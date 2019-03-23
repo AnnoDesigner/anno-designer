@@ -14,9 +14,14 @@ namespace AnnoDesigner
             InitializeComponent();
         }
 
-        private void ButtonProjectHomepageClick(object sender, RoutedEventArgs e)
+        private void ButtonOriginalHomepageClick(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://code.google.com/p/anno-designer/");
+        }
+
+        private void ButtonProjectHomepageClick(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/AgmasGold/anno-designer/");
         }
 
         private void ButtonCloseClick(object sender, RoutedEventArgs e)
@@ -34,7 +39,7 @@ namespace AnnoDesigner
 
         private void ButtonWikiaClick(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://anno2070.wikia.com/wiki/Anno_2070_Wiki");
+            System.Diagnostics.Process.Start("https://anno1800.fandom.com/wiki/Anno_Designer");
         }
     }
 }
