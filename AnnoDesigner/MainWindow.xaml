@@ -4,6 +4,7 @@
         xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
         xmlns:my="clr-namespace:AnnoDesigner"
         xmlns:myUI="clr-namespace:AnnoDesigner.UI"
+        xmlns:l="clr-namespace:AnnoDesigner.Localization"
         xmlns:i="clr-namespace:AnnoDesigner.Presets"
         Title="Anno Designer"
         Icon="/AnnoDesigner;component/icon.ico"
@@ -40,11 +41,11 @@
                     <DockPanel HorizontalAlignment="Stretch"/>
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>-->
-            <MenuItem Header="File" TabIndex="20">
-                <MenuItem Header="New" Command="ApplicationCommands.New" CommandTarget="{Binding ElementName=annoCanvas}" />
-                <MenuItem Header="Open" Command="ApplicationCommands.Open" CommandTarget="{Binding ElementName=annoCanvas}" />
-                <MenuItem Header="Save" Command="ApplicationCommands.Save" CommandTarget="{Binding ElementName=annoCanvas}" />
-                <MenuItem Header="Save as" Command="ApplicationCommands.SaveAs" CommandTarget="{Binding ElementName=annoCanvas}" />
+            <MenuItem Header="{Binding Source={x:Static l:MainWindow.File}}" TabIndex="20">
+                <MenuItem Header="{Binding Source={x:Static l:MainWindow.New}}" Command="ApplicationCommands.New" CommandTarget="{Binding ElementName=annoCanvas}" />
+                <MenuItem Header="{Binding Source={x:Static l:MainWindow.Open}}" Command="ApplicationCommands.Open" CommandTarget="{Binding ElementName=annoCanvas}" />
+                <MenuItem Header="{Binding Source={x:Static l:MainWindow.Save}}" Command="ApplicationCommands.Save" CommandTarget="{Binding ElementName=annoCanvas}" />
+                <MenuItem Header="{Binding Source={x:Static l:MainWindow.SaveAs}}" Command="ApplicationCommands.SaveAs" CommandTarget="{Binding ElementName=annoCanvas}" />
                 <Separator />
                 <MenuItem Header="Exit" Click="MenuItemCloseClick" />
             </MenuItem>

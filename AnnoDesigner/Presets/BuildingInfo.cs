@@ -51,7 +51,7 @@ namespace AnnoDesigner.Presets
         {
             return new AnnoObject
             {
-                Label = Localization == null ? Identifier : Localization[UI.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)],
+                Label = Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)],
                 Icon = IconFileName,
                 Radius = InfluenceRadius,
                 Size = BuildBlocker == null ? new Size() : new Size(BuildBlocker["x"], BuildBlocker["z"])
@@ -61,7 +61,7 @@ namespace AnnoDesigner.Presets
 
         public string GetOrderParameter()
         {
-            return Localization == null ? Identifier : Localization[UI.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
+            return Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
         }
     }
 }
