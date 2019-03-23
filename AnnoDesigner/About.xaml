@@ -11,7 +11,7 @@
         <Label Margin="24,157,0,0" VerticalAlignment="Top" Content="Combined Building presets for Anno 1404, 2070, 2205 and 1800" />
         <Label Margin="24,175,0,0" VerticalAlignment="Top" Content="Building presets Anno 1404 by '&lt;Unknown&gt;' - Anno 2207 by by Peter Hozak (DeathApril)" />
         <Label Margin="24,194,0,0" VerticalAlignment="Top" Content="Building presets Anno 2205 by .... - Anno 1800 by Sting McRay" />
-        <Label Margin="24,225,0,0" VerticalAlignment="Top" Content="Additional changes made by Agmas, Sting McRay, Vad1m" />
+        <Label Margin="24,225,0,0" VerticalAlignment="Top" Content="Additional changes made by Agmas, Sting McRay, Gosolceser1" />
         <Label Margin="0,256,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="Many thanks to all the users who contributed to this project!" />
         <Label Margin="0,283,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="Be sure to visit the wikia pages for anno!" />
         <Button Width="150" Height="23" Margin="12,0,0,12" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="Go to project homepage" Click="ButtonProjectHomepageClick"  />
