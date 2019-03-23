@@ -100,7 +100,7 @@
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="26">
                         <Label Content="Color" />
-                        <extToolkit:ColorPicker DisplayColorAndName="True" DockPanel.Dock="Right" Name="colorPicker" SelectedColor="#Red" ShowAvailableColors="True" ShowRecentColors="False" StandardColorsHeader="Standard Color Presets" Width="140" TabIndex="2" />
+                        <extToolkit:ColorPicker DisplayColorAndName="True" DockPanel.Dock="Right" Name="colorPicker" SelectedColor="Red" ShowAvailableColors="True" ShowRecentColors="False" StandardColorsHeader="Standard Color Presets" Width="140" TabIndex="2" />
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="26">
                         <Label Content="Label" />
