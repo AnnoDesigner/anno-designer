@@ -1,0 +1,90 @@
+<div class="buttonpane">
+    <h3>Layout</h3>
+    <div class="layout">
+        <table>
+            <tr>
+                <td><label for="layoutName"><span class="icon-span ui-icon ui-icon-comment"></span>Layout name</label></td>
+                <td><input id="layoutName" name="layoutName" type="text"/></td>
+            </tr>
+            <tr>
+                <td><span class="icon-span ui-icon ui-icon-person"></span>Author</td>
+                <td id="layoutAuthor">TODO</td>
+            </tr>
+            <tr>
+                <td><span class="icon-span ui-icon ui-icon-arrow-4"></span>Size</td>
+                <td id="layoutSize">TODO</td>
+            </tr>
+            <tr>
+                <td><span class="icon-span ui-icon ui-icon-calendar"></span>Created</td>
+                <td id="layoutCreated">TODO</td>
+            </tr>
+            <tr>
+                <td><span class="icon-span ui-icon ui-icon-calendar"></span>Edited</td>
+                <td id="layoutEdited">TODO</td>
+            </tr>
+        </table>
+        <p>
+            <button id="new">New</button>
+            <button id="save">Save</button>
+            <button id="saveas">Save as</button>
+            <button id="delete">Delete</button>
+        </p>
+    </div>
+    <h3>Properties</h3>
+    <div class="properties">
+        <table>
+            <tr class="size">
+                <td><label for="width"><span class="icon-span ui-icon ui-icon-arrow-4"></span>Size</label></td>
+                <td><input type="text" id="width" /> x <input type="text" id="height" /><button id="flipSize">Flip</button></td>
+            </tr>
+            <tr class="color">
+                <td><label for="color"><span class="icon-span ui-icon ui-icon-radio-on"></span>Color</label></td>
+                <td><input id="color" type="minicolors" value="#FF0000" /></td>
+            </tr>
+            <tr class="label">
+                <td><label for="label"><span class="icon-span ui-icon ui-icon-comment"></span>Label</label></td>
+                <td><input type="text" id="label" /></td>
+            </tr>
+            <tr class="icon">
+                <td><label for="icon"><span class="icon-span ui-icon ui-icon-image"></span>Icon</label></td>
+                <td><select id="icon"><option>Fruits</option></select></td>
+            </tr>
+            <tr class="options">
+                <td rowspan="3"><span class="icon-span ui-icon ui-icon-gear"></span>Options</td>
+                <td><input type="checkbox" id="enableLabel" /><label for="enableLabel">Enable label</label></td>
+            </tr>
+            <tr class="options">
+                <td><input type="checkbox" id="borderless" /><label for="borderless">Borderless</label></td>
+            </tr>
+            <tr class="options">
+                <td><input type="checkbox" id="road" /><label for="road">Road tile</label></td>
+            </tr>
+            <tr>
+                <td colspan="2"><button id="apply">Apply</button></td>
+            </tr>
+        </table>
+    </div>
+    <h3>Building presets</h3>
+    <div class="presets">
+        <p>
+            TODO
+        </p>
+    </div>
+    <h3>Debug console</h3>
+    <div>
+        <table id="debug">
+            <tr>
+                <td>State</td>
+                <td><span id="debugState"></span></td>
+            </tr>
+            <tr>
+                <td>Frames rendered</td>
+                <td><span id="debugFrameCount"></span></td>
+            </tr>
+            <tr>
+                <td><label for="debugConsole">Console</label></td>
+                <td><textarea id="debugConsole"></textarea><button id="debugConsoleClear">Clear</button></td>
+            </tr>
+        </table>
+    </div>
+</div>

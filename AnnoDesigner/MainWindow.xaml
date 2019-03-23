@@ -1,0 +1,136 @@
+﻿<Window x:Class="AnnoDesigner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
+        xmlns:my="clr-namespace:AnnoDesigner"
+        xmlns:myUI="clr-namespace:AnnoDesigner.UI"
+        xmlns:i="clr-namespace:AnnoDesigner.Presets"
+        Title="Anno Designer"
+        Icon="/AnnoDesigner;component/icon.ico"
+        Height="1317.793" Width="1518.161"
+        Loaded="WindowLoaded">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type myUI:IconImage}">
+            <StackPanel Orientation="Horizontal">
+                <Viewbox Margin="5">
+                    <Image Width="23" Height="23" Source="{Binding Path=Icon}" />
+                </Viewbox>
+                <TextBlock Margin="0,5,5,5" VerticalAlignment="Center" Text="{Binding Path=DisplayName}" />
+            </StackPanel>
+        </DataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type my:AnnoObject}">
+            <TextBlock Text="{Binding Label}"/>
+        </HierarchicalDataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="230" />
+        </Grid.ColumnDefinitions>
+        <my:AnnoCanvas x:Name="annoCanvas" Grid.RowSpan="1" Grid.Row="1" RenderGrid="True" RenderIcon="True" RenderLabel="True" RenderStats="True" />
+        <GridSplitter Grid.Row="1" Width="6" />
+        <Menu Height="23" VerticalAlignment="Top" Grid.ColumnSpan="2">
+            <!--<Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>-->
+            <MenuItem Header="File" TabIndex="20">
+                <MenuItem Header="New" Command="ApplicationCommands.New" CommandTarget="{Binding ElementName=annoCanvas}" />
+                <MenuItem Header="Open" Command="ApplicationCommands.Open" CommandTarget="{Binding ElementName=annoCanvas}" />
+                <MenuItem Header="Save" Command="ApplicationCommands.Save" CommandTarget="{Binding ElementName=annoCanvas}" />
+                <MenuItem Header="Save as" Command="ApplicationCommands.SaveAs" CommandTarget="{Binding ElementName=annoCanvas}" />
+                <Separator />
+                <MenuItem Header="Exit" Click="MenuItemCloseClick" />
+            </MenuItem>
+            <MenuItem Header="Extras" TabIndex="21">
+                <!--<MenuItem Header="Prefer local presets" IsCheckable="True" IsEnabled="False" />
+                <MenuItem Header="Apply automatic color scheme" IsEnabled="False" />-->
+                <MenuItem Header="Normalize" Click="MenuItemNormalizeClick" />
+                <MenuItem Header="Reset zoom" Click="MenuItemResetZoomClick" />
+                <Separator />
+                <MenuItem Header="Register file extension" Click="MenuItemRegisterExtensionClick" />
+                <MenuItem Header="Unregister file extension" Click="MenuItemUnregisterExtensionClick" />
+            </MenuItem>
+            <MenuItem Header="Export" TabIndex="22">
+                <MenuItem Header="Export Image" Click="MenuItemExportImageClick" />
+                <Separator />
+                <MenuItem Header="Use current zoom on exported image" IsCheckable="True" IsChecked="False" Name="MenuItemExportZoom" />
+                <MenuItem Header="Render selection highlights on exported image" IsCheckable="True" IsChecked="False" Name="MenuItemExportSelection" />
+            </MenuItem>
+            <MenuItem Header="Language" TabIndex="23" SubmenuClosed="MenuItemLanguageSubmenuClosed">
+                <MenuItem Header="English" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageEng" />
+                <MenuItem Header="Deutsch" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageGer" />
+                <MenuItem Header="Français" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageFra" />
+                <MenuItem Header="Español" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageEsp" />
+                <MenuItem Header="Italiano" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageIta" />
+                <MenuItem Header="Polski" IsCheckable="True" IsChecked="False" Name="MenuItemLanguagePol" />
+                <MenuItem Header="Русский" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageRus" />
+                <MenuItem Header="český" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageCze" />
+            </MenuItem>
+            <MenuItem Header="Help" TabIndex="24" HorizontalAlignment="Right">
+                <MenuItem Header="Version: x" Name="MenuItemVersion" IsEnabled="False" />
+                <MenuItem Header="File version: x" Name="MenuItemFileVersion" IsEnabled="False" />
+                <MenuItem Header="Presets version: not loaded" Name="MenuItemPresetsVersion" IsEnabled="False" />
+                <MenuItem Header="Check for updates" Click="MenuItemVersionCheckImageClick" />
+                <Separator />
+                <MenuItem Header="Go to project homepage" Click="MenuItemHomepageClick" />
+                <MenuItem Header="About Anno Designer" Click="MenuItemAboutClick" />
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="Show grid" IsCheckable="True" IsChecked="True" Click="MenuItemGridClick" TabIndex="25" />
+            <MenuItem Header="Show labels" IsCheckable="True" IsChecked="True" Click="MenuItemLabelClick" TabIndex="26" />
+            <MenuItem Header="Show icons" IsCheckable="True" IsChecked="True" Click="MenuItemIconClick" TabIndex="27" />
+            <MenuItem Header="Show stats" IsCheckable="True" IsChecked="True" Click="MenuItemStatsClick" TabIndex="28" />
+        </Menu>
+        <DockPanel Grid.Column="1" Grid.Row="1" LastChildFill="True">
+            <GroupBox Header="Building settings" DockPanel.Dock="Top">
+                <StackPanel>
+                    <DockPanel LastChildFill="False" Height="26">
+                        <Label Content="Size" />
+                        <TextBox DockPanel.Dock="Right" Height="23" Name="textBoxHeight" Text="4" Width="40" TabIndex="1" />
+                        <Label Content="x" DockPanel.Dock="Right" />
+                        <TextBox DockPanel.Dock="Right" Height="23" Name="textBoxWidth" Text="4" Width="40" TabIndex="0" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Height="26">
+                        <Label Content="Color" />
+                        <extToolkit:ColorPicker DisplayColorAndName="True" DockPanel.Dock="Right" Name="colorPicker" SelectedColor="#FFD63131" ShowAvailableColors="False" ShowRecentColors="False" StandardColorsHeader="Standard Color Presets" Width="140" TabIndex="2" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Height="26">
+                        <Label Content="Label" />
+                        <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxLabel" Text="Building" Width="140" TabIndex="4" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Height="46">
+                        <Label Content="Icon" VerticalAlignment="Center" />
+                        <ComboBox DockPanel.Dock="Right" Width="140" Height="46" IsEnabled="True" Name="comboBoxIcon" SelectedIndex="0" TabIndex="6" TextSearch.TextPath="DisplayName" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Height="26">
+                        <Label Content="Radius" />
+                        <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxRadius" Width="140" Text="0" TabIndex="8" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False">
+                        <Label Content="Options" />
+                        <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
+                            <CheckBox Content="Enable label" Name="checkBoxLabel" Margin="0,5,0,5" VerticalAlignment="Center" TabIndex="9" IsChecked="True" />
+                            <CheckBox Content="Borderless" Name="checkBoxBorderless" Margin="0,0,0,5" VerticalAlignment="Center" TabIndex="10" />
+                            <CheckBox Content="Road" Name="checkBoxRoad" Margin="0,0,0,5" VerticalAlignment="Center" TabIndex="11" />
+                        </StackPanel>
+                    </DockPanel>
+                    <Button Click="ButtonPlaceBuildingClick" Content="Place building" Height="23" TabIndex="12" />
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Building presets - not loaded" Name="GroupBoxPresets" IsEnabled="True" DockPanel.Dock="Top">
+                <TreeView Name="treeViewPresets" MouseDoubleClick="TreeViewPresetsMouseDoubleClick" KeyDown="TreeViewPresetsKeyDown" TabIndex="13" />
+            </GroupBox>
+        </DockPanel>
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="2">
+            <StatusBarItem Content="Mouse controls: left - place, select, move / right - stop placement, remove / both - move all / double click - copy / wheel - zoom / wheel-click - rotate." />
+            <StatusBarItem Name="StatusBarItemStatus" Content="Standard" Margin="10,0,0,0" />
+        </StatusBar>
+    </Grid>
+</Window>

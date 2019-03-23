@@ -1,0 +1,137 @@
+{
+	"ColorSchemes":
+	[
+		{
+			"Name": "1 Farmtype, 1 Factorytype",
+			"ColorInfos":
+			[
+				{
+					"Target": "Depot",
+					"Color":
+					{
+						"A": 255,
+						"R": 214,
+						"G": 49,
+						"B": 49
+					}
+				},
+				{
+					"Target": "Road",
+					"Color":
+					{
+						"A": 255,
+						"R": 128,
+						"G": 128,
+						"B": 128
+					}
+				},
+				{
+					"Target": "Factory",
+					"Color":
+					{
+						"A": 255,
+						"R": 76,
+						"G": 106,
+						"B": 222
+					}
+				},
+				{
+					"Target": "Farm",
+					"Color":
+					{
+						"A": 255,
+						"R": 247,
+						"G": 150,
+						"B": 70
+					}
+				},
+				{
+					"Target": "Field",
+					"Color":
+					{
+						"A": 255,
+						"R": 171,
+						"G": 232,
+						"B": 107
+					}
+				}
+			]
+		},
+		{
+			"Name": "2 Farmtypes, 1 Factorytype",
+			"ColorInfos":
+			[
+				{
+					"Target": "Depot",
+					"Color":
+					{
+						"A": 255,
+						"R": 255,
+						"G": 67,
+						"B": 61
+					}
+				},
+				{
+					"Target": "Road",
+					"Color":
+					{
+						"A": 255,
+						"R": 36,
+						"G": 255,
+						"B": 0
+					}
+				},
+				{
+					"Target": "Factory",
+					"Color":
+					{
+						"A": 255,
+						"R": 0,
+						"G": 247,
+						"B": 241
+					}
+				},
+				{
+					"Target": "Farm",
+					"Color":
+					{
+						"A": 255,
+						"R": 247,
+						"G": 0,
+						"B": 239
+					}
+				},
+				{
+					"Target": "Field",
+					"Color":
+					{
+						"A": 255,
+						"R": 255,
+						"G": 108,
+						"B": 200
+					}
+				},
+				{
+					"Target": "Farm",
+					"Color":
+					{
+						"A": 255,
+						"R": 255,
+						"G": 166,
+						"B": 0
+					}
+				},
+				{
+					"Target": "Field",
+					"Color":
+					{
+						"A": 255,
+						"R": 255,
+						"G": 209,
+						"B": 123
+					}
+				}
+			]
+		}
+	]
+}
