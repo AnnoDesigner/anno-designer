@@ -79,8 +79,8 @@ namespace AnnoDesigner
             // load presets
             treeViewPresets.Items.Clear();
             // manually add a road tile preset
-            treeViewPresets.Items.Add(new AnnoObject { Label = "road tile", Size = new Size(1, 1), Radius = 0, Road = true });
-            treeViewPresets.Items.Add(new AnnoObject { Label = "borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true });
+            treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true });
+            treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true });
             BuildingPresets presets = annoCanvas.BuildingPresets;
             if (presets != null)
             {
