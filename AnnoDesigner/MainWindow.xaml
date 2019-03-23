@@ -100,7 +100,7 @@
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="26">
                         <Label Content="Color" />
-                        <extToolkit:ColorPicker DisplayColorAndName="True" DockPanel.Dock="Right" Name="colorPicker" SelectedColor="#FFD63131" ShowAvailableColors="False" ShowRecentColors="False" StandardColorsHeader="Standard Color Presets" Width="140" TabIndex="2" />
+                        <extToolkit:ColorPicker DisplayColorAndName="True" DockPanel.Dock="Right" Name="colorPicker" SelectedColor="#Red" ShowAvailableColors="True" ShowRecentColors="False" StandardColorsHeader="Standard Color Presets" Width="140" TabIndex="2" />
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="26">
                         <Label Content="Label" />
@@ -117,7 +117,7 @@
                     <DockPanel LastChildFill="False">
                         <Label Content="Options" />
                         <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
-                            <CheckBox Content="Enable label" Name="checkBoxLabel" Margin="0,5,0,5" VerticalAlignment="Center" TabIndex="9" IsChecked="True" />
+                            <CheckBox Content="Enable label" Name="checkBoxLabel" Margin="0,5,0,5" VerticalAlignment="Center" TabIndex="9" IsChecked="False" />
                             <CheckBox Content="Borderless" Name="checkBoxBorderless" Margin="0,0,0,5" VerticalAlignment="Center" TabIndex="10" />
                             <CheckBox Content="Road" Name="checkBoxRoad" Margin="0,0,0,5" VerticalAlignment="Center" TabIndex="11" />
                         </StackPanel>
