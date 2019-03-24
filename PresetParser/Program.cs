@@ -10,22 +10,25 @@ namespace PresetParser
 {
     public class Program
     {
-        ///<summary>
-        ///Path to extracted RDA files (prompt the user for this eventually?)
-        ///</summary>   
-        private static string BASE_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\RDAExplorer\Working copies\Extract\"; //Include the trailing backslash on this
+        private static string BasePath { get; set; }
 
-        private const string ANNO_VERSION_1404 = "1404";
-
+        /// <summary>
+        /// Holds the paths and xpaths to parse the extracted RDA's for different Anno versions
+        /// 
+        /// The RDA's should all be extracted into the same directory.
+        /// </summary>
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
+        private const string ANNO_VERSION_1404 = "1404";
+        private const string ANNO_VERSION_2070 = "2070";
+        private const string ANNO_VERSION_2205 = "2205";
+        private const string ANNO_VERSION_1800 = "1800";
 
-
-        private static readonly string[] Languages = new[] { "cze", "eng", "esp", "fra", "frus", "ger", "ita", "pol", "rus", "spus", "usa" }; //TODO add languages after this
+        private static readonly string[] Languages = new[] { "cze", "eng", "esp", "fra", "frus", "ger", "ita", "pol", "rus", "spus", "usa" };
 
 
         private static string GetIconFilename(XmlNode iconNode)
         {
-            return string.Format("icon_{0}_{1}.png", iconNode["IconFileID"].InnerText, iconNode["IconIndex"] != null ? iconNode["IconIndex"].InnerText : "0");
+            return string.Format("icon_{0}_{1}.png", iconNode["IconFileID"].InnerText, iconNode["IconIndex"] != null ? iconNode["IconIndex"].InnerText : "0"); //TODO: check this icon format is consistent between Anno versions
         }
 
         static Program()
@@ -35,7 +38,56 @@ namespace PresetParser
 
         public static void Main(string[] args)
         {
+            bool validPath = false;
+            string path = "";
+            while (!validPath)
+            {
+                Console.Write("Please enter the path to the extracted RDA files:");
+                path = Console.ReadLine();
+                if (path == "quit")
+                {
+                    Environment.Exit(0);
+                }
+                if (Directory.Exists(path))
+                {
+                    validPath = true;
+                    ///Add a trailing backslash if one is not present.
+                    BasePath = path.Last() == '\\' ? path : path + "\\";
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Invalid input, please try again or enter 'quit' to exit.");
+                }
+            }
 
+            string annoVersion = "";
+            bool validVersion = false;
+            while (!validVersion)
+            {
+                Console.WriteLine();
+                Console.Write("Please enter an Anno version (1 of: {0} {1} {2} {3}):", ANNO_VERSION_1404, ANNO_VERSION_2070, ANNO_VERSION_2205, ANNO_VERSION_1800);
+                annoVersion = Console.ReadLine();
+                if (annoVersion == "quit")
+                {
+                    Environment.Exit(0);
+                }
+                if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070 || annoVersion == ANNO_VERSION_2205 || annoVersion == ANNO_VERSION_1800)
+                {
+                    validVersion = true;
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Invalid input, please try again or enter 'quit to exit.");
+                }
+            }
+
+            Console.WriteLine("Extracting and parsing RDA data from {0} for anno version {1}.", BasePath, annoVersion);
+
+            //These should stay constant for different anno versions (hopefully!)
+
+            //Paths for Anno 1404
             VersionSpecificPaths.Add(ANNO_VERSION_1404, new Dictionary<string, PathRef[]>());
             VersionSpecificPaths[ANNO_VERSION_1404].Add("icons", new PathRef[]
             {
@@ -53,19 +105,24 @@ namespace PresetParser
                 new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group"),
                 new PathRef("addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group/Groups/Group")
             });
+            //Paths for 2070
+
+            //Paths for 2205
+
+            //Paths for 1800
 
 
 
             // prepare localizations
-            Dictionary<string, SerializableDictionary<string>> localizations = GetLocalizations(ANNO_VERSION_1404);
+            Dictionary<string, SerializableDictionary<string>> localizations = GetLocalizations(annoVersion);
 
             // prepare icon mapping
             XmlDocument iconsDocument = new XmlDocument();
             List<XmlNode> iconNodes = new List<XmlNode>();
 
-            foreach (PathRef p in VersionSpecificPaths[ANNO_VERSION_1404]["icons"])
+            foreach (PathRef p in VersionSpecificPaths[annoVersion]["icons"])
             {
-                iconsDocument.Load(BASE_PATH + p.Path);
+                iconsDocument.Load(BasePath + p.Path);
                 iconNodes.AddRange(iconsDocument.SelectNodes(p.XPath).Cast<XmlNode>());
             }
 
@@ -80,9 +137,9 @@ namespace PresetParser
             // find buildings in assets.xml
             Console.WriteLine();
             Console.WriteLine("Parsing assets.xml:");
-            foreach (PathRef p in VersionSpecificPaths[ANNO_VERSION_1404]["assets"])
+            foreach (PathRef p in VersionSpecificPaths[annoVersion]["assets"])
             {
-                ParseAssetsFile(BASE_PATH + p.Path, p.XPath, buildings, iconNodes, localizations);
+                ParseAssetsFile(BasePath + p.Path, p.XPath, buildings, iconNodes, localizations);
             }
 
             //No longer needed
@@ -165,7 +222,7 @@ namespace PresetParser
         private static bool RetrieveBuildingBlocker(BuildingInfo building, string variationFilename)
         {
             XmlDocument ifoDocument = new XmlDocument();
-            ifoDocument.Load(Path.Combine(BASE_PATH + "/", string.Format("{0}.ifo", Path.GetDirectoryName(variationFilename) + "\\" + Path.GetFileNameWithoutExtension(variationFilename))));
+            ifoDocument.Load(Path.Combine(BasePath + "/", string.Format("{0}.ifo", Path.GetDirectoryName(variationFilename) + "\\" + Path.GetFileNameWithoutExtension(variationFilename))));
             try
             {
                 XmlNode node = ifoDocument.FirstChild["BuildBlocker"].FirstChild;
@@ -197,7 +254,7 @@ namespace PresetParser
             {
                 foreach (PathRef p in VersionSpecificPaths[annoVersion]["localisation"])
                 {
-                    string basePath = Path.Combine(BASE_PATH, p.Path, language, "txt");
+                    string basePath = Path.Combine(BasePath, p.Path, language, "txt");
                     foreach (string path in files.Select(_ => Path.Combine(basePath, _)))
                     {
                         if (!File.Exists(path))
