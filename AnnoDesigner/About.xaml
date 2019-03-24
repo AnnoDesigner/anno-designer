@@ -1,7 +1,7 @@
 ﻿<Window x:Class="AnnoDesigner.About"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="About Anno Designer" Height="382.666" Width="528.333" Icon="/AnnoDesigner;component/icon.ico" ResizeMode="NoResize" KeyDown="WindowKeyDown" WindowStartupLocation="CenterOwner">
+        Title="About Anno Designer (Modified)" Height="382.666" Width="528.333" Icon="/AnnoDesigner;component/icon.ico" ResizeMode="NoResize" KeyDown="WindowKeyDown" WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="223*"/>

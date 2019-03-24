@@ -23,6 +23,8 @@ namespace PresetParser
         private const string ANNO_VERSION_2205 = "2205";
         private const string ANNO_VERSION_1800 = "1800";
 
+        private const string BUILDING_PRESETS_VERSION = "0.8";
+
         private static readonly string[] Languages = new[] { "cze", "eng", "esp", "fra", "frus", "ger", "ita", "pol", "rus", "spus", "usa" };
 
 
@@ -52,7 +54,7 @@ namespace PresetParser
                 {
                     validPath = true;
                     ///Add a trailing backslash if one is not present.
-                    BasePath = path.Last() == '\\' ? path : path + "\\";
+                    BasePath = path.LastOrDefault() == '\\' ? path : path + "\\";
                 }
                 else
                 {
@@ -150,7 +152,7 @@ namespace PresetParser
             //ParseAssetsFile(BASE_PATH + "addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group/Groups/Group", buildings, iconNodes, localizations);
 
             // serialize presets to json file
-            BuildingPresets presets = new BuildingPresets { Version = "0.5", Buildings = buildings };
+            BuildingPresets presets = new BuildingPresets { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
             Console.WriteLine("Writing buildings to presets.json");
             DataIO.SaveToFile(presets, "presets.json");
 
