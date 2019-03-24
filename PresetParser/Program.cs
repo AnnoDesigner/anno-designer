@@ -25,7 +25,7 @@ namespace PresetParser
 
         private const string BUILDING_PRESETS_VERSION = "0.8";
 
-        private static readonly string[] Languages = new[] { "cze", "eng", "esp", "fra", "frus", "ger", "ita", "pol", "rus", "spus", "usa" };
+        private static readonly string[] Languages = new[] { "cze", "eng", "esp", "fra", "ger", "ita", "pol", "rus" };
 
 
         private static string GetIconFilename(XmlNode iconNode)
