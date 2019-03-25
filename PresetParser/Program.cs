@@ -68,13 +68,13 @@ namespace PresetParser
             while (!validVersion)
             {
                 Console.WriteLine();
-                Console.Write("Please enter an Anno version (1 of: {0} {1} {2} {3}):", ANNO_VERSION_1404, ANNO_VERSION_2070, ANNO_VERSION_2205, ANNO_VERSION_1800);
+                Console.Write("Please enter an Anno version (1 of: {0} {1} {2}):", ANNO_VERSION_1404, ANNO_VERSION_2070, ANNO_VERSION_2205);
                 annoVersion = Console.ReadLine();
                 if (annoVersion == "quit")
                 {
                     Environment.Exit(0);
                 }
-                if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070 || annoVersion == ANNO_VERSION_2205 || annoVersion == ANNO_VERSION_1800)
+                if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070 || annoVersion == ANNO_VERSION_2205)
                 {
                     validVersion = true;
                 }
@@ -89,31 +89,48 @@ namespace PresetParser
 
             //These should stay constant for different anno versions (hopefully!)
 
-            //Paths for Anno 1404
-            VersionSpecificPaths.Add(ANNO_VERSION_1404, new Dictionary<string, PathRef[]>());
-            VersionSpecificPaths[ANNO_VERSION_1404].Add("icons", new PathRef[]
+            // Paths for Anno 1404
+            if (annoVersion == "1404")
             {
-                new PathRef("data/config/game/icons.xml", "/Icons/i" ),
+                VersionSpecificPaths.Add(ANNO_VERSION_1404, new Dictionary<string, PathRef[]>());
+                VersionSpecificPaths[ANNO_VERSION_1404].Add("icons", new PathRef[]
+                {
+                //new PathRef("data/config/game/icons.xml", "/Icons/i" ),
                 new PathRef("addondata/config/game/icons.xml", "/Icons/i")
-            });
-            VersionSpecificPaths[ANNO_VERSION_1404].Add("localisation", new PathRef[]
-            {
+                });
+                VersionSpecificPaths[ANNO_VERSION_1404].Add("localisation", new PathRef[]
+                {
                 new PathRef("data/loca", ""),
                 new PathRef("addondata/loca", "")
-            });
-            VersionSpecificPaths[ANNO_VERSION_1404].Add("assets", new PathRef[]
-            {
+                });
+                VersionSpecificPaths[ANNO_VERSION_1404].Add("assets", new PathRef[]
+                {
                 new PathRef("addondata/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group"),
-                new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group"),
+                //new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group"),
                 new PathRef("addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group/Groups/Group")
-            });
-            //Paths for 2070
+                });
+            }
+            // Paths for 2070
+            if (annoVersion == "2070")
+            {
+                VersionSpecificPaths.Add(ANNO_VERSION_2070, new Dictionary<string, PathRef[]>());
+                VersionSpecificPaths[ANNO_VERSION_2070].Add("icons", new PathRef[]
+                {
+                new PathRef("data/config/game/icons.xml", "/Icons/i" )
+                });
+                VersionSpecificPaths[ANNO_VERSION_2070].Add("localisation", new PathRef[]
+                {
+                new PathRef("data/loca", "")
+                });
+                VersionSpecificPaths[ANNO_VERSION_2070].Add("assets", new PathRef[]
+                {
+                new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group")
+                });
+            }
+            // Paths for 2205
 
-            //Paths for 2205
-
-            //Paths for 1800
-
-
+            // Paths for 1800
+            ///Because there is no extracted data available, this Program need to be terminated
 
             // prepare localizations
             Dictionary<string, SerializableDictionary<string>> localizations = GetLocalizations(annoVersion);
@@ -137,11 +154,16 @@ namespace PresetParser
             List<BuildingInfo> buildings = new List<BuildingInfo>();
 
             // find buildings in assets.xml
+            string innerNameTag = "";
+            if (annoVersion == "1404") { innerNameTag = "PlayerBuildings"; Console.WriteLine(); Console.WriteLine("innerNameTag set to: {0}", innerNameTag);};
+            if (annoVersion == "2070") { innerNameTag = "Buildings"; Console.WriteLine(); Console.WriteLine("innerNameTag set to: {0}", innerNameTag); };
+            if (annoVersion == "2205") { innerNameTag = "Buildings"; Console.WriteLine(); Console.WriteLine("innerNameTag set to: {0}", innerNameTag); };
+            //if (annoVersion == "1800") { innerNameTag = "Buildings"; Console.WriteLine(); Console.WriteLine("innerNameTag set to: {0}", innerNameTag); };
             Console.WriteLine();
             Console.WriteLine("Parsing assets.xml:");
             foreach (PathRef p in VersionSpecificPaths[annoVersion]["assets"])
             {
-                ParseAssetsFile(BasePath + p.Path, p.XPath, buildings, iconNodes, localizations);
+                ParseAssetsFile(BasePath + p.Path, p.XPath, buildings, iconNodes, localizations, innerNameTag );
             }
 
             //No longer needed
@@ -163,13 +185,12 @@ namespace PresetParser
         }
 
         private static void ParseAssetsFile(string filename, string xPathToBuildingsNode, List<BuildingInfo> buildings,
-            IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations)
+            IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string innerNameTag)
         {
             XmlDocument assetsDocument = new XmlDocument();
             assetsDocument.Load(filename);
             XmlNode buildingNodes = assetsDocument.SelectNodes(xPathToBuildingsNode)
-                .Cast<XmlNode>().Single(_ => _["Name"].InnerText == "PlayerBuildings"); //This was different before (for a different anno) 
-
+                .Cast<XmlNode>().Single(_ => _["Name"].InnerText == innerNameTag); //This differs between anno versions
             foreach (XmlNode buildingNode in buildingNodes.SelectNodes("Groups/Group/Groups/Group/Assets/Asset").Cast<XmlNode>())
             {
                 ParseBuilding(buildings, buildingNode, iconNodes, localizations);
