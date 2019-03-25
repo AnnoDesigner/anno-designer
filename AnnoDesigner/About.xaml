@@ -1,26 +1,34 @@
 ﻿<Window x:Class="AnnoDesigner.About"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="About Anno Designer (Modified)" Height="382.666" Width="528.333" Icon="/AnnoDesigner;component/icon.ico" ResizeMode="NoResize" KeyDown="WindowKeyDown" WindowStartupLocation="CenterOwner">
+        xmlns:local="clr-namespace:AnnoDesigner.Localization"
+        Title="About Anno Designer (Modified)" Height="382.666" Width="555.333" Icon="/AnnoDesigner;component/icon.ico" ResizeMode="NoResize" KeyDown="WindowKeyDown" WindowStartupLocation="CenterOwner">
     <Grid>
+        <Grid.Resources>
+            <local:About x:Key="Locale"></local:About>
+        </Grid.Resources>
+        <Grid.DataContext>
+            <Binding Source="{StaticResource Locale}"></Binding>
+        </Grid.DataContext>
         <Grid.RowDefinitions>
             <RowDefinition Height="223*"/>
             <RowDefinition Height="132*"/>
         </Grid.RowDefinitions>
         <Image Height="64" Width="64" Source="/AnnoDesigner;component/Stuff/icon64.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,12,0,0" />
-        <Label HorizontalAlignment="Left" Margin="82,12,0,0" VerticalAlignment="Top" FontSize="24" Content="Modified Anno Designer" />
-        <Label Margin="82,48,0,0" VerticalAlignment="Top" Content="A building layout designer for Ubisofts Anno-series" />
-        <Label Margin="12,92,0,0" VerticalAlignment="Top" FontSize="14" Content="Credits" />
-        <Label Margin="24,120,0,0" VerticalAlignment="Top" Content="Original Application by Jan Christoph Bernack (ZackSchneider)" />
-        <Label Margin="24,153,0,0" VerticalAlignment="Top" Content="Combined Building presets for Anno 1404, 2070, 2205 and 1800" />
-        <Label Margin="24,171,0,0" VerticalAlignment="Top" Content="Building presets Anno 1404 by '&lt;Unknown&gt;' - Anno 2207 by by Peter Hozak (DeathApril)" />
-        <Label Margin="24,189,0,0" VerticalAlignment="Top" Content="Building presets Anno 2205 by PickledWhispers - Anno 1800 by Sting McRay" />
-        <Label Margin="24,2,0,0" VerticalAlignment="Top" Content="Additional changes made by Agmas, Sting McRay and Gosolceser1" Grid.Row="1" />
-        <Label Margin="0,33,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="Many thanks to all the users who contributed to this project!" Grid.Row="1" />
-        <Label Margin="0,60,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="Be sure to visit the Fandom pages for anno!" Grid.Row="1" />
-        <Button Width="117" Height="23" Margin="23,0,0,12" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="Original Homepage" Click="ButtonOriginalHomepageClick" Grid.Row="1"  />
-        <Button Width="117" Height="23" Margin="143,0,0,12" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="Project Homepage" Click="ButtonProjectHomepageClick" Grid.Row="1"  />
-        <Button Width="117" Height="23" Margin="263,0,142,12" VerticalAlignment="Bottom" HorizontalAlignment="Center" Content="Go to Fandom" Click="ButtonWikiaClick" Grid.Row="1" />
-        <Button Width="117" Height="23" Margin="0,0,22,12" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Close" Click="ButtonCloseClick" Grid.Row="1" />
+        <Label HorizontalAlignment="Left" Margin="82,12,0,0" VerticalAlignment="Top" FontSize="24" Content="{Binding Path=ModifiedAnnoDesigner}" />
+        <Label Margin="82,48,0,0" VerticalAlignment="Top" Content="{Binding Path=BuildingLayoutDesigner}" />
+        <Label Margin="12,92,0,0" VerticalAlignment="Top" FontSize="14" Content="{Binding Path=Credits}" />
+        <!-- Can't use StringFormat with label elements -->
+        <TextBlock Margin="24,120,0,0" VerticalAlignment="Top" Text="{Binding Path=OriginalApplicationBy, StringFormat=\{0\} Jan Christoph Bernack (ZackSchneider)}" />
+        <TextBlock Margin="24,153,0,0" VerticalAlignment="Top"  Text="{Binding Path=CombinedForAnnoVersions, StringFormat='\{0\} Anno 1404, 2070, 2205 and 1800'}" />
+        <TextBlock Margin="24,171,0,0" VerticalAlignment="Top" Text="{Binding Path=BuildingPresets, StringFormat='\{0\} Anno 1404 by &quot;&lt;Unknown&gt;&quot; - Anno 2207 by by Peter Hozak (DeathApril)'}" />
+        <TextBlock Margin="24,189,0,0" VerticalAlignment="Top" Text="{Binding Path=BuildingPresets, StringFormat='\{0\} Anno 2205 by PickledWhispers - Anno 1800 by Sting McRay'}" />
+        <TextBlock Margin="24,2,0,0" VerticalAlignment="Top" Text="{Binding Path=AdditionalChanges, StringFormat='\{0\} Additional changes made by Agmas, Sting McRay and Gosolceser1'}" Grid.Row="1" />
+        <Label Margin="0,33,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="{Binding Path=ManyThanks}" Grid.Row="1" />
+        <Label Margin="0,60,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="{Binding Path=VisitTheFandom}" Grid.Row="1" />
+        <Button Width="117" Height="23" Margin="10,0,0,10" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="{Binding Path=OriginalHomepage}" Click="ButtonOriginalHomepageClick" Grid.Row="1"  />
+        <Button Width="117" Height="23" Margin="145,0,0,10" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="{Binding Path=ProjectHomepage}" Click="ButtonProjectHomepageClick" Grid.Row="1"  />
+        <Button Width="118" Height="23" Margin="278,0,145,10" VerticalAlignment="Bottom" HorizontalAlignment="Center" Content="{Binding Path=GoToFandom}" Click="ButtonWikiaClick" Grid.Row="1" />
+        <Button Width="117" Height="23" Margin="0,0,10,10" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="{Binding Path=Close}" Click="ButtonCloseClick" Grid.Row="1" />
     </Grid>
 </Window>

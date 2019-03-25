@@ -35,37 +35,43 @@
         </Grid.ColumnDefinitions>
         <my:AnnoCanvas x:Name="annoCanvas" Grid.RowSpan="1" Grid.Row="1" RenderGrid="True" RenderIcon="True" RenderLabel="True" RenderStats="True" />
         <GridSplitter Grid.Row="1" Width="6" />
-        <Menu Height="23" VerticalAlignment="Top" Grid.ColumnSpan="2">
+        <Menu Name="Menu" Height="23" VerticalAlignment="Top" Grid.ColumnSpan="2">
+            <Menu.Resources>
+                <l:MainWindow x:Key="localization"></l:MainWindow>
+            </Menu.Resources>
+            <Menu.DataContext>
+                <Binding Source="{StaticResource localization}"></Binding>
+            </Menu.DataContext>
             <!--<Menu.ItemsPanel>
                 <ItemsPanelTemplate>
                     <DockPanel HorizontalAlignment="Stretch"/>
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>-->
-            <MenuItem Header="{Binding Source={x:Static l:MainWindow.File}}" TabIndex="20">
-                <MenuItem Header="{Binding Source={x:Static l:MainWindow.NewCanvas}}" Command="ApplicationCommands.New" CommandTarget="{Binding ElementName=annoCanvas}" />
-                <MenuItem Header="{Binding Source={x:Static l:MainWindow.Open}}" Command="ApplicationCommands.Open" CommandTarget="{Binding ElementName=annoCanvas}" />
-                <MenuItem Header="{Binding Source={x:Static l:MainWindow.Save}}" Command="ApplicationCommands.Save" CommandTarget="{Binding ElementName=annoCanvas}" />
-                <MenuItem Header="{Binding Source={x:Static l:MainWindow.SaveAs}}" Command="ApplicationCommands.SaveAs" CommandTarget="{Binding ElementName=annoCanvas}" />
+            <MenuItem Header="{Binding Path=File}" TabIndex="20">
+                <MenuItem Header="{Binding Path=NewCanvas}" Command="ApplicationCommands.New" CommandTarget="{Binding ElementName=annoCanvas}" />
+                <MenuItem Header="{Binding Path=Open}" Command="ApplicationCommands.Open" CommandTarget="{Binding ElementName=annoCanvas}" />
+                <MenuItem Header="{Binding Path=Save}" Command="ApplicationCommands.Save" CommandTarget="{Binding ElementName=annoCanvas}" />
+                <MenuItem Header="{Binding Path=SaveAs}" Command="ApplicationCommands.SaveAs" CommandTarget="{Binding ElementName=annoCanvas}" />
                 <Separator />
-                <MenuItem Header="Exit" Click="MenuItemCloseClick" />
+                <MenuItem Header="{Binding Path=Exit}" Click="MenuItemCloseClick" />
             </MenuItem>
-            <MenuItem Header="Extras" TabIndex="21">
+            <MenuItem Header="{Binding Path=Extras}" TabIndex="21">
                 <!--<MenuItem Header="Prefer local presets" IsCheckable="True" IsEnabled="False" />
                 <MenuItem Header="Apply automatic color scheme" IsEnabled="False" />-->
-                <MenuItem Header="Normalize" Click="MenuItemNormalizeClick" />
-                <MenuItem Header="Reset zoom" Click="MenuItemResetZoomClick" />
+                <MenuItem Header="{Binding Path=Normalize}" Click="MenuItemNormalizeClick" />
+                <MenuItem Header="{Binding Path=ResetZoom}" Click="MenuItemResetZoomClick" />
                 <Separator />
-                <MenuItem Header="Register file extension" Click="MenuItemRegisterExtensionClick" />
-                <MenuItem Header="Unregister file extension" Click="MenuItemUnregisterExtensionClick" />
+                <MenuItem Header="{Binding Path=RegisterFileExtension}" Click="MenuItemRegisterExtensionClick" />
+                <MenuItem Header="{Binding Path=UnregisterFileExtension}" Click="MenuItemUnregisterExtensionClick" />
             </MenuItem>
-            <MenuItem Header="Export" TabIndex="22">
-                <MenuItem Header="Export Image" Click="MenuItemExportImageClick" />
+            <MenuItem Header="{Binding Path=Export}" TabIndex="22">
+                <MenuItem Header="{Binding Path=ExportImage}" Click="MenuItemExportImageClick" />
                 <Separator />
-                <MenuItem Header="Use current zoom on exported image" IsCheckable="True" IsChecked="False" Name="MenuItemExportZoom" />
-                <MenuItem Header="Render selection highlights on exported image" IsCheckable="True" IsChecked="False" Name="MenuItemExportSelection" />
+                <MenuItem Header="{Binding Path=UseCurrentZoomOnExportedImage}" IsCheckable="True" IsChecked="False" Name="MenuItemExportZoom" />
+                <MenuItem Header="{Binding Path=RenderSelectionHighlightsOnExportedImage}" IsCheckable="True" IsChecked="False" Name="MenuItemExportSelection" />
             </MenuItem>
-            <MenuItem Header="Language" TabIndex="23" SubmenuClosed="MenuItemLanguageSubmenuClosed">
-                <MenuItem Header="English" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageEng" />
+            <MenuItem Header="Language" TabIndex="23" Click="MenuItemLanguageClick">
+                <MenuItem Header="English" IsCheckable="True" IsChecked="True" Name="MenuItemLanguageEng" />
                 <MenuItem Header="Deutsch" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageGer" />
                 <MenuItem Header="Français" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageFra" />
                 <MenuItem Header="Español" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageEsp" />
@@ -74,55 +80,55 @@
                 <MenuItem Header="Русский" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageRus" />
                 <MenuItem Header="český" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageCze" />
             </MenuItem>
-            <MenuItem Header="Help" TabIndex="24" HorizontalAlignment="Right">
-                <MenuItem Header="Version: x" Name="MenuItemVersion" IsEnabled="False" />
-                <MenuItem Header="File version: x" Name="MenuItemFileVersion" IsEnabled="False" />
-                <MenuItem Header="Presets version: not loaded" Name="MenuItemPresetsVersion" IsEnabled="False" />
-                <MenuItem Header="Check for updates" Click="MenuItemVersionCheckImageClick" />
+            <MenuItem Header="{Binding Path=Help}" TabIndex="24" HorizontalAlignment="Right">
+                <MenuItem Header="{Binding Path=Version}" Name="MenuItemVersion" IsEnabled="False" />
+                <MenuItem Header="{Binding Path=FileVersion}" Name="MenuItemFileVersion" IsEnabled="False" />
+                <MenuItem Header="{Binding Path=PresetsVersion}" Name="MenuItemPresetsVersion" IsEnabled="False" />
+                <MenuItem Header="{Binding Path=CheckForUpdates}" Click="MenuItemVersionCheckImageClick" />
                 <Separator />
-                <MenuItem Header="Go to project homepage" Click="MenuItemHomepageClick" />
-                <MenuItem Header="About Anno Designer" Click="MenuItemAboutClick" />
+                <MenuItem Header="{Binding Path=GoToProjectHomepage}" Click="MenuItemHomepageClick" />
+                <MenuItem Header="{Binding Path=AboutAnnoDesigner}" Click="MenuItemAboutClick" />
             </MenuItem>
             <Separator />
-            <MenuItem Header="Show grid" IsCheckable="True" IsChecked="True" Click="MenuItemGridClick" TabIndex="25" />
-            <MenuItem Header="Show labels" IsCheckable="True" IsChecked="True" Click="MenuItemLabelClick" TabIndex="26" />
-            <MenuItem Header="Show icons" IsCheckable="True" IsChecked="True" Click="MenuItemIconClick" TabIndex="27" />
-            <MenuItem Header="Show stats" IsCheckable="True" IsChecked="True" Click="MenuItemStatsClick" TabIndex="28" />
+            <MenuItem Header="{Binding Path=ShowGrid}" IsCheckable="True" IsChecked="True" Click="MenuItemGridClick" TabIndex="25" />
+            <MenuItem Header="{Binding Path=ShowLabels}" IsCheckable="True" IsChecked="True" Click="MenuItemLabelClick" TabIndex="26" />
+            <MenuItem Header="{Binding Path=ShowIcons}" IsCheckable="True" IsChecked="True" Click="MenuItemIconClick" TabIndex="27" />
+            <MenuItem Header="{Binding Path=ShowStats}" IsCheckable="True" IsChecked="True" Click="MenuItemStatsClick" TabIndex="28" />
         </Menu>
         <DockPanel Grid.Column="1" Grid.Row="1" LastChildFill="True">
-            <GroupBox Header="Building settings" DockPanel.Dock="Top">
+            <GroupBox Header="{Binding Path=BuildingSettings}" DockPanel.Dock="Top">
                 <StackPanel>
                     <DockPanel LastChildFill="False" Height="26">
-                        <Label Content="Size" />
+                        <Label Content="{Binding Path=Size}" />
                         <TextBox DockPanel.Dock="Right" Height="23" Name="textBoxHeight" Text="4" Width="40" TabIndex="1" />
                         <Label Content="x" DockPanel.Dock="Right" />
                         <TextBox DockPanel.Dock="Right" Height="23" Name="textBoxWidth" Text="4" Width="40" TabIndex="0" />
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="26">
-                        <Label Content="Color" />
+                        <Label Content="{Binding Path=Color}" />
                         <extToolkit:ColorPicker DisplayColorAndName="True" DockPanel.Dock="Right" Name="colorPicker" SelectedColor="Red" ShowAvailableColors="True" ShowRecentColors="False" StandardColorsHeader="Standard Color Presets" Width="140" TabIndex="2" />
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="26">
-                        <Label Content="Label" />
+                        <Label Content="{Binding Path=Label}" />
                         <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxLabel" Text="Building" Width="140" TabIndex="4" />
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="46">
-                        <Label Content="Icon" VerticalAlignment="Center" />
+                        <Label Content="{Binding Path=Icon}" VerticalAlignment="Center" />
                         <ComboBox DockPanel.Dock="Right" Width="140" Height="46" IsEnabled="True" Name="comboBoxIcon" SelectedIndex="0" TabIndex="6" TextSearch.TextPath="DisplayName" />
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="26">
-                        <Label Content="Radius" />
+                        <Label Content="{Binding Path=Radius}" />
                         <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxRadius" Width="140" Text="0" TabIndex="8" />
                     </DockPanel>
                     <DockPanel LastChildFill="False">
-                        <Label Content="Options" />
+                        <Label Content="{Binding Path=Options}" />
                         <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
-                            <CheckBox Content="Enable label" Name="checkBoxLabel" Margin="0,5,0,5" VerticalAlignment="Center" TabIndex="9" IsChecked="False" />
-                            <CheckBox Content="Borderless" Name="checkBoxBorderless" Margin="0,0,0,5" VerticalAlignment="Center" TabIndex="10" />
-                            <CheckBox Content="Road" Name="checkBoxRoad" Margin="0,0,0,5" VerticalAlignment="Center" TabIndex="11" />
+                            <CheckBox Content="{Binding Path=EnableLabel}" Name="checkBoxLabel" Margin="0,5,0,5" VerticalAlignment="Center" TabIndex="9" IsChecked="False" />
+                            <CheckBox Content="{Binding Path=Borderless}" Name="checkBoxBorderless" Margin="0,0,0,5" VerticalAlignment="Center" TabIndex="10" />
+                            <CheckBox Content="{Binding Path=Road}" Name="checkBoxRoad" Margin="0,0,0,5" VerticalAlignment="Center" TabIndex="11" />
                         </StackPanel>
                     </DockPanel>
-                    <Button Click="ButtonPlaceBuildingClick" Content="Place building" Height="23" TabIndex="12" />
+                    <Button Click="ButtonPlaceBuildingClick" Content="{Binding Path=PlaceBuilding}" Height="23" TabIndex="12" />
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="Building presets - not loaded" Name="GroupBoxPresets" IsEnabled="True" DockPanel.Dock="Top">

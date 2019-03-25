@@ -12,6 +12,7 @@ namespace AnnoDesigner
         public About()
         {
             InitializeComponent();
+            this.DataContext = this;
         }
 
         private void ButtonOriginalHomepageClick(object sender, RoutedEventArgs e)

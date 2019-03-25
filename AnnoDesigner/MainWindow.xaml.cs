@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using MessageBox = Microsoft.Windows.Controls.MessageBox;
+using System.ComponentModel;
 
 namespace AnnoDesigner
 {
@@ -27,8 +28,14 @@ namespace AnnoDesigner
         public static string SelectedLanguage
         {
             get { return _selectedLanguage == null ? "English" : _selectedLanguage; }
-            set { _selectedLanguage = value == null ? "English" : value; }
+            set {
+                _selectedLanguage = value == null ? "English" : value;
+                mainWindowLocalization.UpdateLanguage();
+            }
         }
+
+        private static Localization.MainWindow mainWindowLocalization;
+        //About window does not need to be called, as it get's instantiated and used when the about window is created
 
         #region Initialization
 
@@ -42,6 +49,10 @@ namespace AnnoDesigner
             annoCanvas.OnCurrentObjectChanged += UpdateUIFromObject;
             annoCanvas.OnStatusMessageChanged += StatusMessageChanged;
             annoCanvas.OnLoadedFileChanged += LoadedFileChanged;
+
+            //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
+            DependencyObject dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
+            mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -352,15 +363,14 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MenuItemLanguageSubmenuClosed(object sender, RoutedEventArgs e)
+        private void MenuItemLanguageClick(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
             bool languageChecked = false;
             string language = null;
             foreach (MenuItem m in menuItem.Items)
             {
-                //Make sure only 1 language is selected at a time;
-                if (m.IsChecked && !languageChecked)
+                if (m.IsChecked && !languageChecked && m.Header.ToString() != SelectedLanguage)
                 {
                     languageChecked = true;
                     language = m.Header.ToString();
@@ -369,7 +379,6 @@ namespace AnnoDesigner
                 {
                     m.IsChecked = false;
                 }
-             
             }
             if (!languageChecked)
             {
