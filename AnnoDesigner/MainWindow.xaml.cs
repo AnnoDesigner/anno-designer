@@ -148,6 +148,10 @@ namespace AnnoDesigner
 
         #region AnnoCanvas events
 
+        /// <summary>
+        /// Fired on the OnCurrentObjectChanged event
+        /// </summary>
+        /// <param name="obj"></param>
         private void UpdateUIFromObject(AnnoObject obj)
         {
             if (obj == null)
@@ -247,6 +251,9 @@ namespace AnnoDesigner
             treeViewPresets.Items.Clear();
             if (annoCanvas.BuildingPresets != null)
             {
+                // manually add a road tile preset
+                treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true });
+                treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true });
                 annoCanvas.BuildingPresets.AddToTree(treeViewPresets);
             }
         }
