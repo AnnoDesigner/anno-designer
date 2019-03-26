@@ -22,7 +22,11 @@
         <HierarchicalDataTemplate DataType="{x:Type my:AnnoObject}">
             <TextBlock Text="{Binding Label}"/>
         </HierarchicalDataTemplate>
+        <l:MainWindow x:Key="localization"></l:MainWindow>
     </Window.Resources>
+    <Window.DataContext>
+        <Binding Source="{StaticResource localization}"></Binding>
+    </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -36,12 +40,12 @@
         <my:AnnoCanvas x:Name="annoCanvas" Grid.RowSpan="1" Grid.Row="1" RenderGrid="True" RenderIcon="True" RenderLabel="True" RenderStats="True" />
         <GridSplitter Grid.Row="1" Width="6" />
         <Menu Name="Menu" Height="23" VerticalAlignment="Top" Grid.ColumnSpan="2">
-            <Menu.Resources>
-                <l:MainWindow x:Key="localization"></l:MainWindow>
+            <!--<Menu.Resources>
+               
             </Menu.Resources>
             <Menu.DataContext>
-                <Binding Source="{StaticResource localization}"></Binding>
-            </Menu.DataContext>
+                
+            </Menu.DataContext>-->
             <!--<Menu.ItemsPanel>
                 <ItemsPanelTemplate>
                     <DockPanel HorizontalAlignment="Stretch"/>
