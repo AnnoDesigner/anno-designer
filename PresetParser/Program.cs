@@ -10,6 +10,7 @@ namespace PresetParser
 {
     public class Program
     {
+        #region Initalisizing values
         private static string BasePath { get; set; }
 
         /// <summary>
@@ -23,10 +24,9 @@ namespace PresetParser
         private const string ANNO_VERSION_2205 = "2205";
         private const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "0.8";
+        private const string BUILDING_PRESETS_VERSION = "0.8.1";
 
         private static readonly string[] Languages = new[] { "cze", "eng", "esp", "fra", "ger", "ita", "pol", "rus" };
-
 
         private static string GetIconFilename(XmlNode iconNode)
         {
@@ -38,8 +38,11 @@ namespace PresetParser
             VersionSpecificPaths = new Dictionary<string, Dictionary<string, PathRef[]>>();
         }
 
+        #endregion
+
         public static void Main(string[] args)
         {
+            #region User Choices 
             bool validPath = false;
             string path = "";
             while (!validPath)
@@ -62,7 +65,6 @@ namespace PresetParser
                     Console.WriteLine("Invalid input, please try again or enter 'quit' to exit.");
                 }
             }
-
             string annoVersion = "";
             bool validVersion = false;
             while (!validVersion)
@@ -87,8 +89,11 @@ namespace PresetParser
 
             Console.WriteLine("Extracting and parsing RDA data from {0} for anno version {1}.", BasePath, annoVersion);
 
-            //These should stay constant for different anno versions (hopefully!)
+            #endregion
 
+            #region Anno Verion Data Paths
+
+            //These should stay constant for different anno versions (hopefully!)
             // Paths for Anno 1404
             if (annoVersion == "1404")
             {
@@ -124,32 +129,54 @@ namespace PresetParser
                 });
                 VersionSpecificPaths[ANNO_VERSION_2070].Add("assets", new PathRef[]
                 {
-                new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group")
+                new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group"),
                 });
             }
             // Paths for 2205
+            if (annoVersion == "2205")
+            {
+                VersionSpecificPaths.Add(ANNO_VERSION_2205, new Dictionary<string, PathRef[]>());
+                //VersionSpecificPaths[ANNO_VERSION_2205].Add("icons", new PathRef[]
+                //{
+                //new PathRef("data/config/game/icons.xml", "/Icons/i" )
+                //});
+                VersionSpecificPaths[ANNO_VERSION_2205].Add("localisation", new PathRef[]
+                {
+                new PathRef("data/dlc01/config/game/asset/", "")
+                });
+                VersionSpecificPaths[ANNO_VERSION_2205].Add("assets", new PathRef[]
+                {
+                new PathRef("data/dlc01/config/game/asset/assets.xml", "/AssetList/Groups/Group/Groups/Group")
+                });
+            }
 
             // Paths for 1800
             ///Because there is no extracted data available, this Program need to be terminated
 
+            #endregion
+
+            #region Preparing Writing JSON Files
             // prepare localizations
             Dictionary<string, SerializableDictionary<string>> localizations = GetLocalizations(annoVersion);
 
+            #region Preparing icon.json file
             // prepare icon mapping
             XmlDocument iconsDocument = new XmlDocument();
             List<XmlNode> iconNodes = new List<XmlNode>();
-
             foreach (PathRef p in VersionSpecificPaths[annoVersion]["icons"])
             {
                 iconsDocument.Load(BasePath + p.Path);
                 iconNodes.AddRange(iconsDocument.SelectNodes(p.XPath).Cast<XmlNode>());
             }
+            if (annoVersion != "2205") //skip the icons.json file writing on Anno 2205 , lag of text files
+            {
+                // write icon name mapping
+                Console.WriteLine("Writing icon name mapping to icons.json");
+                WriteIconNameMapping(iconNodes, localizations);
+            }
+            #endregion
 
-
-            // write icon name mapping
-            Console.WriteLine("Writing icon name mapping to icons.json");
-            WriteIconNameMapping(iconNodes, localizations);
-
+            #region Preparing presets.json file
             // parse buildings
             List<BuildingInfo> buildings = new List<BuildingInfo>();
 
@@ -172,7 +199,11 @@ namespace PresetParser
             //Console.WriteLine("Parsing addon_01_assets.xml:");
             ////"Groups/Group/Groups/Group/"
             //ParseAssetsFile(BASE_PATH + "addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group/Groups/Group", buildings, iconNodes, localizations);
+            #endregion
 
+            #endregion
+
+            #region Finalizing presets.json file and Ending program 
             // serialize presets to json file
             BuildingPresets presets = new BuildingPresets { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
             Console.WriteLine("Writing buildings to presets.json");
@@ -182,6 +213,7 @@ namespace PresetParser
             Console.WriteLine();
             Console.WriteLine("DONE - press enter to exit");
             Console.ReadLine();
+            #endregion
         }
 
         private static void ParseAssetsFile(string filename, string xPathToBuildingsNode, List<BuildingInfo> buildings,
