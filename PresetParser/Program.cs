@@ -142,7 +142,8 @@ namespace PresetParser
                 //});
                 VersionSpecificPaths[ANNO_VERSION_2205].Add("localisation", new PathRef[]
                 {
-                new PathRef("data/dlc01/config/game/asset/", "")
+                new PathRef("data/dlc01/config/game/asset/", "") 
+               //We need to thing of a different solution for this, due to the lack of language codes as the directory names
                 });
                 VersionSpecificPaths[ANNO_VERSION_2205].Add("assets", new PathRef[]
                 {
@@ -151,7 +152,7 @@ namespace PresetParser
             }
 
             // Paths for 1800
-            ///Because there is no extracted data available, this Program need to be terminated
+            ///Because there is no extracted data available, the Program need to be terminated
 
             #endregion
 
@@ -168,7 +169,7 @@ namespace PresetParser
                 iconsDocument.Load(BasePath + p.Path);
                 iconNodes.AddRange(iconsDocument.SelectNodes(p.XPath).Cast<XmlNode>());
             }
-            if (annoVersion != "2205") //skip the icons.json file writing on Anno 2205 , lag of text files
+            if (annoVersion != "2205") //skip the icons.json file writing on Anno 2205 , lack of text files
             {
                 // write icon name mapping
                 Console.WriteLine("Writing icon name mapping to icons.json");
