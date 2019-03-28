@@ -4,15 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace PresetParser
 {
     public class Program
     {
         #region Initalisizing values
-        private static string BasePath { get; set; }
+        private static string BASE_PATH { get; set; }
 
         /// <summary>
         /// Holds the paths and xpaths to parse the extracted RDA's for different Anno versions
@@ -58,7 +58,7 @@ namespace PresetParser
                 {
                     validPath = true;
                     ///Add a trailing backslash if one is not present.
-                    BasePath = path.LastOrDefault() == '\\' ? path : path + "\\";
+                    BASE_PATH = path.LastOrDefault() == '\\' ? path : path + "\\";
                 }
                 else
                 {
@@ -88,7 +88,7 @@ namespace PresetParser
                 }
             }
 
-            Console.WriteLine("Extracting and parsing RDA data from {0} for anno version {1}.", BasePath, annoVersion);
+            Console.WriteLine("Extracting and parsing RDA data from {0} for anno version {1}.", BASE_PATH, annoVersion);
 
             #endregion
 
@@ -106,8 +106,8 @@ namespace PresetParser
                 });
                 VersionSpecificPaths[ANNO_VERSION_1404].Add("localisation", new PathRef[]
                 {
-                new PathRef("data/loca", "" , "", ""),
-                new PathRef("addondata/loca", "", "", "" )
+                new PathRef("data/loca"),
+                new PathRef("addondata/loca")
                 });
                 VersionSpecificPaths[ANNO_VERSION_1404].Add("assets", new PathRef[]
                 {
@@ -179,7 +179,7 @@ namespace PresetParser
                 List<XmlNode> iconNodes = new List<XmlNode>();
                 foreach (PathRef p in VersionSpecificPaths[annoVersion]["icons"])
                 {
-                    iconsDocument.Load(BasePath + p.Path);
+                    iconsDocument.Load(BASE_PATH + p.Path);
                     iconNodes.AddRange(iconsDocument.SelectNodes(p.XPath).Cast<XmlNode>());
                 }
                 // write icon name mapping
@@ -196,7 +196,7 @@ namespace PresetParser
                 Console.WriteLine("Parsing assets.xml:");
                 foreach (PathRef p in VersionSpecificPaths[annoVersion]["assets"])
                 {
-                    ParseAssetsFile(BasePath + p.Path, p.XPath, p.YPath, buildings, iconNodes, localizations, p.InnerNameTag);
+                    ParseAssetsFile(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, iconNodes, localizations, p.InnerNameTag);
                 }
 
                 //No longer needed
@@ -206,7 +206,7 @@ namespace PresetParser
                 ////"Groups/Group/Groups/Group/"
                 //ParseAssetsFile(BASE_PATH + "addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group/Groups/Group", buildings, iconNodes, localizations);
                 #endregion
-                
+
                 #region Finalizing presets.json file and Ending program 
                 // serialize presets to json file
                 BuildingPresets presets = new BuildingPresets { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
@@ -222,7 +222,7 @@ namespace PresetParser
 
             #region Preparing Writing JSON Files for 2205
             else if (annoVersion == "2205" || annoVersion == "1800")
-            {                
+            {
                 #region Preparing icon.json file
                 // prepare icon mapping
                 //XmlDocument iconsDocument = new XmlDocument();
@@ -247,7 +247,7 @@ namespace PresetParser
                 Console.WriteLine("Parsing assets.xml:");
                 foreach (PathRef p in VersionSpecificPaths[annoVersion]["assets"])
                 {
-                    ParseAssetsFile2205(BasePath + p.Path, p.XPath, p.YPath, buildings, p.InnerNameTag, annoVersion);
+                    ParseAssetsFile2205(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, p.InnerNameTag, annoVersion);
                 }
                 //No longer needed
                 //// find buildings in addon_01_assets.xml
@@ -323,7 +323,7 @@ namespace PresetParser
                 b.IconFileName = GetIconFilename(icon["Icons"].FirstChild);
             }
             #endregion
-            
+
             #region Get Influence Radius
             // read influence radius if existing
             try
@@ -403,8 +403,18 @@ namespace PresetParser
             if (icon != null)
             {
                 /// Split the Value <IconFilenames>innertext</IconFilenames> to get only the Name.png
-                string replacename = ""; if (annoVersion == "2205") { replacename = "A6_"; }; if (annoVersion == "1800") { replacename = "A7_"; }
-                string[] Sicons = Regex.Split(icon, "/"); icon = Regex.Replace(Sicons.Last(), "icon_", replacename);
+                string replaceName = "";
+                if (annoVersion == "2205")
+                {
+                    replaceName = "A6_";
+                }
+                else if (annoVersion == "1800")
+                {
+                    replaceName = "A7_";
+                }
+                string[] sIcons = icon.Split('/');
+                icon = sIcons.LastOrDefault().Replace("icon_", replaceName);
+                //string[] sIcons = Regex.Split(icon, "/"); icon = Regex.Replace(sIcons.Last(), "icon_", replaceName);
                 b.IconFileName = icon;
             }
             #endregion
@@ -426,24 +436,43 @@ namespace PresetParser
             #region Get Localization Translations ofr Building Names
             /// find localization
             string buildingGuid = values["Standard"]["GUID"].InnerText;
-            string LanguageFileName = ""; int Languagecount = 0; List<string> finalTranslation = new List<string>();
+            string languageFileName = "";
+            int languageCount = 0;
+            List<string> finalTranslation = new List<string>();
+
+            //Initialise the dictionary
+            b.Localization = new SerializableDictionary<string>();
+
             foreach (string Language in Languages)
             {
-                LanguageFileName = "data/config/gui/texts_" + LanguagesFiles[Languagecount] + ".xml";
-                XmlDocument LangDocument = new XmlDocument();
-                LangDocument.Load(LanguageFileName);
-                XmlNode Translations = LangDocument.SelectNodes("/TextExport/Texts/Text")
+                languageFileName = BASE_PATH + "data/config/gui/texts_" + LanguagesFiles[languageCount] + ".xml";
+                XmlDocument langDocument = new XmlDocument();
+                langDocument.Load(languageFileName);
+                XmlNode translationNodes = langDocument.SelectNodes("/TextExport/Texts/Text")
                     .Cast<XmlNode>().Single(_ => _["GUID"].InnerText == buildingGuid); //This differs between anno versions
-                foreach (XmlNode Translation in Translations.SelectNodes("Text").Cast<XmlNode>())
+
+                //List<string> translations = translationNodes.SelectNodes("Text").Cast<XmlNode>().Select(_ => _.InnerText).ToList();
+
+                string translation = translationNodes?.SelectNodes("Text")?.Item(0).InnerText;
+                if (translation == null)
                 {
-                    finalTranslation.Add(Languages[Languagecount]);
-                    finalTranslation.Add(Translation.ParentNode["Text"].InnerText);
+                    throw new InvalidOperationException("Cannot get translation, text node not found");
                 }
-                Languagecount++;
+
+                while (translation.Contains("GUIDNAME"))
+                {
+                    //"[GUIDNAME 2001009]",
+                    //remove the [ and ] marking the GUID, and remove the GUIDNAME identifier.
+                    string nextGuid = translation.Substring(1, translation.Length - 2).Replace("GUIDNAME", "").Trim();
+                    translation = langDocument.SelectNodes("/TextExport/Texts/Text").Cast<XmlNode>().SingleOrDefault(_ => _["GUID"].InnerText == nextGuid).InnerText;
+                }
+
+                b.Localization.Dict.Add(Languages[languageCount], translation);
+                languageCount++;
             }
             //b.Localization = finalTranslation;
 
-  
+
             /// original Block
             //if (localizations.ContainsKey(buildingGuid))
             //{
@@ -458,7 +487,7 @@ namespace PresetParser
         private static bool RetrieveBuildingBlocker(BuildingInfo building, string variationFilename)
         {
             XmlDocument ifoDocument = new XmlDocument();
-            ifoDocument.Load(Path.Combine(BasePath + "/", string.Format("{0}.ifo", Path.GetDirectoryName(variationFilename) + "\\" + Path.GetFileNameWithoutExtension(variationFilename))));
+            ifoDocument.Load(Path.Combine(BASE_PATH + "/", string.Format("{0}.ifo", Path.GetDirectoryName(variationFilename) + "\\" + Path.GetFileNameWithoutExtension(variationFilename))));
             try
             {
                 XmlNode node = ifoDocument.FirstChild["BuildBlocker"].FirstChild;
@@ -506,7 +535,7 @@ namespace PresetParser
             {
                 foreach (PathRef p in VersionSpecificPaths[annoVersion]["localisation"])
                 {
-                    string basePath = Path.Combine(BasePath, p.Path, language, "txt");
+                    string basePath = Path.Combine(BASE_PATH, p.Path, language, "txt");
                     foreach (string path in files.Select(_ => Path.Combine(basePath, _)))
                     {
                         if (!File.Exists(path))
@@ -592,14 +621,20 @@ namespace PresetParser
         {
             public string Path { get; }
             public string XPath { get; }
-            public string YPath { get; }
+            public string YPath { get; } //A secondary path used match xml within a secondary file
             public string InnerNameTag { get; }
-            public PathRef(string path, string xPath, string yPath, string innerNameTag )
+
+            public PathRef(string path, string xPath, string yPath, string innerNameTag)
             {
                 Path = path;
                 XPath = xPath;
                 YPath = yPath;
                 InnerNameTag = innerNameTag;
+            }
+
+            public PathRef(string path)
+            {
+                Path = path;
             }
         }
     }
