@@ -479,7 +479,7 @@ namespace PresetParser
             string languageFilePath = ""; /// Data path to the language files including the last slash '/' started with 'data/'
             string languageFileStart = ""; /// Begin of the file, including the dashdown '_' is this is standard, else leafe blanc
             string langNodeStartPath = ""; /// Path where the xmlfile start with till the <GUID>number</GUID>
-            string langNodeDepht = ""; /// The depht where the translation text is, counted from <GUID>number</GUID>
+            string langNodeDepth = ""; /// The depth where the translation text is, counted from <GUID>number</GUID>
             int languageCount = 0;
             List<string> finalTranslation = new List<string>();
             if (annoVersion == "2205")
@@ -487,7 +487,7 @@ namespace PresetParser
                 languageFilePath = "data/config/gui/"; 
                 languageFileStart = "texts_"; 
                 langNodeStartPath = "/TextExport/Texts/Text"; 
-                langNodeDepht = "Text"; 
+                langNodeDepth = "Text"; 
             }
 
             //Initialise the dictionary
@@ -501,7 +501,7 @@ namespace PresetParser
                 XmlNode translationNodes = langDocument.SelectNodes(langNodeStartPath)
                     .Cast<XmlNode>().Single(_ => _["GUID"].InnerText == buildingGuid);
 
-                string translation = translationNodes?.SelectNodes(langNodeDepht)?.Item(0).InnerText;
+                string translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
                 if (translation == null)
                 {
                     throw new InvalidOperationException("Cannot get translation, text node not found");
@@ -514,7 +514,7 @@ namespace PresetParser
                     string nextGuid = translation.Substring(1, translation.Length - 2).Replace("GUIDNAME", "").Trim();
                     translationNodes = langDocument.SelectNodes(langNodeStartPath)
                         .Cast<XmlNode>().Single(_ => _["GUID"].InnerText == nextGuid);
-                    translation = translationNodes?.SelectNodes(langNodeDepht)?.Item(0).InnerText;
+                    translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
                 }
                 b.Localization.Dict.Add(Languages[languageCount], translation);
                 languageCount++;
