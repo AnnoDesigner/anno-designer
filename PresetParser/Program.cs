@@ -436,20 +436,20 @@ namespace PresetParser
             #region Get Localization Translations ofr Building Names
             /// find localization
             string buildingGuid = values["Standard"]["GUID"].InnerText;
-            string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
+            string languageFileName = ""; /// This will be given through the static LanguagesFiles array
             /// The variables below will set dependently from the annoversion thats choiced.
             string languageFilePath = ""; /// Data path to the language files including the last slash '/' started with 'data/'
-            string languageFileStart = ""; /// Begin of the file, including the dashdown '_' is this is standard, else leafe blanc
-            string langNodeStartPath = ""; /// Path where the xmlfile start with till the <GUID>number</GUID>
-            string langNodeDepht = ""; /// The depht where the translation text is, counted from <GUID>number</GUID>
+            string languageFileStart = ""; /// Beginning of the file, including the underscore '_'
+            string langNodeStartPath = ""; /// XPath to the <Text> node in the XML file that contains the <GUID>number</GUID> and <Text>localization</Text> elements
+            string langNodeDepth = ""; /// The depth where the translation text is, counted from <GUID>number</GUID>
             int languageCount = 0;
             List<string> finalTranslation = new List<string>();
-            if (annoVersion == "2205")
+            if (annoVersion == ANNO_VERSION_2205)
             {
                 languageFilePath = "data/config/gui/"; 
                 languageFileStart = "texts_"; 
                 langNodeStartPath = "/TextExport/Texts/Text"; 
-                langNodeDepht = "Text"; 
+                langNodeDepth = "Text"; 
             }
 
             //Initialise the dictionary
@@ -463,7 +463,7 @@ namespace PresetParser
                 XmlNode translationNodes = langDocument.SelectNodes(langNodeStartPath)
                     .Cast<XmlNode>().Single(_ => _["GUID"].InnerText == buildingGuid);
 
-                string translation = translationNodes?.SelectNodes(langNodeDepht)?.Item(0).InnerText;
+                string translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
                 if (translation == null)
                 {
                     throw new InvalidOperationException("Cannot get translation, text node not found");
@@ -471,12 +471,12 @@ namespace PresetParser
 
                 while (translation.Contains("GUIDNAME"))
                 {
-                    //"[GUIDNAME 2001009]",
+                    //e.g "[GUIDNAME 2001009]",
                     //remove the [ and ] marking the GUID, and remove the GUIDNAME identifier.
                     string nextGuid = translation.Substring(1, translation.Length - 2).Replace("GUIDNAME", "").Trim();
                     translationNodes = langDocument.SelectNodes(langNodeStartPath)
                         .Cast<XmlNode>().Single(_ => _["GUID"].InnerText == nextGuid);
-                    translation = translationNodes?.SelectNodes(langNodeDepht)?.Item(0).InnerText;
+                    translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
                 }
                 b.Localization.Dict.Add(Languages[languageCount], translation);
                 languageCount++;
