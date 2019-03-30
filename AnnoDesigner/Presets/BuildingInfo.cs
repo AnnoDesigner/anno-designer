@@ -33,6 +33,8 @@ namespace AnnoDesigner.Presets
         
         // grouping
         [DataMember]
+        public string Header;
+        [DataMember]
         public string Faction;
         [DataMember]
         public string Group;

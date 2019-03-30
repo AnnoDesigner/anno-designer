@@ -318,7 +318,7 @@ namespace PresetParser
             // parse stuff
             BuildingInfo b = new BuildingInfo
             {
-                //Header = "Anno " + (annoVersion),
+                Header = "Anno " + (annoVersion),
                 Faction = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText,
                 Group = buildingNode.ParentNode.ParentNode["Name"].InnerText,
                 Template = buildingNode["Template"].InnerText,
@@ -410,7 +410,7 @@ namespace PresetParser
             // parse stuff
             BuildingInfo b = new BuildingInfo
             {
-                //Header = "Anno " + (annoVersion),
+                Header = "Anno " + (annoVersion),
                 Faction = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText,
                 Group = buildingNode.ParentNode.ParentNode["Name"].InnerText,
                 Template = buildingNode["Template"].InnerText,
