@@ -8,13 +8,13 @@ using System.Xml;
 
 namespace PresetParser
 {
- 
-
     public class Program
     {
         #region Initalisizing values
         private static string BASE_PATH { get; set; }
-
+        
+        public static bool isExcludedName = false;
+        public static bool isExcludedTemplate = false;
         /// <summary>
         /// Holds the paths and xpaths to parse the extracted RDA's for different Anno versions
         /// 
@@ -26,10 +26,16 @@ namespace PresetParser
         private const string ANNO_VERSION_2205 = "2205";
         private const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "0.8.1";
-
+        private const string BUILDING_PRESETS_VERSION = "0.8.2";
+        // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "cze", "eng", "esp", "fra", "ger", "ita", "pol", "rus" };
         private static readonly string[] LanguagesFiles = new[] { "english", "english", "spanish", "french", "german", "english", "polish", "russian" };
+        // Initalisizing Exclude <Name>"text"</Name> and <Template>"text"</Template> for presets.json file 
+        // Anno 2205
+        private static readonly List<string> ExcludeNameList2205 = new List<string> { "Placeholder", "tier02", "tier03", "tier04", "tier05", "voting" };
+        private static readonly List<string> ExcludeTemplateList2205 = new List<string> { "SpacePort", "BridgeWithUpgrade" };
+
+            // Set Icon File Name seperations
         private static string GetIconFilename(XmlNode iconNode)
         {
             return string.Format("icon_{0}_{1}.png", iconNode["IconFileID"].InnerText, iconNode["IconIndex"] != null ? iconNode["IconIndex"].InnerText : "0"); //TODO: check this icon format is consistent between Anno versions
@@ -93,9 +99,8 @@ namespace PresetParser
             #endregion
 
             #region Anno Verion Data Paths
-
             //These should stay constant for different anno versions (hopefully!)
-            // Paths for Anno 1404
+                #region Anno 1404 xPaths
             if (annoVersion == "1404")
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_1404, new Dictionary<string, PathRef[]>());
@@ -116,7 +121,9 @@ namespace PresetParser
                 new PathRef("addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "PlayerBuildings")
                 });
             }
-            // Paths for 2070
+                #endregion
+
+                #region Anno 2070 xPaths
             if (annoVersion == "2070")
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_2070, new Dictionary<string, PathRef[]>());
@@ -133,7 +140,9 @@ namespace PresetParser
                 new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
                 });
             }
-            // Paths for 2205
+                #endregion
+
+                #region Anno 2205 xPaths
             if (annoVersion == "2205")
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_2205, new Dictionary<string, PathRef[]>());
@@ -142,28 +151,31 @@ namespace PresetParser
                 Console.WriteLine("Trying to read Buildings Data from the objects.xml of anno 2205");
                 VersionSpecificPaths[ANNO_VERSION_2205].Add("assets", new PathRef[]
                 {
-                new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Earth")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Earth"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Arctic"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Arctic"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Moon"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Moon"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon"),
-                //new PathRef("data/dlc01/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Earth"),
+                new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Earth"),
+                new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Arctic")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Arctic")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Moon")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Moon")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon")
+                //new PathRef("data/dlc01/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Buildings")
                 //new PathRef("data/dlc02/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings")
                 });
             }
+                #endregion
 
+                #region Anno 1800 xPaths
             // Paths for 1800
             ///Because there is no extracted data available, the Program need to be terminated
+                #endregion
 
             #endregion
 
@@ -184,7 +196,7 @@ namespace PresetParser
                 }
                 // write icon name mapping
                 Console.WriteLine("Writing icon name mapping to icons.json");
-                WriteIconNameMapping(iconNodes, localizations);
+                WriteIconNameMapping(iconNodes, localizations, annoVersion);
                 #endregion
 
                 #region Preparing presets.json file
@@ -196,7 +208,7 @@ namespace PresetParser
                 Console.WriteLine("Parsing assets.xml:");
                 foreach (PathRef p in VersionSpecificPaths[annoVersion]["assets"])
                 {
-                    ParseAssetsFile(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, iconNodes, localizations, p.InnerNameTag);
+                    ParseAssetsFile(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, iconNodes, localizations, p.InnerNameTag, annoVersion);
                 }
 
                 //No longer needed
@@ -210,9 +222,14 @@ namespace PresetParser
                 #region Finalizing presets.json file and Ending program 
                 // serialize presets to json file
                 BuildingPresets presets = new BuildingPresets { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
-                Console.WriteLine("Writing buildings to presets.json");
-                DataIO.SaveToFile(presets, "presets.json");
+                // I have put '-Anno<annoVersion>" to the presets.json name, to avoid overwriting the other presets.json
+                // so, the name now will as i.e. presets-Anno1404.json
+                Console.WriteLine("Writing buildings to presets-{0}.json", annoVersion);
+                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + ".json");
                 // wait for keypress before exiting
+                Console.WriteLine();
+                Console.WriteLine("Do not forget to copy the contents to the normal");
+                Console.WriteLine("presets.json, in the Anno Designer directory!");
                 Console.WriteLine();
                 Console.WriteLine("DONE - press enter to exit");
                 Console.ReadLine();
@@ -220,10 +237,10 @@ namespace PresetParser
             }
             #endregion
 
-            #region Preparing Writing JSON Files for 2205
+            #region Preparing Writing JSON Files for 2205 (and maybe 1800)
             else if (annoVersion == "2205" || annoVersion == "1800")
             {
-                #region Preparing icon.json file
+                #region Preparing icon.json file (Not Used on 2205)
                 // prepare icon mapping
                 //XmlDocument iconsDocument = new XmlDocument();
                 //List<XmlNode> iconNodes = new List<XmlNode>();
@@ -234,7 +251,7 @@ namespace PresetParser
                 //}
                 // write icon name mapping
                 //Console.WriteLine("Writing icon name mapping to icons.json");
-                //WriteIconNameMapping(iconNodes, localizations);
+                //WriteIconNameMapping(iconNodes, localizations, annoVerion);
                 #endregion
 
                 #region Preparing presets.json file
@@ -242,7 +259,6 @@ namespace PresetParser
                 List<BuildingInfo> buildings = new List<BuildingInfo>();
 
                 // find buildings in assets.xml
-                //if (annoVersion == "1800") { annoTagVer = "1800"; innerNameTag = "Buildings"; Console.WriteLine(); Console.WriteLine("innerNameTag set to: {0}", innerNameTag); };
                 Console.WriteLine();
                 Console.WriteLine("Parsing assets.xml:");
                 foreach (PathRef p in VersionSpecificPaths[annoVersion]["assets"])
@@ -260,9 +276,14 @@ namespace PresetParser
                 #region Finalizing presets.json file and Ending program 
                 // serialize presets to json file
                 BuildingPresets presets = new BuildingPresets { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
-                Console.WriteLine("Writing buildings to presets.json");
-                DataIO.SaveToFile(presets, "presets.json");
+                // I have put '-Anno<annoVersion>" to the presets.json name, to avoid overwriting the other presets.json
+                // so, the name now will as ex. presets-Anno2205.json
+                Console.WriteLine("Writing buildings to presets-{0}.json", annoVersion);
+                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + ".json");
                 // wait for keypress before exiting
+                Console.WriteLine();
+                Console.WriteLine("Do not forget to copy the contents to the normal");
+                Console.WriteLine("presets.json, in the Anno Designer directory!");
                 Console.WriteLine();
                 Console.WriteLine("DONE - press enter to exit");
                 Console.ReadLine();
@@ -273,7 +294,7 @@ namespace PresetParser
         /// Parsing Part for 1404 and 2070
         #region Parsing Buildngs for Anno 1404/2070
         private static void ParseAssetsFile(string filename, string xPathToBuildingsNode, string YPath, List<BuildingInfo> buildings,
-            IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string innerNameTag)
+            IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string innerNameTag, string annoVersion)
         {
             XmlDocument assetsDocument = new XmlDocument();
             assetsDocument.Load(filename);
@@ -281,11 +302,11 @@ namespace PresetParser
                 .Cast<XmlNode>().Single(_ => _["Name"].InnerText == innerNameTag); //This differs between anno versions
             foreach (XmlNode buildingNode in buildingNodes.SelectNodes(YPath).Cast<XmlNode>())
             {
-                ParseBuilding(buildings, buildingNode, iconNodes, localizations);
+                ParseBuilding(buildings, buildingNode, iconNodes, localizations, annoVersion);
             }
         }
 
-        private static void ParseBuilding(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations)
+        private static void ParseBuilding(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string annoVersion)
         {
             #region Get valid Building Information 
             XmlElement values = buildingNode["Values"];
@@ -297,6 +318,7 @@ namespace PresetParser
             // parse stuff
             BuildingInfo b = new BuildingInfo
             {
+                //Header = "Anno " + (annoVersion),
                 Faction = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText,
                 Group = buildingNode.ParentNode.ParentNode["Name"].InnerText,
                 Template = buildingNode["Template"].InnerText,
@@ -346,6 +368,7 @@ namespace PresetParser
         }
         #endregion
 
+        /// Parsing Part for 2205 (and maybe 1800)
         #region Parsing Buildngs for Anno 2205 (and maybe 1800)
         private static void ParseAssetsFile2205(string filename, string xPathToBuildingsNode, string YPath, List<BuildingInfo> buildings, string innerNameTag, string annoVersion)
         {
@@ -358,7 +381,7 @@ namespace PresetParser
                 ParseBuilding2205(buildings, buildingNode, annoVersion);
             }
         }
-
+        
         /// ORGLINE: private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations)
         private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, string annoVersion)
         {
@@ -369,10 +392,25 @@ namespace PresetParser
             {
                 return;
             }
+            // Skip Unused buildings in Anno Designer List;
+            if (annoVersion == "2205")
+            {
+                string nameValue = values["Standard"]["Name"].InnerText;
+                isExcludedName = nameValue.Contains(ExcludeNameList2205);
+                string templatValue = buildingNode["Template"].InnerText;
+                isExcludedTemplate = templatValue.Contains(ExcludeTemplateList2205);
+                if (isExcludedName == true || isExcludedTemplate == true)
+                {
+                    Console.WriteLine("{0} <---> {1}",nameValue , templatValue);
+                    Console.WriteLine("- Building will skipped - Unused Designer Object");
+                    return;
 
+                }
+            }
             // parse stuff
             BuildingInfo b = new BuildingInfo
             {
+                //Header = "Anno " + (annoVersion),
                 Faction = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText,
                 Group = buildingNode.ParentNode.ParentNode["Name"].InnerText,
                 Template = buildingNode["Template"].InnerText,
@@ -436,20 +474,20 @@ namespace PresetParser
             #region Get Localization Translations ofr Building Names
             /// find localization
             string buildingGuid = values["Standard"]["GUID"].InnerText;
-            string languageFileName = ""; /// This will be given through the static LanguagesFiles array
-            /// The variables below will set dependently from the annoversion thats choiced.
+            string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
+            /// The variables below will set dependently from the annoversion thats choiced, fill in after if function
             string languageFilePath = ""; /// Data path to the language files including the last slash '/' started with 'data/'
-            string languageFileStart = ""; /// Beginning of the file, including the underscore '_'
-            string langNodeStartPath = ""; /// XPath to the <Text> node in the XML file that contains the <GUID>number</GUID> and <Text>localization</Text> elements
-            string langNodeDepth = ""; /// The depth where the translation text is, counted from <GUID>number</GUID>
+            string languageFileStart = ""; /// Begin of the file, including the dashdown '_' is this is standard, else leafe blanc
+            string langNodeStartPath = ""; /// Path where the xmlfile start with till the <GUID>number</GUID>
+            string langNodeDepht = ""; /// The depht where the translation text is, counted from <GUID>number</GUID>
             int languageCount = 0;
             List<string> finalTranslation = new List<string>();
-            if (annoVersion == ANNO_VERSION_2205)
+            if (annoVersion == "2205")
             {
                 languageFilePath = "data/config/gui/"; 
                 languageFileStart = "texts_"; 
                 langNodeStartPath = "/TextExport/Texts/Text"; 
-                langNodeDepth = "Text"; 
+                langNodeDepht = "Text"; 
             }
 
             //Initialise the dictionary
@@ -463,7 +501,7 @@ namespace PresetParser
                 XmlNode translationNodes = langDocument.SelectNodes(langNodeStartPath)
                     .Cast<XmlNode>().Single(_ => _["GUID"].InnerText == buildingGuid);
 
-                string translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
+                string translation = translationNodes?.SelectNodes(langNodeDepht)?.Item(0).InnerText;
                 if (translation == null)
                 {
                     throw new InvalidOperationException("Cannot get translation, text node not found");
@@ -471,12 +509,12 @@ namespace PresetParser
 
                 while (translation.Contains("GUIDNAME"))
                 {
-                    //e.g "[GUIDNAME 2001009]",
+                    //"[GUIDNAME 2001009]",
                     //remove the [ and ] marking the GUID, and remove the GUIDNAME identifier.
                     string nextGuid = translation.Substring(1, translation.Length - 2).Replace("GUIDNAME", "").Trim();
                     translationNodes = langDocument.SelectNodes(langNodeStartPath)
                         .Cast<XmlNode>().Single(_ => _["GUID"].InnerText == nextGuid);
-                    translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
+                    translation = translationNodes?.SelectNodes(langNodeDepht)?.Item(0).InnerText;
                 }
                 b.Localization.Dict.Add(Languages[languageCount], translation);
                 languageCount++;
@@ -492,6 +530,8 @@ namespace PresetParser
         }
         #endregion
 
+        /// Other Classes and or Internal Commands used in this program
+        #region Retrieving BuildingBlockers from Buidings Nodes
         private static bool RetrieveBuildingBlocker(BuildingInfo building, string variationFilename)
         {
             XmlDocument ifoDocument = new XmlDocument();
@@ -526,14 +566,18 @@ namespace PresetParser
             }
             return true;
         }
+        #endregion
 
+        #region GuidRef Class
         private class GuidRef
         {
             public string Language;
             public string Guid;
             public string GuidReference;
         }
+        #endregion
 
+        #region Getting the Localizations from files (Anno 1404 / Anno 2070)
         private static Dictionary<string, SerializableDictionary<string>> GetLocalizations(string annoVersion)
         {
             string[] files = { "icons.txt", "guids.txt", "addon/texts.txt" };
@@ -589,6 +633,7 @@ namespace PresetParser
                     }
                 }
             }
+
             // copy over references
             foreach (GuidRef reference in references)
             {
@@ -604,8 +649,10 @@ namespace PresetParser
             }
             return localizations;
         }
+        #endregion
 
-        private static void WriteIconNameMapping(IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations)
+        #region Writting the icons.json File (Anno 1404 / Anno 2070)
+        private static void WriteIconNameMapping(IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string annoVersion)
         {
             List<IconNameMap> mapping = new List<IconNameMap>();
             foreach (XmlNode iconNode in iconNodes)
@@ -622,9 +669,11 @@ namespace PresetParser
                     Localizations = localizations[guid]
                 });
             }
-            DataIO.SaveToFile(mapping, "icons.json");
+            DataIO.SaveToFile(mapping, "icons"+annoVersion+".json");
         }
+        #endregion
 
+        #region PathRef Class
         private class PathRef
         {
             public string Path { get; }
@@ -645,5 +694,6 @@ namespace PresetParser
                 Path = path;
             }
         }
+        #endregion
     }
 }
