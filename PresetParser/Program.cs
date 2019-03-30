@@ -397,11 +397,11 @@ namespace PresetParser
             {
                 string nameValue = values["Standard"]["Name"].InnerText;
                 isExcludedName = nameValue.Contains(ExcludeNameList2205);
-                string templatValue = buildingNode["Template"].InnerText;
-                isExcludedTemplate = templatValue.Contains(ExcludeTemplateList2205);
+                string templateValue = buildingNode["Template"].InnerText;
+                isExcludedTemplate = templateValue.Contains(ExcludeTemplateList2205);
                 if (isExcludedName == true || isExcludedTemplate == true)
                 {
-                    Console.WriteLine("{0} <---> {1}",nameValue , templatValue);
+                    Console.WriteLine("{0} <---> {1}",nameValue , templateValue);
                     Console.WriteLine("- Building will skipped - Unused Designer Object");
                     return;
 
