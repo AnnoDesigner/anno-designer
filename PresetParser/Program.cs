@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 
-
 namespace PresetParser
 {
     public class Program
@@ -31,9 +30,10 @@ namespace PresetParser
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "cze", "eng", "esp", "fra", "ger", "ita", "pol", "rus" };
         private static readonly string[] LanguagesFiles = new[] { "english", "english", "spanish", "french", "german", "english", "polish", "russian" };
-        // Initalisizing Exclude <Name>"text"</Name> and <Template>"text"</Template> for presets.json file
-        private static readonly List<string> ExcludeNameList = new List<string> { "Placeholder", "tier02", "tier03", "tier04", "tier05", "voting" };
-        private static readonly List<string> ExcludeTemplateList = new List<string> { "SpacePort", "BridgeWithUpgrade" };
+        // Initalisizing Exclude <Name>"text"</Name> and <Template>"text"</Template> for presets.json file 
+        // Anno 2205
+        private static readonly List<string> ExcludeNameList2205 = new List<string> { "Placeholder", "tier02", "tier03", "tier04", "tier05", "voting" };
+        private static readonly List<string> ExcludeTemplateList2205 = new List<string> { "SpacePort", "BridgeWithUpgrade" };
 
             // Set Icon File Name seperations
         private static string GetIconFilename(XmlNode iconNode)
@@ -99,9 +99,8 @@ namespace PresetParser
             #endregion
 
             #region Anno Verion Data Paths
-
             //These should stay constant for different anno versions (hopefully!)
-            // Paths for Anno 1404
+                #region Anno 1404 xPaths
             if (annoVersion == "1404")
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_1404, new Dictionary<string, PathRef[]>());
@@ -122,7 +121,9 @@ namespace PresetParser
                 new PathRef("addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "PlayerBuildings")
                 });
             }
-            // Paths for 2070
+                #endregion
+
+                #region Anno 2070 xPaths
             if (annoVersion == "2070")
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_2070, new Dictionary<string, PathRef[]>());
@@ -139,7 +140,9 @@ namespace PresetParser
                 new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
                 });
             }
-            // Paths for 2205
+                #endregion
+
+                #region Anno 2205 xPaths
             if (annoVersion == "2205")
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_2205, new Dictionary<string, PathRef[]>());
@@ -167,9 +170,12 @@ namespace PresetParser
                 //new PathRef("data/dlc02/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings")
                 });
             }
+                #endregion
 
+                #region Anno 1800 xPaths
             // Paths for 1800
             ///Because there is no extracted data available, the Program need to be terminated
+                #endregion
 
             #endregion
 
@@ -190,7 +196,7 @@ namespace PresetParser
                 }
                 // write icon name mapping
                 Console.WriteLine("Writing icon name mapping to icons.json");
-                WriteIconNameMapping(iconNodes, localizations);
+                WriteIconNameMapping(iconNodes, localizations, annoVersion);
                 #endregion
 
                 #region Preparing presets.json file
@@ -202,7 +208,7 @@ namespace PresetParser
                 Console.WriteLine("Parsing assets.xml:");
                 foreach (PathRef p in VersionSpecificPaths[annoVersion]["assets"])
                 {
-                    ParseAssetsFile(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, iconNodes, localizations, p.InnerNameTag);
+                    ParseAssetsFile(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, iconNodes, localizations, p.InnerNameTag, annoVersion);
                 }
 
                 //No longer needed
@@ -216,9 +222,14 @@ namespace PresetParser
                 #region Finalizing presets.json file and Ending program 
                 // serialize presets to json file
                 BuildingPresets presets = new BuildingPresets { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
-                Console.WriteLine("Writing buildings to presets.json");
-                DataIO.SaveToFile(presets, "presets.json");
+                // I have put '-Anno<annoVersion>" to the presets.json name, to avoid overwriting the other presets.json
+                // so, the name now will as i.e. presets-Anno1404.json
+                Console.WriteLine("Writing buildings to presets-{0}.json", annoVersion);
+                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + ".json");
                 // wait for keypress before exiting
+                Console.WriteLine();
+                Console.WriteLine("Do not forget to copy the contents to the normal");
+                Console.WriteLine("presets.json, in the Anno Designer directory!");
                 Console.WriteLine();
                 Console.WriteLine("DONE - press enter to exit");
                 Console.ReadLine();
@@ -226,10 +237,10 @@ namespace PresetParser
             }
             #endregion
 
-            #region Preparing Writing JSON Files for 2205
+            #region Preparing Writing JSON Files for 2205 (and maybe 1800)
             else if (annoVersion == "2205" || annoVersion == "1800")
             {
-                #region Preparing icon.json file
+                #region Preparing icon.json file (Not Used on 2205)
                 // prepare icon mapping
                 //XmlDocument iconsDocument = new XmlDocument();
                 //List<XmlNode> iconNodes = new List<XmlNode>();
@@ -240,7 +251,7 @@ namespace PresetParser
                 //}
                 // write icon name mapping
                 //Console.WriteLine("Writing icon name mapping to icons.json");
-                //WriteIconNameMapping(iconNodes, localizations);
+                //WriteIconNameMapping(iconNodes, localizations, annoVerion);
                 #endregion
 
                 #region Preparing presets.json file
@@ -248,7 +259,6 @@ namespace PresetParser
                 List<BuildingInfo> buildings = new List<BuildingInfo>();
 
                 // find buildings in assets.xml
-                //if (annoVersion == "1800") { annoTagVer = "1800"; innerNameTag = "Buildings"; Console.WriteLine(); Console.WriteLine("innerNameTag set to: {0}", innerNameTag); };
                 Console.WriteLine();
                 Console.WriteLine("Parsing assets.xml:");
                 foreach (PathRef p in VersionSpecificPaths[annoVersion]["assets"])
@@ -266,9 +276,14 @@ namespace PresetParser
                 #region Finalizing presets.json file and Ending program 
                 // serialize presets to json file
                 BuildingPresets presets = new BuildingPresets { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
-                Console.WriteLine("Writing buildings to presets.json");
-                DataIO.SaveToFile(presets, "presets.json");
+                // I have put '-Anno<annoVersion>" to the presets.json name, to avoid overwriting the other presets.json
+                // so, the name now will as ex. presets-Anno2205.json
+                Console.WriteLine("Writing buildings to presets-{0}.json", annoVersion);
+                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + ".json");
                 // wait for keypress before exiting
+                Console.WriteLine();
+                Console.WriteLine("Do not forget to copy the contents to the normal");
+                Console.WriteLine("presets.json, in the Anno Designer directory!");
                 Console.WriteLine();
                 Console.WriteLine("DONE - press enter to exit");
                 Console.ReadLine();
@@ -279,7 +294,7 @@ namespace PresetParser
         /// Parsing Part for 1404 and 2070
         #region Parsing Buildngs for Anno 1404/2070
         private static void ParseAssetsFile(string filename, string xPathToBuildingsNode, string YPath, List<BuildingInfo> buildings,
-            IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string innerNameTag)
+            IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string innerNameTag, string annoVersion)
         {
             XmlDocument assetsDocument = new XmlDocument();
             assetsDocument.Load(filename);
@@ -287,11 +302,11 @@ namespace PresetParser
                 .Cast<XmlNode>().Single(_ => _["Name"].InnerText == innerNameTag); //This differs between anno versions
             foreach (XmlNode buildingNode in buildingNodes.SelectNodes(YPath).Cast<XmlNode>())
             {
-                ParseBuilding(buildings, buildingNode, iconNodes, localizations);
+                ParseBuilding(buildings, buildingNode, iconNodes, localizations, annoVersion);
             }
         }
 
-        private static void ParseBuilding(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations)
+        private static void ParseBuilding(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string annoVersion)
         {
             #region Get valid Building Information 
             XmlElement values = buildingNode["Values"];
@@ -303,6 +318,7 @@ namespace PresetParser
             // parse stuff
             BuildingInfo b = new BuildingInfo
             {
+                //Header = "Anno " + (annoVersion),
                 Faction = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText,
                 Group = buildingNode.ParentNode.ParentNode["Name"].InnerText,
                 Template = buildingNode["Template"].InnerText,
@@ -352,6 +368,7 @@ namespace PresetParser
         }
         #endregion
 
+        /// Parsing Part for 2205 (and maybe 1800)
         #region Parsing Buildngs for Anno 2205 (and maybe 1800)
         private static void ParseAssetsFile2205(string filename, string xPathToBuildingsNode, string YPath, List<BuildingInfo> buildings, string innerNameTag, string annoVersion)
         {
@@ -364,7 +381,7 @@ namespace PresetParser
                 ParseBuilding2205(buildings, buildingNode, annoVersion);
             }
         }
-
+        
         /// ORGLINE: private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations)
         private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, string annoVersion)
         {
@@ -378,12 +395,10 @@ namespace PresetParser
             // Skip Unused buildings in Anno Designer List;
             if (annoVersion == "2205")
             {
-                isExcludedName = false;
-                isExcludedTemplate = false;
                 string nameValue = values["Standard"]["Name"].InnerText;
-                isExcludedName = nameValue.Contains(ExcludeNameList);
+                isExcludedName = nameValue.Contains(ExcludeNameList2205);
                 string templatValue = buildingNode["Template"].InnerText;
-                isExcludedTemplate = templatValue.Contains(ExcludeTemplateList);
+                isExcludedTemplate = templatValue.Contains(ExcludeTemplateList2205);
                 if (isExcludedName == true || isExcludedTemplate == true)
                 {
                     Console.WriteLine("{0} <---> {1}",nameValue , templatValue);
@@ -395,6 +410,7 @@ namespace PresetParser
             // parse stuff
             BuildingInfo b = new BuildingInfo
             {
+                //Header = "Anno " + (annoVersion),
                 Faction = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText,
                 Group = buildingNode.ParentNode.ParentNode["Name"].InnerText,
                 Template = buildingNode["Template"].InnerText,
@@ -514,6 +530,8 @@ namespace PresetParser
         }
         #endregion
 
+        /// Other Classes and or Internal Commands used in this program
+        #region Retrieving BuildingBlockers from Buidings Nodes
         private static bool RetrieveBuildingBlocker(BuildingInfo building, string variationFilename)
         {
             XmlDocument ifoDocument = new XmlDocument();
@@ -548,14 +566,18 @@ namespace PresetParser
             }
             return true;
         }
+        #endregion
 
+        #region GuidRef Class
         private class GuidRef
         {
             public string Language;
             public string Guid;
             public string GuidReference;
         }
+        #endregion
 
+        #region Getting the Localizations from files (Anno 1404 / Anno 2070)
         private static Dictionary<string, SerializableDictionary<string>> GetLocalizations(string annoVersion)
         {
             string[] files = { "icons.txt", "guids.txt", "addon/texts.txt" };
@@ -611,6 +633,7 @@ namespace PresetParser
                     }
                 }
             }
+
             // copy over references
             foreach (GuidRef reference in references)
             {
@@ -626,8 +649,10 @@ namespace PresetParser
             }
             return localizations;
         }
+        #endregion
 
-        private static void WriteIconNameMapping(IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations)
+        #region Writting the icons.json File (Anno 1404 / Anno 2070)
+        private static void WriteIconNameMapping(IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string annoVersion)
         {
             List<IconNameMap> mapping = new List<IconNameMap>();
             foreach (XmlNode iconNode in iconNodes)
@@ -644,9 +669,11 @@ namespace PresetParser
                     Localizations = localizations[guid]
                 });
             }
-            DataIO.SaveToFile(mapping, "icons.json");
+            DataIO.SaveToFile(mapping, "icons"+annoVersion+".json");
         }
+        #endregion
 
+        #region PathRef Class
         private class PathRef
         {
             public string Path { get; }
@@ -667,5 +694,6 @@ namespace PresetParser
                 Path = path;
             }
         }
+        #endregion
     }
 }
