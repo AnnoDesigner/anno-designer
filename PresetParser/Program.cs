@@ -6,15 +6,16 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 
+
 namespace PresetParser
 {
- 
-
     public class Program
     {
         #region Initalisizing values
         private static string BASE_PATH { get; set; }
-
+        
+        public static bool isExcludedName = false;
+        public static bool isExcludedTemplate = false;
         /// <summary>
         /// Holds the paths and xpaths to parse the extracted RDA's for different Anno versions
         /// 
@@ -26,10 +27,15 @@ namespace PresetParser
         private const string ANNO_VERSION_2205 = "2205";
         private const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "0.8.1";
-
+        private const string BUILDING_PRESETS_VERSION = "0.8.2";
+        // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "cze", "eng", "esp", "fra", "ger", "ita", "pol", "rus" };
         private static readonly string[] LanguagesFiles = new[] { "english", "english", "spanish", "french", "german", "english", "polish", "russian" };
+        // Initalisizing Exclude <Name>"text"</Name> and <Template>"text"</Template> for presets.json file
+        private static readonly List<string> ExcludeNameList = new List<string> { "Placeholder", "tier02", "tier03", "tier04", "tier05", "voting" };
+        private static readonly List<string> ExcludeTemplateList = new List<string> { "SpacePort", "BridgeWithUpgrade" };
+
+            // Set Icon File Name seperations
         private static string GetIconFilename(XmlNode iconNode)
         {
             return string.Format("icon_{0}_{1}.png", iconNode["IconFileID"].InnerText, iconNode["IconIndex"] != null ? iconNode["IconIndex"].InnerText : "0"); //TODO: check this icon format is consistent between Anno versions
@@ -142,22 +148,22 @@ namespace PresetParser
                 Console.WriteLine("Trying to read Buildings Data from the objects.xml of anno 2205");
                 VersionSpecificPaths[ANNO_VERSION_2205].Add("assets", new PathRef[]
                 {
-                new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Earth")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Earth"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Arctic"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Arctic"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Moon"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Moon"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon"),
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon"),
-                //new PathRef("data/dlc01/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Earth"),
+                new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Earth"),
+                new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Arctic")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Arctic")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Moon")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Moon")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon")
+                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon")
+                //new PathRef("data/dlc01/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Buildings")
                 //new PathRef("data/dlc02/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings")
                 });
             }
@@ -369,7 +375,23 @@ namespace PresetParser
             {
                 return;
             }
+            // Skip Unused buildings in Anno Designer List;
+            if (annoVersion == "2205")
+            {
+                isExcludedName = false;
+                isExcludedTemplate = false;
+                string nameValue = values["Standard"]["Name"].InnerText;
+                isExcludedName = nameValue.Contains(ExcludeNameList);
+                string templatValue = buildingNode["Template"].InnerText;
+                isExcludedTemplate = templatValue.Contains(ExcludeTemplateList);
+                if (isExcludedName == true || isExcludedTemplate == true)
+                {
+                    Console.WriteLine("{0} <---> {1}",nameValue , templatValue);
+                    Console.WriteLine("- Building will skipped - Unused Designer Object");
+                    return;
 
+                }
+            }
             // parse stuff
             BuildingInfo b = new BuildingInfo
             {
@@ -437,7 +459,7 @@ namespace PresetParser
             /// find localization
             string buildingGuid = values["Standard"]["GUID"].InnerText;
             string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
-            /// The variables below will set dependently from the annoversion thats choiced.
+            /// The variables below will set dependently from the annoversion thats choiced, fill in after if function
             string languageFilePath = ""; /// Data path to the language files including the last slash '/' started with 'data/'
             string languageFileStart = ""; /// Begin of the file, including the dashdown '_' is this is standard, else leafe blanc
             string langNodeStartPath = ""; /// Path where the xmlfile start with till the <GUID>number</GUID>
