@@ -32,7 +32,7 @@ namespace PresetParser
         private static readonly string[] LanguagesFiles = new[] { "english", "english", "spanish", "french", "german", "english", "polish", "russian" };
         // Initalisizing Exclude <Name>"text"</Name> and <Template>"text"</Template> for presets.json file 
         // Anno 2205
-        private static readonly List<string> ExcludeNameList2205 = new List<string> { "Placeholder", "tier02", "tier03", "tier04", "tier05", "voting" };
+        private static readonly List<string> ExcludeNameList2205 = new List<string> { "Placeholder", "tier02", "tier03", "tier04", "tier05", "voting"};
         private static readonly List<string> ExcludeTemplateList2205 = new List<string> { "SpacePort", "BridgeWithUpgrade" };
 
             // Set Icon File Name seperations
@@ -151,23 +151,35 @@ namespace PresetParser
                 Console.WriteLine("Trying to read Buildings Data from the objects.xml of anno 2205");
                 VersionSpecificPaths[ANNO_VERSION_2205].Add("assets", new PathRef[]
                 {
-                new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Earth"),
-                new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Earth"),
-                new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Arctic")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Arctic")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Moon")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Moon")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon")
-                //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon")
-                //new PathRef("data/dlc01/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Buildings")
-                //new PathRef("data/dlc02/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings")
+                    #region Data Structure Normal Anno 2205
+                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Earth"),
+                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Earth"),
+                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Earth"),
+                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Arctic"),
+                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Arctic"),
+                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Arctic"),
+                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Moon"),
+                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Moon"),
+                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moon"),
+                    #endregion
+                    #region Data Structure DLC 01 (Tundra)
+                    new PathRef("data/dlc01/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                    new PathRef("data/dlc01/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                    new PathRef("data/dlc01/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                    #endregion
+                    #region Data Structure DLC 02 (Orbit)
+                    new PathRef("data/dlc02/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                    #endregion
+                    #region Data Structure DLC 03 (Frontiers) (and DCL 04, no data groups)
+                    new PathRef("data/dlc03/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                    new PathRef("data/dlc03/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                    //DLC 04 does not contain any building information that goes into the preset
+                    #endregion
+                    #region Data Structure FCP 01 / 02 / 02b
+                    new PathRef("data/fcp01/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                    new PathRef("data/fcp02/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                    new PathRef("data/fcp02b/config/game/asset/objects.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings")
+                    #endregion
                 });
             }
                 #endregion
@@ -361,7 +373,20 @@ namespace PresetParser
             {
                 b.Localization = localizations[buildingGuid];
             }
-            #endregion
+            else
+            {
+                Console.WriteLine("No Translation found, it will set to Identifier.");
+                b.Localization = new SerializableDictionary<string>();
+                int languageCount = 0;
+                string translation = "";
+                foreach (string Language in Languages)
+                {
+                    translation = values["Standard"]["Name"].InnerText;
+                    b.Localization.Dict.Add(Languages[languageCount], translation);
+                    languageCount++;
+                }
+            }
+             #endregion
 
             // add building to the list
             buildings.Add(b);
@@ -381,7 +406,7 @@ namespace PresetParser
                 ParseBuilding2205(buildings, buildingNode, annoVersion);
             }
         }
-        
+
         /// ORGLINE: private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations)
         private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, string annoVersion)
         {
@@ -401,7 +426,7 @@ namespace PresetParser
                 isExcludedTemplate = templateValue.Contains(ExcludeTemplateList2205);
                 if (isExcludedName == true || isExcludedTemplate == true)
                 {
-                    Console.WriteLine("{0} <---> {1}",nameValue , templateValue);
+                    Console.WriteLine("{0} <---> {1}", nameValue, templateValue);
                     Console.WriteLine("- Building will skipped - Unused Designer Object");
                     return;
 
@@ -423,8 +448,16 @@ namespace PresetParser
             #region parse building blocker
             if (values["Object"] != null)
             {
-                if (!RetrieveBuildingBlocker(b, values["Object"]["Variations"].FirstChild["Filename"].InnerText))
+                if (values["Object"]?["Variations"]?.FirstChild["Filename"]?.InnerText != null)
                 {
+                    if (!RetrieveBuildingBlocker(b, values["Object"]["Variations"].FirstChild["Filename"].InnerText))
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("-BuildBlocker not found, skipping: Missing Object File");
                     return;
                 }
             }
@@ -438,9 +471,14 @@ namespace PresetParser
 
             #region Get IconFilenames
             // find icon node in values (diverent vs 1404/2070)
-            string icon = values["Standard"]["IconFilename"].InnerText;
+            string icon = null;
+            if (values["Standard"]?["IconFilename"]?.InnerText != null)
+            {
+                icon = values["Standard"]["IconFilename"].InnerText;
+            }
             if (icon != null)
             {
+
                 /// Split the Value <IconFilenames>innertext</IconFilenames> to get only the Name.png
                 string replaceName = "";
                 if (annoVersion == "2205")
@@ -454,6 +492,10 @@ namespace PresetParser
                 string[] sIcons = icon.Split('/');
                 icon = sIcons.LastOrDefault().Replace("icon_", replaceName);
                 b.IconFileName = icon;
+            }
+            else
+            {
+                b.IconFileName = null;
             }
             #endregion
 
@@ -475,13 +517,13 @@ namespace PresetParser
             /// find localization
             string buildingGuid = values["Standard"]["GUID"].InnerText;
             string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
-            /// The variables below will set dependently from the annoversion thats choiced, fill in after if function
-            string languageFilePath = ""; /// Data path to the language files including the last slash '/' started with 'data/'
-            string languageFileStart = ""; /// Begin of the file, including the dashdown '_' is this is standard, else leafe blanc
-            string langNodeStartPath = ""; /// Path where the xmlfile start with till the <GUID>number</GUID>
-            string langNodeDepth = ""; /// The depth where the translation text is, counted from <GUID>number</GUID>
+            /// Do not change any value's below till ----
+            string languageFilePath = "";
+            string languageFileStart = ""; 
+            string langNodeStartPath = ""; 
+            string langNodeDepth = "";
             int languageCount = 0;
-            List<string> finalTranslation = new List<string>();
+            ///------------------------------------------
             if (annoVersion == "2205")
             {
                 languageFilePath = "data/config/gui/"; 
@@ -498,23 +540,33 @@ namespace PresetParser
                 languageFileName = BASE_PATH + languageFilePath + languageFileStart + LanguagesFiles[languageCount] + ".xml";
                 XmlDocument langDocument = new XmlDocument();
                 langDocument.Load(languageFileName);
+                string translation = "";
                 XmlNode translationNodes = langDocument.SelectNodes(langNodeStartPath)
-                    .Cast<XmlNode>().Single(_ => _["GUID"].InnerText == buildingGuid);
-
-                string translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
-                if (translation == null)
-                {
-                    throw new InvalidOperationException("Cannot get translation, text node not found");
-                }
-
-                while (translation.Contains("GUIDNAME"))
-                {
-                    //"[GUIDNAME 2001009]",
-                    //remove the [ and ] marking the GUID, and remove the GUIDNAME identifier.
-                    string nextGuid = translation.Substring(1, translation.Length - 2).Replace("GUIDNAME", "").Trim();
-                    translationNodes = langDocument.SelectNodes(langNodeStartPath)
-                        .Cast<XmlNode>().Single(_ => _["GUID"].InnerText == nextGuid);
+                    .Cast<XmlNode>().SingleOrDefault(_ => _["GUID"].InnerText == buildingGuid);
+                if (translationNodes != null) {
                     translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
+                    if (translation == null)
+                    {
+                        throw new InvalidOperationException("Cannot get translation, text node not found");
+                    }
+
+                    while (translation.Contains("GUIDNAME"))
+                    {
+                        //"[GUIDNAME 2001009]",
+                        //remove the [ and ] marking the GUID, and remove the GUIDNAME identifier.
+                        string nextGuid = translation.Substring(1, translation.Length - 2).Replace("GUIDNAME", "").Trim();
+                        translationNodes = langDocument.SelectNodes(langNodeStartPath)
+                            .Cast<XmlNode>().SingleOrDefault(_ => _["GUID"].InnerText == nextGuid);
+                        translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
+                    }
+                }
+                else
+                {
+                    if (languageCount < 1) /*just set the text one time */
+                    {
+                        Console.WriteLine("No Translation found, it will set to Identifier.");
+                    }
+                    translation = values["Standard"]["Name"].InnerText;
                 }
                 b.Localization.Dict.Add(Languages[languageCount], translation);
                 languageCount++;
@@ -540,14 +592,18 @@ namespace PresetParser
             {
                 XmlNode node = ifoDocument.FirstChild["BuildBlocker"].FirstChild;
                 building.BuildBlocker = new SerializableDictionary<int>();
+                if (Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048) < 1 && Math.Abs(Convert.ToInt32(node["z"].InnerText) / 2048) < 1) /* When both values are zero, then skipp building */
+                {
+                    Console.WriteLine("-'X' and 'Z' are both 0 - Building will skipped!");
+                    return false;
+                }
                 if (Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048) > 0)
                 {
                     building.BuildBlocker["x"] = Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048);
                 }
                 else
                 {
-                    Console.WriteLine("-BuildBlocker not found, skipping: X = 0 value");
-                    return false;
+                   building.BuildBlocker["x"] = 1;
                 }
                 if (Math.Abs(Convert.ToInt32(node["z"].InnerText) / 2048) > 0)
                 {
@@ -555,8 +611,7 @@ namespace PresetParser
                 }
                 else
                 {
-                    Console.WriteLine("-BuildBlocker not found, skipping: Z = 0 value");
-                    return false;
+                    building.BuildBlocker["z"] = 1;
                 }
             }
             catch (NullReferenceException)
