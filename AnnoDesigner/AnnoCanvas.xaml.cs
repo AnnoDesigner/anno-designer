@@ -1,4 +1,7 @@
-﻿using System;
+﻿using AnnoDesigner.Presets;
+using AnnoDesigner.UI;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
@@ -10,9 +13,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using AnnoDesigner.Presets;
-using AnnoDesigner.UI;
-using Microsoft.Win32;
 using MessageBox = Microsoft.Windows.Controls.MessageBox;
 
 namespace AnnoDesigner
@@ -31,7 +31,7 @@ namespace AnnoDesigner
         public readonly Dictionary<string, IconImage> Icons;
 
         public readonly BuildingPresets BuildingPresets;
-        
+
         /// <summary>
         /// Backing field of the GridSize property.
         /// </summary>
@@ -51,9 +51,15 @@ namespace AnnoDesigner
             {
                 var tmp = value;
                 if (tmp < Constants.GridStepMin)
+                {
                     tmp = Constants.GridStepMin;
+                }
+
                 if (tmp > Constants.GridStepMax)
+                {
                     tmp = Constants.GridStepMax;
+                }
+
                 if (_gridStep != tmp)
                 {
                     InvalidateVisual();
@@ -280,7 +286,7 @@ namespace AnnoDesigner
         /// Backing field of the CurrentMode property.
         /// </summary>
         private MouseMode _currentMode;
-        
+
         /// <summary>
         /// Indicates the current mouse mode.
         /// </summary>
@@ -316,7 +322,7 @@ namespace AnnoDesigner
         /// The rectangle used for selection.
         /// </summary>
         private Rect _selectionRect;
-        
+
         /// <summary>
         /// List of all currently placed objects.
         /// </summary>
@@ -520,7 +526,7 @@ namespace AnnoDesigner
             {
                 drawingContext.DrawRectangle(_lightBrush, _highlightPen, _selectionRect);
             }
-            
+
             // draw additional information
             if (RenderStats)
             {
@@ -565,12 +571,12 @@ namespace AnnoDesigner
             {
                 // draw icon 2x2 grid cells large
                 var iconSize = obj.Size.Width < 2 && obj.Size.Height < 2
-                    ? GridToScreen(new Size(1,1))
-                    : GridToScreen(new Size(2,2));
+                    ? GridToScreen(new Size(1, 1))
+                    : GridToScreen(new Size(2, 2));
                 // center icon within the object
                 var iconPos = objRect.TopLeft;
-                iconPos.X += objRect.Width/2 - iconSize.Width/2;
-                iconPos.Y += objRect.Height/2 - iconSize.Height/2;
+                iconPos.X += objRect.Width / 2 - iconSize.Width / 2;
+                iconPos.Y += objRect.Height / 2 - iconSize.Height / 2;
                 var iconName = Path.GetFileNameWithoutExtension(obj.Icon); // for backwards compatibility to older layouts
                 if (iconName != null && Icons.ContainsKey(iconName))
                 {
@@ -640,7 +646,7 @@ namespace AnnoDesigner
                     distance.X -= circle.Center.X;
                     distance.Y -= circle.Center.Y;
                     // check if the center is within the influence circle
-                    if (distance.X*distance.X + distance.Y*distance.Y <= radius*radius)
+                    if (distance.X * distance.X + distance.Y * distance.Y <= radius * radius)
                     {
                         drawingContext.DrawRectangle(_influencedBrush, _influencedPen, oRect);
                     }
@@ -663,10 +669,15 @@ namespace AnnoDesigner
             // draw vertical grid line
             //drawingContext.DrawLine(_linePen, new Point(offset, 0), new Point(offset, RenderSize.Height));
 
+            var statNothingPlaced = Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]["StatNothingPlaced"];
+            var statBoundingBox = Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]["StatBoundingBox"];
+            var statMinimumArea = Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]["StatMinimumArea"];
+            var statSpaceEfficiency = Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]["StatSpaceEfficiency"];
+
             var informationLines = new List<string>();
             if (!_placedObjects.Any())
             {
-                informationLines.Add("Nothing placed");
+                informationLines.Add(statNothingPlaced);
             }
             else
             {
@@ -676,29 +687,26 @@ namespace AnnoDesigner
                 // calculate area of all buildings
                 var minTiles = _placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
                 // format lines
-                informationLines.Add("Bounding Box");
+                informationLines.Add(statBoundingBox);
                 informationLines.Add(string.Format(" {0}x{1}", boxX, boxY));
                 informationLines.Add(string.Format(" {0} Tiles", boxX * boxY));
                 informationLines.Add("");
-                informationLines.Add("Minimum Area");
+                informationLines.Add(statMinimumArea);
                 informationLines.Add(string.Format(" {0} Tiles", minTiles));
                 informationLines.Add("");
-                informationLines.Add("Space efficiency");
+                informationLines.Add(statSpaceEfficiency);
                 informationLines.Add(string.Format(" {0}%", Math.Round(minTiles / boxX / boxY * 100)));
             }
-            // render all the lines
-            for (var i = 0; i < informationLines.Count; i++)
+            var statString = String.Join("\r\n", informationLines);
+            var text = new FormattedText(statString, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                         new Typeface("Verdana"), 12, Brushes.Black, null, TextFormattingMode.Display)
             {
-                var line = informationLines[i];
-                var text = new FormattedText(line, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                             new Typeface("Verdana"), 12, Brushes.Black, null ,TextFormattingMode.Display)
-                {
-                    MaxTextWidth = Constants.StatisticsMargin,
-                    MaxTextHeight = RenderSize.Height,
-                    TextAlignment = TextAlignment.Left
-                };
-                drawingContext.DrawText(text, new Point(RenderSize.Width - Constants.StatisticsMargin + 10, 10 + i * 15));
-            }
+                MaxTextWidth = Constants.StatisticsMargin,
+                MaxTextHeight = RenderSize.Height,
+                TextAlignment = TextAlignment.Left
+            };
+            drawingContext.DrawText(text, new Point(RenderSize.Width - Constants.StatisticsMargin + 10, 25));
+
         }
 
         #endregion
@@ -1165,7 +1173,7 @@ namespace AnnoDesigner
             {
                 _placedObjects.Add(new AnnoObject(CurrentObject));
                 // sort the objects because borderless objects should be drawn first
-                _placedObjects.Sort((a,b) => b.Borderless.CompareTo(a.Borderless));
+                _placedObjects.Sort((a, b) => b.Borderless.CompareTo(a.Borderless));
                 return true;
             }
             return false;
@@ -1212,7 +1220,7 @@ namespace AnnoDesigner
         {
             Normalize(0);
         }
-        
+
         /// <summary>
         /// Normalizes the layout, i.e. moves all objects so that the top-most and left-most objects are exactly at the top and left coordinate zero if border is zero.
         /// Otherwise moves all objects further to the bottom-right by border in grid-units.
@@ -1474,7 +1482,7 @@ namespace AnnoDesigner
                 e.Handled = true;
             }
         }
-    
+
         #endregion
     }
 }

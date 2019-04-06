@@ -74,15 +74,15 @@
                 <MenuItem Header="{Binding Path=UseCurrentZoomOnExportedImage}" IsCheckable="True" IsChecked="False" Name="MenuItemExportZoom" />
                 <MenuItem Header="{Binding Path=RenderSelectionHighlightsOnExportedImage}" IsCheckable="True" IsChecked="False" Name="MenuItemExportSelection" />
             </MenuItem>
-            <MenuItem Header="Language" TabIndex="23" Click="MenuItemLanguageClick">
+            <MenuItem Header="{Binding Path=Language}" TabIndex="23" Click="MenuItemLanguageClick">
                 <MenuItem Header="English" IsCheckable="True" IsChecked="True" Name="MenuItemLanguageEng" />
                 <MenuItem Header="Deutsch" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageGer" />
-                <MenuItem Header="Français" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageFra" />
-                <MenuItem Header="Español" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageEsp" />
-                <MenuItem Header="Italiano" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageIta" />
+                <!--<MenuItem Header="Français" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageFra" />-->
+                <!--<MenuItem Header="Español" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageEsp" />-->
+                <!--<MenuItem Header="Italiano" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageIta" />-->
                 <MenuItem Header="Polski" IsCheckable="True" IsChecked="False" Name="MenuItemLanguagePol" />
                 <MenuItem Header="Русский" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageRus" />
-                <MenuItem Header="český" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageCze" />
+                <!--<MenuItem Header="český" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageCze" />-->
             </MenuItem>
             <MenuItem Header="{Binding Path=Help}" TabIndex="24" HorizontalAlignment="Right">
                 <MenuItem Header="{Binding Path=Version}" Name="MenuItemVersion" IsEnabled="False" />
@@ -140,7 +140,7 @@
             </GroupBox>
         </DockPanel>
         <StatusBar Grid.Row="2" Grid.ColumnSpan="2">
-            <StatusBarItem Content="Mouse controls: left - place, select, move / right - stop placement, remove / both - move all / double click - copy / wheel - zoom / wheel-click - rotate." />
+            <StatusBarItem Content="{Binding Path=StatusBarControls}" />
             <StatusBarItem Name="StatusBarItemStatus" Content="Standard" Margin="10,0,0,0" />
         </StatusBar>
     </Grid>
