@@ -12,6 +12,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using MessageBox = Microsoft.Windows.Controls.MessageBox;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace AnnoDesigner
 {
@@ -152,8 +154,10 @@ namespace AnnoDesigner
         /// Fired on the OnCurrentObjectChanged event
         /// </summary>
         /// <param name="obj"></param>
-        private void UpdateUIFromObject(AnnoObject obj)
+        private void UpdateUIFromObject(List<AnnoObject> objects)
         {
+            var obj = objects[0];
+            //TODO Rewrite UpdateUIFromObject
             if (obj == null)
             {
                 return;
@@ -229,19 +233,32 @@ namespace AnnoDesigner
 
         private void ApplyPreset()
         {
+            //TODO Rewrite ApplyPreset
             try
             {
                 AnnoObject selectedItem = treeViewPresets.SelectedItem as AnnoObject;
+
+                var objects = new List<AnnoObject>();
+                objects.Add(new AnnoObject(selectedItem) { Color = colorPicker.SelectedColor });
+
                 if (selectedItem != null)
                 {
-                    UpdateUIFromObject(new AnnoObject(selectedItem) { Color = colorPicker.SelectedColor });
+                    UpdateUIFromObject(objects);
                     ApplyCurrentObject();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                MessageBox.Show("Something went wrong while applying the preset.");
+                if (Debugger.IsAttached)
+                {
+                    MessageBox.Show("Error applying preset: " + e.Message + " -\r\n " + e.StackTrace);
+                }
+                else
+                {
+                    MessageBox.Show("Something went wrong while applying the preset.");
+                }
             }
+               
         }
         /// <summary>
         /// Called when localisation is changed, to repopulate the tree view

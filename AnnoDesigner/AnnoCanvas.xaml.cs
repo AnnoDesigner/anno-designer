@@ -161,22 +161,22 @@ namespace AnnoDesigner
         /// <summary>
         /// Backing field of the CurrentObject property
         /// </summary>
-        private AnnoObject _currentObject;
+        private List<AnnoObject> _currentObjects = new List<AnnoObject>();
 
         /// <summary>
         /// Current object to be placed. Fires an event when changed.
         /// </summary>
-        public AnnoObject CurrentObject
+        public List<AnnoObject> CurrentObjects
         {
             get
             {
-                return _currentObject;
+                return _currentObjects;
             }
             private set
             {
-                if (_currentObject != value)
+                if (_currentObjects != value)
                 {
-                    _currentObject = value;
+                    _currentObjects = value;
                     if (OnCurrentObjectChanged != null)
                     {
                         OnCurrentObjectChanged(value);
@@ -188,7 +188,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Event which is fired when the current object is changed
         /// </summary>
-        public event Action<AnnoObject> OnCurrentObjectChanged;
+        public event Action<List<AnnoObject>> OnCurrentObjectChanged;
 
         /// <summary>
         /// Backing field of the StatusMessage property.
@@ -253,6 +253,11 @@ namespace AnnoDesigner
         /// Event which is fired when the status message should be changed.
         /// </summary>
         public event Action<string> OnLoadedFileChanged;
+
+        /// <summary>
+        /// Last recorded mouse position
+        /// </summary>
+        private Point _previousMousePosition { get; set; }
 
         #endregion
 
@@ -491,7 +496,7 @@ namespace AnnoDesigner
             _selectedObjects.ForEach(_ => RenderObjectInfluence(drawingContext, _));
             _selectedObjects.ForEach(_ => RenderObjectSelection(drawingContext, _));
 
-            if (CurrentObject == null)
+            if (CurrentObjects.Count == 0)
             {
                 // highlight object which is currently hovered
                 var hoveredObj = GetObjectAt(_mousePosition);
@@ -505,13 +510,14 @@ namespace AnnoDesigner
                 // draw current object
                 if (_mouseWithinControl)
                 {
-                    MoveCurrentObjectToMouse();
+                    MoveCurrentObjectsToMouse();
                     // draw influence radius
-                    RenderObjectInfluence(drawingContext, CurrentObject);
+                    //TODO: Rewrite RenderObjectInfluence
+                    RenderObjectInfluence(drawingContext, CurrentObjects[0]);
                     // draw with transparency
-                    CurrentObject.Color.A = 128;
-                    RenderObject(drawingContext, CurrentObject);
-                    CurrentObject.Color.A = 255;
+                    CurrentObjects[0].Color.A = 128;
+                    RenderObject(drawingContext, CurrentObjects[0]);
+                    CurrentObjects[0].Color.A = 255;
                 }
             }
 
@@ -534,18 +540,35 @@ namespace AnnoDesigner
         /// <summary>
         /// Moves the current object to the mouse position.
         /// </summary>
-        private void MoveCurrentObjectToMouse()
+        private void MoveCurrentObjectsToMouse()
         {
-            if (CurrentObject == null)
+            if (CurrentObjects.Count == 0)
             {
                 return;
             }
             // determine grid position beneath mouse
-            var pos = _mousePosition;
-            var size = GridToScreen(CurrentObject.Size);
-            pos.X -= size.Width / 2;
-            pos.Y -= size.Height / 2;
-            CurrentObject.Position = RoundScreenToGrid(pos);
+            //TODO rewrite MoveCurrentObjectsToMouse()
+            //++ This needs to use relative coordinates to the mouse
+
+            var pos = _previousMousePosition;
+
+            var dx = _mousePosition.X - _previousMousePosition.X;
+            var dy = _mousePosition.Y - _previousMousePosition.Y;
+
+            foreach (AnnoObject obj in CurrentObjects)
+            {        
+                //var size = GridToScreen(obj.Size);
+    
+                obj.Position.Offset(dx, dy);
+                obj.Position = RoundScreenToGrid(obj.Position);
+            }
+
+            //var pos = _mousePosition;
+            //var size = GridToScreen(obj.Size);
+            //pos.X -= size.Width / 2;
+            //pos.Y -= size.Height / 2;
+            //obj.Position = RoundScreenToGrid(pos);
+
         }
 
         /// <summary>
@@ -829,6 +852,7 @@ namespace AnnoDesigner
         protected override void OnMouseEnter(MouseEventArgs e)
         {
             _mouseWithinControl = true;
+            _mousePosition = e.GetPosition(this);
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)
@@ -849,8 +873,9 @@ namespace AnnoDesigner
         private void HandleMouse(MouseEventArgs e)
         {
             // refresh retrieved mouse position
+            _previousMousePosition = _mousePosition;
             _mousePosition = e.GetPosition(this);
-            MoveCurrentObjectToMouse();
+            MoveCurrentObjectsToMouse();
         }
 
         /// <summary>
@@ -869,7 +894,9 @@ namespace AnnoDesigner
                 var obj = GetObjectAt(_mousePosition);
                 if (obj != null)
                 {
-                    CurrentObject = new AnnoObject(obj);
+                    //TODO Check this LIst<AnnoObject> event still works correctly 
+                    CurrentObjects.Clear();
+                    CurrentObjects.Add(new AnnoObject(obj));
                 }
                 return;
             }
@@ -878,12 +905,12 @@ namespace AnnoDesigner
             {
                 CurrentMode = MouseMode.DragAllStart;
             }
-            else if (e.LeftButton == MouseButtonState.Pressed && CurrentObject != null)
+            else if (e.LeftButton == MouseButtonState.Pressed && CurrentObjects.Count != 0)
             {
                 // place new object
                 TryPlaceCurrentObject();
             }
-            else if (e.LeftButton == MouseButtonState.Pressed && CurrentObject == null)
+            else if (e.LeftButton == MouseButtonState.Pressed && CurrentObjects.Count == 0)
             {
                 var obj = GetObjectAt(_mousePosition);
                 if (obj == null)
@@ -947,7 +974,7 @@ namespace AnnoDesigner
             }
             else if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if (CurrentObject != null)
+                if (CurrentObjects.Count != 0)
                 {
                     // place new object
                     TryPlaceCurrentObject();
@@ -1032,7 +1059,7 @@ namespace AnnoDesigner
                 }
                 return;
             }
-            if (e.ChangedButton == MouseButton.Left && CurrentObject == null)
+            if (e.ChangedButton == MouseButton.Left && CurrentObjects.Count == 0)
             {
                 switch (CurrentMode)
                 {
@@ -1073,7 +1100,7 @@ namespace AnnoDesigner
                 switch (CurrentMode)
                 {
                     case MouseMode.Standard:
-                        if (CurrentObject == null)
+                        if (CurrentObjects.Count == 0)
                         {
                             var obj = GetObjectAt(_mousePosition);
                             if (obj == null)
@@ -1094,15 +1121,16 @@ namespace AnnoDesigner
                         else
                         {
                             // cancel placement of object
-                            CurrentObject = null;
+                            CurrentObjects.Clear();
                         }
                         break;
                 }
             }
             // rotate current object
-            if (e.ChangedButton == MouseButton.Middle && CurrentObject != null)
+            if (e.ChangedButton == MouseButton.Middle && CurrentObjects.Count != 0)
             {
-                CurrentObject.Size = Rotate(CurrentObject.Size);
+                //TODO rewrite rotation algorithm
+                CurrentObjects[0].Size = Rotate(CurrentObjects[0].Size);
             }
             InvalidateVisual();
         }
@@ -1151,6 +1179,7 @@ namespace AnnoDesigner
         /// <returns>true if there is a collision, otherwise false</returns>
         private static bool ObjectIntersectionExists(AnnoObject a, AnnoObject b)
         {
+            //TODO Rewrite ObjectIntersectionExists to handle lists, or rewrite calling code (probably a better solution)
             return GetObjectCollisionRect(a).IntersectsWith(GetObjectCollisionRect(b));
         }
 
@@ -1161,9 +1190,10 @@ namespace AnnoDesigner
         /// <returns>true if placement succeeded, otherwise false</returns>
         private bool TryPlaceCurrentObject()
         {
-            if (CurrentObject != null && !_placedObjects.Exists(_ => ObjectIntersectionExists(CurrentObject, _)))
+            //TODO Rewrite TryPlaceCurrentObject
+            if (CurrentObjects.Count != 0 && !_placedObjects.Exists(_ => ObjectIntersectionExists(CurrentObjects[0], _)))
             {
-                _placedObjects.Add(new AnnoObject(CurrentObject));
+                _placedObjects.Add(new AnnoObject(CurrentObjects[0]));
                 // sort the objects because borderless objects should be drawn first
                 _placedObjects.Sort((a,b) => b.Borderless.CompareTo(a.Borderless));
                 return true;
@@ -1191,9 +1221,11 @@ namespace AnnoDesigner
         /// <param name="obj">object to apply</param>
         public void SetCurrentObject(AnnoObject obj)
         {
+            //TODO rewrite SetCurrentObject
             obj.Position = _mousePosition;
             // note: setting of the backing field doens't fire the changed event
-            _currentObject = obj;
+            _currentObjects.Clear();
+            _currentObjects.Add(obj);
             InvalidateVisual();
         }
 
