@@ -15,11 +15,7 @@ namespace PresetParser
         
         public static bool isExcludedName = false;
         public static bool isExcludedTemplate = false;
-        /// <summary>
-        /// Holds the paths and xpaths to parse the extracted RDA's for different Anno versions
-        /// 
-        /// The RDA's should all be extracted into the same directory.
-        /// </summary>
+
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
         private const string ANNO_VERSION_1404 = "1404";
         private const string ANNO_VERSION_2070 = "2070";
@@ -28,17 +24,32 @@ namespace PresetParser
 
         private const string BUILDING_PRESETS_VERSION = "0.8.2";
         // Initalisizing Language Directory's and Filenames
-        private static readonly string[] Languages = new[] { "cze", "eng", "esp", "fra", "ger", "ita", "pol", "rus" };
-        private static readonly string[] LanguagesFiles = new[] { "english", "english", "spanish", "french", "german", "english", "polish", "russian" };
+        private static readonly string[] Languages = new[] { "eng", "ger", "pol", "rus" };
+        private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "polish", "russian" };
+        private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "polish", "russian" };
+        
         // Initalisizing Exclude <Name>"text"</Name> and <Template>"text"</Template> for presets.json file 
         // Anno 2205
         private static readonly List<string> ExcludeNameList2205 = new List<string> { "Placeholder", "tier02", "tier03", "tier04", "tier05", "voting"};
         private static readonly List<string> ExcludeTemplateList2205 = new List<string> { "SpacePort", "BridgeWithUpgrade" };
+        // anno 1800
+        private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)",
+          "(Hunting Grounds)", "(Wash House)", "Quay System", "1x1" , "module_01_birds", "module_02_peacock"};
+        private static readonly List<string> ExcludeTemplateList1800 = new List<string> { "BridgeBuilding", "OrnamentalBuilding" };
 
-            // Set Icon File Name seperations
-        private static string GetIconFilename(XmlNode iconNode)
+        // Set Icon File Name seperations
+        private static string GetIconFilename(XmlNode iconNode, string annoVersion)
         {
-            return string.Format("icon_{0}_{1}.png", iconNode["IconFileID"].InnerText, iconNode["IconIndex"] != null ? iconNode["IconIndex"].InnerText : "0"); //TODO: check this icon format is consistent between Anno versions
+            string annoIdexNumber = "";
+            if (annoVersion == "1404") 
+            {
+                annoIdexNumber = "A4_";
+            }
+            if (annoVersion == "2070") 
+            {
+                annoIdexNumber = "A5_";
+            }
+            return string.Format("{0}icon_{1}_{2}.png", annoIdexNumber , iconNode["IconFileID"].InnerText, iconNode["IconIndex"] != null ? iconNode["IconIndex"].InnerText : "0"); //TODO: check this icon format is consistent between Anno versions
         }
 
         static Program()
@@ -77,13 +88,13 @@ namespace PresetParser
             while (!validVersion)
             {
                 Console.WriteLine();
-                Console.Write("Please enter an Anno version (1 of: {0} {1} {2}):", ANNO_VERSION_1404, ANNO_VERSION_2070, ANNO_VERSION_2205);
+                Console.Write("Please enter an Anno version (1 of: {0} {1} {2} {3}):", ANNO_VERSION_1404, ANNO_VERSION_2070, ANNO_VERSION_2205, ANNO_VERSION_1800);
                 annoVersion = Console.ReadLine();
                 if (annoVersion == "quit")
                 {
                     Environment.Exit(0);
                 }
-                if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070 || annoVersion == ANNO_VERSION_2205)
+                if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070 || annoVersion == ANNO_VERSION_2205 || annoVersion == ANNO_VERSION_1800)
                 {
                     validVersion = true;
                 }
@@ -99,6 +110,11 @@ namespace PresetParser
             #endregion
 
             #region Anno Verion Data Paths
+            /// <summary>
+            /// Holds the paths and xpaths to parse the extracted RDA's for different Anno versions
+            /// 
+            /// The RDA's should all be extracted into the same directory.
+            /// </summary>
             //These should stay constant for different anno versions (hopefully!)
                 #region Anno 1404 xPaths
             if (annoVersion == "1404")
@@ -182,9 +198,23 @@ namespace PresetParser
                     #endregion
                 });
             }
-                #endregion
+            #endregion
 
                 #region Anno 1800 xPaths
+            if (annoVersion == "1800")
+            {
+                VersionSpecificPaths.Add(ANNO_VERSION_1800, new Dictionary<string, PathRef[]>());
+                /// Trying to read data from the objects.exm 
+                Console.WriteLine();
+                Console.WriteLine("Trying to read Buildings Data from the objects.xml of anno 1800");
+                VersionSpecificPaths[ANNO_VERSION_1800].Add("assets", new PathRef[]
+                {
+                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Moderate"),
+                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Moderate"),
+                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moderate"),
+                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moderate")
+                });
+            }
             // Paths for 1800
             ///Because there is no extracted data available, the Program need to be terminated
                 #endregion
@@ -342,7 +372,7 @@ namespace PresetParser
 
             #region Parse building blocker
             // parse building blocker
-            if (!RetrieveBuildingBlocker(b, values["Object"]["Variations"].FirstChild["Filename"].InnerText))
+            if (!RetrieveBuildingBlocker(b, values["Object"]["Variations"].FirstChild["Filename"].InnerText, annoVersion))
             {
                 return;
             }
@@ -354,7 +384,7 @@ namespace PresetParser
             XmlNode icon = iconNodes.FirstOrDefault(_ => _["GUID"].InnerText == buildingGuid);
             if (icon != null)
             {
-                b.IconFileName = GetIconFilename(icon["Icons"].FirstChild);
+                b.IconFileName = GetIconFilename(icon["Icons"].FirstChild, annoVersion);
             }
             #endregion
 
@@ -410,6 +440,7 @@ namespace PresetParser
         /// ORGLINE: private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations)
         private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, string annoVersion)
         {
+            string[] LanguagesFiles = new[] { "" };
             #region Get valid Building Information 
             XmlElement values = buildingNode["Values"];
             // skip invalid elements
@@ -424,6 +455,20 @@ namespace PresetParser
                 isExcludedName = nameValue.Contains(ExcludeNameList2205);
                 string templateValue = buildingNode["Template"].InnerText;
                 isExcludedTemplate = templateValue.Contains(ExcludeTemplateList2205);
+                if (isExcludedName == true || isExcludedTemplate == true)
+                {
+                    Console.WriteLine("{0} <---> {1}", nameValue, templateValue);
+                    Console.WriteLine("- Building will skipped - Unused Designer Object");
+                    return;
+
+                }
+            }
+            if (annoVersion == "1800")
+            {
+                string nameValue = values["Standard"]["Name"].InnerText;
+                isExcludedName = nameValue.Contains(ExcludeNameList1800);
+                string templateValue = buildingNode["Template"].InnerText;
+                isExcludedTemplate = templateValue.Contains(ExcludeTemplateList1800);
                 if (isExcludedName == true || isExcludedTemplate == true)
                 {
                     Console.WriteLine("{0} <---> {1}", nameValue, templateValue);
@@ -450,7 +495,7 @@ namespace PresetParser
             {
                 if (values["Object"]?["Variations"]?.FirstChild["Filename"]?.InnerText != null)
                 {
-                    if (!RetrieveBuildingBlocker(b, values["Object"]["Variations"].FirstChild["Filename"].InnerText))
+                    if (!RetrieveBuildingBlocker(b, values["Object"]["Variations"].FirstChild["Filename"].InnerText, annoVersion))
                     {
                         return;
                     }
@@ -467,6 +512,8 @@ namespace PresetParser
                 return;
 
             }
+
+
             #endregion
 
             #region Get IconFilenames
@@ -524,12 +571,20 @@ namespace PresetParser
             string langNodeDepth = "";
             int languageCount = 0;
             ///------------------------------------------
-            if (annoVersion == "2205")
+            if (annoVersion == "2205" || annoVersion == "1800" )
             {
                 languageFilePath = "data/config/gui/"; 
                 languageFileStart = "texts_"; 
                 langNodeStartPath = "/TextExport/Texts/Text"; 
                 langNodeDepth = "Text"; 
+                if (annoVersion == "2205")
+                {
+                    LanguagesFiles= LanguagesFiles2205;
+                }
+                if (annoVersion == "1800")
+                {
+                    LanguagesFiles = LanguagesFiles1800;
+                }
             }
 
             //Initialise the dictionary
@@ -584,43 +639,121 @@ namespace PresetParser
 
         /// Other Classes and or Internal Commands used in this program
         #region Retrieving BuildingBlockers from Buidings Nodes
-        private static bool RetrieveBuildingBlocker(BuildingInfo building, string variationFilename)
+        private static bool RetrieveBuildingBlocker(BuildingInfo building, string variationFilename, string annoVersion)
         {
-            XmlDocument ifoDocument = new XmlDocument();
-            ifoDocument.Load(Path.Combine(BASE_PATH + "/", string.Format("{0}.ifo", Path.GetDirectoryName(variationFilename) + "\\" + Path.GetFileNameWithoutExtension(variationFilename))));
-            try
+            if (annoVersion == "1800")
             {
-                XmlNode node = ifoDocument.FirstChild["BuildBlocker"].FirstChild;
-                building.BuildBlocker = new SerializableDictionary<int>();
-                if (Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048) < 1 && Math.Abs(Convert.ToInt32(node["z"].InnerText) / 2048) < 1) /* When both values are zero, then skipp building */
+                XmlDocument ifoDocument = new XmlDocument();
+                ifoDocument.Load(Path.Combine(BASE_PATH + "/", string.Format("{0}.ifo", Path.GetDirectoryName(variationFilename) + "\\" + Path.GetFileNameWithoutExtension(variationFilename))));
+                try
                 {
-                    Console.WriteLine("-'X' and 'Z' are both 0 - Building will skipped!");
+                    XmlNode node = ifoDocument.FirstChild["BuildBlocker"].FirstChild;
+                    building.BuildBlocker = new SerializableDictionary<int>();
+                    string xfNormal = node["xf"].InnerText;
+                    string zfNormal = node["zf"].InnerText;
+                    decimal XF = ParseBuildingBlockerNumber(xfNormal);
+                    decimal ZF = ParseBuildingBlockerNumber(zfNormal);
+                    if (XF < 1 && ZF < 0) /* When both values are zero, then skipp building */
+                    {
+                        Console.WriteLine("-'X' and 'Z' are both 0 - Building will skipped!");
+                        return false;
+                    }
+                    if (XF > 0)
+                    {
+                        building.BuildBlocker["x"] = Convert.ToInt32(XF);
+                    }
+                    else
+                    {
+                        building.BuildBlocker["x"] = 1;
+                    }
+                    if (ZF > 0)
+                    {
+                        building.BuildBlocker["z"] = Convert.ToInt32(ZF); 
+                    }
+                    else
+                    {
+                        building.BuildBlocker["z"] = 1;
+                    }
+                }
+                catch (NullReferenceException)
+                {
+                    Console.WriteLine("-BuildBlocker not found, skipping");
                     return false;
                 }
-                if (Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048) > 0)
-                {
-                    building.BuildBlocker["x"] = Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048);
-                }
-                else
-                {
-                   building.BuildBlocker["x"] = 1;
-                }
-                if (Math.Abs(Convert.ToInt32(node["z"].InnerText) / 2048) > 0)
-                {
-                    building.BuildBlocker["z"] = Math.Abs(Convert.ToInt32(node["z"].InnerText) / 2048);
-                }
-                else
-                {
-                    building.BuildBlocker["z"] = 1;
-                }
+                return true;
             }
-            catch (NullReferenceException)
+            else
             {
-                Console.WriteLine("-BuildBlocker not found, skipping");
-                return false;
+                XmlDocument ifoDocument = new XmlDocument();
+                ifoDocument.Load(Path.Combine(BASE_PATH + "/", string.Format("{0}.ifo", Path.GetDirectoryName(variationFilename) + "\\" + Path.GetFileNameWithoutExtension(variationFilename))));
+                try
+                {
+                    XmlNode node = ifoDocument.FirstChild["BuildBlocker"].FirstChild;
+                    building.BuildBlocker = new SerializableDictionary<int>();
+                    if (Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048) < 1 && Math.Abs(Convert.ToInt32(node["z"].InnerText) / 2048) < 1) /* When both values are zero, then skipp building */
+                    {
+                        Console.WriteLine("-'X' and 'Z' are both 0 - Building will skipped!");
+                        return false;
+                    }
+                    if (Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048) > 0)
+                    {
+                        building.BuildBlocker["x"] = Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048);
+                    }
+                    else
+                    {
+                        building.BuildBlocker["x"] = 1;
+                    }
+                    if (Math.Abs(Convert.ToInt32(node["z"].InnerText) / 2048) > 0)
+                    {
+                        building.BuildBlocker["z"] = Math.Abs(Convert.ToInt32(node["z"].InnerText) / 2048);
+                    }
+                    else
+                    {
+                        building.BuildBlocker["z"] = 1;
+                    }
+                }
+                catch (NullReferenceException)
+                {
+                    Console.WriteLine("-BuildBlocker not found, skipping");
+                    return false;
+                }
+                return true;
             }
-            return true;
         }
+        #region ParseBuildingBlockerNumber for anno 1800
+        private static int ParseBuildingBlockerNumber(string number)
+        {
+            string[] xz = new[] { "" };
+            int countNumberLenght = 0;
+            int i = 0, zx = 0, xz1 = 0;
+            double xz2 = 0;
+            if (number.Contains("."))
+            {
+                xz = number.Split(new char[] { '.' });
+                //Console.WriteLine("1: {0}  2: {1}", xz[0], xz[1]);
+                xz1 = Math.Abs(Convert.ToInt32(xz[0]));
+                xz2 = Math.Abs(Convert.ToInt32(xz[1]));
+                //Console.WriteLine("xz1: {0}  xz2: {1}", xz1, xz2);
+                countNumberLenght = xz[1].Length;
+                //Console.WriteLine("lebght= {0}", countNumberLenght);
+                while (i < countNumberLenght)
+                {
+                    xz2 = xz2 / 10;
+                    //Console.WriteLine("{0}", xz2);
+                    i++;
+                }
+                xz1 = xz1 * 2;
+                xz2 = xz2 * 2;
+                zx = xz1 + Convert.ToInt32(xz2);
+            }
+            else
+            {
+                zx = Math.Abs(Convert.ToInt32(number));
+                zx = zx * 2;
+            }
+            return zx;
+        }
+        #endregion
         #endregion
 
         #region GuidRef Class
@@ -713,7 +846,7 @@ namespace PresetParser
             foreach (XmlNode iconNode in iconNodes)
             {
                 string guid = iconNode["GUID"].InnerText;
-                string iconFilename = GetIconFilename(iconNode["Icons"].FirstChild);
+                string iconFilename = GetIconFilename(iconNode["Icons"].FirstChild,annoVersion);
                 if (!localizations.ContainsKey(guid) || mapping.Exists(_ => _.IconFilename == iconFilename))
                 {
                     continue;
