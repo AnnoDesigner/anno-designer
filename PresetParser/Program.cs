@@ -51,7 +51,6 @@ namespace PresetParser
         {
             #region User Choices 
             bool validPath = false;
-            var a = "Testing tracking branch";
             string path = "";
             while (!validPath)
             {

@@ -263,7 +263,7 @@ namespace AnnoDesigner.Localization
                         { "Close" , "Закрыть" },
                         { "StatusBarControls" , "Управление мышью: влево - разместить, выбрать, переместить // вправо - прекратить размещение, удалить // оба - переместить все // двойной щелчок - копировать // колесо - масштабировать // колесико щелкнуть - повернуть." },
                         { "StatNothingPlaced" , "Nothing Placed" },
-                        { "StatBoundBox" , "Bounding box" },
+                        { "StatBoundingBox" , "Bounding box" },
                         { "StatMinimumArea" , "Minimum area" },
                         { "StatSpaceEfficiency" , "Space efficiency" },
                         { "PresetsLoaded" , "Building presets loaded" }
