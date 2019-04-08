@@ -413,7 +413,7 @@ namespace PresetParser
             if (annoVersion == "1404")
             {
                 string nameValue = values["Standard"]["Name"].InnerText;
-                isExcludedName = nameValue.IsPartOff(anno1404BuildingLists);
+                isExcludedName = nameValue.IsPartOf(anno1404BuildingLists);
                 if (isExcludedName) {
                     //Console.WriteLine("{0}", nameValue);
                     //Console.WriteLine("- Building already exists in the building list - Building Skipped");
