@@ -42,7 +42,7 @@ namespace AnnoDesigner.Presets
             foreach (var header in list.GroupBy(_ => _.Header).OrderBy(_ => _.Key))
             {
                 var headerItem = new TreeViewItem { Header = header.Key };
-                foreach (var secondLevel in list.GroupBy(_ => _.Faction).OrderBy(_ => _.Key))
+                foreach (var secondLevel in header.GroupBy(_ => _.Faction).OrderBy(_ => _.Key))
                 {
                     var secondLevelItem = new TreeViewItem { Header = secondLevel.Key };
                     foreach (var thirdLevel in secondLevel.GroupBy(_ => _.Group).OrderBy(_ => _.Key))
