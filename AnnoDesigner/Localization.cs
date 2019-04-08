@@ -38,6 +38,7 @@ namespace AnnoDesigner.Localization
                         { "ExportImage" , "Export Image" },
                         { "UseCurrentZoomOnExportedImage" , "Use current zoom on exported image" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Render selection highlights on exported image" },
+                        { "Language" , "Language" },
                         { "Help" , "Help" },
                         { "Version" , "Version" },
                         { "FileVersion" , "File Version" },
@@ -64,7 +65,7 @@ namespace AnnoDesigner.Localization
                         { "Title" , "Modified" },
                         { "BuildingLayoutDesigner" , "A building layout designer for Ubisofts Anno-series" },
                         { "Credits" , "Credits" },
-                        { "OriginalApplicationBy" , "Original application by " },
+                        { "OriginalApplicationBy" , "Original application by [name]" },
                         { "BuildingPresets" , "Building presets" },
                         { "CombinedForAnnoVersions" , "Combined building presets for" },
                         { "AdditionalChanges" , "Additional changes by" },
@@ -73,7 +74,13 @@ namespace AnnoDesigner.Localization
                         { "OriginalHomepage" , "Original Homepage" },
                         { "ProjectHomepage" , "Project Homepage" },
                         { "GoToFandom" , "Go to Fandom" },
-                        { "Close" , "Close" }
+                        { "Close" , "Close" },
+                        { "StatusBarControls" , "Mouse controls: left - place, select, move // right - stop placement, remove // both - move all // double click - copy // wheel - zoom // wheel-click - rotate." },
+                        { "StatNothingPlaced" , "Nothing Placed" },
+                        { "StatBoundingBox" , "Bounding box" },
+                        { "StatMinimumArea" , "Minimum area" },
+                        { "StatSpaceEfficiency" , "Space efficiency" },
+                        { "PresetsLoaded" , "Building presets loaded" }
                     }
                  },
                 {
@@ -93,6 +100,7 @@ namespace AnnoDesigner.Localization
                         { "ExportImage" , "Exportiere Bild / Speichere als Bild" },
                         { "UseCurrentZoomOnExportedImage" , "Wende aktuellen Zomm auf exportiertes Bild an" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Exportiere Bild mit Selektionen" },
+                        { "Language" , "Sprache" },
                         { "Help" , "Hilfe" },
                         { "Version" , "Version" },
                         { "FileVersion" , "Dateiversion" },
@@ -119,7 +127,7 @@ namespace AnnoDesigner.Localization
                         { "Title" , "bearbeitet/geändert" },
                         { "BuildingLayoutDesigner" , "Ein Gebäude-layout Designer für Ubisofts Anno Reihe" },
                         { "Credits" , "Credits" },
-                        { "OriginalApplicationBy" , "Ursprüngliche Anwendung von " },
+                        { "OriginalApplicationBy" , "Ursprüngliche Anwendung von [name]" },
                         { "BuildingPresets" , "Gebäudevorlagen" },
                         { "CombinedForAnnoVersions" , "Zusammengefügte Gebäudevorlagen für" },
                         { "AdditionalChanges" , "Zusätzliche Änderungen von" },
@@ -128,172 +136,13 @@ namespace AnnoDesigner.Localization
                         { "OriginalHomepage" , "Original Startseite" },
                         { "ProjectHomepage" , "Projekt Startsteite" },
                         { "GoToFandom" , "Fangemeinde besuchen" },
-                        { "Close" , "Schließen" }
-                    }
-                 },
-                {
-                    "fra", new Dictionary<string, string>() {
-                        { "File" , "File" },
-                        { "NewCanvas" , "New Canvas" },
-                        { "Open" , "Open" },
-                        { "Save" , "Save" },
-                        { "SaveAs" , "Save As" },
-                        { "Exit" , "Exit" },
-                        { "Extras" , "Extras" },
-                        { "Normalize" , "Normalize" },
-                        { "ResetZoom" , "Reset Zoom" },
-                        { "RegisterFileExtension" , "Register File Extension" },
-                        { "UnregisterFileExtension" , "Unregister File Extension" },
-                        { "Export" , "Export" },
-                        { "ExportImage" , "Export Image" },
-                        { "UseCurrentZoomOnExportedImage" , "Use current zoom on exported image" },
-                        { "RenderSelectionHighlightsOnExportedImage" , "Render selection highlights on exported image" },
-                        { "Help" , "Help" },
-                        { "Version" , "Version" },
-                        { "FileVersion" , "File Version" },
-                        { "PresetsVersion" , "Presets Version" },
-                        { "CheckForUpdates" , "Check For Updates" },
-                        { "GoToProjectHomepage" , "Go to Project Homepage" },
-                        { "AboutAnnoDesigner" , "About Anno Designer" },
-                        { "ShowGrid" , "Show Grid" },
-                        { "ShowLabels" , "Show Labels" },
-                        { "ShowIcons" , "Show Icons" },
-                        { "ShowStats" , "Show Stats" },
-                        { "BuildingSettings" , "Building Settings" },
-                        { "Size" , "Size" },
-                        { "Color" , "Color" },
-                        { "Label" , "Label" },
-                        { "Icon" , "Icon" },
-                        { "Radius" , "Radius" },
-                        { "Options" , "Options" },
-                        { "EnableLabel" , "Enable label" },
-                        { "Borderless" , "Borderless" },
-                        { "Road" , "Road" },
-                        { "PlaceBuilding" , "Place building" },
-                        { "TitleAbout" , "About" },
-                        { "Title" , "Modified" },
-                        { "BuildingLayoutDesigner" , "A building layout designer for Ubisofts Anno-series" },
-                        { "Credits" , "Credits" },
-                        { "OriginalApplicationBy" , "Original application by " },
-                        { "BuildingPresets" , "Building presets" },
-                        { "CombinedForAnnoVersions" , "Combined building presets for" },
-                        { "AdditionalChanges" , "Additional changes by" },
-                        { "ManyThanks" , "Many thanks to all the users who contributed to this project!" },
-                        { "VisitTheFandom" , "Be sure to visit the Fandom pages for Anno!" },
-                        { "OriginalHomepage" , "Original Homepage" },
-                        { "ProjectHomepage" , "Project Homepage" },
-                        { "GoToFandom" , "Go to Fandom" },
-                        { "Close" , "Close" }
-                    }
-                 },
-                {
-                    "esp", new Dictionary<string, string>() {
-                        { "File" , "File" },
-                        { "NewCanvas" , "New Canvas" },
-                        { "Open" , "Open" },
-                        { "Save" , "Save" },
-                        { "SaveAs" , "Save As" },
-                        { "Exit" , "Exit" },
-                        { "Extras" , "Extras" },
-                        { "Normalize" , "Normalize" },
-                        { "ResetZoom" , "Reset Zoom" },
-                        { "RegisterFileExtension" , "Register File Extension" },
-                        { "UnregisterFileExtension" , "Unregister File Extension" },
-                        { "Export" , "Export" },
-                        { "ExportImage" , "Export Image" },
-                        { "UseCurrentZoomOnExportedImage" , "Use current zoom on exported image" },
-                        { "RenderSelectionHighlightsOnExportedImage" , "Render selection highlights on exported image" },
-                        { "Help" , "Help" },
-                        { "Version" , "Version" },
-                        { "FileVersion" , "File Version" },
-                        { "PresetsVersion" , "Presets Version" },
-                        { "CheckForUpdates" , "Check For Updates" },
-                        { "GoToProjectHomepage" , "Go to Project Homepage" },
-                        { "AboutAnnoDesigner" , "About Anno Designer" },
-                        { "ShowGrid" , "Show Grid" },
-                        { "ShowLabels" , "Show Labels" },
-                        { "ShowIcons" , "Show Icons" },
-                        { "ShowStats" , "Show Stats" },
-                        { "BuildingSettings" , "Building Settings" },
-                        { "Size" , "Size" },
-                        { "Color" , "Color" },
-                        { "Label" , "Label" },
-                        { "Icon" , "Icon" },
-                        { "Radius" , "Radius" },
-                        { "Options" , "Options" },
-                        { "EnableLabel" , "Enable label" },
-                        { "Borderless" , "Borderless" },
-                        { "Road" , "Road" },
-                        { "PlaceBuilding" , "Place building" },
-                        { "TitleAbout" , "About" },
-                        { "Title" , "Modified" },
-                        { "BuildingLayoutDesigner" , "A building layout designer for Ubisofts Anno-series" },
-                        { "Credits" , "Credits" },
-                        { "OriginalApplicationBy" , "Original application by [name]" },
-                        { "BuildingPresets" , "Building presets" },
-                        { "CombinedForAnnoVersions" , "Combined building presets for" },
-                        { "AdditionalChanges" , "Additional changes by" },
-                        { "ManyThanks" , "Many thanks to all the users who contributed to this project!" },
-                        { "VisitTheFandom" , "Be sure to visit the Fandom pages for Anno!" },
-                        { "OriginalHomepage" , "Original Homepage" },
-                        { "ProjectHomepage" , "Project Homepage" },
-                        { "GoToFandom" , "Go to Fandom" },
-                        { "Close" , "Close" }
-                    }
-                 },
-                {
-                    "ita", new Dictionary<string, string>() {
-                        { "File" , "File" },
-                        { "NewCanvas" , "New Canvas" },
-                        { "Open" , "Open" },
-                        { "Save" , "Save" },
-                        { "SaveAs" , "Save As" },
-                        { "Exit" , "Exit" },
-                        { "Extras" , "Extras" },
-                        { "Normalize" , "Normalize" },
-                        { "ResetZoom" , "Reset Zoom" },
-                        { "RegisterFileExtension" , "Register File Extension" },
-                        { "UnregisterFileExtension" , "Unregister File Extension" },
-                        { "Export" , "Export" },
-                        { "ExportImage" , "Export Image" },
-                        { "UseCurrentZoomOnExportedImage" , "Use current zoom on exported image" },
-                        { "RenderSelectionHighlightsOnExportedImage" , "Render selection highlights on exported image" },
-                        { "Help" , "Help" },
-                        { "Version" , "Version" },
-                        { "FileVersion" , "File Version" },
-                        { "PresetsVersion" , "Presets Version" },
-                        { "CheckForUpdates" , "Check For Updates" },
-                        { "GoToProjectHomepage" , "Go to Project Homepage" },
-                        { "AboutAnnoDesigner" , "About Anno Designer" },
-                        { "ShowGrid" , "Show Grid" },
-                        { "ShowLabels" , "Show Labels" },
-                        { "ShowIcons" , "Show Icons" },
-                        { "ShowStats" , "Show Stats" },
-                        { "BuildingSettings" , "Building Settings" },
-                        { "Size" , "Size" },
-                        { "Color" , "Color" },
-                        { "Label" , "Label" },
-                        { "Icon" , "Icon" },
-                        { "Radius" , "Radius" },
-                        { "Options" , "Options" },
-                        { "EnableLabel" , "Enable label" },
-                        { "Borderless" , "Borderless" },
-                        { "Road" , "Road" },
-                        { "PlaceBuilding" , "Place building" },
-                        { "TitleAbout" , "About" },
-                        { "Title" , "Modified" },
-                        { "BuildingLayoutDesigner" , "A building layout designer for Ubisofts Anno-series" },
-                        { "Credits" , "Credits" },
-                        { "OriginalApplicationBy" , "Original application by [name]" },
-                        { "BuildingPresets" , "Building presets" },
-                        { "CombinedForAnnoVersions" , "Combined building presets for" },
-                        { "AdditionalChanges" , "Additional changes by" },
-                        { "ManyThanks" , "Many thanks to all the users who contributed to this project!" },
-                        { "VisitTheFandom" , "Be sure to visit the Fandom pages for Anno!" },
-                        { "OriginalHomepage" , "Original Homepage" },
-                        { "ProjectHomepage" , "Project Homepage" },
-                        { "GoToFandom" , "Go to Fandom" },
-                        { "Close" , "Close" }
+                        { "Close" , "Schließen" },
+                        { "StatusBarControls" , "Maussteuerung: Links - Platzieren, Auswählen, Verschieben // Rechts - Platzieren stoppen // Beide - Alle verschieben // Doppelklicken - Kopieren // Rad Zoom // Klickrad - Drehen" },
+                        { "StatNothingPlaced" , "Nothing Placed" },
+                        { "StatBoundingBox" , "Bounding box" },
+                        { "StatMinimumArea" , "Minimum area" },
+                        { "StatSpaceEfficiency" , "Space efficiency" },
+                        { "PresetsLoaded" , "Building presets loaded" }
                     }
                  },
                 {
@@ -313,6 +162,7 @@ namespace AnnoDesigner.Localization
                         { "ExportImage" , "Eksportuj obraz" },
                         { "UseCurrentZoomOnExportedImage" , "Użyj obecnego powiększenia na eksportowanym obrazie" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Pokaż podświetlenie wybranych elementów na eksportowanym obrazie" },
+                        { "Language" , "Język" },
                         { "Help" , "Pomoc" },
                         { "Version" , "Wersja" },
                         { "FileVersion" , "Wersja pliku" },
@@ -339,7 +189,7 @@ namespace AnnoDesigner.Localization
                         { "Title" , "zmodyfikowany" },
                         { "BuildingLayoutDesigner" , "Program do planowania zabudowy w serii Anno Ubisoftu" },
                         { "Credits" , "Autorzy" },
-                        { "OriginalApplicationBy" , "Oryginalna aplikacja napisana przez " },
+                        { "OriginalApplicationBy" , "Oryginalna aplikacja napisana przez [imię]" },
                         { "BuildingPresets" , "Presety dla budynków" },
                         { "CombinedForAnnoVersions" , "Połączone presety budynków dla" },
                         { "AdditionalChanges" , "Dodatkowe zmiany wprowadzone przez" },
@@ -348,26 +198,33 @@ namespace AnnoDesigner.Localization
                         { "OriginalHomepage" , "Oryginalna strona" },
                         { "ProjectHomepage" , "Strona projektu" },
                         { "GoToFandom" , "Przejdź do strony Fandom" },
-                        { "Close" , "Zamknij" }
+                        { "Close" , "Zamknij" },
+                        { "StatusBarControls" , "Sterowanie myszą: w lewo - miejsce, zaznacz, przesuń // zatrzymanie w prawo, usuń // oba - przenieś wszystko // podwójne kliknięcie - kopiuj // kółko - powiększ // kółko - obracaj." },
+                        { "StatNothingPlaced" , "Nic nie postawiono" },
+                        { "StatBoundingBox" , "Ramka ograniczająca" },
+                        { "StatMinimumArea" , "Minimalna powierzchnia" },
+                        { "StatSpaceEfficiency" , "Wykorzystanie przestrzeni" },
+                        { "PresetsLoaded" , "Presety budynków załadowano" }
                     }
                  },
                 {
                     "rus", new Dictionary<string, string>() {
                         { "File" , "Файл" },
-                        { "NewCanvas" , "Новый лист" },
+                        { "NewCanvas" , "Новый файл" },
                         { "Open" , "Открыть" },
                         { "Save" , "Сохранить" },
                         { "SaveAs" , "Сохранить как" },
                         { "Exit" , "Выход" },
                         { "Extras" , "Дополнительно" },
                         { "Normalize" , "Нормализация" },
-                        { "ResetZoom" , "Сброс масштаба" },
+                        { "ResetZoom" , "Сбросить масштаб" },
                         { "RegisterFileExtension" , "Зарегистрировать расширение файла" },
                         { "UnregisterFileExtension" , "Отмена регистрации расширения файла" },
                         { "Export" , "Экспорт" },
                         { "ExportImage" , "Экспортировать изображение" },
                         { "UseCurrentZoomOnExportedImage" , "Использовать текущее масштабирование экспортируемого изображения" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Выделение выделенного фрагмента на экспортируемом изображении" },
+                        { "Language" , "язык" },
                         { "Help" , "Помощь" },
                         { "Version" , "Версия" },
                         { "FileVersion" , "Версия файла" },
@@ -376,21 +233,21 @@ namespace AnnoDesigner.Localization
                         { "GoToProjectHomepage" , "Перейти на главную страницу" },
                         { "AboutAnnoDesigner" , "О Anno Дизайнер" },
                         { "ShowGrid" , "Показать сетку" },
-                        { "ShowLabels" , "Показать Метки" },
-                        { "ShowIcons" , "Показать Значок" },
-                        { "ShowStats" , "Показать статистику" },
-                        { "BuildingSettings" , "Параметры построения" },
+                        { "ShowLabels" , "Показывать название" },
+                        { "ShowIcons" , "Показывать значок" },
+                        { "ShowStats" , "Показывать параметры" },
+                        { "BuildingSettings" , "Параметры здания" },
                         { "Size" , "Размер" },
                         { "Color" , "Цвет" },
-                        { "Label" , "Ярлык" },
+                        { "Label" , "Название" },
                         { "Icon" , "Значок" },
                         { "Radius" , "Радиус" },
                         { "Options" , "Параметры" },
-                        { "EnableLabel" , "Включить ярлык" },
+                        { "EnableLabel" , "Показывать название" },
                         { "Borderless" , "Без полей" },
                         { "Road" , "Дорогa" },
-                        { "PlaceBuilding" , "Поставить здание" },
-                        { "TitleAbout" , "О" },
+                        { "PlaceBuilding" , "Выбрать здание" },
+                        { "TitleAbout" , "О программе" },
                         { "Title" , "обновлено" },
                         { "BuildingLayoutDesigner" , "Конструктор макета здания для Ubisofts Anno-серии" },
                         { "Credits" , "Авторы" },
@@ -403,64 +260,15 @@ namespace AnnoDesigner.Localization
                         { "OriginalHomepage" , "Оригинальная домашняя страница" },
                         { "ProjectHomepage" , "Домашняя страница проекта" },
                         { "GoToFandom" , "Перейти к Фэндом" },
-                        { "Close" , "Закрыть" }
+                        { "Close" , "Закрыть" },
+                        { "StatusBarControls" , "Управление мышью: влево - разместить, выбрать, переместить // вправо - прекратить размещение, удалить // оба - переместить все // двойной щелчок - копировать // колесо - масштабировать // колесико щелкнуть - повернуть." },
+                        { "StatNothingPlaced" , "Nothing Placed" },
+                        { "StatBoundingBox" , "Bounding box" },
+                        { "StatMinimumArea" , "Minimum area" },
+                        { "StatSpaceEfficiency" , "Space efficiency" },
+                        { "PresetsLoaded" , "Building presets loaded" }
                     }
                  },
-                {
-                    "cze", new Dictionary<string, string>() {
-                        { "File" , "File" },
-                        { "NewCanvas" , "New Canvas" },
-                        { "Open" , "Open" },
-                        { "Save" , "Save" },
-                        { "SaveAs" , "Save As" },
-                        { "Exit" , "Exit" },
-                        { "Extras" , "Extras" },
-                        { "Normalize" , "Normalize" },
-                        { "ResetZoom" , "Reset Zoom" },
-                        { "RegisterFileExtension" , "Register File Extension" },
-                        { "UnregisterFileExtension" , "Unregister File Extension" },
-                        { "Export" , "Export" },
-                        { "ExportImage" , "Export Image" },
-                        { "UseCurrentZoomOnExportedImage" , "Use current zoom on exported image" },
-                        { "RenderSelectionHighlightsOnExportedImage" , "Render selection highlights on exported image" },
-                        { "Help" , "Help" },
-                        { "Version" , "Version" },
-                        { "FileVersion" , "File Version" },
-                        { "PresetsVersion" , "Presets Version" },
-                        { "CheckForUpdates" , "Check For Updates" },
-                        { "GoToProjectHomepage" , "Go to Project Homepage" },
-                        { "AboutAnnoDesigner" , "About Anno Designer" },
-                        { "ShowGrid" , "Show Grid" },
-                        { "ShowLabels" , "Show Labels" },
-                        { "ShowIcons" , "Show Icons" },
-                        { "ShowStats" , "Show Stats" },
-                        { "BuildingSettings" , "Building Settings" },
-                        { "Size" , "Size" },
-                        { "Color" , "Color" },
-                        { "Label" , "Label" },
-                        { "Icon" , "Icon" },
-                        { "Radius" , "Radius" },
-                        { "Options" , "Options" },
-                        { "EnableLabel" , "Enable label" },
-                        { "Borderless" , "Borderless" },
-                        { "Road" , "Road" },
-                        { "PlaceBuilding" , "Place building" },
-                        { "TitleAbout" , "About" },
-                        { "Title" , "Modified" },
-                        { "BuildingLayoutDesigner" , "A building layout designer for Ubisofts Anno-series" },
-                        { "Credits" , "Credits" },
-                        { "OriginalApplicationBy" , "Original application by [name]" },
-                        { "BuildingPresets" , "Building presets" },
-                        { "CombinedForAnnoVersions" , "Combined building presets for" },
-                        { "AdditionalChanges" , "Additional changes by" },
-                        { "ManyThanks" , "Many thanks to all the users who contributed to this project!" },
-                        { "VisitTheFandom" , "Be sure to visit the Fandom pages for Anno!" },
-                        { "OriginalHomepage" , "Original Homepage" },
-                        { "ProjectHomepage" , "Project Homepage" },
-                        { "GoToFandom" , "Go to Fandom" },
-                        { "Close" , "Close" }
-                    }
-                 }
             };
         }
 
@@ -483,7 +291,7 @@ namespace AnnoDesigner.Localization
 
         public static void Update()
         {
-           
+
         }
 
 
@@ -701,14 +509,65 @@ namespace AnnoDesigner.Localization
 
     }
 
-    ////Probably nothing to add in here
-    //public static class AnnoCanvas : StaticNotify
-    //{
+    public class AnnoCanvas : Notify
+    {
+        public AnnoCanvas()
+        {
+            UpdateLanguage();
+        }
 
-    //}
+        public void UpdateLanguage()
+        {
+            string language = Localization.GetLanguageCodeFromName(AnnoDesigner.MainWindow.SelectedLanguage);
+
+            //Statistics Section
+            NothingPlaced = Localization.Translations[language]["StatNothingPlaced"];
+            BoundingBox = Localization.Translations[language]["StatBoundingBox"];
+            MinimumArea = Localization.Translations[language]["StatMinimumArea"];
+            SpaceEfficiency = Localization.Translations[language]["StatSpaceEfficiency"];
+
+        }
+        //Statistics Section
+        private string _nothingPlaced;
+        public string NothingPlaced
+        {
+            get { return _nothingPlaced; }
+            set
+            {
+                UpdateProperty(ref _nothingPlaced, value);
+            }
+        }
+        private string _boundingBox;
+        public string BoundingBox
+        {
+            get { return _boundingBox; }
+            set
+            {
+                UpdateProperty(ref _boundingBox, value);
+            }
+        }
+        private string _minimumArea;
+        public string MinimumArea
+        {
+            get { return _minimumArea; }
+            set
+            {
+                UpdateProperty(ref _minimumArea, value);
+            }
+        }
+        private string _spaceEfficiency;
+        public string SpaceEfficiency
+        {
+            get { return _spaceEfficiency; }
+            set
+            {
+                UpdateProperty(ref _spaceEfficiency, value);
+            }
+        }
+    }
 
     ////Probably nothing to add in here
-    //public static class App : StaticNotify
+    //public class App : Notify
     //{
     //}
 
@@ -747,6 +606,9 @@ namespace AnnoDesigner.Localization
             UseCurrentZoomOnExportedImage = Localization.Translations[language]["UseCurrentZoomOnExportedImage"];
             RenderSelectionHighlightsOnExportedImage = Localization.Translations[language]["RenderSelectionHighlightsOnExportedImage"];
 
+            //Language Menu
+            Language = Localization.Translations[language]["Language"];
+
             //Help Menu
             Help = Localization.Translations[language]["Help"];
             Version = Localization.Translations[language]["Version"];
@@ -774,6 +636,9 @@ namespace AnnoDesigner.Localization
             Borderless = Localization.Translations[language]["Borderless"];
             Road = Localization.Translations[language]["Road"];
             PlaceBuilding = Localization.Translations[language]["PlaceBuilding"];
+
+            //Status Bar
+            StatusBarControls = Localization.Translations[language]["StatusBarControls"];
         }
 
         //Generated from:
@@ -926,6 +791,18 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _renderSelectionHighlightsOnExportedImage, value);
             }
         }
+
+        //Language Menu
+        private string _language;
+        public string Language
+        {
+            get { return _language; }
+            set
+            {
+                UpdateProperty(ref _language, value);
+            }
+        }
+
 
         //Help Menu
         private string _help;
@@ -1130,6 +1007,46 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _placeBuilding, value);
             }
         }
+
+        //Status Bar
+        private string _statusBarControls;
+        public string StatusBarControls
+        {
+            get { return _statusBarControls; }
+            set
+            {
+                UpdateProperty(ref _statusBarControls, value);
+            }
+        }
+
+        public class Welcome : Notify
+        {
+            private string _continue;
+            public string Continue
+            {
+                get { return _continue; }
+                set
+                {
+                    UpdateProperty(ref _continue, value);
+                }
+            }
+
+            private string _selectALanguageWarning;
+            public string SelectALanguageWarning
+            {
+                get { return _selectALanguageWarning; }
+                set
+                {
+                    UpdateProperty(ref _selectALanguageWarning, value);
+                }
+            }
+        }
+    }
+
+    public class SupportedLanguage
+    {
+        public string Name { get; set; }
+        public string FlagPath { get; set; }
     }
 }
 

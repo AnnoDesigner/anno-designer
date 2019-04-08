@@ -1297,6 +1297,12 @@
       <HintPath>..\WPFToolkit.Extended.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Flags\Germany.png" />
+    <Resource Include="Flags\Poland.png" />
+    <Resource Include="Flags\Russia.png" />
+    <Resource Include="Flags\United Kingdom.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <!-- <PostBuildEvent>del $(TargetDir)icons /Q -->

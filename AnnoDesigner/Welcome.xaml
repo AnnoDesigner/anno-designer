@@ -5,8 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AnnoDesigner"
         mc:Ignorable="d"
-        Title="Welcome" Height="450" Width="800">
-    <Grid>
-        
+        xmlns:l="clr-namespace:AnnoDesigner.Localization"
+        Title="Welcome" 
+        Height="600" 
+        Width="525" 
+        MinHeight="300" 
+        MinWidth="300"
+        Padding="10,10,10,10">
+        <Grid Margin="0,0,2,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Margin="79,10,0,0" FontSize="30" Text="Welcome to the Anno Designer!" VerticalAlignment="Top" HorizontalAlignment="Left" Width="433"/>
+        <Image Source="Stuff/icon64.png" Stretch="None" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0"/>
+        <TextBlock HorizontalAlignment="Left" Margin="79,45,0,0" VerticalAlignment="Top" Width="433" FontSize="22" Height="38"><Run Text="Please select a language:"/></TextBlock>
+        <ListBox Name="LanguageSelection" 
+                 Margin="10,83,191,48" 
+                 HorizontalContentAlignment="Stretch" 
+                 SelectionMode="Single" 
+                 ItemsSource="{Binding}"
+                 ScrollViewer.CanContentScroll="False"
+                 BorderThickness="0" 
+                 Background="#FFECECEC"
+                 MouseDoubleClick="LanguageSelection_MouseDoubleClick"
+                 SelectionChanged="LanguageSelection_SelectionChanged"
+                 >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal" Margin="20">
+                        <Image Source="{Binding FlagPath}" Width="100"/>
+                        <Label Content="{Binding Name}" VerticalContentAlignment="Center" FontSize="16" Width="Auto"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Height="33" Margin="10,0,373,10" VerticalAlignment="Bottom" Content="Continue" Name="ContinueButton" HorizontalAlignment="Stretch" Click="ContinueButton_Click"  />
+        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Left" Margin="329,88,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.416,0.462" Width="146"/>
     </Grid>
 </Window>

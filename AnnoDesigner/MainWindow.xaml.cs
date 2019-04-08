@@ -53,6 +53,9 @@ namespace AnnoDesigner
             //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
             DependencyObject dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
             mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
+
+            Welcome w = new Welcome();
+            w.ShowDialog();
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
