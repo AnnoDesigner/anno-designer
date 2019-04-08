@@ -15,6 +15,7 @@ namespace PresetParser
         
         public static bool isExcludedName = false;
         public static bool isExcludedTemplate = false;
+        public static bool isExcludedFaction = false; /* Only for Anno 2070 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
         private const string ANNO_VERSION_1404 = "1404";
@@ -27,8 +28,19 @@ namespace PresetParser
         private static readonly string[] Languages = new[] { "eng", "ger", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "polish", "russian" };
         private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "polish", "russian" };
-        
-        // Initalisizing Exclude <Name>"text"</Name> and <Template>"text"</Template> for presets.json file 
+
+        #region Initalisizing Exclude <Name>"text"</Name> and <Template>"text"</Template> for presets.json file 
+        //Anno 1404
+        public static List<string> anno1404BuildingLists = new List<string>();
+        private static readonly List<string> ExcludeNameList1404 = new List<string> { "ResidenceRuin", "AmbassadorRuin", "CitizenHouse", "PatricianHouse",
+            "NoblemanHouse", "AmbassadorHouse", "Gatehouse", "StorehouseTownPart", "ImperialCathedralPart", "SultanMosquePart", "Warehouse02", "Warehouse03",
+            "Markethouse02", "Markethouse03", "TreeBuildCost", "BanditCamp"};
+        private static readonly List<string> ExcludeTemplateList1404 = new List<string> { "OrnamentBuilding","Wall" };
+        //Anno 2070 * Also on FactionName Excludes *
+        private static readonly List<string> ExcludeNameList2070 = new List<string> { "distillery_field" , "citizen_residenc", "executive_residence", "leader_residence",
+            "ruin_residence" , "villager_residence" ,"builder_residence", "creator_residence" ,"scientist_residence"};
+        private static readonly List<string> ExcludeTemplateList2070 = new List<string> { "OrnamentBuilding", "OrnamentFeedbackBuilding", "Ark" };
+        private static readonly List<string> ExcludeFactionList2070 = new List<string> { "third party" };
         // Anno 2205
         private static readonly List<string> ExcludeNameList2205 = new List<string> { "Placeholder", "tier02", "tier03", "tier04", "tier05", "voting"};
         private static readonly List<string> ExcludeTemplateList2205 = new List<string> { "SpacePort", "BridgeWithUpgrade" };
@@ -36,6 +48,7 @@ namespace PresetParser
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)",
           "(Hunting Grounds)", "(Wash House)", "Quay System", "1x1" , "module_01_birds", "module_02_peacock"};
         private static readonly List<string> ExcludeTemplateList1800 = new List<string> { "BridgeBuilding", "OrnamentalBuilding" };
+        #endregion
 
         // Set Icon File Name seperations
         private static string GetIconFilename(XmlNode iconNode, string annoVersion)
@@ -132,8 +145,11 @@ namespace PresetParser
                 });
                 VersionSpecificPaths[ANNO_VERSION_1404].Add("assets", new PathRef[]
                 {
+                new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Assets/Asset", "PlayerBuildings"),
+                new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "PlayerBuildings"),
+                new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "PlayerBuildings"),
+                new PathRef("addondata/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Assets/Asset", "PlayerBuildings"),
                 new PathRef("addondata/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "PlayerBuildings"),
-                //new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group"),
                 new PathRef("addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "PlayerBuildings")
                 });
             }
@@ -149,11 +165,17 @@ namespace PresetParser
                 });
                 VersionSpecificPaths[ANNO_VERSION_2070].Add("localisation", new PathRef[]
                 {
-                new PathRef("data/loca", "", "", "")
+                new PathRef("data/loca")
                 });
                 VersionSpecificPaths[ANNO_VERSION_2070].Add("assets", new PathRef[]
                 {
                 new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                new PathRef("data/config/dlc_01/assets.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                new PathRef("data/config/dlc_02/assets.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                new PathRef("data/config/dlc_03/assets.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings")
+                //DLC 04 does not contains assets overall
+                //new PathRef("data/config/dlc_04/assets.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings")
                 });
             }
                 #endregion
@@ -357,14 +379,82 @@ namespace PresetParser
             {
                 return;
             }
-            // parse stuff
+            // Skip Unused buildings in Anno Designer List;
+            if (annoVersion == "1404")
+            {
+                string nameValue = values["Standard"]["Name"].InnerText;
+                isExcludedName = nameValue.Contains(ExcludeNameList1404);
+                string templateValue = buildingNode["Template"].InnerText;
+                isExcludedTemplate = templateValue.Contains(ExcludeTemplateList1404);
+                if (isExcludedName == true || isExcludedTemplate == true)
+                {
+                    //Console.WriteLine("{0} <---> {1}", nameValue, templateValue);
+                    //Console.WriteLine("- Building will skipped - Unused Designer Object");
+                    return;
+
+                }
+            }
+            if (annoVersion == "2070")
+            {
+                string nameValue = values["Standard"]["Name"].InnerText;
+                isExcludedName = nameValue.Contains(ExcludeNameList2070);
+                string templateValue = buildingNode["Template"].InnerText;
+                isExcludedTemplate = templateValue.Contains(ExcludeTemplateList2070);
+                string factionValue = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText;
+                isExcludedFaction = factionValue.Contains(ExcludeFactionList2070);
+                if (isExcludedName == true || isExcludedTemplate == true || isExcludedFaction == true)
+                {
+                    Console.WriteLine("{0} <---> {1} <---> {2}", nameValue, templateValue, factionValue);
+                    Console.WriteLine("- Building will skipped - Unused Designer Object");
+                    return;
+                }
+            }
+            // Skip Double Database Buildings Anno 1404 Only
+            if (annoVersion == "1404")
+            {
+                string nameValue = values["Standard"]["Name"].InnerText;
+                isExcludedName = nameValue.IsPartOff(anno1404BuildingLists);
+                if (isExcludedName) {
+                    //Console.WriteLine("{0}", nameValue);
+                    //Console.WriteLine("- Building already exists in the building list - Building Skipped");
+                    return;
+                }
+            }
+            // Parse Stuff
+            string factionName = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText;
+            string groupName = buildingNode.ParentNode.ParentNode["Name"].InnerText;
+            string identifierName = values["Standard"]["Name"].InnerText;
+            // Anno 1404 Switch Faction 'Farm' to 'Production'
+            if (factionName == "Farm" && annoVersion == "1404")
+            {
+                factionName = "Production";
+            }/* Anno 1404 Move Alms House to the correct menu */
+            if ( identifierName == "Hospice" && annoVersion == "1404")
+            {
+                factionName = "Public";
+                groupName = "Special";
+            }/* Anno 2070 Change Groupname 'famrfields' to 'farm fields' */
+            if ( (groupName == "farmfields" || groupName == "farmfield") && annoVersion == "2070")
+            {
+                groupName = "farm fields";
+            }/* Anno 2070 Change factionnames eco, tycoons, techs to (n) <name> */
+            if (annoVersion == "2070")
+            {
+                if (factionName == "ecos") { factionName = "(1) eco's"; }
+                if (factionName == "tycoons") { factionName = "(2) tycoons"; }
+                if (factionName == "techs") { factionName = "(3) techs"; }
+            }/* Anno 2070 Change Groupname for vegetable_farm_field */
+            if (identifierName== "vegetable_farm_field" && annoVersion == "2070")
+            {
+                groupName = "vegetable farm field";
+            }
             BuildingInfo b = new BuildingInfo
             {
                 Header = "Anno " + (annoVersion),
-                Faction = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText,
-                Group = buildingNode.ParentNode.ParentNode["Name"].InnerText,
+                Faction = factionName,
+                Group = groupName,
                 Template = buildingNode["Template"].InnerText,
-                Identifier = values["Standard"]["Name"].InnerText
+                Identifier = identifierName,
             };
             // print progress
             Console.WriteLine(b.Identifier);
@@ -416,15 +506,19 @@ namespace PresetParser
                     languageCount++;
                 }
             }
-             #endregion
+            #endregion
 
             // add building to the list
+            if (annoVersion == "1404")
+            {
+                anno1404BuildingLists.Add(values["Standard"]["Name"].InnerText);
+            }
             buildings.Add(b);
         }
         #endregion
 
-        /// Parsing Part for 2205 (and maybe 1800)
-        #region Parsing Buildngs for Anno 2205 (and maybe 1800)
+        /// Parsing Part for 2205 and 1800
+        #region Parsing Buildngs for Anno 2205 and 1800)
         private static void ParseAssetsFile2205(string filename, string xPathToBuildingsNode, string YPath, List<BuildingInfo> buildings, string innerNameTag, string annoVersion)
         {
             XmlDocument assetsDocument = new XmlDocument();
@@ -457,8 +551,8 @@ namespace PresetParser
                 isExcludedTemplate = templateValue.Contains(ExcludeTemplateList2205);
                 if (isExcludedName == true || isExcludedTemplate == true)
                 {
-                    Console.WriteLine("{0} <---> {1}", nameValue, templateValue);
-                    Console.WriteLine("- Building will skipped - Unused Designer Object");
+                    //Console.WriteLine("{0} <---> {1}", nameValue, templateValue);
+                    //Console.WriteLine("- Building will skipped - Unused Designer Object");
                     return;
 
                 }
@@ -471,8 +565,8 @@ namespace PresetParser
                 isExcludedTemplate = templateValue.Contains(ExcludeTemplateList1800);
                 if (isExcludedName == true || isExcludedTemplate == true)
                 {
-                    Console.WriteLine("{0} <---> {1}", nameValue, templateValue);
-                    Console.WriteLine("- Building will skipped - Unused Designer Object");
+                    //Console.WriteLine("{0} <---> {1}", nameValue, templateValue);
+                    //Console.WriteLine("- Building will skipped - Unused Designer Object");
                     return;
 
                 }
@@ -510,7 +604,6 @@ namespace PresetParser
             {
                 Console.WriteLine("-BuildBlocker not found, skipping: Object Informaion not fount");
                 return;
-
             }
 
 
@@ -618,7 +711,7 @@ namespace PresetParser
                 else
                 {
                     if (languageCount < 1) /*just set the text one time */
-                    {
+            {
                         Console.WriteLine("No Translation found, it will set to Identifier.");
                     }
                     translation = values["Standard"]["Name"].InnerText;
@@ -720,6 +813,8 @@ namespace PresetParser
                 return true;
             }
         }
+        #endregion
+
         #region ParseBuildingBlockerNumber for anno 1800
         private static int ParseBuildingBlockerNumber(string number)
         {
@@ -753,7 +848,6 @@ namespace PresetParser
             }
             return zx;
         }
-        #endregion
         #endregion
 
         #region GuidRef Class
