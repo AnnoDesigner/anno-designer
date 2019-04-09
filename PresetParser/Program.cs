@@ -38,7 +38,8 @@ namespace PresetParser
         private static readonly List<string> ExcludeTemplateList1404 = new List<string> { "OrnamentBuilding","Wall" };
         //Anno 2070 * Also on FactionName Excludes *
         private static readonly List<string> ExcludeNameList2070 = new List<string> { "distillery_field" , "citizen_residenc", "executive_residence", "leader_residence",
-            "ruin_residence" , "villager_residence" ,"builder_residence", "creator_residence" ,"scientist_residence"};
+            "ruin_residence" , "villager_residence" ,"builder_residence", "creator_residence" ,"scientist_residence", "genius_residence", "monument_unfinished",
+            "town_center_variation", "underwater_energy_transmitter"};
         private static readonly List<string> ExcludeTemplateList2070 = new List<string> { "OrnamentBuilding", "OrnamentFeedbackBuilding", "Ark" };
         private static readonly List<string> ExcludeFactionList2070 = new List<string> { "third party" };
         // Anno 2205
@@ -173,9 +174,9 @@ namespace PresetParser
                 new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
                 new PathRef("data/config/dlc_01/assets.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
                 new PathRef("data/config/dlc_02/assets.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
-                new PathRef("data/config/dlc_03/assets.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings")
-                //DLC 04 does not contains assets overall
-                //new PathRef("data/config/dlc_04/assets.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings")
+                new PathRef("data/config/dlc_03/assets.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                new PathRef("addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
+                new PathRef("addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Buildings")
                 });
             }
                 #endregion
@@ -388,8 +389,6 @@ namespace PresetParser
                 isExcludedTemplate = templateValue.Contains(ExcludeTemplateList1404);
                 if (isExcludedName == true || isExcludedTemplate == true)
                 {
-                    //Console.WriteLine("{0} <---> {1}", nameValue, templateValue);
-                    //Console.WriteLine("- Building will skipped - Unused Designer Object");
                     return;
 
                 }
@@ -404,19 +403,15 @@ namespace PresetParser
                 isExcludedFaction = factionValue.Contains(ExcludeFactionList2070);
                 if (isExcludedName == true || isExcludedTemplate == true || isExcludedFaction == true)
                 {
-                    Console.WriteLine("{0} <---> {1} <---> {2}", nameValue, templateValue, factionValue);
-                    Console.WriteLine("- Building will skipped - Unused Designer Object");
                     return;
                 }
             }
-            // Skip Double Database Buildings Anno 1404 Only
-            if (annoVersion == "1404")
+            // Skip Double Database Buildings Anno 1404 and 2070
+            if (annoVersion == "1404" || annoVersion=="2070")
             {
                 string nameValue = values["Standard"]["Name"].InnerText;
                 isExcludedName = nameValue.IsPartOf(anno1404BuildingLists);
                 if (isExcludedName) {
-                    //Console.WriteLine("{0}", nameValue);
-                    //Console.WriteLine("- Building already exists in the building list - Building Skipped");
                     return;
                 }
             }
@@ -424,6 +419,8 @@ namespace PresetParser
             string factionName = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText;
             string groupName = buildingNode.ParentNode.ParentNode["Name"].InnerText;
             string identifierName = values["Standard"]["Name"].InnerText;
+            groupName = groupName.FirstCharToUpper();
+            factionName = factionName.FirstCharToUpper();
             // Anno 1404 Switch Faction 'Farm' to 'Production'
             if (factionName == "Farm" && annoVersion == "1404")
             {
@@ -433,20 +430,20 @@ namespace PresetParser
             {
                 factionName = "Public";
                 groupName = "Special";
-            }/* Anno 2070 Change Groupname 'famrfields' to 'farm fields' */
-            if ( (groupName == "farmfields" || groupName == "farmfield") && annoVersion == "2070")
+            }/* Anno 2070 Change Groupname 'farmfields' to 'farm fields' */
+            if ( (groupName == "Farmfields" || groupName == "Farmfield") && annoVersion == "2070")
             {
-                groupName = "farm fields";
+                groupName = "Farm Fields";
             }/* Anno 2070 Change factionnames eco, tycoons, techs to (n) <name> */
             if (annoVersion == "2070")
             {
-                if (factionName == "ecos") { factionName = "(1) eco's"; }
-                if (factionName == "tycoons") { factionName = "(2) tycoons"; }
-                if (factionName == "techs") { factionName = "(3) techs"; }
+                if (factionName == "Ecos") { factionName = "(1) Ecos"; }
+                if (factionName == "Tycoons") { factionName = "(2) Tycoons"; }
+                if (factionName == "Techs") { factionName = "(3) Techs"; }
             }/* Anno 2070 Change Groupname for vegetable_farm_field */
             if (identifierName== "vegetable_farm_field" && annoVersion == "2070")
             {
-                groupName = "vegetable farm field";
+                groupName = "Vegetable Farmfield";
             }
             BuildingInfo b = new BuildingInfo
             {
@@ -498,21 +495,30 @@ namespace PresetParser
                 Console.WriteLine("No Translation found, it will set to Identifier.");
                 b.Localization = new SerializableDictionary<string>();
                 int languageCount = 0;
-                string translation = "";
+                string translation = values["Standard"]["Name"].InnerText;
+                //Anno 2070 need some special translations
+                if (translation == "former_balance_ecos")
+                {
+                    translation = "Keeper 1.0";
+                }
+                if (translation == "former_balance_techs")
+                {
+                    translation = "Guardian 1.0";
+                }
+                if (translation == "oil_driller_variation_Sokow")
+                {
+                    translation = "Oil Driller Sokow Transnational";
+                }
                 foreach (string Language in Languages)
                 {
-                    translation = values["Standard"]["Name"].InnerText;
                     b.Localization.Dict.Add(Languages[languageCount], translation);
                     languageCount++;
                 }
             }
             #endregion
 
-            // add building to the list
-            if (annoVersion == "1404")
-            {
-                anno1404BuildingLists.Add(values["Standard"]["Name"].InnerText);
-            }
+            // add building to the list(s)
+            anno1404BuildingLists.Add(values["Standard"]["Name"].InnerText);
             buildings.Add(b);
         }
         #endregion
