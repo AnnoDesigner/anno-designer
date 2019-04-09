@@ -1124,6 +1124,18 @@ namespace AnnoDesigner
                     _selectedObjects.ForEach(_ => _placedObjects.Remove(_));
                     _selectedObjects.Clear();
                     break;
+                case Key.R:
+                    if (CurrentObject != null)
+                    Rotate(CurrentObject.Size);
+                    break;
+                case Key.V:
+                    if (CurrentObject == null
+                        && _selectedObjects.Count != 0 
+                        && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                    {
+                        CurrentObject = _selectedObjects[0];
+                    }
+                    break;
             }
             InvalidateVisual();
         }
