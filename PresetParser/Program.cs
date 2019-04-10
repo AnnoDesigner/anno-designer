@@ -29,29 +29,39 @@ namespace PresetParser
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "polish", "russian" };
         private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "polish", "russian" };
 
-        #region Initalisizing Exclude <Name>"text"</Name> and <Template>"text"</Template> for presets.json file 
-        //Anno 1404
+            #region Initalisizing Exclude IdentifierNames, FactionNames and TemplateNames for presets.json file 
+
+                #region Anno 1404
         public static List<string> anno1404BuildingLists = new List<string>();
         private static readonly List<string> ExcludeNameList1404 = new List<string> { "ResidenceRuin", "AmbassadorRuin", "CitizenHouse", "PatricianHouse",
             "NoblemanHouse", "AmbassadorHouse", "Gatehouse", "StorehouseTownPart", "ImperialCathedralPart", "SultanMosquePart", "Warehouse02", "Warehouse03",
             "Markethouse02", "Markethouse03", "TreeBuildCost", "BanditCamp"};
         private static readonly List<string> ExcludeTemplateList1404 = new List<string> { "OrnamentBuilding","Wall" };
-        //Anno 2070 * Also on FactionName Excludes *
+                #endregion
+
+                #region Anno 2070 * Also on FactionName Excludes *
         private static readonly List<string> ExcludeNameList2070 = new List<string> { "distillery_field" , "citizen_residenc", "executive_residence", "leader_residence",
             "ruin_residence" , "villager_residence" ,"builder_residence", "creator_residence" ,"scientist_residence", "genius_residence", "monument_unfinished",
-            "town_center_variation", "underwater_energy_transmitter"};
+            "town_center_variation", "underwater_energy_transmitter", "iron_mine", "nuclearpowerplant_destroyed","limestone_quarry", "markethouse2", "markethouse3",
+            "warehouse2","warehouse3", "cybernatic_factory","vegetable_farm_field","electronic_recycler"};
         private static readonly List<string> ExcludeTemplateList2070 = new List<string> { "OrnamentBuilding", "OrnamentFeedbackBuilding", "Ark" };
         private static readonly List<string> ExcludeFactionList2070 = new List<string> { "third party" };
-        // Anno 2205
+                #endregion
+
+                #region Anno 2205
         private static readonly List<string> ExcludeNameList2205 = new List<string> { "Placeholder", "tier02", "tier03", "tier04", "tier05", "voting"};
         private static readonly List<string> ExcludeTemplateList2205 = new List<string> { "SpacePort", "BridgeWithUpgrade" };
-        // anno 1800
+                #endregion
+
+                #region anno 1800
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)",
           "(Hunting Grounds)", "(Wash House)", "Quay System", "1x1" , "module_01_birds", "module_02_peacock"};
         private static readonly List<string> ExcludeTemplateList1800 = new List<string> { "BridgeBuilding", "OrnamentalBuilding" };
-        #endregion
+                #endregion
 
-        // Set Icon File Name seperations
+            #endregion
+
+            #region Set Icon File Name seperations
         private static string GetIconFilename(XmlNode iconNode, string annoVersion)
         {
             string annoIdexNumber = "";
@@ -59,12 +69,11 @@ namespace PresetParser
             {
                 annoIdexNumber = "A4_";
             }
-            if (annoVersion == "2070") 
-            {
-                annoIdexNumber = "A5_";
-            }
+            /* For Anno 2070, we use the normal icon names, without the AnnoIndexNUmber ('A5_'),
+                because anno 2070 has already the right names in previous Anno Designer versions. */
             return string.Format("{0}icon_{1}_{2}.png", annoIdexNumber , iconNode["IconFileID"].InnerText, iconNode["IconIndex"] != null ? iconNode["IconIndex"].InnerText : "0"); //TODO: check this icon format is consistent between Anno versions
         }
+        #endregion
 
         static Program()
         {
@@ -248,8 +257,9 @@ namespace PresetParser
             if (annoVersion == "1404" || annoVersion == "2070")
             {
                 // prepare localizations
-                Dictionary<string, SerializableDictionary<string>> localizations = GetLocalizations(annoVersion);
-
+                // This call will set the extra Anno Version Number on the icon translation for Anno 1404 ('A4_')
+                // and Anno 2070 ('A5_') that will be seen in the Icons Selection tree of the program (icon.json)
+                Dictionary<string, SerializableDictionary<string>> localizations = GetLocalizations(annoVersion, 1);
                 #region Preparing icon.json file
                 // prepare icon mapping
                 XmlDocument iconsDocument = new XmlDocument();
@@ -261,7 +271,10 @@ namespace PresetParser
                 }
                 // write icon name mapping
                 Console.WriteLine("Writing icon name mapping to icons.json");
-                WriteIconNameMapping(iconNodes, localizations, annoVersion);
+                WriteIconNameMapping(iconNodes, localizations, annoVersion, BUILDING_PRESETS_VERSION);
+                //This must be done, to clear the 'A4_' or 'A5_' and get normal translation for presets.json
+                localizations.Clear();
+                localizations = GetLocalizations(annoVersion, 0);
                 #endregion
 
                 #region Preparing presets.json file
@@ -289,8 +302,8 @@ namespace PresetParser
                 BuildingPresets presets = new BuildingPresets { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
                 // I have put '-Anno<annoVersion>" to the presets.json name, to avoid overwriting the other presets.json
                 // so, the name now will as i.e. presets-Anno1404.json
-                Console.WriteLine("Writing buildings to presets-{0}.json", annoVersion);
-                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + ".json");
+                Console.WriteLine("Writing buildings to presets-{0}-(1).json", annoVersion, BUILDING_PRESETS_VERSION);
+                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
                 // wait for keypress before exiting
                 Console.WriteLine();
                 Console.WriteLine("Do not forget to copy the contents to the normal");
@@ -302,7 +315,7 @@ namespace PresetParser
             }
             #endregion
 
-            #region Preparing Writing JSON Files for 2205 (and maybe 1800)
+            #region Preparing Writing JSON Files for 2205 and 1800)
             else if (annoVersion == "2205" || annoVersion == "1800")
             {
                 #region Preparing icon.json file (Not Used on 2205)
@@ -343,8 +356,8 @@ namespace PresetParser
                 BuildingPresets presets = new BuildingPresets { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
                 // I have put '-Anno<annoVersion>" to the presets.json name, to avoid overwriting the other presets.json
                 // so, the name now will as ex. presets-Anno2205.json
-                Console.WriteLine("Writing buildings to presets-{0}.json", annoVersion);
-                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + ".json");
+                Console.WriteLine("Writing buildings to presets-{0}-(1).json", annoVersion,BUILDING_PRESETS_VERSION);
+                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion +"-v" + BUILDING_PRESETS_VERSION + ".json");
                 // wait for keypress before exiting
                 Console.WriteLine();
                 Console.WriteLine("Do not forget to copy the contents to the normal");
@@ -380,7 +393,7 @@ namespace PresetParser
             {
                 return;
             }
-            // Skip Unused buildings in Anno Designer List;
+            #region Skip Unused buildings in Anno Designer List
             if (annoVersion == "1404")
             {
                 string nameValue = values["Standard"]["Name"].InnerText;
@@ -406,48 +419,60 @@ namespace PresetParser
                     return;
                 }
             }
-            // Skip Double Database Buildings Anno 1404 and 2070
+            #endregion
+
+            #region Skip Double Database Buildings Anno 1404 and 2070
             if (annoVersion == "1404" || annoVersion=="2070")
-            {
+                {
                 string nameValue = values["Standard"]["Name"].InnerText;
-                isExcludedName = nameValue.IsPartOf(anno1404BuildingLists);
-                if (isExcludedName) {
-                    return;
+                if (nameValue != "underwater markethouse")
+                {
+                    isExcludedName = nameValue.IsPartOf(anno1404BuildingLists);
+                    if (isExcludedName) {
+                        return;
+                    }
                 }
             }
+            #endregion
+
             // Parse Stuff
             string factionName = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText;
             string groupName = buildingNode.ParentNode.ParentNode["Name"].InnerText;
             string identifierName = values["Standard"]["Name"].InnerText;
             groupName = groupName.FirstCharToUpper();
             factionName = factionName.FirstCharToUpper();
-            // Anno 1404 Switch Faction 'Farm' to 'Production'
-            if (factionName == "Farm" && annoVersion == "1404")
+            #region Regrouping several faction or group names for Anno 1404
+            if (annoVersion == "1404")
             {
-                factionName = "Production";
-            }/* Anno 1404 Move Alms House to the correct menu */
-            if ( identifierName == "Hospice" && annoVersion == "1404")
-            {
-                factionName = "Public";
-                groupName = "Special";
-            }/* Anno 2070 Change Groupname 'farmfields' to 'farm fields' */
-            if ( (groupName == "Farmfields" || groupName == "Farmfield") && annoVersion == "2070")
-            {
-                groupName = "Farm Fields";
-            }/* Anno 2070 Change factionnames eco, tycoons, techs to (n) <name> */
+                if (factionName == "Farm") { factionName = "Production"; }
+                if (identifierName == "Hospice") { factionName = "Public"; groupName = "Special"; }
+            }
+            #endregion
+            #region Regrouping several faction or group names for Anno 2070
             if (annoVersion == "2070")
             {
                 if (factionName == "Ecos") { factionName = "(1) Ecos"; }
                 if (factionName == "Tycoons") { factionName = "(2) Tycoons"; }
                 if (factionName == "Techs") { factionName = "(3) Techs"; }
-            }/* Anno 2070 Change Groupname for vegetable_farm_field */
-            if (identifierName== "vegetable_farm_field" && annoVersion == "2070")
-            {
-                groupName = "Vegetable Farmfield";
+                if (factionName == "(3) Techs" && identifierName == "underwater markethouse") { factionName = "Others"; }
+                if (identifierName == "techs_academy") { groupName = "Public"; }
+                if (groupName == "Farmfields" || groupName == "Farmfield") { groupName = "Farm Fields"; }
+                if (factionName == "Others" && identifierName.Contains("black_smoker_miner") == true) { groupName = "Black Smokers (Normal)"; }
+                if (factionName == "(3) Techs" && identifierName == "black_smoker_miner_platinum")
+                {
+                    factionName = "Others";
+                    groupName = "Black Smokers (Deep Sea)";
+                }
             }
+            #endregion
+            #region Set Header Name for Anno 1404 and Anno 2070
+            string headerName = "Anno" + annoVersion;/*in case if statments are passed by*/
+            if (annoVersion == "1404") { headerName = "(A4) Anno 1404"; }
+            if (annoVersion == "2070") { headerName = "(A5) Anno 2070"; }
+            #endregion
             BuildingInfo b = new BuildingInfo
             {
-                Header = "Anno " + (annoVersion),
+                Header = headerName,
                 Faction = factionName,
                 Group = groupName,
                 Template = buildingNode["Template"].InnerText,
@@ -499,11 +524,11 @@ namespace PresetParser
                 //Anno 2070 need some special translations
                 if (translation == "former_balance_ecos")
                 {
-                    translation = "Keeper 1.0";
+                    translation = "Guardian 1.0";
                 }
                 if (translation == "former_balance_techs")
                 {
-                    translation = "Guardian 1.0";
+                    translation = "Keeper 1.0";
                 }
                 if (translation == "oil_driller_variation_Sokow")
                 {
@@ -578,9 +603,12 @@ namespace PresetParser
                 }
             }
             // parse stuff
+            string headerName = "Anno" + annoVersion;/*in case if statments are passed by*/
+            if (annoVersion == "2205") { headerName = "(A6) Anno 2205"; }
+            if (annoVersion == "2070") { headerName = "(A7) Anno 1800"; }
             BuildingInfo b = new BuildingInfo
             {
-                Header = "Anno " + (annoVersion),
+                Header = headerName,
                 Faction = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText,
                 Group = buildingNode.ParentNode.ParentNode["Name"].InnerText,
                 Template = buildingNode["Template"].InnerText,
@@ -611,8 +639,6 @@ namespace PresetParser
                 Console.WriteLine("-BuildBlocker not found, skipping: Object Informaion not fount");
                 return;
             }
-
-
             #endregion
 
             #region Get IconFilenames
@@ -783,6 +809,7 @@ namespace PresetParser
             }
             else
             {
+
                 XmlDocument ifoDocument = new XmlDocument();
                 ifoDocument.Load(Path.Combine(BASE_PATH + "/", string.Format("{0}.ifo", Path.GetDirectoryName(variationFilename) + "\\" + Path.GetFileNameWithoutExtension(variationFilename))));
                 try
@@ -796,7 +823,15 @@ namespace PresetParser
                     }
                     if (Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048) > 0)
                     {
-                        building.BuildBlocker["x"] = Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048);
+                        Console.WriteLine("{0}", Path.GetFileNameWithoutExtension(variationFilename));
+                        if (Path.GetFileNameWithoutExtension(variationFilename) != "water_mill_ecos")
+                        {
+                            building.BuildBlocker["x"] = Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048);
+                        }
+                        else
+                        {
+                            building.BuildBlocker["x"] = 3;
+                        }
                     }
                     else
                     {
@@ -804,7 +839,14 @@ namespace PresetParser
                     }
                     if (Math.Abs(Convert.ToInt32(node["z"].InnerText) / 2048) > 0)
                     {
-                        building.BuildBlocker["z"] = Math.Abs(Convert.ToInt32(node["z"].InnerText) / 2048);
+                        if (Path.GetFileNameWithoutExtension(variationFilename) != "water_mill_ecos")
+                        {
+                            building.BuildBlocker["z"] = Math.Abs(Convert.ToInt32(node["z"].InnerText) / 2048);
+                        }
+                        else
+                        {
+                            building.BuildBlocker["z"] = 7;
+                        }
                     }
                     else
                     {
@@ -866,7 +908,7 @@ namespace PresetParser
         #endregion
 
         #region Getting the Localizations from files (Anno 1404 / Anno 2070)
-        private static Dictionary<string, SerializableDictionary<string>> GetLocalizations(string annoVersion)
+        private static Dictionary<string, SerializableDictionary<string>> GetLocalizations(string annoVersion, int DoExtraAnumber)
         {
             string[] files = { "icons.txt", "guids.txt", "addon/texts.txt" };
             Dictionary<string, SerializableDictionary<string>> localizations = new Dictionary<string, SerializableDictionary<string>>();
@@ -906,6 +948,24 @@ namespace PresetParser
                                 localizations.Add(guid, new SerializableDictionary<string>());
                             }
                             // add localization string
+                            /// Translation of GUID 10239 (Anno 2070) is needed, else it will be named 
+                            /// as Metal Converter, witch it is not.
+                            if (annoVersion == "2070" && guid == "10239" && DoExtraAnumber == 0)
+                            {
+                                if (language == "eng") { translation = "Black Smoker"; }
+                                if (language == "ger") { translation = "Black Smoker"; }
+                                if (language == "pol") { translation = "Komin hydrotermalny"; }
+                                if (language == "rus") { translation = "Черный курильщик"; }
+                            }
+                            /// Icon.json extra A number for the Icon Selection tree
+                            if (annoVersion == "1404" && DoExtraAnumber == 1)
+                            {
+                                translation = "A4_" + translation;
+                            }
+                            if (annoVersion == "2070" && DoExtraAnumber == 1)
+                            {
+                                translation = "A5_" + translation;
+                            }
                             localizations[guid][language] = translation;
                             // remember entry if guid it is a reference to another guid
                             if (translation.StartsWith("[GUIDNAME"))
@@ -915,6 +975,24 @@ namespace PresetParser
                                     Language = language,
                                     Guid = guid,
                                     GuidReference = translation.Substring(10, translation.Length - 11)
+                                });
+                            }
+                            if (translation.StartsWith("A4_[GUIDNAME"))
+                            {
+                                references.Add(new GuidRef
+                                {
+                                    Language = language,
+                                    Guid = guid,
+                                    GuidReference = "A4_" + translation.Substring(13, translation.Length - 14)
+                                });
+                            }
+                            if (translation.StartsWith("A5_[GUIDNAME"))
+                            {
+                                references.Add(new GuidRef
+                                {
+                                    Language = language,
+                                    Guid = guid,
+                                    GuidReference = "A5_"+translation.Substring(13, translation.Length - 14)
                                 });
                             }
                         }
@@ -940,7 +1018,7 @@ namespace PresetParser
         #endregion
 
         #region Writting the icons.json File (Anno 1404 / Anno 2070)
-        private static void WriteIconNameMapping(IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string annoVersion)
+        private static void WriteIconNameMapping(IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string annoVersion, string BUILDING_PRESETS_VERSION)
         {
             List<IconNameMap> mapping = new List<IconNameMap>();
             foreach (XmlNode iconNode in iconNodes)
@@ -957,7 +1035,7 @@ namespace PresetParser
                     Localizations = localizations[guid]
                 });
             }
-            DataIO.SaveToFile(mapping, "icons"+annoVersion+".json");
+            DataIO.SaveToFile(mapping, "icons-Anno"+annoVersion+"-v"+ BUILDING_PRESETS_VERSION+".json");
         }
         #endregion
 
