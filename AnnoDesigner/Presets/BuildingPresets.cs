@@ -29,7 +29,7 @@ namespace AnnoDesigner.Presets
 
             //For Anno 2205 only
             var modulesList = Buildings
-                            .Where(_ => _.Header == "Anno 2205")
+                            .Where(_ => _.Header == "(A6) Anno 2205")
                             .Where(_ => _.Faction == "Facility Modules")
                             .Where(_ => _.Faction != "Facilities")
                             .ToList();

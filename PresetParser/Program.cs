@@ -28,11 +28,12 @@ namespace PresetParser
         private static readonly string[] Languages = new[] { "eng", "ger", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "polish", "russian" };
         private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "polish", "russian" };
+        // Internal Program Buildings List to skipp double buildings
+        public static List<string> annoBuildingLists = new List<string>();
 
-            #region Initalisizing Exclude IdentifierNames, FactionNames and TemplateNames for presets.json file 
+        #region Initalisizing Exclude IdentifierNames, FactionNames and TemplateNames for presets.json file 
 
                 #region Anno 1404
-        public static List<string> anno1404BuildingLists = new List<string>();
         private static readonly List<string> ExcludeNameList1404 = new List<string> { "ResidenceRuin", "AmbassadorRuin", "CitizenHouse", "PatricianHouse",
             "NoblemanHouse", "AmbassadorHouse", "Gatehouse", "StorehouseTownPart", "ImperialCathedralPart", "SultanMosquePart", "Warehouse02", "Warehouse03",
             "Markethouse02", "Markethouse03", "TreeBuildCost", "BanditCamp"};
@@ -46,11 +47,18 @@ namespace PresetParser
             "warehouse2","warehouse3", "cybernatic_factory","vegetable_farm_field","electronic_recycler"};
         private static readonly List<string> ExcludeTemplateList2070 = new List<string> { "OrnamentBuilding", "OrnamentFeedbackBuilding", "Ark" };
         private static readonly List<string> ExcludeFactionList2070 = new List<string> { "third party" };
-                #endregion
+        #endregion
 
-                #region Anno 2205
-        private static readonly List<string> ExcludeNameList2205 = new List<string> { "Placeholder", "tier02", "tier03", "tier04", "tier05", "voting"};
-        private static readonly List<string> ExcludeTemplateList2205 = new List<string> { "SpacePort", "BridgeWithUpgrade" };
+                #region Anno 2205 Also a GUID Checker for excluding. Do not change any numbers below
+        private static readonly List<string> ExcludeGUIDList2205 = new List<string> { "1001178", "1000737", "7000274", "1001175", "1000736", "7000275",
+            "1000672", "1000755", "7000273", "1001171", "1000703", "7000272", "7000420", "7000421", "7000423", "7000424", "7000425", "7000427", "7000428",
+            "7000429", "7000430", "7000431", "12000009", "12000010", "12000011", "12000020", "12000036", "1000063", "1000170", "1000212", "1000213", "1000174",
+            "1000215", "1000217", "1000224", "1000250", "1000332", "1000886", "7001466", "7001467", "7001470", "7001471", "7001472", "7001473", "7001877",
+            "7001878", "7001879", "7001880", "7001881", "7001882", "7001883", "7001884", "7001885", "7000310", "7000311", "7000315", "7000316" };
+        private static readonly List<string> ExcludeNameList2205 = new List<string> { "Placeholder", "tier02", "tier03", "tier04", "tier05", "voting",
+            "CTU Reactor 2 (decommissioned)", "CTU Reactor 3 (decommissioned)", "CTU Reactor 4 (decommissioned)", "CTU Reactor 5 (decommissioned)", "CTU Reactor 6 (decommissioned)",
+            "CTU Reactor 2 (active!)", "CTU Reactor 3 (active!)", "CTU Reactor 4 (active!)", "CTU Reactor 5 (active!)", "CTU Reactor 6 (active!)" };
+        private static readonly List<string> ExcludeTemplateList2205 = new List<string> { "SpacePort", "BridgeWithUpgrade", "DistributionBuilding" };
                 #endregion
 
                 #region anno 1800
@@ -387,50 +395,43 @@ namespace PresetParser
         private static void ParseBuilding(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string annoVersion)
         {
             #region Get valid Building Information 
-            XmlElement values = buildingNode["Values"];
+            XmlElement values = buildingNode["Values"]; string nameValue = "", templateValue = "";
             // skip invalid elements
             if (buildingNode["Template"] == null)
             {
                 return;
             }
+
             #region Skip Unused buildings in Anno Designer List
             if (annoVersion == "1404")
             {
-                string nameValue = values["Standard"]["Name"].InnerText;
+                nameValue = values["Standard"]["Name"].InnerText;
                 isExcludedName = nameValue.Contains(ExcludeNameList1404);
-                string templateValue = buildingNode["Template"].InnerText;
+                templateValue = buildingNode["Template"].InnerText;
                 isExcludedTemplate = templateValue.Contains(ExcludeTemplateList1404);
-                if (isExcludedName == true || isExcludedTemplate == true)
-                {
-                    return;
-
-                }
             }
             if (annoVersion == "2070")
             {
-                string nameValue = values["Standard"]["Name"].InnerText;
+                nameValue = values["Standard"]["Name"].InnerText;
                 isExcludedName = nameValue.Contains(ExcludeNameList2070);
-                string templateValue = buildingNode["Template"].InnerText;
+                templateValue = buildingNode["Template"].InnerText;
                 isExcludedTemplate = templateValue.Contains(ExcludeTemplateList2070);
                 string factionValue = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText;
                 isExcludedFaction = factionValue.Contains(ExcludeFactionList2070);
-                if (isExcludedName == true || isExcludedTemplate == true || isExcludedFaction == true)
-                {
-                    return;
-                }
+            }
+            if (isExcludedName == true || isExcludedTemplate == true || isExcludedFaction == true)
+            {
+                return;
             }
             #endregion
-
-            #region Skip Double Database Buildings Anno 1404 and 2070
-            if (annoVersion == "1404" || annoVersion=="2070")
+            #region Skip Double Database Buildings
+            nameValue = values["Standard"]["Name"].InnerText;
+            if (nameValue != "underwater markethouse")
+            {
+                isExcludedName = nameValue.IsPartOf(annoBuildingLists);
+                if (isExcludedName)
                 {
-                string nameValue = values["Standard"]["Name"].InnerText;
-                if (nameValue != "underwater markethouse")
-                {
-                    isExcludedName = nameValue.IsPartOf(anno1404BuildingLists);
-                    if (isExcludedName) {
-                        return;
-                    }
+                    return;
                 }
             }
             #endregion
@@ -543,7 +544,7 @@ namespace PresetParser
             #endregion
 
             // add building to the list(s)
-            anno1404BuildingLists.Add(values["Standard"]["Name"].InnerText);
+            annoBuildingLists.Add(values["Standard"]["Name"].InnerText);
             buildings.Add(b);
         }
         #endregion
@@ -565,7 +566,7 @@ namespace PresetParser
         /// ORGLINE: private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations)
         private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, string annoVersion)
         {
-            string[] LanguagesFiles = new[] { "" };
+            string[] LanguagesFiles = new[] { "" }; string nameValue = "", templateValue = "";
             #region Get valid Building Information 
             XmlElement values = buildingNode["Values"];
             // skip invalid elements
@@ -573,46 +574,63 @@ namespace PresetParser
             {
                 return;
             }
-            // Skip Unused buildings in Anno Designer List;
+
+            #region Skip Unused buildings in Anno Designer List
             if (annoVersion == "2205")
             {
-                string nameValue = values["Standard"]["Name"].InnerText;
+                nameValue = values["Standard"]["Name"].InnerText;
                 isExcludedName = nameValue.Contains(ExcludeNameList2205);
-                string templateValue = buildingNode["Template"].InnerText;
+                templateValue = buildingNode["Template"].InnerText;
                 isExcludedTemplate = templateValue.Contains(ExcludeTemplateList2205);
-                if (isExcludedName == true || isExcludedTemplate == true)
-                {
-                    //Console.WriteLine("{0} <---> {1}", nameValue, templateValue);
-                    //Console.WriteLine("- Building will skipped - Unused Designer Object");
-                    return;
-
-                }
             }
             if (annoVersion == "1800")
             {
-                string nameValue = values["Standard"]["Name"].InnerText;
+                nameValue = values["Standard"]["Name"].InnerText;
                 isExcludedName = nameValue.Contains(ExcludeNameList1800);
-                string templateValue = buildingNode["Template"].InnerText;
+                templateValue = buildingNode["Template"].InnerText;
                 isExcludedTemplate = templateValue.Contains(ExcludeTemplateList1800);
-                if (isExcludedName == true || isExcludedTemplate == true)
-                {
-                    //Console.WriteLine("{0} <---> {1}", nameValue, templateValue);
-                    //Console.WriteLine("- Building will skipped - Unused Designer Object");
-                    return;
-
-                }
             }
+            if (isExcludedName == true || isExcludedTemplate == true || isExcludedFaction == true)
+            {
+                return;
+            }
+            #endregion
+            #region Skip Double Database Buildings
+            nameValue = values["Standard"]["Name"].InnerText;
+            isExcludedName = nameValue.IsPartOf(annoBuildingLists);
+            if (isExcludedName)
+            {
+                return;
+            }
+            #endregion
+
             // parse stuff
+            string factionName = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText;
+            string groupName = buildingNode.ParentNode.ParentNode["Name"].InnerText;
+            string identifierName = values["Standard"]["Name"].InnerText;
+            groupName = groupName.FirstCharToUpper();
+            factionName = factionName.FirstCharToUpper();
+            #region Regrouping several faction or group names for Anno 2205
+            if (annoVersion == "2205")
+            {
+                if (factionName == "Earth") { factionName = "(1) Earth"; }
+                if (factionName == "Arctic") { factionName = "(2) Arctic"; }
+                if (factionName == "Moon") { factionName = "(3) Moon"; }
+                if (factionName == "Tundra") { factionName = "(4) Tundra"; }
+                if (factionName == "Orbit") { factionName = "(5) Orbit"; }
+                if (identifierName == "orbit connection 01") { groupName = "Special"; }
+            }
+            #endregion
             string headerName = "Anno" + annoVersion;/*in case if statments are passed by*/
             if (annoVersion == "2205") { headerName = "(A6) Anno 2205"; }
             if (annoVersion == "2070") { headerName = "(A7) Anno 1800"; }
             BuildingInfo b = new BuildingInfo
             {
                 Header = headerName,
-                Faction = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText,
-                Group = buildingNode.ParentNode.ParentNode["Name"].InnerText,
+                Faction = factionName,
+                Group = groupName,
                 Template = buildingNode["Template"].InnerText,
-                Identifier = values["Standard"]["Name"].InnerText
+                Identifier = identifierName
             };
             // print progress
             Console.WriteLine(b.Identifier);
@@ -650,7 +668,6 @@ namespace PresetParser
             }
             if (icon != null)
             {
-
                 /// Split the Value <IconFilenames>innertext</IconFilenames> to get only the Name.png
                 string replaceName = "";
                 if (annoVersion == "2205")
@@ -688,6 +705,7 @@ namespace PresetParser
             #region Get Localization Translations ofr Building Names
             /// find localization
             string buildingGuid = values["Standard"]["GUID"].InnerText;
+            if (annoVersion == "2205" && buildingGuid.Contains(ExcludeGUIDList2205) == true) { return; };
             string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
             /// Do not change any value's below till ----
             string languageFilePath = "";
@@ -725,6 +743,23 @@ namespace PresetParser
                     .Cast<XmlNode>().SingleOrDefault(_ => _["GUID"].InnerText == buildingGuid);
                 if (translationNodes != null) {
                     translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
+                    if (annoVersion == "2205")
+                    {
+                        if (buildingGuid== "7000422")
+                        {
+                            if (languageCount == 0) { translation = "Storage Depot (4x4)"; }
+                            if (languageCount == 1) { translation = "Lager (4x4)"; }
+                            if (languageCount == 2) { translation = "Magazyn (4x4)"; }
+                            if (languageCount == 3) { translation = "Хранилище (4x4)"; }
+                        }
+                        if (buildingGuid == "7000426")
+                        {
+                            if (languageCount == 0) { translation = "Storage Depot (2x2)"; }
+                            if (languageCount == 1) { translation = "Lager (2x2)"; }
+                            if (languageCount == 2) { translation = "Magazyn (2x2)"; }
+                            if (languageCount == 3) { translation = "Хранилище (2x2)"; }
+                        }
+                    }
                     if (translation == null)
                     {
                         throw new InvalidOperationException("Cannot get translation, text node not found");
@@ -743,7 +778,7 @@ namespace PresetParser
                 else
                 {
                     if (languageCount < 1) /*just set the text one time */
-            {
+                    {
                         Console.WriteLine("No Translation found, it will set to Identifier.");
                     }
                     translation = values["Standard"]["Name"].InnerText;
@@ -758,6 +793,7 @@ namespace PresetParser
             //}
             #endregion
             // add building to the list
+            annoBuildingLists.Add(values["Standard"]["Name"].InnerText);
             buildings.Add(b);
         }
         #endregion
@@ -824,13 +860,20 @@ namespace PresetParser
                     if (Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048) > 0)
                     {
                         Console.WriteLine("{0}", Path.GetFileNameWithoutExtension(variationFilename));
-                        if (Path.GetFileNameWithoutExtension(variationFilename) != "water_mill_ecos")
+                        if (Path.GetFileNameWithoutExtension(variationFilename) != "ornamental_post_09")
                         {
-                            building.BuildBlocker["x"] = Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048);
+                            if (Path.GetFileNameWithoutExtension(variationFilename) != "water_mill_ecos")
+                            {
+                                building.BuildBlocker["x"] = Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048);
+                            }
+                            else
+                            {
+                                building.BuildBlocker["x"] = 3;
+                            }
                         }
                         else
                         {
-                            building.BuildBlocker["x"] = 3;
+                            building.BuildBlocker["x"] = 7;
                         }
                     }
                     else
@@ -839,7 +882,7 @@ namespace PresetParser
                     }
                     if (Math.Abs(Convert.ToInt32(node["z"].InnerText) / 2048) > 0)
                     {
-                        if (Path.GetFileNameWithoutExtension(variationFilename) != "water_mill_ecos")
+                        if (Path.GetFileNameWithoutExtension(variationFilename) != "water_mill_ecos" && Path.GetFileNameWithoutExtension(variationFilename) != "ornamental_post_09")
                         {
                             building.BuildBlocker["z"] = Math.Abs(Convert.ToInt32(node["z"].InnerText) / 2048);
                         }
