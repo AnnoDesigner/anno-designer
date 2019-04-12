@@ -73,7 +73,7 @@ namespace PresetParser
         private static string GetIconFilename(XmlNode iconNode, string annoVersion)
         {
             string annoIdexNumber = "";
-            if (annoVersion == "1404") 
+            if (annoVersion == ANNO_VERSION_1404) 
             {
                 annoIdexNumber = "A4_";
             }
@@ -148,7 +148,7 @@ namespace PresetParser
             /// </summary>
             //These should stay constant for different anno versions (hopefully!)
                 #region Anno 1404 xPaths
-            if (annoVersion == "1404")
+            if (annoVersion == ANNO_VERSION_1404)
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_1404, new Dictionary<string, PathRef[]>());
                 VersionSpecificPaths[ANNO_VERSION_1404].Add("icons", new PathRef[]
@@ -174,7 +174,7 @@ namespace PresetParser
                 #endregion
 
                 #region Anno 2070 xPaths
-            if (annoVersion == "2070")
+            if (annoVersion == ANNO_VERSION_2070)
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_2070, new Dictionary<string, PathRef[]>());
                 VersionSpecificPaths[ANNO_VERSION_2070].Add("icons", new PathRef[]
@@ -199,7 +199,7 @@ namespace PresetParser
                 #endregion
 
                 #region Anno 2205 xPaths
-            if (annoVersion == "2205")
+            if (annoVersion == ANNO_VERSION_2205)
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_2205, new Dictionary<string, PathRef[]>());
                 /// Trying to read data from the objects.exm 
@@ -240,8 +240,8 @@ namespace PresetParser
             }
             #endregion
 
-                #region Anno 1800 xPaths
-            if (annoVersion == "1800")
+            #region Anno 1800 xPaths
+            if (annoVersion == ANNO_VERSION_1800)
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_1800, new Dictionary<string, PathRef[]>());
                 /// Trying to read data from the objects.exm 
@@ -249,20 +249,24 @@ namespace PresetParser
                 Console.WriteLine("Trying to read Buildings Data from the objects.xml of anno 1800");
                 VersionSpecificPaths[ANNO_VERSION_1800].Add("assets", new PathRef[]
                 {
-                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Moderate"),
-                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Moderate"),
-                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moderate"),
-                    new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moderate")
+                    new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset/Values")
+                    //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Moderate"),
+                    //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Moderate"),
+                    //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moderate"),
+                    //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moderate")
                 });
             }
-            // Paths for 1800
-            ///Because there is no extracted data available, the Program need to be terminated
-                #endregion
+            #endregion
 
             #endregion
 
-            #region Preparing Writing JSON Files for 1404 and 2070
-            if (annoVersion == "1404" || annoVersion == "2070")
+            #region Prepare JSON Files
+            List<BuildingInfo> buildings = new List<BuildingInfo>();
+            Console.WriteLine();
+            Console.WriteLine("Parsing assets.xml:");
+            var assetPathRefs = VersionSpecificPaths[annoVersion]["assets"];
+
+            if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070)
             {
                 // prepare localizations
                 // This call will set the extra Anno Version Number on the icon translation for Anno 1404 ('A4_')
@@ -284,99 +288,44 @@ namespace PresetParser
                 localizations.Clear();
                 localizations = GetLocalizations(annoVersion, 0);
                 #endregion
-
-                #region Preparing presets.json file
                 // parse buildings
-                List<BuildingInfo> buildings = new List<BuildingInfo>();
-
                 // find buildings in assets.xml
-                Console.WriteLine();
-                Console.WriteLine("Parsing assets.xml:");
-                foreach (PathRef p in VersionSpecificPaths[annoVersion]["assets"])
+ 
+                foreach (PathRef p in assetPathRefs)
                 {
                     ParseAssetsFile(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, iconNodes, localizations, p.InnerNameTag, annoVersion);
                 }
-
-                //No longer needed
-                //// find buildings in addon_01_assets.xml
-                //Console.WriteLine();
-                //Console.WriteLine("Parsing addon_01_assets.xml:");
-                ////"Groups/Group/Groups/Group/"
-                //ParseAssetsFile(BASE_PATH + "addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group/Groups/Group", buildings, iconNodes, localizations);
-                #endregion
-
-                #region Finalizing presets.json file and Ending program 
-                // serialize presets to json file
-                BuildingPresets presets = new BuildingPresets { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
-                // I have put '-Anno<annoVersion>" to the presets.json name, to avoid overwriting the other presets.json
-                // so, the name now will as i.e. presets-Anno1404.json
-                Console.WriteLine("Writing buildings to presets-{0}-(1).json", annoVersion, BUILDING_PRESETS_VERSION);
-                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
-                // wait for keypress before exiting
-                Console.WriteLine();
-                Console.WriteLine("Do not forget to copy the contents to the normal");
-                Console.WriteLine("presets.json, in the Anno Designer directory!");
-                Console.WriteLine();
-                Console.WriteLine("DONE - press enter to exit");
-                Console.ReadLine();
-                #endregion
             }
-            #endregion
-
-            #region Preparing Writing JSON Files for 2205 and 1800)
-            else if (annoVersion == "2205" || annoVersion == "1800")
+            else if (annoVersion == ANNO_VERSION_2205)
             {
-                #region Preparing icon.json file (Not Used on 2205)
-                // prepare icon mapping
-                //XmlDocument iconsDocument = new XmlDocument();
-                //List<XmlNode> iconNodes = new List<XmlNode>();
-                //foreach (PathRef p in VersionSpecificPaths[annoVersion]["icons"])
-                //{
-                //    iconsDocument.Load(BasePath + p.Path);
-                //    iconNodes.AddRange(iconsDocument.SelectNodes(p.XPath).Cast<XmlNode>());
-                //}
-                // write icon name mapping
-                //Console.WriteLine("Writing icon name mapping to icons.json");
-                //WriteIconNameMapping(iconNodes, localizations, annoVerion);
-                #endregion
-
-                #region Preparing presets.json file
-                // parse buildings
-                List<BuildingInfo> buildings = new List<BuildingInfo>();
-
-                // find buildings in assets.xml
-                Console.WriteLine();
-                Console.WriteLine("Parsing assets.xml:");
-                foreach (PathRef p in VersionSpecificPaths[annoVersion]["assets"])
+                foreach (PathRef p in assetPathRefs)
                 {
                     ParseAssetsFile2205(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, p.InnerNameTag, annoVersion);
                 }
-                //No longer needed
-                //// find buildings in addon_01_assets.xml
-                //Console.WriteLine();
-                //Console.WriteLine("Parsing addon_01_assets.xml:");
-                ////"Groups/Group/Groups/Group/"
-                //ParseAssetsFile(BASE_PATH + "addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group/Groups/Group", buildings, iconNodes, localizations);
-                #endregion
-
-                #region Finalizing presets.json file and Ending program 
-                // serialize presets to json file
-                BuildingPresets presets = new BuildingPresets { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
-                // I have put '-Anno<annoVersion>" to the presets.json name, to avoid overwriting the other presets.json
-                // so, the name now will as ex. presets-Anno2205.json
-                Console.WriteLine("Writing buildings to presets-{0}-(1).json", annoVersion,BUILDING_PRESETS_VERSION);
-                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion +"-v" + BUILDING_PRESETS_VERSION + ".json");
-                // wait for keypress before exiting
-                Console.WriteLine();
-                Console.WriteLine("Do not forget to copy the contents to the normal");
-                Console.WriteLine("presets.json, in the Anno Designer directory!");
-                Console.WriteLine();
-                Console.WriteLine("DONE - press enter to exit");
-                Console.ReadLine();
-                #endregion
             }
-            #endregion
+            else if (annoVersion == ANNO_VERSION_1800)
+            {
+                foreach (PathRef p in assetPathRefs)
+                {
+                    ParseAssetsFile1800(BASE_PATH + p.Path, p.XPath, buildings);
+                }
+            }
+
+            BuildingPresets presets = new BuildingPresets() { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
+
+            Console.WriteLine("Writing buildings to presets-{0}-(1).json", annoVersion, BUILDING_PRESETS_VERSION);
+            DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
+            // wait for keypress before exiting
+            Console.WriteLine();
+            Console.WriteLine("Do not forget to copy the contents to the normal");
+            Console.WriteLine("presets.json, in the Anno Designer directory!");
+            Console.WriteLine();
+            Console.WriteLine("DONE - press enter to exit");
+            Console.ReadLine();
+          
         }
+        #endregion //End Prepare JSON Files
+
         /// Parsing Part for 1404 and 2070
         #region Parsing Buildngs for Anno 1404/2070
         private static void ParseAssetsFile(string filename, string xPathToBuildingsNode, string YPath, List<BuildingInfo> buildings,
@@ -403,14 +352,14 @@ namespace PresetParser
             }
 
             #region Skip Unused buildings in Anno Designer List
-            if (annoVersion == "1404")
+            if (annoVersion == ANNO_VERSION_1404)
             {
                 nameValue = values["Standard"]["Name"].InnerText;
                 isExcludedName = nameValue.Contains(ExcludeNameList1404);
                 templateValue = buildingNode["Template"].InnerText;
                 isExcludedTemplate = templateValue.Contains(ExcludeTemplateList1404);
             }
-            if (annoVersion == "2070")
+            if (annoVersion == ANNO_VERSION_2070)
             {
                 nameValue = values["Standard"]["Name"].InnerText;
                 isExcludedName = nameValue.Contains(ExcludeNameList2070);
@@ -443,14 +392,14 @@ namespace PresetParser
             groupName = groupName.FirstCharToUpper();
             factionName = factionName.FirstCharToUpper();
             #region Regrouping several faction or group names for Anno 1404
-            if (annoVersion == "1404")
+            if (annoVersion == ANNO_VERSION_1404)
             {
                 if (factionName == "Farm") { factionName = "Production"; }
                 if (identifierName == "Hospice") { factionName = "Public"; groupName = "Special"; }
             }
             #endregion
             #region Regrouping several faction or group names for Anno 2070
-            if (annoVersion == "2070")
+            if (annoVersion == ANNO_VERSION_2070)
             {
                 if (factionName == "Ecos") { factionName = "(1) Ecos"; }
                 if (factionName == "Tycoons") { factionName = "(2) Tycoons"; }
@@ -468,8 +417,8 @@ namespace PresetParser
             #endregion
             #region Set Header Name for Anno 1404 and Anno 2070
             string headerName = "Anno" + annoVersion;/*in case if statments are passed by*/
-            if (annoVersion == "1404") { headerName = "(A4) Anno 1404"; }
-            if (annoVersion == "2070") { headerName = "(A5) Anno 2070"; }
+            if (annoVersion == ANNO_VERSION_1404) { headerName = "(A4) Anno 1404"; }
+            if (annoVersion == ANNO_VERSION_2070) { headerName = "(A5) Anno 2070"; }
             #endregion
             BuildingInfo b = new BuildingInfo
             {
@@ -550,7 +499,7 @@ namespace PresetParser
         #endregion
 
         /// Parsing Part for 2205 and 1800
-        #region Parsing Buildngs for Anno 2205 and 1800)
+        #region Parsing Buildngs for Anno 2205
         private static void ParseAssetsFile2205(string filename, string xPathToBuildingsNode, string YPath, List<BuildingInfo> buildings, string innerNameTag, string annoVersion)
         {
             XmlDocument assetsDocument = new XmlDocument();
@@ -563,10 +512,22 @@ namespace PresetParser
             }
         }
 
+        private static void ParseAssetsFile1800(string filename, string xPathToBuildingsNode, List<BuildingInfo> buildings)
+        {
+            XmlDocument assetsDocument = new XmlDocument();
+            assetsDocument.Load(filename);
+            List<XmlNode> buildingNodes = assetsDocument.SelectNodes(xPathToBuildingsNode).Cast<XmlNode>().ToList();
+            foreach (XmlNode buildingNode in buildingNodes)
+            {
+                ParseBuilding1800(buildings, buildingNode, ANNO_VERSION_1800);
+            }
+        }
+
         /// ORGLINE: private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations)
         private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, string annoVersion)
         {
-            string[] LanguagesFiles = new[] { "" }; string nameValue = "", templateValue = "";
+            string[] LanguagesFiles = { "" };
+            string nameValue = "", templateValue = "";
             #region Get valid Building Information 
             XmlElement values = buildingNode["Values"];
             // skip invalid elements
@@ -576,19 +537,12 @@ namespace PresetParser
             }
 
             #region Skip Unused buildings in Anno Designer List
-            if (annoVersion == "2205")
+            if (annoVersion == ANNO_VERSION_2205)
             {
                 nameValue = values["Standard"]["Name"].InnerText;
                 isExcludedName = nameValue.Contains(ExcludeNameList2205);
                 templateValue = buildingNode["Template"].InnerText;
                 isExcludedTemplate = templateValue.Contains(ExcludeTemplateList2205);
-            }
-            if (annoVersion == "1800")
-            {
-                nameValue = values["Standard"]["Name"].InnerText;
-                isExcludedName = nameValue.Contains(ExcludeNameList1800);
-                templateValue = buildingNode["Template"].InnerText;
-                isExcludedTemplate = templateValue.Contains(ExcludeTemplateList1800);
             }
             if (isExcludedName == true || isExcludedTemplate == true || isExcludedFaction == true)
             {
@@ -611,7 +565,7 @@ namespace PresetParser
             groupName = groupName.FirstCharToUpper();
             factionName = factionName.FirstCharToUpper();
             #region Regrouping several faction or group names for Anno 2205
-            if (annoVersion == "2205")
+            if (annoVersion == ANNO_VERSION_2205)
             {
                 if (factionName == "Earth") { factionName = "(1) Earth"; }
                 if (factionName == "Arctic") { factionName = "(2) Arctic"; }
@@ -621,9 +575,8 @@ namespace PresetParser
                 if (identifierName == "orbit connection 01") { groupName = "Special"; }
             }
             #endregion
-            string headerName = "Anno" + annoVersion;/*in case if statments are passed by*/
-            if (annoVersion == "2205") { headerName = "(A6) Anno 2205"; }
-            if (annoVersion == "2070") { headerName = "(A7) Anno 1800"; }
+            string headerName = "Anno " + annoVersion;/*in case if statments are passed by*/
+            if (annoVersion == ANNO_VERSION_2205) { headerName = "(A6) Anno 2205"; }
             BuildingInfo b = new BuildingInfo
             {
                 Header = headerName,
@@ -636,7 +589,7 @@ namespace PresetParser
             Console.WriteLine(b.Identifier);
             #endregion
 
-            #region parse building blocker
+            //Get building blocker
             if (values["Object"] != null)
             {
                 if (values["Object"]?["Variations"]?.FirstChild["Filename"]?.InnerText != null)
@@ -657,7 +610,6 @@ namespace PresetParser
                 Console.WriteLine("-BuildBlocker not found, skipping: Object Informaion not fount");
                 return;
             }
-            #endregion
 
             #region Get IconFilenames
             // find icon node in values (diverent vs 1404/2070)
@@ -670,13 +622,9 @@ namespace PresetParser
             {
                 /// Split the Value <IconFilenames>innertext</IconFilenames> to get only the Name.png
                 string replaceName = "";
-                if (annoVersion == "2205")
+                if (annoVersion == ANNO_VERSION_2205)
                 {
                     replaceName = "A6_";
-                }
-                else if (annoVersion == "1800")
-                {
-                    replaceName = "A7_";
                 }
                 string[] sIcons = icon.Split('/');
                 icon = sIcons.LastOrDefault().Replace("icon_", replaceName);
@@ -690,7 +638,7 @@ namespace PresetParser
 
             #region Get Influence Radius
             //Ther will no Influence Radius for anno 2205 (Lines will stay if we need them for 1800)
-            if (annoVersion != "2205")
+            if (annoVersion != ANNO_VERSION_2205)
             {   // read influence radius if existing 
                 //try
                 //{
@@ -702,10 +650,10 @@ namespace PresetParser
             }
             #endregion
 
-            #region Get Localization Translations ofr Building Names
+            #region Get Localization Translations for Building Names
             /// find localization
             string buildingGuid = values["Standard"]["GUID"].InnerText;
-            if (annoVersion == "2205" && buildingGuid.Contains(ExcludeGUIDList2205) == true) { return; };
+            if (annoVersion == ANNO_VERSION_2205 && buildingGuid.Contains(ExcludeGUIDList2205) == true) { return; };
             string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
             /// Do not change any value's below till ----
             string languageFilePath = "";
@@ -714,19 +662,15 @@ namespace PresetParser
             string langNodeDepth = "";
             int languageCount = 0;
             ///------------------------------------------
-            if (annoVersion == "2205" || annoVersion == "1800" )
+            if (annoVersion == ANNO_VERSION_2205 || annoVersion == ANNO_VERSION_1800 )
             {
                 languageFilePath = "data/config/gui/"; 
                 languageFileStart = "texts_"; 
                 langNodeStartPath = "/TextExport/Texts/Text"; 
                 langNodeDepth = "Text"; 
-                if (annoVersion == "2205")
+                if (annoVersion == ANNO_VERSION_2205)
                 {
                     LanguagesFiles= LanguagesFiles2205;
-                }
-                if (annoVersion == "1800")
-                {
-                    LanguagesFiles = LanguagesFiles1800;
                 }
             }
 
@@ -743,7 +687,7 @@ namespace PresetParser
                     .Cast<XmlNode>().SingleOrDefault(_ => _["GUID"].InnerText == buildingGuid);
                 if (translationNodes != null) {
                     translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
-                    if (annoVersion == "2205")
+                    if (annoVersion == ANNO_VERSION_2205)
                     {
                         if (buildingGuid== "7000422")
                         {
@@ -798,11 +742,41 @@ namespace PresetParser
         }
         #endregion
 
+        private static void ParseBuilding1800(List<BuildingInfo> buildings, XmlNode buildingNode, string annoVersion)
+        {
+            string factionName = ""; //Need to get from GUID, look in <BuildingCategoryType>. //This element does not exist for Residences.
+            string groupName = ""; //Need to get from GUID
+            string identifierName = buildingNode["Standard"]["Name"].InnerText; //Identifier name is the same for Anno 1800
+
+            //e.g, match 100510 (I think
+            /*
+                  <Values>
+                        <Standard>
+                          <GUID>100510</GUID>
+                          <Name>kontor_main_02</Name>
+                          <IconFilename>data/ui/2kimages/main/3dicons/icon_kontor.png</IconFilename>
+                          <InfoDescription>2977</InfoDescription>
+                        </Standard>
+             */
+            if (buildingNode?["Building"]?["BuildingType"].InnerText == "Residence") {
+                factionName = "Residence";
+            }
+            else
+            {
+                //Get from GUID
+            }
+
+            
+            groupName = groupName.FirstCharToUpper();
+            factionName = factionName.FirstCharToUpper();
+
+        }
+
         /// Other Classes and or Internal Commands used in this program
         #region Retrieving BuildingBlockers from Buidings Nodes
         private static bool RetrieveBuildingBlocker(BuildingInfo building, string variationFilename, string annoVersion)
         {
-            if (annoVersion == "1800")
+            if (annoVersion == ANNO_VERSION_1800)
             {
                 XmlDocument ifoDocument = new XmlDocument();
                 ifoDocument.Load(Path.Combine(BASE_PATH + "/", string.Format("{0}.ifo", Path.GetDirectoryName(variationFilename) + "\\" + Path.GetFileNameWithoutExtension(variationFilename))));
@@ -993,7 +967,7 @@ namespace PresetParser
                             // add localization string
                             /// Translation of GUID 10239 (Anno 2070) is needed, else it will be named 
                             /// as Metal Converter, witch it is not.
-                            if (annoVersion == "2070" && guid == "10239" && DoExtraAnumber == 0)
+                            if (annoVersion == ANNO_VERSION_2070 && guid == "10239" && DoExtraAnumber == 0)
                             {
                                 if (language == "eng") { translation = "Black Smoker"; }
                                 if (language == "ger") { translation = "Black Smoker"; }
@@ -1001,11 +975,11 @@ namespace PresetParser
                                 if (language == "rus") { translation = "Черный курильщик"; }
                             }
                             /// Icon.json extra A number for the Icon Selection tree
-                            if (annoVersion == "1404" && DoExtraAnumber == 1)
+                            if (annoVersion == ANNO_VERSION_1404 && DoExtraAnumber == 1)
                             {
                                 translation = "A4_" + translation;
                             }
-                            if (annoVersion == "2070" && DoExtraAnumber == 1)
+                            if (annoVersion == ANNO_VERSION_2070 && DoExtraAnumber == 1)
                             {
                                 translation = "A5_" + translation;
                             }
@@ -1096,6 +1070,14 @@ namespace PresetParser
                 XPath = xPath;
                 YPath = yPath;
                 InnerNameTag = innerNameTag;
+            }
+
+            public PathRef(string path, string xPath)
+            {
+                Path = path;
+                XPath = xPath;
+               // YPath = yPath;
+               // InnerNameTag = innerNameTag;
             }
 
             public PathRef(string path)
