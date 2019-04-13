@@ -2,7 +2,16 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:AnnoDesigner.Localization"
-        Title="About Anno Designer (Modified)" Height="382.666" Width="555.333" Icon="/AnnoDesigner;component/icon.ico" ResizeMode="NoResize" KeyDown="WindowKeyDown" WindowStartupLocation="CenterOwner">
+        xmlns:properties="clr-namespace:AnnoDesigner.Properties"
+        Title="About Anno Designer (Modified)" 
+        Height="382.666" 
+        Width="567.333" 
+        Icon="/AnnoDesigner;component/icon.ico" 
+        ResizeMode="NoResize" 
+        KeyDown="WindowKeyDown" 
+        WindowStartupLocation="CenterOwner"
+        Top="{Binding Source={x:Static properties:Settings.Default},Path=AboutTop, Mode=TwoWay}"
+        Left="{Binding Source={x:Static properties:Settings.Default},Path=AboutLeft, Mode=TwoWay}">
     <Grid>
         <Grid.Resources>
             <local:About x:Key="Locale"></local:About>

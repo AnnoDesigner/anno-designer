@@ -12,6 +12,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using MessageBox = Microsoft.Windows.Controls.MessageBox;
 using System.ComponentModel;
+using AnnoDesigner.Properties;
 
 namespace AnnoDesigner
 {
@@ -27,8 +28,20 @@ namespace AnnoDesigner
         private static string _selectedLanguage;
         public static string SelectedLanguage
         {
-            get { return _selectedLanguage == null ? "English" : _selectedLanguage; }
-            set {
+            get
+            {
+                if (_selectedLanguage != null && Localization.Localization.LanguageCodeMap.ContainsKey(_selectedLanguage))
+                {
+                    return _selectedLanguage;
+                }
+                else
+                {
+                    _selectedLanguage = "English";
+                    return _selectedLanguage;
+                }
+            }
+            set
+            {
                 _selectedLanguage = value == null ? "English" : value;
                 mainWindowLocalization.UpdateLanguage();
             }
@@ -54,8 +67,27 @@ namespace AnnoDesigner
             DependencyObject dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
             mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
 
-            Welcome w = new Welcome();
-            w.ShowDialog();
+            //If language is not recognized, bring up the language selection screen
+            if (!Localization.Localization.LanguageCodeMap.ContainsKey(Settings.Default.SelectedLanguage))
+            {
+                Welcome w = new Welcome();
+                w.Owner = this;
+                w.ShowDialog();
+            }
+            else
+            {
+                SelectedLanguage = Settings.Default.SelectedLanguage;
+            }
+            foreach (MenuItem item in LanguageMenu.Items)
+            {
+                if (item.Header.ToString() == SelectedLanguage)
+                {
+                    item.IsChecked = true;
+                }
+            }
+
+           
+
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -119,7 +151,7 @@ namespace AnnoDesigner
 
         private void CheckForUpdates(bool forcedCheck)
         {
-           /// _webClient.DownloadStringAsync(new Uri("http://anno-designer.googlecode.com/svn/trunk/version.txt"), forcedCheck);
+            //_webClient.DownloadStringAsync(new Uri("http://anno-designer.googlecode.com/svn/trunk/version.txt"), forcedCheck);
         }
 
         private void WebClientDownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
@@ -360,7 +392,14 @@ namespace AnnoDesigner
 
         private void MenuItemHomepageClick(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://code.google.com/p/anno-designer/");
+            System.Diagnostics.Process.Start("https://github.com/AgmasGold/anno-designer");
+        }
+
+        private void MenuItemOpenWelcomeClick(object sender, RoutedEventArgs e)
+        {
+            Welcome w = new Welcome();
+            w.Owner = this;
+            w.Show();
         }
 
         private void MenuItemAboutClick(object sender, RoutedEventArgs e)
@@ -406,5 +445,21 @@ namespace AnnoDesigner
             }
         }
         #endregion
+
+        private void WindowClosing(object sender, CancelEventArgs e)
+        {
+            Settings.Default.Save();
+        }
+
+        private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
+        {
+            foreach (MenuItem item in LanguageMenu.Items)
+            {
+                if (item.Header.ToString() == SelectedLanguage)
+                {
+                    item.IsChecked = true;
+                }
+            }
+        }
     }
 }

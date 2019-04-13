@@ -58,6 +58,11 @@
     <Compile Include="Presets\ColorScheme.cs" />
     <Compile Include="Presets\ColorTarget.cs" />
     <Compile Include="Presets\IconNameMap.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="SerializableColor.cs" />
     <Compile Include="DataIO.cs" />
     <Compile Include="SerializableDictionary.cs" />
@@ -554,6 +559,10 @@
     <None Include="icons\.svn\text-base\icon_27_98.png.svn-base" />
     <None Include="icons\.svn\text-base\icon_27_99.png.svn-base" />
     <None Include="presets.json" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Stuff\list_of_buildings_v0.3.json" />
     <None Include="Stuff\list_of_buildings_v0.4.json" />
   </ItemGroup>

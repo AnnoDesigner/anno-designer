@@ -1,4 +1,5 @@
 ﻿using AnnoDesigner.Localization;
+using AnnoDesigner.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,6 +76,8 @@ namespace AnnoDesigner
         private void LoadSelectedLanguage()
         {
             MainWindow.SelectedLanguage = ((SupportedLanguage)LanguageSelection.SelectedItem).Name;
+            Settings.Default.SelectedLanguage = MainWindow.SelectedLanguage;
+            Settings.Default.Save();
             this.Close();
         }
 
