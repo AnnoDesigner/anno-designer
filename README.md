@@ -23,7 +23,7 @@ Sting_McRay has also done a lot of work on this, extracting icons from Anno 2205
 - Added more color choices on the Buiding Settings menu.
 - Reviewed the icon menu structure, so that buildings are now sorted by Anno version.
 - Added Language Selection screen.
-- Added peristent user settings (window size/position, language selection).
+- Added persistent user settings (window size/position, language selection).
 
 ## License
 MIT
