@@ -11,7 +11,7 @@ Currently most layouts are created either by some kind of spreadsheet (excel, go
 
 ## Technology
 
-This application is written in C# (.Net Framework 4.6.1) and uses WPF.
+This application is written in C# (.Net Framework 4.5.2) and uses WPF.
 
 The building presets and icons are extracted from game files using the [RDA explorer](https://github.com/lysannschlegel/RDAExplorer)  and a custom script written by Peter Hozak. See the development pages at wikia: http://anno2070.wikia.com/wiki/Development_Pages
 
