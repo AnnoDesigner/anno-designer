@@ -12,7 +12,7 @@ namespace PresetParser
     {
         #region Initalisizing values
         private static string BASE_PATH { get; set; }
-        
+
         public static bool isExcludedName = false;
         public static bool isExcludedTemplate = false;
         public static bool isExcludedFaction = false; /* Only for Anno 2070 */
@@ -30,17 +30,18 @@ namespace PresetParser
         private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "polish", "russian" };
         // Internal Program Buildings List to skipp double buildings
         public static List<string> annoBuildingLists = new List<string>();
+        public static int annoBuildingsListCount = 0;
 
         #region Initalisizing Exclude IdentifierNames, FactionNames and TemplateNames for presets.json file 
 
-                #region Anno 1404
+        #region Anno 1404
         private static readonly List<string> ExcludeNameList1404 = new List<string> { "ResidenceRuin", "AmbassadorRuin", "CitizenHouse", "PatricianHouse",
             "NoblemanHouse", "AmbassadorHouse", "Gatehouse", "StorehouseTownPart", "ImperialCathedralPart", "SultanMosquePart", "Warehouse02", "Warehouse03",
             "Markethouse02", "Markethouse03", "TreeBuildCost", "BanditCamp"};
-        private static readonly List<string> ExcludeTemplateList1404 = new List<string> { "OrnamentBuilding","Wall" };
-                #endregion
+        private static readonly List<string> ExcludeTemplateList1404 = new List<string> { "OrnamentBuilding", "Wall" };
+        #endregion
 
-                #region Anno 2070 * Also on FactionName Excludes *
+        #region Anno 2070 * Also on FactionName Excludes *
         private static readonly List<string> ExcludeNameList2070 = new List<string> { "distillery_field" , "citizen_residenc", "executive_residence", "leader_residence",
             "ruin_residence" , "villager_residence" ,"builder_residence", "creator_residence" ,"scientist_residence", "genius_residence", "monument_unfinished",
             "town_center_variation", "underwater_energy_transmitter", "iron_mine", "nuclearpowerplant_destroyed","limestone_quarry", "markethouse2", "markethouse3",
@@ -49,7 +50,7 @@ namespace PresetParser
         private static readonly List<string> ExcludeFactionList2070 = new List<string> { "third party" };
         #endregion
 
-                #region Anno 2205 Also a GUID Checker for excluding. Do not change any numbers below
+        #region Anno 2205 Also a GUID Checker for excluding. Do not change any numbers below
         private static readonly List<string> ExcludeGUIDList2205 = new List<string> { "1001178", "1000737", "7000274", "1001175", "1000736", "7000275",
             "1000672", "1000755", "7000273", "1001171", "1000703", "7000272", "7000420", "7000421", "7000423", "7000424", "7000425", "7000427", "7000428",
             "7000429", "7000430", "7000431", "12000009", "12000010", "12000011", "12000020", "12000036", "1000063", "1000170", "1000212", "1000213", "1000174",
@@ -59,13 +60,28 @@ namespace PresetParser
             "CTU Reactor 2 (decommissioned)", "CTU Reactor 3 (decommissioned)", "CTU Reactor 4 (decommissioned)", "CTU Reactor 5 (decommissioned)", "CTU Reactor 6 (decommissioned)",
             "CTU Reactor 2 (active!)", "CTU Reactor 3 (active!)", "CTU Reactor 4 (active!)", "CTU Reactor 5 (active!)", "CTU Reactor 6 (active!)" };
         private static readonly List<string> ExcludeTemplateList2205 = new List<string> { "SpacePort", "BridgeWithUpgrade", "DistributionBuilding" };
-                #endregion
+        #endregion
 
-                #region anno 1800
-        private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)",
-          "(Hunting Grounds)", "(Wash House)", "Quay System", "1x1" , "module_01_birds", "module_02_peacock"};
-        private static readonly List<string> ExcludeTemplateList1800 = new List<string> { "BridgeBuilding", "OrnamentalBuilding" };
-                #endregion
+        #region anno 1800
+        /// <summary>
+        /// i need the IncludeBuildingsTemplateNames to get Building informaton from, as it is also the Presets Template String or Template GUID
+        /// </summary>
+        private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
+            "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "CultureModule", "PowerplantBuilding"};
+        private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263" };
+        /// ---
+        private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System", "1x1",
+            "module_01_birds", "module_02_peacock", "(Warehouse II)", "(Warehouse III)", "logistic_colony01_01 (Warehouse I)", "Kontor_main_02", "Kontor_main_03", "kontor_main_colony01",
+            "Fake Ornament [test 2nd party]", "Kontor_imperial_02", "Kontor_imperial_03","(Oil Harbor II)","(Oil Harbor III)", "Third_party_", "CQO_"};
+        /// <summary>
+        /// in NewFactionAndGroup1800.cs are made the following lists
+        /// ChangeBuildingTo<1>_<2>_1800 
+        /// <1> can be : AW (All Worlds) - NW1 (New World - Farmers) - NW2 (New World - Workers) - NW3 (New World - Artisans)
+        ///              NW4 (New World - Engineers) - NW5 (New World - Investors) - 
+        ///              OW1 (Old World - Jornaleros) and OW2 (Old World - Obreros)
+        /// <2> wil be the Group under <1>, like Production, Public, etc
+        /// </summary>
+            #endregion
 
             #endregion
 
@@ -240,16 +256,20 @@ namespace PresetParser
             }
             #endregion
 
-            #region Anno 1800 xPaths
+                #region Anno 1800 xPaths
             if (annoVersion == ANNO_VERSION_1800)
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_1800, new Dictionary<string, PathRef[]>());
                 /// Trying to read data from the objects.exm 
                 Console.WriteLine();
                 Console.WriteLine("Trying to read Buildings Data from the objects.xml of anno 1800");
+                /// I have removed the lat pathname 'Values' as it does the same i wanted, 
+                /// only the 'Values' will skip the <template> tag that i still need
                 VersionSpecificPaths[ANNO_VERSION_1800].Add("assets", new PathRef[]
                 {
-                    new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset/Values")
+                    new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset")
+                   // new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset")
                     //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Moderate"),
                     //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Moderate"),
                     //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moderate"),
@@ -313,9 +333,14 @@ namespace PresetParser
 
             BuildingPresets presets = new BuildingPresets() { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
 
-            Console.WriteLine("Writing buildings to presets-{0}-(1).json", annoVersion, BUILDING_PRESETS_VERSION);
+            Console.WriteLine();
+            Console.WriteLine("Writing buildings to presets-{0}-{1}.json", annoVersion, BUILDING_PRESETS_VERSION);
             DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
             // wait for keypress before exiting
+            if (annoVersion == ANNO_VERSION_1800)
+            {
+                Console.WriteLine("Parst {0} Buildings", annoBuildingsListCount);
+            }
             Console.WriteLine();
             Console.WriteLine("Do not forget to copy the contents to the normal");
             Console.WriteLine("presets.json, in the Anno Designer directory!");
@@ -417,8 +442,8 @@ namespace PresetParser
             #endregion
             #region Set Header Name for Anno 1404 and Anno 2070
             string headerName = "Anno" + annoVersion;/*in case if statments are passed by*/
-            if (annoVersion == ANNO_VERSION_1404) { headerName = "(A4) Anno 1404"; }
-            if (annoVersion == ANNO_VERSION_2070) { headerName = "(A5) Anno 2070"; }
+            if (annoVersion == ANNO_VERSION_1404) { headerName = "(A4) Anno " + ANNO_VERSION_1404; }
+            if (annoVersion == ANNO_VERSION_2070) { headerName = "(A5) Anno " + ANNO_VERSION_2070; }
             #endregion
             BuildingInfo b = new BuildingInfo
             {
@@ -498,7 +523,7 @@ namespace PresetParser
         }
         #endregion
 
-        /// Parsing Part for 2205 and 1800
+        /// Parsing Part for 2205
         #region Parsing Buildngs for Anno 2205
         private static void ParseAssetsFile2205(string filename, string xPathToBuildingsNode, string YPath, List<BuildingInfo> buildings, string innerNameTag, string annoVersion)
         {
@@ -508,18 +533,7 @@ namespace PresetParser
                 .Cast<XmlNode>().Single(_ => _["Name"].InnerText == innerNameTag); //This differs between anno versions
             foreach (XmlNode buildingNode in buildingNodes.SelectNodes(YPath).Cast<XmlNode>())
             {
-                ParseBuilding2205(buildings, buildingNode, annoVersion);
-            }
-        }
-
-        private static void ParseAssetsFile1800(string filename, string xPathToBuildingsNode, List<BuildingInfo> buildings)
-        {
-            XmlDocument assetsDocument = new XmlDocument();
-            assetsDocument.Load(filename);
-            List<XmlNode> buildingNodes = assetsDocument.SelectNodes(xPathToBuildingsNode).Cast<XmlNode>().ToList();
-            foreach (XmlNode buildingNode in buildingNodes)
-            {
-                ParseBuilding1800(buildings, buildingNode, ANNO_VERSION_1800);
+                ParseBuilding2205(buildings, buildingNode, ANNO_VERSION_2205);
             }
         }
 
@@ -565,18 +579,17 @@ namespace PresetParser
             groupName = groupName.FirstCharToUpper();
             factionName = factionName.FirstCharToUpper();
             #region Regrouping several faction or group names for Anno 2205
-            if (annoVersion == ANNO_VERSION_2205)
+            switch (factionName)
             {
-                if (factionName == "Earth") { factionName = "(1) Earth"; }
-                if (factionName == "Arctic") { factionName = "(2) Arctic"; }
-                if (factionName == "Moon") { factionName = "(3) Moon"; }
-                if (factionName == "Tundra") { factionName = "(4) Tundra"; }
-                if (factionName == "Orbit") { factionName = "(5) Orbit"; }
-                if (identifierName == "orbit connection 01") { groupName = "Special"; }
+                case "Earth": factionName = "(1) Earth"; break;
+                case "Arctic": factionName = "(2) Arctic"; break;
+                case "Moon": factionName = "(3) Moon"; break;
+                case "Tundra": factionName = "(4) Tundra"; break;
+                case "Orbit": factionName = "(5) Orbit"; break;
             }
+            if (identifierName == "orbit connection 01") { groupName = "Special"; }
             #endregion
-            string headerName = "Anno " + annoVersion;/*in case if statments are passed by*/
-            if (annoVersion == ANNO_VERSION_2205) { headerName = "(A6) Anno 2205"; }
+            string headerName = "(A6) Anno " + ANNO_VERSION_2205;
             BuildingInfo b = new BuildingInfo
             {
                 Header = headerName,
@@ -589,6 +602,7 @@ namespace PresetParser
             Console.WriteLine(b.Identifier);
             #endregion
 
+            #region Get BuildBlockers information
             //Get building blocker
             if (values["Object"] != null)
             {
@@ -610,6 +624,7 @@ namespace PresetParser
                 Console.WriteLine("-BuildBlocker not found, skipping: Object Informaion not fount");
                 return;
             }
+            #endregion
 
             #region Get IconFilenames
             // find icon node in values (diverent vs 1404/2070)
@@ -636,43 +651,17 @@ namespace PresetParser
             }
             #endregion
 
-            #region Get Influence Radius
-            //Ther will no Influence Radius for anno 2205 (Lines will stay if we need them for 1800)
-            if (annoVersion != ANNO_VERSION_2205)
-            {   // read influence radius if existing 
-                //try
-                //{
-                //    b.InfluenceRadius = Convert.ToInt32(values["Influence"]["InfluenceRadius"].InnerText);
-                //}
-                //catch (NullReferenceException ex) { }
-                // Building the Localizations for building b
-
-            }
-            #endregion
-
-            #region Get Localization Translations for Building Names
+            #region Get localizations
             /// find localization
             string buildingGuid = values["Standard"]["GUID"].InnerText;
             if (annoVersion == ANNO_VERSION_2205 && buildingGuid.Contains(ExcludeGUIDList2205) == true) { return; };
             string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
-            /// Do not change any value's below till ----
-            string languageFilePath = "";
-            string languageFileStart = ""; 
-            string langNodeStartPath = ""; 
-            string langNodeDepth = "";
+            string languageFilePath = "data/config/gui/";
+            string languageFileStart = "texts_";
+            string langNodeStartPath = "/TextExport/Texts/Text";
+            string langNodeDepth = "Text";
             int languageCount = 0;
-            ///------------------------------------------
-            if (annoVersion == ANNO_VERSION_2205 || annoVersion == ANNO_VERSION_1800 )
-            {
-                languageFilePath = "data/config/gui/"; 
-                languageFileStart = "texts_"; 
-                langNodeStartPath = "/TextExport/Texts/Text"; 
-                langNodeDepth = "Text"; 
-                if (annoVersion == ANNO_VERSION_2205)
-                {
-                    LanguagesFiles= LanguagesFiles2205;
-                }
-            }
+            LanguagesFiles= LanguagesFiles2205;
 
             //Initialise the dictionary
             b.Localization = new SerializableDictionary<string>();
@@ -687,22 +676,19 @@ namespace PresetParser
                     .Cast<XmlNode>().SingleOrDefault(_ => _["GUID"].InnerText == buildingGuid);
                 if (translationNodes != null) {
                     translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
-                    if (annoVersion == ANNO_VERSION_2205)
+                    if (buildingGuid == "7000422")
                     {
-                        if (buildingGuid== "7000422")
-                        {
-                            if (languageCount == 0) { translation = "Storage Depot (4x4)"; }
-                            if (languageCount == 1) { translation = "Lager (4x4)"; }
-                            if (languageCount == 2) { translation = "Magazyn (4x4)"; }
-                            if (languageCount == 3) { translation = "Хранилище (4x4)"; }
-                        }
-                        if (buildingGuid == "7000426")
-                        {
-                            if (languageCount == 0) { translation = "Storage Depot (2x2)"; }
-                            if (languageCount == 1) { translation = "Lager (2x2)"; }
-                            if (languageCount == 2) { translation = "Magazyn (2x2)"; }
-                            if (languageCount == 3) { translation = "Хранилище (2x2)"; }
-                        }
+                        if (languageCount == 0) { translation = "Storage Depot (4x4)"; }
+                        if (languageCount == 1) { translation = "Lager (4x4)"; }
+                        if (languageCount == 2) { translation = "Magazyn (4x4)"; }
+                        if (languageCount == 3) { translation = "Хранилище (4x4)"; }
+                    }
+                    if (buildingGuid == "7000426")
+                    {
+                        if (languageCount == 0) { translation = "Storage Depot (2x2)"; }
+                        if (languageCount == 1) { translation = "Lager (2x2)"; }
+                        if (languageCount == 2) { translation = "Magazyn (2x2)"; }
+                        if (languageCount == 3) { translation = "Хранилище (2x2)"; }
                     }
                     if (translation == null)
                     {
@@ -730,11 +716,6 @@ namespace PresetParser
                 b.Localization.Dict.Add(Languages[languageCount], translation);
                 languageCount++;
             }
-            /// original Block in case anno 1800 works diverent
-            //if (localizations.ContainsKey(buildingGuid))
-            //{
-            //   b.Localization = localizations[buildingGuid];
-            //}
             #endregion
             // add building to the list
             annoBuildingLists.Add(values["Standard"]["Name"].InnerText);
@@ -742,36 +723,232 @@ namespace PresetParser
         }
         #endregion
 
+        /// Parsing Part for 1800
+        #region Parsing Buildings for Anno 1800
+        private static void ParseAssetsFile1800(string filename, string xPathToBuildingsNode, List<BuildingInfo> buildings)
+        {
+            XmlDocument assetsDocument = new XmlDocument();
+            assetsDocument.Load(filename);
+            List<XmlNode> buildingNodes = assetsDocument.SelectNodes(xPathToBuildingsNode).Cast<XmlNode>().ToList();
+
+            foreach (XmlNode buildingNode in buildingNodes)
+            {
+                ParseBuilding1800(buildings, buildingNode, ANNO_VERSION_1800);
+            }
+        }
+
         private static void ParseBuilding1800(List<BuildingInfo> buildings, XmlNode buildingNode, string annoVersion)
         {
-            string factionName = ""; //Need to get from GUID, look in <BuildingCategoryType>. //This element does not exist for Residences.
-            string groupName = ""; //Need to get from GUID
-            string identifierName = buildingNode["Standard"]["Name"].InnerText; //Identifier name is the same for Anno 1800
-
-            //e.g, match 100510 (I think
-            /*
-                  <Values>
-                        <Standard>
-                          <GUID>100510</GUID>
-                          <Name>kontor_main_02</Name>
-                          <IconFilename>data/ui/2kimages/main/3dicons/icon_kontor.png</IconFilename>
-                          <InfoDescription>2977</InfoDescription>
-                        </Standard>
-             */
-            if (buildingNode?["Building"]?["BuildingType"].InnerText == "Residence") {
-                factionName = "Residence";
+            string[] LanguagesFiles = { "" };
+            string templateName = "", factionName = "", identifierName = "", groupName = "";
+            string headerName = "(A7) Anno " + ANNO_VERSION_1800;
+            XmlElement values = buildingNode["Values"]; //Set the value List as normaly
+            if (buildingNode.HasChildNodes)
+            {
+                for (int i = 0; i < buildingNode.ChildNodes.Count; i++)
+                {
+                    string firstChildName = buildingNode.ChildNodes[i].Name;
+                    //if (firstChildName != "") { Console.WriteLine("--> {0}", firstChildName); }
+                    switch (firstChildName)
+                    {
+                        case "BaseAssetGUID": templateName = buildingNode["BaseAssetGUID"].InnerText; break;
+                        case "Template": templateName = buildingNode["Template"].InnerText; break;
+                    }
+                    if (templateName == null) { Console.WriteLine("No Template found, Building is skipped"); return; }
+                    if (templateName.Contains(IncludeBuildingsTemplateNames1800) == false && templateName.Contains(IncludeBuildingsTemplateGUID1800) == false) { return; }
+                    if (values.HasChildNodes == false) { return; }
+                }
             }
             else
             {
-                //Get from GUID
+                //Go next when no firstValue<ChildNames> are found
+                return;
+            }
+            identifierName = values["Standard"]["Name"].InnerText;
+            identifierName = identifierName.FirstCharToUpper();
+            isExcludedName = identifierName.Contains(ExcludeNameList1800);
+            if (isExcludedName == true || isExcludedTemplate == true)
+            {
+                return;
+            }
+            // Setting the factionname, thats the first menu after header
+            string associatedRegion = "";
+            associatedRegion = values?["Building"]?["AssociatedRegions"]?.InnerText;
+            switch (associatedRegion)
+            {
+                case "Moderate;Colony01": factionName = "Both Worlds"; break;
+                default: factionName = associatedRegion.FirstCharToUpper(); break;
+            }
+            if (values?["Building"]?["BuildingType"]?.InnerText != null)
+            {
+                groupName = values["Building"]["BuildingType"].InnerText;
+            }
+            switch (templateName)
+            {
+                case "Farmfield": groupName = "Farm Fields"; break;
+                case "SlotFactoryBuilding7": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
+                default: groupName = templateName.FirstCharToUpper(); break;
+            }
+            if (groupName == "") { groupName = "Not Placed Yet"; }
+            if (groupName == "Farm Fields")
+            {
+                if (factionName == "Moderate") { factionName = "(6) New World Fields"; }
+                if (factionName == "Colony01") { factionName = "(9) Old World Fields"; }
+            }
+            switch (identifierName)
+            {
+                case "Culture_01 (Zoo)": { factionName = "Attractiveness"; groupName = "Visitor Buildings"; break; }
+                case "Culture_02 (Museum)": { factionName = "Attractiveness"; groupName = "Visitor Buildings"; break; }
+                case "Residence_tier01": { factionName = "(1) Farmers"; identifierName = "Residence_Old_World"; groupName = "Residence"; break; }
+                case "Residence_colony01_tier01": { factionName = "(7) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; break; }
+                case "Coastal_03 (Quartz Sand Coast Building)": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
             }
 
+            // Place the rest of the buildings in the right Faction > Group menu
+            #region Order the Buildings to the right tiers and factions as in the game
+            string[] newFactionGroupName = NewFactionAndGroup1800.get(identifierName, factionName, groupName);
+            factionName = newFactionGroupName[0];
+            groupName = newFactionGroupName[1];
+            #endregion
+            if (factionName == "" || factionName == "Moderate" || factionName == "Colony01")
+            {
+                factionName = "Not Placed Yet";
+            }
+            // Starting buildup the preset data
+            BuildingInfo b = new BuildingInfo
+            {
+                Header = headerName,
+                Faction = factionName,
+                Group = groupName,
+                Template = templateName,
+                Identifier = identifierName
+            };
+            // print progress
+            Console.WriteLine(b.Identifier);
+            #region Get BuildBlockers information
+            //Get building blocker
+            if (values["Object"] != null)
+            {
+                if (values["Object"]?["Variations"]?.FirstChild["Filename"]?.InnerText != null)
+                {
+                    if (!RetrieveBuildingBlocker(b, values["Object"]["Variations"].FirstChild["Filename"].InnerText, annoVersion))
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("-BuildBlocker not found, skipping: Missing Object File");
+                    return;
+                }
+            }
+            else
+            {
+                Console.WriteLine("-BuildBlocker not found, skipping: Object Informaion not fount");
+                return;
+            }
+            #endregion
+
+            #region Get IconFilenames
+            // find icon node in values
+            string replaceName = "A7_";
+            string icon = null;
+            if (values["Standard"]?["IconFilename"]?.InnerText != null)
+            {
+                icon = values["Standard"]["IconFilename"].InnerText;
+            }
             
-            groupName = groupName.FirstCharToUpper();
-            factionName = factionName.FirstCharToUpper();
+            if (icon != null)
+            {
+                /// Split the Value <IconFilenames>innertext</IconFilenames> to get only the Name.png
+                string[] sIcons = icon.Split('/');
+                icon = sIcons.LastOrDefault().Replace("icon_", replaceName);
+                b.IconFileName = icon;
+            }
+            else
+            {
+                b.IconFileName = null;
+                //Buildings that came in with the BaseAssetGUID template has no icons, this will fix that;
+                switch (identifierName)
+                {
+                    case "Residence_New_World": b.IconFileName = replaceName + "resident.png"; break;
+                    case "Agriculture_colony01_06 (Timber Yard)": b.IconFileName = replaceName + "wood_log.png"; break;
+                    case "Factory_colony01_01 (Timber Factory)": b.IconFileName = replaceName + "wooden_planks.png"; break;
+                    case "Heavy_colony01_01 (Oil Heavy Industry)": b.IconFileName = replaceName + "oil.png"; break;
+                    case "Processing_colony01_03 (Inlay Processing)": b.IconFileName = replaceName + "inlay.png"; break;
+                    case "Factory_colony01_02(Sailcloth Factory)": b.IconFileName = replaceName + "sail.png"; break;
+                    case "Agriculture_colony01_09(Cattle Farm)": b.IconFileName = replaceName + "meat_raw.png"; break;
+                }
+            }
+            #endregion
 
+            #region Get Infuence Radios of Buildings
+            // read influence radius if existing 
+            try
+            {
+               b.InfluenceRadius = Convert.ToInt32(values["FreeAreaProductivity"]["InfluenceRadius"].InnerText);
+            }
+            catch (NullReferenceException ex) { }
+            #endregion
+
+            // Building the Localizations for building b
+            #region Get localizations
+            /// find localization
+            string buildingGuid = values["Standard"]["GUID"].InnerText;
+            string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
+            string languageFilePath = "data/config/gui/";
+            string languageFileStart = "texts_";
+            string langNodeStartPath = "/TextExport/Texts/Text";
+            string langNodeDepth = "Text";
+            int languageCount = 0;
+            LanguagesFiles = LanguagesFiles1800;
+
+            //Initialise the dictionary
+            b.Localization = new SerializableDictionary<string>();
+
+            foreach (string Language in Languages)
+            {
+                languageFileName = BASE_PATH + languageFilePath + languageFileStart + LanguagesFiles[languageCount] + ".xml";
+                XmlDocument langDocument = new XmlDocument();
+                langDocument.Load(languageFileName);
+                string translation = "";
+                XmlNode translationNodes = langDocument.SelectNodes(langNodeStartPath)
+                    .Cast<XmlNode>().SingleOrDefault(_ => _["GUID"].InnerText == buildingGuid);
+                if (translationNodes != null)
+                {
+                    translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
+                    if (translation == null)
+                    {
+                        throw new InvalidOperationException("Cannot get translation, text node not found");
+                    }
+                    while (translation.Contains("AssetData"))
+                    {
+                        //"[AsserData(2001009): <text>",
+                        //Split the taranslation text ( and ) marking the GUID, and use the second value in nextGUID[].
+                        string[] nextGuid = translation.Split('(',')');
+                        translationNodes = langDocument.SelectNodes(langNodeStartPath)
+                            .Cast<XmlNode>().SingleOrDefault(_ => _["GUID"].InnerText == nextGuid[1]);
+                        translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
+                    }
+                }
+                else
+                {
+                    if (languageCount < 1) /*just set the text one time */
+                    {
+                        Console.WriteLine("No Translation found, it will set to Identifier.");
+                    }
+                    translation = values["Standard"]["Name"].InnerText;
+                }
+                b.Localization.Dict.Add(Languages[languageCount], translation);
+                languageCount++;
+            }
+            #endregion
+            // add building to the list
+            annoBuildingsListCount++;
+            annoBuildingLists.Add(values["Standard"]["Name"].InnerText);
+            buildings.Add(b);
         }
-
+        #endregion
         /// Other Classes and or Internal Commands used in this program
         #region Retrieving BuildingBlockers from Buidings Nodes
         private static bool RetrieveBuildingBlocker(BuildingInfo building, string variationFilename, string annoVersion)
