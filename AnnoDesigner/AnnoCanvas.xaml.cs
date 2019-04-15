@@ -564,9 +564,9 @@ namespace AnnoDesigner
             if (_renderIcon && !string.IsNullOrEmpty(obj.Icon))
             {
                 // draw icon 2x2 grid cells large
-                var iconSize = obj.Size.Width < 2 && obj.Size.Height < 2
-                    ? GridToScreen(new Size(1,1))
-                    : GridToScreen(new Size(2,2));
+                var minSize = Math.Min(obj.Size.Width, obj.Size.Height);
+                minSize = minSize == 1 ? minSize : Math.Floor(NthRoot(minSize, 1.5) + 1);
+                var iconSize = GridToScreen(new Size(minSize, minSize));
                 // center icon within the object
                 var iconPos = objRect.TopLeft;
                 iconPos.X += objRect.Width/2 - iconSize.Width/2;
@@ -699,6 +699,13 @@ namespace AnnoDesigner
                 };
                 drawingContext.DrawText(text, new Point(RenderSize.Width - Constants.StatisticsMargin + 10, 10 + i * 15));
             }
+        }
+
+        //I was really just checking to see if there was a built in function, but this works
+        //https://stackoverflow.com/questions/18657508/c-sharp-find-nth-root
+        static double NthRoot(double A, double N)
+        {
+            return Math.Pow(A, 1.0 / N);
         }
 
         #endregion

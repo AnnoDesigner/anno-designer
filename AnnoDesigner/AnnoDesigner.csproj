@@ -107,8 +107,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="bin\Debug\presetsV8.json" />
-    <None Include="bin\Debug\iconsV8.json" />
+    <None Include="bin\Debug\presets.json" />
+    <None Include="bin\Debug\icons.json" />
     <None Include="bin\Release\icons.json" />
     <None Include="bin\Release\presets.json" />
     <None Include="colors.json" />
