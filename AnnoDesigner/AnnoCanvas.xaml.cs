@@ -565,8 +565,10 @@ namespace AnnoDesigner
             {
                 // draw icon 2x2 grid cells large
                 var minSize = Math.Min(obj.Size.Width, obj.Size.Height);
-                minSize = minSize == 1 ? minSize : Math.Floor(NthRoot(minSize, 1.5) + 1);
+                //minSize = minSize == 1 ? minSize : Math.Floor(NthRoot(minSize, Constants.IconSizeFactor) + 1);
                 var iconSize = GridToScreen(new Size(minSize, minSize));
+                iconSize = minSize == 1 ? iconSize : new Size(NthRoot(iconSize.Width, Constants.IconSizeFactor), NthRoot(iconSize.Height, Constants.IconSizeFactor));
+
                 // center icon within the object
                 var iconPos = objRect.TopLeft;
                 iconPos.X += objRect.Width/2 - iconSize.Width/2;

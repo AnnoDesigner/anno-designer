@@ -126,7 +126,13 @@
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="46">
                         <Label Content="{Binding Path=Icon}" VerticalAlignment="Center" />
-                        <ComboBox DockPanel.Dock="Right" Width="140" Height="46" IsEnabled="True" Name="comboBoxIcon" SelectedIndex="0" TabIndex="6" TextSearch.TextPath="DisplayName" />
+                        <ComboBox DockPanel.Dock="Right" Width="140" Height="46" IsEnabled="True" Name="comboBoxIcon" SelectedIndex="0" TabIndex="6" TextSearch.TextPath="DisplayName">
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel
+                                    VirtualizingStackPanel.IsVirtualizing="True" 
+                                    VirtualizingStackPanel.VirtualizationMode="Recycling"></VirtualizingStackPanel>
+                            </ItemsPanelTemplate>
+                        </ComboBox>
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="26">
                         <Label Content="{Binding Path=Radius}" />

@@ -56,6 +56,11 @@ namespace AnnoDesigner
         public const int StatisticsMargin = 120;
 
         /// <summary>
+        /// The value that affects the rendering sizes of icons on the anno canvas. 1 produces an icon of the biggest size.
+        /// </summary>
+        public const double IconSizeFactor = 1.1;
+
+        /// <summary>
         /// The folder containing all icon files.
         /// </summary>
         public const string IconFolder = "icons";
