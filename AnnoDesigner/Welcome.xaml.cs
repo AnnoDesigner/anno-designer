@@ -50,8 +50,6 @@ namespace AnnoDesigner
             LanguageSelection.ItemsSource = languages;
         }
 
-        private static int _selectedIndex = -1;
-
         private void LanguageSelection_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var lb = (ListBox)sender;
@@ -63,7 +61,7 @@ namespace AnnoDesigner
 
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedIndex != -1)
+            if (LanguageSelection.SelectedItem != null)
             {
                 LoadSelectedLanguage();
             }
@@ -80,12 +78,6 @@ namespace AnnoDesigner
             Settings.Default.SelectedLanguage = MainWindow.SelectedLanguage;
             Settings.Default.Save();
             this.Close();
-        }
-
-        private void LanguageSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var lb = (ListBox)sender;
-            _selectedIndex = lb.SelectedIndex;
         }
     }
 }

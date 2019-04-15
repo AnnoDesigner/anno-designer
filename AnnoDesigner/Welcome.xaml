@@ -35,7 +35,6 @@
                  BorderThickness="0" 
                  Background="#FFECECEC"
                  MouseDoubleClick="LanguageSelection_MouseDoubleClick"
-                 SelectionChanged="LanguageSelection_SelectionChanged"
                  >
             <ListBox.ItemTemplate>
                 <DataTemplate>
