@@ -45,7 +45,8 @@ namespace AnnoDesigner.Presets
                 foreach (var secondLevel in header.GroupBy(_ => _.Faction).OrderBy(_ => _.Key))
                 {
                     var secondLevelItem = new TreeViewItem { Header = secondLevel.Key };
-                    foreach (var thirdLevel in secondLevel.GroupBy(_ => _.Group).OrderBy(_ => _.Key))
+                  
+                    foreach (var thirdLevel in secondLevel.Where(_ => _.Group != null).GroupBy(_ => _.Group).OrderBy(_ => _.Key))
                     {
                         var thirdLevelItem = new TreeViewItem { Header = thirdLevel.Key };
                         foreach (var buildingInfo in thirdLevel.OrderBy(_ => _.GetOrderParameter()))
@@ -65,9 +66,14 @@ namespace AnnoDesigner.Presets
                         {
                             thirdLevelItem.Items.Add(fourthLevelItem);
                         }
-
                         secondLevelItem.Items.Add(thirdLevelItem);
                     }
+
+                    foreach (var thirdLevel in secondLevel.Where(_ => _.Group == null).OrderBy(_ => _.Group))
+                    {
+                        secondLevelItem.Items.Add(thirdLevel.ToAnnoObject());
+                    }
+
                     headerItem.Items.Add(secondLevelItem);
                 }
                 treeView.Items.Add(headerItem);
