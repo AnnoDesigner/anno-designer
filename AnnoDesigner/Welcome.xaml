@@ -14,15 +14,17 @@
         MinWidth="300"
         Padding="10,10,10,10" 
         ResizeMode="NoResize"
+        Icon="icon.ico"
         Top="{Binding Source={x:Static properties:Settings.Default},Path=WelcomeTop, Mode=TwoWay}"
-        Left="{Binding Source={x:Static properties:Settings.Default},Path=WelcomeLeft, Mode=TwoWay}" WindowStartupLocation="CenterScreen"
+        Left="{Binding Source={x:Static properties:Settings.Default},Path=WelcomeLeft, Mode=TwoWay}" 
+        WindowStartupLocation="CenterOwner"
         >
     <Grid Margin="0,0,2,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <TextBlock Margin="79,10,0,0" FontSize="30" Text="Welcome to the Anno Designer!" VerticalAlignment="Top" HorizontalAlignment="Left" Width="433"/>
-        <Image Source="Stuff/icon64.png" Stretch="None" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0"/>
+        <Image Name="WelcomeIcon" Source="Stuff/icon64.png" Stretch="Fill" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0" Height="68" Width="64"/>
         <TextBlock HorizontalAlignment="Left" Margin="79,45,0,0" VerticalAlignment="Top" Width="433" FontSize="22" Height="38"><Run Text="Please select a language:"/></TextBlock>
         <ListBox Name="LanguageSelection" 
                  Margin="10,83,191,48" 

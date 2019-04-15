@@ -13,6 +13,7 @@ using System.Windows.Input;
 using MessageBox = Microsoft.Windows.Controls.MessageBox;
 using System.ComponentModel;
 using AnnoDesigner.Properties;
+using System.Diagnostics;
 
 namespace AnnoDesigner
 {
@@ -24,6 +25,7 @@ namespace AnnoDesigner
     {
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
+        private static MainWindow _instance;
 
         private static string _selectedLanguage;
         public static string SelectedLanguage
@@ -44,17 +46,35 @@ namespace AnnoDesigner
             {
                 _selectedLanguage = value == null ? "English" : value;
                 mainWindowLocalization.UpdateLanguage();
+                _instance.SelectedLanguageChanged();
+                _instance.RepopulateTreeView();
             }
         }
 
         private static Localization.MainWindow mainWindowLocalization;
         //About window does not need to be called, as it get's instantiated and used when the about window is created
 
+        private void SelectedLanguageChanged()
+        {
+            foreach (MenuItem item in LanguageMenu.Items)
+            {
+                if (item.Header.ToString() == SelectedLanguage)
+                {
+                    item.IsChecked = true;
+                }
+                else
+                {
+                    item.IsChecked = false;
+                }
+            }
+        }
+
         #region Initialization
 
         public MainWindow()
         {
             InitializeComponent();
+            _instance = this;
             // initialize web client
             _webClient = new WebClient();
             _webClient.DownloadStringCompleted += WebClientDownloadStringCompleted;
@@ -71,7 +91,6 @@ namespace AnnoDesigner
             if (!Localization.Localization.LanguageCodeMap.ContainsKey(Settings.Default.SelectedLanguage))
             {
                 Welcome w = new Welcome();
-                w.Owner = this;
                 w.ShowDialog();
             }
             else
@@ -85,9 +104,6 @@ namespace AnnoDesigner
                     item.IsChecked = true;
                 }
             }
-
-           
-
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -107,26 +123,27 @@ namespace AnnoDesigner
             CheckForUpdates(false);
             // load color presets
             colorPicker.StandardColors.Clear();
-            try
-            {
-                ColorPresets colorPresets = DataIO.LoadFromFile<ColorPresets>(Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile));
-                foreach (ColorScheme colorScheme in colorPresets.ColorSchemes)
-                {
-                    foreach (ColorInfo colorInfo in colorScheme.ColorInfos)
-                    {
-                        colorPicker.StandardColors.Add(new ColorItem(colorInfo.Color, string.Format("{0} ({1})", colorInfo.ColorTarget, colorScheme.Name)));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Loading of the color presets failed");
-            }
+            //This is currently disabled
+            //try
+            //{
+            //    ColorPresets colorPresets = DataIO.LoadFromFile<ColorPresets>(Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile));
+            //    foreach (ColorScheme colorScheme in colorPresets.ColorSchemes)
+            //    {
+            //        foreach (ColorInfo colorInfo in colorScheme.ColorInfos)
+            //        {
+            //            colorPicker.StandardColors.Add(new ColorItem(colorInfo.Color, string.Format("{0} ({1})", colorInfo.ColorTarget, colorScheme.Name)));
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "Loading of the color presets failed");
+            //}
             // load presets
             treeViewPresets.Items.Clear();
             // manually add a road tile preset
             treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true });
-            treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true });
+            //treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true });
             BuildingPresets presets = annoCanvas.BuildingPresets;
             if (presets != null)
             {
@@ -436,12 +453,11 @@ namespace AnnoDesigner
             else
             {
                 string currentLanguage = SelectedLanguage;
-                //And re populate the tree view if the language has changed
                 if (language != currentLanguage)
                 {
                     SelectedLanguage = language;
-                    RepopulateTreeView();
                 }
+               
             }
         }
         #endregion
@@ -453,13 +469,9 @@ namespace AnnoDesigner
 
         private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
         {
-            foreach (MenuItem item in LanguageMenu.Items)
-            {
-                if (item.Header.ToString() == SelectedLanguage)
-                {
-                    item.IsChecked = true;
-                }
-            }
+            SelectedLanguageChanged();
         }
+
+       
     }
 }

@@ -39,7 +39,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -107,6 +108,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="bin\Debug\presetsV8.json" />
+    <None Include="bin\Debug\iconsV8.json" />
     <None Include="colors.json" />
     <None Include="icons.json" />
     <None Include="icons\.svn\all-wcprops" />
@@ -558,6 +561,8 @@
     <None Include="icons\.svn\text-base\icon_27_97.png.svn-base" />
     <None Include="icons\.svn\text-base\icon_27_98.png.svn-base" />
     <None Include="icons\.svn\text-base\icon_27_99.png.svn-base" />
+    <None Include="Presets-v8\icons.json" />
+    <None Include="Presets-v8\presets.json" />
     <None Include="presets.json" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -567,15 +572,12 @@
     <None Include="Stuff\list_of_buildings_v0.4.json" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Stuff\icon128.png" />
-    <Resource Include="Stuff\icon16.png" />
-    <Resource Include="Stuff\icon256.png" />
-    <Resource Include="Stuff\icon32.png" />
-    <Resource Include="Stuff\icon61_web.png" />
-    <Resource Include="Stuff\icon64.png" />
+    <Resource Include="Stuff\Original Icons\icon128.png" />
+    <Resource Include="Stuff\Original Icons\icon16.png" />
+    <Resource Include="Stuff\Original Icons\icon256.png" />
+    <Resource Include="Stuff\Original Icons\icon32.png" />
+    <Resource Include="Stuff\Original Icons\icon61_web.png" />
+    <Resource Include="Stuff\Original Icons\icon64.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icons\A7_Advanced weapons.png" />
@@ -1311,6 +1313,2198 @@
     <Resource Include="Flags\Poland.png" />
     <Resource Include="Flags\Russia.png" />
     <Resource Include="Flags\United Kingdom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Stuff\IconAD8.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Stuff\Original Icons\icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Stuff\icon32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Stuff\icon64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Anno 2205 PNG\others1_0.png" />
+    <Resource Include="Anno 2205 PNG\others2_0.png" />
+    <Resource Include="Anno 2205 PNG\playerlogos1_0.png" />
+    <Resource Include="Anno 2205 PNG\playerlogos2_0.png" />
+    <Resource Include="Anno 2205 PNG\portraits_0.png" />
+    <Resource Include="Anno 2205 PNG\sessionmaps_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons-v8\A4_icon_116_0.png" />
+    <Resource Include="icons-v8\A4_icon_116_1.png" />
+    <Resource Include="icons-v8\A4_icon_116_10.png" />
+    <Resource Include="icons-v8\A4_icon_116_103.png" />
+    <Resource Include="icons-v8\A4_icon_116_104.png" />
+    <Resource Include="icons-v8\A4_icon_116_107.png" />
+    <Resource Include="icons-v8\A4_icon_116_11.png" />
+    <Resource Include="icons-v8\A4_icon_116_110.png" />
+    <Resource Include="icons-v8\A4_icon_116_111.png" />
+    <Resource Include="icons-v8\A4_icon_116_112.png" />
+    <Resource Include="icons-v8\A4_icon_116_113.png" />
+    <Resource Include="icons-v8\A4_icon_116_114.png" />
+    <Resource Include="icons-v8\A4_icon_116_115.png" />
+    <Resource Include="icons-v8\A4_icon_116_116.png" />
+    <Resource Include="icons-v8\A4_icon_116_117.png" />
+    <Resource Include="icons-v8\A4_icon_116_118.png" />
+    <Resource Include="icons-v8\A4_icon_116_119.png" />
+    <Resource Include="icons-v8\A4_icon_116_12.png" />
+    <Resource Include="icons-v8\A4_icon_116_120.png" />
+    <Resource Include="icons-v8\A4_icon_116_121.png" />
+    <Resource Include="icons-v8\A4_icon_116_122.png" />
+    <Resource Include="icons-v8\A4_icon_116_125.png" />
+    <Resource Include="icons-v8\A4_icon_116_128.png" />
+    <Resource Include="icons-v8\A4_icon_116_129.png" />
+    <Resource Include="icons-v8\A4_icon_116_13.png" />
+    <Resource Include="icons-v8\A4_icon_116_132.png" />
+    <Resource Include="icons-v8\A4_icon_116_136.png" />
+    <Resource Include="icons-v8\A4_icon_116_138.png" />
+    <Resource Include="icons-v8\A4_icon_116_139.png" />
+    <Resource Include="icons-v8\A4_icon_116_14.png" />
+    <Resource Include="icons-v8\A4_icon_116_140.png" />
+    <Resource Include="icons-v8\A4_icon_116_141.png" />
+    <Resource Include="icons-v8\A4_icon_116_142.png" />
+    <Resource Include="icons-v8\A4_icon_116_143.png" />
+    <Resource Include="icons-v8\A4_icon_116_144.png" />
+    <Resource Include="icons-v8\A4_icon_116_145.png" />
+    <Resource Include="icons-v8\A4_icon_116_146.png" />
+    <Resource Include="icons-v8\A4_icon_116_147.png" />
+    <Resource Include="icons-v8\A4_icon_116_148.png" />
+    <Resource Include="icons-v8\A4_icon_116_149.png" />
+    <Resource Include="icons-v8\A4_icon_116_15.png" />
+    <Resource Include="icons-v8\A4_icon_116_151.png" />
+    <Resource Include="icons-v8\A4_icon_116_155.png" />
+    <Resource Include="icons-v8\A4_icon_116_156.png" />
+    <Resource Include="icons-v8\A4_icon_116_157.png" />
+    <Resource Include="icons-v8\A4_icon_116_158.png" />
+    <Resource Include="icons-v8\A4_icon_116_16.png" />
+    <Resource Include="icons-v8\A4_icon_116_17.png" />
+    <Resource Include="icons-v8\A4_icon_116_18.png" />
+    <Resource Include="icons-v8\A4_icon_116_19.png" />
+    <Resource Include="icons-v8\A4_icon_116_2.png" />
+    <Resource Include="icons-v8\A4_icon_116_20.png" />
+    <Resource Include="icons-v8\A4_icon_116_21.png" />
+    <Resource Include="icons-v8\A4_icon_116_22.png" />
+    <Resource Include="icons-v8\A4_icon_116_23.png" />
+    <Resource Include="icons-v8\A4_icon_116_24.png" />
+    <Resource Include="icons-v8\A4_icon_116_25.png" />
+    <Resource Include="icons-v8\A4_icon_116_26.png" />
+    <Resource Include="icons-v8\A4_icon_116_27.png" />
+    <Resource Include="icons-v8\A4_icon_116_28.png" />
+    <Resource Include="icons-v8\A4_icon_116_29.png" />
+    <Resource Include="icons-v8\A4_icon_116_3.png" />
+    <Resource Include="icons-v8\A4_icon_116_30.png" />
+    <Resource Include="icons-v8\A4_icon_116_31.png" />
+    <Resource Include="icons-v8\A4_icon_116_32.png" />
+    <Resource Include="icons-v8\A4_icon_116_33.png" />
+    <Resource Include="icons-v8\A4_icon_116_34.png" />
+    <Resource Include="icons-v8\A4_icon_116_35.png" />
+    <Resource Include="icons-v8\A4_icon_116_36.png" />
+    <Resource Include="icons-v8\A4_icon_116_37.png" />
+    <Resource Include="icons-v8\A4_icon_116_38.png" />
+    <Resource Include="icons-v8\A4_icon_116_39.png" />
+    <Resource Include="icons-v8\A4_icon_116_4.png" />
+    <Resource Include="icons-v8\A4_icon_116_40.png" />
+    <Resource Include="icons-v8\A4_icon_116_41.png" />
+    <Resource Include="icons-v8\A4_icon_116_42.png" />
+    <Resource Include="icons-v8\A4_icon_116_43.png" />
+    <Resource Include="icons-v8\A4_icon_116_44.png" />
+    <Resource Include="icons-v8\A4_icon_116_45.png" />
+    <Resource Include="icons-v8\A4_icon_116_46.png" />
+    <Resource Include="icons-v8\A4_icon_116_47.png" />
+    <Resource Include="icons-v8\A4_icon_116_48.png" />
+    <Resource Include="icons-v8\A4_icon_116_49.png" />
+    <Resource Include="icons-v8\A4_icon_116_5.png" />
+    <Resource Include="icons-v8\A4_icon_116_50.png" />
+    <Resource Include="icons-v8\A4_icon_116_51.png" />
+    <Resource Include="icons-v8\A4_icon_116_52.png" />
+    <Resource Include="icons-v8\A4_icon_116_53.png" />
+    <Resource Include="icons-v8\A4_icon_116_54.png" />
+    <Resource Include="icons-v8\A4_icon_116_55.png" />
+    <Resource Include="icons-v8\A4_icon_116_56.png" />
+    <Resource Include="icons-v8\A4_icon_116_57.png" />
+    <Resource Include="icons-v8\A4_icon_116_58.png" />
+    <Resource Include="icons-v8\A4_icon_116_59.png" />
+    <Resource Include="icons-v8\A4_icon_116_6.png" />
+    <Resource Include="icons-v8\A4_icon_116_60.png" />
+    <Resource Include="icons-v8\A4_icon_116_61.png" />
+    <Resource Include="icons-v8\A4_icon_116_62.png" />
+    <Resource Include="icons-v8\A4_icon_116_63.png" />
+    <Resource Include="icons-v8\A4_icon_116_64.png" />
+    <Resource Include="icons-v8\A4_icon_116_65.png" />
+    <Resource Include="icons-v8\A4_icon_116_66.png" />
+    <Resource Include="icons-v8\A4_icon_116_67.png" />
+    <Resource Include="icons-v8\A4_icon_116_68.png" />
+    <Resource Include="icons-v8\A4_icon_116_69.png" />
+    <Resource Include="icons-v8\A4_icon_116_7.png" />
+    <Resource Include="icons-v8\A4_icon_116_70.png" />
+    <Resource Include="icons-v8\A4_icon_116_73.png" />
+    <Resource Include="icons-v8\A4_icon_116_74.png" />
+    <Resource Include="icons-v8\A4_icon_116_75.png" />
+    <Resource Include="icons-v8\A4_icon_116_76.png" />
+    <Resource Include="icons-v8\A4_icon_116_8.png" />
+    <Resource Include="icons-v8\A4_icon_116_9.png" />
+    <Resource Include="icons-v8\A4_icon_116_90.png" />
+    <Resource Include="icons-v8\A4_icon_116_91.png" />
+    <Resource Include="icons-v8\A4_icon_116_92.png" />
+    <Resource Include="icons-v8\A4_icon_116_93.png" />
+    <Resource Include="icons-v8\A4_icon_116_94.png" />
+    <Resource Include="icons-v8\A4_icon_116_95.png" />
+    <Resource Include="icons-v8\A4_icon_116_96.png" />
+    <Resource Include="icons-v8\A4_icon_116_97.png" />
+    <Resource Include="icons-v8\A4_icon_116_98.png" />
+    <Resource Include="icons-v8\A4_icon_116_99.png" />
+    <Resource Include="icons-v8\A4_icon_27_2.png" />
+    <Resource Include="icons-v8\A4_icon_27_3.png" />
+    <Resource Include="icons-v8\A4_icon_27_44.png" />
+    <Resource Include="icons-v8\A4_icon_27_45.png" />
+    <Resource Include="icons-v8\A4_icon_27_46.png" />
+    <Resource Include="icons-v8\A4_icon_27_47.png" />
+    <Resource Include="icons-v8\A4_icon_27_48.png" />
+    <Resource Include="icons-v8\A4_icon_27_49.png" />
+    <Resource Include="icons-v8\A4_icon_27_50.png" />
+    <Resource Include="icons-v8\A6_Accumulator Unit.png" />
+    <Resource Include="icons-v8\A6_Advanced weapons.png" />
+    <Resource Include="icons-v8\A6_aerogel.png" />
+    <Resource Include="icons-v8\A6_algae.png" />
+    <Resource Include="icons-v8\A6_Alpaca wool.png" />
+    <Resource Include="icons-v8\A6_aluminium.png" />
+    <Resource Include="icons-v8\A6_androids.png" />
+    <Resource Include="icons-v8\A6_Anti-Grav Compensators.png" />
+    <Resource Include="icons-v8\A6_antibiotics.png" />
+    <Resource Include="icons-v8\A6_arctic_road.png" />
+    <Resource Include="icons-v8\A6_beef.png" />
+    <Resource Include="icons-v8\A6_biocomposites.png" />
+    <Resource Include="icons-v8\A6_Bioenhancers.png" />
+    <Resource Include="icons-v8\A6_biologist.png" />
+    <Resource Include="icons-v8\A6_Biopolymer.png" />
+    <Resource Include="icons-v8\A6_bioresigns.png" />
+    <Resource Include="icons-v8\A6_Bioresin.png" />
+    <Resource Include="icons-v8\A6_bio_enhancers.png" />
+    <Resource Include="icons-v8\A6_Canned Food.png" />
+    <Resource Include="icons-v8\A6_canned_food.png" />
+    <Resource Include="icons-v8\A6_ceramics.png" />
+    <Resource Include="icons-v8\A6_christmas_tree.png" />
+    <Resource Include="icons-v8\A6_christmas_tree_02.png" />
+    <Resource Include="icons-v8\A6_cobalt.png" />
+    <Resource Include="icons-v8\A6_colony_safety.png" />
+    <Resource Include="icons-v8\A6_Community Center.png" />
+    <Resource Include="icons-v8\A6_community_center.png" />
+    <Resource Include="icons-v8\A6_community_food.png" />
+    <Resource Include="icons-v8\A6_concrete.png" />
+    <Resource Include="icons-v8\A6_Construct-O-Bots.png" />
+    <Resource Include="icons-v8\A6_construct_o_bots.png" />
+    <Resource Include="icons-v8\A6_copper.png" />
+    <Resource Include="icons-v8\A6_Corporation HQ.png" />
+    <Resource Include="icons-v8\A6_credits_module.png" />
+    <Resource Include="icons-v8\A6_cybernetic_implants.png" />
+    <Resource Include="icons-v8\A6_cybersynth_circuits.png" />
+    <Resource Include="icons-v8\A6_deep_water_corals.png" />
+    <Resource Include="icons-v8\A6_deuterium.png" />
+    <Resource Include="icons-v8\A6_diamant.png" />
+    <Resource Include="icons-v8\A6_distribution_center_arctic.png" />
+    <Resource Include="icons-v8\A6_distribution_center_earth.png" />
+    <Resource Include="icons-v8\A6_distribution_center_moon.png" />
+    <Resource Include="icons-v8\A6_Drone Hive.png" />
+    <Resource Include="icons-v8\A6_earth_distribution_center.png" />
+    <Resource Include="icons-v8\A6_earth_resident.png" />
+    <Resource Include="icons-v8\A6_earth_resident_estate.png" />
+    <Resource Include="icons-v8\A6_earth_road.png" />
+    <Resource Include="icons-v8\A6_earth_spaceport.png" />
+    <Resource Include="icons-v8\A6_earth_transportation_center.png" />
+    <Resource Include="icons-v8\A6_energy_module.png" />
+    <Resource Include="icons-v8\A6_energy_shielding_big.png" />
+    <Resource Include="icons-v8\A6_energy_shielding_big_2.png" />
+    <Resource Include="icons-v8\A6_energy_shielding_small.png" />
+    <Resource Include="icons-v8\A6_energy_shielding_small_2.png" />
+    <Resource Include="icons-v8\A6_Finance Calculator.png" />
+    <Resource Include="icons-v8\A6_fine_food.png" />
+    <Resource Include="icons-v8\A6_fish.png" />
+    <Resource Include="icons-v8\A6_Flax.png" />
+    <Resource Include="icons-v8\A6_forbidden_science.png" />
+    <Resource Include="icons-v8\A6_fruit.png" />
+    <Resource Include="icons-v8\A6_fruit_drink.png" />
+    <Resource Include="icons-v8\A6_Fusion Power Cells.png" />
+    <Resource Include="icons-v8\A6_Fusion Reactor.png" />
+    <Resource Include="icons-v8\A6_fusion_accumulators.png" />
+    <Resource Include="icons-v8\A6_fusion_power_plant.png" />
+    <Resource Include="icons-v8\A6_Gas Power Station.png" />
+    <Resource Include="icons-v8\A6_gas_power_plant.png" />
+    <Resource Include="icons-v8\A6_geothermal_turbinnes.png" />
+    <Resource Include="icons-v8\A6_grapes.png" />
+    <Resource Include="icons-v8\A6_graphene.png" />
+    <Resource Include="icons-v8\A6_graphene_module.png" />
+    <Resource Include="icons-v8\A6_gravity_generators.png" />
+    <Resource Include="icons-v8\A6_headquarter_base.png" />
+    <Resource Include="icons-v8\A6_headquarter_base_variation.png" />
+    <Resource Include="icons-v8\A6_headquarter_module_1.png" />
+    <Resource Include="icons-v8\A6_headquarter_module_2.png" />
+    <Resource Include="icons-v8\A6_headquarter_module_3.png" />
+    <Resource Include="icons-v8\A6_headquarter_module_4.png" />
+    <Resource Include="icons-v8\A6_headquarter_module_5.png" />
+    <Resource Include="icons-v8\A6_Health Center.png" />
+    <Resource Include="icons-v8\A6_health_care.png" />
+    <Resource Include="icons-v8\A6_helium_3.png" />
+    <Resource Include="icons-v8\A6_High Security Laboratory.png" />
+    <Resource Include="icons-v8\A6_hospital.png" />
+    <Resource Include="icons-v8\A6_HQ Intersection.png" />
+    <Resource Include="icons-v8\A6_HQ Terminal 1.png" />
+    <Resource Include="icons-v8\A6_HQ Terminal 2.png" />
+    <Resource Include="icons-v8\A6_HQ Wing 1.png" />
+    <Resource Include="icons-v8\A6_HQ Wing 2.png" />
+    <Resource Include="icons-v8\A6_Infodrome.png" />
+    <Resource Include="icons-v8\A6_information.png" />
+    <Resource Include="icons-v8\A6_Intelliwear.png" />
+    <Resource Include="icons-v8\A6_intelli_clothes.png" />
+    <Resource Include="icons-v8\A6_iridium.png" />
+    <Resource Include="icons-v8\A6_Large Shield Generator.png" />
+    <Resource Include="icons-v8\A6_large_bridge.png" />
+    <Resource Include="icons-v8\A6_logistics.png" />
+    <Resource Include="icons-v8\A6_logistics_module.png" />
+    <Resource Include="icons-v8\A6_Lunar Lunch.png" />
+    <Resource Include="icons-v8\A6_Luxury Food.png" />
+    <Resource Include="icons-v8\A6_luxury_food.png" />
+    <Resource Include="icons-v8\A6_magnatite.png" />
+    <Resource Include="icons-v8\A6_magnetites.png" />
+    <Resource Include="icons-v8\A6_Maintenance Station.png" />
+    <Resource Include="icons-v8\A6_Metal Foam.png" />
+    <Resource Include="icons-v8\A6_metal_foam.png" />
+    <Resource Include="icons-v8\A6_methan_clathrate.png" />
+    <Resource Include="icons-v8\A6_Metro Station.png" />
+    <Resource Include="icons-v8\A6_microchips.png" />
+    <Resource Include="icons-v8\A6_mobility.png" />
+    <Resource Include="icons-v8\A6_molybdenum.png" />
+    <Resource Include="icons-v8\A6_mood_road.png" />
+    <Resource Include="icons-v8\A6_Moon Crops.png" />
+    <Resource Include="icons-v8\A6_moon_attraction_astronaut.png" />
+    <Resource Include="icons-v8\A6_moon_attraction_donut.png" />
+    <Resource Include="icons-v8\A6_moon_attraction_robot_fight.png" />
+    <Resource Include="icons-v8\A6_moon_construction_vehicle.png" />
+    <Resource Include="icons-v8\A6_moon_crops.png" />
+    <Resource Include="icons-v8\A6_moon_heavy_facility.png" />
+    <Resource Include="icons-v8\A6_moon_ice.png" />
+    <Resource Include="icons-v8\A6_moon_road.png" />
+    <Resource Include="icons-v8\A6_moon_spaceport.png" />
+    <Resource Include="icons-v8\A6_moon_transportation_center.png" />
+    <Resource Include="icons-v8\A6_mountain_building_site.png" />
+    <Resource Include="icons-v8\A6_mountain_building_site_earth.png" />
+    <Resource Include="icons-v8\A6_mountain_building_site_polar.png" />
+    <Resource Include="icons-v8\A6_Multispec Prisms.png" />
+    <Resource Include="icons-v8\A6_multispectral_prisms.png" />
+    <Resource Include="icons-v8\A6_natural_space_food.png" />
+    <Resource Include="icons-v8\A6_needs_infrastructure.png" />
+    <Resource Include="icons-v8\A6_needs_sustenance.png" />
+    <Resource Include="icons-v8\A6_neural_interfaces.png" />
+    <Resource Include="icons-v8\A6_Neuro Implants.png" />
+    <Resource Include="icons-v8\A6_neuro_implants_2.png" />
+    <Resource Include="icons-v8\A6_nutrient_powder.png" />
+    <Resource Include="icons-v8\A6_oil_rig.png" />
+    <Resource Include="icons-v8\A6_Organic Food.png" />
+    <Resource Include="icons-v8\A6_organic_nanotubes.png" />
+    <Resource Include="icons-v8\A6_ornamental_advertisement_02.png" />
+    <Resource Include="icons-v8\A6_ornamental_bus_stop.png" />
+    <Resource Include="icons-v8\A6_ornamental_car_park_large.png" />
+    <Resource Include="icons-v8\A6_ornamental_car_park_medium.png" />
+    <Resource Include="icons-v8\A6_ornamental_car_park_small.png" />
+    <Resource Include="icons-v8\A6_ornamental_flower_bed.png" />
+    <Resource Include="icons-v8\A6_ornamental_forest_large.png" />
+    <Resource Include="icons-v8\A6_ornamental_forest_small.png" />
+    <Resource Include="icons-v8\A6_ornamental_latern.png" />
+    <Resource Include="icons-v8\A6_ornamental_maypole.png" />
+    <Resource Include="icons-v8\A6_ornamental_park_large.png" />
+    <Resource Include="icons-v8\A6_ornamental_park_medium.png" />
+    <Resource Include="icons-v8\A6_ornamental_park_small.png" />
+    <Resource Include="icons-v8\A6_ornamental_staircase_02.png" />
+    <Resource Include="icons-v8\A6_ornamental_tree_03.png" />
+    <Resource Include="icons-v8\A6_ornamental_trials_fusion.png" />
+    <Resource Include="icons-v8\A6_ornamental_veteran.png" />
+    <Resource Include="icons-v8\A6_ornamental_water_fountain.png" />
+    <Resource Include="icons-v8\A6_oxygen-48.png" />
+    <Resource Include="icons-v8\A6_oxygen.png" />
+    <Resource Include="icons-v8\A6_petrochemicals.png" />
+    <Resource Include="icons-v8\A6_plant_fibres.png" />
+    <Resource Include="icons-v8\A6_police.png" />
+    <Resource Include="icons-v8\A6_population.png" />
+    <Resource Include="icons-v8\A6_project_climate_stabilizer.png" />
+    <Resource Include="icons-v8\A6_project_glacier_channel.png" />
+    <Resource Include="icons-v8\A6_project_liberty_statue.png" />
+    <Resource Include="icons-v8\A6_project_meteor.png" />
+    <Resource Include="icons-v8\A6_project_moon_hotel.png" />
+    <Resource Include="icons-v8\A6_project_refugee_camp.png" />
+    <Resource Include="icons-v8\A6_project_sunken_arc.png" />
+    <Resource Include="icons-v8\A6_Quantum Computers.png" />
+    <Resource Include="icons-v8\A6_quantum_computers.png" />
+    <Resource Include="icons-v8\A6_Qubit Processors.png" />
+    <Resource Include="icons-v8\A6_qubit_processors.png" />
+    <Resource Include="icons-v8\A6_rare_earth_elements.png" />
+    <Resource Include="icons-v8\A6_recreation.png" />
+    <Resource Include="icons-v8\A6_recreation_4.png" />
+    <Resource Include="icons-v8\A6_regolith.png" />
+    <Resource Include="icons-v8\A6_rejuvenators.png" />
+    <Resource Include="icons-v8\A6_replicators.png" />
+    <Resource Include="icons-v8\A6_Residence %28Arctic%29.png" />
+    <Resource Include="icons-v8\A6_Residence %28Lunar%29.png" />
+    <Resource Include="icons-v8\A6_Residence %28Temperate%29.png" />
+    <Resource Include="icons-v8\A6_residence_arctic.png" />
+    <Resource Include="icons-v8\A6_residence_earth.png" />
+    <Resource Include="icons-v8\A6_residence_estate.png" />
+    <Resource Include="icons-v8\A6_residence_moon.png" />
+    <Resource Include="icons-v8\A6_Residential Complex %28Temperate%29.png" />
+    <Resource Include="icons-v8\A6_rice.png" />
+    <Resource Include="icons-v8\A6_rice_dish.png" />
+    <Resource Include="icons-v8\A6_road.png" />
+    <Resource Include="icons-v8\A6_robots.png" />
+    <Resource Include="icons-v8\A6_Security Department.png" />
+    <Resource Include="icons-v8\A6_security.png" />
+    <Resource Include="icons-v8\A6_session_arctic_01.png" />
+    <Resource Include="icons-v8\A6_session_earth_01.png" />
+    <Resource Include="icons-v8\A6_session_moon_01.png" />
+    <Resource Include="icons-v8\A6_session_polar_01.png" />
+    <Resource Include="icons-v8\A6_session_space_station.png" />
+    <Resource Include="icons-v8\A6_shaped_firework_fountain.png" />
+    <Resource Include="icons-v8\A6_silica.png" />
+    <Resource Include="icons-v8\A6_single_firework_fountain.png" />
+    <Resource Include="icons-v8\A6_Small Shield Generator.png" />
+    <Resource Include="icons-v8\A6_solar_array.png" />
+    <Resource Include="icons-v8\A6_Soy Beans.png" />
+    <Resource Include="icons-v8\A6_soy_beans.png" />
+    <Resource Include="icons-v8\A6_soy_milk.png" />
+    <Resource Include="icons-v8\A6_spacefood.png" />
+    <Resource Include="icons-v8\A6_spaceport_earth.png" />
+    <Resource Include="icons-v8\A6_spaceport_earth_level_2.png" />
+    <Resource Include="icons-v8\A6_spaceport_earth_level_3.png" />
+    <Resource Include="icons-v8\A6_spaceport_earth_level_4.png" />
+    <Resource Include="icons-v8\A6_spaceport_moon.png" />
+    <Resource Include="icons-v8\A6_spaceport_moon_level_0.png" />
+    <Resource Include="icons-v8\A6_spaceport_moon_level_1.png" />
+    <Resource Include="icons-v8\A6_spaceport_moon_level_2.png" />
+    <Resource Include="icons-v8\A6_spaceport_upgrade_arctic_docks.png" />
+    <Resource Include="icons-v8\A6_spaceport_upgrade_energy_transmitter.png" />
+    <Resource Include="icons-v8\A6_spaceport_upgrade_launchpad.png" />
+    <Resource Include="icons-v8\A6_spaceport_upgrade_space_elevator_2.png" />
+    <Resource Include="icons-v8\A6_space_rocket.png" />
+    <Resource Include="icons-v8\A6_spore_cultures.png" />
+    <Resource Include="icons-v8\A6_Stadium.png" />
+    <Resource Include="icons-v8\A6_stimulants.png" />
+    <Resource Include="icons-v8\A6_stock_market_3d.png" />
+    <Resource Include="icons-v8\A6_Storage Depot.png" />
+    <Resource Include="icons-v8\A6_superalloy.png" />
+    <Resource Include="icons-v8\A6_Superalloys.png" />
+    <Resource Include="icons-v8\A6_Supercoolants.png" />
+    <Resource Include="icons-v8\A6_super_alloys.png" />
+    <Resource Include="icons-v8\A6_super_conductors.png" />
+    <Resource Include="icons-v8\A6_super_coolants.png" />
+    <Resource Include="icons-v8\A6_sushi.png" />
+    <Resource Include="icons-v8\A6_Synaptic Circuits.png" />
+    <Resource Include="icons-v8\A6_synaptic_circuits.png" />
+    <Resource Include="icons-v8\A6_Synthcells.png" />
+    <Resource Include="icons-v8\A6_synth_cells.png" />
+    <Resource Include="icons-v8\A6_temp_module.png" />
+    <Resource Include="icons-v8\A6_thermal_shells.png" />
+    <Resource Include="icons-v8\A6_tidal_power_station.png" />
+    <Resource Include="icons-v8\A6_Titanium Plating.png" />
+    <Resource Include="icons-v8\A6_titanium.png" />
+    <Resource Include="icons-v8\A6_titan_plating.png" />
+    <Resource Include="icons-v8\A6_tofu.png" />
+    <Resource Include="icons-v8\A6_Trade Union.png" />
+    <Resource Include="icons-v8\A6_Transportation Center %28Arctic%29.png" />
+    <Resource Include="icons-v8\A6_Transportation Center %28Lunar%29.png" />
+    <Resource Include="icons-v8\A6_Transportation Center %28Temperate%29.png" />
+    <Resource Include="icons-v8\A6_transportation_center_arctic.png" />
+    <Resource Include="icons-v8\A6_transportation_center_earth.png" />
+    <Resource Include="icons-v8\A6_transportation_center_moon.png" />
+    <Resource Include="icons-v8\A6_University.png" />
+    <Resource Include="icons-v8\A6_Vita Drinks.png" />
+    <Resource Include="icons-v8\A6_vitapills.png" />
+    <Resource Include="icons-v8\A6_water.png" />
+    <Resource Include="icons-v8\A6_waterfall_dam.png" />
+    <Resource Include="icons-v8\A6_Wind Park.png" />
+    <Resource Include="icons-v8\A6_Windows.png" />
+    <Resource Include="icons-v8\A6_windpark.png" />
+    <Resource Include="icons-v8\A6_wine.png" />
+    <Resource Include="icons-v8\A6_workforce_module.png" />
+    <Resource Include="icons-v8\icon_27_0.png" />
+    <Resource Include="icons-v8\icon_27_1.png" />
+    <Resource Include="icons-v8\icon_27_10.png" />
+    <Resource Include="icons-v8\icon_27_101.png" />
+    <Resource Include="icons-v8\icon_27_11.png" />
+    <Resource Include="icons-v8\icon_27_111.png" />
+    <Resource Include="icons-v8\icon_27_112.png" />
+    <Resource Include="icons-v8\icon_27_113.png" />
+    <Resource Include="icons-v8\icon_27_114.png" />
+    <Resource Include="icons-v8\icon_27_115.png" />
+    <Resource Include="icons-v8\icon_27_12.png" />
+    <Resource Include="icons-v8\icon_27_124.png" />
+    <Resource Include="icons-v8\icon_27_124b.png" />
+    <Resource Include="icons-v8\icon_27_13.png" />
+    <Resource Include="icons-v8\icon_27_134.png" />
+    <Resource Include="icons-v8\icon_27_135.png" />
+    <Resource Include="icons-v8\icon_27_136.png" />
+    <Resource Include="icons-v8\icon_27_137.png" />
+    <Resource Include="icons-v8\icon_27_138.png" />
+    <Resource Include="icons-v8\icon_27_139.png" />
+    <Resource Include="icons-v8\icon_27_140.png" />
+    <Resource Include="icons-v8\icon_27_141.png" />
+    <Resource Include="icons-v8\icon_27_142.png" />
+    <Resource Include="icons-v8\icon_27_143.png" />
+    <Resource Include="icons-v8\icon_27_144.png" />
+    <Resource Include="icons-v8\icon_27_145.png" />
+    <Resource Include="icons-v8\icon_27_146.png" />
+    <Resource Include="icons-v8\icon_27_148.png" />
+    <Resource Include="icons-v8\icon_27_149.png" />
+    <Resource Include="icons-v8\icon_27_150.png" />
+    <Resource Include="icons-v8\icon_27_151.png" />
+    <Resource Include="icons-v8\icon_27_152.png" />
+    <Resource Include="icons-v8\icon_27_153.png" />
+    <Resource Include="icons-v8\icon_27_154.png" />
+    <Resource Include="icons-v8\icon_27_155.png" />
+    <Resource Include="icons-v8\icon_27_156.png" />
+    <Resource Include="icons-v8\icon_27_157.png" />
+    <Resource Include="icons-v8\icon_27_158.png" />
+    <Resource Include="icons-v8\icon_27_160.png" />
+    <Resource Include="icons-v8\icon_27_161.png" />
+    <Resource Include="icons-v8\icon_27_162.png" />
+    <Resource Include="icons-v8\icon_27_163.png" />
+    <Resource Include="icons-v8\icon_27_164.png" />
+    <Resource Include="icons-v8\icon_27_165.png" />
+    <Resource Include="icons-v8\icon_27_166.png" />
+    <Resource Include="icons-v8\icon_27_167.png" />
+    <Resource Include="icons-v8\icon_27_168.png" />
+    <Resource Include="icons-v8\icon_27_169.png" />
+    <Resource Include="icons-v8\icon_27_17.png" />
+    <Resource Include="icons-v8\icon_27_170.png" />
+    <Resource Include="icons-v8\icon_27_171.png" />
+    <Resource Include="icons-v8\icon_27_172.png" />
+    <Resource Include="icons-v8\icon_27_173.png" />
+    <Resource Include="icons-v8\icon_27_174.png" />
+    <Resource Include="icons-v8\icon_27_175.png" />
+    <Resource Include="icons-v8\icon_27_176.png" />
+    <Resource Include="icons-v8\icon_27_177.png" />
+    <Resource Include="icons-v8\icon_27_178.png" />
+    <Resource Include="icons-v8\icon_27_179.png" />
+    <Resource Include="icons-v8\icon_27_18.png" />
+    <Resource Include="icons-v8\icon_27_180.png" />
+    <Resource Include="icons-v8\icon_27_181.png" />
+    <Resource Include="icons-v8\icon_27_182.png" />
+    <Resource Include="icons-v8\icon_27_183.png" />
+    <Resource Include="icons-v8\icon_27_184.png" />
+    <Resource Include="icons-v8\icon_27_185.png" />
+    <Resource Include="icons-v8\icon_27_186.png" />
+    <Resource Include="icons-v8\icon_27_187.png" />
+    <Resource Include="icons-v8\icon_27_19.png" />
+    <Resource Include="icons-v8\icon_27_193.png" />
+    <Resource Include="icons-v8\icon_27_194.png" />
+    <Resource Include="icons-v8\icon_27_2.png" />
+    <Resource Include="icons-v8\icon_27_20.png" />
+    <Resource Include="icons-v8\icon_27_203.png" />
+    <Resource Include="icons-v8\icon_27_21.png" />
+    <Resource Include="icons-v8\icon_27_210.png" />
+    <Resource Include="icons-v8\icon_27_211.png" />
+    <Resource Include="icons-v8\icon_27_212.png" />
+    <Resource Include="icons-v8\icon_27_213.png" />
+    <Resource Include="icons-v8\icon_27_214.png" />
+    <Resource Include="icons-v8\icon_27_215.png" />
+    <Resource Include="icons-v8\icon_27_216.png" />
+    <Resource Include="icons-v8\icon_27_217.png" />
+    <Resource Include="icons-v8\icon_27_22.png" />
+    <Resource Include="icons-v8\icon_27_23.png" />
+    <Resource Include="icons-v8\icon_27_24.png" />
+    <Resource Include="icons-v8\icon_27_25.png" />
+    <Resource Include="icons-v8\icon_27_26.png" />
+    <Resource Include="icons-v8\icon_27_27.png" />
+    <Resource Include="icons-v8\icon_27_28.png" />
+    <Resource Include="icons-v8\icon_27_29.png" />
+    <Resource Include="icons-v8\icon_27_3.png" />
+    <Resource Include="icons-v8\icon_27_30.png" />
+    <Resource Include="icons-v8\icon_27_31.png" />
+    <Resource Include="icons-v8\icon_27_32.png" />
+    <Resource Include="icons-v8\icon_27_34.png" />
+    <Resource Include="icons-v8\icon_27_4.png" />
+    <Resource Include="icons-v8\icon_27_44.png" />
+    <Resource Include="icons-v8\icon_27_47.png" />
+    <Resource Include="icons-v8\icon_27_48.png" />
+    <Resource Include="icons-v8\icon_27_48_emptyfield.png" />
+    <Resource Include="icons-v8\icon_27_48_field.png" />
+    <Resource Include="icons-v8\icon_27_49.png" />
+    <Resource Include="icons-v8\icon_27_5.png" />
+    <Resource Include="icons-v8\icon_27_50.png" />
+    <Resource Include="icons-v8\icon_27_51.png" />
+    <Resource Include="icons-v8\icon_27_52.png" />
+    <Resource Include="icons-v8\icon_27_53.png" />
+    <Resource Include="icons-v8\icon_27_54.png" />
+    <Resource Include="icons-v8\icon_27_55.png" />
+    <Resource Include="icons-v8\icon_27_56.png" />
+    <Resource Include="icons-v8\icon_27_58.png" />
+    <Resource Include="icons-v8\icon_27_59.png" />
+    <Resource Include="icons-v8\icon_27_6.png" />
+    <Resource Include="icons-v8\icon_27_60.png" />
+    <Resource Include="icons-v8\icon_27_61.png" />
+    <Resource Include="icons-v8\icon_27_62.png" />
+    <Resource Include="icons-v8\icon_27_63.png" />
+    <Resource Include="icons-v8\icon_27_68.png" />
+    <Resource Include="icons-v8\icon_27_69.png" />
+    <Resource Include="icons-v8\icon_27_70.png" />
+    <Resource Include="icons-v8\icon_27_71.png" />
+    <Resource Include="icons-v8\icon_27_72.png" />
+    <Resource Include="icons-v8\icon_27_73.png" />
+    <Resource Include="icons-v8\icon_27_74.png" />
+    <Resource Include="icons-v8\icon_27_75.png" />
+    <Resource Include="icons-v8\icon_27_80.png" />
+    <Resource Include="icons-v8\icon_27_81.png" />
+    <Resource Include="icons-v8\icon_27_83.png" />
+    <Resource Include="icons-v8\icon_27_85.png" />
+    <Resource Include="icons-v8\icon_27_87.png" />
+    <Resource Include="icons-v8\icon_27_88.png" />
+    <Resource Include="icons-v8\icon_27_89.png" />
+    <Resource Include="icons-v8\icon_27_9.png" />
+    <Resource Include="icons-v8\icon_27_91.png" />
+    <Resource Include="icons-v8\icon_30_11.png" />
+    <Resource Include="icons-v8\icon_30_12.png" />
+    <Resource Include="icons-v8\icon_30_13.png" />
+    <Resource Include="icons-v8\icon_30_19.png" />
+    <Resource Include="icons-v8\icon_30_279.png" />
+    <Resource Include="icons-v8\icon_30_280.png" />
+    <Resource Include="icons-v8\icon_30_281.png" />
+    <Resource Include="icons-v8\icon_30_282.png" />
+    <Resource Include="icons-v8\icon_30_283.png" />
+    <Resource Include="icons-v8\icon_30_29.png" />
+    <Resource Include="icons-v8\icon_30_32.png" />
+    <Resource Include="icons-v8\icon_30_41.png" />
+    <Resource Include="icons-v8\icon_30_7.png" />
+    <Resource Include="icons-v8\icon_30_8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Presets-v8\Combined icons and Preset Break Lines.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_103.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_104.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_107.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_110.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_111.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_112.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_113.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_114.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_115.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_116.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_117.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_118.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_119.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_120.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_121.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_122.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_125.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_128.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_129.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_132.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_136.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_138.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_139.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_14.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_140.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_141.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_142.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_143.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_144.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_145.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_146.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_147.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_148.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_149.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_15.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_151.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_155.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_156.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_157.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_158.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_17.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_18.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_19.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_21.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_23.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_27.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_28.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_30.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_31.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_33.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_34.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_35.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_36.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_37.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_38.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_39.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_40.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_41.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_42.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_43.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_44.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_45.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_46.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_47.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_49.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_51.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_52.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_53.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_54.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_55.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_56.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_57.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_58.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_59.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_60.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_61.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_62.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_63.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_65.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_66.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_67.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_68.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_69.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_70.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_73.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_74.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_75.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_76.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_90.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_91.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_92.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_93.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_94.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_95.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_97.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_98.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_116_99.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_27_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_27_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_27_44.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_27_45.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_27_46.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_27_47.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_27_48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_27_49.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A4_icon_27_50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Accumulator Unit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Advanced weapons.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_aerogel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_algae.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Alpaca wool.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_aluminium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_androids.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Anti-Grav Compensators.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_antibiotics.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_arctic_road.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_beef.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_bio_enhancers.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_biocomposites.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Bioenhancers.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_biologist.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Biopolymer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_bioresigns.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Bioresin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Canned Food.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_canned_food.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ceramics.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_christmas_tree.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_christmas_tree_02.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_cobalt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_colony_safety.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Community Center.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_community_center.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_community_food.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_concrete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Construct-O-Bots.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_construct_o_bots.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_copper.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Corporation HQ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_credits_module.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_cybernetic_implants.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_cybersynth_circuits.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_deep_water_corals.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_deuterium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_diamant.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_distribution_center_arctic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_distribution_center_earth.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_distribution_center_moon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Drone Hive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_earth_distribution_center.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_earth_resident.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_earth_resident_estate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_earth_road.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_earth_spaceport.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_earth_transportation_center.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_energy_module.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_energy_shielding_big.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_energy_shielding_big_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_energy_shielding_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_energy_shielding_small_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Finance Calculator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_fine_food.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_fish.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Flax.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_forbidden_science.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_fruit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_fruit_drink.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Fusion Power Cells.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Fusion Reactor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_fusion_accumulators.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_fusion_power_plant.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Gas Power Station.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_gas_power_plant.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_geothermal_turbinnes.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_grapes.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_graphene.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_graphene_module.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_gravity_generators.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_headquarter_base.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_headquarter_base_variation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_headquarter_module_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_headquarter_module_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_headquarter_module_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_headquarter_module_4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_headquarter_module_5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Health Center.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_health_care.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_helium_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_High Security Laboratory.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_hospital.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_HQ Intersection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_HQ Terminal 1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_HQ Terminal 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_HQ Wing 1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_HQ Wing 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Infodrome.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_information.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_intelli_clothes.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Intelliwear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_iridium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Large Shield Generator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_large_bridge.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_logistics.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_logistics_module.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Lunar Lunch.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Luxury Food.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_luxury_food.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_magnatite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_magnetites.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Maintenance Station.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Metal Foam.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_metal_foam.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_methan_clathrate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Metro Station.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_microchips.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_mobility.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_molybdenum.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_mood_road.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Moon Crops.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_moon_attraction_astronaut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_moon_attraction_donut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_moon_attraction_robot_fight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_moon_construction_vehicle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_moon_crops.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_moon_heavy_facility.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_moon_ice.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_moon_road.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_moon_spaceport.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_moon_transportation_center.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_mountain_building_site.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_mountain_building_site_earth.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_mountain_building_site_polar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Multispec Prisms.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_multispectral_prisms.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_natural_space_food.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_needs_infrastructure.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_needs_sustenance.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_neural_interfaces.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Neuro Implants.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_neuro_implants_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_nutrient_powder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_oil_rig.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Organic Food.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_organic_nanotubes.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_advertisement_02.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_bus_stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_car_park_large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_car_park_medium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_car_park_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_flower_bed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_forest_large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_forest_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_latern.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_maypole.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_park_large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_park_medium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_park_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_staircase_02.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_tree_03.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_trials_fusion.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_veteran.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_ornamental_water_fountain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_oxygen-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_oxygen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_petrochemicals.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_plant_fibres.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_police.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_population.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_project_climate_stabilizer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_project_glacier_channel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_project_liberty_statue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_project_meteor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_project_moon_hotel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_project_refugee_camp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_project_sunken_arc.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Quantum Computers.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_quantum_computers.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Qubit Processors.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_qubit_processors.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_rare_earth_elements.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_recreation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_recreation_4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_regolith.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_rejuvenators.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_replicators.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Residence %28Arctic%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Residence %28Lunar%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Residence %28Temperate%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_residence_arctic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_residence_earth.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_residence_estate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_residence_moon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Residential Complex %28Temperate%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_rice.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_rice_dish.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_road.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_robots.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Security Department.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_security.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_session_arctic_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_session_earth_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_session_moon_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_session_polar_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_session_space_station.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_shaped_firework_fountain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_silica.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_single_firework_fountain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Small Shield Generator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_solar_array.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Soy Beans.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_soy_beans.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_soy_milk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_space_rocket.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spacefood.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spaceport_earth.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spaceport_earth_level_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spaceport_earth_level_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spaceport_earth_level_4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spaceport_moon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spaceport_moon_level_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spaceport_moon_level_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spaceport_moon_level_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spaceport_upgrade_arctic_docks.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spaceport_upgrade_energy_transmitter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spaceport_upgrade_launchpad.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spaceport_upgrade_space_elevator_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_spore_cultures.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Stadium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_stimulants.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_stock_market_3d.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Storage Depot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_super_alloys.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_super_conductors.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_super_coolants.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_superalloy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Superalloys.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Supercoolants.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_sushi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Synaptic Circuits.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_synaptic_circuits.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_synth_cells.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Synthcells.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_temp_module.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_thermal_shells.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_tidal_power_station.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_titan_plating.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Titanium Plating.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_titanium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_tofu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Trade Union.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Transportation Center %28Arctic%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Transportation Center %28Lunar%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Transportation Center %28Temperate%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_transportation_center_arctic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_transportation_center_earth.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_transportation_center_moon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_University.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Vita Drinks.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_vitapills.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_water.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_waterfall_dam.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Wind Park.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_Windows.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_windpark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_wine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\A6_workforce_module.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_101.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_111.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_112.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_113.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_114.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_115.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_124.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_124b.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_134.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_135.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_136.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_137.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_138.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_139.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_140.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_141.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_142.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_143.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_144.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_145.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_146.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_148.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_149.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_150.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_151.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_152.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_153.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_154.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_155.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_156.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_157.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_158.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_160.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_161.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_162.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_163.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_164.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_165.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_166.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_167.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_168.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_169.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_17.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_170.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_171.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_172.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_173.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_174.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_175.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_176.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_177.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_178.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_179.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_18.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_180.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_181.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_182.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_183.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_184.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_185.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_186.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_187.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_19.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_193.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_194.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_203.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_21.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_210.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_211.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_212.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_213.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_214.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_215.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_216.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_217.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_23.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_27.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_28.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_30.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_31.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_34.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_44.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_47.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_48_emptyfield.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_48_field.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_49.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_51.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_52.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_53.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_54.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_55.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_56.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_58.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_59.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_60.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_61.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_62.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_63.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_68.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_69.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_70.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_71.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_72.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_73.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_74.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_75.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_80.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_81.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_83.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_85.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_87.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_88.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_89.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_27_91.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_19.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_279.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_280.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_281.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_282.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_283.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_41.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\icons-v8\icon_30_8.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

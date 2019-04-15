@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:AnnoDesigner.Localization"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
-        Title="About Anno Designer (Modified)" 
+        Title="About Anno Designer" 
         Height="382.666" 
-        Width="567.333" 
+        Width="572.333" 
         Icon="/AnnoDesigner;component/icon.ico" 
         ResizeMode="NoResize" 
         KeyDown="WindowKeyDown" 
@@ -23,7 +23,7 @@
             <RowDefinition Height="223*"/>
             <RowDefinition Height="132*"/>
         </Grid.RowDefinitions>
-        <Image Height="64" Width="64" Source="/AnnoDesigner;component/Stuff/icon64.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,12,0,0" />
+        <Image Source="/AnnoDesigner;component/Stuff/icon64.png" Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7,12,0,0" Height="75" Width="70" />
         <Label HorizontalAlignment="Left" Margin="82,12,0,0" VerticalAlignment="Top" FontSize="24" Content="{Binding Path=ModifiedAnnoDesigner}" />
         <Label Margin="82,48,0,0" VerticalAlignment="Top" Content="{Binding Path=BuildingLayoutDesigner}" />
         <Label Margin="12,92,0,0" VerticalAlignment="Top" FontSize="14" Content="{Binding Path=Credits}" />
