@@ -790,7 +790,7 @@ namespace PresetParser
             {
                 case "Farmfield": groupName = "Farm Fields"; break;
                 case "SlotFactoryBuilding7": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
-                case "Warehouse": { factionName = "(1) Farmers"; groupName = "Logistics"; break; }
+                case "Warehouse": { factionName = "(1) Farmers"; groupName = null; break; }
                 case "HarborWarehouse7": { factionName = "Harbor"; groupName = null; break; }
                 case "HarborWarehouseStrategic": { factionName = "Harbor"; groupName = "Logistics"; break; }
                 case "HarborDepot": { factionName = "Harbor"; groupName = "Depots"; break; }
@@ -806,8 +806,8 @@ namespace PresetParser
             }
             if (groupName == "Farm Fields")
             {
-                if (factionName == "Moderate") { factionName = "(6) New World Fields"; }
-                if (factionName == "Colony01") { factionName = "(9) Old World Fields"; }
+                if (factionName == "Moderate") { factionName = "(6) New World Fields"; groupName = null; }
+                if (factionName == "Colony01") { factionName = "(9) Old World Fields"; groupName = null; }
             }
             switch (identifierName)
             {
@@ -894,6 +894,7 @@ namespace PresetParser
                     case "Agriculture_colony01_09 (Cattle Farm)": b.IconFileName = replaceName + "meat_raw.png"; break;
                     case "Service_colony01_01 (Marketplace)": b.IconFileName = replaceName + "market.png"; break;
                     case "Service_colony01_02 (Chapel)": b.IconFileName = replaceName + "church.png"; break;
+                    case "Kontor_main_01":b.IconFileName = replaceName + "harbour_buildings.png"; break;
                 }
             }
             #endregion
