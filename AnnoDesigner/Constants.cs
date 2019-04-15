@@ -28,12 +28,12 @@ namespace AnnoDesigner
         /// <summary>
         /// Json encoded file containing the building presets.
         /// </summary>
-        public const string BuildingPresetsFile = "presetsV8.json";
+        public const string BuildingPresetsFile = "presets.json";
         
         /// <summary>
         /// Json encoded file containing the localized names for the icons
         /// </summary>
-        public const string IconNameFile = "iconsV8.json";
+        public const string IconNameFile = "icons.json";
 
         /// <summary>
         /// The minimal grid size to which the user can zoom out.
@@ -58,7 +58,7 @@ namespace AnnoDesigner
         /// <summary>
         /// The folder containing all icon files.
         /// </summary>
-        public const string IconFolder = "icons-v8";
+        public const string IconFolder = "icons";
 
         /// <summary>
         /// Filter used to retrieve the icons within the IconFolder.
