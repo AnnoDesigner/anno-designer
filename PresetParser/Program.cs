@@ -67,12 +67,13 @@ namespace PresetParser
         /// i need the IncludeBuildingsTemplateNames to get Building informaton from, as it is also the Presets Template String or Template GUID
         /// </summary>
         private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
-            "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "CultureModule", "PowerplantBuilding"};
-        private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263" };
+            "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "CultureModule", "PowerplantBuilding",
+        "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse"};
+        private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358" };
         /// ---
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System", "1x1",
             "module_01_birds", "module_02_peacock", "(Warehouse II)", "(Warehouse III)", "logistic_colony01_01 (Warehouse I)", "Kontor_main_02", "Kontor_main_03", "kontor_main_colony01",
-            "Fake Ornament [test 2nd party]", "Kontor_imperial_02", "Kontor_imperial_03","(Oil Harbor II)","(Oil Harbor III)", "Third_party_", "CQO_"};
+            "Fake Ornament [test 2nd party]", "Kontor_imperial_02", "Kontor_imperial_03","(Oil Harbor II)","(Oil Harbor III)", "Third_party_", "CQO_", "Kontor_imperial_01", "- Pirates", "Harbor_colony01_09 (tourism_pier_01)"};
         /// <summary>
         /// in NewFactionAndGroup1800.cs are made the following lists
         /// ChangeBuildingTo<1>_<2>_1800 
@@ -557,6 +558,7 @@ namespace PresetParser
                 isExcludedName = nameValue.Contains(ExcludeNameList2205);
                 templateValue = buildingNode["Template"].InnerText;
                 isExcludedTemplate = templateValue.Contains(ExcludeTemplateList2205);
+
             }
             if (isExcludedName == true || isExcludedTemplate == true || isExcludedFaction == true)
             {
@@ -654,7 +656,7 @@ namespace PresetParser
             #region Get localizations
             /// find localization
             string buildingGuid = values["Standard"]["GUID"].InnerText;
-            if (annoVersion == ANNO_VERSION_2205 && buildingGuid.Contains(ExcludeGUIDList2205) == true) { return; };
+            if (buildingGuid.Contains(ExcludeGUIDList2205) == true) { return; };
             string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
             string languageFilePath = "data/config/gui/";
             string languageFileStart = "texts_";
@@ -783,13 +785,25 @@ namespace PresetParser
             {
                 groupName = values["Building"]["BuildingType"].InnerText;
             }
+            if (groupName == "") { groupName = "Not Placed Yet"; }
             switch (templateName)
             {
                 case "Farmfield": groupName = "Farm Fields"; break;
                 case "SlotFactoryBuilding7": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
+                case "Warehouse": { factionName = "(1) Farmers"; groupName = "Logistics"; break; }
+                case "HarborWarehouse7": { factionName = "Harbor"; groupName = null; break; }
+                case "HarborWarehouseStrategic": { factionName = "Harbor"; groupName = "Logistics"; break; }
+                case "HarborDepot": { factionName = "Harbor"; groupName = "Depots"; break; }
+                case "HarborLandingStage7": { factionName = "Harbor"; groupName = null; break; }
+                case "HarborBuildingAttacker": { factionName = "Harbor"; groupName = "Military"; break; }
+                case "Shipyard": { factionName = "Harbor"; groupName = "Shipyards"; break; }
+                case "VisitorPier": { factionName = "Harbor"; groupName = "Special Buildings"; break; }
+                case "WorkforceConnector": { factionName = "Harbor"; groupName = "Special Buildings"; break; }
+                case "RepairCrane": { factionName = "Harbor"; groupName = "Special Buildings"; break; }
+                case "HarborOffice": { factionName = "Harbor"; groupName = "Special Buildings"; break; }
+                case "PowerplantBuilding": { factionName = "Electricity"; groupName = null; break; }
                 default: groupName = templateName.FirstCharToUpper(); break;
             }
-            if (groupName == "") { groupName = "Not Placed Yet"; }
             if (groupName == "Farm Fields")
             {
                 if (factionName == "Moderate") { factionName = "(6) New World Fields"; }
@@ -797,8 +811,8 @@ namespace PresetParser
             }
             switch (identifierName)
             {
-                case "Culture_01 (Zoo)": { factionName = "Attractiveness"; groupName = "Visitor Buildings"; break; }
-                case "Culture_02 (Museum)": { factionName = "Attractiveness"; groupName = "Visitor Buildings"; break; }
+                case "Culture_01 (Zoo)": { factionName = "Attractiveness"; groupName = null; break; }
+                case "Culture_02 (Museum)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Residence_tier01": { factionName = "(1) Farmers"; identifierName = "Residence_Old_World"; groupName = "Residence"; break; }
                 case "Residence_colony01_tier01": { factionName = "(7) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; break; }
                 case "Coastal_03 (Quartz Sand Coast Building)": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
@@ -876,8 +890,10 @@ namespace PresetParser
                     case "Factory_colony01_01 (Timber Factory)": b.IconFileName = replaceName + "wooden_planks.png"; break;
                     case "Heavy_colony01_01 (Oil Heavy Industry)": b.IconFileName = replaceName + "oil.png"; break;
                     case "Processing_colony01_03 (Inlay Processing)": b.IconFileName = replaceName + "inlay.png"; break;
-                    case "Factory_colony01_02(Sailcloth Factory)": b.IconFileName = replaceName + "sail.png"; break;
-                    case "Agriculture_colony01_09(Cattle Farm)": b.IconFileName = replaceName + "meat_raw.png"; break;
+                    case "Factory_colony01_02 (Sailcloth Factory)": b.IconFileName = replaceName + "sail.png"; break;
+                    case "Agriculture_colony01_09 (Cattle Farm)": b.IconFileName = replaceName + "meat_raw.png"; break;
+                    case "Service_colony01_01 (Marketplace)": b.IconFileName = replaceName + "market.png"; break;
+                    case "Service_colony01_02 (Chapel)": b.IconFileName = replaceName + "church.png"; break;
                 }
             }
             #endregion

@@ -17,33 +17,23 @@ namespace PresetParser
         /// <2> wil be the Group under <1>, like Production, Public, etc
         /// </summary>
         /// Public Buildings
-        /* Dunmy List Building.
-        private static readonly List<string> ChangeBuildingsToAW_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToNW1_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToNW2_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToNW3_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToNW4_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToNW5_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToOW1_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToOW2_Public_1800 = new List<string> { "" };
-        */
-        private static readonly List<string> ChangeBuildingsToAW_Public_1800 = new List<string> { "Institution_01 (Police)", "Institution_02 (Fire Department)", "Institution_03 (Hospital)", "Logistic_01 (Marketplace)" };
-        private static readonly List<string> ChangeBuildingsToNW1_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToNW2_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToNW3_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToNW4_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToNW5_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToOW1_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToOW2_Public_1800 = new List<string> { "" };
+        private static readonly List<string> ChangeBuildingsToAW_Public_1800 = new List<string> { "Institution_01 (Police)", "Institution_02 (Fire Department)", "Institution_03 (Hospital)" };
+        private static readonly List<string> ChangeBuildingsToNW1_Public_1800 = new List<string> { "Logistic_01 (Marketplace)", "Service_01 (Pub)" };
+        private static readonly List<string> ChangeBuildingsToNW2_Public_1800 = new List<string> { "Service_04 (Church)", "Service_02 (School)" };
+        private static readonly List<string> ChangeBuildingsToNW3_Public_1800 = new List<string> { "Service_05 (Cabaret)", "Service_07 (University)",};
+        private static readonly List<string> ChangeBuildingsToNW4_Public_1800 = new List<string> { "Service_03 (Bank)" };
+        private static readonly List<string> ChangeBuildingsToNW5_Public_1800 = new List<string> { "Service_09 (Club House)" };
+        private static readonly List<string> ChangeBuildingsToOW1_Public_1800 = new List<string> { "Service_colony01_01 (Marketplace)", "Service_colony01_02 (Chapel)" };
+        private static readonly List<string> ChangeBuildingsToOW2_Public_1800 = new List<string> { "Service_colony01_03 (Boxing Arena)" };
         /// Production Buildings
         // private static readonly List<string> ChangeBuildingsToAW_Productions_1800 = new List<string> { "" };
         private static readonly List<string> ChangeBuildingsToNW1_Productions_1800 = new List<string> { "Coastal_01 (Fish Coast Building)", "Processing_04 (Weavery)", "Food_06 (Schnapps Maker)", "Factory_03 (Timber Factory)", "Agriculture_05 (Timber Yard)" };
         private static readonly List<string> ChangeBuildingsToNW2_Productions_1800 = new List<string> { "Factory_09 (Sailcloth Factory)", "Heavy_01 (Beams Heavy Industry)", "Heavy_04 (Weapons Heavy Industry)", "Heavy_02 (Steel Heavy Industry)", "Heavy_03 (Coal Heavy Industry)", "Processing_01 (Tallow Processing)", "Food_07 (Sausage Maker)", "Processing_02 (Flour Processing)", "Factory_02 (Soap Factory)", "Processing_03 (Malt Processing)", "Food_02 (Beer Maker)", "Factory_04 (Brick Factory)", "Food_01 (Bread Maker)" };
         private static readonly List<string> ChangeBuildingsToNW3_Productions_1800 = new List<string> { "Food_03 (Goulash Factory)", "Food_05 (Canned Food Factory)", "Processing_06 (Glass Processing)", "Factory_07 (Window Factory)", "Agriculture_09 (Hunter's Cabin)", "Factory_05 (Fur Coat Workshop)", "Workshop_03 (Sewing Machines Factory)" };
-        private static readonly List<string> ChangeBuildingsToNW4_Productions_1800 = new List<string> { "Factory_06 (Light Bulb Factory)", "Processing_08 (Carbon Filament Processing)", "Workshop_02 (Pocket Watch Workshop)", "Workshop_05 (Gold Workshop)", "Heavy_07 (Steam Motors Heavy Industry)", "Workshop_01 (High-Wheeler Workshop)", "Heavy_06 (Advanced Weapons Heavy Industry)", "Processing_05 (Dynamite Processing)", "Coastal_02 (Niter Coast Building)", "Workshop_07 (Glasses Workshop)", "Heavy_09 (Brass Heavy Industry)", "Heavy_10 (Oil Heavy Industry)", "Factory_01 (Concrete Factory)" };
+        private static readonly List<string> ChangeBuildingsToNW4_Productions_1800 = new List<string> { "Factory_06 (Light Bulb Factory)", "Processing_08 (Carbon Filament Processing)", "Workshop_02 (Pocket Watch Workshop)", "Workshop_05 (Gold Workshop)", "Heavy_07 (Steam Motors Heavy Industry)", "Workshop_01 (High-Wheeler Workshop)", "Heavy_06 (Advanced Weapons Heavy Industry)", "Processing_05 (Dynamite Processing)", "Coastal_02 (Niter Coast Building)", "Workshop_07 (Glasses Workshop)", "Heavy_09 (Brass Heavy Industry)", "Heavy_10 (Oil Heavy Industry)", "Factory_01 (Concrete Factory)", "Heavy_10_field (Oil Pump)" };
         private static readonly List<string> ChangeBuildingsToNW5_Productions_1800 = new List<string> { "Heavy_08 (Steam Carriages Heavy Industry)", "Factory_10 (Chassis Factory)", "Workshop_04 (Phonographs Workshop)", "Processing_07 (Inlay Processing)", "Workshop_06 (Jewelry Workshop)", "Food_08 (Champagne Maker)" };
         private static readonly List<string> ChangeBuildingsToOW1_Productions_1800 = new List<string> { "Processing_colony01_02 (Poncho Maker)", "Coastal_colony01_01 (Pearls Coast Building)", "Food_colony01_04 (Fried Banana Maker)", "Coastal_colony01_02 (Fish Coast Building)", "Factory_colony01_02 (Sailcloth Factory)", "Factory_colony01_01 (Timber Factory)", "Agriculture_colony01_06 (Timber Yard)", "Factory_colony01_03 (Cotton Cloth Processing)", "Food_colony01_01 (Rum Maker)"};
-        private static readonly List<string> ChangeBuildingsToOW2_Productions_1800 = new List<string> { "Food_colony01_02 (Chocolate Maker)", "Workshop_colony01_01 (Cigars Workshop)", "Factory_colony01_07 (Bombin Maker)", "Factory_colony01_06 (Felt Maker)", "Food_colony01_03 (Coffee Maker)", "Food_colony01_05 (Burrito Maker)", "Processing_colony01_01 (Sugar Processing)", "Processing_colony01_03 (Inlay Processing)", "Heavy_colony01_01 (Oil Heavy Industry)" };
+        private static readonly List<string> ChangeBuildingsToOW2_Productions_1800 = new List<string> { "Food_colony01_02 (Chocolate Maker)", "Workshop_colony01_01 (Cigars Workshop)", "Factory_colony01_07 (Bombin Maker)", "Factory_colony01_06 (Felt Maker)", "Food_colony01_03 (Coffee Maker)", "Food_colony01_05 (Burrito Maker)", "Processing_colony01_01 (Sugar Processing)", "Processing_colony01_03 (Inlay Processing)", "Heavy_colony01_01 (Oil Heavy Industry)", "Heavy_colony01_01_field (Oil Pump)" };
         /// Farm Building
         //private static readonly List<string> ChangeBuildingsToAW_FarmBuilding_1800 = new List<string> { "" };
         private static readonly List<string> ChangeBuildingsToNW1_FarmBuilding_1800 = new List<string> { "Agriculture_04 (Potato Farm)", "Agriculture_06 (Sheep Farm)", };
@@ -53,7 +43,8 @@ namespace PresetParser
         private static readonly List<string> ChangeBuildingsToNW5_FarmBuilding_1800 = new List<string> { "Agriculture_10 (Vineyard)" };
         private static readonly List<string> ChangeBuildingsToOW1_FarmBuilding_1800 = new List<string> { "Agriculture_colony01_11 (Alpaca Farm)", "Agriculture_colony01_08 (Banana Farm)", "Agriculture_colony01_03 (Cotton Farm)", "Agriculture_colony01_01 (Sugar Cane Farm)", "Agriculture_colony01_05 (Caoutchouc Farm)" };
         private static readonly List<string> ChangeBuildingsToOW2_FarmBuilding_1800 = new List<string> { "Agriculture_colony01_09 (Cattle Farm)", "Agriculture_colony01_04 (Cocoa Farm)", "Agriculture_colony01_02 (Tobacco Farm)", "Agriculture_colony01_07 (Coffee Beans Farm)", "Agriculture_colony01_10 (Corn Farm)" };
-
+        // Special Building
+        private static readonly List<string> ChangeBuildingsToAW_SpecialBuilding_1800 = new List<string> { "Guild_house", "Town hall" };
 
         /// </summary>
         /// <param name="identifierName"></param> The given Buildingname, this will not changed
@@ -89,7 +80,8 @@ namespace PresetParser
             if (identifierName.IsPartOf(ChangeBuildingsToNW5_FarmBuilding_1800)) { factionName = "(5) Investors"; groupName = "Farm Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToOW1_FarmBuilding_1800)) { factionName = "(7) Jornaleros"; groupName = "Farm Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToOW2_FarmBuilding_1800)) { factionName = "(8) Obreros"; groupName = "Farm Buildings"; }
-
+            //Special Buildings
+            if (identifierName.IsPartOf(ChangeBuildingsToAW_SpecialBuilding_1800)) { factionName = "All Worlds"; groupName = "Special Buildings"; }
 
             string[] facionNameGroupName = { factionName, groupName };
             return facionNameGroupName;
