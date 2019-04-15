@@ -45,9 +45,7 @@ namespace AnnoDesigner
             set
             {
                 _selectedLanguage = value == null ? "English" : value;
-                mainWindowLocalization.UpdateLanguage();
                 _instance.SelectedLanguageChanged();
-                _instance.RepopulateTreeView();
             }
         }
 
@@ -56,6 +54,8 @@ namespace AnnoDesigner
 
         private void SelectedLanguageChanged()
         {
+            mainWindowLocalization.UpdateLanguage();
+            _instance.RepopulateTreeView();
             foreach (MenuItem item in LanguageMenu.Items)
             {
                 if (item.Header.ToString() == SelectedLanguage)
@@ -67,6 +67,7 @@ namespace AnnoDesigner
                     item.IsChecked = false;
                 }
             }
+            Settings.Default.SelectedLanguage = SelectedLanguage;
         }
 
         #region Initialization
