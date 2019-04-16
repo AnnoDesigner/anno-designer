@@ -30,7 +30,8 @@ namespace PresetParser
         private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "polish", "russian" };
         // Internal Program Buildings List to skipp double buildings
         public static List<string> annoBuildingLists = new List<string>();
-        public static int annoBuildingsListCount = 0;
+        public static int annoBuildingsListCount = 0, printTestText = 0;
+        public static bool testVersion = false;
 
         #region Initalisizing Exclude IdentifierNames, FactionNames and TemplateNames for presets.json file 
 
@@ -55,17 +56,19 @@ namespace PresetParser
             "1000672", "1000755", "7000273", "1001171", "1000703", "7000272", "7000420", "7000421", "7000423", "7000424", "7000425", "7000427", "7000428",
             "7000429", "7000430", "7000431", "12000009", "12000010", "12000011", "12000020", "12000036", "1000063", "1000170", "1000212", "1000213", "1000174",
             "1000215", "1000217", "1000224", "1000250", "1000332", "1000886", "7001466", "7001467", "7001470", "7001471", "7001472", "7001473", "7001877",
-            "7001878", "7001879", "7001880", "7001881", "7001882", "7001883", "7001884", "7001885", "7000310", "7000311", "7000315", "7000316" };
+            "7001878", "7001879", "7001880", "7001881", "7001882", "7001883", "7001884", "7001885", "7000310", "7000311", "7000315", "7000316",
+            "7000313", "7000263", "7000262", "7000305", "7000306" };
         private static readonly List<string> ExcludeNameList2205 = new List<string> { "Placeholder", "tier02", "tier03", "tier04", "tier05", "voting",
             "CTU Reactor 2 (decommissioned)", "CTU Reactor 3 (decommissioned)", "CTU Reactor 4 (decommissioned)", "CTU Reactor 5 (decommissioned)", "CTU Reactor 6 (decommissioned)",
             "CTU Reactor 2 (active!)", "CTU Reactor 3 (active!)", "CTU Reactor 4 (active!)", "CTU Reactor 5 (active!)", "CTU Reactor 6 (active!)" };
         private static readonly List<string> ExcludeTemplateList2205 = new List<string> { "SpacePort", "BridgeWithUpgrade", "DistributionBuilding" };
+        private static readonly List<string> testGUIDNames2205 = new List<string> { "NODOUBLES YET" };
         #endregion
 
-        #region anno 1800
-        /// <summary>
-        /// i need the IncludeBuildingsTemplateNames to get Building informaton from, as it is also the Presets Template String or Template GUID
-        /// </summary>
+            #region anno 1800
+            /// <summary>
+            /// i need the IncludeBuildingsTemplateNames to get Building informaton from, as it is also the Presets Template String or Template GUID
+            /// </summary>
         private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "CultureModule", "PowerplantBuilding",
         "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse"};
@@ -146,15 +149,30 @@ namespace PresetParser
                 {
                     validVersion = true;
                 }
+                else if (annoVersion.ToLower() == "-test")
+                {
+                    Console.Write("Please enter an Anno version:");
+                    annoVersion = Console.ReadLine();
+                    if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070 || annoVersion == ANNO_VERSION_2205 || annoVersion == ANNO_VERSION_1800)
+                    {
+                        validVersion = true;
+                        testVersion = true;
+                    }
+                }
                 else
                 {
                     Console.WriteLine();
                     Console.WriteLine("Invalid input, please try again or enter 'quit to exit.");
                 }
             }
-
-            Console.WriteLine("Extracting and parsing RDA data from {0} for anno version {1}.", BASE_PATH, annoVersion);
-
+            if (!testVersion)
+            {
+                Console.WriteLine("Extracting and parsing RDA data from {0} for anno version {1}.", BASE_PATH, annoVersion);
+            }
+            else
+            {
+                Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH, annoVersion);
+            }
             #endregion
 
             #region Anno Verion Data Paths
@@ -335,13 +353,18 @@ namespace PresetParser
             BuildingPresets presets = new BuildingPresets() { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
 
             Console.WriteLine();
-            Console.WriteLine("Writing buildings to presets-{0}-{1}.json", annoVersion, BUILDING_PRESETS_VERSION);
-            DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
-            // wait for keypress before exiting
-            if (annoVersion == ANNO_VERSION_1800)
+            if (!testVersion)
             {
-                Console.WriteLine("Parst {0} Buildings", annoBuildingsListCount);
+                Console.WriteLine("Writing buildings to presets-{0}-{1}.json", annoVersion, BUILDING_PRESETS_VERSION);
+                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
             }
+            else
+            {
+                Console.WriteLine("THIS IS A TEST DUMMY FILE WRITEN!!!!");
+                DataIO.SaveToFile(presets, "DUMMY.json");
+            }
+            // wait for keypress before exiting
+            Console.WriteLine("This list contains {0} Buildings", annoBuildingsListCount);
             Console.WriteLine();
             Console.WriteLine("Do not forget to copy the contents to the normal");
             Console.WriteLine("presets.json, in the Anno Designer directory!");
@@ -519,6 +542,7 @@ namespace PresetParser
             #endregion
 
             // add building to the list(s)
+            annoBuildingsListCount++;
             annoBuildingLists.Add(values["Standard"]["Name"].InnerText);
             buildings.Add(b);
         }
@@ -552,14 +576,10 @@ namespace PresetParser
             }
 
             #region Skip Unused buildings in Anno Designer List
-            if (annoVersion == ANNO_VERSION_2205)
-            {
-                nameValue = values["Standard"]["Name"].InnerText;
-                isExcludedName = nameValue.Contains(ExcludeNameList2205);
-                templateValue = buildingNode["Template"].InnerText;
-                isExcludedTemplate = templateValue.Contains(ExcludeTemplateList2205);
-
-            }
+            nameValue = values["Standard"]["Name"].InnerText;
+            isExcludedName = nameValue.Contains(ExcludeNameList2205);
+            templateValue = buildingNode["Template"].InnerText;
+            isExcludedTemplate = templateValue.Contains(ExcludeTemplateList2205);
             if (isExcludedName == true || isExcludedTemplate == true || isExcludedFaction == true)
             {
                 return;
@@ -571,6 +591,33 @@ namespace PresetParser
             if (isExcludedName)
             {
                 return;
+            }
+            #endregion
+
+            string buildingGuid = values["Standard"]["GUID"].InnerText;
+            #region TEST SECTION OF GUID CHECK
+            if (!testVersion)
+            {
+                if (buildingGuid.Contains(ExcludeGUIDList2205) == true) { return; }
+            }
+            else
+            {
+                if (printTestText == 0)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Testing GUID Resuld :");
+                    printTestText = 1;
+                }
+                if (buildingGuid.Contains(ExcludeGUIDList2205) == true)
+                {
+                    Console.WriteLine("GUID : {0} (Checked GUID)", buildingGuid);
+                    Console.WriteLine("Name : {0}", nameValue);
+                }
+                else
+                {
+                    Console.WriteLine("GUID : {0} <<-- NOT IN GUID CHECK", buildingGuid);
+                    Console.WriteLine("Name : {0}", nameValue);
+                }
             }
             #endregion
 
@@ -601,7 +648,10 @@ namespace PresetParser
                 Identifier = identifierName
             };
             // print progress
-            Console.WriteLine(b.Identifier);
+            if (!testVersion)
+            {
+                Console.WriteLine(b.Identifier);
+            }
             #endregion
 
             #region Get BuildBlockers information
@@ -655,8 +705,7 @@ namespace PresetParser
 
             #region Get localizations
             /// find localization
-            string buildingGuid = values["Standard"]["GUID"].InnerText;
-            if (buildingGuid.Contains(ExcludeGUIDList2205) == true) { return; };
+
             string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
             string languageFilePath = "data/config/gui/";
             string languageFileStart = "texts_";
@@ -716,10 +765,24 @@ namespace PresetParser
                     translation = values["Standard"]["Name"].InnerText;
                 }
                 b.Localization.Dict.Add(Languages[languageCount], translation);
+                if (testVersion==true && annoVersion==ANNO_VERSION_2205)
+                {
+                    if (languageCount == 0)
+                    {
+                        Console.WriteLine("ENG name: {0}", translation);
+                        if (translation.IsPartOf(testGUIDNames2205))
+                        {
+                            Console.WriteLine(">>------------------------------------------------------------------------<<");
+                            Console.ReadKey();
+                            if (buildingGuid.Contains(ExcludeGUIDList2205) == true) { return; }
+                        }
+                    }
+                }
                 languageCount++;
             }
             #endregion
             // add building to the list
+            annoBuildingsListCount++;
             annoBuildingLists.Add(values["Standard"]["Name"].InnerText);
             buildings.Add(b);
         }
@@ -1013,7 +1076,6 @@ namespace PresetParser
             }
             else
             {
-
                 XmlDocument ifoDocument = new XmlDocument();
                 ifoDocument.Load(Path.Combine(BASE_PATH + "/", string.Format("{0}.ifo", Path.GetDirectoryName(variationFilename) + "\\" + Path.GetFileNameWithoutExtension(variationFilename))));
                 try
@@ -1027,7 +1089,7 @@ namespace PresetParser
                     }
                     if (Math.Abs(Convert.ToInt32(node["x"].InnerText) / 2048) > 0)
                     {
-                        Console.WriteLine("{0}", Path.GetFileNameWithoutExtension(variationFilename));
+                        //Console.WriteLine("{0}", Path.GetFileNameWithoutExtension(variationFilename));
                         if (Path.GetFileNameWithoutExtension(variationFilename) != "ornamental_post_09")
                         {
                             if (Path.GetFileNameWithoutExtension(variationFilename) != "water_mill_ecos")
@@ -1246,7 +1308,15 @@ namespace PresetParser
                     Localizations = localizations[guid]
                 });
             }
-            DataIO.SaveToFile(mapping, "icons-Anno"+annoVersion+"-v"+ BUILDING_PRESETS_VERSION+".json");
+            if (!testVersion)
+            {
+                DataIO.SaveToFile(mapping, "icons-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
+            }
+            else
+            {
+                Console.WriteLine("TIS IS A TEST: No icon.sjon File is writen") ;
+            }
+            
         }
         #endregion
 
