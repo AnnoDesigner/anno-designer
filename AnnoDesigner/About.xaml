@@ -32,7 +32,7 @@
         <TextBlock Margin="24,153,0,0" VerticalAlignment="Top"  Text="{Binding Path=CombinedForAnnoVersions, StringFormat='\{0\} Anno 1404, 2070, 2205 and 1800'}" />
         <TextBlock Margin="24,171,0,0" VerticalAlignment="Top" Text="{Binding Path=BuildingPresets, StringFormat='\{0\} Anno 1404 by &quot;&lt;Unknown&gt;&quot; - Anno 2207 by by Peter Hozak (DeathApril)'}" />
         <TextBlock Margin="24,189,0,0" VerticalAlignment="Top" Text="{Binding Path=BuildingPresets, StringFormat='\{0\} Anno 2205 by PickledWhispers - Anno 1800 by Sting McRay'}" />
-        <TextBlock Margin="24,2,0,0" VerticalAlignment="Top" Text="{Binding Path=AdditionalChanges, StringFormat='\{0\} Additional changes made by Agmas, Sting McRay and Gosolceser1'}" Grid.Row="1" />
+        <TextBlock Margin="24,2,0,0" VerticalAlignment="Top" Text="{Binding Path=AdditionalChanges, StringFormat='\{0\} made by Agmas, Sting McRay and Gosolceser1'}" Grid.Row="1" />
         <Label Margin="0,33,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="{Binding Path=ManyThanks}" Grid.Row="1" />
         <Label Margin="0,60,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="{Binding Path=VisitTheFandom}" Grid.Row="1" />
         <Button Width="117" Height="23" Margin="10,0,0,10" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="{Binding Path=OriginalHomepage}" Click="ButtonOriginalHomepageClick" Grid.Row="1"  />
