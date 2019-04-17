@@ -12,7 +12,7 @@ namespace AnnoDesigner
         /// Version number of the application.
         /// Will be increased with each release.
         /// </summary>
-        public const int Version = 8;
+        public const double Version = 8.0;
 
         /// <summary>
         /// Version number of the saved file format.

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -61,8 +62,20 @@ namespace AnnoDesigner
         {
             try
             {
-                MessageBox.Show("We have encountered a problem with the Application. Please check the error-log.txt file in the application directory for more information. \n\n Attempting to resume...", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                File.AppendAllText(App.ApplicationPath + "/error-log.txt", string.Format("\n\n***Application Error***\n\n Message: {0} \n Stack Trace:{1}\n\n", e.Message, e.StackTrace));
+                MessageBox.Show("We have encountered a problem with the application. Please check the error-log.txt file in the application directory for more information. \n\n Attempting to resume...", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                WriteToErrorLog("Application Unhandled Error", e.Message, e.StackTrace);
+            }
+            catch (Exception)
+            {
+                //Don't rethrow.
+            }
+        }
+
+        public static void WriteToErrorLog(string heading, string message, string stackTrace)
+        {
+            try
+            {
+                File.AppendAllText(App.ApplicationPath + "/error-log.txt", string.Format("\n\n*** {0} *** {1} \n\nMessage: {2} \n Stack Trace:\n{3}\n\n", heading, DateTime.Now.ToString("yyyy-MM-dd"), message, stackTrace));
             }
             catch (Exception)
             {

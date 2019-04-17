@@ -169,31 +169,40 @@ namespace AnnoDesigner
 
         private void CheckForUpdates(bool forcedCheck)
         {
-            //_webClient.DownloadStringAsync(new Uri("http://anno-designer.googlecode.com/svn/trunk/version.txt"), forcedCheck);
+            _webClient.DownloadStringAsync(new Uri("https://raw.githubusercontent.com/AgmasGold/anno-designer/master/version.txt"), forcedCheck);
         }
 
         private void WebClientDownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
-            if (e.Error != null)
+            try
             {
-                MessageBox.Show(e.Error.Message, "Version check failed");
+                if (e.Error != null)
+                {
+                    MessageBox.Show(e.Error.Message, "Version check failed");
+                    return;
+                }
+                if (Double.Parse(e.Result) > Constants.Version)
+                {
+                    // new version found
+                    if (MessageBox.Show("A newer version was found, do you want to visit the releases page?\nhttps://github.com/AgmasGold/anno-designer/releases\n\n Clicking 'Yes' will open a new tab in your web browser.", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Asterisk, MessageBoxResult.OK) == MessageBoxResult.Yes)
+                    {
+                        System.Diagnostics.Process.Start("https://github.com/AgmasGold/anno-designer/releases");
+                    }
+                }
+                else
+                {
+                    StatusMessageChanged("Version is up to date.");
+                    if ((bool)e.UserState)
+                    {
+                        MessageBox.Show("This version is up to date.", "No updates found");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error checking version. \n\nAdded error to error log.", "Version check failed");
+                App.WriteToErrorLog("Error Checking Version", ex.Message, ex.StackTrace);
                 return;
-            }
-            if (int.Parse(e.Result) > Constants.Version)
-            {
-                // new version found
-                if (MessageBox.Show("A newer version was found, do you want to visit the project page?\nhttp://anno-designer.googlecode.com/", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Asterisk, MessageBoxResult.OK) == MessageBoxResult.Yes)
-                {
-                    System.Diagnostics.Process.Start("http://code.google.com/p/anno-designer/downloads/list");
-                }
-            }
-            else
-            {
-                StatusMessageChanged("Version is up to date.");
-                if ((bool)e.UserState)
-                {
-                    MessageBox.Show("This version is up to date.", "No updates found");
-                }
             }
         }
 
