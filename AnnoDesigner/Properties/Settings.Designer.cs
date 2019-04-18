@@ -133,10 +133,10 @@ namespace AnnoDesigner.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("8")]
-        public int CurrentVersion {
+        [global::System.Configuration.DefaultSettingValueAttribute("8.1")]
+        public double CurrentVersion {
             get {
-                return ((int)(this["CurrentVersion"]));
+                return ((double)(this["CurrentVersion"]));
             }
         }
         
@@ -149,6 +149,18 @@ namespace AnnoDesigner.Properties {
             }
             set {
                 this["MainWindowWindowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableAutomaticUpdateCheck {
+            get {
+                return ((bool)(this["EnableAutomaticUpdateCheck"]));
+            }
+            set {
+                this["EnableAutomaticUpdateCheck"] = value;
             }
         }
     }

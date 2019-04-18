@@ -169,7 +169,10 @@ namespace AnnoDesigner
 
         private void CheckForUpdates(bool forcedCheck)
         {
-            _webClient.DownloadStringAsync(new Uri("https://raw.githubusercontent.com/AgmasGold/anno-designer/master/version.txt"), forcedCheck);
+            if (Settings.Default.EnableAutomaticUpdateCheck || forcedCheck)
+            {
+                _webClient.DownloadStringAsync(new Uri("https://raw.githubusercontent.com/AgmasGold/anno-designer/master/version.txt"), forcedCheck);
+            }
         }
 
         private void WebClientDownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
@@ -196,6 +199,10 @@ namespace AnnoDesigner
                     {
                         MessageBox.Show("This version is up to date.", "No updates found");
                     }
+                }
+                if (MessageBox.Show("Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.", "Continue checking for updates?", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
+                {
+                    Settings.Default.EnableAutomaticUpdateCheck = false;
                 }
             }
             catch (Exception ex)
@@ -482,6 +489,40 @@ namespace AnnoDesigner
             SelectedLanguageChanged();
         }
 
-       
+        /// <summary>
+        /// Toggle the EnableAutomaticUpdateCheck setting
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItemEnableAutomaticUpdateCheckChecked(object sender, RoutedEventArgs e)
+        {
+            MenuItem m = (MenuItem)sender;
+            if (m.IsChecked)
+            {
+                Settings.Default.EnableAutomaticUpdateCheck = true;
+            }
+            else
+            {
+                Settings.Default.EnableAutomaticUpdateCheck = false;
+            }
+        }
+
+        /// <summary>
+        /// Set the checked value, loaded from settings, when the element is loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItemEnableAutomaticUpdateCheckLoaded(object sender, RoutedEventArgs e)
+        {
+            MenuItem m = (MenuItem)sender;
+            if (Settings.Default.EnableAutomaticUpdateCheck)
+            {
+                m.IsChecked = true;
+            }
+            else
+            {
+                m.IsChecked = false;
+            }
+        }
     }
 }

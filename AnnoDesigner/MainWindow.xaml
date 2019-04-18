@@ -96,6 +96,7 @@
                 <MenuItem Header="{Binding Path=FileVersion}" Name="MenuItemFileVersion" IsEnabled="False" />
                 <MenuItem Header="{Binding Path=PresetsVersion}" Name="MenuItemPresetsVersion" IsEnabled="False" />
                 <MenuItem Header="{Binding Path=CheckForUpdates}" Click="MenuItemVersionCheckImageClick" />
+                <MenuItem Header="{Binding Path=EnableAutomaticUpdateCheck}" IsCheckable="True" Checked="MenuItemEnableAutomaticUpdateCheckChecked" Loaded="MenuItemEnableAutomaticUpdateCheckLoaded" ></MenuItem>
                 <Separator />
                 <MenuItem Header="{Binding Path=GoToProjectHomepage}" Click="MenuItemHomepageClick" />
                 <MenuItem Header="{Binding Path=OpenWelcomePage}" Click="MenuItemOpenWelcomeClick"></MenuItem>
