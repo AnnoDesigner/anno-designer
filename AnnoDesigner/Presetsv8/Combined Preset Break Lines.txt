@@ -1,3 +1,6 @@
+This file is to get know where the versions of anno startes in the Presets and Icon Json files.
+This we use to check or change things within the files
+
 icons.json
 Anno 1404	starts 000002 	ends 004445
 Anno 2070	Starts 004446	ends 011176
