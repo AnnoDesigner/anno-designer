@@ -3471,7 +3471,7 @@
 		"InfluenceRadius":0
 	},
 	{
-		"BuildBlocker":{"x":3,"z":3},
+		"BuildBlocker":{"x":4,"z":5},
 		"Faction":"(7) Anno 1800 - (2) New World",
 		"Group":"(1) Jornaleros",
 		"Localization":{"eng":"Poncho Darner"},
