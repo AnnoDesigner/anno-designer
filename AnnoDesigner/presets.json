@@ -8590,63 +8590,6 @@
 		},
 		{
 			"BuildBlocker": {
-				"x": 2,
-				"z": 3
-			},
-			"Faction": "Facility Modules",
-			"Group": "Agriculture",
-			"Header": "(A6) Anno 2205",
-			"IconFileName": "A6_plant_fibres.png",
-			"Identifier": "production agriculture tundra facility module 04",
-			"InfluenceRadius": 0,
-			"Localization": {
-				"eng": "Flax Planters",
-				"ger": "Flachspflanzer",
-				"pol": "Hodowcy lnu",
-				"rus": "Льняная плантация"
-			},
-			"Template": "BuildingModule"
-		},
-		{
-			"BuildBlocker": {
-				"x": 5,
-				"z": 8
-			},
-			"Faction": "Facility Modules",
-			"Group": "Agriculture",
-			"Header": "(A6) Anno 2205",
-			"IconFileName": "A6_bioresigns.png",
-			"Identifier": "production agriculture tundra facility module 03",
-			"InfluenceRadius": 0,
-			"Localization": {
-				"eng": "Sunflower Cropland",
-				"ger": "Sonnenblumenfeld",
-				"pol": "Uprawy słonecznika",
-				"rus": "Поле подсолнечников"
-			},
-			"Template": "BuildingModule"
-		},
-		{
-			"BuildBlocker": {
-				"x": 2,
-				"z": 1
-			},
-			"Faction": "Facility Modules",
-			"Group": "Agriculture",
-			"Header": "(A6) Anno 2205",
-			"IconFileName": "A6_algae.png",
-			"Identifier": "production agriculture tundra facility module 05",
-			"InfluenceRadius": 0,
-			"Localization": {
-				"eng": "Algae Bed",
-				"ger": "Algenbett",
-				"pol": "Dywan alg",
-				"rus": "Бассейн для водорослей"
-			},
-			"Template": "BuildingModuleMining"
-		},
-		{
-			"BuildBlocker": {
 				"x": 8,
 				"z": 5
 			},
@@ -8682,44 +8625,6 @@
 				"rus": "Камера высокого давления"
 			},
 			"Template": "BuildingModule"
-		},
-		{
-			"BuildBlocker": {
-				"x": 3,
-				"z": 5
-			},
-			"Faction": "Facility Modules",
-			"Group": "Biotech",
-			"Header": "(A6) Anno 2205",
-			"IconFileName": "A6_synth_cells.png",
-			"Identifier": "production biotech tundra facility module 04",
-			"InfluenceRadius": 0,
-			"Localization": {
-				"eng": "Synthcell Chambers",
-				"ger": "Synthzellenkammern",
-				"pol": "Komory komórek syntetycznych",
-				"rus": "Камеры синтетической ткани"
-			},
-			"Template": "BuildingModule"
-		},
-		{
-			"BuildBlocker": {
-				"x": 2,
-				"z": 2
-			},
-			"Faction": "Facility Modules",
-			"Group": "Chemical",
-			"Header": "(A6) Anno 2205",
-			"IconFileName": "A6_water.png",
-			"Identifier": "production chemical tundra facility module 01",
-			"InfluenceRadius": 0,
-			"Localization": {
-				"eng": "Filter Unit",
-				"ger": "Filtereinheit",
-				"pol": "Jednostka filtrująca",
-				"rus": "Фильтрующий блок"
-			},
-			"Template": "BuildingModuleMining"
 		},
 		{
 			"BuildBlocker": {
@@ -9136,25 +9041,6 @@
 				"ger": "Aufbereitungssystem",
 				"pol": "System recyklingu",
 				"rus": "Система рециркуляции"
-			},
-			"Template": "OrbitModule"
-		},
-		{
-			"BuildBlocker": {
-				"x": 5,
-				"z": 3
-			},
-			"Faction": "(5) Orbit",
-			"Group": "Modules",
-			"Header": "(A6) Anno 2205",
-			"IconFileName": "A6_module_orbit_unknown_naming.png",
-			"Identifier": "orbit module 07 (unused)",
-			"InfluenceRadius": 0,
-			"Localization": {
-				"eng": "Heat Reduction System",
-				"ger": "Kühlungssystem",
-				"pol": "System redukcji ciepła",
-				"rus": "Система охлаждения"
 			},
 			"Template": "OrbitModule"
 		},
@@ -12351,5 +12237,5 @@
 			"Template": "Warehouse"
 		}
 	],
-	"Version": "0.8.2"
+	"Version": "0.8.3"
 }
