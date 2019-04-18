@@ -200,9 +200,14 @@ namespace AnnoDesigner
                         MessageBox.Show("This version is up to date.", "No updates found");
                     }
                 }
-                if (MessageBox.Show("Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.", "Continue checking for updates?", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
+                //If not already prompted
+                if (Settings.Default.PromptedForAutoUpdateCheck == false)
                 {
-                    Settings.Default.EnableAutomaticUpdateCheck = false;
+                    Settings.Default.PromptedForAutoUpdateCheck = true;
+                    if (MessageBox.Show("Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.", "Continue checking for updates?", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
+                    {
+                        Settings.Default.EnableAutomaticUpdateCheck = false;
+                    }
                 }
             }
             catch (Exception ex)

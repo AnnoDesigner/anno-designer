@@ -163,5 +163,17 @@ namespace AnnoDesigner.Properties {
                 this["EnableAutomaticUpdateCheck"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PromptedForAutoUpdateCheck {
+            get {
+                return ((bool)(this["PromptedForAutoUpdateCheck"]));
+            }
+            set {
+                this["PromptedForAutoUpdateCheck"] = value;
+            }
+        }
     }
 }
