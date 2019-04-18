@@ -5,4 +5,5 @@ Anno 2070	Starts 004446	ends 011176
 presets.json
 Anno 1404	starts 000003 	ends 002244 	extra ends 002320
 Anno 2070	starts 002321	ends 005341	extra ends 005417
-Anno 2205	starts 005418	ends 009483	extra ends
+Anno 2205	starts 005418	ends 009369	extra ends ------
+Anno 1800	starts 009370	ends 012124	extra ends 012238	
