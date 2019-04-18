@@ -110,6 +110,12 @@
     <None Include="bin\Debug\presets.json" />
     <None Include="bin\Debug\icons.json" />
     <None Include="colors.json" />
+    <None Include="icons.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="presets.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
