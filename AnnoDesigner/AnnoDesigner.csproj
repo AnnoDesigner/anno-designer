@@ -110,14 +110,10 @@
     <None Include="bin\Debug\presets.json" />
     <None Include="bin\Debug\icons.json" />
     <None Include="colors.json" />
-    <None Include="icons.json" />
-    <None Include="presets.json" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Stuff\list_of_buildings_v0.3.json" />
-    <None Include="Stuff\list_of_buildings_v0.4.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Stuff\Original Icons\icon128.png" />
