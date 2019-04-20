@@ -716,24 +716,38 @@ namespace AnnoDesigner
                 informationLines.Add(string.Format(" {0}%", Math.Round(minTiles / boxX / boxY * 100)));
                 if (_renderBuildingCount)
                 {
-                    // calculate selected buildings
-                    var _selectedBuildings = GetBuildingCountingList(_selectedObjects);
-                    var _tlBuildingName = "";
                     informationLines.Add("");
                     informationLines.Add("Buildings Selected");
-                    if (_selectedBuildings.Count > 1)
+
+                    /* Sting McRay code */
+
+                    //// calculate selected buildings
+                    //var _selectedBuildings = GetBuildingCountingList(_selectedObjects);
+                    //var _tlBuildingName = "";
+
+                    //if (_selectedBuildings.Count > 1)
+                    //{
+                    //    for (int bc = 0; bc < _selectedBuildings.Count; bc = bc + 2)
+                    //    {
+                    //        _tlBuildingName = _selectedBuildings[bc];
+                    //        //_tlBuildingName =
+                    //        informationLines.Add(string.Format(" {0} x {1}", _selectedBuildings[bc + 1], _tlBuildingName));
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    informationLines.Add(string.Format(" {0}", _selectedBuildings[0]));
+                    //}
+
+                    //Agmas Code
+
+                    var groupedBuildings = _selectedObjects.GroupBy(_ => _.Identifier);
+                    foreach (var item in groupedBuildings)
                     {
-                        for (int bc = 0; bc < _selectedBuildings.Count; bc = bc + 2)
-                        {
-                            _tlBuildingName = _selectedBuildings[bc];
-                            //_tlBuildingName =
-                            informationLines.Add(string.Format(" {0} x {1}", _selectedBuildings[bc + 1], _tlBuildingName));
-                        }
+                        var building = BuildingPresets.Buildings.Single(_ => _.Identifier == item.ElementAt(0).Identifier);
+                        informationLines.Add(string.Format("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]));
                     }
-                    else
-                    {
-                        informationLines.Add(string.Format(" {0}", _selectedBuildings[0]));
-                    }
+
                 }
             }
             // render all the lines
@@ -1544,7 +1558,7 @@ namespace AnnoDesigner
             }
         }
 
-        private static List<string> GetBuildingCountingList(List<AnnoObject> _selectObjects)
+        private List<string> GetBuildingCountingList(List<AnnoObject> _selectObjects)
         {
             _buidingCountings.Clear();
             if (_selectObjects.Count > 0)
@@ -1569,6 +1583,21 @@ namespace AnnoDesigner
             {
                 _buidingCountings.Add("Nothing Selected.");
             }
+            
+            //Agmas code
+            if (_buidingCountings.Count > 1)
+            {
+                var bList = BuildingPresets.Buildings;
+                for (int i = 0; i < _buidingCountings.Count; i+=2)
+                {
+                    var b = bList.SingleOrDefault(_ => _.Identifier == _buidingCountings[i]);
+                    if (b != null)
+                    {
+                        _buidingCountings[i] = b.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
+                    }
+                }
+            }
+
             return _buidingCountings;
         }
 
