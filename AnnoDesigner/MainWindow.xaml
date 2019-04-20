@@ -116,9 +116,9 @@
                 <MenuItem Header="{Binding Path=AboutAnnoDesigner}" Click="MenuItemAboutClick" />
             </MenuItem>
             <Separator />
-            <MenuItem Header="{Binding Path=ShowGrid}" IsCheckable="True" IsChecked="True" Click="MenuItemGridClick" TabIndex="26" />
-            <MenuItem Header="{Binding Path=ShowLabels}" IsCheckable="True" IsChecked="True" Click="MenuItemLabelClick" TabIndex="27" />
-            <MenuItem Header="{Binding Path=ShowIcons}" IsCheckable="True" IsChecked="True" Click="MenuItemIconClick" TabIndex="28" />
+            <MenuItem Header="{Binding Path=ShowGrid}" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowGrid, Mode=TwoWay}" Click="MenuItemGridClick" TabIndex="26" />
+            <MenuItem Header="{Binding Path=ShowLabels}" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowLabels, Mode=TwoWay}" Click="MenuItemLabelClick" TabIndex="27" />
+            <MenuItem Header="{Binding Path=ShowIcons}" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowIcons, Mode=TwoWay}" Click="MenuItemIconClick" TabIndex="28" />
         </Menu>
         <DockPanel Grid.Column="2" Grid.Row="1" LastChildFill="True">
             <GroupBox Header="{Binding Path=BuildingSettings}" DockPanel.Dock="Top">

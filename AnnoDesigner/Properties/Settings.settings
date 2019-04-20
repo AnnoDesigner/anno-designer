@@ -36,7 +36,7 @@
       <Value Profile="(Default)">Normal</Value>
     </Setting>
     <Setting Name="EnableAutomaticUpdateCheck" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="PromptedForAutoUpdateCheck" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -45,6 +45,15 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="StatsShowBuildingCount" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ShowLabels" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ShowIcons" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ShowGrid" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
