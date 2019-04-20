@@ -9451,7 +9451,7 @@
 			"Faction": "Harbor",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
-			"IconFileName": "A7_harbour_buildings.png",
+			"IconFileName": "A7_kontor.png",
 			"Identifier": "Kontor_main_01",
 			"InfluenceRadius": 0,
 			"Localization": {
@@ -10892,7 +10892,7 @@
 				"x": 1,
 				"z": 1
 			},
-			"Faction": "(6) New World Fields",
+			"Faction": "(6) Old World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_farmfield_module.png",
@@ -10911,7 +10911,7 @@
 				"x": 3,
 				"z": 4
 			},
-			"Faction": "(6) New World Fields",
+			"Faction": "(6) Old World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_general_module_01.png",
@@ -10930,7 +10930,7 @@
 				"x": 1,
 				"z": 1
 			},
-			"Faction": "(6) New World Fields",
+			"Faction": "(6) Old World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_farmfield_module.png",
@@ -10949,7 +10949,7 @@
 				"x": 1,
 				"z": 1
 			},
-			"Faction": "(6) New World Fields",
+			"Faction": "(6) Old World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_farmfield_module.png",
@@ -10968,7 +10968,7 @@
 				"x": 3,
 				"z": 3
 			},
-			"Faction": "(6) New World Fields",
+			"Faction": "(6) Old World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_general_module_01.png",
@@ -10987,7 +10987,7 @@
 				"x": 2,
 				"z": 3
 			},
-			"Faction": "(6) New World Fields",
+			"Faction": "(6) Old World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_general_module_01.png",
@@ -11006,7 +11006,7 @@
 				"x": 1,
 				"z": 1
 			},
-			"Faction": "(6) New World Fields",
+			"Faction": "(6) Old World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_farmfield_module.png",
@@ -11025,7 +11025,7 @@
 				"x": 1,
 				"z": 1
 			},
-			"Faction": "(6) New World Fields",
+			"Faction": "(6) Old World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_farmfield_module.png",
@@ -11899,7 +11899,7 @@
 				"x": 1,
 				"z": 1
 			},
-			"Faction": "(9) Old World Fields",
+			"Faction": "(9) New World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_farmfield_module.png",
@@ -11918,7 +11918,7 @@
 				"x": 1,
 				"z": 1
 			},
-			"Faction": "(9) Old World Fields",
+			"Faction": "(9) New World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_farmfield_module.png",
@@ -11937,7 +11937,7 @@
 				"x": 1,
 				"z": 1
 			},
-			"Faction": "(9) Old World Fields",
+			"Faction": "(9) New World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_farmfield_module.png",
@@ -11956,7 +11956,7 @@
 				"x": 1,
 				"z": 1
 			},
-			"Faction": "(9) Old World Fields",
+			"Faction": "(9) New World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_general_module_01.png",
@@ -11975,7 +11975,7 @@
 				"x": 1,
 				"z": 1
 			},
-			"Faction": "(9) Old World Fields",
+			"Faction": "(9) New World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_general_module_01.png",
@@ -11994,7 +11994,7 @@
 				"x": 1,
 				"z": 1
 			},
-			"Faction": "(9) Old World Fields",
+			"Faction": "(9) New World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_general_module_01.png",
@@ -12013,7 +12013,7 @@
 				"x": 1,
 				"z": 1
 			},
-			"Faction": "(9) Old World Fields",
+			"Faction": "(9) New World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_farmfield_module.png",
@@ -12032,7 +12032,7 @@
 				"x": 1,
 				"z": 1
 			},
-			"Faction": "(9) Old World Fields",
+			"Faction": "(9) New World Fields",
 			"Group": null,
 			"Header": "(A7) Anno 1800",
 			"IconFileName": "A7_farmfield_module.png",
