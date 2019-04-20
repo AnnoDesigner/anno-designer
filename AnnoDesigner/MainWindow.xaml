@@ -92,8 +92,17 @@
                 <!--<MenuItem Header="český" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageCze" />-->
             </MenuItem>
             <MenuItem Header="{Binding Path=ManageStats}" TabIndex="24" HorizontalAlignment="Right">
-                <MenuItem Header="{Binding Path=ShowStats}" IsCheckable="True" IsChecked="True" Click="MenuItemStatsClick" />
-                <MenuItem Header="{Binding Path=BuildingCount}" IsCheckable="True" Name="MenuItemBuildingCount" Click="MenuItemBuildingCountClick" IsEnabled="True" />
+                <MenuItem Header="{Binding Path=ShowStats}" 
+                          IsCheckable="True" 
+                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowStats, Mode=TwoWay}" 
+                          Click="MenuItemStatsShowStatsClick" />
+                <Separator></Separator>
+                <MenuItem Name="MenuItemStatsBuildingCount" 
+                          Header="{Binding Path=BuildingCount}" 
+                          IsCheckable="True" 
+                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowBuildingCount, Mode=TwoWay}"
+                          IsEnabled="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowStats, Mode=OneWay}" 
+                          Click="MenuItemStatsBuildingCountClick" />
             </MenuItem>
             <MenuItem Header="{Binding Path=Help}" TabIndex="25" HorizontalAlignment="Right">
                 <MenuItem Header="{Binding Path=Version}" Name="MenuItemVersion" IsEnabled="False" />

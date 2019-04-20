@@ -714,18 +714,26 @@ namespace AnnoDesigner
                 informationLines.Add("");
                 informationLines.Add("Space efficiency");
                 informationLines.Add(string.Format(" {0}%", Math.Round(minTiles / boxX / boxY * 100)));
+
                 if (_renderBuildingCount)
                 {
-                    var groupedBuildings = _selectedObjects.GroupBy(_ => _.Identifier);
+                    informationLines.Add("");
+                  
+                    IEnumerable<IGrouping<string, AnnoObject>> groupedBuildings;
                     if (_selectedObjects.Count > 0)
                     {
-                        informationLines.Add("");
                         informationLines.Add("Buildings Selected");
-                        foreach (var item in groupedBuildings)
-                        {
-                            var building = BuildingPresets.Buildings.Single(_ => _.Identifier == item.ElementAt(0).Identifier);
-                            informationLines.Add(string.Format("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]));
-                        }
+                        groupedBuildings = _selectedObjects.GroupBy(_ => _.Identifier);
+                    }
+                    else
+                    {
+                        informationLines.Add("Buildings");
+                        groupedBuildings = _placedObjects.GroupBy(_ => _.Identifier);
+                    }
+                    foreach (var item in groupedBuildings)
+                    {
+                        var building = BuildingPresets.Buildings.Single(_ => _.Identifier == item.ElementAt(0).Identifier);
+                        informationLines.Add(string.Format("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]));
                     }
                 }
             }

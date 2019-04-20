@@ -175,5 +175,29 @@ namespace AnnoDesigner.Properties {
                 this["PromptedForAutoUpdateCheck"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool StatsShowStats {
+            get {
+                return ((bool)(this["StatsShowStats"]));
+            }
+            set {
+                this["StatsShowStats"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool StatsShowBuildingCount {
+            get {
+                return ((bool)(this["StatsShowBuildingCount"]));
+            }
+            set {
+                this["StatsShowBuildingCount"] = value;
+            }
+        }
     }
 }

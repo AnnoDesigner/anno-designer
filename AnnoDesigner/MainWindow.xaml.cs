@@ -376,21 +376,14 @@ namespace AnnoDesigner
             annoCanvas.RenderIcon = !annoCanvas.RenderIcon;
         }
 
-        private void MenuItemStatsClick(object sender, RoutedEventArgs e)
+        private void MenuItemStatsShowStatsClick(object sender, RoutedEventArgs e)
         {
-            annoCanvas.RenderStats = !annoCanvas.RenderStats;
-            if (annoCanvas.RenderStats)
-            {
-                MenuItemBuildingCount.IsEnabled = true; 
-            }
-            else
-            {
-                MenuItemBuildingCount.IsEnabled = false;
-            }
+            annoCanvas.RenderStats = ((MenuItem)sender).IsChecked;
         }
-        private void MenuItemBuildingCountClick(object sender, RoutedEventArgs e)
+
+        private void MenuItemStatsBuildingCountClick(object sender, RoutedEventArgs e)
         {
-            annoCanvas.RenderBuildingCount = !annoCanvas.RenderBuildingCount;
+            annoCanvas.RenderBuildingCount = ((MenuItem)sender).IsChecked;
         }
 
         private void MenuItemVersionCheckImageClick(object sender, RoutedEventArgs e)
