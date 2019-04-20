@@ -167,6 +167,20 @@ namespace AnnoDesigner
             {
                 GroupBoxPresets.Header = "Building presets - load failed";
             }
+
+            if (Settings.Default.TreeViewState != null && Settings.Default.TreeViewState.Count > 0)
+            {
+                try
+                {
+                    treeViewPresets.SetTreeViewState(Settings.Default.TreeViewState);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Failed to restore previous preset menu settings.");
+                    App.WriteToErrorLog("TreeView SetTreeViewState Error", ex.Message, ex.StackTrace);
+                }
+            }
+
             // load file given by argument
             if (!string.IsNullOrEmpty(App.FilenameArgument))
             {
@@ -505,6 +519,7 @@ namespace AnnoDesigner
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
+            Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
             Settings.Default.Save();
         }
 

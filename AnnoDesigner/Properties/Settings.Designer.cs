@@ -154,18 +154,6 @@ namespace AnnoDesigner.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool EnableAutomaticUpdateCheck {
-            get {
-                return ((bool)(this["EnableAutomaticUpdateCheck"]));
-            }
-            set {
-                this["EnableAutomaticUpdateCheck"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool PromptedForAutoUpdateCheck {
             get {
@@ -173,6 +161,29 @@ namespace AnnoDesigner.Properties {
             }
             set {
                 this["PromptedForAutoUpdateCheck"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Generic.List<System.Boolean> TreeViewState {
+            get {
+                return ((global::System.Collections.Generic.List<System.Boolean>)(this["TreeViewState"]));
+            }
+            set {
+                this["TreeViewState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableAutomaticUpdateCheck {
+            get {
+                return ((bool)(this["EnableAutomaticUpdateCheck"]));
+            }
+            set {
+                this["EnableAutomaticUpdateCheck"] = value;
             }
         }
         
