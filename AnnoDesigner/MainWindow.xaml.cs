@@ -116,6 +116,10 @@ namespace AnnoDesigner
             annoCanvas.RenderLabel = Settings.Default.ShowLabels;
             annoCanvas.RenderStats = Settings.Default.StatsShowStats;
             annoCanvas.RenderBuildingCount = Settings.Default.StatsShowBuildingCount;
+            AutomaticUpdateCheck.IsChecked = Settings.Default.EnableAutomaticUpdateCheck;
+            ShowGrid.IsChecked = Settings.Default.ShowGrid;
+            ShowIcons.IsChecked = Settings.Default.ShowIcons;
+            ShowLabels.IsChecked = Settings.Default.ShowLabels;
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -528,40 +532,5 @@ namespace AnnoDesigner
             SelectedLanguageChanged();
         }
 
-        /// <summary>
-        /// Toggle the EnableAutomaticUpdateCheck setting
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MenuItemEnableAutomaticUpdateCheckChecked(object sender, RoutedEventArgs e)
-        {
-            MenuItem m = (MenuItem)sender;
-            if (m.IsChecked)
-            {
-                Settings.Default.EnableAutomaticUpdateCheck = true;
-            }
-            else
-            {
-                Settings.Default.EnableAutomaticUpdateCheck = false;
-            }
-        }
-
-        /// <summary>
-        /// Set the checked value, loaded from settings, when the element is loaded
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MenuItemEnableAutomaticUpdateCheckLoaded(object sender, RoutedEventArgs e)
-        {
-            MenuItem m = (MenuItem)sender;
-            if (Settings.Default.EnableAutomaticUpdateCheck)
-            {
-                m.IsChecked = true;
-            }
-            else
-            {
-                m.IsChecked = false;
-            }
-        }
     }
 }
