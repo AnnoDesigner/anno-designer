@@ -730,7 +730,7 @@ namespace AnnoDesigner
                         informationLines.Add("Buildings");
                         groupedBuildings = _placedObjects.GroupBy(_ => _.Identifier);
                     }
-                    foreach (var item in groupedBuildings)
+                    foreach (var item in groupedBuildings.OrderByDescending(_ => _.Count()))
                     {
                         var building = BuildingPresets.Buildings.Single(_ => _.Identifier == item.ElementAt(0).Identifier);
                         informationLines.Add(string.Format("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]));
