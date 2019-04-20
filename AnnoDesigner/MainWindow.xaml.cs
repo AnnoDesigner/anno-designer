@@ -14,6 +14,7 @@ using MessageBox = Microsoft.Windows.Controls.MessageBox;
 using System.ComponentModel;
 using AnnoDesigner.Properties;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace AnnoDesigner
 {
@@ -213,7 +214,7 @@ namespace AnnoDesigner
                     MessageBox.Show(e.Error.Message, "Version check failed");
                     return;
                 }
-                if (Double.Parse(e.Result) > Constants.Version)
+                if (Double.Parse(e.Result, CultureInfo.InvariantCulture) > Constants.Version)
                 {
                     // new version found
                     if (MessageBox.Show("A newer version was found, do you want to visit the releases page?\nhttps://github.com/AgmasGold/anno-designer/releases\n\n Clicking 'Yes' will open a new tab in your web browser.", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Asterisk, MessageBoxResult.OK) == MessageBoxResult.Yes)
@@ -317,7 +318,7 @@ namespace AnnoDesigner
                 Color = colorPicker.SelectedColor,
                 Label = IsChecked(checkBoxLabel) ? textBoxLabel.Text : "",
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
-                Radius = string.IsNullOrEmpty(textBoxRadius.Text) ? 0 : double.Parse(textBoxRadius.Text),
+                Radius = string.IsNullOrEmpty(textBoxRadius.Text) ? 0 : double.Parse(textBoxRadius.Text, CultureInfo.InvariantCulture),
                 Borderless = IsChecked(checkBoxBorderless),
                 Road = IsChecked(checkBoxRoad),
                 Identifier = textBoxIdentifier.Text,
