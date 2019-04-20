@@ -14,25 +14,25 @@ namespace AnnoDesigner
         /// </summary>
         [DataMember]
         public Size Size;
-        
+
         /// <summary>
         /// Color used to fill this object
         /// </summary>
         [DataMember]
         public SerializableColor Color;
-        
+
         /// <summary>
         /// Position in grid units
         /// </summary>
         [DataMember]
         public Point Position;
-        
+
         /// <summary>
         /// Filename for an icon
         /// </summary>
         [DataMember]
         public string Icon;
-        
+
         /// <summary>
         /// Label string
         /// </summary>
@@ -42,6 +42,22 @@ namespace AnnoDesigner
             get;
             set;
         }
+
+        /// <summary>
+        /// ObjName string
+        /// </summary>
+        [DataMember]
+        public string Identifier;
+
+        /// <summary>
+        /// Localization string
+        /// </summary>
+        /* [DataMember]
+        public string[] Localization
+        {
+            get;
+            set;
+        }*/
         
         /// <summary>
         /// Influence radius in grid units
@@ -81,6 +97,8 @@ namespace AnnoDesigner
             Color = obj.Color;
             Position = obj.Position;
             Label = obj.Label;
+            Identifier = obj.Identifier;
+            //Localization = obj.Localization;
             Icon = obj.Icon;
             Radius = obj.Radius;
             Borderless = obj.Borderless;

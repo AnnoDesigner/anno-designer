@@ -158,6 +158,27 @@ namespace AnnoDesigner
             }
         }
 
+        private bool _renderBuildingCount = false;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the calculated building statistics of the layout should be rendered.
+        /// </summary>
+        public bool RenderBuildingCount
+        {
+            get
+            {
+                return _renderBuildingCount;
+            }
+            set
+            {
+                if (_renderBuildingCount != value)
+                {
+                    InvalidateVisual();
+                }
+                _renderBuildingCount = value;
+            }
+        }
+
         /// <summary>
         /// Backing field of the CurrentObject property
         /// </summary>
@@ -327,6 +348,11 @@ namespace AnnoDesigner
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
         private readonly List<AnnoObject> _selectedObjects;
+
+        /// <summary></summary>
+        /// initialization of the Buildng Selection Count List
+        /// list buidingCounting<"number","name">; The counting-values and names of the selceted buidings
+        public static List<string> _buidingCountings = new List<string>();
 
         #region Pens and Brushes
 
@@ -677,6 +703,7 @@ namespace AnnoDesigner
                 var boxY = _placedObjects.Max(_ => _.Position.Y + _.Size.Height) - _placedObjects.Min(_ => _.Position.Y);
                 // calculate area of all buildings
                 var minTiles = _placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
+
                 // format lines
                 informationLines.Add("Bounding Box");
                 informationLines.Add(string.Format(" {0}x{1}", boxX, boxY));
@@ -687,20 +714,42 @@ namespace AnnoDesigner
                 informationLines.Add("");
                 informationLines.Add("Space efficiency");
                 informationLines.Add(string.Format(" {0}%", Math.Round(minTiles / boxX / boxY * 100)));
+
+                if (_renderBuildingCount)
+                {
+                    informationLines.Add("");
+                  
+                    IEnumerable<IGrouping<string, AnnoObject>> groupedBuildings;
+                    if (_selectedObjects.Count > 0)
+                    {
+                        informationLines.Add("Buildings Selected");
+                        groupedBuildings = _selectedObjects.GroupBy(_ => _.Identifier);
+                    }
+                    else
+                    {
+                        informationLines.Add("Buildings");
+                        groupedBuildings = _placedObjects.GroupBy(_ => _.Identifier);
+                    }
+                    foreach (var item in groupedBuildings
+                        .Where(_ => _.ElementAt(0).Road == false)
+                        .Where(_ => _.ElementAt(0).Identifier != null)
+                        .OrderByDescending(_ => _.Count()))
+                    {
+                        var building = BuildingPresets.Buildings.Single(_ => _.Identifier == item.ElementAt(0).Identifier);
+                        informationLines.Add(string.Format("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]));
+                    }
+                }
             }
             // render all the lines
-            for (var i = 0; i < informationLines.Count; i++)
+            var text = String.Join("\n", informationLines);
+            var f = new FormattedText(text, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                            new Typeface("Verdana"), 12, Brushes.Black, null, TextFormattingMode.Display)
             {
-                var line = informationLines[i];
-                var text = new FormattedText(line, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                             new Typeface("Verdana"), 12, Brushes.Black, null ,TextFormattingMode.Display)
-                {
-                    MaxTextWidth = Constants.StatisticsMargin,
-                    MaxTextHeight = RenderSize.Height,
-                    TextAlignment = TextAlignment.Left
-                };
-                drawingContext.DrawText(text, new Point(RenderSize.Width - Constants.StatisticsMargin + 10, 10 + i * 15));
-            }
+                MaxTextWidth = Constants.StatisticsMargin - 20,
+                MaxTextHeight = RenderSize.Height,
+                TextAlignment = TextAlignment.Left
+            };
+            drawingContext.DrawText(f, new Point(RenderSize.Width - Constants.StatisticsMargin + 10, 10));
         }
 
         //I was really just checking to see if there was a built in function, but this works
@@ -1495,7 +1544,7 @@ namespace AnnoDesigner
                 e.Handled = true;
             }
         }
-    
+
         #endregion
     }
 }

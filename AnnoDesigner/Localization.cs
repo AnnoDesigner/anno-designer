@@ -39,19 +39,21 @@ namespace AnnoDesigner.Localization
                         { "UseCurrentZoomOnExportedImage" , "Use current zoom on exported image" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Render selection highlights on exported image" },
                         { "Language" , "Language" },
+                        { "ManageStats" , "Manage Stats" },
+                        { "ShowStats" , "Show Stats" },
+                        { "BuildingCount" , "Building Count" },
                         { "Help" , "Help" },
                         { "Version" , "Version" },
                         { "FileVersion" , "File Version" },
                         { "PresetsVersion" , "Presets Version" },
                         { "CheckForUpdates" , "Check For Updates" },
-                        { "EnableAutomaticUpdateCheck" , "Enable Automatic Update Check on Startup?" },
+                        { "EnableAutomaticUpdateCheck" , "Enable Automatic Update Check on Startup" },
                         { "GoToProjectHomepage" , "Go to Project Homepage" },
                         { "OpenWelcomePage" , "Open Welcome page" },
                         { "AboutAnnoDesigner" , "About Anno Designer" },
                         { "ShowGrid" , "Show Grid" },
                         { "ShowLabels" , "Show Labels" },
                         { "ShowIcons" , "Show Icons" },
-                        { "ShowStats" , "Show Stats" },
                         { "BuildingSettings" , "Building Settings" },
                         { "Size" , "Size" },
                         { "Color" , "Color" },
@@ -79,9 +81,11 @@ namespace AnnoDesigner.Localization
                         { "Close" , "Close" },
                         { "StatusBarControls" , "Mouse controls: left - place, select, move // right - stop placement, remove // both - move all // double click - copy // wheel - zoom // wheel-click - rotate." },
                         { "StatNothingPlaced" , "Nothing Placed" },
-                        { "StatBoundingBox" , "Bounding box" },
-                        { "StatMinimumArea" , "Minimum area" },
-                        { "StatSpaceEfficiency" , "Space efficiency" },
+                        { "StatBoundingBox" , "Bounding Box" },
+                        { "StatMinimumArea" , "Minimum Area" },
+                        { "StatSpaceEfficiency" , "Space Efficiency" },
+                        { "StatBuildings" , "Buildings" },
+                        { "StatBuildingsSelected" , "Buildings Selected" },
                         { "PresetsLoaded" , "Building presets loaded" }
                     }
                  },
@@ -103,19 +107,21 @@ namespace AnnoDesigner.Localization
                         { "UseCurrentZoomOnExportedImage" , "Wende aktuellen Zomm auf exportiertes Bild an" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Exportiere Bild mit Selektionen" },
                         { "Language" , "Sprache" },
+                        { "ManageStats" , "Statistiken verwalten" },
+                        { "ShowStats" , "Statistiken (an)zeigen" },
+                        { "BuildingCount" , "Anzahl der Gebäude" },
                         { "Help" , "Hilfe" },
                         { "Version" , "Version" },
                         { "FileVersion" , "Dateiversion" },
                         { "PresetsVersion" , "Preset-Version" },
                         { "CheckForUpdates" , "Auf Updates prüfen" },
-                        { "EnableAutomaticUpdateCheck" , "Automatische Updateprüfung beim Start aktivieren?" },
+                        { "EnableAutomaticUpdateCheck" , "Automatische Updateprüfung beim Start aktivieren" },
                         { "GoToProjectHomepage" , "Gehe zu Projekt Startseite" },
                         { "OpenWelcomePage" , "Willkommensseite öffnen" },
                         { "AboutAnnoDesigner" , "über Anno Designer" },
                         { "ShowGrid" , "Raster/Gitter (an)zeigen" },
                         { "ShowLabels" , "Bezeichnungen (an)zeigen" },
                         { "ShowIcons" , "Symbol (an)zeigen" },
-                        { "ShowStats" , "Statistiken (an)zeigen" },
                         { "BuildingSettings" , "Gebäude Optionen" },
                         { "Size" , "Größe" },
                         { "Color" , "Farbe" },
@@ -146,6 +152,8 @@ namespace AnnoDesigner.Localization
                         { "StatBoundingBox" , "Begrenzungsbox" },
                         { "StatMinimumArea" , "Minimale Fläche" },
                         { "StatSpaceEfficiency" , "Raumeffizienz" },
+                        { "StatBuildings" , "Gebäude" },
+                        { "StatBuildingsSelected" , "Ausgewählte Gebäude" },
                         { "PresetsLoaded" , "Gebäudevorlagen geladen" }
                     }
                  },
@@ -167,19 +175,21 @@ namespace AnnoDesigner.Localization
                         { "UseCurrentZoomOnExportedImage" , "Użyj obecnego powiększenia na eksportowanym obrazie" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Pokaż podświetlenie wybranych elementów na eksportowanym obrazie" },
                         { "Language" , "Język" },
+                        { "ManageStats" , "Zarządzanie statystyki" },
+                        { "ShowStats" , "Pokaż statystyki" },
+                        { "BuildingCount" , "Licznik budynków" },
                         { "Help" , "Pomoc" },
                         { "Version" , "Wersja" },
                         { "FileVersion" , "Wersja pliku" },
                         { "PresetsVersion" , "Presety-wersja" },
                         { "CheckForUpdates" , "Sprawdź aktualizacje" },
-                        { "EnableAutomaticUpdateCheck" , "Włączyć automatyczne sprawdzanie aktualizacji przy uruchamianiu?" },
+                        { "EnableAutomaticUpdateCheck" , "Włączyć automatyczne sprawdzanie aktualizacji przy uruchamianiu" },
                         { "GoToProjectHomepage" , "Przejdź do strony projektu" },
                         { "OpenWelcomePage" , "Otwórz stronę powitalną" },
                         { "AboutAnnoDesigner" , "O Anno Designerze" },
                         { "ShowGrid" , "Pokaż siatkę" },
                         { "ShowLabels" , "Pokaż etykiety" },
                         { "ShowIcons" , "Pokaż ikony" },
-                        { "ShowStats" , "Pokaż statystyki" },
                         { "BuildingSettings" , "Ustawienia budynku" },
                         { "Size" , "Wymiary" },
                         { "Color" , "Kolor" },
@@ -207,9 +217,11 @@ namespace AnnoDesigner.Localization
                         { "Close" , "Zamknij" },
                         { "StatusBarControls" , "Sterowanie myszą: w lewo - miejsce, zaznacz, przesuń // zatrzymanie w prawo, usuń // oba - przenieś wszystko // podwójne kliknięcie - kopiuj // kółko - powiększ // kółko - obracaj." },
                         { "StatNothingPlaced" , "Nic nie postawiono" },
-                        { "StatBoundingBox" , "Ramka ograniczająca" },
-                        { "StatMinimumArea" , "Minimalna powierzchnia" },
-                        { "StatSpaceEfficiency" , "Wykorzystanie przestrzeni" },
+                        { "StatBoundingBox" , "Ramka Ograniczająca" },
+                        { "StatMinimumArea" , "Minimalna Powierzchnia" },
+                        { "StatSpaceEfficiency" , "Wykorzystanie Przestrzeni" },
+                        { "StatBuildings" , "Budynki" },
+                        { "StatBuildingsSelected" , "Wybrane Budynki" },
                         { "PresetsLoaded" , "Presety budynków załadowano" }
                     }
                  },
@@ -231,19 +243,21 @@ namespace AnnoDesigner.Localization
                         { "UseCurrentZoomOnExportedImage" , "Использовать текущее масштабирование экспортируемого изображения" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Выделение выделенного фрагмента на экспортируемом изображении" },
                         { "Language" , "язык" },
+                        { "ManageStats" , "Управление статистикой" },
+                        { "ShowStats" , "Показывать параметры" },
+                        { "BuildingCount" , "Строительный граф" },
                         { "Help" , "Помощь" },
                         { "Version" , "Версия" },
                         { "FileVersion" , "Версия файла" },
                         { "PresetsVersion" , "Версия пресета" },
                         { "CheckForUpdates" , "Проверить наличие обновлений" },
-                        { "EnableAutomaticUpdateCheck" , "Включить автоматическую проверку обновлений при запуске?" },
+                        { "EnableAutomaticUpdateCheck" , "Включить автоматическую проверку обновлений при запуске" },
                         { "GoToProjectHomepage" , "Перейти на главную страницу" },
                         { "OpenWelcomePage" , "Открыть страницу приветствия" },
                         { "AboutAnnoDesigner" , "О Anno Дизайнер" },
                         { "ShowGrid" , "Показать сетку" },
                         { "ShowLabels" , "Показывать название" },
                         { "ShowIcons" , "Показывать значок" },
-                        { "ShowStats" , "Показывать параметры" },
                         { "BuildingSettings" , "Параметры здания" },
                         { "Size" , "Размер" },
                         { "Color" , "Цвет" },
@@ -273,7 +287,9 @@ namespace AnnoDesigner.Localization
                         { "StatNothingPlaced" , "Ничего не размещено" },
                         { "StatBoundingBox" , "Ограничительная рамка" },
                         { "StatMinimumArea" , "Минимальная площадь" },
-                        { "StatSpaceEfficiency" , "Эффективность пространства" },
+                        { "StatSpaceEfficiency" , "Космическая эффективность" },
+                        { "StatBuildings" , "Здания" },
+                        { "StatBuildingsSelected" , "Выбранные здания" },
                         { "PresetsLoaded" , "Загружаются пресеты зданий" }
                     }
                  },
@@ -614,6 +630,11 @@ namespace AnnoDesigner.Localization
             UseCurrentZoomOnExportedImage = Localization.Translations[language]["UseCurrentZoomOnExportedImage"];
             RenderSelectionHighlightsOnExportedImage = Localization.Translations[language]["RenderSelectionHighlightsOnExportedImage"];
 
+            //Manage Stats Menu
+            ManageStats = Localization.Translations[language]["ManageStats"];
+            ShowStats = Localization.Translations[language]["ShowStats"];
+            BuildingCount = Localization.Translations[language]["BuildingCount"];
+
             //Language Menu
             Language = Localization.Translations[language]["Language"];
 
@@ -632,7 +653,6 @@ namespace AnnoDesigner.Localization
             ShowGrid = Localization.Translations[language]["ShowGrid"];
             ShowLabels = Localization.Translations[language]["ShowLabels"];
             ShowIcons = Localization.Translations[language]["ShowIcons"];
-            ShowStats = Localization.Translations[language]["ShowStats"];
 
             //DockPanel
             BuildingSettings = Localization.Translations[language]["BuildingSettings"];
@@ -813,6 +833,34 @@ namespace AnnoDesigner.Localization
             }
         }
 
+        //Managa Stats Menu
+        private string _ManageStats;
+        public string ManageStats
+        {
+            get { return _ManageStats; }
+            set
+            {
+                UpdateProperty(ref _ManageStats, value);
+            }
+        }
+        private string _showStats;
+        public string ShowStats
+        {
+            get { return _showStats; }
+            set
+            {
+                UpdateProperty(ref _showStats, value);
+            }
+        }
+        private string _BuildingCount;
+        public string BuildingCount
+        {
+            get { return _BuildingCount; }
+            set
+            {
+                UpdateProperty(ref _BuildingCount, value);
+            }
+        }
 
         //Help Menu
         private string _help;
@@ -927,15 +975,6 @@ namespace AnnoDesigner.Localization
             set
             {
                 UpdateProperty(ref _showIcons, value);
-            }
-        }
-        private string _showStats;
-        public string ShowStats
-        {
-            get { return _showStats; }
-            set
-            {
-                UpdateProperty(ref _showStats, value);
             }
         }
 

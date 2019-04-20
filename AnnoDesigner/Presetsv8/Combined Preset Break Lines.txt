@@ -1,5 +1,5 @@
-This file is to get know where the versions of Anno starts in the Presets and Icon Json files.
-This we use to check or change things within the files
+This file is to know where the versions of Anno is starting in the 'presets.josn' and 'icon.json' files.
+This we are using to check or change things within the json files
 
 icons.json
 Anno 1404	starts 000002 	ends 004445

@@ -53,9 +53,10 @@ namespace AnnoDesigner.Presets
         {
             return new AnnoObject
             {
-                Label = Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)],
+                Label = (Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]),
                 Icon = IconFileName,
                 Radius = InfluenceRadius,
+                Identifier = Identifier,
                 Size = BuildBlocker == null ? new Size() : new Size(BuildBlocker["x"], BuildBlocker["z"])
                 //BuildCosts = BuildCost
             };
