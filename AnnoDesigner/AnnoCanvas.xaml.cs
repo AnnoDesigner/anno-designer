@@ -716,38 +716,17 @@ namespace AnnoDesigner
                 informationLines.Add(string.Format(" {0}%", Math.Round(minTiles / boxX / boxY * 100)));
                 if (_renderBuildingCount)
                 {
-                    informationLines.Add("");
-                    informationLines.Add("Buildings Selected");
-
-                    /* Sting McRay code */
-
-                    //// calculate selected buildings
-                    //var _selectedBuildings = GetBuildingCountingList(_selectedObjects);
-                    //var _tlBuildingName = "";
-
-                    //if (_selectedBuildings.Count > 1)
-                    //{
-                    //    for (int bc = 0; bc < _selectedBuildings.Count; bc = bc + 2)
-                    //    {
-                    //        _tlBuildingName = _selectedBuildings[bc];
-                    //        //_tlBuildingName =
-                    //        informationLines.Add(string.Format(" {0} x {1}", _selectedBuildings[bc + 1], _tlBuildingName));
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    informationLines.Add(string.Format(" {0}", _selectedBuildings[0]));
-                    //}
-
-                    //Agmas Code
-
                     var groupedBuildings = _selectedObjects.GroupBy(_ => _.Identifier);
-                    foreach (var item in groupedBuildings)
+                    if (_selectedObjects.Count > 0)
                     {
-                        var building = BuildingPresets.Buildings.Single(_ => _.Identifier == item.ElementAt(0).Identifier);
-                        informationLines.Add(string.Format("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]));
+                        informationLines.Add("");
+                        informationLines.Add("Buildings Selected");
+                        foreach (var item in groupedBuildings)
+                        {
+                            var building = BuildingPresets.Buildings.Single(_ => _.Identifier == item.ElementAt(0).Identifier);
+                            informationLines.Add(string.Format("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]));
+                        }
                     }
-
                 }
             }
             // render all the lines
@@ -1553,49 +1532,6 @@ namespace AnnoDesigner
                 CommandExecuteMappings[e.Command].Invoke(canvas);
                 e.Handled = true;
             }
-        }
-
-        private List<string> GetBuildingCountingList(List<AnnoObject> _selectObjects)
-        {
-            _buidingCountings.Clear();
-            if (_selectObjects.Count > 0)
-            {
-                foreach (var _selectObject in _selectObjects)
-                {
-                    var _bName = "";
-                    if (!_buidingCountings.Contains(_selectObject.Identifier))
-                    {
-                        _bName = _selectObject.Identifier;
-                        var _counted = 0;
-                        foreach (var _selectObject2 in _selectObjects)
-                        {
-                            if (_selectObject2.Identifier == _bName) { _counted++; }
-                        }
-                        _buidingCountings.Add(Convert.ToString(_bName));
-                        _buidingCountings.Add(Convert.ToString(_counted));
-                    }
-                }
-            }
-            else
-            {
-                _buidingCountings.Add("Nothing Selected.");
-            }
-            
-            //Agmas code
-            if (_buidingCountings.Count > 1)
-            {
-                var bList = BuildingPresets.Buildings;
-                for (int i = 0; i < _buidingCountings.Count; i+=2)
-                {
-                    var b = bList.SingleOrDefault(_ => _.Identifier == _buidingCountings[i]);
-                    if (b != null)
-                    {
-                        _buidingCountings[i] = b.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
-                    }
-                }
-            }
-
-            return _buidingCountings;
         }
 
         #endregion
