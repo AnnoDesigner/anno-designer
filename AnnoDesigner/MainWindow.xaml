@@ -91,7 +91,11 @@
                 <MenuItem Header="Русский" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageRus" />
                 <!--<MenuItem Header="český" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageCze" />-->
             </MenuItem>
-            <MenuItem Header="{Binding Path=Help}" TabIndex="24" HorizontalAlignment="Right">
+            <MenuItem Header="{Binding Path=ManageStats}" TabIndex="24" HorizontalAlignment="Right">
+                <MenuItem Header="{Binding Path=ShowStats}" IsCheckable="True" IsChecked="True" Click="MenuItemStatsClick" />
+                <MenuItem Header="{Binding Path=BuildingCount}" IsCheckable="True" Name="MenuItemBuildingCount" Click="MenuItemBuildingCountClick" IsEnabled="True" />
+            </MenuItem>
+            <MenuItem Header="{Binding Path=Help}" TabIndex="25" HorizontalAlignment="Right">
                 <MenuItem Header="{Binding Path=Version}" Name="MenuItemVersion" IsEnabled="False" />
                 <MenuItem Header="{Binding Path=FileVersion}" Name="MenuItemFileVersion" IsEnabled="False" />
                 <MenuItem Header="{Binding Path=PresetsVersion}" Name="MenuItemPresetsVersion" IsEnabled="False" />
@@ -103,10 +107,9 @@
                 <MenuItem Header="{Binding Path=AboutAnnoDesigner}" Click="MenuItemAboutClick" />
             </MenuItem>
             <Separator />
-            <MenuItem Header="{Binding Path=ShowGrid}" IsCheckable="True" IsChecked="True" Click="MenuItemGridClick" TabIndex="25" />
-            <MenuItem Header="{Binding Path=ShowLabels}" IsCheckable="True" IsChecked="True" Click="MenuItemLabelClick" TabIndex="26" />
-            <MenuItem Header="{Binding Path=ShowIcons}" IsCheckable="True" IsChecked="True" Click="MenuItemIconClick" TabIndex="27" />
-            <MenuItem Header="{Binding Path=ShowStats}" IsCheckable="True" IsChecked="True" Click="MenuItemStatsClick" TabIndex="28" />
+            <MenuItem Header="{Binding Path=ShowGrid}" IsCheckable="True" IsChecked="True" Click="MenuItemGridClick" TabIndex="26" />
+            <MenuItem Header="{Binding Path=ShowLabels}" IsCheckable="True" IsChecked="True" Click="MenuItemLabelClick" TabIndex="27" />
+            <MenuItem Header="{Binding Path=ShowIcons}" IsCheckable="True" IsChecked="True" Click="MenuItemIconClick" TabIndex="28" />
         </Menu>
         <DockPanel Grid.Column="2" Grid.Row="1" LastChildFill="True">
             <GroupBox Header="{Binding Path=BuildingSettings}" DockPanel.Dock="Top">
@@ -124,6 +127,8 @@
                     <DockPanel LastChildFill="False" Height="26">
                         <Label Content="{Binding Path=Label}" />
                         <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxLabel" Text="Building" Width="140" TabIndex="4" />
+                        <TextBox DockPanel.Dock="Right" Height="10" IsEnabled="False" Name="textBoxIdentifier" Text="" Visibility="Hidden" Width="140" />
+                        <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="False" Name="TextBoxLanguages" Text="" Visibility="Visible" Width="140" />
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="46">
                         <Label Content="{Binding Path=Icon}" VerticalAlignment="Center" />

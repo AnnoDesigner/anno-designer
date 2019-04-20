@@ -5006,7 +5006,7 @@
 			"Group": "Public",
 			"Header": "(A5) Anno 2070",
 			"IconFileName": "icon_30_11.png",
-			"Identifier": "underwater markethouse",
+			"Identifier": "underwater markethouse II",
 			"InfluenceRadius": 20,
 			"Localization": {
 				"eng": "Underwater receiving dock",
@@ -5348,7 +5348,7 @@
 			"Group": "Black Smokers (Deep Sea)",
 			"Header": "(A5) Anno 2070",
 			"IconFileName": "icon_30_281.png",
-			"Identifier": "black_smoker_miner_gold",
+			"Identifier": "black_smoker_miner_gold_II",
 			"InfluenceRadius": 0,
 			"Localization": {
 				"eng": "Gold Metal converter",
@@ -5367,7 +5367,7 @@
 			"Group": "Black Smokers (Deep Sea)",
 			"Header": "(A5) Anno 2070",
 			"IconFileName": "icon_30_282.png",
-			"Identifier": "black_smoker_miner_copper",
+			"Identifier": "black_smoker_miner_copper_II",
 			"InfluenceRadius": 0,
 			"Localization": {
 				"eng": "Copper Metal converter",
@@ -5386,7 +5386,7 @@
 			"Group": "Black Smokers (Deep Sea)",
 			"Header": "(A5) Anno 2070",
 			"IconFileName": "icon_30_283.png",
-			"Identifier": "black_smoker_miner_uranium",
+			"Identifier": "black_smoker_miner_uranium_II",
 			"InfluenceRadius": 0,
 			"Localization": {
 				"eng": "Uranium Metal converter",
@@ -5405,7 +5405,7 @@
 			"Group": "Black Smokers (Deep Sea)",
 			"Header": "(A5) Anno 2070",
 			"IconFileName": "icon_30_280.png",
-			"Identifier": "black_smoker_miner_iron",
+			"Identifier": "black_smoker_miner_iron_II",
 			"InfluenceRadius": 0,
 			"Localization": {
 				"eng": "Iron Metal converter",
@@ -12237,5 +12237,5 @@
 			"Template": "Warehouse"
 		}
 	],
-	"Version": "0.8.3"
+	"Version": "0.8.4"
 }

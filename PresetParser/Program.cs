@@ -23,7 +23,7 @@ namespace PresetParser
         private const string ANNO_VERSION_2205 = "2205";
         private const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "0.8.3";
+        private const string BUILDING_PRESETS_VERSION = "0.8.4";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "polish", "russian" };
@@ -432,12 +432,20 @@ namespace PresetParser
                     return;
                 }
             }
+            string identifierName = values["Standard"]["Name"].InnerText;
+            if (nameValue == "underwater markethouse")
+            {
+                if (nameValue.IsPartOf(annoBuildingLists))
+                {
+                    identifierName = "underwater markethouse II";
+                }
+            }
+
             #endregion
 
             // Parse Stuff
             string factionName = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText;
             string groupName = buildingNode.ParentNode.ParentNode["Name"].InnerText;
-            string identifierName = values["Standard"]["Name"].InnerText;
             groupName = groupName.FirstCharToUpper();
             factionName = factionName.FirstCharToUpper();
             #region Regrouping several faction or group names for Anno 1404
@@ -453,7 +461,7 @@ namespace PresetParser
                 if (factionName == "Ecos") { factionName = "(1) Ecos"; }
                 if (factionName == "Tycoons") { factionName = "(2) Tycoons"; }
                 if (factionName == "Techs") { factionName = "(3) Techs"; }
-                if (factionName == "(3) Techs" && identifierName == "underwater markethouse") { factionName = "Others"; }
+                if (factionName == "(3) Techs" && identifierName == "underwater markethouse II") { factionName = "Others"; }
                 if (identifierName == "techs_academy") { groupName = "Public"; }
                 if (groupName == "Farmfields" || groupName == "Farmfield") { groupName = "Farm Fields"; }
                 if (factionName == "Others" && identifierName.Contains("black_smoker_miner") == true) { groupName = "Black Smokers (Normal)"; }
@@ -869,8 +877,8 @@ namespace PresetParser
             }
             if (groupName == "Farm Fields")
             {
-                if (factionName == "Moderate") { factionName = "(6) New World Fields"; groupName = null; }
-                if (factionName == "Colony01") { factionName = "(9) Old World Fields"; groupName = null; }
+                if (factionName == "Moderate") { factionName = "(6) Old World Fields"; groupName = null; }
+                if (factionName == "Colony01") { factionName = "(9) New World Fields"; groupName = null; }
             }
             switch (identifierName)
             {

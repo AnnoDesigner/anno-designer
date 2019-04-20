@@ -143,8 +143,8 @@ namespace AnnoDesigner
             // load presets
             treeViewPresets.Items.Clear();
             // manually add a road tile preset
-            treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true });
-            treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true });
+            treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true, Identifier="Road"});
+            treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true, Identifier = "Road" });
             BuildingPresets presets = annoCanvas.BuildingPresets;
             if (presets != null)
             {
@@ -239,6 +239,8 @@ namespace AnnoDesigner
             colorPicker.SelectedColor = obj.Color;
             // label
             textBoxLabel.Text = obj.Label;
+            // Ident
+            textBoxIdentifier.Text = obj.Identifier;
             // icon
             try
             {
@@ -288,7 +290,8 @@ namespace AnnoDesigner
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
                 Radius = string.IsNullOrEmpty(textBoxRadius.Text) ? 0 : double.Parse(textBoxRadius.Text),
                 Borderless = IsChecked(checkBoxBorderless),
-                Road = IsChecked(checkBoxRoad)
+                Road = IsChecked(checkBoxRoad),
+                Identifier = textBoxIdentifier.Text,
             };
             // do some sanity checks
             if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
@@ -326,8 +329,8 @@ namespace AnnoDesigner
             if (annoCanvas.BuildingPresets != null)
             {
                 // manually add a road tile preset
-                treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true });
-                treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true });
+                treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true, Identifier = "Road" });
+                treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true, Identifier = "Road" });
                 annoCanvas.BuildingPresets.AddToTree(treeViewPresets);
             }
         }
@@ -376,6 +379,18 @@ namespace AnnoDesigner
         private void MenuItemStatsClick(object sender, RoutedEventArgs e)
         {
             annoCanvas.RenderStats = !annoCanvas.RenderStats;
+            if (annoCanvas.RenderStats)
+            {
+                MenuItemBuildingCount.IsEnabled = true; 
+            }
+            else
+            {
+                MenuItemBuildingCount.IsEnabled = false;
+            }
+        }
+        private void MenuItemBuildingCountClick(object sender, RoutedEventArgs e)
+        {
+            annoCanvas.RenderBuildingCount = !annoCanvas.RenderBuildingCount;
         }
 
         private void MenuItemVersionCheckImageClick(object sender, RoutedEventArgs e)

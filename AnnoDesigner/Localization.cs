@@ -39,6 +39,9 @@ namespace AnnoDesigner.Localization
                         { "UseCurrentZoomOnExportedImage" , "Use current zoom on exported image" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Render selection highlights on exported image" },
                         { "Language" , "Language" },
+                        { "ManageStats", "Manage Stats" },
+                        { "ShowStats" , "Show Stats" },
+                        { "BuildingCount","Building Count" },
                         { "Help" , "Help" },
                         { "Version" , "Version" },
                         { "FileVersion" , "File Version" },
@@ -51,7 +54,6 @@ namespace AnnoDesigner.Localization
                         { "ShowGrid" , "Show Grid" },
                         { "ShowLabels" , "Show Labels" },
                         { "ShowIcons" , "Show Icons" },
-                        { "ShowStats" , "Show Stats" },
                         { "BuildingSettings" , "Building Settings" },
                         { "Size" , "Size" },
                         { "Color" , "Color" },
@@ -103,6 +105,9 @@ namespace AnnoDesigner.Localization
                         { "UseCurrentZoomOnExportedImage" , "Wende aktuellen Zomm auf exportiertes Bild an" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Exportiere Bild mit Selektionen" },
                         { "Language" , "Sprache" },
+                        { "ManageStats", "Statistiken verwalten" },
+                        { "ShowStats" , "Statistiken (an)zeigen" },
+                        { "BuildingCount","Anzahl der Gebäude" },
                         { "Help" , "Hilfe" },
                         { "Version" , "Version" },
                         { "FileVersion" , "Dateiversion" },
@@ -115,7 +120,6 @@ namespace AnnoDesigner.Localization
                         { "ShowGrid" , "Raster/Gitter (an)zeigen" },
                         { "ShowLabels" , "Bezeichnungen (an)zeigen" },
                         { "ShowIcons" , "Symbol (an)zeigen" },
-                        { "ShowStats" , "Statistiken (an)zeigen" },
                         { "BuildingSettings" , "Gebäude Optionen" },
                         { "Size" , "Größe" },
                         { "Color" , "Farbe" },
@@ -167,6 +171,9 @@ namespace AnnoDesigner.Localization
                         { "UseCurrentZoomOnExportedImage" , "Użyj obecnego powiększenia na eksportowanym obrazie" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Pokaż podświetlenie wybranych elementów na eksportowanym obrazie" },
                         { "Language" , "Język" },
+                        { "ManageStats", "Zarządzanie statystyki" },
+                        { "ShowStats" , "Pokaż statystyki" },
+                        { "BuildingCount","Licznik budynków" },
                         { "Help" , "Pomoc" },
                         { "Version" , "Wersja" },
                         { "FileVersion" , "Wersja pliku" },
@@ -179,7 +186,6 @@ namespace AnnoDesigner.Localization
                         { "ShowGrid" , "Pokaż siatkę" },
                         { "ShowLabels" , "Pokaż etykiety" },
                         { "ShowIcons" , "Pokaż ikony" },
-                        { "ShowStats" , "Pokaż statystyki" },
                         { "BuildingSettings" , "Ustawienia budynku" },
                         { "Size" , "Wymiary" },
                         { "Color" , "Kolor" },
@@ -231,6 +237,9 @@ namespace AnnoDesigner.Localization
                         { "UseCurrentZoomOnExportedImage" , "Использовать текущее масштабирование экспортируемого изображения" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Выделение выделенного фрагмента на экспортируемом изображении" },
                         { "Language" , "язык" },
+                        { "ManageStats", "Управление статистикой" },
+                        { "ShowStats" , "Показывать параметры" },
+                        { "BuildingCount","Строительный граф" },
                         { "Help" , "Помощь" },
                         { "Version" , "Версия" },
                         { "FileVersion" , "Версия файла" },
@@ -243,7 +252,6 @@ namespace AnnoDesigner.Localization
                         { "ShowGrid" , "Показать сетку" },
                         { "ShowLabels" , "Показывать название" },
                         { "ShowIcons" , "Показывать значок" },
-                        { "ShowStats" , "Показывать параметры" },
                         { "BuildingSettings" , "Параметры здания" },
                         { "Size" , "Размер" },
                         { "Color" , "Цвет" },
@@ -614,6 +622,11 @@ namespace AnnoDesigner.Localization
             UseCurrentZoomOnExportedImage = Localization.Translations[language]["UseCurrentZoomOnExportedImage"];
             RenderSelectionHighlightsOnExportedImage = Localization.Translations[language]["RenderSelectionHighlightsOnExportedImage"];
 
+            //Manage Stats Menu
+            ManageStats = Localization.Translations[language]["ManageStats"];
+            ShowStats = Localization.Translations[language]["ShowStats"];
+            BuildingCount = Localization.Translations[language]["BuildingCount"];
+
             //Language Menu
             Language = Localization.Translations[language]["Language"];
 
@@ -632,7 +645,6 @@ namespace AnnoDesigner.Localization
             ShowGrid = Localization.Translations[language]["ShowGrid"];
             ShowLabels = Localization.Translations[language]["ShowLabels"];
             ShowIcons = Localization.Translations[language]["ShowIcons"];
-            ShowStats = Localization.Translations[language]["ShowStats"];
 
             //DockPanel
             BuildingSettings = Localization.Translations[language]["BuildingSettings"];
@@ -813,6 +825,34 @@ namespace AnnoDesigner.Localization
             }
         }
 
+        //Managa Stats Menu
+        private string _ManageStats;
+        public string ManageStats
+        {
+            get { return _ManageStats; }
+            set
+            {
+                UpdateProperty(ref _ManageStats, value);
+            }
+        }
+        private string _showStats;
+        public string ShowStats
+        {
+            get { return _showStats; }
+            set
+            {
+                UpdateProperty(ref _showStats, value);
+            }
+        }
+        private string _BuildingCount;
+        public string BuildingCount
+        {
+            get { return _BuildingCount; }
+            set
+            {
+                UpdateProperty(ref _BuildingCount, value);
+            }
+        }
 
         //Help Menu
         private string _help;
@@ -927,15 +967,6 @@ namespace AnnoDesigner.Localization
             set
             {
                 UpdateProperty(ref _showIcons, value);
-            }
-        }
-        private string _showStats;
-        public string ShowStats
-        {
-            get { return _showStats; }
-            set
-            {
-                UpdateProperty(ref _showStats, value);
             }
         }
 

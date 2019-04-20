@@ -158,6 +158,27 @@ namespace AnnoDesigner
             }
         }
 
+        private bool _renderBuildingCount = false;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the calculated building statistics of the layout should be rendered.
+        /// </summary>
+        public bool RenderBuildingCount
+        {
+            get
+            {
+                return _renderBuildingCount;
+            }
+            set
+            {
+                if (_renderBuildingCount != value)
+                {
+                    InvalidateVisual();
+                }
+                _renderBuildingCount = value;
+            }
+        }
+
         /// <summary>
         /// Backing field of the CurrentObject property
         /// </summary>
@@ -327,6 +348,11 @@ namespace AnnoDesigner
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
         private readonly List<AnnoObject> _selectedObjects;
+
+        /// <summary></summary>
+        /// initialization of the Buildng Selection Count List
+        /// list buidingCounting<"number","name">; The counting-values and names of the selceted buidings
+        public static List<string> _buidingCountings = new List<string>();
 
         #region Pens and Brushes
 
@@ -677,6 +703,7 @@ namespace AnnoDesigner
                 var boxY = _placedObjects.Max(_ => _.Position.Y + _.Size.Height) - _placedObjects.Min(_ => _.Position.Y);
                 // calculate area of all buildings
                 var minTiles = _placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
+
                 // format lines
                 informationLines.Add("Bounding Box");
                 informationLines.Add(string.Format(" {0}x{1}", boxX, boxY));
@@ -687,6 +714,27 @@ namespace AnnoDesigner
                 informationLines.Add("");
                 informationLines.Add("Space efficiency");
                 informationLines.Add(string.Format(" {0}%", Math.Round(minTiles / boxX / boxY * 100)));
+                if (_renderBuildingCount)
+                {
+                    // calculate selected buildings
+                    var _selectedBuildings = GetBuildingCountingList(_selectedObjects);
+                    var _tlBuildingName = "";
+                    informationLines.Add("");
+                    informationLines.Add("Buildings Selected");
+                    if (_selectedBuildings.Count > 1)
+                    {
+                        for (int bc = 0; bc < _selectedBuildings.Count; bc = bc + 2)
+                        {
+                            _tlBuildingName = _selectedBuildings[bc];
+                            //_tlBuildingName =
+                            informationLines.Add(string.Format(" {0} x {1}", _selectedBuildings[bc + 1], _tlBuildingName));
+                        }
+                    }
+                    else
+                    {
+                        informationLines.Add(string.Format(" {0}", _selectedBuildings[0]));
+                    }
+                }
             }
             // render all the lines
             for (var i = 0; i < informationLines.Count; i++)
@@ -1495,7 +1543,35 @@ namespace AnnoDesigner
                 e.Handled = true;
             }
         }
-    
+
+        private static List<string> GetBuildingCountingList(List<AnnoObject> _selectObjects)
+        {
+            _buidingCountings.Clear();
+            if (_selectObjects.Count > 0)
+            {
+                foreach (var _selectObject in _selectObjects)
+                {
+                    var _bName = "";
+                    if (!_buidingCountings.Contains(_selectObject.Identifier))
+                    {
+                        _bName = _selectObject.Identifier;
+                        var _counted = 0;
+                        foreach (var _selectObject2 in _selectObjects)
+                        {
+                            if (_selectObject2.Identifier == _bName) { _counted++; }
+                        }
+                        _buidingCountings.Add(Convert.ToString(_bName));
+                        _buidingCountings.Add(Convert.ToString(_counted));
+                    }
+                }
+            }
+            else
+            {
+                _buidingCountings.Add("Nothing Selected.");
+            }
+            return _buidingCountings;
+        }
+
         #endregion
     }
 }

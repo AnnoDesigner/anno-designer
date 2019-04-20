@@ -18,7 +18,7 @@ namespace AnnoDesigner
         /// Version number of the saved file format.
         /// Will be increased every time the file format is changed.
         /// </summary>
-        public const int FileVersion = 2;
+        public const int FileVersion = 3;
 
         /// <summary>
         /// Json encoded file containing the color presets.
@@ -53,7 +53,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Defines the margin in pixels on the right side of the layout which is used to render the statistics
         /// </summary>
-        public const int StatisticsMargin = 120;
+        public const int StatisticsMargin = 142;
 
         /// <summary>
         /// The value that affects the rendering sizes of icons on the anno canvas. 1 produces an icon of the biggest size.
