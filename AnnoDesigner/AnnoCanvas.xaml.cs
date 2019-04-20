@@ -751,18 +751,15 @@ namespace AnnoDesigner
                 }
             }
             // render all the lines
-            for (var i = 0; i < informationLines.Count; i++)
+            var text = String.Join("\n", informationLines);
+            var f = new FormattedText(text, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                            new Typeface("Verdana"), 12, Brushes.Black, null, TextFormattingMode.Display)
             {
-                var line = informationLines[i];
-                var text = new FormattedText(line, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                             new Typeface("Verdana"), 12, Brushes.Black, null ,TextFormattingMode.Display)
-                {
-                    MaxTextWidth = Constants.StatisticsMargin,
-                    MaxTextHeight = RenderSize.Height,
-                    TextAlignment = TextAlignment.Left
-                };
-                drawingContext.DrawText(text, new Point(RenderSize.Width - Constants.StatisticsMargin + 10, 10 + i * 15));
-            }
+                MaxTextWidth = Constants.StatisticsMargin - 20,
+                MaxTextHeight = RenderSize.Height,
+                TextAlignment = TextAlignment.Left
+            };
+            drawingContext.DrawText(f, new Point(RenderSize.Width - Constants.StatisticsMargin + 10, 10));
         }
 
         //I was really just checking to see if there was a built in function, but this works
