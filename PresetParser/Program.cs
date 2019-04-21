@@ -35,23 +35,23 @@ namespace PresetParser
 
         #region Initalisizing Exclude IdentifierNames, FactionNames and TemplateNames for presets.json file 
 
-        #region Anno 1404
+            #region Anno 1404
         private static readonly List<string> ExcludeNameList1404 = new List<string> { "ResidenceRuin", "AmbassadorRuin", "CitizenHouse", "PatricianHouse",
             "NoblemanHouse", "AmbassadorHouse", "Gatehouse", "StorehouseTownPart", "ImperialCathedralPart", "SultanMosquePart", "Warehouse02", "Warehouse03",
             "Markethouse02", "Markethouse03", "TreeBuildCost", "BanditCamp"};
         private static readonly List<string> ExcludeTemplateList1404 = new List<string> { "OrnamentBuilding", "Wall" };
         #endregion
 
-        #region Anno 2070 * Also on FactionName Excludes *
-        private static readonly List<string> ExcludeNameList2070 = new List<string> { "distillery_field" , "citizen_residenc", "executive_residence", "leader_residence",
-            "ruin_residence" , "villager_residence" ,"builder_residence", "creator_residence" ,"scientist_residence", "genius_residence", "monument_unfinished",
-            "town_center_variation", "underwater_energy_transmitter", "iron_mine", "nuclearpowerplant_destroyed","limestone_quarry", "markethouse2", "markethouse3",
-            "warehouse2","warehouse3", "cybernatic_factory","vegetable_farm_field","electronic_recycler"};
-        private static readonly List<string> ExcludeTemplateList2070 = new List<string> { "OrnamentBuilding", "OrnamentFeedbackBuilding", "Ark" };
-        private static readonly List<string> ExcludeFactionList2070 = new List<string> { "third party" };
-        #endregion
+            #region Anno 2070 * Also on FactionName Excludes *
+            private static readonly List<string> ExcludeNameList2070 = new List<string> { "distillery_field" , "citizen_residenc", "executive_residence", "leader_residence",
+                "ruin_residence" , "villager_residence" ,"builder_residence", "creator_residence" ,"scientist_residence", "genius_residence", "monument_unfinished",
+                "town_center_variation", "underwater_energy_transmitter", "iron_mine", "nuclearpowerplant_destroyed","limestone_quarry", "markethouse2", "markethouse3",
+                "warehouse2","warehouse3", "cybernatic_factory","vegetable_farm_field","electronic_recycler"};
+            private static readonly List<string> ExcludeTemplateList2070 = new List<string> { "OrnamentBuilding", "OrnamentFeedbackBuilding", "Ark" };
+            private static readonly List<string> ExcludeFactionList2070 = new List<string> { "third party" };
+            #endregion
 
-        #region Anno 2205 Also a GUID Checker for excluding. Do not change any numbers below
+            #region Anno 2205 Also a GUID Checker for excluding. Do not change any numbers below
         private static readonly List<string> ExcludeGUIDList2205 = new List<string> { "1001178", "1000737", "7000274", "1001175", "1000736", "7000275",
             "1000672", "1000755", "7000273", "1001171", "1000703", "7000272", "7000420", "7000421", "7000423", "7000424", "7000425", "7000427", "7000428",
             "7000429", "7000430", "7000431", "12000009", "12000010", "12000011", "12000020", "12000036", "1000063", "1000170", "1000212", "1000213", "1000174",
@@ -87,9 +87,9 @@ namespace PresetParser
         /// </summary>
             #endregion
 
-            #endregion
-
-            #region Set Icon File Name seperations
+       #endregion
+        
+        #region Set Icon File Name seperations
         private static string GetIconFilename(XmlNode iconNode, string annoVersion)
         {
             string annoIdexNumber = "";
@@ -288,11 +288,6 @@ namespace PresetParser
                 {
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset")
-                   // new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset")
-                    //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Moderate"),
-                    //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Moderate"),
-                    //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moderate"),
-                    //new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Moderate")
                 });
             }
             #endregion
