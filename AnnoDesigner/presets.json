@@ -9759,10 +9759,10 @@
 			"Identifier": "Agriculture_01 (Grain Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Grain Farm",
-				"ger": "Getreidefarm",
-				"pol": "Uprawa zboża",
-				"rus": "Ферма"
+				"eng": "Grain Farm - (144)",
+				"ger": "Getreidefarm - (144)",
+				"pol": "Uprawa zboża - (144)",
+				"rus": "Ферма - (144)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -9778,10 +9778,10 @@
 			"Identifier": "Agriculture_02 (Cattle Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Cattle Farm",
-				"ger": "Rinderfarm",
-				"pol": "Farma bydła",
-				"rus": "Скотоферма"
+				"eng": "Cattle Farm - (4)",
+				"ger": "Rinderfarm - (4)",
+				"pol": "Farma bydła - (4)",
+				"rus": "Скотоферма - (4)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -9797,10 +9797,10 @@
 			"Identifier": "Agriculture_03 (Hop Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Hop Farm",
-				"ger": "Hopfenplantage",
-				"pol": "Uprawa chmielu",
-				"rus": "Ферма хмеля"
+				"eng": "Hop Farm - (96)",
+				"ger": "Hopfenplantage - (96)",
+				"pol": "Uprawa chmielu - (96)",
+				"rus": "Ферма хмеля - (96)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -9816,10 +9816,10 @@
 			"Identifier": "Agriculture_04 (Potato Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Potato Farm",
-				"ger": "Kartoffelhof",
-				"pol": "Uprawa ziemniaków",
-				"rus": "Картофельная ферма"
+				"eng": "Potato Farm - (72)",
+				"ger": "Kartoffelhof - (72)",
+				"pol": "Uprawa ziemniaków - (72)",
+				"rus": "Картофельная ферма - (72)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -9854,10 +9854,10 @@
 			"Identifier": "Agriculture_06 (Sheep Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Sheep Farm",
-				"ger": "Schäferei",
-				"pol": "Farma owiec",
-				"rus": "Овцеферма"
+				"eng": "Sheep Farm - (3)",
+				"ger": "Schäferei - (3)",
+				"pol": "Farma owiec - (3)",
+				"rus": "Овцеферма - (3)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -9873,10 +9873,10 @@
 			"Identifier": "Agriculture_08 (Pig Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Pig Farm",
-				"ger": "Schweinezucht",
-				"pol": "Farma świń",
-				"rus": "Свиноферма"
+				"eng": "Pig Farm - (5)",
+				"ger": "Schweinezucht - (5)",
+				"pol": "Farma świń - (5)",
+				"rus": "Свиноферма - (5)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -9911,10 +9911,10 @@
 			"Identifier": "Agriculture_11 (Bell Pepper Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Red Pepper Farm",
-				"ger": "Paprikafarm",
-				"pol": "Uprawa czerwonej papryki",
-				"rus": "Перечная ферма"
+				"eng": "Red Pepper Farm - (108)",
+				"ger": "Paprikafarm - (108)",
+				"pol": "Uprawa czerwonej papryki - (108)",
+				"rus": "Перечная ферма - (108)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -9930,10 +9930,10 @@
 			"Identifier": "Agriculture_10 (Vineyard)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Vineyard",
-				"ger": "Weinberg",
-				"pol": "Winnica",
-				"rus": "Виноградник"
+				"eng": "Vineyard - (128)",
+				"ger": "Weinberg - (128)",
+				"pol": "Winnica - (128)",
+				"rus": "Виноградник - (128)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -10899,10 +10899,10 @@
 			"Identifier": "Agriculture_01_field (Grain Field)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Grain Field",
-				"ger": "Getreidefeld",
-				"pol": "Pole zboża",
-				"rus": "Поле пшеницы"
+				"eng": "Grain Field - (144)",
+				"ger": "Getreidefeld - (144)",
+				"pol": "Pole zboża - (144)",
+				"rus": "Поле пшеницы - (144)"
 			},
 			"Template": "Farmfield"
 		},
@@ -10918,10 +10918,10 @@
 			"Identifier": "Agriculture_02_field (Pasture)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Pasture",
-				"ger": "Rindergehege",
-				"pol": "Pastwisko",
-				"rus": "Пастбище"
+				"eng": "Pasture - (4)",
+				"ger": "Rindergehege - (4)",
+				"pol": "Pastwisko - (4)",
+				"rus": "Пастбище - (4)"
 			},
 			"Template": "Farmfield"
 		},
@@ -10937,10 +10937,10 @@
 			"Identifier": "Agriculture_03_field (Hop Field)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Hop Field",
-				"ger": "Hopfenfeld",
-				"pol": "Pole chmielu",
-				"rus": "Поле хмеля"
+				"eng": "Hop Field - (96)",
+				"ger": "Hopfenfeld - (96)",
+				"pol": "Pole chmielu - (96)",
+				"rus": "Поле хмеля - (96)"
 			},
 			"Template": "Farmfield"
 		},
@@ -10956,10 +10956,10 @@
 			"Identifier": "Agriculture_04_field (Potato Field)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Potato Field",
-				"ger": "Kartoffelfeld",
-				"pol": "Pole ziemniaków",
-				"rus": "Картофельное поле"
+				"eng": "Potato Field - (72)",
+				"ger": "Kartoffelfeld - (72)",
+				"pol": "Pole ziemniaków - (72)",
+				"rus": "Картофельное поле - (72)"
 			},
 			"Template": "Farmfield"
 		},
@@ -10975,10 +10975,10 @@
 			"Identifier": "Agriculture_06_field (Sheepfold)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Sheepfold",
-				"ger": "Schafpferch",
-				"pol": "Zagroda owiec",
-				"rus": "Овчарня"
+				"eng": "Sheepfold - (3)",
+				"ger": "Schafpferch - (3)",
+				"pol": "Zagroda owiec - (3)",
+				"rus": "Овчарня - (3)"
 			},
 			"Template": "Farmfield"
 		},
@@ -10994,10 +10994,10 @@
 			"Identifier": "Agriculture_08_field (Pig Sty)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Pig Sty",
-				"ger": "Schweinestall",
-				"pol": "Zagroda świń",
-				"rus": "Свинарник"
+				"eng": "Pig Sty - (5)",
+				"ger": "Schweinestall - (5)",
+				"pol": "Zagroda świń - (5)",
+				"rus": "Свинарник - (5)"
 			},
 			"Template": "Farmfield"
 		},
@@ -11013,10 +11013,10 @@
 			"Identifier": "Agriculture_10_field (Vines)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Vines",
-				"ger": "Weingut",
-				"pol": "Uprawa winorośli",
-				"rus": "Виноградники"
+				"eng": "Vines - (128)",
+				"ger": "Weingut - (128)",
+				"pol": "Uprawa winorośli - (128)",
+				"rus": "Виноградники - (128)"
 			},
 			"Template": "Farmfield"
 		},
@@ -11032,10 +11032,10 @@
 			"Identifier": "Agriculture_11_field (Pepper Field)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Pepper Crop",
-				"ger": "Paprikafeld",
-				"pol": "Uprawa papryki",
-				"rus": "Перец"
+				"eng": "Pepper Crop - (108)",
+				"ger": "Paprikafeld - (108)",
+				"pol": "Uprawa papryki - (108)",
+				"rus": "Перец - (108)"
 			},
 			"Template": "Farmfield"
 		},
@@ -11374,10 +11374,10 @@
 			"Identifier": "Agriculture_colony01_01 (Sugar Cane Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Sugar Cane Plantation",
-				"ger": "Zuckerrohrplantage",
-				"pol": "Plantacja trzciny cukrowej",
-				"rus": "Плантация тростника"
+				"eng": "Sugar Cane Plantation - (128)",
+				"ger": "Zuckerrohrplantage - (128)",
+				"pol": "Plantacja trzciny cukrowej - (128)",
+				"rus": "Плантация тростника - (128)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -11393,10 +11393,10 @@
 			"Identifier": "Agriculture_colony01_02 (Tobacco Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Tobacco Plantation",
-				"ger": "Tabakplantage",
-				"pol": "Plantacja tytoniu",
-				"rus": "Плантация табака"
+				"eng": "Tobacco Plantation - (192)",
+				"ger": "Tabakplantage - (192)",
+				"pol": "Plantacja tytoniu - (192)",
+				"rus": "Плантация табака - (192)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -11412,10 +11412,10 @@
 			"Identifier": "Agriculture_colony01_03 (Cotton Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Cotton Plantation",
-				"ger": "Baumwollplantage",
-				"pol": "Plantacja bawełny",
-				"rus": "Плантация хлопка"
+				"eng": "Cotton Plantation - (144)",
+				"ger": "Baumwollplantage - (144)",
+				"pol": "Plantacja bawełny - (144)",
+				"rus": "Плантация хлопка - (144)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -11431,10 +11431,10 @@
 			"Identifier": "Agriculture_colony01_04 (Cocoa Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Cocoa Plantation",
-				"ger": "Kakaoplantage",
-				"pol": "Plantacja kakaowców",
-				"rus": "Плантация какао"
+				"eng": "Cocoa Plantation - (128)",
+				"ger": "Kakaoplantage - (128)",
+				"pol": "Plantacja kakaowców - (128)",
+				"rus": "Плантация какао - (128)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -11450,10 +11450,10 @@
 			"Identifier": "Agriculture_colony01_05 (Caoutchouc Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Caoutchouc Plantation",
-				"ger": "Kautschuckplantage",
-				"pol": "Plantacja kauczuku",
-				"rus": "Плантация каучука"
+				"eng": "Caoutchouc Plantation - (144)",
+				"ger": "Kautschuckplantage - (144)",
+				"pol": "Plantacja kauczuku - (144)",
+				"rus": "Плантация каучука - (144)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -11488,10 +11488,10 @@
 			"Identifier": "Agriculture_colony01_07 (Coffee Beans Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Coffee Plantation",
-				"ger": "Kaffeeplantage",
-				"pol": "Plantacja kawy",
-				"rus": "Кофейная плантация"
+				"eng": "Coffee Plantation - (168)",
+				"ger": "Kaffeeplantage - (168)",
+				"pol": "Plantacja kawy - (168)",
+				"rus": "Кофейная плантация - (168)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -11507,10 +11507,10 @@
 			"Identifier": "Agriculture_colony01_08 (Banana Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Plantain Plantation",
-				"ger": "Bananenplantage",
-				"pol": "Plantacja bananów",
-				"rus": "Банановая плантация"
+				"eng": "Plantain Plantation - (128)",
+				"ger": "Bananenplantage - (128)",
+				"pol": "Plantacja bananów - (128)",
+				"rus": "Банановая плантация - (128)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -11545,10 +11545,10 @@
 			"Identifier": "Agriculture_colony01_10 (Corn Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Corn Farm",
-				"ger": "Maisplantage",
-				"pol": "Plantacja kukurydzy",
-				"rus": "Кукурузная ферма"
+				"eng": "Corn Farm - (168)",
+				"ger": "Maisplantage - (168)",
+				"pol": "Plantacja kukurydzy - (168)",
+				"rus": "Кукурузная ферма - (168)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -11564,10 +11564,10 @@
 			"Identifier": "Agriculture_colony01_11 (Alpaca Farm)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Alpaca Farm",
-				"ger": "Alpakafarm",
-				"pol": "Farma alpak",
-				"rus": "Ферма альпака"
+				"eng": "Alpaca Farm - (4)",
+				"ger": "Alpakafarm - (4)",
+				"pol": "Farma alpak - (4)",
+				"rus": "Ферма альпака - (4)"
 			},
 			"Template": "FarmBuilding"
 		},
@@ -11906,10 +11906,10 @@
 			"Identifier": "Agriculture_colony01_01_field (Sugar Cane Field)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Sugar Cane Crop",
-				"ger": "Zuckerrohrfeld",
-				"pol": "Pole trzciny cukrowej",
-				"rus": "Поле сахарного тростника"
+				"eng": "Sugar Cane Crop - (128)",
+				"ger": "Zuckerrohrfeld - (128)",
+				"pol": "Pole trzciny cukrowej - (128)",
+				"rus": "Поле сахарного тростника - (128)"
 			},
 			"Template": "Farmfield"
 		},
@@ -11925,10 +11925,10 @@
 			"Identifier": "Agriculture_colony01_02_field (Tobacco Field)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Tobacco Field",
-				"ger": "Tabakfeld",
-				"pol": "Pole tytoniu",
-				"rus": "Поле табака"
+				"eng": "Tobacco Field - (192)",
+				"ger": "Tabakfeld - (192)",
+				"pol": "Pole tytoniu - (192)",
+				"rus": "Поле табака - (192)"
 			},
 			"Template": "Farmfield"
 		},
@@ -11944,10 +11944,10 @@
 			"Identifier": "Agriculture_colony01_03_field (Cotton Field)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Cotton Field",
-				"ger": "Baumwollfeld",
-				"pol": "Pole bawełny",
-				"rus": "Хлопковое поле"
+				"eng": "Cotton Field - (144)",
+				"ger": "Baumwollfeld - (144)",
+				"pol": "Pole bawełny - (144)",
+				"rus": "Хлопковое поле - (144)"
 			},
 			"Template": "Farmfield"
 		},
@@ -11963,10 +11963,10 @@
 			"Identifier": "Agriculture_colony01_04_field (Cocoa Field)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Cocoa Grove",
-				"ger": "Kakaofeld",
-				"pol": "Pole kakaowców",
-				"rus": "Деревья какао"
+				"eng": "Cocoa Grove - (128)",
+				"ger": "Kakaofeld - (128)",
+				"pol": "Pole kakaowców - (128)",
+				"rus": "Деревья какао - (128)"
 			},
 			"Template": "Farmfield"
 		},
@@ -11982,10 +11982,10 @@
 			"Identifier": "Agriculture_colony01_05_field (Caoutchouc Field)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Caoutchouc Grove",
-				"ger": "Kautschukfeld",
-				"pol": "Pole kauczuku",
-				"rus": "Каучуковые деревья"
+				"eng": "Caoutchouc Grove - (144)",
+				"ger": "Kautschukfeld - (144)",
+				"pol": "Pole kauczuku - (144)",
+				"rus": "Каучуковые деревья - (144)"
 			},
 			"Template": "Farmfield"
 		},
@@ -12001,10 +12001,10 @@
 			"Identifier": "Agriculture_colony01_07_field (Coffee Field)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Coffee Crop",
-				"ger": "Kaffeefeld",
-				"pol": "Uprawa kawy",
-				"rus": "Кофейные деревья"
+				"eng": "Coffee Crop - (168)",
+				"ger": "Kaffeefeld - (168)",
+				"pol": "Uprawa kawy - (168)",
+				"rus": "Кофейные деревья - (168)"
 			},
 			"Template": "Farmfield"
 		},
@@ -12020,10 +12020,10 @@
 			"Identifier": "Agriculture_colony01_08_field (Banana Field)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Plantain Grove",
-				"ger": "Bananenplantage",
-				"pol": "Zagajnik bananowców",
-				"rus": "Банановая роща"
+				"eng": "Plantain Grove - (128)",
+				"ger": "Bananenplantage - (128)",
+				"pol": "Zagajnik bananowców - (128)",
+				"rus": "Банановая роща - (128)"
 			},
 			"Template": "Farmfield"
 		},
@@ -12039,10 +12039,10 @@
 			"Identifier": "Agriculture_colony01_10_field (Corn Field)",
 			"InfluenceRadius": 0,
 			"Localization": {
-				"eng": "Cornfield",
-				"ger": "Maisfeld",
-				"pol": "Pole kukurydzy",
-				"rus": "Кукурузное поле"
+				"eng": "Cornfield - (168)",
+				"ger": "Maisfeld - (168)",
+				"pol": "Pole kukurydzy - (168)",
+				"rus": "Кукурузное поле - (168)"
 			},
 			"Template": "Farmfield"
 		},
@@ -12237,5 +12237,5 @@
 			"Template": "Warehouse"
 		}
 	],
-	"Version": "0.8.4"
+	"Version": "0.8.5"
 }

@@ -23,7 +23,7 @@ namespace PresetParser
         private const string ANNO_VERSION_2205 = "2205";
         private const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "0.8.4";
+        private const string BUILDING_PRESETS_VERSION = "0.8.5";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "polish", "russian" };
@@ -35,23 +35,23 @@ namespace PresetParser
 
         #region Initalisizing Exclude IdentifierNames, FactionNames and TemplateNames for presets.json file 
 
-            #region Anno 1404
+        #region Anno 1404
         private static readonly List<string> ExcludeNameList1404 = new List<string> { "ResidenceRuin", "AmbassadorRuin", "CitizenHouse", "PatricianHouse",
             "NoblemanHouse", "AmbassadorHouse", "Gatehouse", "StorehouseTownPart", "ImperialCathedralPart", "SultanMosquePart", "Warehouse02", "Warehouse03",
             "Markethouse02", "Markethouse03", "TreeBuildCost", "BanditCamp"};
         private static readonly List<string> ExcludeTemplateList1404 = new List<string> { "OrnamentBuilding", "Wall" };
         #endregion
 
-            #region Anno 2070 * Also on FactionName Excludes *
-            private static readonly List<string> ExcludeNameList2070 = new List<string> { "distillery_field" , "citizen_residenc", "executive_residence", "leader_residence",
+        #region Anno 2070 * Also on FactionName Excludes *
+        private static readonly List<string> ExcludeNameList2070 = new List<string> { "distillery_field" , "citizen_residenc", "executive_residence", "leader_residence",
                 "ruin_residence" , "villager_residence" ,"builder_residence", "creator_residence" ,"scientist_residence", "genius_residence", "monument_unfinished",
                 "town_center_variation", "underwater_energy_transmitter", "iron_mine", "nuclearpowerplant_destroyed","limestone_quarry", "markethouse2", "markethouse3",
                 "warehouse2","warehouse3", "cybernatic_factory","vegetable_farm_field","electronic_recycler"};
-            private static readonly List<string> ExcludeTemplateList2070 = new List<string> { "OrnamentBuilding", "OrnamentFeedbackBuilding", "Ark" };
-            private static readonly List<string> ExcludeFactionList2070 = new List<string> { "third party" };
-            #endregion
+        private static readonly List<string> ExcludeTemplateList2070 = new List<string> { "OrnamentBuilding", "OrnamentFeedbackBuilding", "Ark" };
+        private static readonly List<string> ExcludeFactionList2070 = new List<string> { "third party" };
+        #endregion
 
-            #region Anno 2205 Also a GUID Checker for excluding. Do not change any numbers below
+        #region Anno 2205 Also a GUID Checker for excluding. Do not change any numbers below
         private static readonly List<string> ExcludeGUIDList2205 = new List<string> { "1001178", "1000737", "7000274", "1001175", "1000736", "7000275",
             "1000672", "1000755", "7000273", "1001171", "1000703", "7000272", "7000420", "7000421", "7000423", "7000424", "7000425", "7000427", "7000428",
             "7000429", "7000430", "7000431", "12000009", "12000010", "12000011", "12000020", "12000036", "1000063", "1000170", "1000212", "1000213", "1000174",
@@ -65,10 +65,11 @@ namespace PresetParser
         private static readonly List<string> testGUIDNames2205 = new List<string> { "NODOUBLES YET" };
         #endregion
 
-            #region anno 1800
-            /// <summary>
-            /// i need the IncludeBuildingsTemplateNames to get Building informaton from, as it is also the Presets Template String or Template GUID
-            /// </summary>
+        #region anno 1800
+        /// <summary>
+        /// i need the IncludeBuildingsTemplateNames to get Building informaton from, as it is also the Presets Template String or Template GUID
+        /// </summary>
+        public static IList<FarmField> farmFieldList1800 = new List<FarmField>();
         private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "CultureModule", "PowerplantBuilding",
         "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse"};
@@ -85,21 +86,21 @@ namespace PresetParser
         ///              OW1 (Old World - Jornaleros) and OW2 (Old World - Obreros)
         /// <2> wil be the Group under <1>, like Production, Public, etc
         /// </summary>
-            #endregion
+        #endregion
 
-       #endregion
-        
+        #endregion
+
         #region Set Icon File Name seperations
         private static string GetIconFilename(XmlNode iconNode, string annoVersion)
         {
             string annoIdexNumber = "";
-            if (annoVersion == ANNO_VERSION_1404) 
+            if (annoVersion == ANNO_VERSION_1404)
             {
                 annoIdexNumber = "A4_";
             }
             /* For Anno 2070, we use the normal icon names, without the AnnoIndexNUmber ('A5_'),
                 because anno 2070 has already the right names in previous Anno Designer versions. */
-            return string.Format("{0}icon_{1}_{2}.png", annoIdexNumber , iconNode["IconFileID"].InnerText, iconNode["IconIndex"] != null ? iconNode["IconIndex"].InnerText : "0"); //TODO: check this icon format is consistent between Anno versions
+            return string.Format("{0}icon_{1}_{2}.png", annoIdexNumber, iconNode["IconFileID"].InnerText, iconNode["IconIndex"] != null ? iconNode["IconIndex"].InnerText : "0"); //TODO: check this icon format is consistent between Anno versions
         }
         #endregion
 
@@ -182,7 +183,7 @@ namespace PresetParser
             /// The RDA's should all be extracted into the same directory.
             /// </summary>
             //These should stay constant for different anno versions (hopefully!)
-                #region Anno 1404 xPaths
+            #region Anno 1404 xPaths
             if (annoVersion == ANNO_VERSION_1404)
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_1404, new Dictionary<string, PathRef[]>());
@@ -206,9 +207,9 @@ namespace PresetParser
                 new PathRef("addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "PlayerBuildings")
                 });
             }
-                #endregion
+            #endregion
 
-                #region Anno 2070 xPaths
+            #region Anno 2070 xPaths
             if (annoVersion == ANNO_VERSION_2070)
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_2070, new Dictionary<string, PathRef[]>());
@@ -231,9 +232,9 @@ namespace PresetParser
                 new PathRef("addondata/config/balancing/addon_01_assets.xml", "/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Buildings")
                 });
             }
-                #endregion
+            #endregion
 
-                #region Anno 2205 xPaths
+            #region Anno 2205 xPaths
             if (annoVersion == ANNO_VERSION_2205)
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_2205, new Dictionary<string, PathRef[]>());
@@ -275,7 +276,7 @@ namespace PresetParser
             }
             #endregion
 
-                #region Anno 1800 xPaths
+            #region Anno 1800 xPaths
             if (annoVersion == ANNO_VERSION_1800)
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_1800, new Dictionary<string, PathRef[]>());
@@ -324,7 +325,7 @@ namespace PresetParser
                 #endregion
                 // parse buildings
                 // find buildings in assets.xml
- 
+
                 foreach (PathRef p in assetPathRefs)
                 {
                     ParseAssetsFile(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, iconNodes, localizations, p.InnerNameTag, annoVersion);
@@ -366,7 +367,7 @@ namespace PresetParser
             Console.WriteLine();
             Console.WriteLine("DONE - press enter to exit");
             Console.ReadLine();
-          
+
         }
         #endregion //End Prepare JSON Files
 
@@ -715,7 +716,7 @@ namespace PresetParser
             string langNodeStartPath = "/TextExport/Texts/Text";
             string langNodeDepth = "Text";
             int languageCount = 0;
-            LanguagesFiles= LanguagesFiles2205;
+            LanguagesFiles = LanguagesFiles2205;
 
             //Initialise the dictionary
             b.Localization = new SerializableDictionary<string>();
@@ -768,7 +769,7 @@ namespace PresetParser
                     translation = values["Standard"]["Name"].InnerText;
                 }
                 b.Localization.Dict.Add(Languages[languageCount], translation);
-                if (testVersion==true && annoVersion==ANNO_VERSION_2205)
+                if (testVersion == true && annoVersion == ANNO_VERSION_2205)
                 {
                     if (languageCount == 0)
                     {
@@ -937,7 +938,7 @@ namespace PresetParser
             {
                 icon = values["Standard"]["IconFilename"].InnerText;
             }
-            
+
             if (icon != null)
             {
                 /// Split the Value <IconFilenames>innertext</IconFilenames> to get only the Name.png
@@ -960,7 +961,7 @@ namespace PresetParser
                     case "Agriculture_colony01_09 (Cattle Farm)": b.IconFileName = replaceName + "meat_raw.png"; break;
                     case "Service_colony01_01 (Marketplace)": b.IconFileName = replaceName + "market.png"; break;
                     case "Service_colony01_02 (Chapel)": b.IconFileName = replaceName + "church.png"; break;
-                    case "Kontor_main_01":b.IconFileName = replaceName + "harbour_buildings.png"; break;
+                    case "Kontor_main_01": b.IconFileName = replaceName + "harbour_buildings.png"; break;
                 }
             }
             #endregion
@@ -969,7 +970,7 @@ namespace PresetParser
             // read influence radius if existing 
             try
             {
-               b.InfluenceRadius = Convert.ToInt32(values["FreeAreaProductivity"]["InfluenceRadius"].InnerText);
+                b.InfluenceRadius = Convert.ToInt32(values["FreeAreaProductivity"]["InfluenceRadius"].InnerText);
             }
             catch (NullReferenceException ex) { }
             #endregion
@@ -1008,7 +1009,7 @@ namespace PresetParser
                     {
                         //"[AsserData(2001009): <text>",
                         //Split the taranslation text ( and ) marking the GUID, and use the second value in nextGUID[].
-                        string[] nextGuid = translation.Split('(',')');
+                        string[] nextGuid = translation.Split('(', ')');
                         translationNodes = langDocument.SelectNodes(langNodeStartPath)
                             .Cast<XmlNode>().SingleOrDefault(_ => _["GUID"].InnerText == nextGuid[1]);
                         translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
@@ -1022,6 +1023,33 @@ namespace PresetParser
                     }
                     translation = values["Standard"]["Name"].InnerText;
                 }
+                if (templateName == "FarmBuilding" || templateName=="Farmfield")
+                {
+                    string fieldAmountValue = null, fieldGuidValue = null;
+                    switch (templateName)
+                    {
+                        case "FarmBuilding": { fieldGuidValue = values["ModuleOwner"]["ConstructionOptions"]["Item"]["ModuleGUID"].InnerText; fieldAmountValue = values?["ModuleOwner"]?["ModuleLimit"]?.InnerText; break; };
+                        case "Farmfield": { fieldGuidValue = values["Standard"]["GUID"].InnerText; fieldAmountValue = "0"; break; }
+                    }
+                    if (fieldAmountValue != null)
+                    {
+                        bool getFieldGuidBool = false;
+                        foreach (var getFieldGuid in farmFieldList1800)
+                        {
+                            if (getFieldGuid.fieldGUID == fieldGuidValue)
+                            {
+                                getFieldGuidBool = true;
+                                fieldAmountValue = getFieldGuid.fieldAmount;
+                                break;
+                            }
+                        }
+                        if (!getFieldGuidBool)
+                        {
+                            farmFieldList1800.Add(new FarmField() { fieldGUID = fieldGuidValue, fieldAmount = fieldAmountValue });
+                        }
+                        translation = translation + " - (" + fieldAmountValue + ")";
+                    }
+                }
                 b.Localization.Dict.Add(Languages[languageCount], translation);
                 languageCount++;
             }
@@ -1032,6 +1060,7 @@ namespace PresetParser
             buildings.Add(b);
         }
         #endregion
+
         /// Other Classes and or Internal Commands used in this program
         #region Retrieving BuildingBlockers from Buidings Nodes
         private static bool RetrieveBuildingBlocker(BuildingInfo building, string variationFilename, string annoVersion)
@@ -1063,7 +1092,7 @@ namespace PresetParser
                     }
                     if (ZF > 0)
                     {
-                        building.BuildBlocker["z"] = Convert.ToInt32(ZF); 
+                        building.BuildBlocker["z"] = Convert.ToInt32(ZF);
                     }
                     else
                     {
@@ -1140,6 +1169,7 @@ namespace PresetParser
         #endregion
 
         #region ParseBuildingBlockerNumber for anno 1800
+
         private static int ParseBuildingBlockerNumber(string number)
         {
             string[] xz = new[] { "" };
@@ -1323,7 +1353,16 @@ namespace PresetParser
         }
         #endregion
 
+        #region FarmField Ilist commands for Anno 1800
+        public class FarmField
+        {
+            public string fieldGUID { get; set; }
+            public string fieldAmount { get; set; }
+        }
+        #endregion
+
         #region PathRef Class
+
         private class PathRef
         {
             public string Path { get; }
