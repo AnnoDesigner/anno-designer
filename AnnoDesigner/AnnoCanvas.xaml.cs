@@ -634,7 +634,6 @@ namespace AnnoDesigner
             if (_renderLabel)
             {
                 var textPoint = objRect.TopLeft;
-                var a = new GlyphRunDrawing()
                 var text = new FormattedText(obj.Label, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
                                              new Typeface("Verdana"), 12, Brushes.Black, null, TextFormattingMode.Display)
                 {
