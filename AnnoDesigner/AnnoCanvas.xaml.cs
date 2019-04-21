@@ -457,6 +457,19 @@ namespace AnnoDesigner
                 // sort icons by its DisplayName
                 Icons = icons.OrderBy(_ => _.Value.DisplayName).ToDictionary(_ => _.Key, _ => _.Value);
             }
+
+            const int dpiFactor = 1;
+            _linePen.Thickness = dpiFactor * 1;
+            _highlightPen.Thickness = dpiFactor * 2;
+            _radiusPen.Thickness = dpiFactor * 2;
+            _influencedPen.Thickness = dpiFactor * 2;
+
+            _linePen.Freeze();
+            _highlightPen.Freeze();
+            _radiusPen.Freeze();
+            _influencedPen.Freeze();
+            _lightBrush.Freeze();
+            _influencedBrush.Freeze();
         }
 
         #endregion
@@ -471,11 +484,7 @@ namespace AnnoDesigner
         {
             //var m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
             //var dpiFactor = 1 / m.M11;
-            const int dpiFactor = 1;
-            _linePen.Thickness = dpiFactor * 1;
-            _highlightPen.Thickness = dpiFactor * 2;
-            _radiusPen.Thickness = dpiFactor * 2;
-            _influencedPen.Thickness = dpiFactor * 2;
+        
 
             // assure pixel perfect drawing
             var halfPenWidth = _linePen.Thickness / 2;
