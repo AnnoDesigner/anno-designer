@@ -31,7 +31,7 @@ namespace AnnoDesigner
         public readonly Dictionary<string, IconImage> Icons;
 
         public readonly BuildingPresets BuildingPresets;
-        
+
         /// <summary>
         /// Backing field of the GridSize property.
         /// </summary>
@@ -301,7 +301,7 @@ namespace AnnoDesigner
         /// Backing field of the CurrentMode property.
         /// </summary>
         private MouseMode _currentMode;
-        
+
         /// <summary>
         /// Indicates the current mouse mode.
         /// </summary>
@@ -337,7 +337,7 @@ namespace AnnoDesigner
         /// The rectangle used for selection.
         /// </summary>
         private Rect _selectionRect;
-        
+
         /// <summary>
         /// List of all currently placed objects.
         /// </summary>
@@ -484,7 +484,7 @@ namespace AnnoDesigner
         {
             //var m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
             //var dpiFactor = 1 / m.M11;
-        
+
 
             // assure pixel perfect drawing
             var halfPenWidth = _linePen.Thickness / 2;
@@ -555,7 +555,7 @@ namespace AnnoDesigner
             {
                 drawingContext.DrawRectangle(_lightBrush, _highlightPen, _selectionRect);
             }
-            
+
             // draw additional information
             if (RenderStats)
             {
@@ -593,7 +593,18 @@ namespace AnnoDesigner
             // draw object rectangle
             var objRect = GetObjectScreenRect(obj);
             var brush = new SolidColorBrush(obj.Color);
-            drawingContext.DrawRectangle(brush, obj.Borderless ? new Pen(brush, _linePen.Thickness) : _linePen, objRect);
+            brush.Freeze();
+            if (obj.Borderless)
+            {
+                var borderlessPen = new Pen(brush, _linePen.Thickness);
+                borderlessPen.Freeze();
+                drawingContext.DrawRectangle(brush, borderlessPen, objRect);
+            }
+            else
+            {
+                drawingContext.DrawRectangle(brush, _linePen, objRect);
+            }
+            
             // draw object icon if it is at least 2x2 cells
             var iconRendered = false;
             if (_renderIcon && !string.IsNullOrEmpty(obj.Icon))
@@ -606,8 +617,8 @@ namespace AnnoDesigner
 
                 // center icon within the object
                 var iconPos = objRect.TopLeft;
-                iconPos.X += objRect.Width/2 - iconSize.Width/2;
-                iconPos.Y += objRect.Height/2 - iconSize.Height/2;
+                iconPos.X += objRect.Width / 2 - iconSize.Width / 2;
+                iconPos.Y += objRect.Height / 2 - iconSize.Height / 2;
                 var iconName = Path.GetFileNameWithoutExtension(obj.Icon); // for backwards compatibility to older layouts
                 if (iconName != null && Icons.ContainsKey(iconName))
                 {
@@ -623,6 +634,7 @@ namespace AnnoDesigner
             if (_renderLabel)
             {
                 var textPoint = objRect.TopLeft;
+                var a = new GlyphRunDrawing()
                 var text = new FormattedText(obj.Label, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
                                              new Typeface("Verdana"), 12, Brushes.Black, null, TextFormattingMode.Display)
                 {
@@ -670,6 +682,7 @@ namespace AnnoDesigner
                 // highlight buildings within influence
                 var radius = GridToScreen(obj.Radius);
                 var circle = new EllipseGeometry(GetCenterPoint(GetObjectScreenRect(obj)), radius, radius);
+                circle.Freeze();
                 foreach (var o in _placedObjects)
                 {
                     var oRect = GetObjectScreenRect(o);
@@ -677,7 +690,7 @@ namespace AnnoDesigner
                     distance.X -= circle.Center.X;
                     distance.Y -= circle.Center.Y;
                     // check if the center is within the influence circle
-                    if (distance.X*distance.X + distance.Y*distance.Y <= radius*radius)
+                    if (distance.X * distance.X + distance.Y * distance.Y <= radius * radius)
                     {
                         drawingContext.DrawRectangle(_influencedBrush, _influencedPen, oRect);
                     }
@@ -727,7 +740,7 @@ namespace AnnoDesigner
                 if (_renderBuildingCount)
                 {
                     informationLines.Add("");
-                  
+
                     IEnumerable<IGrouping<string, AnnoObject>> groupedBuildings;
                     if (_selectedObjects.Count > 0)
                     {
@@ -1193,11 +1206,11 @@ namespace AnnoDesigner
                     break;
                 case Key.R:
                     if (CurrentObject != null)
-                    Rotate(CurrentObject.Size);
+                        Rotate(CurrentObject.Size);
                     break;
                 case Key.V:
                     if (CurrentObject == null
-                        && _selectedObjects.Count != 0 
+                        && _selectedObjects.Count != 0
                         && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
                     {
                         CurrentObject = _selectedObjects[0];
@@ -1244,7 +1257,7 @@ namespace AnnoDesigner
             {
                 _placedObjects.Add(new AnnoObject(CurrentObject));
                 // sort the objects because borderless objects should be drawn first
-                _placedObjects.Sort((a,b) => b.Borderless.CompareTo(a.Borderless));
+                _placedObjects.Sort((a, b) => b.Borderless.CompareTo(a.Borderless));
                 return true;
             }
             return false;
@@ -1291,7 +1304,7 @@ namespace AnnoDesigner
         {
             Normalize(0);
         }
-        
+
         /// <summary>
         /// Normalizes the layout, i.e. moves all objects so that the top-most and left-most objects are exactly at the top and left coordinate zero if border is zero.
         /// Otherwise moves all objects further to the bottom-right by border in grid-units.
