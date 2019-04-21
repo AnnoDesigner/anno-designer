@@ -31,7 +31,7 @@ namespace AnnoDesigner
         public readonly Dictionary<string, IconImage> Icons;
 
         public readonly BuildingPresets BuildingPresets;
-        
+
         /// <summary>
         /// Backing field of the GridSize property.
         /// </summary>
@@ -155,6 +155,27 @@ namespace AnnoDesigner
                     InvalidateVisual();
                 }
                 _renderStats = value;
+            }
+        }
+
+        private bool _renderBuildingCount = false;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the calculated building statistics of the layout should be rendered.
+        /// </summary>
+        public bool RenderBuildingCount
+        {
+            get
+            {
+                return _renderBuildingCount;
+            }
+            set
+            {
+                if (_renderBuildingCount != value)
+                {
+                    InvalidateVisual();
+                }
+                _renderBuildingCount = value;
             }
         }
 
@@ -285,7 +306,7 @@ namespace AnnoDesigner
         /// Backing field of the CurrentMode property.
         /// </summary>
         private MouseMode _currentMode;
-        
+
         /// <summary>
         /// Indicates the current mouse mode.
         /// </summary>
@@ -321,7 +342,7 @@ namespace AnnoDesigner
         /// The rectangle used for selection.
         /// </summary>
         private Rect _selectionRect;
-        
+
         /// <summary>
         /// List of all currently placed objects.
         /// </summary>
@@ -332,6 +353,11 @@ namespace AnnoDesigner
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
         private readonly List<AnnoObject> _selectedObjects;
+
+        /// <summary></summary>
+        /// initialization of the Buildng Selection Count List
+        /// list buidingCounting<"number","name">; The counting-values and names of the selceted buidings
+        public static List<string> _buidingCountings = new List<string>();
 
         #region Pens and Brushes
 
@@ -436,6 +462,19 @@ namespace AnnoDesigner
                 // sort icons by its DisplayName
                 Icons = icons.OrderBy(_ => _.Value.DisplayName).ToDictionary(_ => _.Key, _ => _.Value);
             }
+
+            const int dpiFactor = 1;
+            _linePen.Thickness = dpiFactor * 1;
+            _highlightPen.Thickness = dpiFactor * 2;
+            _radiusPen.Thickness = dpiFactor * 2;
+            _influencedPen.Thickness = dpiFactor * 2;
+
+            _linePen.Freeze();
+            _highlightPen.Freeze();
+            _radiusPen.Freeze();
+            _influencedPen.Freeze();
+            _lightBrush.Freeze();
+            _influencedBrush.Freeze();
         }
 
         #endregion
@@ -450,11 +489,7 @@ namespace AnnoDesigner
         {
             //var m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
             //var dpiFactor = 1 / m.M11;
-            const int dpiFactor = 1;
-            _linePen.Thickness = dpiFactor * 1;
-            _highlightPen.Thickness = dpiFactor * 2;
-            _radiusPen.Thickness = dpiFactor * 2;
-            _influencedPen.Thickness = dpiFactor * 2;
+
 
             // assure pixel perfect drawing
             var halfPenWidth = _linePen.Thickness / 2;
@@ -526,7 +561,7 @@ namespace AnnoDesigner
             {
                 drawingContext.DrawRectangle(_lightBrush, _highlightPen, _selectionRect);
             }
-            
+
             // draw additional information
             if (RenderStats)
             {
@@ -581,19 +616,32 @@ namespace AnnoDesigner
             // draw object rectangle
             var objRect = GetObjectScreenRect(obj);
             var brush = new SolidColorBrush(obj.Color);
-            drawingContext.DrawRectangle(brush, obj.Borderless ? new Pen(brush, _linePen.Thickness) : _linePen, objRect);
+            brush.Freeze();
+            if (obj.Borderless)
+            {
+                var borderlessPen = new Pen(brush, _linePen.Thickness);
+                borderlessPen.Freeze();
+                drawingContext.DrawRectangle(brush, borderlessPen, objRect);
+            }
+            else
+            {
+                drawingContext.DrawRectangle(brush, _linePen, objRect);
+            }
+            
             // draw object icon if it is at least 2x2 cells
             var iconRendered = false;
             if (_renderIcon && !string.IsNullOrEmpty(obj.Icon))
             {
                 // draw icon 2x2 grid cells large
-                var iconSize = obj.Size.Width < 2 && obj.Size.Height < 2
-                    ? GridToScreen(new Size(1,1))
-                    : GridToScreen(new Size(2,2));
+                var minSize = Math.Min(obj.Size.Width, obj.Size.Height);
+                //minSize = minSize == 1 ? minSize : Math.Floor(NthRoot(minSize, Constants.IconSizeFactor) + 1);
+                var iconSize = GridToScreen(new Size(minSize, minSize));
+                iconSize = minSize == 1 ? iconSize : new Size(NthRoot(iconSize.Width, Constants.IconSizeFactor), NthRoot(iconSize.Height, Constants.IconSizeFactor));
+
                 // center icon within the object
                 var iconPos = objRect.TopLeft;
-                iconPos.X += objRect.Width/2 - iconSize.Width/2;
-                iconPos.Y += objRect.Height/2 - iconSize.Height/2;
+                iconPos.X += objRect.Width / 2 - iconSize.Width / 2;
+                iconPos.Y += objRect.Height / 2 - iconSize.Height / 2;
                 var iconName = Path.GetFileNameWithoutExtension(obj.Icon); // for backwards compatibility to older layouts
                 if (iconName != null && Icons.ContainsKey(iconName))
                 {
@@ -656,6 +704,7 @@ namespace AnnoDesigner
                 // highlight buildings within influence
                 var radius = GridToScreen(obj.Radius);
                 var circle = new EllipseGeometry(GetCenterPoint(GetObjectScreenRect(obj)), radius, radius);
+                circle.Freeze();
                 foreach (var o in _placedObjects)
                 {
                     var oRect = GetObjectScreenRect(o);
@@ -663,7 +712,7 @@ namespace AnnoDesigner
                     distance.X -= circle.Center.X;
                     distance.Y -= circle.Center.Y;
                     // check if the center is within the influence circle
-                    if (distance.X*distance.X + distance.Y*distance.Y <= radius*radius)
+                    if (distance.X * distance.X + distance.Y * distance.Y <= radius * radius)
                     {
                         drawingContext.DrawRectangle(_influencedBrush, _influencedPen, oRect);
                     }
@@ -698,6 +747,7 @@ namespace AnnoDesigner
                 var boxY = _placedObjects.Max(_ => _.Position.Y + _.Size.Height) - _placedObjects.Min(_ => _.Position.Y);
                 // calculate area of all buildings
                 var minTiles = _placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
+
                 // format lines
                 informationLines.Add("Bounding Box");
                 informationLines.Add(string.Format(" {0}x{1}", boxX, boxY));
@@ -708,20 +758,49 @@ namespace AnnoDesigner
                 informationLines.Add("");
                 informationLines.Add("Space efficiency");
                 informationLines.Add(string.Format(" {0}%", Math.Round(minTiles / boxX / boxY * 100)));
+
+                if (_renderBuildingCount)
+                {
+                    informationLines.Add("");
+
+                    IEnumerable<IGrouping<string, AnnoObject>> groupedBuildings;
+                    if (_selectedObjects.Count > 0)
+                    {
+                        informationLines.Add("Buildings Selected");
+                        groupedBuildings = _selectedObjects.GroupBy(_ => _.Identifier);
+                    }
+                    else
+                    {
+                        informationLines.Add("Buildings");
+                        groupedBuildings = _placedObjects.GroupBy(_ => _.Identifier);
+                    }
+                    foreach (var item in groupedBuildings
+                        .Where(_ => _.ElementAt(0).Road == false)
+                        .Where(_ => _.ElementAt(0).Identifier != null)
+                        .OrderByDescending(_ => _.Count()))
+                    {
+                        var building = BuildingPresets.Buildings.First(_ => _.Identifier == item.ElementAt(0).Identifier);
+                        informationLines.Add(string.Format("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]));
+                    }
+                }
             }
             // render all the lines
-            for (var i = 0; i < informationLines.Count; i++)
+            var text = String.Join("\n", informationLines);
+            var f = new FormattedText(text, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                            new Typeface("Verdana"), 12, Brushes.Black, null, TextFormattingMode.Display)
             {
-                var line = informationLines[i];
-                var text = new FormattedText(line, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                             new Typeface("Verdana"), 12, Brushes.Black, null ,TextFormattingMode.Display)
-                {
-                    MaxTextWidth = Constants.StatisticsMargin,
-                    MaxTextHeight = RenderSize.Height,
-                    TextAlignment = TextAlignment.Left
-                };
-                drawingContext.DrawText(text, new Point(RenderSize.Width - Constants.StatisticsMargin + 10, 10 + i * 15));
-            }
+                MaxTextWidth = Constants.StatisticsMargin - 20,
+                MaxTextHeight = RenderSize.Height,
+                TextAlignment = TextAlignment.Left
+            };
+            drawingContext.DrawText(f, new Point(RenderSize.Width - Constants.StatisticsMargin + 10, 10));
+        }
+
+        //I was really just checking to see if there was a built in function, but this works
+        //https://stackoverflow.com/questions/18657508/c-sharp-find-nth-root
+        static double NthRoot(double A, double N)
+        {
+            return Math.Pow(A, 1.0 / N);
         }
 
         #endregion
@@ -1152,6 +1231,18 @@ namespace AnnoDesigner
                     _selectedObjects.ForEach(_ => _placedObjects.Remove(_));
                     _selectedObjects.Clear();
                     break;
+                case Key.R:
+                    if (CurrentObject != null)
+                        Rotate(CurrentObject.Size);
+                    break;
+                case Key.V:
+                    if (CurrentObject == null
+                        && _selectedObjects.Count != 0
+                        && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                    {
+                        CurrentObject = _selectedObjects[0];
+                    }
+                    break;
             }
             InvalidateVisual();
         }
@@ -1195,7 +1286,7 @@ namespace AnnoDesigner
             {
                 _placedObjects.Add(new AnnoObject(CurrentObjects[0]));
                 // sort the objects because borderless objects should be drawn first
-                _placedObjects.Sort((a,b) => b.Borderless.CompareTo(a.Borderless));
+                _placedObjects.Sort((a, b) => b.Borderless.CompareTo(a.Borderless));
                 return true;
             }
             return false;
@@ -1244,7 +1335,7 @@ namespace AnnoDesigner
         {
             Normalize(0);
         }
-        
+
         /// <summary>
         /// Normalizes the layout, i.e. moves all objects so that the top-most and left-most objects are exactly at the top and left coordinate zero if border is zero.
         /// Otherwise moves all objects further to the bottom-right by border in grid-units.
@@ -1506,7 +1597,7 @@ namespace AnnoDesigner
                 e.Handled = true;
             }
         }
-    
+
         #endregion
     }
 }

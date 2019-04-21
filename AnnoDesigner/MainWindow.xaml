@@ -6,10 +6,16 @@
         xmlns:myUI="clr-namespace:AnnoDesigner.UI"
         xmlns:l="clr-namespace:AnnoDesigner.Localization"
         xmlns:i="clr-namespace:AnnoDesigner.Presets"
+        xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         Title="Anno Designer"
         Icon="/AnnoDesigner;component/icon.ico"
-        Height="1317.793" Width="1518.161"
-        Loaded="WindowLoaded">
+        Height="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowHeight, Mode=TwoWay}" 
+        Width="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowWidth, Mode=TwoWay}"
+        Top="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowTop, Mode=TwoWay}"
+        Left="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowTop, Mode=TwoWay}"
+        WindowState="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowWindowState, Mode=TwoWay}"
+        Loaded="WindowLoaded"
+        Closing="WindowClosing">
     <Window.Resources>
         <DataTemplate DataType="{x:Type myUI:IconImage}">
             <StackPanel Orientation="Horizontal">
@@ -34,12 +40,13 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
+            <ColumnDefinition Width="27*" />
+            <ColumnDefinition Width="13*"/>
             <ColumnDefinition Width="230" />
         </Grid.ColumnDefinitions>
-        <my:AnnoCanvas x:Name="annoCanvas" Grid.RowSpan="1" Grid.Row="1" RenderGrid="True" RenderIcon="True" RenderLabel="True" RenderStats="True" />
-        <GridSplitter Grid.Row="1" Width="6" />
-        <Menu Name="Menu" Height="23" VerticalAlignment="Top" Grid.ColumnSpan="2">
+        <my:AnnoCanvas x:Name="annoCanvas" Grid.RowSpan="1" Grid.Row="1" RenderGrid="True" RenderIcon="True" RenderLabel="True" RenderStats="True" Grid.ColumnSpan="2" />
+        <GridSplitter Grid.Row="1" Width="6" Grid.Column="1" />
+        <Menu Name="Menu" Height="23" VerticalAlignment="Top" Grid.ColumnSpan="3">
             <!--<Menu.Resources>
                
             </Menu.Resources>
@@ -74,32 +81,46 @@
                 <MenuItem Header="{Binding Path=UseCurrentZoomOnExportedImage}" IsCheckable="True" IsChecked="False" Name="MenuItemExportZoom" />
                 <MenuItem Header="{Binding Path=RenderSelectionHighlightsOnExportedImage}" IsCheckable="True" IsChecked="False" Name="MenuItemExportSelection" />
             </MenuItem>
-            <MenuItem Header="Language" TabIndex="23" Click="MenuItemLanguageClick">
+            <MenuItem Name="LanguageMenu" Header="{Binding Path=Language}" TabIndex="23" Click="MenuItemLanguageClick" SubmenuClosed="LanguageMenuSubmenuClosed">
                 <MenuItem Header="English" IsCheckable="True" IsChecked="True" Name="MenuItemLanguageEng" />
                 <MenuItem Header="Deutsch" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageGer" />
-                <MenuItem Header="Français" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageFra" />
-                <MenuItem Header="Español" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageEsp" />
-                <MenuItem Header="Italiano" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageIta" />
+                <!--<MenuItem Header="Français" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageFra" />-->
+                <!--<MenuItem Header="Español" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageEsp" />-->
+                <!--<MenuItem Header="Italiano" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageIta" />-->
                 <MenuItem Header="Polski" IsCheckable="True" IsChecked="False" Name="MenuItemLanguagePol" />
                 <MenuItem Header="Русский" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageRus" />
-                <MenuItem Header="český" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageCze" />
+                <!--<MenuItem Header="český" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageCze" />-->
             </MenuItem>
-            <MenuItem Header="{Binding Path=Help}" TabIndex="24" HorizontalAlignment="Right">
+            <MenuItem Header="{Binding Path=ManageStats}" TabIndex="24" HorizontalAlignment="Right">
+                <MenuItem Header="{Binding Path=ShowStats}" 
+                          IsCheckable="True" 
+                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowStats, Mode=TwoWay}" 
+                          Click="MenuItemStatsShowStatsClick" />
+                <Separator></Separator>
+                <MenuItem Name="MenuItemStatsBuildingCount" 
+                          Header="{Binding Path=BuildingCount}" 
+                          IsCheckable="True" 
+                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowBuildingCount, Mode=TwoWay}"
+                          IsEnabled="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowStats, Mode=OneWay}" 
+                          Click="MenuItemStatsBuildingCountClick" />
+            </MenuItem>
+            <MenuItem Header="{Binding Path=Help}" TabIndex="25" HorizontalAlignment="Right">
                 <MenuItem Header="{Binding Path=Version}" Name="MenuItemVersion" IsEnabled="False" />
                 <MenuItem Header="{Binding Path=FileVersion}" Name="MenuItemFileVersion" IsEnabled="False" />
                 <MenuItem Header="{Binding Path=PresetsVersion}" Name="MenuItemPresetsVersion" IsEnabled="False" />
                 <MenuItem Header="{Binding Path=CheckForUpdates}" Click="MenuItemVersionCheckImageClick" />
+                <MenuItem Name="AutomaticUpdateCheck" IsCheckable="True" Header="{Binding Path=EnableAutomaticUpdateCheck}" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=EnableAutomaticUpdateCheck, Mode=TwoWay}"></MenuItem>
                 <Separator />
                 <MenuItem Header="{Binding Path=GoToProjectHomepage}" Click="MenuItemHomepageClick" />
+                <MenuItem Header="{Binding Path=OpenWelcomePage}" Click="MenuItemOpenWelcomeClick"></MenuItem>
                 <MenuItem Header="{Binding Path=AboutAnnoDesigner}" Click="MenuItemAboutClick" />
             </MenuItem>
             <Separator />
-            <MenuItem Header="{Binding Path=ShowGrid}" IsCheckable="True" IsChecked="True" Click="MenuItemGridClick" TabIndex="25" />
-            <MenuItem Header="{Binding Path=ShowLabels}" IsCheckable="True" IsChecked="True" Click="MenuItemLabelClick" TabIndex="26" />
-            <MenuItem Header="{Binding Path=ShowIcons}" IsCheckable="True" IsChecked="True" Click="MenuItemIconClick" TabIndex="27" />
-            <MenuItem Header="{Binding Path=ShowStats}" IsCheckable="True" IsChecked="True" Click="MenuItemStatsClick" TabIndex="28" />
+            <MenuItem Name="ShowGrid" Header="{Binding Path=ShowGrid}" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowGrid, Mode=TwoWay}" Click="MenuItemGridClick" TabIndex="26" />
+            <MenuItem Name="ShowLabels" Header="{Binding Path=ShowLabels}" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowLabels, Mode=TwoWay}" Click="MenuItemLabelClick" TabIndex="27" />
+            <MenuItem Name="ShowIcons" Header="{Binding Path=ShowIcons}" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowIcons, Mode=TwoWay}" Click="MenuItemIconClick" TabIndex="28" />
         </Menu>
-        <DockPanel Grid.Column="1" Grid.Row="1" LastChildFill="True">
+        <DockPanel Grid.Column="2" Grid.Row="1" LastChildFill="True">
             <GroupBox Header="{Binding Path=BuildingSettings}" DockPanel.Dock="Top">
                 <StackPanel>
                     <DockPanel LastChildFill="False" Height="26">
@@ -115,10 +136,18 @@
                     <DockPanel LastChildFill="False" Height="26">
                         <Label Content="{Binding Path=Label}" />
                         <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxLabel" Text="Building" Width="140" TabIndex="4" />
+                        <TextBox DockPanel.Dock="Right" Height="10" IsEnabled="False" Name="textBoxIdentifier" Text="" Visibility="Hidden" Width="140" />
+                        <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="False" Name="TextBoxLanguages" Text="" Visibility="Visible" Width="140" />
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="46">
                         <Label Content="{Binding Path=Icon}" VerticalAlignment="Center" />
-                        <ComboBox DockPanel.Dock="Right" Width="140" Height="46" IsEnabled="True" Name="comboBoxIcon" SelectedIndex="0" TabIndex="6" TextSearch.TextPath="DisplayName" />
+                        <ComboBox DockPanel.Dock="Right" Width="140" Height="46" IsEnabled="True" Name="comboBoxIcon" SelectedIndex="0" TabIndex="6" TextSearch.TextPath="DisplayName">
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel
+                                    VirtualizingStackPanel.IsVirtualizing="True" 
+                                    VirtualizingStackPanel.VirtualizationMode="Recycling"></VirtualizingStackPanel>
+                            </ItemsPanelTemplate>
+                        </ComboBox>
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="26">
                         <Label Content="{Binding Path=Radius}" />
@@ -139,7 +168,7 @@
                 <TreeView Name="treeViewPresets" MouseDoubleClick="TreeViewPresetsMouseDoubleClick" KeyDown="TreeViewPresetsKeyDown" TabIndex="13" />
             </GroupBox>
         </DockPanel>
-        <StatusBar Grid.Row="2" Grid.ColumnSpan="2">
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="3">
             <StatusBarItem Content="Mouse controls: left - place, select, move / right - stop placement, remove / both - move all / double click - copy / wheel - zoom / wheel-click - rotate." />
             <StatusBarItem Name="StatusBarItemStatus" Content="Standard" Margin="10,0,0,0" />
         </StatusBar>

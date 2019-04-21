@@ -29,7 +29,7 @@ namespace AnnoDesigner.Presets
 
             //For Anno 2205 only
             var modulesList = Buildings
-                            .Where(_ => _.Header == "Anno 2205")
+                            .Where(_ => _.Header == "(A6) Anno 2205")
                             .Where(_ => _.Faction == "Facility Modules")
                             .Where(_ => _.Faction != "Facilities")
                             .ToList();
@@ -42,10 +42,11 @@ namespace AnnoDesigner.Presets
             foreach (var header in list.GroupBy(_ => _.Header).OrderBy(_ => _.Key))
             {
                 var headerItem = new TreeViewItem { Header = header.Key };
-                foreach (var secondLevel in list.GroupBy(_ => _.Faction).OrderBy(_ => _.Key))
+                foreach (var secondLevel in header.GroupBy(_ => _.Faction).OrderBy(_ => _.Key))
                 {
                     var secondLevelItem = new TreeViewItem { Header = secondLevel.Key };
-                    foreach (var thirdLevel in secondLevel.GroupBy(_ => _.Group).OrderBy(_ => _.Key))
+                  
+                    foreach (var thirdLevel in secondLevel.Where(_ => _.Group != null).GroupBy(_ => _.Group).OrderBy(_ => _.Key))
                     {
                         var thirdLevelItem = new TreeViewItem { Header = thirdLevel.Key };
                         foreach (var buildingInfo in thirdLevel.OrderBy(_ => _.GetOrderParameter()))
@@ -65,9 +66,14 @@ namespace AnnoDesigner.Presets
                         {
                             thirdLevelItem.Items.Add(fourthLevelItem);
                         }
-
                         secondLevelItem.Items.Add(thirdLevelItem);
                     }
+
+                    foreach (var thirdLevel in secondLevel.Where(_ => _.Group == null).OrderBy(_ => _.Group))
+                    {
+                        secondLevelItem.Items.Add(thirdLevel.ToAnnoObject());
+                    }
+
                     headerItem.Items.Add(secondLevelItem);
                 }
                 treeView.Items.Add(headerItem);

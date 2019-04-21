@@ -12,8 +12,9 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using MessageBox = Microsoft.Windows.Controls.MessageBox;
 using System.ComponentModel;
-using System.Collections.Generic;
+using AnnoDesigner.Properties;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace AnnoDesigner
 {
@@ -25,25 +26,57 @@ namespace AnnoDesigner
     {
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
+        private static MainWindow _instance;
 
         private static string _selectedLanguage;
         public static string SelectedLanguage
         {
-            get { return _selectedLanguage == null ? "English" : _selectedLanguage; }
-            set {
+            get
+            {
+                if (_selectedLanguage != null && Localization.Localization.LanguageCodeMap.ContainsKey(_selectedLanguage))
+                {
+                    return _selectedLanguage;
+                }
+                else
+                {
+                    _selectedLanguage = "English";
+                    return _selectedLanguage;
+                }
+            }
+            set
+            {
                 _selectedLanguage = value == null ? "English" : value;
-                mainWindowLocalization.UpdateLanguage();
+                _instance.SelectedLanguageChanged();
             }
         }
 
         private static Localization.MainWindow mainWindowLocalization;
         //About window does not need to be called, as it get's instantiated and used when the about window is created
 
+        private void SelectedLanguageChanged()
+        {
+            mainWindowLocalization.UpdateLanguage();
+            _instance.RepopulateTreeView();
+            foreach (MenuItem item in LanguageMenu.Items)
+            {
+                if (item.Header.ToString() == SelectedLanguage)
+                {
+                    item.IsChecked = true;
+                }
+                else
+                {
+                    item.IsChecked = false;
+                }
+            }
+            Settings.Default.SelectedLanguage = SelectedLanguage;
+        }
+
         #region Initialization
 
         public MainWindow()
         {
             InitializeComponent();
+            _instance = this;
             // initialize web client
             _webClient = new WebClient();
             _webClient.DownloadStringCompleted += WebClientDownloadStringCompleted;
@@ -55,6 +88,39 @@ namespace AnnoDesigner
             //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
             DependencyObject dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
             mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
+
+            //If language is not recognized, bring up the language selection screen
+            if (!Localization.Localization.LanguageCodeMap.ContainsKey(Settings.Default.SelectedLanguage))
+            {
+                Welcome w = new Welcome();
+                w.ShowDialog();
+            }
+            else
+            {
+                SelectedLanguage = Settings.Default.SelectedLanguage;
+            }
+            foreach (MenuItem item in LanguageMenu.Items)
+            {
+                if (item.Header.ToString() == SelectedLanguage)
+                {
+                    item.IsChecked = true;
+                }
+            }
+
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
+            annoCanvas.RenderGrid = Settings.Default.ShowGrid;
+            annoCanvas.RenderIcon = Settings.Default.ShowIcons;
+            annoCanvas.RenderLabel = Settings.Default.ShowLabels;
+            annoCanvas.RenderStats = Settings.Default.StatsShowStats;
+            annoCanvas.RenderBuildingCount = Settings.Default.StatsShowBuildingCount;
+            AutomaticUpdateCheck.IsChecked = Settings.Default.EnableAutomaticUpdateCheck;
+            ShowGrid.IsChecked = Settings.Default.ShowGrid;
+            ShowIcons.IsChecked = Settings.Default.ShowIcons;
+            ShowLabels.IsChecked = Settings.Default.ShowLabels;
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -63,7 +129,7 @@ namespace AnnoDesigner
             comboBoxIcon.Items.Clear();
             _noIconItem = new IconImage("None");
             comboBoxIcon.Items.Add(_noIconItem);
-            foreach (System.Collections.Generic.KeyValuePair<string, IconImage> icon in annoCanvas.Icons)
+            foreach (var icon in annoCanvas.Icons)
             {
                 comboBoxIcon.Items.Add(icon.Value);
             }
@@ -74,26 +140,27 @@ namespace AnnoDesigner
             CheckForUpdates(false);
             // load color presets
             colorPicker.StandardColors.Clear();
-            try
-            {
-                ColorPresets colorPresets = DataIO.LoadFromFile<ColorPresets>(Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile));
-                foreach (ColorScheme colorScheme in colorPresets.ColorSchemes)
-                {
-                    foreach (ColorInfo colorInfo in colorScheme.ColorInfos)
-                    {
-                        colorPicker.StandardColors.Add(new ColorItem(colorInfo.Color, string.Format("{0} ({1})", colorInfo.ColorTarget, colorScheme.Name)));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Loading of the color presets failed");
-            }
+            //This is currently disabled
+            //try
+            //{
+            //    ColorPresets colorPresets = DataIO.LoadFromFile<ColorPresets>(Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile));
+            //    foreach (ColorScheme colorScheme in colorPresets.ColorSchemes)
+            //    {
+            //        foreach (ColorInfo colorInfo in colorScheme.ColorInfos)
+            //        {
+            //            colorPicker.StandardColors.Add(new ColorItem(colorInfo.Color, string.Format("{0} ({1})", colorInfo.ColorTarget, colorScheme.Name)));
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "Loading of the color presets failed");
+            //}
             // load presets
             treeViewPresets.Items.Clear();
             // manually add a road tile preset
-            treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true });
-            treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true });
+            treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true, Identifier = "Road" });
+            treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true, Identifier = "Road" });
             BuildingPresets presets = annoCanvas.BuildingPresets;
             if (presets != null)
             {
@@ -105,6 +172,20 @@ namespace AnnoDesigner
             {
                 GroupBoxPresets.Header = "Building presets - load failed";
             }
+
+            if (Settings.Default.TreeViewState != null && Settings.Default.TreeViewState.Count > 0)
+            {
+                try
+                {
+                    treeViewPresets.SetTreeViewState(Settings.Default.TreeViewState);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Failed to restore previous preset menu settings.");
+                    App.WriteToErrorLog("TreeView SetTreeViewState Error", ex.Message, ex.StackTrace);
+                }
+            }
+
             // load file given by argument
             if (!string.IsNullOrEmpty(App.FilenameArgument))
             {
@@ -118,31 +199,52 @@ namespace AnnoDesigner
 
         private void CheckForUpdates(bool forcedCheck)
         {
-            _webClient.DownloadStringAsync(new Uri("http://anno-designer.googlecode.com/svn/trunk/version.txt"), forcedCheck);
+            if (Settings.Default.EnableAutomaticUpdateCheck || forcedCheck)
+            {
+                _webClient.DownloadStringAsync(new Uri("https://raw.githubusercontent.com/AgmasGold/anno-designer/master/version.txt"), forcedCheck);
+            }
         }
 
         private void WebClientDownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
-            if (e.Error != null)
+            try
             {
-                MessageBox.Show(e.Error.Message, "Version check failed");
+                if (e.Error != null)
+                {
+                    MessageBox.Show(e.Error.Message, "Version check failed");
+                    return;
+                }
+                if (Double.Parse(e.Result, CultureInfo.InvariantCulture) > Constants.Version)
+                {
+                    // new version found
+                    if (MessageBox.Show("A newer version was found, do you want to visit the releases page?\nhttps://github.com/AgmasGold/anno-designer/releases\n\n Clicking 'Yes' will open a new tab in your web browser.", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Asterisk, MessageBoxResult.OK) == MessageBoxResult.Yes)
+                    {
+                        System.Diagnostics.Process.Start("https://github.com/AgmasGold/anno-designer/releases");
+                    }
+                }
+                else
+                {
+                    StatusMessageChanged("Version is up to date.");
+                    if ((bool)e.UserState)
+                    {
+                        MessageBox.Show("This version is up to date.", "No updates found");
+                    }
+                }
+                //If not already prompted
+                if (Settings.Default.PromptedForAutoUpdateCheck == false)
+                {
+                    Settings.Default.PromptedForAutoUpdateCheck = true;
+                    if (MessageBox.Show("Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.", "Continue checking for updates?", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
+                    {
+                        Settings.Default.EnableAutomaticUpdateCheck = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error checking version. \n\nAdded error to error log.", "Version check failed");
+                App.WriteToErrorLog("Error Checking Version", ex.Message, ex.StackTrace);
                 return;
-            }
-            if (int.Parse(e.Result) > Constants.Version)
-            {
-                // new version found
-                if (MessageBox.Show("A newer version was found, do you want to visit the project page?\nhttp://anno-designer.googlecode.com/", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Asterisk, MessageBoxResult.OK) == MessageBoxResult.Yes)
-                {
-                    System.Diagnostics.Process.Start("http://code.google.com/p/anno-designer/downloads/list");
-                }
-            }
-            else
-            {
-                StatusMessageChanged("Version is up to date.");
-                if ((bool)e.UserState)
-                {
-                    MessageBox.Show("This version is up to date.", "No updates found");
-                }
             }
         }
 
@@ -154,10 +256,8 @@ namespace AnnoDesigner
         /// Fired on the OnCurrentObjectChanged event
         /// </summary>
         /// <param name="obj"></param>
-        private void UpdateUIFromObject(List<AnnoObject> objects)
+        private void UpdateUIFromObject(AnnoObject obj)
         {
-            var obj = objects[0];
-            //TODO Rewrite UpdateUIFromObject
             if (obj == null)
             {
                 return;
@@ -169,6 +269,8 @@ namespace AnnoDesigner
             colorPicker.SelectedColor = obj.Color;
             // label
             textBoxLabel.Text = obj.Label;
+            // Ident
+            textBoxIdentifier.Text = obj.Identifier;
             // icon
             try
             {
@@ -216,9 +318,10 @@ namespace AnnoDesigner
                 Color = colorPicker.SelectedColor,
                 Label = IsChecked(checkBoxLabel) ? textBoxLabel.Text : "",
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
-                Radius = string.IsNullOrEmpty(textBoxRadius.Text) ? 0 : double.Parse(textBoxRadius.Text),
+                Radius = string.IsNullOrEmpty(textBoxRadius.Text) ? 0 : double.Parse(textBoxRadius.Text, CultureInfo.InvariantCulture),
                 Borderless = IsChecked(checkBoxBorderless),
-                Road = IsChecked(checkBoxRoad)
+                Road = IsChecked(checkBoxRoad),
+                Identifier = textBoxIdentifier.Text,
             };
             // do some sanity checks
             if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
@@ -233,32 +336,19 @@ namespace AnnoDesigner
 
         private void ApplyPreset()
         {
-            //TODO Rewrite ApplyPreset
             try
             {
                 AnnoObject selectedItem = treeViewPresets.SelectedItem as AnnoObject;
-
-                var objects = new List<AnnoObject>();
-                objects.Add(new AnnoObject(selectedItem) { Color = colorPicker.SelectedColor });
-
                 if (selectedItem != null)
                 {
-                    UpdateUIFromObject(objects);
+                    UpdateUIFromObject(new AnnoObject(selectedItem) { Color = colorPicker.SelectedColor });
                     ApplyCurrentObject();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                if (Debugger.IsAttached)
-                {
-                    MessageBox.Show("Error applying preset: " + e.Message + " -\r\n " + e.StackTrace);
-                }
-                else
-                {
-                    MessageBox.Show("Something went wrong while applying the preset.");
-                }
+                MessageBox.Show("Something went wrong while applying the preset.");
             }
-               
         }
         /// <summary>
         /// Called when localisation is changed, to repopulate the tree view
@@ -269,8 +359,8 @@ namespace AnnoDesigner
             if (annoCanvas.BuildingPresets != null)
             {
                 // manually add a road tile preset
-                treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true });
-                treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true });
+                treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true, Identifier = "Road" });
+                treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true, Identifier = "Road" });
                 annoCanvas.BuildingPresets.AddToTree(treeViewPresets);
             }
         }
@@ -316,9 +406,14 @@ namespace AnnoDesigner
             annoCanvas.RenderIcon = !annoCanvas.RenderIcon;
         }
 
-        private void MenuItemStatsClick(object sender, RoutedEventArgs e)
+        private void MenuItemStatsShowStatsClick(object sender, RoutedEventArgs e)
         {
-            annoCanvas.RenderStats = !annoCanvas.RenderStats;
+            annoCanvas.RenderStats = ((MenuItem)sender).IsChecked;
+        }
+
+        private void MenuItemStatsBuildingCountClick(object sender, RoutedEventArgs e)
+        {
+            annoCanvas.RenderBuildingCount = ((MenuItem)sender).IsChecked;
         }
 
         private void MenuItemVersionCheckImageClick(object sender, RoutedEventArgs e)
@@ -374,7 +469,14 @@ namespace AnnoDesigner
 
         private void MenuItemHomepageClick(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://code.google.com/p/anno-designer/");
+            System.Diagnostics.Process.Start("https://github.com/AgmasGold/anno-designer");
+        }
+
+        private void MenuItemOpenWelcomeClick(object sender, RoutedEventArgs e)
+        {
+            Welcome w = new Welcome();
+            w.Owner = this;
+            w.Show();
         }
 
         private void MenuItemAboutClick(object sender, RoutedEventArgs e)
@@ -411,14 +513,25 @@ namespace AnnoDesigner
             else
             {
                 string currentLanguage = SelectedLanguage;
-                //And re populate the tree view if the language has changed
                 if (language != currentLanguage)
                 {
                     SelectedLanguage = language;
-                    RepopulateTreeView();
                 }
+
             }
         }
         #endregion
+
+        private void WindowClosing(object sender, CancelEventArgs e)
+        {
+            Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
+            Settings.Default.Save();
+        }
+
+        private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
+        {
+            SelectedLanguageChanged();
+        }
+
     }
 }
