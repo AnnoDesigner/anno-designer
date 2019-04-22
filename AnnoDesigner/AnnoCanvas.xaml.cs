@@ -544,7 +544,7 @@ namespace AnnoDesigner
 
             // draw placed objects
             RenderObject(drawingContext, _placedObjects);
-            _selectedObjects.ForEach(_ => RenderObjectInfluence(drawingContext, _));
+            RenderObjectInfluence(drawingContext, _selectedObjects);
             _selectedObjects.ForEach(_ => RenderObjectSelection(drawingContext, _));
 
             if (CurrentObjects.Count == 0)
@@ -565,7 +565,7 @@ namespace AnnoDesigner
                     MoveCurrentObjectsToMouse();
                     // draw influence radius
                     //TODO: Rewrite RenderObjectInfluence
-                    RenderObjectInfluence(drawingContext, CurrentObjects[0]);
+                    RenderObjectInfluence(drawingContext, CurrentObjects);
                     // draw with transparency
                     CurrentObjects.ForEach(_ => _.Color.A = 128);
                     RenderObject(drawingContext, CurrentObjects);
@@ -601,7 +601,7 @@ namespace AnnoDesigner
 
             //TODO rewrite MoveCurrentObjectsToMouse()
             //++ This needs to use relative coordinates to the mouse
-            
+
             if (CurrentObjects.Count > 1)
             {
                 //Get the center of the current selection
@@ -619,7 +619,7 @@ namespace AnnoDesigner
                 //Ensure we move only in grid steps, to avoid rounding errors.
                 dx = GridToScreen(RoundScreenToGrid(dx));
                 dy = GridToScreen(RoundScreenToGrid(dy));
-               
+
 
                 for (int i = 0; i < CurrentObjects.Count; i++)
                 {
@@ -627,9 +627,9 @@ namespace AnnoDesigner
                     CurrentObjects[i].Position.X = pos.X + dx;
                     CurrentObjects[i].Position.Y = pos.Y + dy;
                     //Debug.WriteLine("***");
-                   // Debug.WriteLine(pos.X + " " + pos.Y);
+                    // Debug.WriteLine(pos.X + " " + pos.Y);
                     CurrentObjects[i].Position = RoundScreenToGrid(CurrentObjects[i].Position);
-                   // Debug.WriteLine(pos.X + " " + pos.Y);
+                    // Debug.WriteLine(pos.X + " " + pos.Y);
                 }
             }
             else
@@ -741,29 +741,33 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object which's influence is rendered</param>
-        private void RenderObjectInfluence(DrawingContext drawingContext, AnnoObject obj)
+        private void RenderObjectInfluence(DrawingContext drawingContext, List<AnnoObject> objects)
         {
-            if (obj.Radius >= 0.5)
+            foreach (var obj in objects)
             {
-                // highlight buildings within influence
-                var radius = GridToScreen(obj.Radius);
-                var circle = new EllipseGeometry(GetCenterPoint(GetObjectScreenRect(obj)), radius, radius);
-                circle.Freeze();
-                foreach (var o in _placedObjects)
+
+                if (obj.Radius >= 0.5)
                 {
-                    var oRect = GetObjectScreenRect(o);
-                    var distance = GetCenterPoint(oRect);
-                    distance.X -= circle.Center.X;
-                    distance.Y -= circle.Center.Y;
-                    // check if the center is within the influence circle
-                    if (distance.X * distance.X + distance.Y * distance.Y <= radius * radius)
+                    // highlight buildings within influence
+                    var radius = GridToScreen(obj.Radius);
+                    var circle = new EllipseGeometry(GetCenterPoint(GetObjectScreenRect(obj)), radius, radius);
+                    circle.Freeze();
+                    foreach (var o in _placedObjects)
                     {
-                        drawingContext.DrawRectangle(_influencedBrush, _influencedPen, oRect);
+                        var oRect = GetObjectScreenRect(o);
+                        var distance = GetCenterPoint(oRect);
+                        distance.X -= circle.Center.X;
+                        distance.Y -= circle.Center.Y;
+                        // check if the center is within the influence circle
+                        if (distance.X * distance.X + distance.Y * distance.Y <= radius * radius)
+                        {
+                            drawingContext.DrawRectangle(_influencedBrush, _influencedPen, oRect);
+                        }
+                        //o.Label = (Math.Sqrt(distance.X*distance.X + distance.Y*distance.Y) - Math.Sqrt(radius*radius)).ToString();
                     }
-                    //o.Label = (Math.Sqrt(distance.X*distance.X + distance.Y*distance.Y) - Math.Sqrt(radius*radius)).ToString();
+                    // draw circle
+                    drawingContext.DrawGeometry(_lightBrush, _radiusPen, circle);
                 }
-                // draw circle
-                drawingContext.DrawGeometry(_lightBrush, _radiusPen, circle);
             }
         }
 
@@ -775,9 +779,6 @@ namespace AnnoDesigner
         {
             // clear background
             var offset = RenderSize.Width - Constants.StatisticsMargin;
-            //drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(offset, 0, Constants.StatisticsMargin, RenderSize.Height));
-            // draw vertical grid line
-            //drawingContext.DrawLine(_linePen, new Point(offset, 0), new Point(offset, RenderSize.Height));
 
             var informationLines = new List<string>();
             if (!_placedObjects.Any())
@@ -848,7 +849,7 @@ namespace AnnoDesigner
             return Math.Pow(A, 1.0 / N);
         }
 
-        static List<AnnoObject> CloneList (List<AnnoObject> list) 
+        static List<AnnoObject> CloneList(List<AnnoObject> list)
         {
             var newList = new List<AnnoObject>(list.Capacity);
             list.ForEach(_ => newList.Add(new AnnoObject(_)));
@@ -1309,18 +1310,18 @@ namespace AnnoDesigner
                         MoveCurrentObjectsToMouse();
                     }
                     break;
-                //case Key.V:
-                //    if (CurrentObject == null
-                //        && _selectedObjects.Count != 0
-                //        && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
-                //    {
-                //        CurrentObject = _selectedObjects[0];
-                //    }
-                //    break;
-                //case Key.R:
-                //    if (CurrentObjects != null)
-                //        Rotate(CurrentObjects.Size);
-                //    break;
+                    //case Key.V:
+                    //    if (CurrentObject == null
+                    //        && _selectedObjects.Count != 0
+                    //        && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                    //    {
+                    //        CurrentObject = _selectedObjects[0];
+                    //    }
+                    //    break;
+                    //case Key.R:
+                    //    if (CurrentObjects != null)
+                    //        Rotate(CurrentObjects.Size);
+                    //    break;
 
             }
             InvalidateVisual();

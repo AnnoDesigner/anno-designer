@@ -306,7 +306,7 @@ namespace AnnoDesigner
 
         private void ClipboardChanged(List<AnnoObject> l)
         {
-            StatusBarItemClipboardStatus.Content = "Items on Clipboard: " + l.Count;
+            StatusBarItemClipboardStatus.Content = "Items on clipboard: " + l.Count;
         }
 
         #endregion
