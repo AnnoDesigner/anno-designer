@@ -228,6 +228,7 @@ namespace AnnoDesigner
                 if (value != null)
                 {
                     _objectClipboard = value;
+                    StatusMessage = value.Count + " items copied";
                     OnClipboardChanged?.Invoke(value);
                 }
             }
@@ -1297,14 +1298,14 @@ namespace AnnoDesigner
                 case Key.C:
                     if (_selectedObjects.Count != 0)
                     {
-                        _objectClipboard = CloneList(_selectedObjects);
+                        ObjectClipboard = CloneList(_selectedObjects);
                     }
                     break;
                 case Key.V:
-                    Debug.WriteLine("Object count on clipboard: " + _objectClipboard.Count);
-                    if (_objectClipboard.Count != 0)
+                    Debug.WriteLine("Object count on clipboard: " + ObjectClipboard.Count);
+                    if (ObjectClipboard.Count != 0)
                     {
-                        CurrentObjects = CloneList(_objectClipboard);
+                        CurrentObjects = CloneList(ObjectClipboard);
                         MoveCurrentObjectsToMouse();
                     }
                     break;

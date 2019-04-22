@@ -85,6 +85,7 @@ namespace AnnoDesigner
             annoCanvas.OnCurrentObjectChanged += UpdateUIFromObject;
             annoCanvas.OnStatusMessageChanged += StatusMessageChanged;
             annoCanvas.OnLoadedFileChanged += LoadedFileChanged;
+            annoCanvas.OnClipboardChanged += ClipboardChanged;
 
             //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
             DependencyObject dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
@@ -301,6 +302,11 @@ namespace AnnoDesigner
         {
             Title = string.IsNullOrEmpty(filename) ? "Anno Designer" : string.Format("{0} - Anno Designer", Path.GetFileName(filename));
             System.Diagnostics.Debug.WriteLine(string.Format("Loaded file: {0}", string.IsNullOrEmpty(filename) ? "(none)" : filename));
+        }
+
+        private void ClipboardChanged(List<AnnoObject> l)
+        {
+            StatusBarItemClipboardStatus.Content = "Items on Clipboard: " + l.Count;
         }
 
         #endregion
