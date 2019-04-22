@@ -15,6 +15,7 @@ using System.ComponentModel;
 using AnnoDesigner.Properties;
 using System.Diagnostics;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace AnnoDesigner
 {
@@ -45,7 +46,7 @@ namespace AnnoDesigner
             }
             set
             {
-                _selectedLanguage = value == null ? "English" : value;
+                _selectedLanguage = value ?? "English";
                 _instance.SelectedLanguageChanged();
             }
         }
@@ -256,8 +257,10 @@ namespace AnnoDesigner
         /// Fired on the OnCurrentObjectChanged event
         /// </summary>
         /// <param name="obj"></param>
-        private void UpdateUIFromObject(AnnoObject obj)
+        private void UpdateUIFromObject(List<AnnoObject> list)
         {
+            //TODO: Rewrite UpdateUIFromObject
+            var obj = list[0];
             if (obj == null)
             {
                 return;
@@ -338,10 +341,11 @@ namespace AnnoDesigner
         {
             try
             {
+                //TDOD: Rewrite ApplyPreset();
                 AnnoObject selectedItem = treeViewPresets.SelectedItem as AnnoObject;
                 if (selectedItem != null)
                 {
-                    UpdateUIFromObject(new AnnoObject(selectedItem) { Color = colorPicker.SelectedColor });
+                    UpdateUIFromObject(new List<AnnoObject> { new AnnoObject(selectedItem) { Color = colorPicker.SelectedColor } });
                     ApplyCurrentObject();
                 }
             }

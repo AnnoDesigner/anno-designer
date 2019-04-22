@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
@@ -198,10 +199,7 @@ namespace AnnoDesigner
                 if (_currentObjects != value)
                 {
                     _currentObjects = value;
-                    if (OnCurrentObjectChanged != null)
-                    {
-                        OnCurrentObjectChanged(value);
-                    }
+                    OnCurrentObjectChanged?.Invoke(value);
                 }
             }
         }
@@ -210,6 +208,11 @@ namespace AnnoDesigner
         /// Event which is fired when the current object is changed
         /// </summary>
         public event Action<List<AnnoObject>> OnCurrentObjectChanged;
+
+        /// <summary>
+        /// Holds a list of objects that are currently on the clipboard.
+        /// </summary>
+        private List<AnnoObject> _objectClipboard = new List<AnnoObject>();
 
         /// <summary>
         /// Backing field of the StatusMessage property.
@@ -230,10 +233,7 @@ namespace AnnoDesigner
                 if (_statusMessage != value)
                 {
                     _statusMessage = value;
-                    if (OnStatusMessageChanged != null)
-                    {
-                        OnStatusMessageChanged(value);
-                    }
+                    OnStatusMessageChanged?.Invoke(value);
                 }
             }
         }
@@ -262,10 +262,7 @@ namespace AnnoDesigner
                 if (_loadedFile != value)
                 {
                     _loadedFile = value;
-                    if (OnLoadedFileChanged != null)
-                    {
-                        OnLoadedFileChanged(value);
-                    }
+                    OnLoadedFileChanged?.Invoke(value);
                 }
             }
         }
@@ -274,11 +271,6 @@ namespace AnnoDesigner
         /// Event which is fired when the status message should be changed.
         /// </summary>
         public event Action<string> OnLoadedFileChanged;
-
-        /// <summary>
-        /// Last recorded mouse position
-        /// </summary>
-        private Point _previousMousePosition { get; set; }
 
         #endregion
 
@@ -490,7 +482,6 @@ namespace AnnoDesigner
             //var m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
             //var dpiFactor = 1 / m.M11;
 
-
             // assure pixel perfect drawing
             var halfPenWidth = _linePen.Thickness / 2;
             var guidelines = new GuidelineSet();
@@ -527,7 +518,7 @@ namespace AnnoDesigner
             //drawingContext.DrawRectangle(_lightBrush, _highlightPen, new Rect(GridToScreen(ScreenToGrid(_mousePosition)), new Size(_gridStep, _gridStep)));
 
             // draw placed objects
-            _placedObjects.ForEach(_ => RenderObject(drawingContext, _));
+            RenderObject(drawingContext, _placedObjects);
             _selectedObjects.ForEach(_ => RenderObjectInfluence(drawingContext, _));
             _selectedObjects.ForEach(_ => RenderObjectSelection(drawingContext, _));
 
@@ -542,6 +533,7 @@ namespace AnnoDesigner
             }
             else
             {
+                //TODO: OnRender() Rewrite these statements
                 // draw current object
                 if (_mouseWithinControl)
                 {
@@ -550,9 +542,9 @@ namespace AnnoDesigner
                     //TODO: Rewrite RenderObjectInfluence
                     RenderObjectInfluence(drawingContext, CurrentObjects[0]);
                     // draw with transparency
-                    CurrentObjects[0].Color.A = 128;
-                    RenderObject(drawingContext, CurrentObjects[0]);
-                    CurrentObjects[0].Color.A = 255;
+                    CurrentObjects.ForEach(_ => _.Color.A = 128);
+                    RenderObject(drawingContext, CurrentObjects);
+                    CurrentObjects.ForEach(_ => _.Color.A = 255);
                 }
             }
 
@@ -581,29 +573,49 @@ namespace AnnoDesigner
             {
                 return;
             }
-            // determine grid position beneath mouse
+
             //TODO rewrite MoveCurrentObjectsToMouse()
             //++ This needs to use relative coordinates to the mouse
+            
+            if (CurrentObjects.Count > 1)
+            {
+                //Get the center of the current selection
+                var r = GetObjectScreenRect(CurrentObjects[0]);
+                foreach (var obj in CurrentObjects.Skip(1))
+                {
+                    r.Union(GetObjectScreenRect(obj));
+                }
+                var centerX = r.Left + r.Width / 2;
+                var centerY = r.Top + r.Height / 2;
 
-            var pos = _previousMousePosition;
+                var dx = _mousePosition.X - centerX;
+                var dy = _mousePosition.Y - centerY;
 
-            var dx = _mousePosition.X - _previousMousePosition.X;
-            var dy = _mousePosition.Y - _previousMousePosition.Y;
+                //Ensure we move only in grid steps, to avoid rounding errors.
+                dx = GridToScreen(RoundScreenToGrid(dx));
+                dy = GridToScreen(RoundScreenToGrid(dy));
+               
 
-            foreach (AnnoObject obj in CurrentObjects)
-            {        
-                //var size = GridToScreen(obj.Size);
-    
-                obj.Position.Offset(dx, dy);
-                obj.Position = RoundScreenToGrid(obj.Position);
+                for (int i = 0; i < CurrentObjects.Count; i++)
+                {
+                    var pos = GridToScreen(CurrentObjects[i].Position);
+                    CurrentObjects[i].Position.X = pos.X + dx;
+                    CurrentObjects[i].Position.Y = pos.Y + dy;
+                    //Debug.WriteLine("***");
+                   // Debug.WriteLine(pos.X + " " + pos.Y);
+                    CurrentObjects[i].Position = RoundScreenToGrid(CurrentObjects[i].Position);
+                   // Debug.WriteLine(pos.X + " " + pos.Y);
+                }
             }
+            else
+            {
 
-            //var pos = _mousePosition;
-            //var size = GridToScreen(obj.Size);
-            //pos.X -= size.Width / 2;
-            //pos.Y -= size.Height / 2;
-            //obj.Position = RoundScreenToGrid(pos);
-
+                var pos = _mousePosition;
+                var size = GridToScreen(CurrentObjects[0].Size);
+                pos.X -= size.Width / 2;
+                pos.Y -= size.Height / 2;
+                CurrentObjects[0].Position = RoundScreenToGrid(pos);
+            }
         }
 
         /// <summary>
@@ -611,72 +623,79 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object to render</param>
-        private void RenderObject(DrawingContext drawingContext, AnnoObject obj)
+        private void RenderObject(DrawingContext drawingContext, List<AnnoObject> objects)
         {
-            // draw object rectangle
-            var objRect = GetObjectScreenRect(obj);
-            var brush = new SolidColorBrush(obj.Color);
-            brush.Freeze();
-            if (obj.Borderless)
-            {
-                var borderlessPen = new Pen(brush, _linePen.Thickness);
-                borderlessPen.Freeze();
-                drawingContext.DrawRectangle(brush, borderlessPen, objRect);
-            }
-            else
-            {
-                drawingContext.DrawRectangle(brush, _linePen, objRect);
-            }
-            
-            // draw object icon if it is at least 2x2 cells
-            var iconRendered = false;
-            if (_renderIcon && !string.IsNullOrEmpty(obj.Icon))
-            {
-                // draw icon 2x2 grid cells large
-                var minSize = Math.Min(obj.Size.Width, obj.Size.Height);
-                //minSize = minSize == 1 ? minSize : Math.Floor(NthRoot(minSize, Constants.IconSizeFactor) + 1);
-                var iconSize = GridToScreen(new Size(minSize, minSize));
-                iconSize = minSize == 1 ? iconSize : new Size(NthRoot(iconSize.Width, Constants.IconSizeFactor), NthRoot(iconSize.Height, Constants.IconSizeFactor));
 
-                // center icon within the object
-                var iconPos = objRect.TopLeft;
-                iconPos.X += objRect.Width / 2 - iconSize.Width / 2;
-                iconPos.Y += objRect.Height / 2 - iconSize.Height / 2;
-                var iconName = Path.GetFileNameWithoutExtension(obj.Icon); // for backwards compatibility to older layouts
-                if (iconName != null && Icons.ContainsKey(iconName))
-                {
-                    drawingContext.DrawImage(Icons[iconName].Icon, new Rect(iconPos, iconSize));
-                    iconRendered = true;
-                }
-                else
-                {
-                    StatusMessage = string.Format("Icon file missing ({0}).", iconName);
-                }
-            }
-            // draw object label
-            if (_renderLabel)
+            foreach (var obj in objects)
             {
-                var textPoint = objRect.TopLeft;
-                var text = new FormattedText(obj.Label, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                             new Typeface("Verdana"), 12, Brushes.Black, null, TextFormattingMode.Display)
+
+                // draw object rectangle
+                var objRect = GetObjectScreenRect(obj);
+                var brush = new SolidColorBrush(obj.Color);
+                brush.Freeze();
+
+
+                if (obj.Borderless)
                 {
-                    MaxTextWidth = objRect.Width,
-                    MaxTextHeight = objRect.Height
-                };
-                if (iconRendered)
-                {
-                    // place the text in the top left corner if a icon is present
-                    text.TextAlignment = TextAlignment.Left;
-                    textPoint.X += 3;
-                    textPoint.Y += 2;
+                    var borderlessPen = new Pen(brush, _linePen.Thickness);
+                    borderlessPen.Freeze();
+                    drawingContext.DrawRectangle(brush, borderlessPen, objRect);
                 }
                 else
                 {
-                    // center the text if no icon is present
-                    text.TextAlignment = TextAlignment.Center;
-                    textPoint.Y += (objRect.Height - text.Height) / 2;
+                    drawingContext.DrawRectangle(brush, _linePen, objRect);
                 }
-                drawingContext.DrawText(text, textPoint);
+
+                // draw object icon if it is at least 2x2 cells
+                var iconRendered = false;
+                if (_renderIcon && !string.IsNullOrEmpty(obj.Icon))
+                {
+                    // draw icon 2x2 grid cells large
+                    var minSize = Math.Min(obj.Size.Width, obj.Size.Height);
+                    //minSize = minSize == 1 ? minSize : Math.Floor(NthRoot(minSize, Constants.IconSizeFactor) + 1);
+                    var iconSize = GridToScreen(new Size(minSize, minSize));
+                    iconSize = minSize == 1 ? iconSize : new Size(NthRoot(iconSize.Width, Constants.IconSizeFactor), NthRoot(iconSize.Height, Constants.IconSizeFactor));
+
+                    // center icon within the object
+                    var iconPos = objRect.TopLeft;
+                    iconPos.X += objRect.Width / 2 - iconSize.Width / 2;
+                    iconPos.Y += objRect.Height / 2 - iconSize.Height / 2;
+                    var iconName = Path.GetFileNameWithoutExtension(obj.Icon); // for backwards compatibility to older layouts
+                    if (iconName != null && Icons.ContainsKey(iconName))
+                    {
+                        drawingContext.DrawImage(Icons[iconName].Icon, new Rect(iconPos, iconSize));
+                        iconRendered = true;
+                    }
+                    else
+                    {
+                        StatusMessage = string.Format("Icon file missing ({0}).", iconName);
+                    }
+                }
+                // draw object label
+                if (_renderLabel)
+                {
+                    var textPoint = objRect.TopLeft;
+                    var text = new FormattedText(obj.Label, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                 new Typeface("Verdana"), 12, Brushes.Black, null, TextFormattingMode.Display)
+                    {
+                        MaxTextWidth = objRect.Width,
+                        MaxTextHeight = objRect.Height
+                    };
+                    if (iconRendered)
+                    {
+                        // place the text in the top left corner if a icon is present
+                        text.TextAlignment = TextAlignment.Left;
+                        textPoint.X += 3;
+                        textPoint.Y += 2;
+                    }
+                    else
+                    {
+                        // center the text if no icon is present
+                        text.TextAlignment = TextAlignment.Center;
+                        textPoint.Y += (objRect.Height - text.Height) / 2;
+                    }
+                    drawingContext.DrawText(text, textPoint);
+                }
             }
         }
 
@@ -798,9 +817,17 @@ namespace AnnoDesigner
 
         //I was really just checking to see if there was a built in function, but this works
         //https://stackoverflow.com/questions/18657508/c-sharp-find-nth-root
+        [Pure]
         static double NthRoot(double A, double N)
         {
             return Math.Pow(A, 1.0 / N);
+        }
+
+        static List<AnnoObject> CloneList (List<AnnoObject> list) 
+        {
+            var newList = new List<AnnoObject>(list.Capacity);
+            list.ForEach(_ => newList.Add(new AnnoObject(_)));
+            return newList;
         }
 
         #endregion
@@ -827,6 +854,17 @@ namespace AnnoDesigner
         private Point RoundScreenToGrid(Point screenPoint)
         {
             return new Point(Math.Round(screenPoint.X / _gridStep), Math.Round(screenPoint.Y / _gridStep));
+        }
+
+        /// <summary>
+        /// Converts a length given in (pixel-)units to grid coordinate by determining which grid edge is nearest.
+        /// </summary>
+        /// <param name="screenLength"></param>
+        /// <returns></returns>
+        [Pure]
+        private double RoundScreenToGrid(double screenLength)
+        {
+            return Math.Round(screenLength / _gridStep);
         }
 
         /// <summary>
@@ -931,7 +969,7 @@ namespace AnnoDesigner
         protected override void OnMouseEnter(MouseEventArgs e)
         {
             _mouseWithinControl = true;
-            _mousePosition = e.GetPosition(this);
+            //  _mousePosition = e.GetPosition(this);
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)
@@ -952,7 +990,6 @@ namespace AnnoDesigner
         private void HandleMouse(MouseEventArgs e)
         {
             // refresh retrieved mouse position
-            _previousMousePosition = _mousePosition;
             _mousePosition = e.GetPosition(this);
             MoveCurrentObjectsToMouse();
         }
@@ -1208,7 +1245,7 @@ namespace AnnoDesigner
             // rotate current object
             if (e.ChangedButton == MouseButton.Middle && CurrentObjects.Count != 0)
             {
-                //TODO rewrite rotation algorithm
+                //TODO rewrite Rotate
                 CurrentObjects[0].Size = Rotate(CurrentObjects[0].Size);
             }
             InvalidateVisual();
@@ -1224,6 +1261,7 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
+            //TODO make sure hotkeys work correctly
             switch (e.Key)
             {
                 case Key.Delete:
@@ -1231,18 +1269,32 @@ namespace AnnoDesigner
                     _selectedObjects.ForEach(_ => _placedObjects.Remove(_));
                     _selectedObjects.Clear();
                     break;
-                case Key.R:
-                    if (CurrentObject != null)
-                        Rotate(CurrentObject.Size);
-                    break;
-                case Key.V:
-                    if (CurrentObject == null
-                        && _selectedObjects.Count != 0
-                        && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                case Key.C:
+                    if (_selectedObjects.Count != 0)
                     {
-                        CurrentObject = _selectedObjects[0];
+                        _objectClipboard = CloneList(_selectedObjects);
                     }
                     break;
+                case Key.V:
+                    if (_objectClipboard.Count != 0)
+                    {
+                        CurrentObjects = _objectClipboard;
+                        MoveCurrentObjectsToMouse();
+                    }
+                    break;
+                //case Key.V:
+                //    if (CurrentObject == null
+                //        && _selectedObjects.Count != 0
+                //        && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                //    {
+                //        CurrentObject = _selectedObjects[0];
+                //    }
+                //    break;
+                //case Key.R:
+                //    if (CurrentObjects != null)
+                //        Rotate(CurrentObjects.Size);
+                //    break;
+
             }
             InvalidateVisual();
         }
