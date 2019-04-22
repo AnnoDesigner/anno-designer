@@ -1134,6 +1134,7 @@ namespace AnnoDesigner
                                 obj.Position.X += dx;
                                 obj.Position.Y += dy;
                                 // check for collisions
+                                //TODO: Rewrite OnMouseMove Collision detection
                                 var collides = unselected.Find(_ => ObjectIntersectionExists(obj, _)) != null;
                                 obj.Position = originalPosition;
                                 if (collides)
@@ -1325,6 +1326,18 @@ namespace AnnoDesigner
         {
             //TODO Rewrite ObjectIntersectionExists to handle lists, or rewrite calling code (probably a better solution)
             return GetObjectCollisionRect(a).IntersectsWith(GetObjectCollisionRect(b));
+        }
+
+        // <summary>
+        /// Checks if there is a collision between a list of AnnoObjects a and object b.
+        /// </summary>
+        /// <param name="a">List of objects</param>
+        /// <param name="b">second object</param>
+        /// <returns>true if there is a collision, otherwise false</returns>
+        private static bool ObjectIntersectionExists(List<AnnoObject> a, AnnoObject b)
+        {
+            //TODO Rewrite ObjectIntersectionExists to handle lists, or rewrite calling code (probably a better solution)
+            return a.Exists(_ => GetObjectCollisionRect(_).IntersectsWith(GetObjectCollisionRect(b)));
         }
 
         /// <summary>
