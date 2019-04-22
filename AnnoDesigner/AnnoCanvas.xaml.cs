@@ -199,7 +199,10 @@ namespace AnnoDesigner
                 if (_currentObjects != value)
                 {
                     _currentObjects = value;
-                    OnCurrentObjectChanged?.Invoke(value);
+                    if (value.Count != 0)
+                    {
+                        OnCurrentObjectChanged?.Invoke(value[0]);
+                    }
                 }
             }
         }
@@ -207,7 +210,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Event which is fired when the current object is changed
         /// </summary>
-        public event Action<List<AnnoObject>> OnCurrentObjectChanged;
+        public event Action<AnnoObject> OnCurrentObjectChanged;
 
         /// <summary>
         /// backing field of the ObjectClipboard property
@@ -1064,6 +1067,7 @@ namespace AnnoDesigner
                     //TODO Check this LIst<AnnoObject> event still works correctly 
                     CurrentObjects.Clear();
                     CurrentObjects.Add(new AnnoObject(obj));
+                    OnCurrentObjectChanged(obj);
                 }
                 return;
             }

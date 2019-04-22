@@ -258,10 +258,10 @@ namespace AnnoDesigner
         /// Fired on the OnCurrentObjectChanged event
         /// </summary>
         /// <param name="obj"></param>
-        private void UpdateUIFromObject(List<AnnoObject> list)
+        private void UpdateUIFromObject(AnnoObject obj)
         {
             //TODO: Rewrite UpdateUIFromObject
-            var obj = list[0];
+            Debug.WriteLine("Ran OnCurrentObjectChanged");
             if (obj == null)
             {
                 return;
@@ -351,7 +351,7 @@ namespace AnnoDesigner
                 AnnoObject selectedItem = treeViewPresets.SelectedItem as AnnoObject;
                 if (selectedItem != null)
                 {
-                    UpdateUIFromObject(new List<AnnoObject> { new AnnoObject(selectedItem) { Color = colorPicker.SelectedColor } });
+                    UpdateUIFromObject(new AnnoObject(selectedItem) { Color = colorPicker.SelectedColor });
                     ApplyCurrentObject();
                 }
             }
