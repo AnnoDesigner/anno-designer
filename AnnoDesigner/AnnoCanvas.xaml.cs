@@ -564,7 +564,6 @@ namespace AnnoDesigner
                 {
                     MoveCurrentObjectsToMouse();
                     // draw influence radius
-                    //TODO: Rewrite RenderObjectInfluence
                     RenderObjectInfluence(drawingContext, CurrentObjects);
                     // draw with transparency
                     CurrentObjects.ForEach(_ => _.Color.A = 128);
@@ -599,9 +598,6 @@ namespace AnnoDesigner
                 return;
             }
 
-            //TODO rewrite MoveCurrentObjectsToMouse()
-            //++ This needs to use relative coordinates to the mouse
-
             if (CurrentObjects.Count > 1)
             {
                 //Get the center of the current selection
@@ -610,11 +606,14 @@ namespace AnnoDesigner
                 {
                     r.Union(GetObjectScreenRect(obj));
                 }
+
+                Point center = GetCenterPoint(r);
+
                 var centerX = r.Left + r.Width / 2;
                 var centerY = r.Top + r.Height / 2;
 
-                var dx = _mousePosition.X - centerX;
-                var dy = _mousePosition.Y - centerY;
+                var dx = _mousePosition.X - center.X;
+                var dy = _mousePosition.Y - center.Y;
 
                 //Ensure we move only in grid steps, to avoid rounding errors.
                 dx = GridToScreen(RoundScreenToGrid(dx));
@@ -953,6 +952,17 @@ namespace AnnoDesigner
         }
 
         /// <summary>
+        /// Rotates the given Size object, i.e. switches width and height.
+        /// </summary>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        [Pure]
+        private static Size Rotate(Size size)
+        {
+            return new Size(size.Height, size.Width);
+        }
+
+        /// <summary>
         /// Generates the rect to which the given object is rendered.
         /// </summary>
         /// <param name="obj"></param>
@@ -970,20 +980,35 @@ namespace AnnoDesigner
         /// <param name="obj"></param>
         /// <returns></returns>
         [Pure]
-        private static Rect GetObjectCollisionRect(AnnoObject obj)
+        private Rect GetObjectCollisionRect(AnnoObject obj)
         {
             return new Rect(obj.Position, new Size(obj.Size.Width - 0.5, obj.Size.Height - 0.5));
         }
 
-        /// <summary>
-        /// Rotates the given Size object, i.e. switches width and height.
-        /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        [Pure]
-        private static Size Rotate(Size size)
+        private void Rotate(List<AnnoObject> l)
         {
-            return new Size(size.Height, size.Width);
+            for (int i = 0; i < l.Count; i++)
+            {
+                l[i].Size = Rotate(l[i].Size);
+                Point p = l[i].Position;
+                //Full formula left in for explanation
+                //var xPrime = x * Math.Cos(angle) - y * Math.Sin(angle);
+                //var yPrime = x * Math.Sin(angle) - y * Math.Cos(angle);
+
+                //Cos 90 = 0, sin 90 = 1
+                //Therefore, the below is equivalent
+                var xPrime = 0 - p.Y;
+                var yPrime = p.X;
+
+                //When the building is rotated, the xPrime and yPrime values no 
+                //longer represent the top left corner, they will represent the 
+                //top-right corner instead. We need to account for this, by 
+                //moving the xPrime position (still in grid coordinates).
+                xPrime -= l[i].Size.Width;
+
+                l[i].Position.X = xPrime;
+                l[i].Position.Y = yPrime;
+            }
         }
 
         #endregion
@@ -1310,18 +1335,16 @@ namespace AnnoDesigner
                         MoveCurrentObjectsToMouse();
                     }
                     break;
-                    //case Key.V:
-                    //    if (CurrentObject == null
-                    //        && _selectedObjects.Count != 0
-                    //        && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
-                    //    {
-                    //        CurrentObject = _selectedObjects[0];
-                    //    }
-                    //    break;
-                    //case Key.R:
-                    //    if (CurrentObjects != null)
-                    //        Rotate(CurrentObjects.Size);
-                    //    break;
+                case Key.R:
+                    if (CurrentObjects.Count == 1)
+                    {
+                        CurrentObjects[0].Size = Rotate(CurrentObjects[0].Size);
+                    }
+                    else if (CurrentObjects.Count > 1)
+                    {
+                        Rotate(CurrentObjects);
+                    }
+                    break;
 
             }
             InvalidateVisual();
@@ -1348,9 +1371,8 @@ namespace AnnoDesigner
         /// <param name="a">first object</param>
         /// <param name="b">second object</param>
         /// <returns>true if there is a collision, otherwise false</returns>
-        private static bool ObjectIntersectionExists(AnnoObject a, AnnoObject b)
+        private bool ObjectIntersectionExists(AnnoObject a, AnnoObject b)
         {
-            //TODO Rewrite ObjectIntersectionExists to handle lists, or rewrite calling code (probably a better solution)
             return GetObjectCollisionRect(a).IntersectsWith(GetObjectCollisionRect(b));
         }
 
@@ -1360,9 +1382,8 @@ namespace AnnoDesigner
         /// <param name="a">List of objects</param>
         /// <param name="b">second object</param>
         /// <returns>true if there is a collision, otherwise false</returns>
-        private static bool ObjectIntersectionExists(List<AnnoObject> a, AnnoObject b)
+        private bool ObjectIntersectionExists(List<AnnoObject> a, AnnoObject b)
         {
-            //TODO Rewrite ObjectIntersectionExists to handle lists, or rewrite calling code (probably a better solution)
             return a.Exists(_ => GetObjectCollisionRect(_).IntersectsWith(GetObjectCollisionRect(b)));
         }
 
@@ -1373,7 +1394,6 @@ namespace AnnoDesigner
         /// <returns>true if placement succeeded, otherwise false</returns>
         private bool TryPlaceCurrentObject()
         {
-            //TODO Rewrite TryPlaceCurrentObject
             if (CurrentObjects.Count != 0 && !_placedObjects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
             {
                 _placedObjects.AddRange(CloneList(CurrentObjects));
@@ -1404,7 +1424,6 @@ namespace AnnoDesigner
         /// <param name="obj">object to apply</param>
         public void SetCurrentObject(AnnoObject obj)
         {
-            //TODO rewrite SetCurrentObject
             obj.Position = _mousePosition;
             // note: setting of the backing field doens't fire the changed event
             _currentObjects.Clear();

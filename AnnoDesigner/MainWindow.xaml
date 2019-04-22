@@ -171,7 +171,7 @@
         <StatusBar Grid.Row="2" Grid.ColumnSpan="3">
             <StatusBarItem Content="Mouse controls: left - place, select, move / right - stop placement, remove / both - move all / double click - copy / wheel - zoom / wheel-click - rotate." />
             <StatusBarItem Name="StatusBarItemStatus" Content="Standard" Margin="10,0,0,0" />
-            <StatusBarItem Name="StatusBarItemClipboardStatus" Margin="10,0,0,0" />
+            <StatusBarItem Name="StatusBarItemClipboardStatus" Margin="10,0,0,0" HorizontalAlignment="Right" />
         </StatusBar>
     </Grid>
 </Window>
