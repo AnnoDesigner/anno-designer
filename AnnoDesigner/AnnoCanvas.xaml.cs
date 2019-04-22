@@ -1276,9 +1276,10 @@ namespace AnnoDesigner
                     }
                     break;
                 case Key.V:
+                    Debug.WriteLine("Object count on clipboard: " + _objectClipboard.Count);
                     if (_objectClipboard.Count != 0)
                     {
-                        CurrentObjects = _objectClipboard;
+                        CurrentObjects = CloneList(_objectClipboard);
                         MoveCurrentObjectsToMouse();
                     }
                     break;
