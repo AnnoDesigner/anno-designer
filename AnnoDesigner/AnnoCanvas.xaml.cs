@@ -1348,9 +1348,9 @@ namespace AnnoDesigner
         private bool TryPlaceCurrentObject()
         {
             //TODO Rewrite TryPlaceCurrentObject
-            if (CurrentObjects.Count != 0 && !_placedObjects.Exists(_ => ObjectIntersectionExists(CurrentObjects[0], _)))
+            if (CurrentObjects.Count != 0 && !_placedObjects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
             {
-                _placedObjects.Add(new AnnoObject(CurrentObjects[0]));
+                _placedObjects.AddRange(CloneList(CurrentObjects));
                 // sort the objects because borderless objects should be drawn first
                 _placedObjects.Sort((a, b) => b.Borderless.CompareTo(a.Borderless));
                 return true;
@@ -1419,7 +1419,6 @@ namespace AnnoDesigner
             _placedObjects.ForEach(_ => _.Position.Y -= dy);
             InvalidateVisual();
         }
-
         #endregion
 
         #region New/Save/Load/Export methods
