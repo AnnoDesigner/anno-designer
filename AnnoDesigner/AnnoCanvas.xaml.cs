@@ -210,9 +210,33 @@ namespace AnnoDesigner
         public event Action<List<AnnoObject>> OnCurrentObjectChanged;
 
         /// <summary>
-        /// Holds a list of objects that are currently on the clipboard.
+        /// backing field of the ObjectClipboard property
         /// </summary>
         private List<AnnoObject> _objectClipboard = new List<AnnoObject>();
+
+        /// <summary>
+        /// Holds a list of objects that are currently on the clipboard.
+        /// </summary>
+        public List<AnnoObject> ObjectClipboard
+        {
+            get
+            {
+                return _objectClipboard;
+            }
+            private set
+            {
+                if (value != null)
+                {
+                    _objectClipboard = value;
+                    OnClipboardChanged?.Invoke(value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Event which is fired when the clipboard content is changed.
+        /// </summary>
+        public event Action<List<AnnoObject>> OnClipboardChanged;
 
         /// <summary>
         /// Backing field of the StatusMessage property.
