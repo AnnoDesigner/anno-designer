@@ -561,7 +561,6 @@ namespace AnnoDesigner
             }
             else
             {
-                //TODO: OnRender() Rewrite these statements
                 // draw current object
                 if (_mouseWithinControl)
                 {
@@ -1064,7 +1063,6 @@ namespace AnnoDesigner
                 var obj = GetObjectAt(_mousePosition);
                 if (obj != null)
                 {
-                    //TODO Check this LIst<AnnoObject> event still works correctly 
                     CurrentObjects.Clear();
                     CurrentObjects.Add(new AnnoObject(obj));
                     OnCurrentObjectChanged(obj);
@@ -1189,7 +1187,6 @@ namespace AnnoDesigner
                                 obj.Position.X += dx;
                                 obj.Position.Y += dy;
                                 // check for collisions
-                                //TODO: Rewrite OnMouseMove Collision detection
                                 var collides = unselected.Find(_ => ObjectIntersectionExists(obj, _)) != null;
                                 obj.Position = originalPosition;
                                 if (collides)
@@ -1299,10 +1296,14 @@ namespace AnnoDesigner
                 }
             }
             // rotate current object
-            if (e.ChangedButton == MouseButton.Middle && CurrentObjects.Count != 0)
+            if (e.ChangedButton == MouseButton.Middle)
             {
-                //TODO rewrite Rotate
-                CurrentObjects[0].Size = Rotate(CurrentObjects[0].Size);
+                if (CurrentObjects.Count == 0 && _selectedObjects.Count != 0)
+                {
+                    CurrentObjects = CloneList(_selectedObjects);
+                }
+                Rotate(CurrentObjects);
+
             }
             InvalidateVisual();
         }
@@ -1317,7 +1318,6 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            //TODO make sure hotkeys work correctly
             switch (e.Key)
             {
                 case Key.Delete:
@@ -1332,7 +1332,6 @@ namespace AnnoDesigner
                     }
                     break;
                 case Key.V:
-                    Debug.WriteLine("Object count on clipboard: " + ObjectClipboard.Count);
                     if (ObjectClipboard.Count != 0)
                     {
                         CurrentObjects = CloneList(ObjectClipboard);
@@ -1346,6 +1345,13 @@ namespace AnnoDesigner
                     }
                     else if (CurrentObjects.Count > 1)
                     {
+                        Rotate(CurrentObjects);
+                    }
+                    else
+                    {
+                        //Count == 0;
+                        //Rotate from selected objects
+                        CurrentObjects = CloneList(_selectedObjects);
                         Rotate(CurrentObjects);
                     }
                     break;

@@ -260,8 +260,6 @@ namespace AnnoDesigner
         /// <param name="obj"></param>
         private void UpdateUIFromObject(AnnoObject obj)
         {
-            //TODO: Rewrite UpdateUIFromObject
-            Debug.WriteLine("Ran OnCurrentObjectChanged");
             if (obj == null)
             {
                 return;
