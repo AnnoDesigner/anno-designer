@@ -1,1 +1,0 @@
-cloc-1.55.exe AnnoDesigner --exclude-dir=obj,bin --by-file-by-lang --report-file=loc.txt
