@@ -877,6 +877,7 @@ namespace AnnoDesigner
             return new Point(Math.Round(screenPoint.X / _gridStep), Math.Round(screenPoint.Y / _gridStep));
         }
 
+
         /// <summary>
         /// Converts a length given in (pixel-)units to grid coordinate by determining which grid edge is nearest.
         /// </summary>
