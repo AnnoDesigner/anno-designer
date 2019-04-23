@@ -773,13 +773,15 @@ namespace AnnoDesigner
             // clear background
             var offset = RenderSize.Width - Constants.StatisticsMargin;
 
-            var informationLines = new List<string>();
+            var informationLines = new List<string>(); 
             if (!_placedObjects.Any())
             {
                 informationLines.Add("Nothing placed");
             }
             else
             {
+                informationLines.Capacity = 9; //There will be at least 9 lines in this list 
+
                 // calculate bouding box
                 var boxX = _placedObjects.Max(_ => _.Position.X + _.Size.Width) - _placedObjects.Min(_ => _.Position.X);
                 var boxY = _placedObjects.Max(_ => _.Position.Y + _.Size.Height) - _placedObjects.Min(_ => _.Position.Y);
