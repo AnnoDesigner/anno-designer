@@ -374,10 +374,7 @@ namespace AnnoDesigner
         /// </summary>
         private readonly List<AnnoObject> _selectedObjects;
 
-        /// <summary></summary>
-        /// initialization of the Buildng Selection Count List
-        /// list buidingCounting<"number","name">; The counting-values and names of the selceted buidings
-        public static List<string> _buidingCountings = new List<string>();
+        private readonly Typeface TYPEFACE = new Typeface("Verdana");
 
         #region Pens and Brushes
 
@@ -500,7 +497,6 @@ namespace AnnoDesigner
         #endregion
 
         #region Rendering
-
         /// <summary>
         /// Renders the whole scene including grid, placed objects, current object, selection highlights, influence radii and selection rectangle.
         /// </summary>
@@ -515,7 +511,9 @@ namespace AnnoDesigner
             var guidelines = new GuidelineSet();
             guidelines.GuidelinesX.Add(halfPenWidth);
             guidelines.GuidelinesY.Add(halfPenWidth);
+            guidelines.Freeze();
             drawingContext.PushGuidelineSet(guidelines);
+
 
             var width = RenderSize.Width;
             var height = RenderSize.Height;
@@ -611,9 +609,6 @@ namespace AnnoDesigner
 
                 Point center = GetCenterPoint(r);
 
-                var centerX = r.Left + r.Width / 2;
-                var centerY = r.Top + r.Height / 2;
-
                 var dx = _mousePosition.X - center.X;
                 var dy = _mousePosition.Y - center.Y;
 
@@ -627,10 +622,7 @@ namespace AnnoDesigner
                     var pos = GridToScreen(CurrentObjects[i].Position);
                     CurrentObjects[i].Position.X = pos.X + dx;
                     CurrentObjects[i].Position.Y = pos.Y + dy;
-                    //Debug.WriteLine("***");
-                    // Debug.WriteLine(pos.X + " " + pos.Y);
                     CurrentObjects[i].Position = RoundScreenToGrid(CurrentObjects[i].Position);
-                    // Debug.WriteLine(pos.X + " " + pos.Y);
                 }
             }
             else
@@ -698,11 +690,11 @@ namespace AnnoDesigner
                     }
                 }
                 // draw object label
-                if (_renderLabel)
+                if (_renderLabel && obj.Label != "")
                 {
                     var textPoint = objRect.TopLeft;
                     var text = new FormattedText(obj.Label, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                                 new Typeface("Verdana"), 12, Brushes.Black, null, TextFormattingMode.Display)
+                                                 TYPEFACE, 12, Brushes.Black, null, TextFormattingMode.Display)
                     {
                         MaxTextWidth = objRect.Width,
                         MaxTextHeight = objRect.Height
@@ -833,7 +825,7 @@ namespace AnnoDesigner
             // render all the lines
             var text = String.Join("\n", informationLines);
             var f = new FormattedText(text, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                            new Typeface("Verdana"), 12, Brushes.Black, null, TextFormattingMode.Display)
+                                           TYPEFACE, 12, Brushes.Black, null, TextFormattingMode.Display)
             {
                 MaxTextWidth = Constants.StatisticsMargin - 20,
                 MaxTextHeight = RenderSize.Height,
