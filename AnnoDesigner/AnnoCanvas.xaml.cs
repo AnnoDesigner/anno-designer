@@ -982,6 +982,10 @@ namespace AnnoDesigner
             return new Rect(obj.Position, new Size(obj.Size.Width - 0.5, obj.Size.Height - 0.5));
         }
 
+        /// <summary>
+        /// Rotates a group of objects.
+        /// </summary>
+        /// <param name="l"></param>
         private void Rotate(List<AnnoObject> l)
         {
             for (int i = 0; i < l.Count; i++)
