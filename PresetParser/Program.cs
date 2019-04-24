@@ -12,6 +12,10 @@ namespace PresetParser
     {
         #region Initalisizing values
         private static string BASE_PATH { get; set; }
+        private static string BASE_PATH_1404 { get; set; }
+        private static string BASE_PATH_2070 { get; set; }
+        private static string BASE_PATH_2205 { get; set; }
+        private static string BASE_PATH_1800 { get; set; }
 
         public static bool isExcludedName = false;
         public static bool isExcludedTemplate = false;
@@ -32,6 +36,8 @@ namespace PresetParser
         public static List<string> annoBuildingLists = new List<string>();
         public static int annoBuildingsListCount = 0, printTestText = 0;
         public static bool testVersion = false;
+        // The internal Building list for the Preset writing 
+        public static List<BuildingInfo> buildings = new List<BuildingInfo>();
 
         #region Initalisizing Exclude IdentifierNames, FactionNames and TemplateNames for presets.json file 
 
@@ -70,15 +76,11 @@ namespace PresetParser
         /// i need the IncludeBuildingsTemplateNames to get Building informaton from, as it is also the Presets Template String or Template GUID
         /// </summary>
         public static IList<FarmField> farmFieldList1800 = new List<FarmField>();
-        private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "OrnamentalBuilding" };
         // Removed IncludeBuildingsTemplate "CultureModule" (to must to handle and thus are replaced with the Zoo Module and Museum Module
-        /*private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
+        private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding",
-            "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse"};
-        
+            "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding"};
         private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358" };
-        */
-        private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "000000" };
         /// ---
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System",
             "module_01_birds", "module_02_peacock", "(Warehouse II)", "(Warehouse III)", "logistic_colony01_01 (Warehouse I)", "Kontor_main_02", "Kontor_main_03", "kontor_main_colony01",
@@ -119,40 +121,17 @@ namespace PresetParser
         public static void Main(string[] args)
         {
             #region User Choices 
-            bool validPath = false;
-            string path = "";
-            while (!validPath)
-            {
-                Console.Write("Please enter the path to the extracted RDA files:");
-                path = Console.ReadLine();
-                if (path == "quit")
-                {
-                    Environment.Exit(0);
-                }
-                if (Directory.Exists(path))
-                {
-                    validPath = true;
-                    ///Add a trailing backslash if one is not present.
-                    BASE_PATH = path.LastOrDefault() == '\\' ? path : path + "\\";
-                }
-                else
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Invalid input, please try again or enter 'quit' to exit.");
-                }
-            }
             string annoVersion = "";
             bool validVersion = false;
             while (!validVersion)
             {
-                Console.WriteLine();
                 Console.Write("Please enter an Anno version (1 of: {0} {1} {2} {3}):", ANNO_VERSION_1404, ANNO_VERSION_2070, ANNO_VERSION_2205, ANNO_VERSION_1800);
                 annoVersion = Console.ReadLine();
                 if (annoVersion == "quit")
                 {
                     Environment.Exit(0);
                 }
-                if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070 || annoVersion == ANNO_VERSION_2205 || annoVersion == ANNO_VERSION_1800)
+                if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070 || annoVersion == ANNO_VERSION_2205 || annoVersion == ANNO_VERSION_1800 || annoVersion == "-ALL")
                 {
                     validVersion = true;
                 }
@@ -172,14 +151,32 @@ namespace PresetParser
                     Console.WriteLine("Invalid input, please try again or enter 'quit to exit.");
                 }
             }
+            if (annoVersion != "-ALL")
+            {
+                ///Add a trailing backslash if one is not present.
+                ///BASE_PATH = path.LastOrDefault() == '\\' ? path : path + "\\";
+                BASE_PATH = GetBASE_PATH(annoVersion);
+            }
+            else
+            {
+                BASE_PATH_1404 = GetBASE_PATH(ANNO_VERSION_1404);
+                BASE_PATH_2070 = GetBASE_PATH(ANNO_VERSION_2070);
+                BASE_PATH_2205 = GetBASE_PATH(ANNO_VERSION_2205);
+                BASE_PATH_1800 = GetBASE_PATH(ANNO_VERSION_1800);
+            }
             if (!testVersion)
             {
                 Console.WriteLine("Extracting and parsing RDA data from {0} for anno version {1}.", BASE_PATH, annoVersion);
             }
-            else
+            else if (annoVersion != "-ALL")
             {
                 Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH, annoVersion);
             }
+            else
+            {
+                Console.WriteLine("Extracting and parsing RDA data for all Anno versions");
+            }
+
             #endregion
 
             #region Anno Verion Data Paths
@@ -190,7 +187,7 @@ namespace PresetParser
             /// </summary>
             //These should stay constant for different anno versions (hopefully!)
             #region Anno 1404 xPaths
-            if (annoVersion == ANNO_VERSION_1404)
+            if (annoVersion == ANNO_VERSION_1404 || annoVersion == "-ALL")
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_1404, new Dictionary<string, PathRef[]>());
                 VersionSpecificPaths[ANNO_VERSION_1404].Add("icons", new PathRef[]
@@ -216,7 +213,7 @@ namespace PresetParser
             #endregion
 
             #region Anno 2070 xPaths
-            if (annoVersion == ANNO_VERSION_2070)
+            if (annoVersion == ANNO_VERSION_2070 || annoVersion == "-ALL")
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_2070, new Dictionary<string, PathRef[]>());
                 VersionSpecificPaths[ANNO_VERSION_2070].Add("icons", new PathRef[]
@@ -241,7 +238,7 @@ namespace PresetParser
             #endregion
 
             #region Anno 2205 xPaths
-            if (annoVersion == ANNO_VERSION_2205)
+            if (annoVersion == ANNO_VERSION_2205 || annoVersion == "-ALL")
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_2205, new Dictionary<string, PathRef[]>());
                 /// Trying to read data from the objects.exm 
@@ -283,7 +280,7 @@ namespace PresetParser
             #endregion
 
             #region Anno 1800 xPaths
-            if (annoVersion == ANNO_VERSION_1800)
+            if (annoVersion == ANNO_VERSION_1800 || annoVersion == "-ALL")
             {
                 VersionSpecificPaths.Add(ANNO_VERSION_1800, new Dictionary<string, PathRef[]>());
                 /// Trying to read data from the objects.exm 
@@ -303,7 +300,93 @@ namespace PresetParser
             #endregion
 
             #region Prepare JSON Files
-            List<BuildingInfo> buildings = new List<BuildingInfo>();
+
+            /// <summary>
+            /// start hereeeeeee!!!
+            /// </summary>
+            if (annoVersion != "-ALL")
+            {
+                //execute a Signle Anno Preset
+                DoAnnoPreset(annoVersion);
+            }
+            else
+            {
+                //Execute ALL Anno Presets in one
+                Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_1404, ANNO_VERSION_1404);
+                BASE_PATH = BASE_PATH_1404;
+                DoAnnoPreset(ANNO_VERSION_1404);
+                Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_2070, ANNO_VERSION_2070);
+                BASE_PATH = BASE_PATH_2070;
+                DoAnnoPreset(ANNO_VERSION_2070);
+                Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_2205, ANNO_VERSION_2205);
+                BASE_PATH = BASE_PATH_2205;
+                DoAnnoPreset(ANNO_VERSION_2205);
+                Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_1800, ANNO_VERSION_1800);
+                BASE_PATH = BASE_PATH_1800;
+                DoAnnoPreset(ANNO_VERSION_1800);
+            }
+     
+            BuildingPresets presets = new BuildingPresets() { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
+
+            Console.WriteLine();
+            if (!testVersion)
+            {
+                Console.WriteLine("Writing buildings to presets-{0}-{1}.json", annoVersion, BUILDING_PRESETS_VERSION);
+                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
+            }
+            else
+            {
+                Console.WriteLine("THIS IS A TEST DUMMY FILE WRITEN!!!!");
+                DataIO.SaveToFile(presets, "DUMMY.json");
+            }
+            // wait for keypress before exiting
+            Console.WriteLine("This list contains {0} Buildings", annoBuildingsListCount);
+            Console.WriteLine();
+            Console.WriteLine("Do not forget to copy the contents to the normal");
+            Console.WriteLine("presets.json, in the Anno Designer directory!");
+            Console.WriteLine();
+            Console.WriteLine("DONE - press enter to exit");
+            Console.ReadLine();
+            #endregion //End Prepare JSON Files
+        }
+
+        ///Extra Preset Parsing Part All Anno's
+        #region Add extra preset buildings to the Anno version preset file
+        // Thus can be added in ExtraPresets.cs
+        private static void AddExtraPreset(string annoVersion, List<BuildingInfo> buildings)
+        {
+            if (ExtraPresets.getList(annoVersion))
+            {
+                foreach (var ep in ExtraPresets.ExtraPresetList)
+                {
+                    BuildingInfo b = new BuildingInfo
+                    {
+                        Header = ep.Header,
+                        Faction = ep.Faction,
+                        Group = ep.Group,
+                        IconFileName = ep.IconFileName,
+                        Identifier = ep.Identifier,
+                        InfluenceRadius = ep.InfluenceRadius,
+                        InfluenceRange = ep.InfluenceRange,
+                        Template = ep.Template,
+                    };
+                    Console.WriteLine("Extra Building : {0}", b.Identifier);
+                    b.BuildBlocker = new SerializableDictionary<int>();
+                    b.BuildBlocker["x"] = Convert.ToInt32(ep.BuildBlockerX);
+                    b.BuildBlocker["z"] = Convert.ToInt32(ep.BuildBlockerZ);
+                    b.Localization = new SerializableDictionary<string>();
+                    b.Localization["eng"] = ep.LocaEng;
+                    b.Localization["ger"] = ep.LocaGer;
+                    b.Localization["pol"] = ep.LocaPol;
+                    b.Localization["rus"] = ep.LocaRus;
+                    annoBuildingsListCount++;
+                    buildings.Add(b);
+                }
+            }
+        }
+        #endregion
+        private static void DoAnnoPreset(string annoVersion)
+        {
             Console.WriteLine();
             Console.WriteLine("Parsing assets.xml:");
             var assetPathRefs = VersionSpecificPaths[annoVersion]["assets"];
@@ -337,6 +420,8 @@ namespace PresetParser
                 {
                     ParseAssetsFile(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, iconNodes, localizations, p.InnerNameTag, annoVersion);
                 }
+                // Add extra buildings to the anno version preset file
+                AddExtraPreset(annoVersion, buildings);
             }
             else if (annoVersion == ANNO_VERSION_2205)
             {
@@ -344,6 +429,8 @@ namespace PresetParser
                 {
                     ParseAssetsFile2205(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, p.InnerNameTag, annoVersion);
                 }
+                // Add extra buildings to the anno version preset file
+                AddExtraPreset(annoVersion, buildings);
             }
             else if (annoVersion == ANNO_VERSION_1800)
             {
@@ -352,61 +439,9 @@ namespace PresetParser
                     ParseAssetsFile1800(BASE_PATH + p.Path, p.XPath, buildings);
                 }
                 // Add extra buildings to the anno version preset file
-                // thus can be added in ExtraPresets.cs
-                if (ExtraPresets.getList(annoVersion))
-                {
-                    foreach (var ep in ExtraPresets.ExtraPresetList1800)
-                    {
-                        BuildingInfo b = new BuildingInfo
-                        {
-                            Header = ep.Header,
-                            Faction = ep.Faction,
-                            Group = ep.Group,
-                            IconFileName = ep.IconFileName,
-                            Identifier = ep.Identifier,
-                            InfluenceRadius = ep.InfluenceRadius,
-                            InfluenceRange = ep.InFluenceRange,
-                            Template = ep.Template,
-                        };
-                        Console.WriteLine("Extra Building : {0}", b.Identifier);
-                        b.BuildBlocker = new SerializableDictionary<int>();
-                        b.BuildBlocker["x"] = Convert.ToInt32(ep.BuildBlockerX);
-                        b.BuildBlocker["z"] = Convert.ToInt32(ep.BuildBlockerZ);
-                        b.Localization = new SerializableDictionary<string>();
-                        b.Localization["eng"] = ep.LocaEng;
-                        b.Localization["ger"] = ep.LocaGer;
-                        b.Localization["pol"] = ep.LocaPol;
-                        b.Localization["rus"] = ep.LocaRus;
-                        annoBuildingsListCount++;
-                        buildings.Add(b);
-                    }
-                }
+                AddExtraPreset(annoVersion, buildings);
             }
-
-            BuildingPresets presets = new BuildingPresets() { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
-
-            Console.WriteLine();
-            if (!testVersion)
-            {
-                Console.WriteLine("Writing buildings to presets-{0}-{1}.json", annoVersion, BUILDING_PRESETS_VERSION);
-                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
-            }
-            else
-            {
-                Console.WriteLine("THIS IS A TEST DUMMY FILE WRITEN!!!!");
-                DataIO.SaveToFile(presets, "DUMMY.json");
-            }
-            // wait for keypress before exiting
-            Console.WriteLine("This list contains {0} Buildings", annoBuildingsListCount);
-            Console.WriteLine();
-            Console.WriteLine("Do not forget to copy the contents to the normal");
-            Console.WriteLine("presets.json, in the Anno Designer directory!");
-            Console.WriteLine();
-            Console.WriteLine("DONE - press enter to exit");
-            Console.ReadLine();
-
         }
-        #endregion //End Prepare JSON Files
 
         /// Parsing Part for 1404 and 2070
         #region Parsing Buildngs for Anno 1404/2070
@@ -1413,7 +1448,36 @@ namespace PresetParser
             {
                 Console.WriteLine("TIS IS A TEST: No icon.sjon File is writen") ;
             }
-            
+
+        }
+        #endregion
+
+        #region Asking Path Directory's for Anno Versions (repeatble)
+        public static string GetBASE_PATH(string annoVersion)
+        {
+            bool validPath = false;
+            string path = "";
+            while (!validPath)
+            {
+                Console.WriteLine();
+                Console.Write("Please enter the path to the extracted Anno {0} RDA files:", annoVersion);
+                path = Console.ReadLine();
+                if (path == "quit")
+                {
+                    Environment.Exit(0);
+                }
+                if (Directory.Exists(path))
+                {
+                    validPath = true;
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Invalid input, please try again or enter 'quit' to exit.");
+                }
+            }
+            ///Add a trailing backslash if one is not present.
+            return path.LastOrDefault() == '\\' ? path : path + "\\";
         }
         #endregion
 
