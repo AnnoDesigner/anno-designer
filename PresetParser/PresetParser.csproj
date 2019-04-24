@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtraPresets.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="NewFactionAndGroup1800.cs" />
     <Compile Include="Program.cs" />

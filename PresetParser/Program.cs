@@ -18,12 +18,12 @@ namespace PresetParser
         public static bool isExcludedFaction = false; /* Only for Anno 2070 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-        private const string ANNO_VERSION_1404 = "1404";
-        private const string ANNO_VERSION_2070 = "2070";
-        private const string ANNO_VERSION_2205 = "2205";
-        private const string ANNO_VERSION_1800 = "1800";
+        public const string ANNO_VERSION_1404 = "1404";
+        public const string ANNO_VERSION_2070 = "2070";
+        public const string ANNO_VERSION_2205 = "2205";
+        public const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "0.8.5";
+        private const string BUILDING_PRESETS_VERSION = "3.0.0";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "polish", "russian" };
@@ -70,14 +70,20 @@ namespace PresetParser
         /// i need the IncludeBuildingsTemplateNames to get Building informaton from, as it is also the Presets Template String or Template GUID
         /// </summary>
         public static IList<FarmField> farmFieldList1800 = new List<FarmField>();
-        private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
-            "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "CultureModule", "PowerplantBuilding",
-        "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse"};
+        private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "OrnamentalBuilding" };
+        // Removed IncludeBuildingsTemplate "CultureModule" (to must to handle and thus are replaced with the Zoo Module and Museum Module
+        /*private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
+            "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding",
+            "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse"};
+        
         private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358" };
+        */
+        private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "000000" };
         /// ---
-        private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System", "1x1",
+        private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System",
             "module_01_birds", "module_02_peacock", "(Warehouse II)", "(Warehouse III)", "logistic_colony01_01 (Warehouse I)", "Kontor_main_02", "Kontor_main_03", "kontor_main_colony01",
-            "Fake Ornament [test 2nd party]", "Kontor_imperial_02", "Kontor_imperial_03","(Oil Harbor II)","(Oil Harbor III)", "Third_party_", "CQO_", "Kontor_imperial_01", "- Pirates", "Harbor_colony01_09 (tourism_pier_01)"};
+            "Fake Ornament [test 2nd party]", "Kontor_imperial_02", "Kontor_imperial_03","(Oil Harbor II)","(Oil Harbor III)", "Third_party_", "CQO_", "Kontor_imperial_01", "- Pirates",
+            "Harbor_colony01_09 (tourism_pier_01)", "Ai_", "AarhantLighthouseFake", "CO_Tunnel_Entrance01_Fake" };
         /// <summary>
         /// in NewFactionAndGroup1800.cs are made the following lists
         /// ChangeBuildingTo<1>_<2>_1800 
@@ -288,7 +294,8 @@ namespace PresetParser
                 VersionSpecificPaths[ANNO_VERSION_1800].Add("assets", new PathRef[]
                 {
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
-                    new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset")
+                    new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset")
                 });
             }
             #endregion
@@ -343,6 +350,36 @@ namespace PresetParser
                 foreach (PathRef p in assetPathRefs)
                 {
                     ParseAssetsFile1800(BASE_PATH + p.Path, p.XPath, buildings);
+                }
+                // Add extra buildings to the anno version preset file
+                // thus can be added in ExtraPresets.cs
+                if (ExtraPresets.getList(annoVersion))
+                {
+                    foreach (var ep in ExtraPresets.ExtraPresetList1800)
+                    {
+                        BuildingInfo b = new BuildingInfo
+                        {
+                            Header = ep.Header,
+                            Faction = ep.Faction,
+                            Group = ep.Group,
+                            IconFileName = ep.IconFileName,
+                            Identifier = ep.Identifier,
+                            InfluenceRadius = ep.InfluenceRadius,
+                            InfluenceRange = ep.InFluenceRange,
+                            Template = ep.Template,
+                        };
+                        Console.WriteLine("Extra Building : {0}", b.Identifier);
+                        b.BuildBlocker = new SerializableDictionary<int>();
+                        b.BuildBlocker["x"] = Convert.ToInt32(ep.BuildBlockerX);
+                        b.BuildBlocker["z"] = Convert.ToInt32(ep.BuildBlockerZ);
+                        b.Localization = new SerializableDictionary<string>();
+                        b.Localization["eng"] = ep.LocaEng;
+                        b.Localization["ger"] = ep.LocaGer;
+                        b.Localization["pol"] = ep.LocaPol;
+                        b.Localization["rus"] = ep.LocaRus;
+                        annoBuildingsListCount++;
+                        buildings.Add(b);
+                    }
                 }
             }
 
@@ -485,6 +522,11 @@ namespace PresetParser
             Console.WriteLine(b.Identifier);
             #endregion
 
+            #region Get/Set InfluenceRange information
+            //because this number is not exists yet, we set this to '0'
+            b.InfluenceRange = 0;
+            #endregion
+            
             #region Parse building blocker
             // parse building blocker
             if (!RetrieveBuildingBlocker(b, values["Object"]["Variations"].FirstChild["Filename"].InnerText, annoVersion))
@@ -658,6 +700,11 @@ namespace PresetParser
             }
             #endregion
 
+            #region Get/Set InfluenceRange information
+            //because this number is not exists yet, we set this to 'null'
+            b.InfluenceRange = 0;
+            #endregion
+
             #region Get BuildBlockers information
             //Get building blocker
             if (values["Object"] != null)
@@ -811,6 +858,7 @@ namespace PresetParser
             string[] LanguagesFiles = { "" };
             string templateName = "", factionName = "", identifierName = "", groupName = "";
             string headerName = "(A7) Anno " + ANNO_VERSION_1800;
+            #region Get valid Building Information 
             XmlElement values = buildingNode["Values"]; //Set the value List as normaly
             if (buildingNode.HasChildNodes)
             {
@@ -895,17 +943,20 @@ namespace PresetParser
             {
                 factionName = "Not Placed Yet";
             }
-            // Starting buildup the preset data
+            #endregion
+
+            #region Starting buildup the preset data
             BuildingInfo b = new BuildingInfo
             {
                 Header = headerName,
                 Faction = factionName,
                 Group = groupName,
                 Template = templateName,
-                Identifier = identifierName
+                Identifier = identifierName,
             };
             // print progress
             Console.WriteLine(b.Identifier);
+
             #region Get BuildBlockers information
             //Get building blocker
             if (values["Object"] != null)
@@ -930,7 +981,7 @@ namespace PresetParser
             }
             #endregion
 
-            #region Get IconFilenames
+            #region Get and set new IconFilenames
             // find icon node in values
             string replaceName = "A7_";
             string icon = null;
@@ -943,7 +994,14 @@ namespace PresetParser
             {
                 /// Split the Value <IconFilenames>innertext</IconFilenames> to get only the Name.png
                 string[] sIcons = icon.Split('/');
-                icon = sIcons.LastOrDefault().Replace("icon_", replaceName);
+                if (sIcons.LastOrDefault().StartsWith("icon_")){
+                    icon = sIcons.LastOrDefault().Replace("icon_", replaceName);
+                }
+                else /* Put the Replace name on front*/
+                {
+                    icon = replaceName + sIcons.LastOrDefault();
+                }
+                if (values["Standard"]["GUID"].InnerText== "102133") { icon = replaceName + "park_props_1x1_21.png"; } /*Change the Big Tree icon to Mature Tree icon (as in game) */
                 b.IconFileName = icon;
             }
             else
@@ -975,10 +1033,15 @@ namespace PresetParser
             catch (NullReferenceException ex) { }
             #endregion
 
+            #region Get/Set InfluenceRange information
+            //because this number is not exists yet, we set this to 'null'
+            b.InfluenceRange = 0;
+            #endregion
             // Building the Localizations for building b
             #region Get localizations
             /// find localization
             string buildingGuid = values["Standard"]["GUID"].InnerText;
+            if (buildingGuid == "102133") { buildingGuid = "102085"; } /*rename the Big Tree to Mature Tree (as in game) */
             string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
             string languageFilePath = "data/config/gui/";
             string languageFileStart = "texts_";
@@ -1053,6 +1116,8 @@ namespace PresetParser
                 b.Localization.Dict.Add(Languages[languageCount], translation);
                 languageCount++;
             }
+            #endregion
+           
             #endregion
             // add building to the list
             annoBuildingsListCount++;
@@ -1169,7 +1234,6 @@ namespace PresetParser
         #endregion
 
         #region ParseBuildingBlockerNumber for anno 1800
-
         private static int ParseBuildingBlockerNumber(string number)
         {
             string[] xz = new[] { "" };

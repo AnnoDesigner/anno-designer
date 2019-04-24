@@ -24,6 +24,8 @@ namespace AnnoDesigner.Presets
         public string IconFileName;
         [DataMember]
         public int InfluenceRadius;
+        [DataMember]
+        public int InfluenceRange;
 
         [DataMember]
         public SerializableDictionary<string> Localization;
