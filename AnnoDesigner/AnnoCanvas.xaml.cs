@@ -545,7 +545,7 @@ namespace AnnoDesigner
 
             // draw placed objects
             RenderObject(drawingContext, _placedObjects);
-            RenderObjectInfluence(drawingContext, _selectedObjects);
+            RenderObjectInfluenceRadius(drawingContext, _selectedObjects.Where(_ => _.Radius > 0.5).ToList());
             _selectedObjects.ForEach(_ => RenderObjectSelection(drawingContext, _));
 
             if (CurrentObjects.Count == 0)
@@ -564,7 +564,7 @@ namespace AnnoDesigner
                 {
                     MoveCurrentObjectsToMouse();
                     // draw influence radius
-                    RenderObjectInfluence(drawingContext, CurrentObjects);
+                    RenderObjectInfluenceRadius(drawingContext, CurrentObjects);
                     // draw with transparency
                     CurrentObjects.ForEach(_ => _.Color.A = 128);
                     RenderObject(drawingContext, CurrentObjects);
@@ -734,13 +734,14 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object which's influence is rendered</param>
-        private void RenderObjectInfluence(DrawingContext drawingContext, List<AnnoObject> objects)
+        private void RenderObjectInfluenceRadius(DrawingContext drawingContext, List<AnnoObject> objects)
         {
             foreach (var obj in objects)
             {
 
-                if (obj.Radius >= 0.5)
-                {
+                //This if statement has been moved outside the method to calling code
+                //if (obj.Radius >= 0.5)
+                //{
                     // highlight buildings within influence
                     var radius = GridToScreen(obj.Radius);
                     var circle = new EllipseGeometry(GetCenterPoint(GetObjectScreenRect(obj)), radius, radius);
@@ -760,7 +761,7 @@ namespace AnnoDesigner
                     }
                     // draw circle
                     drawingContext.DrawGeometry(_lightBrush, _radiusPen, circle);
-                }
+                //}
             }
         }
 
