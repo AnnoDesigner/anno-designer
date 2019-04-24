@@ -742,26 +742,35 @@ namespace AnnoDesigner
                 //This if statement has been moved outside the method to calling code
                 //if (obj.Radius >= 0.5)
                 //{
-                    // highlight buildings within influence
-                    var radius = GridToScreen(obj.Radius);
-                    var circle = new EllipseGeometry(GetCenterPoint(GetObjectScreenRect(obj)), radius, radius);
-                    circle.Freeze();
-                    foreach (var o in _placedObjects)
+                Debug.Assert(obj.Radius >= 0.5, "Radius should be larger than 0.5");
+                // highlight buildings within influence
+                var radius = GridToScreen(obj.Radius);
+                var circle = new EllipseGeometry(GetCenterPoint(GetObjectScreenRect(obj)), radius, radius);
+                circle.Freeze();
+                foreach (var o in _placedObjects)
+                {
+                    var oRect = GetObjectScreenRect(o);
+                    var distance = GetCenterPoint(oRect);
+                    distance.X -= circle.Center.X;
+                    distance.Y -= circle.Center.Y;
+                    // check if the center is within the influence circle
+                    if (distance.X * distance.X + distance.Y * distance.Y <= radius * radius)
                     {
-                        var oRect = GetObjectScreenRect(o);
-                        var distance = GetCenterPoint(oRect);
-                        distance.X -= circle.Center.X;
-                        distance.Y -= circle.Center.Y;
-                        // check if the center is within the influence circle
-                        if (distance.X * distance.X + distance.Y * distance.Y <= radius * radius)
-                        {
-                            drawingContext.DrawRectangle(_influencedBrush, _influencedPen, oRect);
-                        }
-                        //o.Label = (Math.Sqrt(distance.X*distance.X + distance.Y*distance.Y) - Math.Sqrt(radius*radius)).ToString();
+                        drawingContext.DrawRectangle(_influencedBrush, _influencedPen, oRect);
                     }
-                    // draw circle
-                    drawingContext.DrawGeometry(_lightBrush, _radiusPen, circle);
+                    //o.Label = (Math.Sqrt(distance.X*distance.X + distance.Y*distance.Y) - Math.Sqrt(radius*radius)).ToString();
+                }
+                // draw circle
+                drawingContext.DrawGeometry(_lightBrush, _radiusPen, circle);
                 //}
+            }
+        }
+
+        private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<AnnoObject> objects)
+        {
+            foreach (var obj in objects)
+            {
+
             }
         }
 
@@ -774,7 +783,7 @@ namespace AnnoDesigner
             // clear background
             var offset = RenderSize.Width - Constants.StatisticsMargin;
 
-            var informationLines = new List<string>(); 
+            var informationLines = new List<string>();
             if (!_placedObjects.Any())
             {
                 informationLines.Add("Nothing placed");
@@ -820,6 +829,7 @@ namespace AnnoDesigner
                         .Where(_ => _.ElementAt(0).Identifier != null)
                         .OrderByDescending(_ => _.Count()))
                     {
+                        Debug.Assert(item.Count() > 0, "grouping should have a length more than 0");
                         if (item.ElementAt(0).Identifier != null && item.ElementAt(0).Identifier != "")
                         {
                             if (BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier) != null)
