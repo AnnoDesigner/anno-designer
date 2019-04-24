@@ -819,8 +819,15 @@ namespace AnnoDesigner
                         .Where(_ => _.ElementAt(0).Identifier != null)
                         .OrderByDescending(_ => _.Count()))
                     {
-                        var building = BuildingPresets.Buildings.First(_ => _.Identifier == item.ElementAt(0).Identifier);
-                        informationLines.Add(string.Format("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]));
+                        if (item.ElementAt(0).Identifier != null && item.ElementAt(0).Identifier!="")
+                        {
+                            var building = BuildingPresets.Buildings.First(_ => _.Identifier == item.ElementAt(0).Identifier);
+                            informationLines.Add(string.Format("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]));
+                        }
+                        else
+                        {
+                            informationLines.Add(string.Format("{0} x Building name not found", item.Count()));
+                        }
                     }
                 }
             }
