@@ -115,7 +115,10 @@ namespace AnnoDesigner
 
         private void annoCanvas_UpdateStatistics(object sender, EventArgs e)
         {
-            mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects);
+            mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
+                annoCanvas.SelectedObjects,
+                annoCanvas.RenderBuildingCount,
+                annoCanvas.BuildingPresets);
         }
 
         private void LoadSettings()

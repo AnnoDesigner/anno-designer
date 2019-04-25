@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:AnnoDesigner"
              xmlns:viewmodel="clr-namespace:AnnoDesigner.viewmodel"
+             xmlns:converter="clr-namespace:AnnoDesigner.converter"
              mc:Ignorable="d"
              d:DesignHeight="350"
              d:DesignWidth="200"
@@ -13,6 +14,9 @@
         <viewmodel:StatisticsViewModel x:Name="statisticsViewModel" />
     </UserControl.DataContext>
     <UserControl.Resources>
+        <converter:BoolToVisibilityConverter x:Key="boolToVisConverter" TrueValue="Visible" FalseValue="Collapsed" />
+        <converter:BoolToVisibilityConverter x:Key="invertedBoolToVisConverter" TrueValue="Collapsed" FalseValue="Visible" />
+
         <Style x:Key="styleGroupBox"
                TargetType="GroupBox">
             <Setter Property="Margin"
@@ -30,54 +34,58 @@
                   HorizontalScrollBarVisibility="Auto">
         <StackPanel>
             <TextBlock x:Name="tblNothingPlaced"
-                       Text="Nothing placed"
-                       Visibility="Visible" />
+                       Text="{Binding TextNothingPlaced}"                       
+                       Margin="5"
+                       Visibility="{Binding AreStatisticsAvailable, Converter={StaticResource invertedBoolToVisConverter}}" />
 
-            <GroupBox x:Name="grpBoundingBox"
+            <StackPanel Visibility="{Binding AreStatisticsAvailable, Converter={StaticResource boolToVisConverter}}">
+                <GroupBox x:Name="grpBoundingBox"
                       Header="Bounding Box"
                       Style="{StaticResource styleGroupBox}">
-                <StackPanel>
-                    <TextBlock Text="22 x 14"
+                    <StackPanel>
+                        <TextBlock Text="{Binding UsedArea}"
                                Style="{StaticResource styleGroupEntry}" />
-                    <TextBlock Text="{Binding UsedTiles}"
+                        <TextBlock Text="{Binding UsedTiles}"
                                Style="{StaticResource styleGroupEntry}" />
-                </StackPanel>
-            </GroupBox>
+                    </StackPanel>
+                </GroupBox>
 
-            <GroupBox x:Name="grpMinArea"
+                <GroupBox x:Name="grpMinArea"
                       Header="Minimum Area"
                       Style="{StaticResource styleGroupBox}">
-                <StackPanel>
-                    <TextBlock Text="48 Tiles"
+                    <StackPanel>
+                        <TextBlock Text="{Binding MinTiles}"
                                Style="{StaticResource styleGroupEntry}" />
-                </StackPanel>
-            </GroupBox>
+                    </StackPanel>
+                </GroupBox>
 
-            <GroupBox x:Name="grpEfficiency"
+                <GroupBox x:Name="grpEfficiency"
                       Header="Space Efficiency"
                       Style="{StaticResource styleGroupBox}">
-                <StackPanel>
-                    <TextBlock Text="16%"
+                    <StackPanel>
+                        <TextBlock Text="{Binding Efficiency}"
                                Style="{StaticResource styleGroupEntry}" />
-                </StackPanel>
-            </GroupBox>
+                    </StackPanel>
+                </GroupBox>
 
-            <GroupBox x:Name="grpBuildings"
+                <GroupBox x:Name="grpBuildings"
                       Header="Buildings"
-                      Style="{StaticResource styleGroupBox}">
-                <StackPanel>
+                      Style="{StaticResource styleGroupBox}"
+                          Visibility="{Binding ShowBuildingList , Converter={StaticResource boolToVisConverter}}">
+                    <StackPanel>
 
-                </StackPanel>
-            </GroupBox>
+                    </StackPanel>
+                </GroupBox>
 
-            <GroupBox x:Name="grpSelectedBuildings"
-                      Header="Selected Buildings"
-                      Visibility="Visible"
-                      Style="{StaticResource styleGroupBox}">
-                <StackPanel>
+                <GroupBox x:Name="grpSelectedBuildings"
+                      Header="Selected Buildings"                      
+                      Style="{StaticResource styleGroupBox}"
+                          Visibility="{Binding ShowBuildingList, Converter={StaticResource boolToVisConverter}}">
+                    <StackPanel>
 
-                </StackPanel>
-            </GroupBox>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

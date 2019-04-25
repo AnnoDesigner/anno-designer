@@ -599,6 +599,9 @@ namespace AnnoDesigner.Localization
         public void UpdateLanguage()
         {
             string language = Localization.GetLanguageCodeFromName(AnnoDesigner.MainWindow.SelectedLanguage);
+
+            StatisticsViewModel.TextNothingPlaced = Localization.Translations[language]["StatNothingPlaced"];
+
             //File Menu
             File = Localization.Translations[language]["File"];
             NewCanvas = Localization.Translations[language]["NewCanvas"];

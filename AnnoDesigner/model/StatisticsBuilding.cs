@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AnnoDesigner.model
 {
+    [DebuggerDisplay("{Count,nq} x {Name}")]
     public class StatisticsBuilding : Notify
     {
         private int _count;

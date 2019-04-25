@@ -4,18 +4,48 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using AnnoDesigner.model;
+using AnnoDesigner.Presets;
 
 namespace AnnoDesigner.viewmodel
 {
     public class StatisticsViewModel : Notify
     {
+        private string _textNothingPlaced;
+        private string _usedArea;
         private string _usedTiles;
+        private string _minTiles;
+        private string _efficiency;
+        private bool _areStatisticsAvailable;
+        private bool _showBuildingList;
         private ObservableCollection<StatisticsBuilding> _buildings;
+        private ObservableCollection<StatisticsBuilding> _selectedBuildings;
 
         public StatisticsViewModel()
         {
+            TextNothingPlaced = "Nothing Placed";
+            UsedArea = "12x4";
             UsedTiles = "308 Tiles";
+            MinTiles = "48 Tiles";
+            Efficiency = "16%";
+            AreStatisticsAvailable = false;
+        }
+
+        #region localization
+
+        public string TextNothingPlaced
+        {
+            get { return _textNothingPlaced; }
+            set { UpdateProperty(ref _textNothingPlaced, value); }
+        }
+
+        #endregion
+
+        public string UsedArea
+        {
+            get { return _usedArea; }
+            set { UpdateProperty(ref _usedArea, value); }
         }
 
         public string UsedTiles
@@ -24,25 +54,127 @@ namespace AnnoDesigner.viewmodel
             set { UpdateProperty(ref _usedTiles, value); }
         }
 
+        public string MinTiles
+        {
+            get { return _minTiles; }
+            set { UpdateProperty(ref _minTiles, value); }
+        }
+
+        public string Efficiency
+        {
+            get { return _efficiency; }
+            set { UpdateProperty(ref _efficiency, value); }
+        }
+
+        public bool AreStatisticsAvailable
+        {
+            get { return _areStatisticsAvailable; }
+            set { UpdateProperty(ref _areStatisticsAvailable, value); }
+        }
+
+        public bool ShowBuildingList
+        {
+            get { return _showBuildingList; }
+            set { UpdateProperty(ref _showBuildingList, value); }
+        }
+
         public ObservableCollection<StatisticsBuilding> Buildings
         {
             get { return _buildings; }
             set { UpdateProperty(ref _buildings, value); }
         }
-
-        public void UpdateStatistics(List<AnnoObject> placedObjects)
+        public ObservableCollection<StatisticsBuilding> SelectedBuildings
         {
+            get { return _selectedBuildings; }
+            set { UpdateProperty(ref _selectedBuildings, value); }
+        }
+
+        public void UpdateStatistics(List<AnnoObject> placedObjects,
+            List<AnnoObject> selectedObjects,
+            bool showBuildingList,
+            BuildingPresets buildingPresets)
+        {
+            if (!placedObjects.Any())
+            {
+                AreStatisticsAvailable = false;
+                return;
+            }
+
+            AreStatisticsAvailable = true;
+
             // calculate bouding box
             var boxX = placedObjects.Max(_ => _.Position.X + _.Size.Width) - placedObjects.Min(_ => _.Position.X);
             var boxY = placedObjects.Max(_ => _.Position.Y + _.Size.Height) - placedObjects.Min(_ => _.Position.Y);
             // calculate area of all buildings
             var minTiles = placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
 
-            // format lines            
-            //informationLines.AppendFormat(" {0}x{1}", boxX, boxY).AppendLine();
-            //informationLines.AppendFormat(" {0} Tiles", boxX * boxY).AppendLine();
-
+            UsedArea = string.Format("{0}x{1}", boxX, boxY);
             UsedTiles = string.Format("{0} Tiles", boxX * boxY);
+
+            MinTiles = string.Format("{0} Tiles", minTiles);
+            Efficiency = string.Format("{0}%", Math.Round(minTiles / boxX / boxY * 100));
+
+            ShowBuildingList = showBuildingList;
+
+            if (showBuildingList)
+            {
+                var groupedBuildings = placedObjects.GroupBy(_ => _.Identifier);
+                var groupedSelectedBuildings = selectedObjects.Count > 0 ? selectedObjects.GroupBy(_ => _.Identifier) : null;
+
+                Buildings = getStatisticBuildings(groupedBuildings, buildingPresets);
+                SelectedBuildings = getStatisticBuildings(groupedSelectedBuildings, buildingPresets);
+            }
+            else
+            {
+
+            }
+        }
+
+        private ObservableCollection<StatisticsBuilding> getStatisticBuildings(IEnumerable<IGrouping<string, AnnoObject>> groupedBuildingsByIdentifier, BuildingPresets buildingPresets)
+        {
+            var result = new ObservableCollection<StatisticsBuilding>();
+
+            if (groupedBuildingsByIdentifier == null)
+            {
+                return result;
+            }
+
+            var language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+
+            foreach (var item in groupedBuildingsByIdentifier
+                        .Where(_ => !_.ElementAt(0).Road && _.ElementAt(0).Identifier != null)
+                        .OrderByDescending(_ => _.Count()))
+            {
+                var statisticBuilding = new StatisticsBuilding();
+
+                if (!string.IsNullOrWhiteSpace(item.ElementAt(0).Identifier))
+                {
+                    var building = buildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
+                    if (building != null)
+                    {
+                        //informationLines.AppendFormat("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]).AppendLine();
+
+                        statisticBuilding.Count = item.Count();
+                        statisticBuilding.Name = building.Localization[language];
+                    }
+                    else
+                    {
+                        item.ElementAt(0).Identifier = "";
+
+                        statisticBuilding.Count = item.Count();
+                        statisticBuilding.Name = "Building name not found";
+                    }
+                }
+                else
+                {
+                    statisticBuilding.Count = item.Count();
+                    statisticBuilding.Name = "Building name not found";
+                }
+
+                result.Add(statisticBuilding);
+            }
+
+            return result;
         }
     }
 }

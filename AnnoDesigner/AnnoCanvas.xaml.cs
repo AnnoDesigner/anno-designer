@@ -376,6 +376,7 @@ namespace AnnoDesigner
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
         private readonly List<AnnoObject> _selectedObjects;
+        public List<AnnoObject> SelectedObjects { get { return _selectedObjects; } }
 
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
 
@@ -495,6 +496,8 @@ namespace AnnoDesigner
             _influencedPen.Freeze();
             _lightBrush.Freeze();
             _influencedBrush.Freeze();
+
+            UpdateStatistics?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
@@ -813,6 +816,7 @@ namespace AnnoDesigner
                         informationLines.AppendLine("Buildings");
                         groupedBuildings = _placedObjects.GroupBy(_ => _.Identifier);
                     }
+
                     foreach (var item in groupedBuildings
                         .Where(_ => !_.ElementAt(0).Road && _.ElementAt(0).Identifier != null)
                         .OrderByDescending(_ => _.Count()))
