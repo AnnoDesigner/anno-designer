@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Windows;
 
@@ -7,6 +8,7 @@ namespace AnnoDesigner
     /// Object that contains all information needed to fully describe a building on the grid
     /// </summary>
     [DataContract]
+    [DebuggerDisplay("{Identifier}")]
     public class AnnoObject
     {
         /// <summary>
