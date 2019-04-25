@@ -885,8 +885,29 @@
     <!-- copy $(ProjectDir)icons.json $(TargetDir)</PostBuildEvent> -->
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>REM xcopy "
-REM xcopy "$(ProjectDir)\icons" "$(TargetDir)" /f /l /y</PostBuildEvent>
+    <PostBuildEvent>echo create directory for icons "$(TargetDir)icons"
+if not exist "$(TargetDir)icons" md "$(TargetDir)icons"
+
+rem ROBOCOPY exits with "success codes" which are under 8. See: http://support.microsoft.com/kb/954404
+rem This means that:
+
+rem robocopy exit code 0 = no files copied
+rem robocopy exit code 1 = files copied
+rem When the result is 1, this becomes an error exit code in visual studio.
+
+echo copy icons from "$(ProjectDir)\icons" to "$(TargetDir)icons"
+ROBOCOPY "$(ProjectDir)\icons" "$(TargetDir)icons" *.* /E /NFL /NDL /NJH /NJS /nc /ns /np
+
+if %25ERRORLEVEL%25 GEQ 8 goto failed
+
+rem end of batch
+goto success
+
+:failed
+exit -1
+
+:success
+exit 0</PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
