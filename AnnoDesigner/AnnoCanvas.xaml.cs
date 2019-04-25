@@ -546,7 +546,7 @@ namespace AnnoDesigner
 
             // draw placed objects
             RenderObject(drawingContext, _placedObjects);
-            RenderObjectInfluenceRadius(drawingContext, _selectedObjects.Where(_ => _.Radius >= 0.5).ToList());
+            RenderObjectInfluenceRadius(drawingContext, _selectedObjects);
             _selectedObjects.ForEach(_ => RenderObjectSelection(drawingContext, _));
 
             if (CurrentObjects.Count == 0)
@@ -565,7 +565,7 @@ namespace AnnoDesigner
                 {
                     MoveCurrentObjectsToMouse();
                     // draw influence radius
-                    RenderObjectInfluenceRadius(drawingContext, CurrentObjects.Where(_ => _.Radius >= 0.5).ToList());
+                    RenderObjectInfluenceRadius(drawingContext, CurrentObjects);
                     // draw with transparency
                     CurrentObjects.ForEach(_ => _.Color.A = 128);
                     RenderObject(drawingContext, CurrentObjects);
@@ -740,10 +740,8 @@ namespace AnnoDesigner
             foreach (var obj in objects)
             {
 
-                //This if statement has been moved outside the method to calling code
-                //if (obj.Radius >= 0.5)
-                //{
-                Debug.Assert(obj.Radius >= 0.5, "Radius should be larger than 0.5");
+                if (obj.Radius >= 0.5)
+                {
                 // highlight buildings within influence
                 var radius = GridToScreen(obj.Radius);
                 var circle = new EllipseGeometry(GetCenterPoint(GetObjectScreenRect(obj)), radius, radius);
@@ -763,7 +761,7 @@ namespace AnnoDesigner
                 }
                 // draw circle
                 drawingContext.DrawGeometry(_lightBrush, _radiusPen, circle);
-                //}
+                }
             }
         }
 
