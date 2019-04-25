@@ -22,8 +22,7 @@ namespace AnnoDesigner
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow
-        : Window
+    public partial class MainWindow : Window
     {
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
@@ -77,6 +76,7 @@ namespace AnnoDesigner
         public MainWindow()
         {
             InitializeComponent();
+
             _instance = this;
             // initialize web client
             _webClient = new WebClient();
@@ -86,6 +86,7 @@ namespace AnnoDesigner
             annoCanvas.OnStatusMessageChanged += StatusMessageChanged;
             annoCanvas.OnLoadedFileChanged += LoadedFileChanged;
             annoCanvas.OnClipboardChanged += ClipboardChanged;
+            annoCanvas.UpdateStatistics += annoCanvas_UpdateStatistics;
 
             //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
             DependencyObject dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
@@ -110,6 +111,11 @@ namespace AnnoDesigner
             }
 
             LoadSettings();
+        }
+
+        private void annoCanvas_UpdateStatistics(object sender, EventArgs e)
+        {
+            mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects);
         }
 
         private void LoadSettings()

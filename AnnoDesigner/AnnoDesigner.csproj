@@ -50,6 +50,8 @@
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="Localization.cs" />
+    <Compile Include="model\StatisticsBuilding.cs" />
+    <Compile Include="model\Notify.cs" />
     <Compile Include="Presets\BuildingInfo.cs" />
     <Compile Include="Presets\BuildingPresets.cs" />
     <Compile Include="Constants.cs" />
@@ -71,6 +73,7 @@
     </Compile>
     <Compile Include="TreeViewExtensions.cs" />
     <Compile Include="UI\IconImage.xaml.cs" />
+    <Compile Include="viewmodel\StatisticsViewModel.cs" />
     <Compile Include="Welcome.xaml.cs">
       <DependentUpon>Welcome.xaml</DependentUpon>
     </Compile>

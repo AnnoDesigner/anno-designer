@@ -24,6 +24,8 @@ namespace AnnoDesigner
     /// </summary>
     public partial class AnnoCanvas : UserControl
     {
+        public event EventHandler UpdateStatistics;
+
         #region Properties
 
         /// <summary>
@@ -367,6 +369,7 @@ namespace AnnoDesigner
         /// List of all currently placed objects.
         /// </summary>
         private List<AnnoObject> _placedObjects;
+        public List<AnnoObject> PlacedObjects { get { return _placedObjects; } }
 
         /// <summary>
         /// List of all currently selected objects.
@@ -1414,6 +1417,9 @@ namespace AnnoDesigner
                 _placedObjects.AddRange(CloneList(CurrentObjects));
                 // sort the objects because borderless objects should be drawn first
                 _placedObjects.Sort((a, b) => b.Borderless.CompareTo(a.Borderless));
+
+                UpdateStatistics?.Invoke(this, EventArgs.Empty);
+
                 return true;
             }
             return false;

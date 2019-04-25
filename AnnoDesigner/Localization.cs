@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using AnnoDesigner.model;
+using AnnoDesigner.viewmodel;
 
 namespace AnnoDesigner.Localization
 {
@@ -333,32 +335,6 @@ namespace AnnoDesigner.Localization
 
     }
 
-    /// <summary>
-    /// Holds the base INotifyPropertyChanged implementation plus helper methods
-    /// //https://stackoverflow.com/questions/1315621/implementing-inotifypropertychanged-does-a-better-way-exist
-    /// </summary>
-    public class Notify : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            //Invoke event if not null
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        protected bool UpdateProperty<T>(ref T field, T value, [CallerMemberName] string name = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-            {
-                return false;
-            }
-
-            field = value;
-            OnPropertyChanged(name);
-            return true;
-        }
-    }
-
-
     //These classes cannot be nested as they are used for data binding
 
     public class About : Notify
@@ -615,6 +591,8 @@ namespace AnnoDesigner.Localization
     {
         public MainWindow()
         {
+            _statisticsViewModel = new StatisticsViewModel();
+
             UpdateLanguage();
         }
 
@@ -1100,6 +1078,13 @@ namespace AnnoDesigner.Localization
             {
                 UpdateProperty(ref _statusBarControls, value);
             }
+        }
+
+        private StatisticsViewModel _statisticsViewModel;
+        public StatisticsViewModel StatisticsViewModel
+        {
+            get { return _statisticsViewModel; }
+            set { _statisticsViewModel = value; }
         }
 
         public class Welcome : Notify
