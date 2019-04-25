@@ -15,24 +15,23 @@ using System.Windows.Media.Imaging;
 using AnnoDesigner.Presets;
 using AnnoDesigner.UI;
 using Microsoft.Win32;
-using MessageBox = Microsoft.Windows.Controls.MessageBox;
+using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner
 {
     /// <summary>
     /// Interaction logic for AnnoCanvas.xaml
     /// </summary>
-    public partial class AnnoCanvas
-        : UserControl
+    public partial class AnnoCanvas : UserControl
     {
         #region Properties
 
         /// <summary>
         /// Contains all loaded icons as a mapping of name (the filename without extension) to loaded BitmapImage.
         /// </summary>
-        public readonly Dictionary<string, IconImage> Icons;
+        public Dictionary<string, IconImage> Icons { get; }
 
-        public readonly BuildingPresets BuildingPresets;
+        public BuildingPresets BuildingPresets { get; }
 
         /// <summary>
         /// Backing field of the GridSize property.
@@ -1392,7 +1391,7 @@ namespace AnnoDesigner
             return GetObjectCollisionRect(a).IntersectsWith(GetObjectCollisionRect(b));
         }
 
-        // <summary>
+        /// <summary>
         /// Checks if there is a collision between a list of AnnoObjects a and object b.
         /// </summary>
         /// <param name="a">List of objects</param>

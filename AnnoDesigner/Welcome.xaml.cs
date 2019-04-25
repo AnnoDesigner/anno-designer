@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner
 {
@@ -68,7 +69,7 @@ namespace AnnoDesigner
             else
             {
                 //Show a message;
-                Microsoft.Windows.Controls.MessageBox.Show(this, "Please select a langauge before continuing");
+                MessageBox.Show(this, "Please select a langauge before continuing");
             }
         }
 

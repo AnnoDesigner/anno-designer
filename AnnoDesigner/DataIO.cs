@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Json;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using MessageBox = Microsoft.Windows.Controls.MessageBox;
+using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner
 {
