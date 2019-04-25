@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -773,15 +774,13 @@ namespace AnnoDesigner
             // clear background
             var offset = RenderSize.Width - Constants.StatisticsMargin;
 
-            var informationLines = new List<string>(); 
+            var informationLines = new StringBuilder(128 * 2);//16=minimum; 127=empty box
             if (!_placedObjects.Any())
             {
-                informationLines.Add("Nothing placed");
+                informationLines.AppendLine("Nothing placed");
             }
             else
             {
-                informationLines.Capacity = 9; //There will be at least 9 lines in this list 
-
                 // calculate bouding box
                 var boxX = _placedObjects.Max(_ => _.Position.X + _.Size.Width) - _placedObjects.Min(_ => _.Position.X);
                 var boxY = _placedObjects.Max(_ => _.Position.Y + _.Size.Height) - _placedObjects.Min(_ => _.Position.Y);
@@ -789,58 +788,58 @@ namespace AnnoDesigner
                 var minTiles = _placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
 
                 // format lines
-                informationLines.Add("Bounding Box");
-                informationLines.Add(string.Format(" {0}x{1}", boxX, boxY));
-                informationLines.Add(string.Format(" {0} Tiles", boxX * boxY));
-                informationLines.Add("");
-                informationLines.Add("Minimum Area");
-                informationLines.Add(string.Format(" {0} Tiles", minTiles));
-                informationLines.Add("");
-                informationLines.Add("Space efficiency");
-                informationLines.Add(string.Format(" {0}%", Math.Round(minTiles / boxX / boxY * 100)));
+                informationLines.AppendLine("Bounding Box");
+                informationLines.AppendFormat(" {0}x{1}", boxX, boxY).AppendLine();
+                informationLines.AppendFormat(" {0} Tiles", boxX * boxY).AppendLine();
+                informationLines.AppendLine("");
+                informationLines.AppendLine("Minimum Area");
+                informationLines.AppendFormat(" {0} Tiles", minTiles).AppendLine();
+                informationLines.AppendLine("");
+                informationLines.AppendLine("Space efficiency");
+                informationLines.AppendFormat(" {0}%", Math.Round(minTiles / boxX / boxY * 100)).AppendLine();
 
                 if (_renderBuildingCount)
                 {
-                    informationLines.Add("");
+                    informationLines.AppendLine("");
 
                     IEnumerable<IGrouping<string, AnnoObject>> groupedBuildings;
                     if (_selectedObjects.Count > 0)
                     {
-                        informationLines.Add("Buildings Selected");
+                        informationLines.AppendLine("Buildings Selected");
                         groupedBuildings = _selectedObjects.GroupBy(_ => _.Identifier);
                     }
                     else
                     {
-                        informationLines.Add("Buildings");
+                        informationLines.AppendLine("Buildings");
                         groupedBuildings = _placedObjects.GroupBy(_ => _.Identifier);
                     }
                     foreach (var item in groupedBuildings
-                        .Where(_ => _.ElementAt(0).Road == false)
-                        .Where(_ => _.ElementAt(0).Identifier != null)
+                        .Where(_ => !_.ElementAt(0).Road && _.ElementAt(0).Identifier != null)
                         .OrderByDescending(_ => _.Count()))
                     {
-                        if (item.ElementAt(0).Identifier != null && item.ElementAt(0).Identifier != "")
+                        if (!string.IsNullOrWhiteSpace(item.ElementAt(0).Identifier))
                         {
-                            if (BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier) != null)
+                            var building = BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
+                            if (building != null)
                             {
-                                var building = BuildingPresets.Buildings.First(_ => _.Identifier == item.ElementAt(0).Identifier);
-                                informationLines.Add(string.Format("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]));
+                                informationLines.AppendFormat("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]).AppendLine();
                             }
                             else
                             {
                                 item.ElementAt(0).Identifier = "";
-                                informationLines.Add(string.Format("{0} x Building name not found", item.Count()));
+                                informationLines.AppendFormat("{0} x Building name not found", item.Count()).AppendLine();
                             }
                         }
                         else
                         {
-                            informationLines.Add(string.Format("{0} x Building name not found", item.Count()));
+                            informationLines.AppendFormat("{0} x Building name not found", item.Count()).AppendLine();
                         }
                     }
                 }
             }
-            // render all the lines
-            var text = String.Join("\n", informationLines);
+
+            // render all the lines            
+            var text = informationLines.ToString();
             var f = new FormattedText(text, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
                                            TYPEFACE, 12, Brushes.Black, null, TextFormattingMode.Display)
             {
