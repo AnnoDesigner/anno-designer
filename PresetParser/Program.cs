@@ -154,7 +154,6 @@ namespace PresetParser
             if (annoVersion != "-ALL")
             {
                 ///Add a trailing backslash if one is not present.
-                ///BASE_PATH = path.LastOrDefault() == '\\' ? path : path + "\\";
                 BASE_PATH = GetBASE_PATH(annoVersion);
             }
             else
@@ -176,7 +175,6 @@ namespace PresetParser
             {
                 Console.WriteLine("Extracting and parsing RDA data for all Anno versions");
             }
-
             #endregion
 
             #region Anno Verion Data Paths
@@ -300,10 +298,6 @@ namespace PresetParser
             #endregion
 
             #region Prepare JSON Files
-
-            /// <summary>
-            /// start hereeeeeee!!!
-            /// </summary>
             if (annoVersion != "-ALL")
             {
                 //execute a Signle Anno Preset
@@ -311,21 +305,31 @@ namespace PresetParser
             }
             else
             {
-                //Execute ALL Anno Presets in one
+                //Execute for all Anno Presets in one
+                Console.WriteLine();
+                Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_1404, ANNO_VERSION_1404);
                 BASE_PATH = BASE_PATH_1404;
                 DoAnnoPreset(ANNO_VERSION_1404);
+                Console.WriteLine();
+                Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_2070, ANNO_VERSION_2070);
                 BASE_PATH = BASE_PATH_2070;
                 DoAnnoPreset(ANNO_VERSION_2070);
+                Console.WriteLine();
+                Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_2205, ANNO_VERSION_2205);
                 BASE_PATH = BASE_PATH_2205;
                 DoAnnoPreset(ANNO_VERSION_2205);
+                Console.WriteLine();
+                Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_1800, ANNO_VERSION_1800);
                 BASE_PATH = BASE_PATH_1800;
                 DoAnnoPreset(ANNO_VERSION_1800);
             }
-     
+            #endregion
+
+            #region Write preset.json and icon.json files
             BuildingPresets presets = new BuildingPresets() { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
 
             Console.WriteLine();
@@ -350,7 +354,98 @@ namespace PresetParser
             #endregion //End Prepare JSON Files
         }
 
-        ///Extra Preset Parsing Part All Anno's
+        /// Get the BASE_PATH for the given Anno
+        #region Asking Directory path for the choiced Anno versions
+        public static string GetBASE_PATH(string annoVersion)
+        {
+            bool validPath = false;
+            string path = "";
+            while (!validPath)
+            {
+                Console.WriteLine();
+                Console.Write("Please enter the path to the extracted Anno {0} RDA files:", annoVersion);
+                path = Console.ReadLine();
+                if (path == "quit")
+                {
+                    Environment.Exit(0);
+                }
+                if (Directory.Exists(path))
+                {
+                    validPath = true;
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Invalid input, please try again or enter 'quit' to exit.");
+                }
+            }
+            ///Add a trailing backslash if one is not present.
+            return path.LastOrDefault() == '\\' ? path : path + "\\";
+        }
+        #endregion
+
+        /// Prepare building list for preset/icon file
+        #region Prepare buildings list for presets, depending on the Anno Version thats given
+        //original Code minus the 'List<BuildingInfo> buildings' initialization  
+        private static void DoAnnoPreset(string annoVersion)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Parsing assets.xml:");
+            var assetPathRefs = VersionSpecificPaths[annoVersion]["assets"];
+
+            if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070)
+            {
+                // prepare localizations
+                // This call will set the extra Anno Version Number on the icon translation for Anno 1404 ('A4_')
+                // and Anno 2070 ('A5_') that will be seen in the Icons Selection tree of the program (icon.json)
+                Dictionary<string, SerializableDictionary<string>> localizations = GetLocalizations(annoVersion, 1);
+                #region Preparing icon.json file
+                // prepare icon mapping
+                XmlDocument iconsDocument = new XmlDocument();
+                List<XmlNode> iconNodes = new List<XmlNode>();
+                foreach (PathRef p in VersionSpecificPaths[annoVersion]["icons"])
+                {
+                    iconsDocument.Load(BASE_PATH + p.Path);
+                    iconNodes.AddRange(iconsDocument.SelectNodes(p.XPath).Cast<XmlNode>());
+                }
+                // write icon name mapping
+                Console.WriteLine("Writing icon name mapping to icons.json");
+                WriteIconNameMapping(iconNodes, localizations, annoVersion, BUILDING_PRESETS_VERSION);
+                //This must be done, to clear the 'A4_' or 'A5_' and get normal translation for presets.json
+                localizations.Clear();
+                localizations = GetLocalizations(annoVersion, 0);
+                #endregion
+                // parse buildings
+                // find buildings in assets.xml
+                foreach (PathRef p in assetPathRefs)
+                {
+                    ParseAssetsFile(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, iconNodes, localizations, p.InnerNameTag, annoVersion);
+                }
+                // Add extra buildings to the anno version preset file
+                AddExtraPreset(annoVersion, buildings);
+            }
+            else if (annoVersion == ANNO_VERSION_2205)
+            {
+                foreach (PathRef p in assetPathRefs)
+                {
+                    ParseAssetsFile2205(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, p.InnerNameTag, annoVersion);
+                }
+                // Add extra buildings to the anno version preset file
+                AddExtraPreset(annoVersion, buildings);
+            }
+            else if (annoVersion == ANNO_VERSION_1800)
+            {
+                foreach (PathRef p in assetPathRefs)
+                {
+                    ParseAssetsFile1800(BASE_PATH + p.Path, p.XPath, buildings);
+                }
+                // Add extra buildings to the anno version preset file
+                AddExtraPreset(annoVersion, buildings);
+            }
+        }
+        #endregion
+
+        /// Extra Preset Parsing Part for All Anno's
         #region Add extra preset buildings to the Anno version preset file
         // Thus can be added in ExtraPresets.cs
         private static void AddExtraPreset(string annoVersion, List<BuildingInfo> buildings)
@@ -385,63 +480,6 @@ namespace PresetParser
             }
         }
         #endregion
-        private static void DoAnnoPreset(string annoVersion)
-        {
-            Console.WriteLine();
-            Console.WriteLine("Parsing assets.xml:");
-            var assetPathRefs = VersionSpecificPaths[annoVersion]["assets"];
-
-            if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070)
-            {
-                // prepare localizations
-                // This call will set the extra Anno Version Number on the icon translation for Anno 1404 ('A4_')
-                // and Anno 2070 ('A5_') that will be seen in the Icons Selection tree of the program (icon.json)
-                Dictionary<string, SerializableDictionary<string>> localizations = GetLocalizations(annoVersion, 1);
-                #region Preparing icon.json file
-                // prepare icon mapping
-                XmlDocument iconsDocument = new XmlDocument();
-                List<XmlNode> iconNodes = new List<XmlNode>();
-                foreach (PathRef p in VersionSpecificPaths[annoVersion]["icons"])
-                {
-                    iconsDocument.Load(BASE_PATH + p.Path);
-                    iconNodes.AddRange(iconsDocument.SelectNodes(p.XPath).Cast<XmlNode>());
-                }
-                // write icon name mapping
-                Console.WriteLine("Writing icon name mapping to icons.json");
-                WriteIconNameMapping(iconNodes, localizations, annoVersion, BUILDING_PRESETS_VERSION);
-                //This must be done, to clear the 'A4_' or 'A5_' and get normal translation for presets.json
-                localizations.Clear();
-                localizations = GetLocalizations(annoVersion, 0);
-                #endregion
-                // parse buildings
-                // find buildings in assets.xml
-
-                foreach (PathRef p in assetPathRefs)
-                {
-                    ParseAssetsFile(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, iconNodes, localizations, p.InnerNameTag, annoVersion);
-                }
-                // Add extra buildings to the anno version preset file
-                AddExtraPreset(annoVersion, buildings);
-            }
-            else if (annoVersion == ANNO_VERSION_2205)
-            {
-                foreach (PathRef p in assetPathRefs)
-                {
-                    ParseAssetsFile2205(BASE_PATH + p.Path, p.XPath, p.YPath, buildings, p.InnerNameTag, annoVersion);
-                }
-                // Add extra buildings to the anno version preset file
-                AddExtraPreset(annoVersion, buildings);
-            }
-            else if (annoVersion == ANNO_VERSION_1800)
-            {
-                foreach (PathRef p in assetPathRefs)
-                {
-                    ParseAssetsFile1800(BASE_PATH + p.Path, p.XPath, buildings);
-                }
-                // Add extra buildings to the anno version preset file
-                AddExtraPreset(annoVersion, buildings);
-            }
-        }
 
         /// Parsing Part for 1404 and 2070
         #region Parsing Buildngs for Anno 1404/2070
@@ -1449,35 +1487,6 @@ namespace PresetParser
                 Console.WriteLine("TIS IS A TEST: No icon.sjon File is writen") ;
             }
 
-        }
-        #endregion
-
-        #region Asking Path Directory's for Anno Versions (repeatble)
-        public static string GetBASE_PATH(string annoVersion)
-        {
-            bool validPath = false;
-            string path = "";
-            while (!validPath)
-            {
-                Console.WriteLine();
-                Console.Write("Please enter the path to the extracted Anno {0} RDA files:", annoVersion);
-                path = Console.ReadLine();
-                if (path == "quit")
-                {
-                    Environment.Exit(0);
-                }
-                if (Directory.Exists(path))
-                {
-                    validPath = true;
-                }
-                else
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Invalid input, please try again or enter 'quit' to exit.");
-                }
-            }
-            ///Add a trailing backslash if one is not present.
-            return path.LastOrDefault() == '\\' ? path : path + "\\";
         }
         #endregion
 
