@@ -1,7 +1,6 @@
 ﻿using AnnoDesigner.Presets;
 using AnnoDesigner.UI;
 using Microsoft.Win32;
-using Microsoft.Windows.Controls;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,7 +9,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using MessageBox = Microsoft.Windows.Controls.MessageBox;
+using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
+using System.Windows.Media;
 using System.ComponentModel;
 using AnnoDesigner.Properties;
 using System.Diagnostics;
@@ -136,13 +136,16 @@ namespace AnnoDesigner
                 comboBoxIcon.Items.Add(icon.Value);
             }
             comboBoxIcon.SelectedIndex = 0;
+
             // check for updates on startup
             MenuItemVersion.Header = "Version: " + Constants.Version;
             MenuItemFileVersion.Header = "File version: " + Constants.FileVersion;
             CheckForUpdates(false);
+
             // load color presets
             colorPicker.StandardColors.Clear();
             //This is currently disabled
+            colorPicker.ShowStandardColors = false;
             //try
             //{
             //    ColorPresets colorPresets = DataIO.LoadFromFile<ColorPresets>(Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile));
@@ -158,6 +161,7 @@ namespace AnnoDesigner
             //{
             //    MessageBox.Show(ex.Message, "Loading of the color presets failed");
             //}
+
             // load presets
             treeViewPresets.Items.Clear();
             // manually add a road tile preset
@@ -322,7 +326,7 @@ namespace AnnoDesigner
             AnnoObject obj = new AnnoObject
             {
                 Size = new Size(int.Parse(textBoxWidth.Text), int.Parse(textBoxHeight.Text)),
-                Color = colorPicker.SelectedColor,
+                Color = colorPicker.SelectedColor.HasValue ? colorPicker.SelectedColor.Value : Colors.Red,
                 Label = IsChecked(checkBoxLabel) ? textBoxLabel.Text : "",
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
                 Radius = string.IsNullOrEmpty(textBoxRadius.Text) ? 0 : double.Parse(textBoxRadius.Text, CultureInfo.InvariantCulture),
@@ -349,7 +353,10 @@ namespace AnnoDesigner
                 AnnoObject selectedItem = treeViewPresets.SelectedItem as AnnoObject;
                 if (selectedItem != null)
                 {
-                    UpdateUIFromObject(new AnnoObject(selectedItem) { Color = colorPicker.SelectedColor });
+                    UpdateUIFromObject(new AnnoObject(selectedItem)
+                    {
+                        Color = colorPicker.SelectedColor.HasValue ? colorPicker.SelectedColor.Value : Colors.Red,
+                    });
                     ApplyCurrentObject();
                 }
             }
