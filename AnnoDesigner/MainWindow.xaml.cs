@@ -459,20 +459,28 @@ namespace AnnoDesigner
             Registry.SetValue(@"HKEY_CURRENT_USER\Software\Classes\anno_designer\DefaultIcon", null, string.Format("\"{0}\",0", App.ExecutablePath));
             // registers the .ad file extension to the anno_designer class
             Registry.SetValue(@"HKEY_CURRENT_USER\Software\Classes\.ad", null, "anno_designer");
-            ShowRegistrationMessageBox();
+
+            showRegistrationMessageBox(isDeregistration: false);
         }
 
         private void MenuItemUnregisterExtensionClick(object sender, RoutedEventArgs e)
         {
-            // removes the registry entries
+            // removes the registry entries            
             Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\anno_designer");
             Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\.ad");
-            ShowRegistrationMessageBox();
+
+            showRegistrationMessageBox(isDeregistration: true);
         }
 
-        private void ShowRegistrationMessageBox()
+        private void showRegistrationMessageBox(bool isDeregistration)
         {
-            MessageBox.Show("You may need to reboot or relog for changes to take effect.", "Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+            string language = AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+            var message = isDeregistration ? AnnoDesigner.Localization.Localization.Translations[language]["UnregisterFileExtensionSuccessful"] : AnnoDesigner.Localization.Localization.Translations[language]["RegisterFileExtensionSuccessful"];
+
+            MessageBox.Show(message,
+                AnnoDesigner.Localization.Localization.Translations[language]["Successful"],
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
         }
 
         private void MenuItemHomepageClick(object sender, RoutedEventArgs e)
