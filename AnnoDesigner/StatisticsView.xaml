@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="AnnoDesigner.StatisticsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:AnnoDesigner"
+             mc:Ignorable="d"
+             d:DesignHeight="350"
+             d:DesignWidth="200"
+             Background="White">
+    <UserControl.Resources>
+        <Style x:Key="styleGroupBox"
+               TargetType="GroupBox">
+            <Setter Property="Margin"
+                    Value="0,5" />
+            <Setter Property="Padding"
+                    Value="2" />
+        </Style>
+        <Style x:Key="styleGroupEntry"
+               TargetType="TextBlock">
+            <Setter Property="Padding"
+                    Value="5,0,0,0" />
+        </Style>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Auto">
+        <StackPanel>
+            <TextBlock x:Name="tblNothingPlaced"
+                       Text="Nothing placed"
+                       Visibility="Visible" />
+
+            <GroupBox x:Name="grpBoundingBox"
+                      Header="Bounding Box"
+                      Style="{StaticResource styleGroupBox}">
+                <StackPanel>
+                    <TextBlock Text="22 x 14"
+                               Style="{StaticResource styleGroupEntry}" />
+                    <TextBlock Text="308 Tiles"
+                               Style="{StaticResource styleGroupEntry}" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox x:Name="grpMinArea"
+                      Header="Minimum Area"
+                      Style="{StaticResource styleGroupBox}">
+                <StackPanel>
+                    <TextBlock Text="48 Tiles"
+                               Style="{StaticResource styleGroupEntry}" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox x:Name="grpEfficiency"
+                      Header="Space Efficiency"
+                      Style="{StaticResource styleGroupBox}">
+                <StackPanel>
+                    <TextBlock Text="16%"
+                               Style="{StaticResource styleGroupEntry}" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox x:Name="grpBuildings"
+                      Header="Buildings"
+                      Style="{StaticResource styleGroupBox}">
+                <StackPanel>
+
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox x:Name="grpSelectedBuildings"
+                      Header="Selected Buildings"
+                      Visibility="Visible"
+                      Style="{StaticResource styleGroupBox}">
+                <StackPanel>
+
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

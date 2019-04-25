@@ -66,6 +66,9 @@
     <Compile Include="SerializableColor.cs" />
     <Compile Include="DataIO.cs" />
     <Compile Include="SerializableDictionary.cs" />
+    <Compile Include="StatisticsView.xaml.cs">
+      <DependentUpon>StatisticsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TreeViewExtensions.cs" />
     <Compile Include="UI\IconImage.xaml.cs" />
     <Compile Include="Welcome.xaml.cs">
@@ -95,6 +98,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="StatisticsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Welcome.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
