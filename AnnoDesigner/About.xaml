@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:AnnoDesigner.Localization"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
-        Title="About Anno Designer" 
-        Height="382.666" 
-        Width="572.333" 
-        Icon="/AnnoDesigner;component/icon.ico" 
+        Title="Anno Designer"
+        Height="420" 
+        Width="575" 
+        Icon="/AnnoDesigner;component/icon.ico"
         ResizeMode="NoResize" 
         KeyDown="WindowKeyDown" 
         WindowStartupLocation="CenterOwner"
@@ -20,8 +20,8 @@
             <Binding Source="{StaticResource Locale}"></Binding>
         </Grid.DataContext>
         <Grid.RowDefinitions>
-            <RowDefinition Height="223*"/>
-            <RowDefinition Height="132*"/>
+            <RowDefinition Height="240*"/>
+            <RowDefinition Height="110*"/>
         </Grid.RowDefinitions>
         <Image Source="/AnnoDesigner;component/Stuff/icon64.png" Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7,12,0,0" Height="75" Width="70" />
         <Label HorizontalAlignment="Left" Margin="82,12,0,0" VerticalAlignment="Top" FontSize="24" Content="{Binding Path=ModifiedAnnoDesigner}" />
@@ -30,11 +30,13 @@
         <!-- Can't use StringFormat with label elements -->
         <TextBlock Margin="24,120,0,0" VerticalAlignment="Top" Text="{Binding Path=OriginalApplicationBy, StringFormat=\{0\} Jan Christoph Bernack (ZackSchneider)}" />
         <TextBlock Margin="24,153,0,0" VerticalAlignment="Top"  Text="{Binding Path=CombinedForAnnoVersions, StringFormat='\{0\} Anno 1404, 2070, 2205 and 1800'}" />
-        <TextBlock Margin="24,171,0,0" VerticalAlignment="Top" Text="{Binding Path=BuildingPresets, StringFormat='\{0\} Anno 1404 by &quot;&lt;Unknown&gt;&quot; - Anno 2207 by by Peter Hozak (DeathApril)'}" />
-        <TextBlock Margin="24,189,0,0" VerticalAlignment="Top" Text="{Binding Path=BuildingPresets, StringFormat='\{0\} Anno 2205 by PickledWhispers - Anno 1800 by Sting McRay'}" />
-        <TextBlock Margin="24,2,0,0" VerticalAlignment="Top" Text="{Binding Path=AdditionalChanges, StringFormat='\{0\} made by Agmas, Sting McRay and Gosolceser1'}" Grid.Row="1" />
-        <Label Margin="0,33,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="{Binding Path=ManyThanks}" Grid.Row="1" />
-        <Label Margin="0,60,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="{Binding Path=VisitTheFandom}" Grid.Row="1" />
+        <TextBlock Margin="24,171,0,0" VerticalAlignment="Top" Text="{Binding Path=BuildingPresets, StringFormat='\{0\} Anno 1404 by &quot;&lt;Unknown&gt;&quot;'}" />
+        <TextBlock Margin="24,189,0,0" VerticalAlignment="Top" Text="{Binding Path=BuildingPresets, StringFormat='\{0\} Anno 2207 by Peter Hozak (DeathApril)'}" />
+        <TextBlock Margin="24,207,0,0" VerticalAlignment="Top" Text="{Binding Path=BuildingPresets, StringFormat='\{0\} Anno 2205 by PickledWhispers'}" />
+        <TextBlock Margin="24,225,0,0" VerticalAlignment="Top" Text="{Binding Path=BuildingPresets, StringFormat='\{0\} Anno 1800 by Sting McRay'}" />
+        <TextBlock Margin="24,2,0,0" VerticalAlignment="Top" Text="{Binding Path=AdditionalChanges, StringFormat='\{0\} Agmas, Sting McRay and Gosolceser1'}" Grid.Row="1" />
+        <Label Margin="0,30,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="{Binding Path=ManyThanks}" Grid.Row="1" />
+        <Label Margin="0,57,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="{Binding Path=VisitTheFandom}" Grid.Row="1" />
         <Button Width="117" Height="23" Margin="10,0,0,10" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="{Binding Path=OriginalHomepage}" Click="ButtonOriginalHomepageClick" Grid.Row="1"  />
         <Button Width="117" Height="23" Margin="145,0,0,10" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="{Binding Path=ProjectHomepage}" Click="ButtonProjectHomepageClick" Grid.Row="1"  />
         <Button Width="118" Height="23" Margin="278,0,145,10" VerticalAlignment="Bottom" HorizontalAlignment="Center" Content="{Binding Path=GoToFandom}" Click="ButtonWikiaClick" Grid.Row="1" />

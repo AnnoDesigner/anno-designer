@@ -770,8 +770,6 @@ namespace AnnoDesigner
         /// <param name="drawingContext">context used for rendering</param>
         protected void RenderStatistics(DrawingContext drawingContext)
         {
-            // clear background
-            var offset = RenderSize.Width - Constants.StatisticsMargin;
 
             var informationLines = new List<string>(); 
             if (!_placedObjects.Any())
