@@ -770,6 +770,20 @@ namespace AnnoDesigner
         {
             foreach (var obj in objects)
             {
+                // 1 | 2
+                // ------
+                // 3 | 4
+
+                //Quad 1 = min(x), min(y)
+                //Quad 2 = max(x), min(y)
+                //Quad 3 = min(x), max(y)
+                //Quad 4 = max(x), max(y)
+
+                //In grid references
+                var topLeftCorner = obj.Position;
+                var topRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y);
+                var bottomLeftCorner = new Point(obj.Position.X, obj.Position.Y + obj.Size.Height);
+                var bottomRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y + obj.Size.Height);
 
             }
         }
