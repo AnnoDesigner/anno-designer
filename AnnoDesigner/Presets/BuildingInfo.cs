@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Diagnostics;
+using System.Runtime.Serialization;
 using System.Windows;
 
 namespace AnnoDesigner.Presets
@@ -7,6 +8,7 @@ namespace AnnoDesigner.Presets
     /// Contains information for one building type, deserialized from presets.json.
     /// </summary>
     [DataContract]
+    [DebuggerDisplay("{Identifier}")]
     public class BuildingInfo
     {
         // technical information
