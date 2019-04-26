@@ -213,8 +213,6 @@ namespace AnnoDesigner.viewmodel
                     var building = buildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
                     if (building != null)
                     {
-                        //informationLines.AppendFormat("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]).AppendLine();
-
                         statisticBuilding.Count = item.Count();
                         statisticBuilding.Name = building.Localization[language];
                     }

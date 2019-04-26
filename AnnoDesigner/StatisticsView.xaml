@@ -76,18 +76,40 @@
                           Header="{Binding TextBuildings}"
                           Style="{StaticResource styleGroupBox}"
                           Visibility="{Binding ShowBuildingList , Converter={StaticResource boolToVisConverter}}">
-                    <StackPanel>
-
-                    </StackPanel>
+                    <ItemsControl ItemsSource="{Binding Buildings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} x {1}">
+                                            <Binding Path="Count" />
+                                            <Binding Path="Name" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </GroupBox>
 
                 <GroupBox x:Name="grpSelectedBuildings"
                           Header="{Binding TextBuildingsSelected}"
                           Style="{StaticResource styleGroupBox}"
                           Visibility="{Binding ShowBuildingList, Converter={StaticResource boolToVisConverter}}">
-                    <StackPanel>
-
-                    </StackPanel>
+                    <ItemsControl ItemsSource="{Binding SelectedBuildings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} x {1}">
+                                            <Binding Path="Count" />
+                                            <Binding Path="Name" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </GroupBox>
             </StackPanel>
         </StackPanel>
