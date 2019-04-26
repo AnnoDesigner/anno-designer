@@ -68,7 +68,12 @@ namespace AnnoDesigner
                     item.IsChecked = false;
                 }
             }
+
             Settings.Default.SelectedLanguage = SelectedLanguage;
+
+            mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
+                annoCanvas.SelectedObjects,
+                annoCanvas.BuildingPresets);
         }
 
         #region Initialization
