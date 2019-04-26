@@ -601,6 +601,11 @@ namespace AnnoDesigner.Localization
             string language = Localization.GetLanguageCodeFromName(AnnoDesigner.MainWindow.SelectedLanguage);
 
             StatisticsViewModel.TextNothingPlaced = Localization.Translations[language]["StatNothingPlaced"];
+            StatisticsViewModel.TextBoundingBox = Localization.Translations[language]["StatBoundingBox"];
+            StatisticsViewModel.TextMinimumArea = Localization.Translations[language]["StatMinimumArea"];
+            StatisticsViewModel.TextSpaceEfficiency = Localization.Translations[language]["StatSpaceEfficiency"];
+            StatisticsViewModel.TextBuildings = Localization.Translations[language]["StatBuildings"];
+            StatisticsViewModel.TextBuildingsSelected = Localization.Translations[language]["StatBuildingsSelected"];
 
             //File Menu
             File = Localization.Translations[language]["File"];

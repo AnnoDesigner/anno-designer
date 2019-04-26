@@ -14,8 +14,12 @@
         <viewmodel:StatisticsViewModel x:Name="statisticsViewModel" />
     </UserControl.DataContext>
     <UserControl.Resources>
-        <converter:BoolToVisibilityConverter x:Key="boolToVisConverter" TrueValue="Visible" FalseValue="Collapsed" />
-        <converter:BoolToVisibilityConverter x:Key="invertedBoolToVisConverter" TrueValue="Collapsed" FalseValue="Visible" />
+        <converter:BoolToVisibilityConverter x:Key="boolToVisConverter"
+                                             TrueValue="Visible"
+                                             FalseValue="Collapsed" />
+        <converter:BoolToVisibilityConverter x:Key="invertedBoolToVisConverter"
+                                             TrueValue="Collapsed"
+                                             FalseValue="Visible" />
 
         <Style x:Key="styleGroupBox"
                TargetType="GroupBox">
@@ -34,43 +38,43 @@
                   HorizontalScrollBarVisibility="Auto">
         <StackPanel>
             <TextBlock x:Name="tblNothingPlaced"
-                       Text="{Binding TextNothingPlaced}"                       
+                       Text="{Binding TextNothingPlaced}"
                        Margin="5"
                        Visibility="{Binding AreStatisticsAvailable, Converter={StaticResource invertedBoolToVisConverter}}" />
 
             <StackPanel Visibility="{Binding AreStatisticsAvailable, Converter={StaticResource boolToVisConverter}}">
                 <GroupBox x:Name="grpBoundingBox"
-                      Header="Bounding Box"
-                      Style="{StaticResource styleGroupBox}">
+                          Header="{Binding TextBoundingBox}"
+                          Style="{StaticResource styleGroupBox}">
                     <StackPanel>
                         <TextBlock Text="{Binding UsedArea}"
-                               Style="{StaticResource styleGroupEntry}" />
+                                   Style="{StaticResource styleGroupEntry}" />
                         <TextBlock Text="{Binding UsedTiles}"
-                               Style="{StaticResource styleGroupEntry}" />
+                                   Style="{StaticResource styleGroupEntry}" />
                     </StackPanel>
                 </GroupBox>
 
                 <GroupBox x:Name="grpMinArea"
-                      Header="Minimum Area"
-                      Style="{StaticResource styleGroupBox}">
+                          Header="{Binding TextMinimumArea}"
+                          Style="{StaticResource styleGroupBox}">
                     <StackPanel>
                         <TextBlock Text="{Binding MinTiles}"
-                               Style="{StaticResource styleGroupEntry}" />
+                                   Style="{StaticResource styleGroupEntry}" />
                     </StackPanel>
                 </GroupBox>
 
                 <GroupBox x:Name="grpEfficiency"
-                      Header="Space Efficiency"
-                      Style="{StaticResource styleGroupBox}">
+                          Header="{Binding TextSpaceEfficiency}"
+                          Style="{StaticResource styleGroupBox}">
                     <StackPanel>
                         <TextBlock Text="{Binding Efficiency}"
-                               Style="{StaticResource styleGroupEntry}" />
+                                   Style="{StaticResource styleGroupEntry}" />
                     </StackPanel>
                 </GroupBox>
 
                 <GroupBox x:Name="grpBuildings"
-                      Header="Buildings"
-                      Style="{StaticResource styleGroupBox}"
+                          Header="{Binding TextBuildings}"
+                          Style="{StaticResource styleGroupBox}"
                           Visibility="{Binding ShowBuildingList , Converter={StaticResource boolToVisConverter}}">
                     <StackPanel>
 
@@ -78,8 +82,8 @@
                 </GroupBox>
 
                 <GroupBox x:Name="grpSelectedBuildings"
-                      Header="Selected Buildings"                      
-                      Style="{StaticResource styleGroupBox}"
+                          Header="{Binding TextBuildingsSelected}"
+                          Style="{StaticResource styleGroupBox}"
                           Visibility="{Binding ShowBuildingList, Converter={StaticResource boolToVisConverter}}">
                     <StackPanel>
 

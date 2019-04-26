@@ -13,6 +13,12 @@ namespace AnnoDesigner.viewmodel
     public class StatisticsViewModel : Notify
     {
         private string _textNothingPlaced;
+        private string _textBoundingBox;
+        private string _textMinimumArea;
+        private string _textSpaceEfficiency;
+        private string _textBuildings;
+        private string _textBuildingsSelected;
+
         private string _usedArea;
         private string _usedTiles;
         private string _minTiles;
@@ -25,11 +31,21 @@ namespace AnnoDesigner.viewmodel
         public StatisticsViewModel()
         {
             TextNothingPlaced = "Nothing Placed";
+            TextBoundingBox = "Bounding Box";
+            TextMinimumArea = "Minimum Area";
+            TextSpaceEfficiency = "Space Efficiency";
+            TextBuildings = "Buildings";
+            TextBuildingsSelected = "Buildings Selected";
+
             UsedArea = "12x4";
             UsedTiles = "308 Tiles";
             MinTiles = "48 Tiles";
             Efficiency = "16%";
-            AreStatisticsAvailable = false;
+            AreStatisticsAvailable = true;
+
+            ShowBuildingList = true;
+            Buildings = new ObservableCollection<StatisticsBuilding>();
+            SelectedBuildings = new ObservableCollection<StatisticsBuilding>();
         }
 
         #region localization
@@ -38,6 +54,51 @@ namespace AnnoDesigner.viewmodel
         {
             get { return _textNothingPlaced; }
             set { UpdateProperty(ref _textNothingPlaced, value); }
+        }
+
+        public string TextBoundingBox
+        {
+            get { return _textBoundingBox; }
+            set
+            {
+                UpdateProperty(ref _textBoundingBox, value);
+            }
+        }
+
+        public string TextMinimumArea
+        {
+            get { return _textMinimumArea; }
+            set
+            {
+                UpdateProperty(ref _textMinimumArea, value);
+            }
+        }
+
+        public string TextSpaceEfficiency
+        {
+            get { return _textSpaceEfficiency; }
+            set
+            {
+                UpdateProperty(ref _textSpaceEfficiency, value);
+            }
+        }
+
+        public string TextBuildings
+        {
+            get { return _textBuildings; }
+            set
+            {
+                UpdateProperty(ref _textBuildings, value);
+            }
+        }
+
+        public string TextBuildingsSelected
+        {
+            get { return _textBuildingsSelected; }
+            set
+            {
+                UpdateProperty(ref _textBuildingsSelected, value);
+            }
         }
 
         #endregion
