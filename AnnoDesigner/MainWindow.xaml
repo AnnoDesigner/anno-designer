@@ -47,8 +47,6 @@
             <ColumnDefinition Width="*"
                               MinWidth="100" />
             <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="5" />
             <ColumnDefinition Width="Auto"
                               MinWidth="100" />
         </Grid.ColumnDefinitions>
@@ -201,34 +199,43 @@
                       TabIndex="28" />
         </Menu>
 
-        <my:AnnoCanvas x:Name="annoCanvas"
-                       Grid.Row="1"
-                       Grid.Column="0"
-                       Grid.ColumnSpan="2"
-                       RenderGrid="True"
-                       RenderIcon="True"
-                       RenderLabel="True" />
+        <Grid x:Name="gridMain"
+              Grid.Row="1"
+              Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"
+                                  MinWidth="100" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="Auto"
+                                  MinWidth="100" />
+            </Grid.ColumnDefinitions>
 
-        <GridSplitter x:Name="splitterStatisticsView"
-                      Grid.Row="1"
+            <my:AnnoCanvas x:Name="annoCanvas"
+                           Grid.Column="0"
+                           RenderGrid="True"
+                           RenderIcon="True"
+                           RenderLabel="True" />
+
+            <GridSplitter x:Name="splitterStatisticsView"
+                          Grid.Column="1"
+                          Width="5"
+                          VerticalAlignment="Stretch"
+                          HorizontalAlignment="Center" />
+
+            <my:StatisticsView x:Name="statisticsView"
+                               Grid.Column="2"
+                               DataContext="{Binding StatisticsViewModel}">
+            </my:StatisticsView>
+
+        </Grid>
+
+        <GridSplitter Grid.Row="1"
                       Grid.Column="1"
                       Width="5"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Center" />
 
-        <my:StatisticsView x:Name="statisticsView"
-                           Grid.Row="1"
-                           Grid.Column="2"
-                           DataContext="{Binding StatisticsViewModel}">
-        </my:StatisticsView>
-
-        <GridSplitter Grid.Row="1"
-                      Grid.Column="3"
-                      Width="5"
-                      VerticalAlignment="Stretch"
-                      HorizontalAlignment="Center" />
-
-        <DockPanel Grid.Column="4"
+        <DockPanel Grid.Column="2"
                    Grid.Row="1"
                    LastChildFill="True">
             <GroupBox Header="{Binding Path=BuildingSettings}"
