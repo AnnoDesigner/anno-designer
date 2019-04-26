@@ -109,6 +109,7 @@ namespace AnnoDesigner
             //Localization = obj.Localization;
             Icon = obj.Icon;
             Radius = obj.Radius;
+            InfluenceRange = obj.InfluenceRange;
             Borderless = obj.Borderless;
             Road = obj.Road;
             // note: this is not really a copy, just a reference, but it is not supposed to change anyway
