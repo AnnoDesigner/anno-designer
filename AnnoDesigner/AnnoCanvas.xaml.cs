@@ -546,6 +546,7 @@ namespace AnnoDesigner
             // draw placed objects
             RenderObject(drawingContext, _placedObjects);
             RenderObjectInfluenceRadius(drawingContext, _selectedObjects);
+            RenderObjectInfluenceRange(drawingContext, _selectedObjects);
             _selectedObjects.ForEach(_ => RenderObjectSelection(drawingContext, _));
 
             if (CurrentObjects.Count == 0)
