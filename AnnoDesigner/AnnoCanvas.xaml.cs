@@ -1151,6 +1151,8 @@ namespace AnnoDesigner
                     // adjust the drag start to compensate the amount we already moved
                     _mouseDragStart.X += GridToScreen(dx);
                     _mouseDragStart.Y += GridToScreen(dy);
+
+                    UpdateStatistics?.Invoke(this, EventArgs.Empty);
                 }
             }
             else if (e.LeftButton == MouseButtonState.Pressed)
@@ -1179,6 +1181,8 @@ namespace AnnoDesigner
                             _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                             // select intersecting objects
                             _selectedObjects.AddRange(_placedObjects.FindAll(_ => GetObjectScreenRect(_).IntersectsWith(_selectionRect)));
+
+                            UpdateStatistics?.Invoke(this, EventArgs.Empty);
                             break;
                         case MouseMode.DragSelection:
                             // move all selected objects
@@ -1187,6 +1191,7 @@ namespace AnnoDesigner
                             // check if the mouse has moved at least one grid cell in any direction
                             if (dx == 0 && dy == 0)
                             {
+                                UpdateStatistics?.Invoke(this, EventArgs.Empty);
                                 break;
                             }
                             var unselected = _placedObjects.FindAll(_ => !_selectedObjects.Contains(_));
@@ -1219,6 +1224,8 @@ namespace AnnoDesigner
                                 _mouseDragStart.X += GridToScreen(dx);
                                 _mouseDragStart.Y += GridToScreen(dy);
                             }
+
+                            UpdateStatistics?.Invoke(this, EventArgs.Empty);
                             break;
                     }
                 }
@@ -1263,6 +1270,8 @@ namespace AnnoDesigner
                                 _selectedObjects.Add(obj);
                             }
                         }
+
+                        UpdateStatistics?.Invoke(this, EventArgs.Empty);
                         // return to standard mode, i.e. clear any drag-start modes
                         CurrentMode = MouseMode.Standard;
                         break;
@@ -1304,6 +1313,8 @@ namespace AnnoDesigner
                             // cancel placement of object
                             CurrentObjects.Clear();
                         }
+
+                        UpdateStatistics?.Invoke(this, EventArgs.Empty);
                         break;
                 }
             }
