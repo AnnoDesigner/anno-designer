@@ -741,48 +741,130 @@ namespace AnnoDesigner
 
                 if (obj.Radius >= 0.5)
                 {
-                // highlight buildings within influence
-                var radius = GridToScreen(obj.Radius);
-                var circle = new EllipseGeometry(GetCenterPoint(GetObjectScreenRect(obj)), radius, radius);
-                circle.Freeze();
-                foreach (var o in _placedObjects)
-                {
-                    var oRect = GetObjectScreenRect(o);
-                    var distance = GetCenterPoint(oRect);
-                    distance.X -= circle.Center.X;
-                    distance.Y -= circle.Center.Y;
-                    // check if the center is within the influence circle
-                    if (distance.X * distance.X + distance.Y * distance.Y <= radius * radius)
+                    // highlight buildings within influence
+                    var radius = GridToScreen(obj.Radius);
+                    var circle = new EllipseGeometry(GetCenterPoint(GetObjectScreenRect(obj)), radius, radius);
+                    circle.Freeze();
+                    foreach (var o in _placedObjects)
                     {
-                        drawingContext.DrawRectangle(_influencedBrush, _influencedPen, oRect);
+                        var oRect = GetObjectScreenRect(o);
+                        var distance = GetCenterPoint(oRect);
+                        distance.X -= circle.Center.X;
+                        distance.Y -= circle.Center.Y;
+                        // check if the center is within the influence circle
+                        if (distance.X * distance.X + distance.Y * distance.Y <= radius * radius)
+                        {
+                            drawingContext.DrawRectangle(_influencedBrush, _influencedPen, oRect);
+                        }
+                        //o.Label = (Math.Sqrt(distance.X*distance.X + distance.Y*distance.Y) - Math.Sqrt(radius*radius)).ToString();
                     }
-                    //o.Label = (Math.Sqrt(distance.X*distance.X + distance.Y*distance.Y) - Math.Sqrt(radius*radius)).ToString();
-                }
-                // draw circle
-                drawingContext.DrawGeometry(_lightBrush, _radiusPen, circle);
+                    // draw circle
+                    drawingContext.DrawGeometry(_lightBrush, _radiusPen, circle);
                 }
             }
         }
 
+        public static bool showBoxTempVariablePleaseDelete = false;
+
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<AnnoObject> objects)
         {
+
             foreach (var obj in objects)
             {
-                // 1 | 2
-                // ------
-                // 3 | 4
+                if (obj.InfluenceRange > 0.5)
+                {   
+                    // Start      vvv
+                    //  +-------> --> -------+
+                    //  |                    |
+                    //  |    +---+--+---+    |
+                    //  |    |   |  |   |    |
+                    //  |    | 1 |  | 2 |    |
+                    //  |    |   |  |   |    v
+                    //  ^    +----------+    |
+                    //  |    |   |  |   |    |
+                    //  |    +----------+    v
+                    //  ^    |   |  |   |    |
+                    //  |    | 4 |  | 3 |    |
+                    //  |    |   |  |   |    |
+                    //  |    +---+--+---+    |
+                    //  |                    |
+                    //  +------- <--- <------+
 
-                //Quad 1 = min(x), min(y)
-                //Quad 2 = max(x), min(y)
-                //Quad 3 = min(x), max(y)
-                //Quad 4 = max(x), max(y)
 
-                //In grid references
-                var topLeftCorner = obj.Position;
-                var topRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y);
-                var bottomLeftCorner = new Point(obj.Position.X, obj.Position.Y + obj.Size.Height);
-                var bottomRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y + obj.Size.Height);
 
+                                        //Quad 1 = min(x), min(y)
+                                        //Quad 2 = max(x), min(y)
+                                        //Quad 3 = min(x), max(y)
+                                        //Quad 4 = max(x), max(y)
+
+                                        //In grid references
+                                        var topLeftCorner = obj.Position;
+                    var topRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y);
+                    var bottomLeftCorner = new Point(obj.Position.X, obj.Position.Y + obj.Size.Height);
+                    var bottomRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y + obj.Size.Height);
+
+                    //tweak this to cache the derived geometry so we don't re-compute every single frame - we need some kind of
+                    //composite key dictionary, that uses range, width and height as a key.
+                    //Store as a list of points and use PolyLineTo
+
+                    //https://stackoverflow.com/questions/2877660/composite-key-dictionary
+                    //Use Tuples!!
+
+                    var influenceRange = obj.InfluenceRange;
+
+                    if (!showBoxTempVariablePleaseDelete)
+                    {
+                        MessageBox.Show("InfluenceRange drawing is not optimised yet - see comments");
+                    }
+
+                    var sg = new StreamGeometry();
+
+                    var startPoint = new Point(topLeftCorner.X, topLeftCorner.Y + influenceRange);
+                    var stroked = true;
+                    var smoothJoin = true;
+                    using (StreamGeometryContext sgc = sg.Open())
+                    {
+                        sgc.BeginFigure(GridToScreen(startPoint), false, true);
+
+                       
+                        //Draw in width of object
+                        sgc.LineTo(GridToScreen(new Point(topRightCorner.X, startPoint.Y)), stroked, smoothJoin);
+
+                        //Draw quadrant 2
+                        //Get end value to draw from top-right of 2nd quadrant to bottom-right of 2nd quadrant
+                        startPoint = new Point(topRightCorner.X, topRightCorner.Y + influenceRange);
+                        var endPoint = new Point(topRightCorner.X + influenceRange, topRightCorner.Y);
+                        
+                        //Following the rules for quadrant 2 - go right and down
+                        var currentPoint = new Point(startPoint.X + 1, startPoint.Y - 1);
+                        while (endPoint != currentPoint)
+                        {
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            currentPoint = new Point(currentPoint.X + 1, currentPoint.Y - 1);
+                        }
+
+                        startPoint = endPoint;
+                        //Draw in height of object
+                        sgc.LineTo(GridToScreen(new Point(startPoint.X, bottomLeftCorner.Y)), stroked, smoothJoin);
+
+                        //Draw quadrant 3
+                        //Get end value to draw from top-left of 3rd quadrant to bottom-left of 3rd quadrant
+                        //Move startPoint to bottomLeftCorner (x value is already correct)
+                        startPoint = new Point(startPoint.X,  bottomLeftCorner.Y);
+                        endPoint = new Point(bottomLeftCorner.X, bottomLeftCorner.Y + influenceRange);
+
+                        //Following the rules for quadrant 3 - go left and down
+                        currentPoint = new Point(startPoint.X -1, startPoint.Y - 1);
+                        while (endPoint != currentPoint)
+                        {
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            currentPoint = new Point(currentPoint.X + 1, currentPoint.Y - 1);
+                        }
+
+
+
+                    }
+                }
             }
         }
 

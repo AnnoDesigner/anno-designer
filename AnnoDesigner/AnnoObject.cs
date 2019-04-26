@@ -68,6 +68,12 @@ namespace AnnoDesigner
         public double Radius;
 
         /// <summary>
+        /// Influence range in grid units
+        /// </summary>
+        [DataMember]
+        public double InfluenceRange;
+
+        /// <summary>
         /// Indicates whether the border should be omitted.
         /// </summary>
         [DataMember]
