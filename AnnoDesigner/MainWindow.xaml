@@ -1,7 +1,7 @@
 ﻿<Window x:Class="AnnoDesigner.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:my="clr-namespace:AnnoDesigner"
         xmlns:myUI="clr-namespace:AnnoDesigner.UI"
         xmlns:l="clr-namespace:AnnoDesigner.Localization"
@@ -131,7 +131,18 @@
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="26">
                         <Label Content="{Binding Path=Color}" />
-                        <extToolkit:ColorPicker DisplayColorAndName="True" DockPanel.Dock="Right" Name="colorPicker" SelectedColor="Red" ShowAvailableColors="True" ShowRecentColors="False" StandardColorsHeader="Standard Color Presets" Width="140" TabIndex="2" />
+                        <xctk:ColorPicker x:Name="colorPicker"
+                                          DockPanel.Dock="Right"
+                                          Width="140"
+                                          TabIndex="2"
+                                          DisplayColorAndName="True"
+                                          DisplayColorTooltip="True"
+                                          ShowDropDownButton="True"
+                                          ShowAvailableColors="True"
+                                          ShowRecentColors="True"
+                                          AvailableColorsSortingMode="HueSaturationBrightness"
+                                          StandardColorsHeader="Standard Color Presets"
+                                          SelectedColor="Red"/>
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="26">
                         <Label Content="{Binding Path=Label}" />
