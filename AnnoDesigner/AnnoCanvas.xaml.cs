@@ -546,7 +546,6 @@ namespace AnnoDesigner
             // draw placed objects
             RenderObject(drawingContext, _placedObjects);
             RenderObjectInfluenceRadius(drawingContext, _selectedObjects);
-            RenderObjectInfluenceRange(drawingContext, _currentObjects);
             _selectedObjects.ForEach(_ => RenderObjectSelection(drawingContext, _));
 
             if (CurrentObjects.Count == 0)
@@ -566,6 +565,8 @@ namespace AnnoDesigner
                     MoveCurrentObjectsToMouse();
                     // draw influence radius
                     RenderObjectInfluenceRadius(drawingContext, CurrentObjects);
+                    // draw influence range
+                    RenderObjectInfluenceRange(drawingContext, _currentObjects);
                     // draw with transparency
                     CurrentObjects.ForEach(_ => _.Color.A = 128);
                     RenderObject(drawingContext, CurrentObjects);
@@ -812,12 +813,16 @@ namespace AnnoDesigner
 
                     var sg = new StreamGeometry();
 
-                    var startPoint = new Point(topLeftCorner.X, topLeftCorner.Y + influenceRange);
+                    var startPoint = new Point(topLeftCorner.X, topLeftCorner.Y - influenceRange);
                     var stroked = true;
                     var smoothJoin = true;
+
+                    var geometryFill = true;
+                    var geometryStroke = true;
+
                     using (StreamGeometryContext sgc = sg.Open())
                     {
-                        sgc.BeginFigure(GridToScreen(startPoint), false, true);
+                        sgc.BeginFigure(GridToScreen(startPoint), geometryFill, geometryStroke);
 
                         ////////////////////////////////////////////////////////////////
                         //Draw in width of object
@@ -825,53 +830,59 @@ namespace AnnoDesigner
 
                         //Draw quadrant 2
                         //Get end value to draw from top-right of 2nd quadrant to bottom-right of 2nd quadrant
-                        startPoint = new Point(topRightCorner.X, topRightCorner.Y + influenceRange);
+                        startPoint = new Point(topRightCorner.X, topRightCorner.Y - influenceRange);
                         var endPoint = new Point(topRightCorner.X + influenceRange, topRightCorner.Y);
 
                         //Following the rules for quadrant 2 - go right and down
-                        var currentPoint = new Point(startPoint.X + 1, startPoint.Y - 1);
+                        var currentPoint = new Point(startPoint.X, startPoint.Y);
                         while (endPoint != currentPoint)
                         {
+                            currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
                             sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
-                            currentPoint = new Point(currentPoint.X + 1, currentPoint.Y - 1);
+                            currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
                         }
 
                         ////////////////////////////////////////////////////////////////
                         startPoint = endPoint;
                         //Draw in height of object
-                        sgc.LineTo(GridToScreen(new Point(startPoint.X, bottomLeftCorner.Y)), stroked, smoothJoin);
+                        sgc.LineTo(GridToScreen(new Point(startPoint.X, bottomRightCorner.Y)), stroked, smoothJoin);
 
                         //Draw quadrant 3
                         //Get end value to draw from top-left of 3rd quadrant to bottom-left of 3rd quadrant
                         //Move startPoint to bottomLeftCorner (x value is already correct)
-                        startPoint = new Point(startPoint.X, bottomLeftCorner.Y);
-                        endPoint = new Point(bottomLeftCorner.X, bottomLeftCorner.Y + influenceRange);
+                        startPoint = new Point(startPoint.X, bottomRightCorner.Y);
+                        endPoint = new Point(bottomRightCorner.X, bottomRightCorner.Y + influenceRange);
 
                         //Following the rules for quadrant 3 - go left and down
-                        currentPoint = new Point(startPoint.X - 1, startPoint.Y - 1);
+                        currentPoint = new Point(startPoint.X, startPoint.Y);
                         while (endPoint != currentPoint)
                         {
+                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
                             sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
-                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y - 1);
+                            currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
                         }
 
                         ////////////////////////////////////////////////////////////////
                         startPoint = endPoint;
                         //Draw in width of object
-                        sgc.LineTo(GridToScreen(new Point(bottomRightCorner.X, startPoint.Y)), stroked, smoothJoin);
+                        sgc.LineTo(GridToScreen(new Point(bottomLeftCorner.X, startPoint.Y)), stroked, smoothJoin);
 
                         //Draw quadrant 4
                         //Get end value to draw from bottom-right of 4th quadrant to top-left of 4th quadrant
                         //Move startPoint to bottomRightCorner (y value is already correct)
-                        startPoint = new Point(bottomRightCorner.X, startPoint.Y);
-                        endPoint = new Point(bottomRightCorner.X + influenceRange, bottomRightCorner.Y);
+                        startPoint = new Point(bottomLeftCorner.X, startPoint.Y);
+                        endPoint = new Point(bottomLeftCorner.X - influenceRange, bottomRightCorner.Y);
 
                         //Following the rules for quadrant 4 - go up and left
-                        currentPoint = new Point(startPoint.X - 1, startPoint.Y + 1);
+                        currentPoint = new Point(startPoint.X, startPoint.Y);
                         while (endPoint != currentPoint)
                         {
+                            currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
                             sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
-                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y + 1);
+                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
                         }
 
                         ////////////////////////////////////////////////////////////////
@@ -883,20 +894,22 @@ namespace AnnoDesigner
                         //Get end value to draw from bottom-left of 1st quadrant to top-right of 1st quadrant
                         //Move startPoint to topLeftCorner (x value is already correct)
                         startPoint = new Point(startPoint.X, topLeftCorner.Y);
-                        endPoint = new Point(topLeftCorner.X, topLeftCorner.Y + influenceRange);
+                        endPoint = new Point(topLeftCorner.X, topLeftCorner.Y - influenceRange);
 
                         //Following the rules for quadrant 1 - go up and right
-                        currentPoint = new Point(startPoint.X - 1, startPoint.Y + 1);
+                        currentPoint = new Point(startPoint.X, startPoint.Y);
                         while (endPoint != currentPoint)
                         {
+                            currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
                             sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
-                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y + 1);
+                            currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
                         }
 
                         //Shape should be complete by this point.
                     }
                     sg.Freeze();
-                    drawingContext.DrawGeometry(Brushes.Black, new Pen(Brushes.Black, 2), sg);
+                    drawingContext.DrawGeometry(_lightBrush, _radiusPen, sg);
                 }
             }
         }
