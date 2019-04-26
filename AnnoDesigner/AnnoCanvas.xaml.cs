@@ -770,11 +770,12 @@ namespace AnnoDesigner
         /// <param name="drawingContext">context used for rendering</param>
         protected void RenderStatistics(DrawingContext drawingContext)
         {
-
+            var language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
             var informationLines = new StringBuilder(128 * 2);//16=minimum; 127=empty box
+
             if (!_placedObjects.Any())
             {
-                informationLines.AppendLine("Nothing placed");
+                informationLines.AppendLine(Localization.Localization.Translations[language]["StatNothingPlaced"]);
             }
             else
             {
@@ -785,14 +786,14 @@ namespace AnnoDesigner
                 var minTiles = _placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
 
                 // format lines
-                informationLines.AppendLine("Bounding Box");
+                informationLines.AppendLine(Localization.Localization.Translations[language]["StatBoundingBox"]);
                 informationLines.AppendFormat(" {0}x{1}", boxX, boxY).AppendLine();
                 informationLines.AppendFormat(" {0} Tiles", boxX * boxY).AppendLine();
                 informationLines.AppendLine("");
-                informationLines.AppendLine("Minimum Area");
+                informationLines.AppendLine(Localization.Localization.Translations[language]["StatMinimumArea"]);
                 informationLines.AppendFormat(" {0} Tiles", minTiles).AppendLine();
                 informationLines.AppendLine("");
-                informationLines.AppendLine("Space efficiency");
+                informationLines.AppendLine(Localization.Localization.Translations[language]["StatSpaceEfficiency"]);
                 informationLines.AppendFormat(" {0}%", Math.Round(minTiles / boxX / boxY * 100)).AppendLine();
 
                 if (_renderBuildingCount)
@@ -802,14 +803,15 @@ namespace AnnoDesigner
                     IEnumerable<IGrouping<string, AnnoObject>> groupedBuildings;
                     if (_selectedObjects.Count > 0)
                     {
-                        informationLines.AppendLine("Buildings Selected");
+                        informationLines.AppendLine(Localization.Localization.Translations[language]["StatBuildingsSelected"]);
                         groupedBuildings = _selectedObjects.GroupBy(_ => _.Identifier);
                     }
                     else
                     {
-                        informationLines.AppendLine("Buildings");
+                        informationLines.AppendLine(Localization.Localization.Translations[language]["StatBuildings"]);
                         groupedBuildings = _placedObjects.GroupBy(_ => _.Identifier);
                     }
+
                     foreach (var item in groupedBuildings
                         .Where(_ => !_.ElementAt(0).Road && _.ElementAt(0).Identifier != null)
                         .OrderByDescending(_ => _.Count()))
@@ -819,7 +821,7 @@ namespace AnnoDesigner
                             var building = BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
                             if (building != null)
                             {
-                                informationLines.AppendFormat("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]).AppendLine();
+                                informationLines.AppendFormat("{0} x {1}", item.Count(), building.Localization[language]).AppendLine();
                             }
                             else
                             {
