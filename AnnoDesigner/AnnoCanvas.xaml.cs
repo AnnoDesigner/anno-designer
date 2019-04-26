@@ -546,6 +546,7 @@ namespace AnnoDesigner
             // draw placed objects
             RenderObject(drawingContext, _placedObjects);
             RenderObjectInfluenceRadius(drawingContext, _selectedObjects);
+            RenderObjectInfluenceRange(drawingContext, _currentObjects);
             _selectedObjects.ForEach(_ => RenderObjectSelection(drawingContext, _));
 
             if (CurrentObjects.Count == 0)
@@ -768,12 +769,12 @@ namespace AnnoDesigner
 
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<AnnoObject> objects)
         {
-
+            
             foreach (var obj in objects)
             {
                 if (obj.InfluenceRange > 0.5)
-                {   
-                    // Start      vvv
+                {
+                    //Start here: V
                     //  +-------> --> -------+
                     //  |                    |
                     //  |    +---+--+---+    |
@@ -790,15 +791,13 @@ namespace AnnoDesigner
                     //  |                    |
                     //  +------- <--- <------+
 
+                    //Quadrant 1 = min(x), min(y)
+                    //Quadrant 2 = max(x), min(y)
+                    //Quadrant 3 = min(x), max(y)
+                    //Quadrant 4 = max(x), max(y)
 
-
-                                        //Quad 1 = min(x), min(y)
-                                        //Quad 2 = max(x), min(y)
-                                        //Quad 3 = min(x), max(y)
-                                        //Quad 4 = max(x), max(y)
-
-                                        //In grid references
-                                        var topLeftCorner = obj.Position;
+                    //In grid references
+                    var topLeftCorner = obj.Position;
                     var topRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y);
                     var bottomLeftCorner = new Point(obj.Position.X, obj.Position.Y + obj.Size.Height);
                     var bottomRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y + obj.Size.Height);
@@ -826,7 +825,7 @@ namespace AnnoDesigner
                     {
                         sgc.BeginFigure(GridToScreen(startPoint), false, true);
 
-                       
+                        ////////////////////////////////////////////////////////////////
                         //Draw in width of object
                         sgc.LineTo(GridToScreen(new Point(topRightCorner.X, startPoint.Y)), stroked, smoothJoin);
 
@@ -834,7 +833,7 @@ namespace AnnoDesigner
                         //Get end value to draw from top-right of 2nd quadrant to bottom-right of 2nd quadrant
                         startPoint = new Point(topRightCorner.X, topRightCorner.Y + influenceRange);
                         var endPoint = new Point(topRightCorner.X + influenceRange, topRightCorner.Y);
-                        
+
                         //Following the rules for quadrant 2 - go right and down
                         var currentPoint = new Point(startPoint.X + 1, startPoint.Y - 1);
                         while (endPoint != currentPoint)
@@ -843,6 +842,7 @@ namespace AnnoDesigner
                             currentPoint = new Point(currentPoint.X + 1, currentPoint.Y - 1);
                         }
 
+                        ////////////////////////////////////////////////////////////////
                         startPoint = endPoint;
                         //Draw in height of object
                         sgc.LineTo(GridToScreen(new Point(startPoint.X, bottomLeftCorner.Y)), stroked, smoothJoin);
@@ -850,20 +850,59 @@ namespace AnnoDesigner
                         //Draw quadrant 3
                         //Get end value to draw from top-left of 3rd quadrant to bottom-left of 3rd quadrant
                         //Move startPoint to bottomLeftCorner (x value is already correct)
-                        startPoint = new Point(startPoint.X,  bottomLeftCorner.Y);
+                        startPoint = new Point(startPoint.X, bottomLeftCorner.Y);
                         endPoint = new Point(bottomLeftCorner.X, bottomLeftCorner.Y + influenceRange);
 
                         //Following the rules for quadrant 3 - go left and down
-                        currentPoint = new Point(startPoint.X -1, startPoint.Y - 1);
+                        currentPoint = new Point(startPoint.X - 1, startPoint.Y - 1);
                         while (endPoint != currentPoint)
                         {
                             sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
-                            currentPoint = new Point(currentPoint.X + 1, currentPoint.Y - 1);
+                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y - 1);
                         }
 
+                        ////////////////////////////////////////////////////////////////
+                        startPoint = endPoint;
+                        //Draw in width of object
+                        sgc.LineTo(GridToScreen(new Point(bottomRightCorner.X, startPoint.Y)), stroked, smoothJoin);
 
+                        //Draw quadrant 4
+                        //Get end value to draw from bottom-right of 4th quadrant to top-left of 4th quadrant
+                        //Move startPoint to bottomRightCorner (y value is already correct)
+                        startPoint = new Point(bottomRightCorner.X, startPoint.Y);
+                        endPoint = new Point(bottomRightCorner.X + influenceRange, bottomRightCorner.Y);
 
+                        //Following the rules for quadrant 4 - go up and left
+                        currentPoint = new Point(startPoint.X - 1, startPoint.Y + 1);
+                        while (endPoint != currentPoint)
+                        {
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y + 1);
+                        }
+
+                        ////////////////////////////////////////////////////////////////
+                        startPoint = endPoint;
+                        //Draw in height of object
+                        sgc.LineTo(GridToScreen(new Point(startPoint.X, topLeftCorner.Y)), stroked, smoothJoin);
+
+                        //Draw quadrant 1
+                        //Get end value to draw from bottom-left of 1st quadrant to top-right of 1st quadrant
+                        //Move startPoint to topLeftCorner (x value is already correct)
+                        startPoint = new Point(startPoint.X, topLeftCorner.Y);
+                        endPoint = new Point(topLeftCorner.X, topLeftCorner.Y + influenceRange);
+
+                        //Following the rules for quadrant 1 - go up and right
+                        currentPoint = new Point(startPoint.X - 1, startPoint.Y + 1);
+                        while (endPoint != currentPoint)
+                        {
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y + 1);
+                        }
+
+                        //Shape should be complete by this point.
                     }
+                    sg.Freeze();
+                    drawingContext.DrawGeometry(Brushes.Black, new Pen(Brushes.Black, 2), sg);
                 }
             }
         }
