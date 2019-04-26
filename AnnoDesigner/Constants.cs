@@ -24,12 +24,12 @@ namespace AnnoDesigner
         /// Json encoded file containing the color presets.
         /// </summary>
         public const string ColorPresetsFile = "colors.json";
-        
+
         /// <summary>
         /// Json encoded file containing the building presets.
         /// </summary>
         public const string BuildingPresetsFile = "presets.json";
-        
+
         /// <summary>
         /// Json encoded file containing the localized names for the icons
         /// </summary>
@@ -49,11 +49,6 @@ namespace AnnoDesigner
         /// The default grid size.
         /// </summary>
         public const int GridStepDefault = 20;
-
-        /// <summary>
-        /// Defines the margin in pixels on the right side of the layout which is used to render the statistics
-        /// </summary>
-        public const int StatisticsMargin = 142;
 
         /// <summary>
         /// The value that affects the rendering sizes of icons on the anno canvas. 1 produces an icon of the biggest size.

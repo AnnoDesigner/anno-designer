@@ -117,7 +117,6 @@ namespace AnnoDesigner
         {
             mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
                 annoCanvas.SelectedObjects,
-                annoCanvas.RenderBuildingCount,
                 annoCanvas.BuildingPresets);
         }
 
@@ -126,8 +125,8 @@ namespace AnnoDesigner
             annoCanvas.RenderGrid = Settings.Default.ShowGrid;
             annoCanvas.RenderIcon = Settings.Default.ShowIcons;
             annoCanvas.RenderLabel = Settings.Default.ShowLabels;
-            annoCanvas.RenderStats = Settings.Default.StatsShowStats;
-            annoCanvas.RenderBuildingCount = Settings.Default.StatsShowBuildingCount;
+            toggleStatisticsView(Settings.Default.StatsShowStats);
+            toggleBuildingList(Settings.Default.StatsShowBuildingCount);
             AutomaticUpdateCheck.IsChecked = Settings.Default.EnableAutomaticUpdateCheck;
             ShowGrid.IsChecked = Settings.Default.ShowGrid;
             ShowIcons.IsChecked = Settings.Default.ShowIcons;
@@ -432,12 +431,25 @@ namespace AnnoDesigner
 
         private void MenuItemStatsShowStatsClick(object sender, RoutedEventArgs e)
         {
-            annoCanvas.RenderStats = ((MenuItem)sender).IsChecked;
+            toggleStatisticsView(((MenuItem)sender).IsChecked);
+        }
+
+        private void toggleStatisticsView(bool showStatisticsView)
+        {
+            statisticsView.Visibility = showStatisticsView ? Visibility.Visible : Visibility.Collapsed;
+            statisticsView.MinWidth = showStatisticsView ? 100 : 0;
+
+            splitterStatisticsView.Visibility = showStatisticsView ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void MenuItemStatsBuildingCountClick(object sender, RoutedEventArgs e)
         {
-            annoCanvas.RenderBuildingCount = ((MenuItem)sender).IsChecked;
+            toggleBuildingList(((MenuItem)sender).IsChecked);
+        }
+
+        private void toggleBuildingList(bool showBuildingList)
+        {
+            mainWindowLocalization.StatisticsViewModel.ShowBuildingList = showBuildingList;
         }
 
         private void MenuItemVersionCheckImageClick(object sender, RoutedEventArgs e)

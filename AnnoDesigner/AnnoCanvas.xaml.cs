@@ -138,51 +138,6 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Backing field of the RenderStats property.
-        /// </summary>
-        private bool _renderStats;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the calculated statistics of the layout should be rendered.
-        /// </summary>
-        public bool RenderStats
-        {
-            get
-            {
-                return _renderStats;
-            }
-            set
-            {
-                if (_renderStats != value)
-                {
-                    InvalidateVisual();
-                }
-                _renderStats = value;
-            }
-        }
-
-        private bool _renderBuildingCount = false;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the calculated building statistics of the layout should be rendered.
-        /// </summary>
-        public bool RenderBuildingCount
-        {
-            get
-            {
-                return _renderBuildingCount;
-            }
-            set
-            {
-                if (_renderBuildingCount != value)
-                {
-                    InvalidateVisual();
-                }
-                _renderBuildingCount = value;
-            }
-        }
-
-        /// <summary>
         /// Backing field of the CurrentObject property
         /// </summary>
         private List<AnnoObject> _currentObjects = new List<AnnoObject>();
@@ -524,12 +479,6 @@ namespace AnnoDesigner
             var width = RenderSize.Width;
             var height = RenderSize.Height;
 
-            // apply offset when rendering statistics
-            if (RenderStats)
-            {
-                width -= Constants.StatisticsMargin;
-            }
-
             // draw background
             drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(new Point(), RenderSize));
 
@@ -582,12 +531,6 @@ namespace AnnoDesigner
             if (CurrentMode == MouseMode.SelectionRect)
             {
                 drawingContext.DrawRectangle(_lightBrush, _highlightPen, _selectionRect);
-            }
-
-            // draw additional information
-            if (RenderStats)
-            {
-                RenderStatistics(drawingContext);
             }
 
             // pop back guidlines set
@@ -768,90 +711,6 @@ namespace AnnoDesigner
                     drawingContext.DrawGeometry(_lightBrush, _radiusPen, circle);
                 }
             }
-        }
-
-        /// <summary>
-        /// Renders calculated statistics of the current layout like the bounding box and space efficiency
-        /// </summary>
-        /// <param name="drawingContext">context used for rendering</param>
-        protected void RenderStatistics(DrawingContext drawingContext)
-        {
-
-            var informationLines = new StringBuilder(128 * 2);//16=minimum; 127=empty box
-            if (!_placedObjects.Any())
-            {
-                informationLines.AppendLine("Nothing placed");
-            }
-            else
-            {
-                // calculate bouding box
-                var boxX = _placedObjects.Max(_ => _.Position.X + _.Size.Width) - _placedObjects.Min(_ => _.Position.X);
-                var boxY = _placedObjects.Max(_ => _.Position.Y + _.Size.Height) - _placedObjects.Min(_ => _.Position.Y);
-                // calculate area of all buildings
-                var minTiles = _placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
-
-                // format lines
-                informationLines.AppendLine("Bounding Box");
-                informationLines.AppendFormat(" {0}x{1}", boxX, boxY).AppendLine();
-                informationLines.AppendFormat(" {0} Tiles", boxX * boxY).AppendLine();
-                informationLines.AppendLine("");
-                informationLines.AppendLine("Minimum Area");
-                informationLines.AppendFormat(" {0} Tiles", minTiles).AppendLine();
-                informationLines.AppendLine("");
-                informationLines.AppendLine("Space efficiency");
-                informationLines.AppendFormat(" {0}%", Math.Round(minTiles / boxX / boxY * 100)).AppendLine();
-
-                if (_renderBuildingCount)
-                {
-                    informationLines.AppendLine("");
-
-                    IEnumerable<IGrouping<string, AnnoObject>> groupedBuildings;
-                    if (_selectedObjects.Count > 0)
-                    {
-                        informationLines.AppendLine("Buildings Selected");
-                        groupedBuildings = _selectedObjects.GroupBy(_ => _.Identifier);
-                    }
-                    else
-                    {
-                        informationLines.AppendLine("Buildings");
-                        groupedBuildings = _placedObjects.GroupBy(_ => _.Identifier);
-                    }
-
-                    foreach (var item in groupedBuildings
-                        .Where(_ => !_.ElementAt(0).Road && _.ElementAt(0).Identifier != null)
-                        .OrderByDescending(_ => _.Count()))
-                    {
-                        if (!string.IsNullOrWhiteSpace(item.ElementAt(0).Identifier))
-                        {
-                            var building = BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
-                            if (building != null)
-                            {
-                                informationLines.AppendFormat("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]).AppendLine();
-                            }
-                            else
-                            {
-                                item.ElementAt(0).Identifier = "";
-                                informationLines.AppendFormat("{0} x Building name not found", item.Count()).AppendLine();
-                            }
-                        }
-                        else
-                        {
-                            informationLines.AppendFormat("{0} x Building name not found", item.Count()).AppendLine();
-                        }
-                    }
-                }
-            }
-
-            // render all the lines            
-            var text = informationLines.ToString();
-            var f = new FormattedText(text, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                           TYPEFACE, 12, Brushes.Black, null, TextFormattingMode.Display)
-            {
-                MaxTextWidth = Constants.StatisticsMargin - 20,
-                MaxTextHeight = RenderSize.Height,
-                TextAlignment = TextAlignment.Left
-            };
-            drawingContext.DrawText(f, new Point(RenderSize.Width - Constants.StatisticsMargin + 10, 10));
         }
 
         //I was really just checking to see if there was a built in function, but this works
@@ -1655,8 +1514,7 @@ namespace AnnoDesigner
                     _placedObjects = allObjects,
                     RenderGrid = RenderGrid,
                     RenderIcon = RenderIcon,
-                    RenderLabel = RenderLabel,
-                    RenderStats = RenderStats
+                    RenderLabel = RenderLabel
                 };
                 // normalize layout
                 target.Normalize(border);
@@ -1673,10 +1531,7 @@ namespace AnnoDesigner
                 // calculate output size
                 var width = target.GridToScreen(_placedObjects.Max(_ => _.Position.X + _.Size.Width) + border) + 1;
                 var height = target.GridToScreen(_placedObjects.Max(_ => _.Position.Y + _.Size.Height) + border) + 1;
-                if (RenderStats)
-                {
-                    width += Constants.StatisticsMargin - 0.5;
-                }
+
                 target.Width = width;
                 target.Height = height;
                 // apply size

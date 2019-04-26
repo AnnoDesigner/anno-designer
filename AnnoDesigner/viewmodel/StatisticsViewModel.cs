@@ -152,7 +152,6 @@ namespace AnnoDesigner.viewmodel
 
         public void UpdateStatistics(List<AnnoObject> placedObjects,
             List<AnnoObject> selectedObjects,
-            bool showBuildingList,
             BuildingPresets buildingPresets)
         {
             if (!placedObjects.Any())
@@ -175,9 +174,7 @@ namespace AnnoDesigner.viewmodel
             MinTiles = string.Format("{0} Tiles", minTiles);
             Efficiency = string.Format("{0}%", Math.Round(minTiles / boxX / boxY * 100));
 
-            ShowBuildingList = showBuildingList;
-
-            if (showBuildingList)
+            if (ShowBuildingList)
             {
                 var groupedBuildings = placedObjects.GroupBy(_ => _.Identifier);
                 var groupedSelectedBuildings = selectedObjects.Count > 0 ? selectedObjects.GroupBy(_ => _.Identifier) : null;

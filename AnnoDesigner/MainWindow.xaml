@@ -47,8 +47,7 @@
             <ColumnDefinition Width="*"
                               MinWidth="100" />
             <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="Auto"
-                              MinWidth="100" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="Auto"
                               MinWidth="100" />
@@ -208,16 +207,17 @@
                        Grid.ColumnSpan="2"
                        RenderGrid="True"
                        RenderIcon="True"
-                       RenderLabel="True"
-                       RenderStats="True" />
+                       RenderLabel="True" />
 
-        <GridSplitter Grid.Row="1"
+        <GridSplitter x:Name="splitterStatisticsView"
+                      Grid.Row="1"
                       Grid.Column="1"
                       Width="5"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Center" />
 
-        <my:StatisticsView Grid.Row="1"
+        <my:StatisticsView x:Name="statisticsView"
+                           Grid.Row="1"
                            Grid.Column="2"
                            DataContext="{Binding StatisticsViewModel}">
         </my:StatisticsView>
