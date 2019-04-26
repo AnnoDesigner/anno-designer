@@ -965,7 +965,6 @@ namespace AnnoDesigner
                         .Where(_ => !_.ElementAt(0).Road && _.ElementAt(0).Identifier != null)
                         .OrderByDescending(_ => _.Count()))
                     {
-                        Debug.Assert(item.Count() > 0, "grouping should have a length more than 0");
                         if (!string.IsNullOrWhiteSpace(item.ElementAt(0).Identifier))
                         {
                             var building = BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
