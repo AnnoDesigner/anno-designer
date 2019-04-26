@@ -765,8 +765,6 @@ namespace AnnoDesigner
             }
         }
 
-        public static bool showBoxTempVariablePleaseDelete = false;
-
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<AnnoObject> objects)
         {
             
@@ -811,10 +809,6 @@ namespace AnnoDesigner
 
                     var influenceRange = obj.InfluenceRange;
 
-                    if (!showBoxTempVariablePleaseDelete)
-                    {
-                        MessageBox.Show("InfluenceRange drawing is not optimised yet - see comments");
-                    }
 
                     var sg = new StreamGeometry();
 
