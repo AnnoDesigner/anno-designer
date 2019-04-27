@@ -45,7 +45,8 @@ namespace PresetParser
         private static readonly List<string> ChangeBuildingsToOW2_FarmBuilding_1800 = new List<string> { "Agriculture_colony01_09 (Cattle Farm)", "Agriculture_colony01_04 (Cocoa Farm)", "Agriculture_colony01_02 (Tobacco Farm)", "Agriculture_colony01_07 (Coffee Beans Farm)", "Agriculture_colony01_10 (Corn Farm)" };
         // Special Building
         private static readonly List<string> ChangeBuildingsToAW_SpecialBuilding_1800 = new List<string> { "Guild_house", "Town hall" };
-
+        //Ornamentals 
+        private static readonly List<string> ChangeBuildingsToAW_Ornamentals_1800 = new List<string> { "Culture_preorder_statue", "Uplay_ornament_2x1_lion_statue", "Uplay_ornament_2x2_pillar_chess_park", "Uplay_ornament_3x2_large_fountain" };
         /// </summary>
         /// <param name="identifierName"></param> The given Buildingname, this will not changed
         /// <param name="factionName"></param> If Buildingmane is in one of the lists, factionName will be changed
@@ -82,7 +83,8 @@ namespace PresetParser
             if (identifierName.IsPartOf(ChangeBuildingsToOW2_FarmBuilding_1800)) { factionName = "(8) Obreros"; groupName = "Farm Buildings"; }
             //Special Buildings
             if (identifierName.IsPartOf(ChangeBuildingsToAW_SpecialBuilding_1800)) { factionName = "All Worlds"; groupName = "Special Buildings"; }
-
+            //Ornamentals 
+            if (identifierName.IsPartOf(ChangeBuildingsToAW_Ornamentals_1800)) { factionName = "All Worlds"; }
             string[] facionNameGroupName = { factionName, groupName };
             return facionNameGroupName;
         }

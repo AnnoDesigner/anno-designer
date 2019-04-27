@@ -53,7 +53,7 @@
         <Menu Name="Menu"
               Height="23"
               VerticalAlignment="Top"
-              Grid.ColumnSpan="5">
+              Grid.ColumnSpan="3">
             <!--<Menu.Resources>
                
             </Menu.Resources>
@@ -198,7 +198,7 @@
                       Click="MenuItemIconClick"
                       TabIndex="28" />
         </Menu>
-
+        
         <Grid x:Name="gridMain"
               Grid.Row="1"
               Grid.Column="0">
@@ -292,6 +292,13 @@
                                  Text=""
                                  Visibility="Hidden"
                                  Width="140" />
+                        <TextBox DockPanel.Dock="Right"
+                                 Height="10"
+                                 IsEnabled="False"
+                                 Name="textBoxInfluenceRange"
+                                 Text=""
+                                 Visibility="Hidden"
+                                 Width="140" />
                     </DockPanel>
                     <DockPanel LastChildFill="False"
                                Height="46">
@@ -360,9 +367,9 @@
                           TabIndex="13" />
             </GroupBox>
         </DockPanel>
-
+        
         <StatusBar Grid.Row="2"
-                   Grid.ColumnSpan="5">
+                   Grid.ColumnSpan="3">
             <StatusBarItem Content="Mouse controls: left - place, select, move / right - stop placement, remove / both - move all / double click - copy / wheel - zoom / wheel-click - rotate." />
             <StatusBarItem Name="StatusBarItemStatus"
                            Content="Standard"

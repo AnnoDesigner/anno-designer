@@ -20,6 +20,7 @@ namespace PresetParser
         public static bool isExcludedName = false;
         public static bool isExcludedTemplate = false;
         public static bool isExcludedFaction = false; /* Only for Anno 2070 */
+        public static bool isExcludedGUID = false; /*only for anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
         public const string ANNO_VERSION_1404 = "1404";
@@ -81,11 +82,11 @@ namespace PresetParser
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding",
             "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding"};
         private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358" };
-        /// ---
+        //private static readonly List<string> ExcludeBuildingsGUID1800 = new List<string> { "102139", "102140", "102141", "102142", "102143", "102828" };
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System",
             "module_01_birds", "module_02_peacock", "(Warehouse II)", "(Warehouse III)", "logistic_colony01_01 (Warehouse I)", "Kontor_main_02", "Kontor_main_03", "kontor_main_colony01",
             "Fake Ornament [test 2nd party]", "Kontor_imperial_02", "Kontor_imperial_03","(Oil Harbor II)","(Oil Harbor III)", "Third_party_", "CQO_", "Kontor_imperial_01", "- Pirates",
-            "Harbor_colony01_09 (tourism_pier_01)", "Ai_", "AarhantLighthouseFake", "CO_Tunnel_Entrance01_Fake" };
+            "Harbor_colony01_09 (tourism_pier_01)", "Ai_", "AarhantLighthouseFake", "CO_Tunnel_Entrance01_Fake","Park_1x1_fence"};
         /// <summary>
         /// in NewFactionAndGroup1800.cs are made the following lists
         /// ChangeBuildingTo<1>_<2>_1800 
@@ -94,11 +95,11 @@ namespace PresetParser
         ///              OW1 (Old World - Jornaleros) and OW2 (Old World - Obreros)
         /// <2> wil be the Group under <1>, like Production, Public, etc
         /// </summary>
-        #endregion
+            #endregion
 
-        #endregion
+            #endregion
 
-        #region Set Icon File Name seperations
+            #region Set Icon File Name seperations
         private static string GetIconFilename(XmlNode iconNode, string annoVersion)
         {
             string annoIdexNumber = "";
@@ -290,6 +291,7 @@ namespace PresetParser
                 {
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    //new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset")
                 });
             }
@@ -954,10 +956,12 @@ namespace PresetParser
                 //Go next when no firstValue<ChildNames> are found
                 return;
             }
+            string guidName = values["Standard"]["GUID"].InnerText;
             identifierName = values["Standard"]["Name"].InnerText;
             identifierName = identifierName.FirstCharToUpper();
             isExcludedName = identifierName.Contains(ExcludeNameList1800);
-            if (isExcludedName == true || isExcludedTemplate == true)
+            //isExcludedGUID = guidName.Contains(ExcludeBuildingsGUID1800);
+            if (isExcludedName == true || isExcludedTemplate == true || isExcludedGUID == true)
             {
                 return;
             }
@@ -966,7 +970,7 @@ namespace PresetParser
             associatedRegion = values?["Building"]?["AssociatedRegions"]?.InnerText;
             switch (associatedRegion)
             {
-                case "Moderate;Colony01": factionName = "Both Worlds"; break;
+                case "Moderate;Colony01": factionName = "All Worlds"; break;
                 default: factionName = associatedRegion.FirstCharToUpper(); break;
             }
             if (values?["Building"]?["BuildingType"]?.InnerText != null)
@@ -1014,7 +1018,7 @@ namespace PresetParser
             #endregion
             if (factionName == "" || factionName == "Moderate" || factionName == "Colony01")
             {
-                factionName = "Not Placed Yet";
+                factionName = "Not Placed Yet -" + factionName;
             }
             #endregion
 
@@ -1074,7 +1078,16 @@ namespace PresetParser
                 {
                     icon = replaceName + sIcons.LastOrDefault();
                 }
-                if (values["Standard"]["GUID"].InnerText== "102133") { icon = replaceName + "park_props_1x1_21.png"; } /*Change the Big Tree icon to Mature Tree icon (as in game) */
+                switch (guidName)
+                {
+                    case "102133": { icon = replaceName + "park_props_1x1_21.png"; break; } /*Change the Big Tree icon to Mature Tree icon (as in game) */
+                    case "102139": { icon = replaceName + "park_props_1x1_27.png"; break; } //Path Corecting Icon
+                    case "102140": { icon = replaceName + "park_props_1x1_28.png"; break; } //Path Corecting Icon
+                    case "102141": { icon = replaceName + "park_props_1x1_29.png"; break; } //Path Corecting Icon
+                    case "102142": { icon = replaceName + "park_props_1x1_30.png"; break; } //Path Corecting Icon
+                    case "102143": { icon = replaceName + "park_props_1x1_31.png"; break; } //Path Corecting Icon 
+                    case "102131": { icon = replaceName + "park_props_1x1_17.png"; break; } //Cypress corecting Icon
+                }
                 b.IconFileName = icon;
             }
             else
@@ -1149,6 +1162,96 @@ namespace PresetParser
                         translationNodes = langDocument.SelectNodes(langNodeStartPath)
                             .Cast<XmlNode>().SingleOrDefault(_ => _["GUID"].InnerText == nextGuid[1]);
                         translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
+                    }
+                    if (buildingGuid == "102165")
+                    {
+                        switch (languageCount)
+                        {
+                            case 0: { translation = "Sidewalk Hedge"; break; }
+                            case 1: { translation = "Gehweg Hecke"; break; }
+                            case 2: { translation = "Żywopłot Chodnikowy"; break; }
+                            case 3: { translation = "Боковая изгородь"; break; }
+                        }
+                    }
+                    if (buildingGuid == "102166")
+                    {
+                        switch (languageCount)
+                        {
+                            case 0: { translation = "Sidewalk Hedge Corner"; break; }
+                            case 1: { translation = "Gehweg Heckenecke Ecke"; break; }
+                            case 2: { translation = "Żywopłot Chodnikowy narożnik"; break; }
+                            case 3: { translation = "Боковая изгородь (угол)"; break; }
+                        }
+                    }
+                    if (buildingGuid == "102167")
+                    {
+                        switch (languageCount)
+                        {
+                            case 0: { translation = "Sidewalk Hedge End"; break; }
+                            case 1: { translation = "Gehweg Heckenende"; break; }
+                            case 2: { translation = "Żywopłot Chodnikowy Koniec"; break; }
+                            case 3: { translation = "Боковая изгородь (край)"; break; }
+                        }
+                    }
+                    if (buildingGuid == "102169")
+                    {
+                        switch (languageCount)
+                        {
+                            case 0: { translation = "Sidewalk Hedge Junction"; break; }
+                            case 1: { translation = "Gehweg Hecken Verbindungsstelle"; break; }
+                            case 2: { translation = "Żywopłot Chodnikowy Złącze"; break; }
+                            case 3: { translation = "Боковая изгородь (Перекресток)"; break; }
+                        }
+                    }
+                    if (buildingGuid == "102171")
+                    {
+                        switch (languageCount)
+                        {
+                            case 0: { translation = "Sidewalk Hedge Crossing"; break; }
+                            case 1: { translation = "Gehweg Hecken Kreuzung"; break; }
+                            case 2: { translation = "Żywopłot Chodnikowy Skrzyżowanie"; break; }
+                            case 3: { translation = "Боковая изгородь (образного)"; break; }
+                        }
+                    }
+                    if (buildingGuid== "102161")
+                    {
+                        switch (languageCount)
+                        {
+                            case 0: { translation = "Railings"; break; }
+                            case 1: { translation = "Zaune"; break; }
+                            case 2: { translation = "Poręcze"; break; }
+                            case 3: { translation = "Ограда"; break; }
+                        }
+                    }
+                    if (buildingGuid == "102170")
+                    {
+                        switch (languageCount)
+                        {
+                            case 0: { translation = "Railings Junction"; break; }
+                            case 1: { translation = "Zaune Verbindungsstelle"; break; }
+                            case 2: { translation = "Poręcze Złącze"; break; }
+                            case 3: { translation = "Ограда (Перекресток)"; break; }
+                        }
+                    }
+                    if (buildingGuid == "102134")
+                    {
+                        switch (languageCount)
+                        {
+                            case 0: { translation = "Hedge"; break; }
+                            case 1: { translation = "Hecke"; break; }
+                            case 2: { translation = "żywopłot"; break; }
+                            case 3: { translation = "изгородь"; break; }
+                        }
+                    }
+                    if (buildingGuid == "102139")
+                    {
+                        switch (languageCount)
+                        {
+                            case 0: { translation = "Path"; break; }
+                            case 1: { translation = "Pfad"; break; }
+                            case 2: { translation = "ścieżka"; break; }
+                            case 3: { translation = "Тропинка"; break; }
+                        }
                     }
                 }
                 else

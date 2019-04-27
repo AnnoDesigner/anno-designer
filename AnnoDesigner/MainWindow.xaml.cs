@@ -301,6 +301,8 @@ namespace AnnoDesigner
             }
             // radius
             textBoxRadius.Text = obj.Radius.ToString();
+            //InfluenceRadius
+            textBoxInfluenceRange.Text = obj.InfluenceRange.ToString();
             // flags
             //checkBoxLabel.IsChecked = !string.IsNullOrEmpty(obj.Label);
             checkBoxBorderless.IsChecked = obj.Borderless;
@@ -343,6 +345,7 @@ namespace AnnoDesigner
                 Label = IsChecked(checkBoxLabel) ? textBoxLabel.Text : "",
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
                 Radius = string.IsNullOrEmpty(textBoxRadius.Text) ? 0 : double.Parse(textBoxRadius.Text, CultureInfo.InvariantCulture),
+                InfluenceRange = string.IsNullOrEmpty(textBoxInfluenceRange.Text) ? 0 : double.Parse(textBoxInfluenceRange.Text, CultureInfo.InvariantCulture),
                 Borderless = IsChecked(checkBoxBorderless),
                 Road = IsChecked(checkBoxRoad),
                 Identifier = textBoxIdentifier.Text,
