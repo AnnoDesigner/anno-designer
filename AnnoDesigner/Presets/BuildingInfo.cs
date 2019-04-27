@@ -60,6 +60,7 @@ namespace AnnoDesigner.Presets
                 Label = (Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]),
                 Icon = IconFileName,
                 Radius = InfluenceRadius,
+                InfluenceRange = InfluenceRange,
                 Identifier = Identifier,
                 Size = BuildBlocker == null ? new Size() : new Size(BuildBlocker["x"], BuildBlocker["z"]),
                 Template = Template

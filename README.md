@@ -3,6 +3,12 @@ A building layout designer for Ubisofts Anno-series
 
 This is a fork of the project created by JcBernack - https://github.com/JcBernack/anno-designer
 
+## Discord
+Keep up to date with the latest developments. This discord is also used for collaboration between contributors. Please note this is  completely **optional** - you are not required to join this to make contributions to the repo.
+
+https://discord.gg/JJpHWRB
+
+
 ## Summary
 
 The **Anno Designer** is a standalone windows application that can be used for creating and exporting layouts. It uses a drag/drop system and is intuitive and easy to use. **The Anno Designer supports the following Anno versions: 1404, 2070, 2205, 1800**.

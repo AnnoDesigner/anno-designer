@@ -68,6 +68,12 @@ namespace AnnoDesigner
         public double Radius;
 
         /// <summary>
+        /// Influence range in grid units
+        /// </summary>
+        [DataMember]
+        public double InfluenceRange;
+
+        /// <summary>
         /// Indicates whether the border should be omitted.
         /// </summary>
         [DataMember]
@@ -109,6 +115,7 @@ namespace AnnoDesigner
             //Localization = obj.Localization;
             Icon = obj.Icon;
             Radius = obj.Radius;
+            InfluenceRange = obj.InfluenceRange;
             Borderless = obj.Borderless;
             Road = obj.Road;
             Template = obj.Template;
