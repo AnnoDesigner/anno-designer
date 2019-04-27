@@ -238,13 +238,6 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Contains a store of points that when used with StreamGeometry create an influence range object.
-        /// An offset will need to be applied to each point to move it to the correct location on the page.
-        /// Note: Remember to operate on a copy of the list.
-        /// </summary>
-        private readonly Dictionary<InfluenceRangeGeometryCompositeKey, List<Point>> _influenceRangeGeometry = new Dictionary<InfluenceRangeGeometryCompositeKey, List<Point>>();
-
-        /// <summary>
         /// Event which is fired when the clipboard content is changed.
         /// </summary>
         public event Action<List<AnnoObject>> OnClipboardChanged;
@@ -776,186 +769,145 @@ namespace AnnoDesigner
 
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<AnnoObject> objects)
         {
-
+            
             foreach (var obj in objects)
             {
                 if (obj.InfluenceRange > 0.5)
                 {
+                    //Start here: V
+                    //  +-------> --> -------+
+                    //  |                    |
+                    //  |    +---+--+---+    |
+                    //  |    |   |  |   |    |
+                    //  |    | 1 |  | 2 |    |
+                    //  |    |   |  |   |    v
+                    //  ^    +----------+    |
+                    //  |    |   |  |   |    |
+                    //  |    +----------+    v
+                    //  ^    |   |  |   |    |
+                    //  |    | 4 |  | 3 |    |
+                    //  |    |   |  |   |    |
+                    //  |    +---+--+---+    |
+                    //  |                    |
+                    //  +------- <--- <------+
+
+                    //Quadrant 1 = min(x), min(y)
+                    //Quadrant 2 = max(x), min(y)
+                    //Quadrant 3 = min(x), max(y)
+                    //Quadrant 4 = max(x), max(y)
+
+                    //In grid references
+                    var topLeftCorner = obj.Position;
+                    var topRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y);
+                    var bottomLeftCorner = new Point(obj.Position.X, obj.Position.Y + obj.Size.Height);
+                    var bottomRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y + obj.Size.Height);
+
+                    //tweak this to cache the derived geometry so we don't re-compute every single frame - we need some kind of
+                    //composite key dictionary, that uses range, width and height as a key.
+                    //Store as a list of points and use PolyLineTo
+
+                    //https://stackoverflow.com/questions/2877660/composite-key-dictionary
+                    //Use Tuples!!
+
+                    var influenceRange = obj.InfluenceRange;
 
 
                     var sg = new StreamGeometry();
-                    var compositeKey = new InfluenceRangeGeometryCompositeKey(obj.Size.Width, obj.Size.Height, obj.InfluenceRange);
+
+                    var startPoint = new Point(topLeftCorner.X, topLeftCorner.Y - influenceRange);
                     var stroked = true;
                     var smoothJoin = true;
-                    var geometryStroke = true;
+
                     var geometryFill = true;
+                    var geometryStroke = true;
 
-                    //Check if we have already computed this geometry before:
-                    if (_influenceRangeGeometry.ContainsKey(compositeKey))
+                    using (StreamGeometryContext sgc = sg.Open())
                     {
-                        //Get points
-                        var points = _influenceRangeGeometry[compositeKey];
-                        //Add offsets
-                        points = points.Select(_ => GridToScreen(new Point(_.X + obj.Position.X, _.Y + obj.Position.Y))).ToList();
-                        using (var sgc = sg.Open())
+                        sgc.BeginFigure(GridToScreen(startPoint), geometryFill, geometryStroke);
+
+                        ////////////////////////////////////////////////////////////////
+                        //Draw in width of object
+                        sgc.LineTo(GridToScreen(new Point(topRightCorner.X, startPoint.Y)), stroked, smoothJoin);
+
+                        //Draw quadrant 2
+                        //Get end value to draw from top-right of 2nd quadrant to bottom-right of 2nd quadrant
+                        startPoint = new Point(topRightCorner.X, topRightCorner.Y - influenceRange);
+                        var endPoint = new Point(topRightCorner.X + influenceRange, topRightCorner.Y);
+
+                        //Following the rules for quadrant 2 - go right and down
+                        var currentPoint = new Point(startPoint.X, startPoint.Y);
+                        while (endPoint != currentPoint)
                         {
-                            sgc.BeginFigure(GridToScreen(new Point(obj.Position.X + obj.InfluenceRange, obj.Position.Y + obj.InfluenceRange)), geometryFill, geometryStroke);
-                            sgc.PolyLineTo(points, stroked, smoothJoin);
+                            currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
                         }
-                    }
-                    else
-                    {
-                        //Compute the shape. The comments below explain this process.
 
+                        ////////////////////////////////////////////////////////////////
+                        startPoint = endPoint;
+                        //Draw in height of object
+                        sgc.LineTo(GridToScreen(new Point(startPoint.X, bottomRightCorner.Y)), stroked, smoothJoin);
 
-                        //The shape is computed clockwise.
+                        //Draw quadrant 3
+                        //Get end value to draw from top-left of 3rd quadrant to bottom-left of 3rd quadrant
+                        //Move startPoint to bottomLeftCorner (x value is already correct)
+                        startPoint = new Point(startPoint.X, bottomRightCorner.Y);
+                        endPoint = new Point(bottomRightCorner.X, bottomRightCorner.Y + influenceRange);
 
-                        //Start here: V
-                        //  +-------> --> -------+
-                        //  |                    |
-                        //  |    +---+--+---+    |
-                        //  |    |   |  |   |    |
-                        //  |    | 1 |  | 2 |    |
-                        //  |    |   |  |   |    v
-                        //  ^    +----------+    |
-                        //  |    |   |  |   |    |
-                        //  |    +----------+    v
-                        //  ^    |   |  |   |    |
-                        //  |    | 4 |  | 3 |    |
-                        //  |    |   |  |   |    |
-                        //  |    +---+--+---+    |
-                        //  |                    |
-                        //  +------- <--- <------+
-
-                        //Quadrant 1 = min(x), min(y)
-                        //Quadrant 2 = max(x), min(y)
-                        //Quadrant 3 = min(x), max(y)
-                        //Quadrant 4 = max(x), max(y)
-
-                        //In grid units
-                        var topLeftCorner = obj.Position;
-                        var topRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y);
-                        var bottomLeftCorner = new Point(obj.Position.X, obj.Position.Y + obj.Size.Height);
-                        var bottomRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y + obj.Size.Height);
-
-                        var influenceRange = obj.InfluenceRange;
-                        var startPoint = new Point(topLeftCorner.X, topLeftCorner.Y - influenceRange);
-                      
-                        //Offset - what makes the left edge of this shape and the top edge of this shape == 0?
-                        var offset = new Point(topLeftCorner.X - influenceRange, topLeftCorner.Y - influenceRange);
-
-                        //Geometry store, so we don't have to recompute this every frame.
-                        var points = new List<Point>();
-                        Point offsetPoint;
-                        using (StreamGeometryContext sgc = sg.Open())
+                        //Following the rules for quadrant 3 - go left and down
+                        currentPoint = new Point(startPoint.X, startPoint.Y);
+                        while (endPoint != currentPoint)
                         {
-                            sgc.BeginFigure(GridToScreen(startPoint), geometryFill, geometryStroke);
-
-                            ////////////////////////////////////////////////////////////////
-                            //Draw in width of object
-                            sgc.LineTo(GridToScreen(new Point(topRightCorner.X, startPoint.Y)), stroked, smoothJoin);
-                            points.Add(new Point(topRightCorner.X - offset.X, startPoint.Y - offset.Y));
-
-                            //Draw quadrant 2
-                            //Get end value to draw from top-right of 2nd quadrant to bottom-right of 2nd quadrant
-                            startPoint = new Point(topRightCorner.X, topRightCorner.Y - influenceRange);
-                            var endPoint = new Point(topRightCorner.X + influenceRange, topRightCorner.Y);
-
-                            //Following the rules for quadrant 2 - go right and down
-                            var currentPoint = new Point(startPoint.X, startPoint.Y);
-                            while (endPoint != currentPoint)
-                            {
-                                currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
-                                sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
-                                offsetPoint = new Point(currentPoint.X - offset.X, currentPoint.Y - offset.Y);
-                                points.Add(offsetPoint);
-                                currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
-                                sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
-                                offsetPoint = new Point(currentPoint.X - offset.X, currentPoint.Y - offset.Y);
-                                points.Add(offsetPoint);
-                            }
-
-                            ////////////////////////////////////////////////////////////////
-                            startPoint = endPoint;
-                            //Draw in height of object
-                            sgc.LineTo(GridToScreen(new Point(startPoint.X, bottomRightCorner.Y)), stroked, smoothJoin);
-                            points.Add(new Point(startPoint.X - offset.X, bottomRightCorner.Y - offset.Y));
-
-                            //Draw quadrant 3
-                            //Get end value to draw from top-left of 3rd quadrant to bottom-left of 3rd quadrant
-                            //Move startPoint to bottomLeftCorner (x value is already correct)
-                            startPoint = new Point(startPoint.X, bottomRightCorner.Y);
-                            endPoint = new Point(bottomRightCorner.X, bottomRightCorner.Y + influenceRange);
-
-                            //Following the rules for quadrant 3 - go left and down
-                            currentPoint = new Point(startPoint.X, startPoint.Y);
-                            while (endPoint != currentPoint)
-                            {
-                                currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
-                                sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
-                                offsetPoint = new Point(currentPoint.X - offset.X, currentPoint.Y - offset.Y);
-                                points.Add(offsetPoint);
-                                currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
-                                sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
-                                offsetPoint = new Point(currentPoint.X - offset.X, currentPoint.Y - offset.Y);
-                                points.Add(offsetPoint);
-                            }
-
-                            ////////////////////////////////////////////////////////////////
-                            startPoint = endPoint;
-                            //Draw in width of object
-                            sgc.LineTo(GridToScreen(new Point(bottomLeftCorner.X, startPoint.Y)), stroked, smoothJoin);
-                            points.Add(new Point(bottomLeftCorner.X - offset.X, startPoint.Y - offset.Y));
-
-                            //Draw quadrant 4
-                            //Get end value to draw from bottom-right of 4th quadrant to top-left of 4th quadrant
-                            //Move startPoint to bottomRightCorner (y value is already correct)
-                            startPoint = new Point(bottomLeftCorner.X, startPoint.Y);
-                            endPoint = new Point(bottomLeftCorner.X - influenceRange, bottomRightCorner.Y);
-
-                            //Following the rules for quadrant 4 - go up and left
-                            currentPoint = new Point(startPoint.X, startPoint.Y);
-                            while (endPoint != currentPoint)
-                            {
-                                currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
-                                sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
-                                offsetPoint = new Point(currentPoint.X - offset.X, currentPoint.Y - offset.Y);
-                                points.Add(offsetPoint);
-                                currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
-                                sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
-                                offsetPoint = new Point(currentPoint.X - offset.X, currentPoint.Y - offset.Y);
-                                points.Add(offsetPoint);
-                            }
-
-                            ////////////////////////////////////////////////////////////////
-                            startPoint = endPoint;
-                            //Draw in height of object
-                            sgc.LineTo(GridToScreen(new Point(startPoint.X, topLeftCorner.Y)), stroked, smoothJoin);
-                            points.Add(new Point(startPoint.X - offset.X, topLeftCorner.Y - offset.Y));
-
-                            //Draw quadrant 1
-                            //Get end value to draw from bottom-left of 1st quadrant to top-right of 1st quadrant
-                            //Move startPoint to topLeftCorner (x value is already correct)
-                            startPoint = new Point(startPoint.X, topLeftCorner.Y);
-                            endPoint = new Point(topLeftCorner.X, topLeftCorner.Y - influenceRange);
-
-                            //Following the rules for quadrant 1 - go up and right
-                            currentPoint = new Point(startPoint.X, startPoint.Y);
-                            while (endPoint != currentPoint)
-                            {
-                                currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
-                                sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
-                                offsetPoint = new Point(currentPoint.X - offset.X, currentPoint.Y - offset.Y);
-                                points.Add(offsetPoint);
-                                currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
-                                sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
-                                offsetPoint = new Point(currentPoint.X - offset.X, currentPoint.Y - offset.Y);
-                                points.Add(offsetPoint);
-                            }
-
-                            //Shape should be complete by this point.
+                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
                         }
-                        _influenceRangeGeometry.Add(new InfluenceRangeGeometryCompositeKey(obj.Size.Width, obj.Size.Height, obj.InfluenceRange), points);
+
+                        ////////////////////////////////////////////////////////////////
+                        startPoint = endPoint;
+                        //Draw in width of object
+                        sgc.LineTo(GridToScreen(new Point(bottomLeftCorner.X, startPoint.Y)), stroked, smoothJoin);
+
+                        //Draw quadrant 4
+                        //Get end value to draw from bottom-right of 4th quadrant to top-left of 4th quadrant
+                        //Move startPoint to bottomRightCorner (y value is already correct)
+                        startPoint = new Point(bottomLeftCorner.X, startPoint.Y);
+                        endPoint = new Point(bottomLeftCorner.X - influenceRange, bottomRightCorner.Y);
+
+                        //Following the rules for quadrant 4 - go up and left
+                        currentPoint = new Point(startPoint.X, startPoint.Y);
+                        while (endPoint != currentPoint)
+                        {
+                            currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                        }
+
+                        ////////////////////////////////////////////////////////////////
+                        startPoint = endPoint;
+                        //Draw in height of object
+                        sgc.LineTo(GridToScreen(new Point(startPoint.X, topLeftCorner.Y)), stroked, smoothJoin);
+
+                        //Draw quadrant 1
+                        //Get end value to draw from bottom-left of 1st quadrant to top-right of 1st quadrant
+                        //Move startPoint to topLeftCorner (x value is already correct)
+                        startPoint = new Point(startPoint.X, topLeftCorner.Y);
+                        endPoint = new Point(topLeftCorner.X, topLeftCorner.Y - influenceRange);
+
+                        //Following the rules for quadrant 1 - go up and right
+                        currentPoint = new Point(startPoint.X, startPoint.Y);
+                        while (endPoint != currentPoint)
+                        {
+                            currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                        }
+
+                        //Shape should be complete by this point.
                     }
                     sg.Freeze();
                     drawingContext.DrawGeometry(_lightBrush, _radiusPen, sg);
@@ -1928,58 +1880,5 @@ namespace AnnoDesigner
         }
 
         #endregion
-
-        #region Structs
-        /// <summary>
-        /// Used as the composite key to the _influenceRangeGeometry Dictionary
-        /// Structs avoid GC and memory copy costs.
-        /// Notes: If anyone has a better name for this, please feel free to change it.
-        /// </summary>
-        private struct InfluenceRangeGeometryCompositeKey : IEquatable<InfluenceRangeGeometryCompositeKey>, IEquatable<object>
-        {
-            readonly double Width;
-            readonly double Height;
-            readonly double InfluenceRange;
-
-            public InfluenceRangeGeometryCompositeKey(double width, double height, double influenceRange)
-            {
-                Width = width;
-                Height = height;
-                InfluenceRange = influenceRange;
-            }
-
-            public bool Equals(InfluenceRangeGeometryCompositeKey other)
-            {
-                return Width == other.Width && Height == other.Height && InfluenceRange == other.InfluenceRange;
-            }
-
-            public static bool operator ==(InfluenceRangeGeometryCompositeKey a, InfluenceRangeGeometryCompositeKey b)
-            {
-                return a.Equals(b);
-            }
-
-            public static bool operator !=(InfluenceRangeGeometryCompositeKey a, InfluenceRangeGeometryCompositeKey b)
-            {
-                return !a.Equals(b);
-            }
-
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
-            }
-
-            public override bool Equals(object obj)
-            {
-                return base.Equals(obj);
-            }
-
-            public override string ToString()
-            {
-                return string.Format("{{{0},{1},{2}}}", Width, Height, InfluenceRange);
-            }
-
-        }
-        #endregion
     }
-
 }
