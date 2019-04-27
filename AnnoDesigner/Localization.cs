@@ -89,6 +89,7 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Space Efficiency" },
                         { "StatBuildings" , "Buildings" },
                         { "StatBuildingsSelected" , "Buildings Selected" },
+                        { "UnknownObject" , "Unknown Object" },
                         { "PresetsLoaded" , "Building presets loaded" }
                     }
                  },
@@ -160,6 +161,7 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Raumeffizienz" },
                         { "StatBuildings" , "Gebäude" },
                         { "StatBuildingsSelected" , "Ausgewählte Gebäude" },
+                        { "UnknownObject" , "Unbekanntes Objekt" },
                         { "PresetsLoaded" , "Gebäudevorlagen geladen" }
                     }
                  },
@@ -231,6 +233,7 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Wykorzystanie Przestrzeni" },
                         { "StatBuildings" , "Budynki" },
                         { "StatBuildingsSelected" , "Wybrane Budynki" },
+                        { "UnknowObject" , "Obiekt nieznany" },
                         { "PresetsLoaded" , "Presety budynków załadowano" }
                     }
                  },
@@ -302,6 +305,7 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Космическая эффективность" },
                         { "StatBuildings" , "Здания" },
                         { "StatBuildingsSelected" , "Выбранные здания" },
+                        { "UnknownObject" , "Неизвестный объект" },
                         { "PresetsLoaded" , "Загружаются пресеты зданий" }
                     }
                  },

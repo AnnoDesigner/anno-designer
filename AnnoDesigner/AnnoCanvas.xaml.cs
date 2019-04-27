@@ -821,7 +821,14 @@ namespace AnnoDesigner
                             var building = BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
                             if (building != null)
                             {
-                                informationLines.AppendFormat("{0} x {1}", item.Count(), building.Localization[language]).AppendLine();
+                                if (item.ElementAt(0).Identifier != "Unknown Object")
+                                {
+                                    informationLines.AppendFormat("{0} x {1}", item.Count(), building.Localization[language]).AppendLine();
+                                } 
+                                else
+                                {
+                                    informationLines.AppendFormat("{0} x {1}", item.Count(), Localization.Localization.Translations[language]["UnknownObject"]);
+                                }   
                             }
                             else
                             {

@@ -97,9 +97,9 @@ namespace PresetParser
         /// </summary>
             #endregion
 
-            #endregion
+        #endregion
 
-            #region Set Icon File Name seperations
+        #region Set Icon File Name seperations
         private static string GetIconFilename(XmlNode iconNode, string annoVersion)
         {
             string annoIdexNumber = "";
