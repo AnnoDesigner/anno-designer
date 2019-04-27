@@ -233,7 +233,7 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Wykorzystanie Przestrzeni" },
                         { "StatBuildings" , "Budynki" },
                         { "StatBuildingsSelected" , "Wybrane Budynki" },
-                        { "UnknowObject" , "Obiekt nieznany" },
+                        { "UnknownObject" , "Obiekt nieznany" },
                         { "PresetsLoaded" , "Presety budynków załadowano" }
                     }
                  },

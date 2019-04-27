@@ -339,42 +339,95 @@ namespace AnnoDesigner
                 Borderless = IsChecked(checkBoxBorderless),
                 Road = IsChecked(checkBoxRoad),
                 Identifier = textBoxIdentifier.Text,
+                Template = textBoxTemlateName.Text
             };
             // do some sanity checks
             if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
             {
                 //Checking changes vs official building info
-                //(like size or Icons on all objects except fields)
+                //(like sizes or Icons on all objects except fields)
                 if (string.IsNullOrEmpty(obj.Icon) || obj.Icon.Contains(IconFieldNamesCheck) == false)
                 {
                     if (!string.IsNullOrEmpty(obj.Icon))
                     {
                         if (obj.Icon.StartsWith("A5_"))
                         {
-                            iconFileNameCheck = obj.Icon.Remove(0, 3) + ".png";
+                            iconFileNameCheck = obj.Icon.Remove(0, 3) + ".png"; //when Anno 2070, it use not A5_ in the original naming.
                         }
                         else
                         {
                             iconFileNameCheck = obj.Icon + ".png";
                         }
-                        MessageBox.Show("Checking Object " + iconFileNameCheck);
+                        //gets icons origin building info
                         var buildingsIconCheck = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName == iconFileNameCheck);
                         if (buildingsIconCheck!=null)
                         {
-                            MessageBox.Show("building found");
+                            // Check X and Z Sizes if the Building Info, if one of both not right, the Object will be Unknown
+                            if (obj.Size.Width != buildingsIconCheck.BuildBlocker["x"] && obj.Size.Width != buildingsIconCheck.BuildBlocker["z"])
+                            {
+                                //Size X is not correct on Building Info, call it Unknown Object
+                                obj.Identifier = "Unknown Object";
+                            }
+                            else if (obj.Size.Height != buildingsIconCheck.BuildBlocker["x"] && obj.Size.Height != buildingsIconCheck.BuildBlocker["z"])
+                            {
+                                //Size Z is not correct on Building Info, call it Unknown Object
+                                obj.Identifier = "Unknown Object";
+                            }
+                            else
+                            {
+                                //if sizes and icon is a existing building in the presets, call it that onject
+                                obj.Identifier = buildingsIconCheck.Identifier;
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("building NOT found" + IconFieldNamesCheck);
+                            //when itis a not existing building, then call it Unknown Object
+                            obj.Identifier = "Unknown Object";
                         }
                         annoCanvas.SetCurrentObject(obj);
                     }
-                    else if (textBoxTemlateName.Text.ToLower().Contains("field") == false)
+                    else if (textBoxTemlateName.Text.ToLower().Contains("field") == false) //check if the icon is removed from a template field
                     {
-                        //check if the icon is removed from a template field, field
-                        MessageBox.Show("Not a Field, Identfier will set to Unknow Object");
+                        //if not, call it Unknown Object
+                        obj.Identifier = "Unknown Object";
                     }
                     annoCanvas.SetCurrentObject(obj);
+                }
+                else if (!string.IsNullOrEmpty(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck) == true) //check icon is there and it is a field icon
+                {
+                    //Check if Filed Icon belongs to the field identifier, else set the correct icon
+                    //gets identifier origin building info
+                    var buildingsIconCheck = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == obj.Identifier);
+                    if (buildingsIconCheck != null)
+                    {
+                        if (obj.Icon.StartsWith("A5_"))
+                        {
+                            iconFileNameCheck = obj.Icon.Remove(0, 3) + ".png"; //when Anno 2070, it use not A5_ in the original naming.
+                        }
+                        else
+                        {
+                            iconFileNameCheck = obj.Icon + ".png";
+                        }
+                        if (iconFileNameCheck != buildingsIconCheck.IconFileName)
+                        {
+                            obj.Icon = buildingsIconCheck.IconFileName.Remove(buildingsIconCheck.IconFileName.Length - 4, 4);
+                            try
+                            {
+                                comboBoxIcon.SelectedItem = string.IsNullOrEmpty(obj.Icon) ? _noIconItem : comboBoxIcon.Items.Cast<IconImage>().Single(_ => _.Name == Path.GetFileNameWithoutExtension(obj.Icon));
+                            }
+                            catch (Exception)
+                            {
+                                comboBoxIcon.SelectedItem = _noIconItem;
+                            }
+                            annoCanvas.SetCurrentObject(obj);
+                        }
+                        annoCanvas.SetCurrentObject(obj);
+                    }
+                    else
+                    {
+                        //when it is a not existing building, then call it Unknown Object
+                        obj.Identifier = "Unknown Object";
+                    }
                 }
                 // set current object to mouse (original line)
                 annoCanvas.SetCurrentObject(obj);
