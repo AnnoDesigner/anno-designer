@@ -147,7 +147,8 @@
                     <DockPanel LastChildFill="False" Height="26">
                         <Label Content="{Binding Path=Label}" />
                         <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxLabel" Text="Building" Width="140" TabIndex="4" />
-                        <TextBox DockPanel.Dock="Right" Height="10" IsEnabled="False" Name="textBoxIdentifier" Text="" Visibility="Hidden" Width="140" />
+                        <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="False" Name="textBoxIdentifier" Text="" Visibility="Hidden" Width="140" />
+                        <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="False" Name="textBoxTemlateName" Text="" Visibility="Hidden" Width="140" />
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="46">
                         <Label Content="{Binding Path=Icon}" VerticalAlignment="Center" />

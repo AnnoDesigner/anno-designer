@@ -79,6 +79,12 @@ namespace AnnoDesigner
         [DataMember]
         public bool Road;
 
+        /// <summary>
+        /// ObjName string
+        /// </summary>
+        [DataMember]
+        public string Template;
+
         //[DataMember]
         //public SerializableDictionary<int> BuildCosts;
 
@@ -105,6 +111,7 @@ namespace AnnoDesigner
             Radius = obj.Radius;
             Borderless = obj.Borderless;
             Road = obj.Road;
+            Template = obj.Template;
             // note: this is not really a copy, just a reference, but it is not supposed to change anyway
             //BuildCosts = obj.BuildCosts;
         }

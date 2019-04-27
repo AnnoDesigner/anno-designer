@@ -30,6 +30,10 @@ namespace AnnoDesigner
         private static MainWindow _instance;
 
         private static string _selectedLanguage;
+        //for identifier checking process
+        private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
+        public string iconFileNameCheck = "";
+        public BuildingPresets BuildingPresets { get; }
         public static string SelectedLanguage
         {
             get
@@ -277,6 +281,8 @@ namespace AnnoDesigner
             textBoxLabel.Text = obj.Label;
             // Ident
             textBoxIdentifier.Text = obj.Identifier;
+            // templatename 
+            textBoxTemlateName.Text = obj.Template;
             // icon
             try
             {
@@ -337,7 +343,41 @@ namespace AnnoDesigner
             // do some sanity checks
             if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
             {
-                annoCanvas.SetCurrentObject(obj);
+                //Checking changes vs official building info
+                //(like size or Icons on all objects except fields)
+                if (string.IsNullOrEmpty(obj.Icon) || obj.Icon.Contains(IconFieldNamesCheck) == false)
+                {
+                    if (!string.IsNullOrEmpty(obj.Icon))
+                    {
+                        if (obj.Icon.StartsWith("A5_"))
+                        {
+                            iconFileNameCheck = obj.Icon.Remove(0, 3).ToLower() + ".png";
+                        }
+                        else
+                        {
+                            iconFileNameCheck = obj.Icon.ToLower() + ".png";
+                        }
+                        MessageBox.Show("Checking Object " + iconFileNameCheck);
+                        var buildingsIconCheck = BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName.ToLower() == iconFileNameCheck);
+                        if (buildingsIconCheck!=null)
+                        {
+                            MessageBox.Show("building found");
+                        }
+                        else
+                        {
+                            MessageBox.Show("building NOT found");
+                        }
+                        annoCanvas.SetCurrentObject(obj);
+                    }
+                    else if (textBoxTemlateName.Text.ToLower().Contains("field") == false)
+                    {
+                        //check if the icon is removed from a template field, field
+                        MessageBox.Show("Not a Field, Identfier will set to Unknow Object");
+                    }
+                    annoCanvas.SetCurrentObject(obj);
+                }
+                // set current object to mouse (original line)
+                //annoCanvas.SetCurrentObject(obj);
             }
             else
             {
