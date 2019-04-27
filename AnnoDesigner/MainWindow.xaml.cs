@@ -33,7 +33,7 @@ namespace AnnoDesigner
         //for identifier checking process
         private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
         public string iconFileNameCheck = "";
-        public BuildingPresets BuildingPresets { get; }
+        public BuildingPresets BuildingPreset { get; }
         public static string SelectedLanguage
         {
             get
@@ -351,21 +351,21 @@ namespace AnnoDesigner
                     {
                         if (obj.Icon.StartsWith("A5_"))
                         {
-                            iconFileNameCheck = obj.Icon.Remove(0, 3).ToLower() + ".png";
+                            iconFileNameCheck = obj.Icon.Remove(0, 3) + ".png";
                         }
                         else
                         {
-                            iconFileNameCheck = obj.Icon.ToLower() + ".png";
+                            iconFileNameCheck = obj.Icon + ".png";
                         }
                         MessageBox.Show("Checking Object " + iconFileNameCheck);
-                        var buildingsIconCheck = BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName.ToLower() == iconFileNameCheck);
+                        var buildingsIconCheck = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName == iconFileNameCheck);
                         if (buildingsIconCheck!=null)
                         {
                             MessageBox.Show("building found");
                         }
                         else
                         {
-                            MessageBox.Show("building NOT found");
+                            MessageBox.Show("building NOT found" + IconFieldNamesCheck);
                         }
                         annoCanvas.SetCurrentObject(obj);
                     }
@@ -377,7 +377,7 @@ namespace AnnoDesigner
                     annoCanvas.SetCurrentObject(obj);
                 }
                 // set current object to mouse (original line)
-                //annoCanvas.SetCurrentObject(obj);
+                annoCanvas.SetCurrentObject(obj);
             }
             else
             {
@@ -401,9 +401,9 @@ namespace AnnoDesigner
                 }
             }
             catch (Exception)
-            {
-                MessageBox.Show("Something went wrong while applying the preset.");
-            }
+           {
+               MessageBox.Show("Something went wrong while applying the preset.");
+           }
         }
         /// <summary>
         /// Called when localisation is changed, to repopulate the tree view
