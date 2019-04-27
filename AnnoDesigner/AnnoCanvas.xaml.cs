@@ -774,6 +774,24 @@ namespace AnnoDesigner
             {
                 if (obj.InfluenceRange > 0.5)
                 {
+
+                    //The below code looks very complex, but is surprisingly quick as most of its
+                    //calculations are done with Points, which being structs, are value types, and
+                    //consequently have much lower GC and memory copy costs.
+
+                    //I did try to cache these points, but as they are absolute values, I needed to
+                    //appy an offset to revert to the proper positions. The process of needing to
+                    //enumerate the points list to add the offset proved to be slower than just
+                    //recalculating all the points again.
+
+                    //You can see my attempts in some of the previous reverted commits for this branch.
+                    //An alternate caching could work in future, if one can be designed. 
+
+                    //Octagon is drawn in clockwise starting from the top-left corner
+                    //The arrows represent the direction, the inner square represents the influence area
+                    //In the normal working, this area is diagonal (hence the octagon drawn), but this 
+                    //cannot be easily displayed on the diagram below.
+
                     //Start here: V
                     //  +-------> --> -------+
                     //  |                    |
@@ -796,21 +814,13 @@ namespace AnnoDesigner
                     //Quadrant 3 = min(x), max(y)
                     //Quadrant 4 = max(x), max(y)
 
-                    //In grid references
+                    //In grid units
                     var topLeftCorner = obj.Position;
                     var topRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y);
                     var bottomLeftCorner = new Point(obj.Position.X, obj.Position.Y + obj.Size.Height);
                     var bottomRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y + obj.Size.Height);
 
-                    //tweak this to cache the derived geometry so we don't re-compute every single frame - we need some kind of
-                    //composite key dictionary, that uses range, width and height as a key.
-                    //Store as a list of points and use PolyLineTo
-
-                    //https://stackoverflow.com/questions/2877660/composite-key-dictionary
-                    //Use Tuples!!
-
                     var influenceRange = obj.InfluenceRange;
-
 
                     var sg = new StreamGeometry();
 
