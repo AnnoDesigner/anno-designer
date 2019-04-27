@@ -545,7 +545,8 @@ namespace AnnoDesigner
 
             // draw placed objects
             RenderObject(drawingContext, _placedObjects);
-            RenderObjectInfluence(drawingContext, _selectedObjects);
+            RenderObjectInfluenceRadius(drawingContext, _selectedObjects);
+            RenderObjectInfluenceRange(drawingContext, _selectedObjects);
             _selectedObjects.ForEach(_ => RenderObjectSelection(drawingContext, _));
 
             if (CurrentObjects.Count == 0)
@@ -564,7 +565,9 @@ namespace AnnoDesigner
                 {
                     MoveCurrentObjectsToMouse();
                     // draw influence radius
-                    RenderObjectInfluence(drawingContext, CurrentObjects);
+                    RenderObjectInfluenceRadius(drawingContext, CurrentObjects);
+                    // draw influence range
+                    RenderObjectInfluenceRange(drawingContext, _currentObjects);
                     // draw with transparency
                     CurrentObjects.ForEach(_ => _.Color.A = 128);
                     RenderObject(drawingContext, CurrentObjects);
@@ -734,7 +737,7 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object which's influence is rendered</param>
-        private void RenderObjectInfluence(DrawingContext drawingContext, List<AnnoObject> objects)
+        private void RenderObjectInfluenceRadius(DrawingContext drawingContext, List<AnnoObject> objects)
         {
             foreach (var obj in objects)
             {
@@ -764,17 +767,176 @@ namespace AnnoDesigner
             }
         }
 
+        private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<AnnoObject> objects)
+        {
+            
+            foreach (var obj in objects)
+            {
+                if (obj.InfluenceRange > 0.5)
+                {
+
+                    //The below code looks very complex, but is surprisingly quick as most of its
+                    //calculations are done with Points, which being structs, are value types, and
+                    //consequently have much lower GC and memory copy costs.
+
+                    //I did try to cache these points, but as they are absolute values, I needed to
+                    //appy an offset to revert to the proper positions. The process of needing to
+                    //enumerate the points list to add the offset proved to be slower than just
+                    //recalculating all the points again.
+
+                    //You can see my attempts in some of the previous reverted commits for this branch.
+                    //An alternate caching could work in future, if one can be designed. 
+
+                    //Octagon is drawn in clockwise starting from the top-left corner
+                    //The arrows represent the direction, the inner square represents the influence area
+                    //In the normal working, this area is diagonal (hence the octagon drawn), but this 
+                    //cannot be easily displayed on the diagram below.
+
+                    //Start here: V
+                    //  +-------> --> -------+
+                    //  |                    |
+                    //  |    +---+--+---+    |
+                    //  |    |   |  |   |    |
+                    //  |    | 1 |  | 2 |    |
+                    //  |    |   |  |   |    v
+                    //  ^    +----------+    |
+                    //  |    |   |  |   |    |
+                    //  |    +----------+    v
+                    //  ^    |   |  |   |    |
+                    //  |    | 4 |  | 3 |    |
+                    //  |    |   |  |   |    |
+                    //  |    +---+--+---+    |
+                    //  |                    |
+                    //  +------- <--- <------+
+
+                    //Quadrant 1 = min(x), min(y)
+                    //Quadrant 2 = max(x), min(y)
+                    //Quadrant 3 = min(x), max(y)
+                    //Quadrant 4 = max(x), max(y)
+
+                    //In grid units
+                    var topLeftCorner = obj.Position;
+                    var topRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y);
+                    var bottomLeftCorner = new Point(obj.Position.X, obj.Position.Y + obj.Size.Height);
+                    var bottomRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y + obj.Size.Height);
+
+                    var influenceRange = obj.InfluenceRange;
+
+                    var sg = new StreamGeometry();
+
+                    var startPoint = new Point(topLeftCorner.X, topLeftCorner.Y - influenceRange);
+                    var stroked = true;
+                    var smoothJoin = true;
+
+                    var geometryFill = true;
+                    var geometryStroke = true;
+
+                    using (StreamGeometryContext sgc = sg.Open())
+                    {
+                        sgc.BeginFigure(GridToScreen(startPoint), geometryFill, geometryStroke);
+
+                        ////////////////////////////////////////////////////////////////
+                        //Draw in width of object
+                        sgc.LineTo(GridToScreen(new Point(topRightCorner.X, startPoint.Y)), stroked, smoothJoin);
+
+                        //Draw quadrant 2
+                        //Get end value to draw from top-right of 2nd quadrant to bottom-right of 2nd quadrant
+                        startPoint = new Point(topRightCorner.X, topRightCorner.Y - influenceRange);
+                        var endPoint = new Point(topRightCorner.X + influenceRange, topRightCorner.Y);
+
+                        //Following the rules for quadrant 2 - go right and down
+                        var currentPoint = new Point(startPoint.X, startPoint.Y);
+                        while (endPoint != currentPoint)
+                        {
+                            currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                        }
+
+                        ////////////////////////////////////////////////////////////////
+                        startPoint = endPoint;
+                        //Draw in height of object
+                        sgc.LineTo(GridToScreen(new Point(startPoint.X, bottomRightCorner.Y)), stroked, smoothJoin);
+
+                        //Draw quadrant 3
+                        //Get end value to draw from top-left of 3rd quadrant to bottom-left of 3rd quadrant
+                        //Move startPoint to bottomLeftCorner (x value is already correct)
+                        startPoint = new Point(startPoint.X, bottomRightCorner.Y);
+                        endPoint = new Point(bottomRightCorner.X, bottomRightCorner.Y + influenceRange);
+
+                        //Following the rules for quadrant 3 - go left and down
+                        currentPoint = new Point(startPoint.X, startPoint.Y);
+                        while (endPoint != currentPoint)
+                        {
+                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                        }
+
+                        ////////////////////////////////////////////////////////////////
+                        startPoint = endPoint;
+                        //Draw in width of object
+                        sgc.LineTo(GridToScreen(new Point(bottomLeftCorner.X, startPoint.Y)), stroked, smoothJoin);
+
+                        //Draw quadrant 4
+                        //Get end value to draw from bottom-right of 4th quadrant to top-left of 4th quadrant
+                        //Move startPoint to bottomRightCorner (y value is already correct)
+                        startPoint = new Point(bottomLeftCorner.X, startPoint.Y);
+                        endPoint = new Point(bottomLeftCorner.X - influenceRange, bottomRightCorner.Y);
+
+                        //Following the rules for quadrant 4 - go up and left
+                        currentPoint = new Point(startPoint.X, startPoint.Y);
+                        while (endPoint != currentPoint)
+                        {
+                            currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                        }
+
+                        ////////////////////////////////////////////////////////////////
+                        startPoint = endPoint;
+                        //Draw in height of object
+                        sgc.LineTo(GridToScreen(new Point(startPoint.X, topLeftCorner.Y)), stroked, smoothJoin);
+
+                        //Draw quadrant 1
+                        //Get end value to draw from bottom-left of 1st quadrant to top-right of 1st quadrant
+                        //Move startPoint to topLeftCorner (x value is already correct)
+                        startPoint = new Point(startPoint.X, topLeftCorner.Y);
+                        endPoint = new Point(topLeftCorner.X, topLeftCorner.Y - influenceRange);
+
+                        //Following the rules for quadrant 1 - go up and right
+                        currentPoint = new Point(startPoint.X, startPoint.Y);
+                        while (endPoint != currentPoint)
+                        {
+                            currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
+                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                        }
+
+                        //Shape should be complete by this point.
+                    }
+                    sg.Freeze();
+                    drawingContext.DrawGeometry(_lightBrush, _radiusPen, sg);
+                }
+            }
+        }
+
         /// <summary>
         /// Renders calculated statistics of the current layout like the bounding box and space efficiency
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         protected void RenderStatistics(DrawingContext drawingContext)
         {
-
+            var language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
             var informationLines = new StringBuilder(128 * 2);//16=minimum; 127=empty box
+
             if (!_placedObjects.Any())
             {
-                informationLines.AppendLine("Nothing placed");
+                informationLines.AppendLine(Localization.Localization.Translations[language]["StatNothingPlaced"]);
             }
             else
             {
@@ -785,14 +947,14 @@ namespace AnnoDesigner
                 var minTiles = _placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
 
                 // format lines
-                informationLines.AppendLine("Bounding Box");
+                informationLines.AppendLine(Localization.Localization.Translations[language]["StatBoundingBox"]);
                 informationLines.AppendFormat(" {0}x{1}", boxX, boxY).AppendLine();
                 informationLines.AppendFormat(" {0} Tiles", boxX * boxY).AppendLine();
                 informationLines.AppendLine("");
-                informationLines.AppendLine("Minimum Area");
+                informationLines.AppendLine(Localization.Localization.Translations[language]["StatMinimumArea"]);
                 informationLines.AppendFormat(" {0} Tiles", minTiles).AppendLine();
                 informationLines.AppendLine("");
-                informationLines.AppendLine("Space efficiency");
+                informationLines.AppendLine(Localization.Localization.Translations[language]["StatSpaceEfficiency"]);
                 informationLines.AppendFormat(" {0}%", Math.Round(minTiles / boxX / boxY * 100)).AppendLine();
 
                 if (_renderBuildingCount)
@@ -802,14 +964,15 @@ namespace AnnoDesigner
                     IEnumerable<IGrouping<string, AnnoObject>> groupedBuildings;
                     if (_selectedObjects.Count > 0)
                     {
-                        informationLines.AppendLine("Buildings Selected");
+                        informationLines.AppendLine(Localization.Localization.Translations[language]["StatBuildingsSelected"]);
                         groupedBuildings = _selectedObjects.GroupBy(_ => _.Identifier);
                     }
                     else
                     {
-                        informationLines.AppendLine("Buildings");
+                        informationLines.AppendLine(Localization.Localization.Translations[language]["StatBuildings"]);
                         groupedBuildings = _placedObjects.GroupBy(_ => _.Identifier);
                     }
+
                     foreach (var item in groupedBuildings
                         .Where(_ => !_.ElementAt(0).Road && _.ElementAt(0).Identifier != null)
                         .OrderByDescending(_ => _.Count()))
@@ -819,7 +982,7 @@ namespace AnnoDesigner
                             var building = BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
                             if (building != null)
                             {
-                                informationLines.AppendFormat("{0} x {1}", item.Count(), building.Localization[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]).AppendLine();
+                                informationLines.AppendFormat("{0} x {1}", item.Count(), building.Localization[language]).AppendLine();
                             }
                             else
                             {
@@ -887,6 +1050,7 @@ namespace AnnoDesigner
         {
             return new Point(Math.Round(screenPoint.X / _gridStep), Math.Round(screenPoint.Y / _gridStep));
         }
+
 
         /// <summary>
         /// Converts a length given in (pixel-)units to grid coordinate by determining which grid edge is nearest.
@@ -992,6 +1156,10 @@ namespace AnnoDesigner
             return new Rect(obj.Position, new Size(obj.Size.Width - 0.5, obj.Size.Height - 0.5));
         }
 
+        /// <summary>
+        /// Rotates a group of objects.
+        /// </summary>
+        /// <param name="l"></param>
         private void Rotate(List<AnnoObject> l)
         {
             for (int i = 0; i < l.Count; i++)
