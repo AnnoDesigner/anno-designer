@@ -400,9 +400,9 @@ namespace AnnoDesigner
                     ApplyCurrentObject();
                 }
             }
-            catch (Exception)
+            catch (Exception whaterror)
            {
-               MessageBox.Show("Something went wrong while applying the preset.");
+               MessageBox.Show("Something went wrong while applying the preset." + Environment.NewLine + whaterror.Message);
            }
         }
         /// <summary>
