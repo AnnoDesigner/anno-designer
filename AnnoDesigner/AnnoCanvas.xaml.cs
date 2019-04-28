@@ -24,7 +24,7 @@ namespace AnnoDesigner
     /// </summary>
     public partial class AnnoCanvas : UserControl
     {
-        public event EventHandler UpdateStatistics;
+        public event EventHandler StatisticsUpdated;
 
         #region Properties
 
@@ -460,7 +460,7 @@ namespace AnnoDesigner
             _lightBrush.Freeze();
             _influencedBrush.Freeze();
 
-            UpdateStatistics?.Invoke(this, EventArgs.Empty);
+            StatisticsUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
@@ -1190,7 +1190,7 @@ namespace AnnoDesigner
                     _mouseDragStart.X += GridToScreen(dx);
                     _mouseDragStart.Y += GridToScreen(dy);
 
-                    UpdateStatistics?.Invoke(this, EventArgs.Empty);
+                    StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                 }
             }
             else if (e.LeftButton == MouseButtonState.Pressed)
@@ -1220,7 +1220,7 @@ namespace AnnoDesigner
                             // select intersecting objects
                             _selectedObjects.AddRange(_placedObjects.FindAll(_ => GetObjectScreenRect(_).IntersectsWith(_selectionRect)));
 
-                            UpdateStatistics?.Invoke(this, EventArgs.Empty);
+                            StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                             break;
                         case MouseMode.DragSelection:
                             // move all selected objects
@@ -1229,7 +1229,7 @@ namespace AnnoDesigner
                             // check if the mouse has moved at least one grid cell in any direction
                             if (dx == 0 && dy == 0)
                             {
-                                UpdateStatistics?.Invoke(this, EventArgs.Empty);
+                                StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                                 break;
                             }
                             var unselected = _placedObjects.FindAll(_ => !_selectedObjects.Contains(_));
@@ -1263,7 +1263,7 @@ namespace AnnoDesigner
                                 _mouseDragStart.Y += GridToScreen(dy);
                             }
 
-                            UpdateStatistics?.Invoke(this, EventArgs.Empty);
+                            StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                             break;
                     }
                 }
@@ -1309,7 +1309,7 @@ namespace AnnoDesigner
                             }
                         }
 
-                        UpdateStatistics?.Invoke(this, EventArgs.Empty);
+                        StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                         // return to standard mode, i.e. clear any drag-start modes
                         CurrentMode = MouseMode.Standard;
                         break;
@@ -1352,7 +1352,7 @@ namespace AnnoDesigner
                             CurrentObjects.Clear();
                         }
 
-                        UpdateStatistics?.Invoke(this, EventArgs.Empty);
+                        StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                         break;
                 }
             }
@@ -1471,7 +1471,7 @@ namespace AnnoDesigner
                 // sort the objects because borderless objects should be drawn first
                 _placedObjects.Sort((a, b) => b.Borderless.CompareTo(a.Borderless));
 
-                UpdateStatistics?.Invoke(this, EventArgs.Empty);
+                StatisticsUpdated?.Invoke(this, EventArgs.Empty);
 
                 return true;
             }

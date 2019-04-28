@@ -91,7 +91,7 @@ namespace AnnoDesigner
             annoCanvas.OnStatusMessageChanged += StatusMessageChanged;
             annoCanvas.OnLoadedFileChanged += LoadedFileChanged;
             annoCanvas.OnClipboardChanged += ClipboardChanged;
-            annoCanvas.UpdateStatistics += annoCanvas_UpdateStatistics;
+            annoCanvas.StatisticsUpdated += AnnoCanvas_StatisticsUpdated;
 
             //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
             DependencyObject dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
@@ -118,7 +118,7 @@ namespace AnnoDesigner
             LoadSettings();
         }
 
-        private void annoCanvas_UpdateStatistics(object sender, EventArgs e)
+        private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)
         {
             mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
                 annoCanvas.SelectedObjects,
@@ -130,8 +130,8 @@ namespace AnnoDesigner
             annoCanvas.RenderGrid = Settings.Default.ShowGrid;
             annoCanvas.RenderIcon = Settings.Default.ShowIcons;
             annoCanvas.RenderLabel = Settings.Default.ShowLabels;
-            toggleStatisticsView(Settings.Default.StatsShowStats);
-            toggleBuildingList(Settings.Default.StatsShowBuildingCount);
+            ToggleStatisticsView(Settings.Default.StatsShowStats);
+            ToggleBuildingList(Settings.Default.StatsShowBuildingCount);
             AutomaticUpdateCheck.IsChecked = Settings.Default.EnableAutomaticUpdateCheck;
             ShowGrid.IsChecked = Settings.Default.ShowGrid;
             ShowIcons.IsChecked = Settings.Default.ShowIcons;
@@ -440,10 +440,10 @@ namespace AnnoDesigner
 
         private void MenuItemStatsShowStatsClick(object sender, RoutedEventArgs e)
         {
-            toggleStatisticsView(((MenuItem)sender).IsChecked);
+            ToggleStatisticsView(((MenuItem)sender).IsChecked);
         }
 
-        private void toggleStatisticsView(bool showStatisticsView)
+        private void ToggleStatisticsView(bool showStatisticsView)
         {
             colStatisticsView.MinWidth = showStatisticsView ? 100 : 0;
             colStatisticsView.Width = showStatisticsView ? GridLength.Auto : new GridLength(0);
@@ -456,10 +456,10 @@ namespace AnnoDesigner
 
         private void MenuItemStatsBuildingCountClick(object sender, RoutedEventArgs e)
         {
-            toggleBuildingList(((MenuItem)sender).IsChecked);
+            ToggleBuildingList(((MenuItem)sender).IsChecked);
         }
 
-        private void toggleBuildingList(bool showBuildingList)
+        private void ToggleBuildingList(bool showBuildingList)
         {
             mainWindowLocalization.StatisticsViewModel.ShowBuildingList = showBuildingList;
             if (showBuildingList)
@@ -506,7 +506,7 @@ namespace AnnoDesigner
             // registers the .ad file extension to the anno_designer class
             Registry.SetValue(@"HKEY_CURRENT_USER\Software\Classes\.ad", null, "anno_designer");
 
-            showRegistrationMessageBox(isDeregistration: false);
+            ShowRegistrationMessageBox(isDeregistration: false);
         }
 
         private void MenuItemUnregisterExtensionClick(object sender, RoutedEventArgs e)
@@ -515,10 +515,10 @@ namespace AnnoDesigner
             Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\anno_designer");
             Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\.ad");
 
-            showRegistrationMessageBox(isDeregistration: true);
+            ShowRegistrationMessageBox(isDeregistration: true);
         }
 
-        private void showRegistrationMessageBox(bool isDeregistration)
+        private void ShowRegistrationMessageBox(bool isDeregistration)
         {
             string language = AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
             var message = isDeregistration ? AnnoDesigner.Localization.Localization.Translations[language]["UnregisterFileExtensionSuccessful"] : AnnoDesigner.Localization.Localization.Translations[language]["RegisterFileExtensionSuccessful"];
@@ -618,7 +618,7 @@ namespace AnnoDesigner
             {
                 try
                 {
-                    renderToFile(dialog.FileName, 1, exportZoom, exportSelection);
+                    RenderToFile(dialog.FileName, 1, exportZoom, exportSelection);
                 }
                 catch (Exception e)
                 {
@@ -628,13 +628,13 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Asynchronously renders the current layout to file.
+        /// Renders the current layout to file.
         /// </summary>
         /// <param name="filename">filename of the output image</param>
         /// <param name="border">normalization value used prior to exporting</param>
         /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
         /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
-        private void renderToFile(string filename, int border, bool exportZoom, bool exportSelection)
+        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection)
         {
             // normalize layout
             annoCanvas.Normalize(border);

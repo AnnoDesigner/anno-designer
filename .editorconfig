@@ -71,6 +71,29 @@ dotnet_style_explicit_tuple_names = true:suggestion
 
 # CSharp code style settings:
 [*.cs]
+#IDE1006
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
+# All of the following must be PascalCase:
+# * Namespaces
+#      See https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/names-of-namespaces
+#      See https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1300.md
+# * Class names and Enums
+#      Note: not sure if `enum members` are covered by `enum`?
+#      See https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/names-of-classes-structs-and-interfaces
+#      See https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1300.md
+# * Delegates
+#      (Suffix cannot be enforced by .editorconfig rules, as it may be either EventHandler or Callback)
+#      See https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/names-of-classes-structs-and-interfaces#names-of-common-types
+# * Methods, Properties, Events, Constructors
+#      See https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/names-of-type-members
+# 
+
+dotnet_naming_symbols.element_group.applicable_kinds = namespace, class, enum, struct, delegate, event, method, property
+dotnet_naming_rule.element_rule.symbols  = element_group
+dotnet_naming_rule.element_rule.style    = pascal_case_style
+dotnet_naming_rule.element_rule.severity = warning
+
 # Prefer "var" everywhere
 csharp_style_var_for_built_in_types = true:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion
