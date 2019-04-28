@@ -27,6 +27,7 @@ namespace AnnoDesigner.viewmodel
         private string _efficiency;
         private bool _areStatisticsAvailable;
         private bool _showBuildingList;
+        private bool _showSelectedBuildingList;
         private ObservableCollection<StatisticsBuilding> _buildings;
         private ObservableCollection<StatisticsBuilding> _selectedBuildings;
 
@@ -158,7 +159,16 @@ namespace AnnoDesigner.viewmodel
         public bool ShowBuildingList
         {
             get { return _showBuildingList; }
-            set { UpdateProperty(ref _showBuildingList, value); }
+            set
+            {
+                UpdateProperty(ref _showBuildingList, value);
+                OnPropertyChanged(nameof(ShowSelectedBuildingList));
+            }
+        }
+
+        public bool ShowSelectedBuildingList
+        {
+            get { return ShowBuildingList && SelectedBuildings.Any(); }
         }
 
         public ObservableCollection<StatisticsBuilding> Buildings
@@ -169,7 +179,11 @@ namespace AnnoDesigner.viewmodel
         public ObservableCollection<StatisticsBuilding> SelectedBuildings
         {
             get { return _selectedBuildings; }
-            set { UpdateProperty(ref _selectedBuildings, value); }
+            set
+            {
+                UpdateProperty(ref _selectedBuildings, value);
+                OnPropertyChanged(nameof(ShowSelectedBuildingList));
+            }
         }
 
         public void UpdateStatistics(List<AnnoObject> placedObjects,

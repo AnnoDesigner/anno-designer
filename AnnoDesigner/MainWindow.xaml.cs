@@ -462,6 +462,12 @@ namespace AnnoDesigner
         private void toggleBuildingList(bool showBuildingList)
         {
             mainWindowLocalization.StatisticsViewModel.ShowBuildingList = showBuildingList;
+            if (showBuildingList)
+            {
+                mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
+                    annoCanvas.SelectedObjects,
+                    annoCanvas.BuildingPresets);
+            }
         }
 
         private void MenuItemVersionCheckImageClick(object sender, RoutedEventArgs e)

@@ -107,7 +107,7 @@
                 <GroupBox x:Name="grpSelectedBuildings"
                           Header="{Binding TextBuildingsSelected}"
                           Style="{StaticResource styleGroupBox}"
-                          Visibility="{Binding ShowBuildingList, Converter={StaticResource boolToVisConverter}}">
+                          Visibility="{Binding ShowSelectedBuildingList, Converter={StaticResource boolToVisConverter}}">
                     <ItemsControl ItemsSource="{Binding SelectedBuildings}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
