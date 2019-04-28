@@ -475,9 +475,7 @@ namespace AnnoDesigner
 
         private void MenuItemUnregisterExtensionClick(object sender, RoutedEventArgs e)
         {
-            var regCheckADFileExtensionPath = @"Software\Classes\anno_designer";
-            var localMachine = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            var regCheckADFileExtension = localMachine.OpenSubKey(regCheckADFileExtensionPath, false);
+            var regCheckADFileExtension = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default).OpenSubKey(@"Software\Classes\anno_designer", false);
             if (regCheckADFileExtension != null)
             {
                 // removes the registry entries when exists          
