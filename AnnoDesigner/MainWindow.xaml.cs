@@ -137,6 +137,11 @@ namespace AnnoDesigner
             }
             comboBoxIcon.SelectedIndex = 0;
 
+            //add range types to combo box
+            comboBoxRangeType.Items.Clear();
+            comboBoxRangeType.ItemsSource = Enum.GetNames(typeof(BuildingInfluence));
+
+
             // check for updates on startup
             MenuItemVersion.Header = "Version: " + Constants.Version;
             MenuItemFileVersion.Header = "File version: " + Constants.FileVersion;

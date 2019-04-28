@@ -148,11 +148,10 @@
                         <Label Content="{Binding Path=Label}" />
                         <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxLabel" Text="Building" Width="140" TabIndex="4" />
                         <TextBox DockPanel.Dock="Right" Height="10" IsEnabled="False" Name="textBoxIdentifier" Text="" Visibility="Hidden" Width="140" />
-                        <TextBox DockPanel.Dock="Right" Height="10" IsEnabled="False" Name="textBoxInfluenceRange" Text="" Visibility="Hidden" Width="140" />
                     </DockPanel>
                     <DockPanel LastChildFill="False" Height="46">
                         <Label Content="{Binding Path=Icon}" VerticalAlignment="Center" />
-                        <ComboBox DockPanel.Dock="Right" Width="140" Height="46" IsEnabled="True" Name="comboBoxIcon" SelectedIndex="0" TabIndex="6" TextSearch.TextPath="DisplayName">
+                        <ComboBox DockPanel.Dock="Right" Width="140" Height="46" IsEnabled="True" Name="comboBoxIcon" SelectedIndex="0" TabIndex="5" TextSearch.TextPath="DisplayName">
                             <ItemsPanelTemplate>
                                 <VirtualizingStackPanel
                                     VirtualizingStackPanel.IsVirtualizing="True" 
@@ -160,23 +159,31 @@
                             </ItemsPanelTemplate>
                         </ComboBox>
                     </DockPanel>
+                    <DockPanel LastChildFill="False">
+                        <Label Content="{Binding Path=Icon}"/>
+                        <ComboBox DockPanel.Dock="Right" Width="140" Height="22" IsEnabled="True" Name="comboBoxRangeType" SelectedIndex="0" TabIndex="6" Margin="2,2,0,0"/>
+                    </DockPanel>
                     <DockPanel LastChildFill="False" Height="26">
                         <Label Content="{Binding Path=Radius}" />
-                        <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxRadius" Width="140" Text="0" TabIndex="8" />
+                        <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxRadius" Width="140" Text="0" TabIndex="7" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False">
+                        <Label Content="{Binding Path=Radius}" />
+                        <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxInfluenceRange" Text="0" Width="140" Visibility="Visible" TabIndex="9"/>
                     </DockPanel>
                     <DockPanel LastChildFill="False">
                         <Label Content="{Binding Path=Options}" />
                         <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
-                            <CheckBox Content="{Binding Path=EnableLabel}" Name="checkBoxLabel" Margin="0,5,0,5" VerticalAlignment="Center" TabIndex="9" IsChecked="False" />
-                            <CheckBox Content="{Binding Path=Borderless}" Name="checkBoxBorderless" Margin="0,0,0,5" VerticalAlignment="Center" TabIndex="10" />
-                            <CheckBox Content="{Binding Path=Road}" Name="checkBoxRoad" Margin="0,0,0,5" VerticalAlignment="Center" TabIndex="11" />
+                            <CheckBox Content="{Binding Path=EnableLabel}" Name="checkBoxLabel" Margin="0,5,0,5" VerticalAlignment="Center" TabIndex="10" IsChecked="False" />
+                            <CheckBox Content="{Binding Path=Borderless}" Name="checkBoxBorderless" Margin="0,0,0,5" VerticalAlignment="Center" TabIndex="11" />
+                            <CheckBox Content="{Binding Path=Road}" Name="checkBoxRoad" Margin="0,0,0,5" VerticalAlignment="Center" TabIndex="12" />
                         </StackPanel>
                     </DockPanel>
-                    <Button Click="ButtonPlaceBuildingClick" Content="{Binding Path=PlaceBuilding}" Height="23" TabIndex="12" />
+                    <Button Click="ButtonPlaceBuildingClick" Content="{Binding Path=PlaceBuilding}" Height="23" TabIndex="13" />
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="Building presets - not loaded" Name="GroupBoxPresets" IsEnabled="True" DockPanel.Dock="Top">
-                <TreeView Name="treeViewPresets" MouseDoubleClick="TreeViewPresetsMouseDoubleClick" KeyDown="TreeViewPresetsKeyDown" TabIndex="13" />
+                <TreeView Name="treeViewPresets" MouseDoubleClick="TreeViewPresetsMouseDoubleClick" KeyDown="TreeViewPresetsKeyDown" TabIndex="14" />
             </GroupBox>
         </DockPanel>
         <StatusBar Grid.Row="2" Grid.ColumnSpan="3">
