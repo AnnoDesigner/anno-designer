@@ -135,7 +135,7 @@ namespace AnnoDesigner
                 }
                 _renderIcon = value;
             }
-        }        
+        }
 
         /// <summary>
         /// Backing field of the CurrentObject property
@@ -324,14 +324,22 @@ namespace AnnoDesigner
         /// List of all currently placed objects.
         /// </summary>
         private List<AnnoObject> _placedObjects;
-        public List<AnnoObject> PlacedObjects { get { return _placedObjects; } }
+        public List<AnnoObject> PlacedObjects
+        {
+            get { return _placedObjects; }
+            set { _placedObjects = value; }
+        }
 
         /// <summary>
         /// List of all currently selected objects.
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
-        private readonly List<AnnoObject> _selectedObjects;
-        public List<AnnoObject> SelectedObjects { get { return _selectedObjects; } }
+        private List<AnnoObject> _selectedObjects;
+        public List<AnnoObject> SelectedObjects
+        {
+            get { return _selectedObjects; }
+            set { _selectedObjects = value; }
+        }
 
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
 
@@ -971,7 +979,7 @@ namespace AnnoDesigner
         /// <param name="gridLength"></param>
         /// <returns></returns>
         [Pure]
-        private double GridToScreen(double gridLength)
+        public double GridToScreen(double gridLength)
         {
             return gridLength * _gridStep;
         }
@@ -1524,12 +1532,16 @@ namespace AnnoDesigner
             {
                 return;
             }
+
             var dx = _placedObjects.Min(_ => _.Position.X) - border;
             var dy = _placedObjects.Min(_ => _.Position.Y) - border;
+
             _placedObjects.ForEach(_ => _.Position.X -= dx);
             _placedObjects.ForEach(_ => _.Position.Y -= dy);
+
             InvalidateVisual();
         }
+
         #endregion
 
         #region New/Save/Load/Export methods
@@ -1631,91 +1643,91 @@ namespace AnnoDesigner
             }
         }
 
-        /// <summary>
-        /// Renders the current layout to file.
-        /// </summary>
-        /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
-        /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
-        public void ExportImage(bool exportZoom, bool exportSelection)
-        {
-            var dialog = new SaveFileDialog
-            {
-                DefaultExt = Constants.ExportedImageExtension,
-                Filter = Constants.ExportDialogFilter
-            };
-            if (!string.IsNullOrEmpty(LoadedFile))
-            {
-                // default the filename to the same name as the saved layout
-                dialog.FileName = Path.GetFileNameWithoutExtension(LoadedFile);
-            }
-            if (dialog.ShowDialog() == true)
-            {
-                try
-                {
-                    RenderToFile(dialog.FileName, 1, exportZoom, exportSelection);
-                }
-                catch (Exception e)
-                {
-                    IOErrorMessageBox(e);
-                }
-            }
-        }
+        ///// <summary>
+        ///// Renders the current layout to file.
+        ///// </summary>
+        ///// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
+        ///// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
+        //public void ExportImage(bool exportZoom, bool exportSelection)
+        //{
+        //    var dialog = new SaveFileDialog
+        //    {
+        //        DefaultExt = Constants.ExportedImageExtension,
+        //        Filter = Constants.ExportDialogFilter
+        //    };
+        //    if (!string.IsNullOrEmpty(LoadedFile))
+        //    {
+        //        // default the filename to the same name as the saved layout
+        //        dialog.FileName = Path.GetFileNameWithoutExtension(LoadedFile);
+        //    }
+        //    if (dialog.ShowDialog() == true)
+        //    {
+        //        try
+        //        {
+        //            RenderToFile(dialog.FileName, 1, exportZoom, exportSelection);
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            IOErrorMessageBox(e);
+        //        }
+        //    }
+        //}
 
-        /// <summary>
-        /// Asynchronously renders the current layout to file.
-        /// </summary>
-        /// <param name="filename">filename of the output image</param>
-        /// <param name="border">normalization value used prior to exporting</param>
-        /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
-        /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
-        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection)
-        {
-            // copy all objects
-            var allObjects = _placedObjects.Select(_ => new AnnoObject(_)).ToList();
-            // copy selected objects
-            // note: should be references to the correct copied objects from allObjects
-            var selectedObjects = _selectedObjects.Select(_ => new AnnoObject(_)).ToList();
-            System.Diagnostics.Debug.WriteLine("UI thread: {0}", Thread.CurrentThread.ManagedThreadId);
-            ThreadStart renderThread = delegate
-            {
-                System.Diagnostics.Debug.WriteLine("Render thread: {0}", Thread.CurrentThread.ManagedThreadId);
-                // initialize output canvas
-                var target = new AnnoCanvas
-                {
-                    _placedObjects = allObjects,
-                    RenderGrid = RenderGrid,
-                    RenderIcon = RenderIcon,
-                    RenderLabel = RenderLabel
-                };
-                // normalize layout
-                target.Normalize(border);
-                // set zoom level
-                if (exportZoom)
-                {
-                    target.GridSize = GridSize;
-                }
-                // set selection
-                if (exportSelection)
-                {
-                    target._selectedObjects.AddRange(selectedObjects);
-                }
-                // calculate output size
-                var width = target.GridToScreen(_placedObjects.Max(_ => _.Position.X + _.Size.Width) + border) + 1;
-                var height = target.GridToScreen(_placedObjects.Max(_ => _.Position.Y + _.Size.Height) + border) + 1;
-                
-                target.Width = width;
-                target.Height = height;
-                // apply size
-                var outputSize = new Size(width, height);
-                target.Measure(outputSize);
-                target.Arrange(new Rect(outputSize));
-                // render canvas to file
-                DataIO.RenderToFile(target, filename);
-            };
-            var thread = new Thread(renderThread);
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-        }
+        ///// <summary>
+        ///// Asynchronously renders the current layout to file.
+        ///// </summary>
+        ///// <param name="filename">filename of the output image</param>
+        ///// <param name="border">normalization value used prior to exporting</param>
+        ///// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
+        ///// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
+        //private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection)
+        //{
+        //    // copy all objects
+        //    var allObjects = _placedObjects.Select(_ => new AnnoObject(_)).ToList();
+        //    // copy selected objects
+        //    // note: should be references to the correct copied objects from allObjects
+        //    var selectedObjects = _selectedObjects.Select(_ => new AnnoObject(_)).ToList();
+        //    System.Diagnostics.Debug.WriteLine("UI thread: {0}", Thread.CurrentThread.ManagedThreadId);
+        //    ThreadStart renderThread = delegate
+        //    {
+        //        System.Diagnostics.Debug.WriteLine("Render thread: {0}", Thread.CurrentThread.ManagedThreadId);
+        //        // initialize output canvas
+        //        var target = new AnnoCanvas
+        //        {
+        //            _placedObjects = allObjects,
+        //            RenderGrid = RenderGrid,
+        //            RenderIcon = RenderIcon,
+        //            RenderLabel = RenderLabel
+        //        };
+        //        // normalize layout
+        //        target.Normalize(border);
+        //        // set zoom level
+        //        if (exportZoom)
+        //        {
+        //            target.GridSize = GridSize;
+        //        }
+        //        // set selection
+        //        if (exportSelection)
+        //        {
+        //            target._selectedObjects.AddRange(selectedObjects);
+        //        }
+        //        // calculate output size
+        //        var width = target.GridToScreen(_placedObjects.Max(_ => _.Position.X + _.Size.Width) + border) + 1;
+        //        var height = target.GridToScreen(_placedObjects.Max(_ => _.Position.Y + _.Size.Height) + border) + 1;
+
+        //        target.Width = width;
+        //        target.Height = height;
+        //        // apply size
+        //        var outputSize = new Size(width, height);
+        //        target.Measure(outputSize);
+        //        target.Arrange(new Rect(outputSize));
+        //        // render canvas to file
+        //        DataIO.RenderToFile(target, filename);
+        //    };
+        //    var thread = new Thread(renderThread);
+        //    thread.SetApartmentState(ApartmentState.STA);
+        //    thread.Start();
+        //}
 
         /// <summary>
         /// Displays a message box containing some error information.

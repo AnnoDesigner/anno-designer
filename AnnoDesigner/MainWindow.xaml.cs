@@ -419,7 +419,8 @@ namespace AnnoDesigner
 
         private void MenuItemExportImageClick(object sender, RoutedEventArgs e)
         {
-            annoCanvas.ExportImage(MenuItemExportZoom.IsChecked, MenuItemExportSelection.IsChecked);
+            //annoCanvas.ExportImage(MenuItemExportZoom.IsChecked, MenuItemExportSelection.IsChecked);
+            ExportImage(MenuItemExportZoom.IsChecked, MenuItemExportSelection.IsChecked);
         }
 
         private void MenuItemGridClick(object sender, RoutedEventArgs e)
@@ -444,6 +445,9 @@ namespace AnnoDesigner
 
         private void toggleStatisticsView(bool showStatisticsView)
         {
+            colStatisticsView.MinWidth = showStatisticsView ? 100 : 0;
+            colStatisticsView.Width = showStatisticsView ? GridLength.Auto : new GridLength(0);
+
             statisticsView.Visibility = showStatisticsView ? Visibility.Visible : Visibility.Collapsed;
             statisticsView.MinWidth = showStatisticsView ? 100 : 0;
 
@@ -585,5 +589,69 @@ namespace AnnoDesigner
             SelectedLanguageChanged();
         }
 
+        /// <summary>
+        /// Renders the current layout to file.
+        /// </summary>
+        /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
+        /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
+        public void ExportImage(bool exportZoom, bool exportSelection)
+        {
+            var dialog = new SaveFileDialog
+            {
+                DefaultExt = Constants.ExportedImageExtension,
+                Filter = Constants.ExportDialogFilter
+            };
+
+            if (!string.IsNullOrEmpty(annoCanvas.LoadedFile))
+            {
+                // default the filename to the same name as the saved layout
+                dialog.FileName = Path.GetFileNameWithoutExtension(annoCanvas.LoadedFile);
+            }
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    renderToFile(dialog.FileName, 1, exportZoom, exportSelection);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, "Something went wrong while saving/loading file.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously renders the current layout to file.
+        /// </summary>
+        /// <param name="filename">filename of the output image</param>
+        /// <param name="border">normalization value used prior to exporting</param>
+        /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
+        /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
+        private void renderToFile(string filename, int border, bool exportZoom, bool exportSelection)
+        {
+            // normalize layout
+            annoCanvas.Normalize(border);
+
+            var originalGridSize = annoCanvas.GridSize;
+            // set zoom level
+            if (!exportZoom)
+            {
+                annoCanvas.GridSize = Constants.GridStepDefault;
+            }
+
+            var originalSelectedObjects = annoCanvas.SelectedObjects;
+            // set selection
+            if (!exportSelection)
+            {
+                annoCanvas.SelectedObjects.Clear();
+            }
+
+            // render canvas to file            
+            DataIO.RenderToFile(gridMain, filename);
+
+            annoCanvas.GridSize = originalGridSize;
+            annoCanvas.SelectedObjects = originalSelectedObjects;
+        }
     }
 }

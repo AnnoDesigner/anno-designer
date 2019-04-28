@@ -206,8 +206,10 @@
                 <ColumnDefinition Width="*"
                                   MinWidth="100" />
                 <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="Auto"
+                <ColumnDefinition x:Name="colStatisticsView" Width="Auto"
                                   MinWidth="100" />
+                <!-- 
+                                  MinWidth="100" -->
             </Grid.ColumnDefinitions>
 
             <my:AnnoCanvas x:Name="annoCanvas"
