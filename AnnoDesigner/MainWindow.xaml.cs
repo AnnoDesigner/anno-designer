@@ -16,6 +16,7 @@ using AnnoDesigner.Properties;
 using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace AnnoDesigner
 {
@@ -69,6 +70,19 @@ namespace AnnoDesigner
                     item.IsChecked = false;
                 }
             }
+
+            //refresh localized influence types in combo box
+            comboxBoxInfluenceType.Items.Clear();
+            string[] rangeTypes = Enum.GetNames(typeof(BuildingInfluenceType));
+            string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+
+            foreach (string rangeType in rangeTypes)
+            {
+                comboxBoxInfluenceType.Items.Add(Localization.Localization.Translations[language][rangeType]);
+            }
+            comboxBoxInfluenceType.SelectedIndex = 0;
+
+            //update settings
             Settings.Default.SelectedLanguage = SelectedLanguage;
         }
 
@@ -137,10 +151,15 @@ namespace AnnoDesigner
             }
             comboBoxIcon.SelectedIndex = 0;
 
-            //add range types to combo box
-            comboBoxRangeType.Items.Clear();
-            comboBoxRangeType.ItemsSource = Enum.GetNames(typeof(BuildingInfluence));
-
+            string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+            //add localized influence types to combo box
+            comboxBoxInfluenceType.Items.Clear();
+            string[] rangeTypes = Enum.GetNames(typeof(BuildingInfluenceType));
+            foreach (string rangeType in rangeTypes)
+            {
+                comboxBoxInfluenceType.Items.Add(Localization.Localization.Translations[language][rangeType]);
+            }
+            comboxBoxInfluenceType.SelectedIndex = 0;
 
             // check for updates on startup
             MenuItemVersion.Header = "Version: " + Constants.Version;
