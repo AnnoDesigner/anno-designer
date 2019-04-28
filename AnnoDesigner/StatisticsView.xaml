@@ -9,7 +9,7 @@
              mc:Ignorable="d"
              d:DesignHeight="350"
              d:DesignWidth="200"
-             Background="White">
+             Background="Transparent">
     <UserControl.DataContext>
         <viewmodel:StatisticsViewModel x:Name="statisticsViewModel" />
     </UserControl.DataContext>
