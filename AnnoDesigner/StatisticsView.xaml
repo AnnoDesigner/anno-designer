@@ -24,7 +24,7 @@
         <Style x:Key="styleGroupBox"
                TargetType="GroupBox">
             <Setter Property="Margin"
-                    Value="0,5" />
+                    Value="2,5" />
             <Setter Property="Padding"
                     Value="2" />
         </Style>
