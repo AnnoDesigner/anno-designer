@@ -1385,6 +1385,7 @@ namespace AnnoDesigner
                     // remove all currently selected objects from the grid and clear selection
                     _selectedObjects.ForEach(_ => _placedObjects.Remove(_));
                     _selectedObjects.Clear();
+                    StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                     break;
                 case Key.C:
                     if (_selectedObjects.Count != 0)
