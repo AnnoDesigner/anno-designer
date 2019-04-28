@@ -18,10 +18,12 @@ namespace AnnoDesigner.viewmodel
         private string _textSpaceEfficiency;
         private string _textBuildings;
         private string _textBuildingsSelected;
+        private string _textTiles;
+        private string _textNameNotFound;
 
         private string _usedArea;
-        private string _usedTiles;
-        private string _minTiles;
+        private double _usedTiles;
+        private double _minTiles;
         private string _efficiency;
         private bool _areStatisticsAvailable;
         private bool _showBuildingList;
@@ -36,10 +38,12 @@ namespace AnnoDesigner.viewmodel
             TextSpaceEfficiency = "Space Efficiency";
             TextBuildings = "Buildings";
             TextBuildingsSelected = "Buildings Selected";
+            TextTiles = "Tiles";
+            TextNameNotFound = "Building name not found";
 
             UsedArea = "12x4";
-            UsedTiles = "308 Tiles";
-            MinTiles = "48 Tiles";
+            UsedTiles = 308;
+            MinTiles = 48;
             Efficiency = "16%";
             AreStatisticsAvailable = true;
 
@@ -101,6 +105,24 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
+        public string TextTiles
+        {
+            get { return _textTiles; }
+            set
+            {
+                UpdateProperty(ref _textTiles, value);
+            }
+        }
+
+        public string TextNameNotFound
+        {
+            get { return _textNameNotFound; }
+            set
+            {
+                UpdateProperty(ref _textNameNotFound, value);
+            }
+        }
+
         #endregion
 
         public string UsedArea
@@ -109,13 +131,13 @@ namespace AnnoDesigner.viewmodel
             set { UpdateProperty(ref _usedArea, value); }
         }
 
-        public string UsedTiles
+        public double UsedTiles
         {
             get { return _usedTiles; }
             set { UpdateProperty(ref _usedTiles, value); }
         }
 
-        public string MinTiles
+        public double MinTiles
         {
             get { return _minTiles; }
             set { UpdateProperty(ref _minTiles, value); }
@@ -169,9 +191,9 @@ namespace AnnoDesigner.viewmodel
             var minTiles = placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
 
             UsedArea = string.Format("{0}x{1}", boxX, boxY);
-            UsedTiles = string.Format("{0} Tiles", boxX * boxY);
+            UsedTiles = boxX * boxY;
 
-            MinTiles = string.Format("{0} Tiles", minTiles);
+            MinTiles = minTiles;
             Efficiency = string.Format("{0}%", Math.Round(minTiles / boxX / boxY * 100));
 
             if (ShowBuildingList)
@@ -218,13 +240,13 @@ namespace AnnoDesigner.viewmodel
                         item.ElementAt(0).Identifier = "";
 
                         statisticBuilding.Count = item.Count();
-                        statisticBuilding.Name = "Building name not found";
+                        statisticBuilding.Name = TextNameNotFound;
                     }
                 }
                 else
                 {
                     statisticBuilding.Count = item.Count();
-                    statisticBuilding.Name = "Building name not found";
+                    statisticBuilding.Name = TextNameNotFound;
                 }
 
                 result.Add(statisticBuilding);

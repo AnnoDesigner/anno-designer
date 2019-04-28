@@ -91,6 +91,8 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Space Efficiency" },
                         { "StatBuildings" , "Buildings" },
                         { "StatBuildingsSelected" , "Buildings Selected" },
+                        { "StatTiles" , "Tiles"},
+                        { "StatNameNotFound" , "Building name not found"},
                         { "PresetsLoaded" , "Building presets loaded" }
                     }
                  },
@@ -162,6 +164,8 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Raumeffizienz" },
                         { "StatBuildings" , "Gebäude" },
                         { "StatBuildingsSelected" , "Ausgewählte Gebäude" },
+                        { "StatTiles" , "Kacheln"},
+                        { "StatNameNotFound" , "Gebäudename nicht gefunden"},
                         { "PresetsLoaded" , "Gebäudevorlagen geladen" }
                     }
                  },
@@ -233,6 +237,8 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Wykorzystanie Przestrzeni" },
                         { "StatBuildings" , "Budynki" },
                         { "StatBuildingsSelected" , "Wybrane Budynki" },
+                        { "StatTiles" , "Płytki"},
+                        { "StatNameNotFound" , "Nie znaleziono nazwy budynku"},
                         { "PresetsLoaded" , "Presety budynków załadowano" }
                     }
                  },
@@ -304,6 +310,8 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Космическая эффективность" },
                         { "StatBuildings" , "Здания" },
                         { "StatBuildingsSelected" , "Выбранные здания" },
+                        { "StatTiles" , "Плитка"},
+                        { "StatNameNotFound" , "Название здания не найдено"},
                         { "PresetsLoaded" , "Загружаются пресеты зданий" }
                     }
                  },
@@ -606,6 +614,8 @@ namespace AnnoDesigner.Localization
             StatisticsViewModel.TextSpaceEfficiency = Localization.Translations[language]["StatSpaceEfficiency"];
             StatisticsViewModel.TextBuildings = Localization.Translations[language]["StatBuildings"];
             StatisticsViewModel.TextBuildingsSelected = Localization.Translations[language]["StatBuildingsSelected"];
+            StatisticsViewModel.TextTiles = Localization.Translations[language]["StatTiles"];
+            StatisticsViewModel.TextNameNotFound = Localization.Translations[language]["StatNameNotFound"];
 
             //File Menu
             File = Localization.Translations[language]["File"];

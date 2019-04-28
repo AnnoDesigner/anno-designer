@@ -49,8 +49,14 @@
                     <StackPanel>
                         <TextBlock Text="{Binding UsedArea}"
                                    Style="{StaticResource styleGroupEntry}" />
-                        <TextBlock Text="{Binding UsedTiles}"
-                                   Style="{StaticResource styleGroupEntry}" />
+                        <TextBlock Style="{StaticResource styleGroupEntry}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} {1}">
+                                    <Binding Path="UsedTiles" />
+                                    <Binding Path="TextTiles" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </StackPanel>
                 </GroupBox>
 
@@ -58,8 +64,14 @@
                           Header="{Binding TextMinimumArea}"
                           Style="{StaticResource styleGroupBox}">
                     <StackPanel>
-                        <TextBlock Text="{Binding MinTiles}"
-                                   Style="{StaticResource styleGroupEntry}" />
+                        <TextBlock Style="{StaticResource styleGroupEntry}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} {1}">
+                                    <Binding Path="MinTiles" />
+                                    <Binding Path="TextTiles" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </StackPanel>
                 </GroupBox>
 
