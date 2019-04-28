@@ -159,17 +159,21 @@
                             </ItemsPanelTemplate>
                         </ComboBox>
                     </DockPanel>
-                    <DockPanel LastChildFill="False">
-                        <Label Content="{Binding Path=InfluenceType}"/>
-                        <ComboBox DockPanel.Dock="Right" Width="140" Height="22" IsEnabled="True" Name="comboxBoxInfluenceType" SelectedIndex="0" TabIndex="6" Margin="2,2,0,0"/>
-                    </DockPanel>
                     <DockPanel LastChildFill="False" Height="26">
+                        <Label Content="{Binding Path=InfluenceType}"/>
+                        <ComboBox DockPanel.Dock="Right" Width="140" Height="22" IsEnabled="True" Name="comboxBoxInfluenceType" SelectedIndex="0" TabIndex="6" 
+                                  SelectedValuePath="Key" 
+                                  DisplayMemberPath="Value"
+      
+                                  SelectionChanged="ComboxBoxInfluenceType_SelectionChanged"/>
+                    </DockPanel>
+                    <DockPanel Name="dockPanelInfluenceRadius" LastChildFill="False" Height="26" Visibility="Visible">
                         <Label Content="{Binding Path=Radius}" />
                         <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxRadius" Width="140" Text="0" TabIndex="7" />
                     </DockPanel>
-                    <DockPanel LastChildFill="False">
+                    <DockPanel Name="dockPanelInfluenceRange" LastChildFill="False" Height="26" Visibility="Visible">
                         <Label Content="{Binding Path=Distance}" />
-                        <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxInfluenceRange" Text="0" Width="140" Visibility="Visible" TabIndex="9"/>
+                        <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxInfluenceRange" Text="0" Width="140" TabIndex="9"/>
                     </DockPanel>
                     <DockPanel LastChildFill="False">
                         <Label Content="{Binding Path=Options}" />

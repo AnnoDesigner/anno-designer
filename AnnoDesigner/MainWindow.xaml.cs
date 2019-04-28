@@ -157,7 +157,7 @@ namespace AnnoDesigner
             string[] rangeTypes = Enum.GetNames(typeof(BuildingInfluenceType));
             foreach (string rangeType in rangeTypes)
             {
-                comboxBoxInfluenceType.Items.Add(Localization.Localization.Translations[language][rangeType]);
+                comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
             }
             comboxBoxInfluenceType.SelectedIndex = 0;
 
@@ -314,6 +314,27 @@ namespace AnnoDesigner
             textBoxRadius.Text = obj.Radius.ToString();
             //InfluenceRadius
             textBoxInfluenceRange.Text = obj.InfluenceRange.ToString();
+
+            //Set Influence Type combo box
+            if (obj.Radius > 0 && obj.InfluenceRange > 0)
+            {
+                //Building uses both a radius and an influence
+                //Has to be set manually 
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Both;
+            } 
+            else if (obj.Radius > 0)
+            {
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Radius;
+            }
+            else if (obj.InfluenceRange > 0)
+            {
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Distance;
+            }
+            else
+            {
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.None;
+            }
+
             // flags
             //checkBoxLabel.IsChecked = !string.IsNullOrEmpty(obj.Label);
             checkBoxBorderless.IsChecked = obj.Borderless;
@@ -570,17 +591,48 @@ namespace AnnoDesigner
 
             }
         }
+        private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
+        {
+            SelectedLanguageChanged();
+        }
+
+        private void ComboxBoxInfluenceType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var cbx = sender as ComboBox;
+            if (cbx.SelectedValue != null)
+            {
+                var influenceType = (BuildingInfluenceType)((KeyValuePair<BuildingInfluenceType, string>)cbx.SelectedItem).Key;
+                switch (influenceType)
+                {
+                    case BuildingInfluenceType.None:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
+                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        break;
+                    case BuildingInfluenceType.Radius:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Visible;
+                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        break;
+                    case BuildingInfluenceType.Distance:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
+                        dockPanelInfluenceRange.Visibility = Visibility.Visible;
+                        break;
+                    case BuildingInfluenceType.Both:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Visible;
+                        dockPanelInfluenceRange.Visibility = Visibility.Visible;
+                        break;
+                    default:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
+                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        break;
+                }
+            }
+        }
         #endregion
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
             Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
             Settings.Default.Save();
-        }
-
-        private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
-        {
-            SelectedLanguageChanged();
         }
 
     }

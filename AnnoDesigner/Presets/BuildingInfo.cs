@@ -74,8 +74,7 @@ namespace AnnoDesigner.Presets
     }
 
     /// <summary>
-    /// Holds the type of influence that a building has .
-    /// Note: As this needs to be localized, I can't just bind directly to these enum values.
+    /// Holds the influence type of a building - not stored in the buildingInfo object itself, this is used in MainWindow.
     /// </summary>
     public enum BuildingInfluenceType
     {
