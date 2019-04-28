@@ -341,76 +341,54 @@ namespace AnnoDesigner
                 Identifier = textBoxIdentifier.Text,
                 Template = textBoxTemlateName.Text
             };
+            // Turn obj.Icon into a checkable filename *iconFileNameCheck*
+            if (!string.IsNullOrEmpty(obj.Icon))
+            {
+                if (obj.Icon.StartsWith("A5_"))
+                {
+                    iconFileNameCheck = obj.Icon.Remove(0, 3) + ".png"; //when Anno 2070, it use not A5_ in the original naming.
+                }
+                else
+                {
+                    iconFileNameCheck = obj.Icon + ".png";
+                }
+            }
             // do some sanity checks
             if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
             {
-                //Checking changes vs official building info
-                //(like sizes or Icons on all objects except fields)
-                if (string.IsNullOrEmpty(obj.Icon) || obj.Icon.Contains(IconFieldNamesCheck) == false)
+                if (!string.IsNullOrEmpty(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck) == false)
                 {
-                    if (!string.IsNullOrEmpty(obj.Icon))
+                    //gets icons origin building info
+                    var buildingsIconCheck = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName == iconFileNameCheck);
+                    if (buildingsIconCheck != null)
                     {
-                        if (obj.Icon.StartsWith("A5_"))
+                        // Check X and Z Sizes if the Building Info, if one of both not right, the Object will be Unknown
+                        if ((obj.Size.Width != buildingsIconCheck.BuildBlocker["x"] && obj.Size.Width != buildingsIconCheck.BuildBlocker["z"]) || (obj.Size.Height != buildingsIconCheck.BuildBlocker["x"] && obj.Size.Height != buildingsIconCheck.BuildBlocker["z"]))
                         {
-                            iconFileNameCheck = obj.Icon.Remove(0, 3) + ".png"; //when Anno 2070, it use not A5_ in the original naming.
-                        }
-                        else
-                        {
-                            iconFileNameCheck = obj.Icon + ".png";
-                        }
-                        //gets icons origin building info
-                        var buildingsIconCheck = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName == iconFileNameCheck);
-                        if (buildingsIconCheck!=null)
-                        {
-                            // Check X and Z Sizes if the Building Info, if one of both not right, the Object will be Unknown
-                            if (obj.Size.Width != buildingsIconCheck.BuildBlocker["x"] && obj.Size.Width != buildingsIconCheck.BuildBlocker["z"])
-                            {
-                                //Size X is not correct on Building Info, call it Unknown Object
-                                obj.Identifier = "Unknown Object";
-                            }
-                            else if (obj.Size.Height != buildingsIconCheck.BuildBlocker["x"] && obj.Size.Height != buildingsIconCheck.BuildBlocker["z"])
-                            {
-                                //Size Z is not correct on Building Info, call it Unknown Object
-                                obj.Identifier = "Unknown Object";
-                            }
-                            else
-                            {
-                                //if sizes and icon is a existing building in the presets, call it that onject
-                                obj.Identifier = buildingsIconCheck.Identifier;
-                            }
-                        }
-                        else
-                        {
-                            //when itis a not existing building, then call it Unknown Object
+                            //Size X is not correct on Building Info, call it Unknown Object
                             obj.Identifier = "Unknown Object";
                         }
-                        annoCanvas.SetCurrentObject(obj);
+                        else
+                        {
+                            //if sizes and icon is a existing building in the presets, call it that onject
+                            obj.Identifier = buildingsIconCheck.Identifier;
+                        }
                     }
                     else if (textBoxTemlateName.Text.ToLower().Contains("field") == false) //check if the icon is removed from a template field
                     {
-                        //if not, call it Unknown Object
                         obj.Identifier = "Unknown Object";
                     }
-                    annoCanvas.SetCurrentObject(obj);
+                    //annoCanvas.SetCurrentObject(obj);
                 }
-                else if (!string.IsNullOrEmpty(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck) == true) //check icon is there and it is a field icon
+                else if (!string.IsNullOrEmpty(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck) == true)
                 {
-                    //Check if Filed Icon belongs to the field identifier, else set the correct icon
-                    //gets identifier origin building info
+                    //Check if Field Icon belongs to the field identifier, else set the official icon
                     var buildingsIconCheck = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == obj.Identifier);
                     if (buildingsIconCheck != null)
                     {
-                        if (obj.Icon.StartsWith("A5_"))
-                        {
-                            iconFileNameCheck = obj.Icon.Remove(0, 3) + ".png"; //when Anno 2070, it use not A5_ in the original naming.
-                        }
-                        else
-                        {
-                            iconFileNameCheck = obj.Icon + ".png";
-                        }
                         if (iconFileNameCheck != buildingsIconCheck.IconFileName)
                         {
-                            obj.Icon = buildingsIconCheck.IconFileName.Remove(buildingsIconCheck.IconFileName.Length - 4, 4);
+                            obj.Icon = buildingsIconCheck.IconFileName.Remove(buildingsIconCheck.IconFileName.Length - 4, 4); //rmeove the .png for the comboBoxIcon
                             try
                             {
                                 comboBoxIcon.SelectedItem = string.IsNullOrEmpty(obj.Icon) ? _noIconItem : comboBoxIcon.Items.Cast<IconImage>().Single(_ => _.Name == Path.GetFileNameWithoutExtension(obj.Icon));
@@ -419,15 +397,18 @@ namespace AnnoDesigner
                             {
                                 comboBoxIcon.SelectedItem = _noIconItem;
                             }
-                            annoCanvas.SetCurrentObject(obj);
                         }
-                        annoCanvas.SetCurrentObject(obj);
                     }
                     else
                     {
                         //when it is a not existing building, then call it Unknown Object
                         obj.Identifier = "Unknown Object";
                     }
+                    //annoCanvas.SetCurrentObject(obj);
+                }
+                if (textBoxTemlateName.Text.ToLower().Contains("field") == false && string.IsNullOrEmpty(obj.Icon))
+                {
+                    obj.Identifier = "Unknown Object";
                 }
                 // set current object to mouse (original line)
                 annoCanvas.SetCurrentObject(obj);
@@ -566,10 +547,12 @@ namespace AnnoDesigner
         private void MenuItemUnregisterExtensionClick(object sender, RoutedEventArgs e)
         {
             // removes the registry entries            
-            Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\anno_designer");
-            Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\.ad");
+
+            Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\anno_designer",true);
+            Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\.ad",true);
 
             showRegistrationMessageBox(isDeregistration: true);
+
         }
 
         private void showRegistrationMessageBox(bool isDeregistration)
