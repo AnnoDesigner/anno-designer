@@ -14,10 +14,10 @@ namespace AnnoDesigner.Presets
     public class BuildingPresets
     {
         [DataMember(Order = 0)]
-        public string Version;
+        public string Version { get; set; }
 
         [DataMember(Order = 1)]
-        public List<BuildingInfo> Buildings;
+        public List<BuildingInfo> Buildings { get; set; }
 
         public void AddToTree(TreeView treeView)
         {
