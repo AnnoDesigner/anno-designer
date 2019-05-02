@@ -475,11 +475,15 @@ namespace AnnoDesigner
 
         private void MenuItemUnregisterExtensionClick(object sender, RoutedEventArgs e)
         {
-            // removes the registry entries            
-            Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\anno_designer");
-            Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\.ad");
+            var regCheckADFileExtension = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default).OpenSubKey(@"Software\Classes\anno_designer", false);
+            if (regCheckADFileExtension != null)
+            {
+                // removes the registry entries when exists          
+                Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\anno_designer");
+                Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\.ad");
 
-            showRegistrationMessageBox(isDeregistration: true);
+                showRegistrationMessageBox(isDeregistration: true);
+            }
         }
 
         private void showRegistrationMessageBox(bool isDeregistration)
