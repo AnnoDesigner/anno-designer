@@ -15,78 +15,70 @@ namespace AnnoDesigner
         /// Size in grid units
         /// </summary>
         [DataMember]
-        public Size Size;
+        public Size Size { get; set; }
 
         /// <summary>
         /// Color used to fill this object
         /// </summary>
         [DataMember]
-        public SerializableColor Color;
+        public SerializableColor Color { get; set; }
 
         /// <summary>
         /// Position in grid units
         /// </summary>
         [DataMember]
-        public Point Position;
+        public Point Position { get; set; }
 
         /// <summary>
         /// Filename for an icon
         /// </summary>
         [DataMember]
-        public string Icon;
+        public string Icon { get; set; }
 
         /// <summary>
         /// Label string
         /// </summary>
         [DataMember]
-        public string Label
-        {
-            get;
-            set;
-        }
+        public string Label { get; set; }
 
         /// <summary>
         /// ObjName string
         /// </summary>
         [DataMember]
-        public string Identifier;
+        public string Identifier { get; set; }
 
-        /// <summary>
+        /* /// <summary>
         /// Localization string
         /// </summary>
-        /* [DataMember]
-        public string[] Localization
-        {
-            get;
-            set;
-        }*/
-        
+        [DataMember]
+        public string[] Localization { get; set; }*/
+
         /// <summary>
         /// Influence radius in grid units
         /// </summary>
         [DataMember]
-        public double Radius;
+        public double Radius { get; set; }
 
         /// <summary>
         /// Influence range in grid units
         /// </summary>
         [DataMember]
-        public double InfluenceRange;
+        public double InfluenceRange { get; set; }
 
         /// <summary>
         /// Indicates whether the border should be omitted.
         /// </summary>
         [DataMember]
-        public bool Borderless;
+        public bool Borderless { get; set; }
 
         /// <summary>
         /// Indicates whether the object is treated as a road tile.
         /// </summary>
         [DataMember]
-        public bool Road;
+        public bool Road { get; set; }
 
         //[DataMember]
-        //public SerializableDictionary<int> BuildCosts;
+        //public SerializableDictionary<int> BuildCosts { get; set; }
 
         /// <summary>
         /// Empty constructor needed for deserialization

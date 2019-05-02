@@ -95,7 +95,7 @@ namespace AnnoDesigner
         private class LayoutVersionContainer
         {
             [DataMember]
-            public int FileVersion;
+            public int FileVersion { get; set; }
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace AnnoDesigner
             : LayoutVersionContainer
         {
             [DataMember]
-            public List<AnnoObject> Objects;
+            public List<AnnoObject> Objects { get; set; }
 
             public SavedLayout(List<AnnoObject> objects)
             {
