@@ -7,6 +7,6 @@ namespace AnnoDesigner.Presets
     public class ColorPresets
     {
         [DataMember]
-        public List<ColorScheme> ColorSchemes;
+        public List<ColorScheme> ColorSchemes { get; set; }
     }
 }
