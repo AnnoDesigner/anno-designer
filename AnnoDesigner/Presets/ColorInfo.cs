@@ -9,19 +9,13 @@ namespace AnnoDesigner.Presets
         [DataMember]
         private string Target
         {
-            get
-            {
-                return ColorTarget.ToString();
-            }
-            set
-            {
-                ColorTarget = (ColorTarget) Enum.Parse(typeof (ColorTarget), value);
-            }
+            get { return ColorTarget.ToString(); }
+            set { ColorTarget = (ColorTarget)Enum.Parse(typeof(ColorTarget), value); }
         }
-        
-        public ColorTarget ColorTarget;
+
+        public ColorTarget ColorTarget { get; set; }
 
         [DataMember]
-        public SerializableColor Color;
+        public SerializableColor Color { get; set; }
     }
 }

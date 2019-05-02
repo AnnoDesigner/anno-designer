@@ -282,8 +282,8 @@ namespace AnnoDesigner
                 return;
             }
             // size
-            textBoxWidth.Text = obj.Size.Width.ToString();
-            textBoxHeight.Text = obj.Size.Height.ToString();
+            textBoxWidth.Value = (int)obj.Size.Width;
+            textBoxHeight.Value = (int)obj.Size.Height;
             // color
             colorPicker.SelectedColor = obj.Color;
             // label
@@ -300,7 +300,7 @@ namespace AnnoDesigner
                 comboBoxIcon.SelectedItem = _noIconItem;
             }
             // radius
-            textBoxRadius.Text = obj.Radius.ToString();
+            textBoxRadius.Value = obj.Radius;
             //InfluenceRadius
             textBoxInfluenceRange.Text = obj.InfluenceRange.ToString();
             // flags
@@ -340,11 +340,11 @@ namespace AnnoDesigner
             // parse user inputs and create new object
             AnnoObject obj = new AnnoObject
             {
-                Size = new Size(int.Parse(textBoxWidth.Text), int.Parse(textBoxHeight.Text)),
+                Size = new Size(textBoxWidth?.Value ?? 1, textBoxHeight?.Value ?? 1),
                 Color = colorPicker.SelectedColor.HasValue ? colorPicker.SelectedColor.Value : Colors.Red,
                 Label = IsChecked(checkBoxLabel) ? textBoxLabel.Text : "",
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
-                Radius = string.IsNullOrEmpty(textBoxRadius.Text) ? 0 : double.Parse(textBoxRadius.Text, CultureInfo.InvariantCulture),
+                Radius = textBoxRadius?.Value ?? 0,
                 InfluenceRange = string.IsNullOrEmpty(textBoxInfluenceRange.Text) ? 0 : double.Parse(textBoxInfluenceRange.Text, CultureInfo.InvariantCulture),
                 Borderless = IsChecked(checkBoxBorderless),
                 Road = IsChecked(checkBoxRoad),
@@ -511,11 +511,14 @@ namespace AnnoDesigner
 
         private void MenuItemUnregisterExtensionClick(object sender, RoutedEventArgs e)
         {
-            // removes the registry entries            
-            Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\anno_designer");
-            Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\.ad");
+            var regCheckADFileExtension = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default).OpenSubKey(@"Software\Classes\anno_designer", false);
+            if (regCheckADFileExtension != null)
+            {
+                // removes the registry entries when exists          
+                Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\anno_designer");
+                Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\.ad");
 
-            ShowRegistrationMessageBox(isDeregistration: true);
+                ShowRegistrationMessageBox(isDeregistration: true);
         }
 
         private void ShowRegistrationMessageBox(bool isDeregistration)

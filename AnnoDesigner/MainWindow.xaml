@@ -50,6 +50,7 @@
             <ColumnDefinition Width="Auto"
                               MinWidth="100" />
         </Grid.ColumnDefinitions>
+
         <Menu Name="Menu"
               Height="23"
               VerticalAlignment="Top"
@@ -246,20 +247,28 @@
                     <DockPanel LastChildFill="False"
                                Height="26">
                         <Label Content="{Binding Path=Size}" />
-                        <TextBox DockPanel.Dock="Right"
-                                 Height="23"
-                                 Name="textBoxHeight"
-                                 Text="4"
-                                 Width="40"
-                                 TabIndex="1" />
+                        <xctk:IntegerUpDown DockPanel.Dock="Right"
+                                            Height="23"
+                                            IsEnabled="True"
+                                            Name="textBoxHeight"
+                                            Width="50"
+                                            DefaultValue="4"
+                                            DisplayDefaultValueOnEmptyText="True"
+                                            Increment="1"
+                                            Minimum="1"
+                                            TabIndex="1" />
                         <Label Content="x"
                                DockPanel.Dock="Right" />
-                        <TextBox DockPanel.Dock="Right"
-                                 Height="23"
-                                 Name="textBoxWidth"
-                                 Text="4"
-                                 Width="40"
-                                 TabIndex="0" />
+                        <xctk:IntegerUpDown DockPanel.Dock="Right"
+                                            Height="23"
+                                            IsEnabled="True"
+                                            Name="textBoxWidth"
+                                            Width="50"
+                                            DefaultValue="4"
+                                            DisplayDefaultValueOnEmptyText="True"
+                                            Increment="1"
+                                            Minimum="1"
+                                            TabIndex="0" />
                     </DockPanel>
                     <DockPanel LastChildFill="False"
                                Height="26">
@@ -323,13 +332,17 @@
                     <DockPanel LastChildFill="False"
                                Height="26">
                         <Label Content="{Binding Path=Radius}" />
-                        <TextBox DockPanel.Dock="Right"
-                                 Height="23"
-                                 IsEnabled="True"
-                                 Name="textBoxRadius"
-                                 Width="140"
-                                 Text="0"
-                                 TabIndex="8" />
+
+                        <xctk:DoubleUpDown DockPanel.Dock="Right"
+                                           Height="23"
+                                           IsEnabled="True"
+                                           Name="textBoxRadius"
+                                           Width="140"
+                                           DefaultValue="0"
+                                           DisplayDefaultValueOnEmptyText="True"
+                                           Increment="1"
+                                           Minimum="0"
+                                           TabIndex="8" />
                     </DockPanel>
                     <DockPanel LastChildFill="False">
                         <Label Content="{Binding Path=Options}" />
@@ -369,16 +382,10 @@
                           TabIndex="13" />
             </GroupBox>
         </DockPanel>
-        
-        <StatusBar Grid.Row="2"
-                   Grid.ColumnSpan="3">
-            <StatusBarItem Content="Mouse controls: left - place, select, move / right - stop placement, remove / both - move all / double click - copy / wheel - zoom / wheel-click - rotate." />
-            <StatusBarItem Name="StatusBarItemStatus"
-                           Content="Standard"
-                           Margin="10,0,0,0" />
-            <StatusBarItem Name="StatusBarItemClipboardStatus"
-                           Margin="10,0,0,0"
-                           HorizontalAlignment="Right" />
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="3">
+            <StatusBarItem Content="{Binding StatusBarControls}" />
+            <StatusBarItem Name="StatusBarItemStatus" Content="Standard" Margin="10,0,0,0" />
+            <StatusBarItem Name="StatusBarItemClipboardStatus" Margin="10,0,0,0" HorizontalAlignment="Right" />
         </StatusBar>
     </Grid>
 </Window>

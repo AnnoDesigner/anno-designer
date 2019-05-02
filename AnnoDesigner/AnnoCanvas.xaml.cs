@@ -532,9 +532,9 @@ namespace AnnoDesigner
                     // draw influence range
                     RenderObjectInfluenceRange(drawingContext, _currentObjects);
                     // draw with transparency
-                    CurrentObjects.ForEach(_ => _.Color.A = 128);
+                    CurrentObjects.ForEach(_ => _.Color = new SerializableColor(128, _.Color.R, _.Color.G, _.Color.B));
                     RenderObject(drawingContext, CurrentObjects);
-                    CurrentObjects.ForEach(_ => _.Color.A = 255);
+                    CurrentObjects.ForEach(_ => _.Color = new SerializableColor(255, _.Color.R, _.Color.G, _.Color.B));
                 }
             }
 
@@ -586,9 +586,7 @@ namespace AnnoDesigner
                 for (int i = 0; i < CurrentObjects.Count; i++)
                 {
                     var pos = GridToScreen(CurrentObjects[i].Position);
-                    CurrentObjects[i].Position.X = pos.X + dx;
-                    CurrentObjects[i].Position.Y = pos.Y + dy;
-                    CurrentObjects[i].Position = RoundScreenToGrid(CurrentObjects[i].Position);
+                    CurrentObjects[i].Position = RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy));
                 }
             }
             else
@@ -1058,8 +1056,7 @@ namespace AnnoDesigner
                 //moving the xPrime position (still in grid coordinates).
                 xPrime -= l[i].Size.Width;
 
-                l[i].Position.X = xPrime;
-                l[i].Position.Y = yPrime;
+                l[i].Position = new Point(xPrime, yPrime);
             }
         }
 
@@ -1183,8 +1180,7 @@ namespace AnnoDesigner
                 {
                     foreach (var obj in _placedObjects)
                     {
-                        obj.Position.X += dx;
-                        obj.Position.Y += dy;
+                        obj.Position = new Point(obj.Position.X + dx, obj.Position.Y + dy);
                     }
                     // adjust the drag start to compensate the amount we already moved
                     _mouseDragStart.X += GridToScreen(dx);
@@ -1238,9 +1234,8 @@ namespace AnnoDesigner
                             foreach (var obj in _selectedObjects)
                             {
                                 var originalPosition = obj.Position;
-                                // move object
-                                obj.Position.X += dx;
-                                obj.Position.Y += dy;
+                                // move object                                
+                                obj.Position = new Point(obj.Position.X + dx, obj.Position.Y + dy);
                                 // check for collisions
                                 var collides = unselected.Find(_ => ObjectIntersectionExists(obj, _)) != null;
                                 obj.Position = originalPosition;
@@ -1255,8 +1250,7 @@ namespace AnnoDesigner
                             {
                                 foreach (var obj in _selectedObjects)
                                 {
-                                    obj.Position.X += dx;
-                                    obj.Position.Y += dy;
+                                    obj.Position = new Point(obj.Position.X + dx, obj.Position.Y + dy);
                                 }
                                 // adjust the drag start to compensate the amount we already moved
                                 _mouseDragStart.X += GridToScreen(dx);
@@ -1536,10 +1530,8 @@ namespace AnnoDesigner
 
             var dx = _placedObjects.Min(_ => _.Position.X) - border;
             var dy = _placedObjects.Min(_ => _.Position.Y) - border;
-
-            _placedObjects.ForEach(_ => _.Position.X -= dx);
-            _placedObjects.ForEach(_ => _.Position.Y -= dy);
-
+            _placedObjects.ForEach(_ => _.Position = new Point(_.Position.X - dx, _.Position.Y - dy));
+            
             InvalidateVisual();
         }
 
