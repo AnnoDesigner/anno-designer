@@ -6,9 +6,9 @@ namespace AnnoDesigner.Presets
     public class IconNameMap
     {
         [DataMember]
-        public string IconFilename;
+        public string IconFilename { get; set; }
 
         [DataMember]
-        public SerializableDictionary<string> Localizations;
+        public SerializableDictionary<string> Localizations { get; set; }
     }
 }
