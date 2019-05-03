@@ -51,6 +51,9 @@
     </Compile>
     <Compile Include="converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Localization.cs" />
+    <Compile Include="MainControl.xaml.cs">
+      <DependentUpon>MainControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="model\StatisticsBuilding.cs" />
     <Compile Include="model\Notify.cs" />
     <Compile Include="Presets\BuildingInfo.cs" />
@@ -83,6 +86,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AnnoCanvas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
