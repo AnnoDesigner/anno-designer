@@ -25,7 +25,6 @@ namespace AnnoDesigner
     public partial class AnnoCanvas : UserControl
     {
         #region Properties
-
         /// <summary>
         /// Contains all loaded icons as a mapping of name (the filename without extension) to loaded BitmapImage.
         /// </summary>
@@ -697,7 +696,7 @@ namespace AnnoDesigner
                 {
                     var textPoint = objRect.TopLeft;
                     var text = new FormattedText(obj.Label, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                                 TYPEFACE, 12, Brushes.Black, null, TextFormattingMode.Display)
+                                                 TYPEFACE, 12, Brushes.Black, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
                     {
                         MaxTextWidth = objRect.Width,
                         MaxTextHeight = objRect.Height
@@ -1001,7 +1000,7 @@ namespace AnnoDesigner
             // render all the lines            
             var text = informationLines.ToString();
             var f = new FormattedText(text, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                           TYPEFACE, 12, Brushes.Black, null, TextFormattingMode.Display)
+                                           TYPEFACE, 12, Brushes.Black, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
             {
                 MaxTextWidth = Constants.StatisticsMargin - 20,
                 MaxTextHeight = RenderSize.Height,

@@ -9,8 +9,7 @@ namespace AnnoDesigner
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App
-        : Application
+    public partial class App : Application
     {
         public static string ExecutablePath
         {
@@ -58,6 +57,10 @@ namespace AnnoDesigner
             if (ex != null) LogErrorMessage(ex);
         }
 
+        /// <summary>
+        /// Writes an exception to the error log
+        /// </summary>
+        /// <param name="e"></param>
         private void LogErrorMessage(Exception e)
         {
             try
@@ -71,6 +74,12 @@ namespace AnnoDesigner
             }
         }
 
+        /// <summary>
+        /// Writes a message to the error log.
+        /// </summary>
+        /// <param name="heading">The value for the heading in the error log.</param>
+        /// <param name="message">The error message.</param>
+        /// <param name="stackTrace">The stack trace for the error.</param>
         public static void WriteToErrorLog(string heading, string message, string stackTrace)
         {
             try
@@ -82,5 +91,10 @@ namespace AnnoDesigner
                 //Don't rethrow.
             }
         }
+
+        /// <summary>
+        /// The DPI information for the current monitor.
+        /// </summary>
+        public static DpiScale DpiScale { get; set; } 
     }
 }
