@@ -519,6 +519,7 @@ namespace AnnoDesigner
                 Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\.ad");
 
                 ShowRegistrationMessageBox(isDeregistration: true);
+            }
         }
 
         private void ShowRegistrationMessageBox(bool isDeregistration)
