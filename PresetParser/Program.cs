@@ -28,7 +28,7 @@ namespace PresetParser
         public const string ANNO_VERSION_2205 = "2205";
         public const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "3.0.0";
+        private const string BUILDING_PRESETS_VERSION = "3.0.1";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "polish", "russian" };
