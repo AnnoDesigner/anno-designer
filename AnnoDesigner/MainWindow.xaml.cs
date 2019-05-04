@@ -361,6 +361,7 @@ namespace AnnoDesigner
             {
                 if (!string.IsNullOrEmpty(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck) == false)
                 {
+                    ///the text 'Uknown Object' is localized within AnnoCanvas.xaml.cs in the RenderStatistics method
                     //gets icons origin building info
                     var buildingsIconCheck = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName == iconFileNameCheck);
                     if (buildingsIconCheck != null)
@@ -381,7 +382,6 @@ namespace AnnoDesigner
                     {
                         obj.Identifier = "Unknown Object";
                     }
-                    //annoCanvas.SetCurrentObject(obj);
                 }
                 else if (!string.IsNullOrEmpty(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck) == true)
                 {
@@ -407,7 +407,6 @@ namespace AnnoDesigner
                         //when it is a not existing building, then call it Unknown Object
                         obj.Identifier = "Unknown Object";
                     }
-                    //annoCanvas.SetCurrentObject(obj);
                 }
                 if (textBoxTemlateName.Text.ToLower().Contains("field") == false && string.IsNullOrEmpty(obj.Icon))
                 {
