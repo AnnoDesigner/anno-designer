@@ -13,45 +13,51 @@ namespace AnnoDesigner.Presets
     {
         // technical information
         //[DataMember(Name = "GUID")]
-        //public int Guid;
+        //public int Guid { get; set; }
         //[DataMember(Name = ".ifo")]
-        //public int IfoFile;
-
-        // main
+        //public int IfoFile { get; set; }
+        
         [DataMember]
-        public SerializableDictionary<int> BuildBlocker;
-        [DataMember]
-        public string Identifier;
-        [DataMember]
-        public string IconFileName;
-        [DataMember]
-        public int InfluenceRadius;
-        [DataMember]
-        public int InfluenceRange;
+        public SerializableDictionary<int> BuildBlocker { get; set; }
 
         [DataMember]
-        public SerializableDictionary<string> Localization;
+        public string Identifier { get; set; }
+
+        [DataMember]
+        public string IconFileName { get; set; }
+
+        [DataMember]
+        public int InfluenceRadius { get; set; }
+
+        [DataMember]
+        public int InfluenceRange { get; set; }
+
+        [DataMember]
+        public SerializableDictionary<string> Localization { get; set; }
 
         //[DataMember]
-        //public SerializableDictionary<int> BuildCost;
-        
+        //public SerializableDictionary<int> BuildCost { get; set; }
+
         // grouping
         [DataMember]
-        public string Header;
+        public string Header { get; set; }
+
         [DataMember]
-        public string Faction;
+        public string Faction { get; set; }
+
         [DataMember]
-        public string Group;
+        public string Group { get; set; }
+
         [DataMember]
-        public string Template;
+        public string Template { get; set; }
 
         // production
         //[DataMember(Name = "Production.Product.GUID")]
-        //public int ProductGUID;
+        //public int ProductGUID { get; set; }
         //[DataMember(Name = "Production.Product.Name")]
-        //public string ProductName;
+        //public string ProductName { get; set; }
         //[DataMember(Name = "Production.Product.Eng1")]
-        //public string ProductEng1;
+        //public string ProductEng1 { get; set; }
 
         public AnnoObject ToAnnoObject()
         {

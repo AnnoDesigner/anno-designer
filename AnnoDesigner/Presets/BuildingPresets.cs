@@ -13,11 +13,11 @@ namespace AnnoDesigner.Presets
     [DataContract]
     public class BuildingPresets
     {
-        [DataMember]
-        public string Version;
+        [DataMember(Order = 0)]
+        public string Version { get; set; }
 
-        [DataMember]
-        public List<BuildingInfo> Buildings;
+        [DataMember(Order = 1)]
+        public List<BuildingInfo> Buildings { get; set; }
 
         public void AddToTree(TreeView treeView)
         {
@@ -34,7 +34,7 @@ namespace AnnoDesigner.Presets
                             .Where(_ => _.Faction != "Facilities")
                             .ToList();
             var facilityList = list.Where(_ => _.Faction == "Facilities").ToList();
-                //Get a list of nonMatchedModules;
+            //Get a list of nonMatchedModules;
             var nonMatchedModulesList = modulesList.Except(facilityList, new BuildingInfoModuleComparer()).ToList();
             //These appear to all match. The below statement should notify the progammer if we need to add handling for non matching lists
             System.Diagnostics.Debug.Assert(nonMatchedModulesList.Count == 0, "Module lists do not match, implement handling for this");
@@ -45,7 +45,7 @@ namespace AnnoDesigner.Presets
                 foreach (var secondLevel in header.GroupBy(_ => _.Faction).OrderBy(_ => _.Key))
                 {
                     var secondLevelItem = new TreeViewItem { Header = secondLevel.Key };
-                  
+
                     foreach (var thirdLevel in secondLevel.Where(_ => _.Group != null).GroupBy(_ => _.Group).OrderBy(_ => _.Key))
                     {
                         var thirdLevelItem = new TreeViewItem { Header = thirdLevel.Key };
