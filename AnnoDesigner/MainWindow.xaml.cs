@@ -16,6 +16,7 @@ using AnnoDesigner.Properties;
 using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace AnnoDesigner
 {
@@ -622,7 +623,7 @@ namespace AnnoDesigner
             {
                 try
                 {
-                    RenderToFile(dialog.FileName, 1, exportZoom, exportSelection);
+                    RenderToFile(dialog.FileName, 1, exportZoom, exportSelection, statisticsView.IsVisible);
                 }
                 catch (Exception e)
                 {
@@ -632,36 +633,74 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Renders the current layout to file.
+        /// Asynchronously renders the current layout to file.
         /// </summary>
         /// <param name="filename">filename of the output image</param>
         /// <param name="border">normalization value used prior to exporting</param>
         /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
         /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
-        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection)
+        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection, bool renderStatistics)
         {
-            // normalize layout
-            annoCanvas.Normalize(border);
-
-            var originalGridSize = annoCanvas.GridSize;
-            // set zoom level
-            if (!exportZoom)
+            if (annoCanvas.PlacedObjects.Count == 0)
             {
-                annoCanvas.GridSize = Constants.GridStepDefault;
+                return;
             }
-
-            var originalSelectedObjects = annoCanvas.SelectedObjects;
-            // set selection
-            if (!exportSelection)
+            // copy all objects
+            var allObjects = annoCanvas.PlacedObjects.Select(_ => new AnnoObject(_)).ToList();
+            // copy selected objects
+            // note: should be references to the correct copied objects from allObjects
+            var selectedObjects = annoCanvas.SelectedObjects.Select(_ => new AnnoObject(_)).ToList();
+            System.Diagnostics.Debug.WriteLine("UI thread: {0}", Thread.CurrentThread.ManagedThreadId);
+            void renderThread()
             {
-                annoCanvas.SelectedObjects.Clear();
+                System.Diagnostics.Debug.WriteLine("Render thread: {0}", Thread.CurrentThread.ManagedThreadId);
+                // initialize output canvas
+                var target = new AnnoCanvas
+                {
+                    PlacedObjects = allObjects,
+                    RenderGrid = annoCanvas.RenderGrid,
+                    RenderIcon = annoCanvas.RenderIcon,
+                    RenderLabel = annoCanvas.RenderLabel
+                };
+                // normalize layout
+                target.Normalize(border);
+                // set zoom level
+                if (exportZoom)
+                {
+                    target.GridSize = annoCanvas.GridSize;
+                }
+                // set selection
+                if (exportSelection)
+                {
+                    target.SelectedObjects.AddRange(selectedObjects);
+                }
+
+                // calculate output size
+                var width = target.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border) + 1;
+                var height = target.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border) + 1;
+
+                if (renderStatistics)
+                {
+                    var statisticsView = new StatisticsView();
+                    statisticsView.Margin = new Thickness(10, 0, 10, 0);
+                    statisticsView.statisticsViewModel.UpdateStatistics(target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
+                    target.StatisticsPanel.Children.Add(statisticsView);
+                    width += Constants.StatisticsMargin + 10;
+                }
+
+                target.Width = width;
+                target.Height = height;
+                target.UpdateLayout();
+                // apply size
+                var outputSize = new Size(width, height);
+                target.Measure(outputSize);
+                target.Arrange(new Rect(outputSize));
+                // render canvas to file
+                DataIO.RenderToFile(target, filename);
             }
-
-            // render canvas to file            
-            DataIO.RenderToFile(gridMain, filename);
-
-            annoCanvas.GridSize = originalGridSize;
-            annoCanvas.SelectedObjects = originalSelectedObjects;
+            var thread = new Thread(renderThread);
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
         }
     }
 }
