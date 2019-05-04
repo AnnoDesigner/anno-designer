@@ -280,10 +280,20 @@ namespace AnnoDesigner
             // icon
             try
             {
-                comboBoxIcon.SelectedItem = string.IsNullOrEmpty(obj.Icon) ? _noIconItem : comboBoxIcon.Items.Cast<IconImage>().Single(_ => _.Name == Path.GetFileNameWithoutExtension(obj.Icon));
+                if (string.IsNullOrWhiteSpace(obj.Icon))
+                {
+                    comboBoxIcon.SelectedItem = _noIconItem;
+                }
+                else
+                {
+                    var foundIconImage = comboBoxIcon.Items.Cast<IconImage>().SingleOrDefault(x => x.Name.Equals(Path.GetFileNameWithoutExtension(obj.Icon), StringComparison.OrdinalIgnoreCase));
+                    comboBoxIcon.SelectedItem = foundIconImage ?? _noIconItem;
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error finding {nameof(IconImage)} for value \"{obj.Icon}\".{Environment.NewLine}{ex}");
+
                 comboBoxIcon.SelectedItem = _noIconItem;
             }
             // radius
