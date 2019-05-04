@@ -272,13 +272,6 @@
                                  Text=""
                                  Visibility="Hidden"
                                  Width="140" />
-                        <TextBox DockPanel.Dock="Right"
-                                 Height="10"
-                                 IsEnabled="False"
-                                 Name="textBoxInfluenceRange"
-                                 Text=""
-                                 Visibility="Hidden"
-                                 Width="140" />
                     </DockPanel>
                     <DockPanel LastChildFill="False"
                                Height="46">
@@ -306,23 +299,38 @@
       
                                   SelectionChanged="ComboxBoxInfluenceType_SelectionChanged"/>
                     </DockPanel>
-                    <DockPanel Name="dockPanelInfluenceRadius" LastChildFill="False" Height="26" Visibility="Visible">
+                    <DockPanel Name="dockPanelInfluenceRadius" 
+                               LastChildFill="False"
+                               Height="26" 
+                               Visibility="Visible">
                         <Label Content="{Binding Path=Radius}" />
                         <xctk:DoubleUpDown DockPanel.Dock="Right"
                                            Height="23"
-                                           IsEnabled="True"
-                                           Name="textBoxRadius"
                                            Width="140"
+                                           Name="textBoxRadius"
+                                           IsEnabled="True"
                                            DefaultValue="0"
                                            DisplayDefaultValueOnEmptyText="True"
                                            Increment="1"
                                            Minimum="0"
                                            TabIndex="8" />
-                        <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxRadius" Width="140" Text="0" TabIndex="7" />
                     </DockPanel>
-                    <DockPanel Name="dockPanelInfluenceRange" LastChildFill="False" Height="26" Visibility="Visible">
+                    <DockPanel Name="dockPanelInfluenceRange" 
+                               LastChildFill="False" 
+                               Height="26" 
+                               Visibility="Visible">
                         <Label Content="{Binding Path=Distance}" />
-                        <TextBox DockPanel.Dock="Right" Height="23" IsEnabled="True" Name="textBoxInfluenceRange" Text="0" Width="140" TabIndex="9"/>
+                        <xctk:DoubleUpDown DockPanel.Dock="Right"
+                                           Height="23" 
+                                           Width="140"
+                                           Name="textBoxInfluenceRange" 
+                                           IsEnabled="True" 
+                                           DefaultValue="0"
+                                           DisplayDefaultValueOnEmptyText="True"
+                                           Increment="1"
+                                           Minimum="0"
+                                           AllowSpin="True"
+                                           TabIndex="9"/>
                     </DockPanel>
                     <DockPanel LastChildFill="False">
                         <Label Content="{Binding Path=Options}" />
