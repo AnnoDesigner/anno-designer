@@ -44,21 +44,13 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="27*" />
-            <ColumnDefinition Width="13*" />
-            <ColumnDefinition Width="230" />
+            <ColumnDefinition Width="*"
+                              MinWidth="100" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="Auto"
+                              MinWidth="100" />
         </Grid.ColumnDefinitions>
-        <my:AnnoCanvas x:Name="annoCanvas"
-                       Grid.RowSpan="1"
-                       Grid.Row="1"
-                       RenderGrid="True"
-                       RenderIcon="True"
-                       RenderLabel="True"
-                       RenderStats="True"
-                       Grid.ColumnSpan="2" />
-        <GridSplitter Grid.Row="1"
-                      Width="6"
-                      Grid.Column="1" />
+
         <Menu Name="Menu"
               Height="23"
               VerticalAlignment="Top"
@@ -207,6 +199,17 @@
                       Click="MenuItemIconClick"
                       TabIndex="28" />
         </Menu>
+
+        <my:MainControl x:Name="mainControl"
+                        Grid.Row="1"
+                        Grid.Column="0" />
+
+        <GridSplitter Grid.Row="1"
+                      Grid.Column="1"
+                      Width="5"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Center" />
+
         <DockPanel Grid.Column="2"
                    Grid.Row="1"
                    LastChildFill="True">
@@ -301,6 +304,7 @@
                     <DockPanel LastChildFill="False"
                                Height="26">
                         <Label Content="{Binding Path=Radius}" />
+
                         <xctk:DoubleUpDown DockPanel.Dock="Right"
                                            Height="23"
                                            IsEnabled="True"
@@ -350,10 +354,15 @@
                           TabIndex="13" />
             </GroupBox>
         </DockPanel>
-        <StatusBar Grid.Row="2" Grid.ColumnSpan="3">
+        <StatusBar Grid.Row="2"
+                   Grid.ColumnSpan="3">
             <StatusBarItem Content="{Binding StatusBarControls}" />
-            <StatusBarItem Name="StatusBarItemStatus" Content="Standard" Margin="10,0,0,0" />
-            <StatusBarItem Name="StatusBarItemClipboardStatus" Margin="10,0,0,0" HorizontalAlignment="Right" />
+            <StatusBarItem Name="StatusBarItemStatus"
+                           Content="Standard"
+                           Margin="10,0,0,0" />
+            <StatusBarItem Name="StatusBarItemClipboardStatus"
+                           Margin="10,0,0,0"
+                           HorizontalAlignment="Right" />
         </StatusBar>
     </Grid>
 </Window>
