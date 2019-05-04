@@ -95,13 +95,13 @@ namespace AnnoDesigner
             annoCanvas.StatisticsUpdated += AnnoCanvas_StatisticsUpdated;
 
             //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
-            DependencyObject dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
+            var dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
             mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
 
             //If language is not recognized, bring up the language selection screen
             if (!Localization.Localization.LanguageCodeMap.ContainsKey(Settings.Default.SelectedLanguage))
             {
-                Welcome w = new Welcome();
+                var w = new Welcome();
                 w.ShowDialog();
             }
             else
@@ -181,7 +181,7 @@ namespace AnnoDesigner
             // manually add a road tile preset
             treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true, Identifier = "Road" });
             treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true, Identifier = "Road" });
-            BuildingPresets presets = annoCanvas.BuildingPresets;
+            var presets = annoCanvas.BuildingPresets;
             if (presets != null)
             {
                 presets.AddToTree(treeViewPresets);
@@ -339,10 +339,10 @@ namespace AnnoDesigner
         private void ApplyCurrentObject()
         {
             // parse user inputs and create new object
-            AnnoObject obj = new AnnoObject
+            var obj = new AnnoObject
             {
                 Size = new Size(textBoxWidth?.Value ?? 1, textBoxHeight?.Value ?? 1),
-                Color = colorPicker.SelectedColor.HasValue ? colorPicker.SelectedColor.Value : Colors.Red,
+                Color = colorPicker.SelectedColor ?? Colors.Red,
                 Label = IsChecked(checkBoxLabel) ? textBoxLabel.Text : "",
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
                 Radius = textBoxRadius?.Value ?? 0,
@@ -366,13 +366,12 @@ namespace AnnoDesigner
         {
             try
             {
-                //TDOD: Rewrite ApplyPreset();
-                AnnoObject selectedItem = treeViewPresets.SelectedItem as AnnoObject;
+                var selectedItem = treeViewPresets.SelectedItem as AnnoObject;
                 if (selectedItem != null)
                 {
                     UpdateUIFromObject(new AnnoObject(selectedItem)
                     {
-                        Color = colorPicker.SelectedColor.HasValue ? colorPicker.SelectedColor.Value : Colors.Red,
+                        Color = colorPicker.SelectedColor ?? Colors.Red,
                     });
                     ApplyCurrentObject();
                 }
@@ -525,7 +524,7 @@ namespace AnnoDesigner
 
         private void ShowRegistrationMessageBox(bool isDeregistration)
         {
-            string language = AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+            var language = AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
             var message = isDeregistration ? AnnoDesigner.Localization.Localization.Translations[language]["UnregisterFileExtensionSuccessful"] : AnnoDesigner.Localization.Localization.Translations[language]["RegisterFileExtensionSuccessful"];
 
             MessageBox.Show(message,
@@ -541,8 +540,10 @@ namespace AnnoDesigner
 
         private void MenuItemOpenWelcomeClick(object sender, RoutedEventArgs e)
         {
-            Welcome w = new Welcome();
-            w.Owner = this;
+            var w = new Welcome
+            {
+                Owner = this
+            };
             w.Show();
         }
 
@@ -558,8 +559,8 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         private void MenuItemLanguageClick(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = sender as MenuItem;
-            bool languageChecked = false;
+            var menuItem = sender as MenuItem;
+            var languageChecked = false;
             string language = null;
             foreach (MenuItem m in menuItem.Items)
             {
@@ -579,7 +580,7 @@ namespace AnnoDesigner
             }
             else
             {
-                string currentLanguage = SelectedLanguage;
+                var currentLanguage = SelectedLanguage;
                 if (language != currentLanguage)
                 {
                     SelectedLanguage = language;
@@ -681,8 +682,10 @@ namespace AnnoDesigner
 
                 if (renderStatistics)
                 {
-                    var statisticsView = new StatisticsView();
-                    statisticsView.Margin = new Thickness(10, 0, 10, 0);
+                    var statisticsView = new StatisticsView
+                    {
+                        Margin = new Thickness(10, 0, 10, 0)
+                    };
                     statisticsView.statisticsViewModel.UpdateStatistics(target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
                     target.StatisticsPanel.Children.Add(statisticsView);
                     width += Constants.StatisticsMargin + 10;
