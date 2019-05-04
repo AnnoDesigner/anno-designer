@@ -451,6 +451,10 @@ namespace AnnoDesigner
                 ApplyPreset();
             }
         }
+        private void TextBoxSearchPresetsKeyDown(object sender, KeyEventArgs e)
+        {
+            
+        }
 
         private void MenuItemResetZoomClick(object sender, RoutedEventArgs e)
         {
@@ -563,5 +567,6 @@ namespace AnnoDesigner
             SelectedLanguageChanged();
         }
 
+      
     }
 }

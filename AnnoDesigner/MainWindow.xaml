@@ -340,6 +340,32 @@
                             TabIndex="12" />
                 </StackPanel>
             </GroupBox>
+
+            <GroupBox Header="Search:"
+                      Name="GroupBoxSearchPresets"
+                      IsEnabled="True"
+                      Height="Auto"
+                      HorizontalAlignment="Stretch"
+                      DockPanel.Dock="Top">
+                <Grid>
+                    <TextBox Grid.Column="0"
+                             Height="23"
+                             x:Name="TextBoxSearchPresets"
+                             KeyDown="TextBoxSearchPresetsKeyDown"
+                             VerticalContentAlignment="Center">
+                    </TextBox>
+                    <!-- Maybe add a clear text box button eventually. (Needs styling etc)--> 
+                    <!--<Button Grid.Column="1"
+                            Content="X"
+                            Height="20"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,2,0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            />-->
+                </Grid>
+            </GroupBox>
             <GroupBox Header="Building presets - not loaded"
                       Name="GroupBoxPresets"
                       IsEnabled="True"
