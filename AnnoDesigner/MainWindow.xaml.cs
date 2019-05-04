@@ -32,6 +32,10 @@ namespace AnnoDesigner
         private readonly StatisticsView statisticsView;
 
         private static string _selectedLanguage;
+        //for identifier checking process
+        private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
+        public string iconFileNameCheck = "";
+        public BuildingPresets BuildingPresets { get; }
         public static string SelectedLanguage
         {
             get
@@ -306,6 +310,8 @@ namespace AnnoDesigner
             textBoxLabel.Text = obj.Label;
             // Ident
             textBoxIdentifier.Text = obj.Identifier;
+            // templatename 
+            textBoxTemlateName.Text = obj.Template;
             // icon
             try
             {
@@ -365,10 +371,75 @@ namespace AnnoDesigner
                 Borderless = IsChecked(checkBoxBorderless),
                 Road = IsChecked(checkBoxRoad),
                 Identifier = textBoxIdentifier.Text,
+                Template = textBoxTemlateName.Text,
             };
+            // Turn obj.Icon into a checkable filename *iconFileNameCheck*
+            if (!string.IsNullOrEmpty(obj.Icon))
+            {
+                if (obj.Icon.StartsWith("A5_"))
+                {
+                    iconFileNameCheck = obj.Icon.Remove(0, 3) + ".png"; //when Anno 2070, it use not A5_ in the original naming.
+                }
+                else
+                {
+                    iconFileNameCheck = obj.Icon + ".png";
+                }
+            }
             // do some sanity checks
             if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
             {
+                if (!string.IsNullOrEmpty(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck) == false)
+                {
+                    ///--> the text 'Uknown Object' is localized within AnnoCanvas.xaml.cs in the RenderStatistics method <--///
+                    //gets icons origin building info
+                    var buildingsIconCheck = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName == iconFileNameCheck);
+                    if (buildingsIconCheck != null)
+                    {
+                        // Check X and Z Sizes if the Building Info, if one of both not right, the Object will be Unknown
+                        if ((obj.Size.Width != buildingsIconCheck.BuildBlocker["x"] && obj.Size.Width != buildingsIconCheck.BuildBlocker["z"]) || (obj.Size.Height != buildingsIconCheck.BuildBlocker["x"] && obj.Size.Height != buildingsIconCheck.BuildBlocker["z"]))
+                        {
+                            //Size X is not correct on Building Info, call it Unknown Object
+                            obj.Identifier = "Unknown Object";
+                        }
+                        else
+                        {
+                            //if sizes and icon is a existing building in the presets, call it that onject
+                            obj.Identifier = buildingsIconCheck.Identifier;
+                        }
+                    }
+                    else if (textBoxTemlateName.Text.ToLower().Contains("field") == false) //check if the icon is removed from a template field
+                    {
+                        obj.Identifier = "Unknown Object";
+                    }
+                }
+                else if (!string.IsNullOrEmpty(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck) == true)
+                {
+                    //Check if Field Icon belongs to the field identifier, else set the official icon
+                    var buildingsIconCheck = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == obj.Identifier);
+                    if (buildingsIconCheck != null)
+                    {
+                        if (iconFileNameCheck != buildingsIconCheck.IconFileName)
+                        {
+                            obj.Icon = buildingsIconCheck.IconFileName.Remove(buildingsIconCheck.IconFileName.Length - 4, 4); //rmeove the .png for the comboBoxIcon
+                            try
+                            {
+                                comboBoxIcon.SelectedItem = string.IsNullOrEmpty(obj.Icon) ? _noIconItem : comboBoxIcon.Items.Cast<IconImage>().Single(_ => _.Name == Path.GetFileNameWithoutExtension(obj.Icon));
+                            }
+                            catch (Exception)
+                            {
+                                comboBoxIcon.SelectedItem = _noIconItem;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        obj.Identifier = "Unknown Object";
+                    }
+                }
+                if (textBoxTemlateName.Text.ToLower().Contains("field") == false && string.IsNullOrEmpty(obj.Icon))
+                {
+                    obj.Identifier = "Unknown Object";
+                }
                 annoCanvas.SetCurrentObject(obj);
             }
             else

@@ -93,6 +93,7 @@ namespace AnnoDesigner.Localization
                         { "StatBuildingsSelected" , "Buildings Selected" },
                         { "StatTiles" , "Tiles"},
                         { "StatNameNotFound" , "Building name not found"},
+                        { "UnknownObject" , "Unknown Object" },
                         { "PresetsLoaded" , "Building presets loaded" }
                     }
                  },
@@ -166,6 +167,7 @@ namespace AnnoDesigner.Localization
                         { "StatBuildingsSelected" , "Ausgewählte Gebäude" },
                         { "StatTiles" , "Kacheln"},
                         { "StatNameNotFound" , "Gebäudename nicht gefunden"},
+                        { "UnknownObject" , "Unbekanntes Objekt" },
                         { "PresetsLoaded" , "Gebäudevorlagen geladen" }
                     }
                  },
@@ -239,6 +241,7 @@ namespace AnnoDesigner.Localization
                         { "StatBuildingsSelected" , "Wybrane Budynki" },
                         { "StatTiles" , "Płytki"},
                         { "StatNameNotFound" , "Nie znaleziono nazwy budynku"},
+                        { "UnknownObject" , "Obiekt nieznany" },
                         { "PresetsLoaded" , "Presety budynków załadowano" }
                     }
                  },
@@ -312,6 +315,7 @@ namespace AnnoDesigner.Localization
                         { "StatBuildingsSelected" , "Выбранные здания" },
                         { "StatTiles" , "Плитка"},
                         { "StatNameNotFound" , "Название здания не найдено"},
+                        { "UnknownObject" , "Неизвестный объект" },
                         { "PresetsLoaded" , "Загружаются пресеты зданий" }
                     }
                  },

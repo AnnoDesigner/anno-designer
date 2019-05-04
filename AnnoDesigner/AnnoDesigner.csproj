@@ -50,6 +50,7 @@
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="converter\BoolToVisibilityConverter.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="MainControl.xaml.cs">
       <DependentUpon>MainControl.xaml</DependentUpon>

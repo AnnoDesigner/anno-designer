@@ -276,6 +276,13 @@
                                  Visibility="Hidden"
                                  Width="140" />
                         <TextBox DockPanel.Dock="Right"
+                                 Height="23" 
+                                 IsEnabled="False" 
+                                 Name="textBoxTemlateName" 
+                                 Text="" 
+                                 Visibility="Hidden" 
+                                 Width="140" />
+                        <TextBox DockPanel.Dock="Right"
                                  Height="10"
                                  IsEnabled="False"
                                  Name="textBoxInfluenceRange"

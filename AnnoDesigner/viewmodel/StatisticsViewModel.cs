@@ -244,10 +244,18 @@ namespace AnnoDesigner.viewmodel
                 if (!string.IsNullOrWhiteSpace(item.ElementAt(0).Identifier))
                 {
                     var building = buildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
-                    if (building != null)
+                    if (building != null || item.ElementAt(0).Identifier=="Unknown Object")
                     {
-                        statisticBuilding.Count = item.Count();
-                        statisticBuilding.Name = building.Localization[language];
+                        if (item.ElementAt(0).Identifier == "Unknown Object")
+                        {
+                            statisticBuilding.Count = item.Count();
+                            statisticBuilding.Name = Localization.Localization.Translations[language]["UnknownObject"];
+                        }
+                        else
+                        {
+                            statisticBuilding.Count = item.Count();
+                            statisticBuilding.Name = building.Localization[language];
+                        }
                     }
                     else
                     {

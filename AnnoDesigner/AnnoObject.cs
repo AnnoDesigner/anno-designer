@@ -77,6 +77,12 @@ namespace AnnoDesigner
         [DataMember]
         public bool Road { get; set; }
 
+        /// <summary>
+        /// ObjName string
+        /// </summary>
+        [DataMember]
+        public string Template;
+
         //[DataMember]
         //public SerializableDictionary<int> BuildCosts { get; set; }
 
@@ -98,6 +104,7 @@ namespace AnnoDesigner
             Position = obj.Position;
             Label = obj.Label;
             Identifier = obj.Identifier;
+            Template = obj.Template;
             //Localization = obj.Localization;
             Icon = obj.Icon;
             Radius = obj.Radius;

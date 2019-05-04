@@ -68,7 +68,8 @@ namespace AnnoDesigner.Presets
                 Radius = InfluenceRadius,
                 InfluenceRange = InfluenceRange,
                 Identifier = Identifier,
-                Size = BuildBlocker == null ? new Size() : new Size(BuildBlocker["x"], BuildBlocker["z"])
+                Size = BuildBlocker == null ? new Size() : new Size(BuildBlocker["x"], BuildBlocker["z"]),
+                Template = Template
                 //BuildCosts = BuildCost
             };
         }
