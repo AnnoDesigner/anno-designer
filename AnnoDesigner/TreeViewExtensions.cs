@@ -54,6 +54,7 @@ namespace AnnoDesigner
         /// <param name="nodeStateList"></param>
         public static void SetTreeViewState(this TreeView t, List<bool> nodeStateList)
         {
+            if (nodeStateList.Count == 0) return;
             int currentIndex = -1;
             foreach (var item in t.ItemContainerGenerator.Items
                     .Where(_ => _ as TreeViewItem != null)
@@ -65,10 +66,6 @@ namespace AnnoDesigner
 
         private static int SetState(TreeViewItem t, List<bool> nodeStateList, int currentIndex)
         {
-            if (currentIndex == 20)
-            {
-
-            }
             if (t == null || !t.HasItems)
             {
                 return currentIndex;

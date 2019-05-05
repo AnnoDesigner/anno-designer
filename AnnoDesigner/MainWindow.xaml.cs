@@ -678,24 +678,35 @@ namespace AnnoDesigner
             };
             _treeViewSearch.EnsureItemContainersGenerated();
 
-
+            var isSearchState = false;
             if (!string.IsNullOrWhiteSpace(Settings.Default.TreeViewSearchText))
             {
                 //Then apply the search **before** reloading state
                 _treeViewSearch.Search(Settings.Default.TreeViewSearchText);
+                isSearchState = true;
             }
 
-            if (Settings.Default.TreeViewState != null && Settings.Default.TreeViewState.Count > 0)
+            if (_treeViewState != null && _treeViewState.Count > 0)
             {
                 try
                 {
-                    treeViewPresets.SetTreeViewState(Settings.Default.TreeViewState);
+                    treeViewPresets.SetTreeViewState(_treeViewState);
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Failed to restore previous preset menu settings.");
                     App.WriteToErrorLog("TreeView SetTreeViewState Error", ex.Message, ex.StackTrace);
                 }
+            }
+
+            if (isSearchState)
+            {
+                //if the application was last closed in the middle of a search, set the previous state
+                //to an empty value, so that we don't just expand the results of the search as the 
+                //previous state
+
+                _treeViewState = new List<bool>();
+
             }
         }
 
