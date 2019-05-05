@@ -265,7 +265,6 @@ namespace AnnoDesigner
             if (item.ItemContainerGenerator.Status == GeneratorStatus.NotStarted)
             {
                 GenerateItemContainers(item);
-                Debug.WriteLine("Generating Container");
             }
             return item.ItemContainerGenerator.ContainerFromItem(obj) as TreeViewItem;
         }
