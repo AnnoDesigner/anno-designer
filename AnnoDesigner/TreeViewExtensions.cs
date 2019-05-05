@@ -82,5 +82,37 @@ namespace AnnoDesigner
             }
             return currentIndex;
         }
+
+        /// <summary>
+        /// Expands all ancestors for the given item.
+        /// </summary>
+        /// <param name="item">The item to expand</param>
+        public static void ExpandAncestors(this TreeViewItem item)
+        {
+            item.IsExpanded = true;
+            if (item.Parent is TreeViewItem treeViewItem)
+            {
+                ExpandAncestors(treeViewItem);
+            }
+        }
+
+        /// <summary>
+        /// Expands all ancestors for the given item. Returns a Dictionary that represents the previous expansion state.
+        /// </summary>
+        /// <param name="item">The item to expand</param>
+        public static List<KeyValuePair<TreeViewItem, bool>> ExpandAncestors(this TreeViewItem item, List<KeyValuePair<TreeViewItem, bool>> previousExpansionState)
+        {
+            if (previousExpansionState == null)
+            {
+                previousExpansionState = new List<KeyValuePair<TreeViewItem, bool>>();
+            }
+            previousExpansionState.Add(new KeyValuePair<TreeViewItem, bool>(item, item.IsExpanded));
+            item.IsExpanded = true;
+            if (item.Parent is TreeViewItem treeViewItem)
+            {
+                return ExpandAncestors(treeViewItem, previousExpansionState);
+            }
+            return previousExpansionState;
+        }
     }
 }

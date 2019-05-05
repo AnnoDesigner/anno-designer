@@ -29,6 +29,7 @@ namespace AnnoDesigner
         private IconImage _noIconItem;
         private static MainWindow _instance;
         private TreeViewSearch<AnnoObject> _treeViewSearch;
+        private List<bool> _treeViewState;
 
         private static string _selectedLanguage;
         public static string SelectedLanguage
@@ -124,6 +125,7 @@ namespace AnnoDesigner
             ShowGrid.IsChecked = Settings.Default.ShowGrid;
             ShowIcons.IsChecked = Settings.Default.ShowIcons;
             ShowLabels.IsChecked = Settings.Default.ShowLabels;
+            _treeViewState = Settings.Default.TreeViewState ?? null;
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -178,19 +180,6 @@ namespace AnnoDesigner
             else
             {
                 GroupBoxPresets.Header = "Building presets - load failed";
-            }
-
-            if (Settings.Default.TreeViewState != null && Settings.Default.TreeViewState.Count > 0)
-            {
-                try
-                {
-                    treeViewPresets.SetTreeViewState(Settings.Default.TreeViewState);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Failed to restore previous preset menu settings.");
-                    App.WriteToErrorLog("TreeView SetTreeViewState Error", ex.Message, ex.StackTrace);
-                }
             }
 
             // load file given by argument
@@ -440,25 +429,6 @@ namespace AnnoDesigner
             CheckForUpdates(true);
         }
 
-        private void TreeViewPresetsMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            ApplyPreset();
-        }
-
-        private void TreeViewPresetsKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Return)
-            {
-                ApplyPreset();
-            }
-        }
-        private void TextBoxSearchPresetsKeyDown(object sender, KeyEventArgs e)
-        {
-            var txt = sender as TextBox;
-            TreeViewSearch<AnnoObject> tvs = new TreeViewSearch<AnnoObject>(this.treeViewPresets, _ => _.Label);
-            tvs.Search(txt.Text);
-        }
-
         private void MenuItemResetZoomClick(object sender, RoutedEventArgs e)
         {
             annoCanvas.ResetZoom();
@@ -557,27 +527,72 @@ namespace AnnoDesigner
 
             }
         }
-        #endregion
-
-        private void WindowClosing(object sender, CancelEventArgs e)
-        {
-            Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
-            Settings.Default.Save();
-        }
-
         private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
         {
             SelectedLanguageChanged();
         }
+        private void TreeViewPresetsMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ApplyPreset();
+        }
+
+        private void TreeViewPresetsKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                ApplyPreset();
+            }
+        }
+        private void TextBoxSearchPresetsKeyUp(object sender, KeyEventArgs e)
+        {
+            var txt = sender as TextBox;
+            try
+            {
+                if (txt.Text == "")
+                {
+                    _treeViewSearch.Reset();
+                }
+                else
+                {
+                    _treeViewSearch.Search(txt.Text);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to execute search successfully.");
+                App.WriteToErrorLog("Failed to execute search successfully", ex.Message, ex.StackTrace);
+            }
+        }
 
         private void TreeViewPresets_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Settings.Default.TreeViewState != null && Settings.Default.TreeViewState.Count > 0)
+            {
+                try
+                {
+                    treeViewPresets.SetTreeViewState(Settings.Default.TreeViewState);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Failed to restore previous preset menu settings.");
+                    App.WriteToErrorLog("TreeView SetTreeViewState Error", ex.Message, ex.StackTrace);
+                }
+            }
+
             _treeViewSearch = new TreeViewSearch<AnnoObject>(treeViewPresets, _ => _.Label)
             {
                 MatchFullWordOnly = false,
                 IsCaseSensitive = false
             };
             _treeViewSearch.EnsureItemContainersGenerated();
+
+        }
+
+        #endregion
+        private void WindowClosing(object sender, CancelEventArgs e)
+        {
+            Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
+            Settings.Default.Save();
         }
     }
 }

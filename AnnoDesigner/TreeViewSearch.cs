@@ -169,37 +169,7 @@ namespace AnnoDesigner
             }
         }
 
-        /// <summary>
-        /// Expands all ancestors for the given item.
-        /// </summary>
-        /// <param name="item">The item to expand</param>
-        private void ExpandAncestors(TreeViewItem item)
-        {
-            item.IsExpanded = true;
-            if (item.Parent is TreeViewItem treeViewItem)
-            {
-                ExpandAncestors(treeViewItem);
-            }
-        }
-
-        /// <summary>
-        /// Expands all ancestors for the given item. Returns a Dictionary that can be used to restore the previous expansion state.
-        /// </summary>
-        /// <param name="item">The item to expand</param>
-        private List<KeyValuePair<TreeViewItem, bool>> ExpandAncestors(TreeViewItem item, List<KeyValuePair<TreeViewItem, bool>> originalExpansions)
-        {
-            if (originalExpansions == null)
-            {
-                originalExpansions = new List<KeyValuePair<TreeViewItem, bool>>();
-            }
-            originalExpansions.Add(new KeyValuePair<TreeViewItem, bool>(item, item.IsExpanded));
-            item.IsExpanded = true;
-            if (item.Parent is TreeViewItem treeViewItem)
-            {
-                return ExpandAncestors(treeViewItem, originalExpansions);
-            }
-            return originalExpansions;
-        }
+        
 
         /// <summary>
         /// Collapses all items in the tree view, and makes them visible.
@@ -295,7 +265,7 @@ namespace AnnoDesigner
         {
             var expandedState = treeViewItem.IsExpanded;
             treeViewItem.IsExpanded = true;
-            var previousStates = ExpandAncestors(treeViewItem, new List<KeyValuePair<TreeViewItem, bool>>());
+            var previousStates = treeViewItem.ExpandAncestors(new List<KeyValuePair<TreeViewItem, bool>>());
             treeViewItem.UpdateLayout();
             treeViewItem.IsExpanded = expandedState;
             foreach (var item in previousStates)

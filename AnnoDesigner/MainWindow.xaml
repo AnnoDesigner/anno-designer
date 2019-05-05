@@ -351,7 +351,7 @@
                     <TextBox Grid.Column="0"
                              Height="23"
                              x:Name="TextBoxSearchPresets"
-                             KeyUp="TextBoxSearchPresetsKeyDown"
+                             KeyUp="TextBoxSearchPresetsKeyUp"
                              VerticalContentAlignment="Center">
                     </TextBox>
                     <!-- Maybe add a clear text box button eventually. (Needs styling etc)-->
