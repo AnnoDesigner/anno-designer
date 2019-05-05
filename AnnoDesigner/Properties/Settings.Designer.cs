@@ -246,5 +246,17 @@ namespace AnnoDesigner.Properties {
                 this["ShowGrid"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TreeViewSearchText {
+            get {
+                return ((string)(this["TreeViewSearchText"]));
+            }
+            set {
+                this["TreeViewSearchText"] = value;
+            }
+        }
     }
 }

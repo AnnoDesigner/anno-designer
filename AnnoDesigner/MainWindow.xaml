@@ -372,7 +372,8 @@
                              Height="23"
                              x:Name="TextBoxSearchPresets"
                              KeyUp="TextBoxSearchPresetsKeyUp"
-                             VerticalContentAlignment="Center">
+                             VerticalContentAlignment="Center"
+                             Text="{Binding Source={x:Static properties:Settings.Default},Path=TreeViewSearchText, Mode=TwoWay}">
                     </TextBox>
                     <!-- Maybe add a clear text box button eventually. (Needs styling etc)-->
                     <!--<Button Grid.Column="1"

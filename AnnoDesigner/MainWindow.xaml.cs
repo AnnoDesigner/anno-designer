@@ -585,10 +585,6 @@ namespace AnnoDesigner
         {
             SelectedLanguageChanged();
         }
-        private void TreeViewPresetsMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            ApplyPreset();
-        }
 
         private void ComboxBoxInfluenceType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -622,6 +618,12 @@ namespace AnnoDesigner
             }
         }
 
+        #region TreeView events
+        private void TreeViewPresetsMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ApplyPreset();
+        }
+
         private void TreeViewPresetsKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
@@ -652,6 +654,21 @@ namespace AnnoDesigner
 
         private void TreeViewPresets_Loaded(object sender, RoutedEventArgs e)
         {
+            //Intialise tree view and ensure that item containers are generated.
+            _treeViewSearch = new TreeViewSearch<AnnoObject>(treeViewPresets, _ => _.Label)
+            {
+                MatchFullWordOnly = false,
+                IsCaseSensitive = false
+            };
+            _treeViewSearch.EnsureItemContainersGenerated();
+
+
+            if (!string.IsNullOrWhiteSpace(Settings.Default.TreeViewSearchText))
+            {
+                //Then apply the search **before** reloading state
+                _treeViewSearch.Search(Settings.Default.TreeViewSearchText);
+            }
+
             if (Settings.Default.TreeViewState != null && Settings.Default.TreeViewState.Count > 0)
             {
                 try
@@ -664,15 +681,8 @@ namespace AnnoDesigner
                     App.WriteToErrorLog("TreeView SetTreeViewState Error", ex.Message, ex.StackTrace);
                 }
             }
-
-            _treeViewSearch = new TreeViewSearch<AnnoObject>(treeViewPresets, _ => _.Label)
-            {
-                MatchFullWordOnly = false,
-                IsCaseSensitive = false
-            };
-            _treeViewSearch.EnsureItemContainersGenerated();
-
         }
+        #endregion
 
         #endregion
         private void WindowClosing(object sender, CancelEventArgs e)
