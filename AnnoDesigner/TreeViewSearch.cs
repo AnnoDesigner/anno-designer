@@ -14,16 +14,6 @@ namespace AnnoDesigner
     public class TreeViewSearch<T>
     {
         /// <summary>
-        /// The instance of the TreeView that this search is filtering. 
-        /// </summary>
-        public TreeView Instance { get; }
-
-        /// <summary>
-        /// Selects a string value from the object to be used in the search.
-        /// </summary>
-        private readonly Func<T, string> _keySelector;
-
-        /// <summary>
         /// Initialises a TreeViewSearch object with a TreeView instance and a function to select the key from the objects the TreeView holds.
         /// </summary>
         /// <param name="t"></param>
@@ -31,8 +21,48 @@ namespace AnnoDesigner
         public TreeViewSearch(TreeView t, Func<T, string> keySelector)
         {
             Instance = t;
-            this._keySelector = keySelector;
+            this.KeySelector = keySelector;
+            IsCaseSensitive = false;
+            MatchFullWordOnly = false;
         }
+
+        /// <summary>
+        /// The instance of the TreeView that this search is filtering. 
+        /// </summary>
+        public TreeView Instance { get; }
+
+        /// <summary>
+        /// Selects a string value from T in the TreeView, which is used when comparing strings.
+        /// </summary>
+        public Func<T, string> KeySelector { get; set; }
+
+        /// <summary>
+        /// Backing field for the IsCaseSensitive property.
+        /// </summary>
+        private bool _isCaseSensitive;
+
+        /// <summary>
+        /// Indicates whether the search should be case-insensitive.
+        /// </summary>
+        public bool IsCaseSensitive
+        {
+            get => _isCaseSensitive;
+            set
+            {
+                _isCaseSensitive = value;
+                CurrentComparison = value ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase;
+            }
+        }
+
+        /// <summary>
+        /// Indicates whether or not a search term should exactly match the search item. 
+        /// </summary>
+        public bool MatchFullWordOnly { get; set; }
+
+        /// <summary>
+        /// Holds the current StringComparison value.
+        /// </summary>
+        private StringComparison CurrentComparison;
 
         /// <summary>
         /// Searches a TreeView for a specified term.
@@ -45,9 +75,9 @@ namespace AnnoDesigner
                 if (node is T obj)
                 {
                     var t = Instance.ItemContainerGenerator.ContainerFromItem(obj) as TreeViewItem;
-                    if (_keySelector(obj).Contains(token, StringComparison.CurrentCultureIgnoreCase))
+                    if (Compare(obj, token))
                     {
-                        t.Visibility = Visibility.Visible;  
+                        t.Visibility = Visibility.Visible;
                     }
                     else
                     {
@@ -104,7 +134,7 @@ namespace AnnoDesigner
                 if (node is T obj)
                 {
                     var t = GetItemContainer(item, obj);
-                    if (_keySelector(obj).Contains(token, StringComparison.CurrentCultureIgnoreCase))
+                    if (Compare(obj, token))
                     {
                         foundMatch = true;
                         t.IsExpanded = true;
@@ -118,6 +148,25 @@ namespace AnnoDesigner
                 }
             }
             return foundMatch;
+        }
+
+        /// <summary>
+        /// Compares an object and a token, using the current KeySelector function to extract the string value from the object.
+        /// Takes into account the current options set on the TreeViewSearch instance.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        private bool Compare(T obj, string token)
+        {
+            if (MatchFullWordOnly)
+            {
+                return string.Equals(token, KeySelector(obj), CurrentComparison);
+            }
+            else
+            {
+                return KeySelector(obj).Contains(token, CurrentComparison);
+            }
         }
 
         /// <summary>
@@ -137,7 +186,7 @@ namespace AnnoDesigner
         /// Expands all ancestors for the given item. Returns a Dictionary that can be used to restore the previous expansion state.
         /// </summary>
         /// <param name="item">The item to expand</param>
-        private List<KeyValuePair<TreeViewItem, bool>> ExpandAncestors(TreeViewItem item,  List<KeyValuePair<TreeViewItem, bool>> originalExpansions)
+        private List<KeyValuePair<TreeViewItem, bool>> ExpandAncestors(TreeViewItem item, List<KeyValuePair<TreeViewItem, bool>> originalExpansions)
         {
             if (originalExpansions == null)
             {
@@ -224,7 +273,8 @@ namespace AnnoDesigner
                 {
                     if (item is TreeViewItem treeViewItem)
                     {
-                        if (treeViewItem.ItemContainerGenerator.Status == GeneratorStatus.NotStarted) {
+                        if (treeViewItem.ItemContainerGenerator.Status == GeneratorStatus.NotStarted)
+                        {
                             GenerateItemContainers(treeViewItem);
                         }
                         if (treeViewItem.HasItems)
