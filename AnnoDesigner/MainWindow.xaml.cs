@@ -28,6 +28,7 @@ namespace AnnoDesigner
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
         private static MainWindow _instance;
+        private TreeViewSearch<AnnoObject> treeViewSearch;
 
         private static string _selectedLanguage;
         public static string SelectedLanguage
@@ -453,7 +454,9 @@ namespace AnnoDesigner
         }
         private void TextBoxSearchPresetsKeyDown(object sender, KeyEventArgs e)
         {
-            
+            var txt = sender as TextBox;
+            TreeViewSearch<AnnoObject> tvs = new TreeViewSearch<AnnoObject>(this.treeViewPresets, _ => _.Label);
+            tvs.Search(txt.Text);
         }
 
         private void MenuItemResetZoomClick(object sender, RoutedEventArgs e)
@@ -567,6 +570,10 @@ namespace AnnoDesigner
             SelectedLanguageChanged();
         }
 
-      
+        private void TreeViewPresets_Loaded(object sender, RoutedEventArgs e)
+        {
+            treeViewSearch = new TreeViewSearch<AnnoObject>(treeViewPresets, _ => _.Label);
+            treeViewSearch.EnsureItemContainersGenerated();
+        }
     }
 }

@@ -351,7 +351,7 @@
                     <TextBox Grid.Column="0"
                              Height="23"
                              x:Name="TextBoxSearchPresets"
-                             KeyDown="TextBoxSearchPresetsKeyDown"
+                             KeyUp="TextBoxSearchPresetsKeyDown"
                              VerticalContentAlignment="Center">
                     </TextBox>
                     <!-- Maybe add a clear text box button eventually. (Needs styling etc)--> 
@@ -373,7 +373,9 @@
                 <TreeView Name="treeViewPresets"
                           MouseDoubleClick="TreeViewPresetsMouseDoubleClick"
                           KeyDown="TreeViewPresetsKeyDown"
-                          TabIndex="13" />
+                          TabIndex="13"
+                          Loaded="TreeViewPresets_Loaded"
+                          />
             </GroupBox>
         </DockPanel>
         <StatusBar Grid.Row="2" Grid.ColumnSpan="3">

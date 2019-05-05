@@ -67,6 +67,7 @@
     <Compile Include="DataIO.cs" />
     <Compile Include="SerializableDictionary.cs" />
     <Compile Include="TreeViewExtensions.cs" />
+    <Compile Include="TreeViewSearch.cs" />
     <Compile Include="UI\IconImage.xaml.cs" />
     <Compile Include="Welcome.xaml.cs">
       <DependentUpon>Welcome.xaml</DependentUpon>
