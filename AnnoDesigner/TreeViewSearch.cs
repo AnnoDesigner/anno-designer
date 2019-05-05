@@ -22,7 +22,7 @@ namespace AnnoDesigner
         {
             Instance = t;
             this.KeySelector = keySelector;
-            IsCaseSensitive = false;
+            IsCaseSensitive = true;
             MatchFullWordOnly = false;
         }
 

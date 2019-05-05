@@ -28,7 +28,7 @@ namespace AnnoDesigner
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
         private static MainWindow _instance;
-        private TreeViewSearch<AnnoObject> treeViewSearch;
+        private TreeViewSearch<AnnoObject> _treeViewSearch;
 
         private static string _selectedLanguage;
         public static string SelectedLanguage
@@ -572,8 +572,12 @@ namespace AnnoDesigner
 
         private void TreeViewPresets_Loaded(object sender, RoutedEventArgs e)
         {
-            treeViewSearch = new TreeViewSearch<AnnoObject>(treeViewPresets, _ => _.Label);
-            treeViewSearch.EnsureItemContainersGenerated();
+            _treeViewSearch = new TreeViewSearch<AnnoObject>(treeViewPresets, _ => _.Label)
+            {
+                MatchFullWordOnly = false,
+                IsCaseSensitive = false
+            };
+            _treeViewSearch.EnsureItemContainersGenerated();
         }
     }
 }
