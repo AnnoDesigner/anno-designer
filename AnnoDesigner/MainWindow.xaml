@@ -354,7 +354,7 @@
                              KeyUp="TextBoxSearchPresetsKeyDown"
                              VerticalContentAlignment="Center">
                     </TextBox>
-                    <!-- Maybe add a clear text box button eventually. (Needs styling etc)--> 
+                    <!-- Maybe add a clear text box button eventually. (Needs styling etc)-->
                     <!--<Button Grid.Column="1"
                             Content="X"
                             Height="20"

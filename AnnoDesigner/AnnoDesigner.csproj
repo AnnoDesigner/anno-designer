@@ -66,6 +66,7 @@
     <Compile Include="SerializableColor.cs" />
     <Compile Include="DataIO.cs" />
     <Compile Include="SerializableDictionary.cs" />
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="TreeViewExtensions.cs" />
     <Compile Include="TreeViewSearch.cs" />
     <Compile Include="UI\IconImage.xaml.cs" />

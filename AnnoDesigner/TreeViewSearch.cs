@@ -13,24 +13,24 @@ namespace AnnoDesigner
 {
     public class TreeViewSearch<T>
     {
-
-        /// <summary>
-        /// Backing field for the Instance property.
-        /// </summary>
-        private readonly TreeView _instance;
         /// <summary>
         /// The instance of the TreeView that this search is filtering. 
         /// </summary>
-        public TreeView Instance { get => _instance; }
+        public TreeView Instance { get; }
 
         /// <summary>
         /// Selects a string value from the object to be used in the search.
         /// </summary>
         private readonly Func<T, string> _keySelector;
 
+        /// <summary>
+        /// Initialises a TreeViewSearch object with a TreeView instance and a function to select the key from the objects the TreeView holds.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="keySelector"></param>
         public TreeViewSearch(TreeView t, Func<T, string> keySelector)
         {
-            _instance = t;
+            Instance = t;
             this._keySelector = keySelector;
         }
 
@@ -40,12 +40,12 @@ namespace AnnoDesigner
         /// <param name="token">The value to search for</param>
         public void Search(string token)
         {
-            foreach (var node in _instance.Items)
+            foreach (var node in Instance.Items)
             {
                 if (node is T obj)
                 {
-                    var t = _instance.ItemContainerGenerator.ContainerFromItem(obj) as TreeViewItem;
-                    if (_keySelector(obj).Contains(token))
+                    var t = Instance.ItemContainerGenerator.ContainerFromItem(obj) as TreeViewItem;
+                    if (_keySelector(obj).Contains(token, StringComparison.CurrentCultureIgnoreCase))
                     {
                         t.Visibility = Visibility.Visible;  
                     }
@@ -72,6 +72,13 @@ namespace AnnoDesigner
             }
         }
 
+        /// <summary>
+        /// Recursively traverses a TreeViewItem looking for the values retrieved using the current KeySelector that match the specified token.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="token"></param>
+        /// <param name="foundMatch"></param>
+        /// <returns></returns>
         private bool Search(TreeViewItem item, string token, bool foundMatch)
         {
             if (item.Header.ToString().Contains(token))
@@ -97,7 +104,7 @@ namespace AnnoDesigner
                 if (node is T obj)
                 {
                     var t = GetItemContainer(item, obj);
-                    if (_keySelector(obj).Contains(token))
+                    if (_keySelector(obj).Contains(token, StringComparison.CurrentCultureIgnoreCase))
                     {
                         foundMatch = true;
                         t.IsExpanded = true;
@@ -150,7 +157,7 @@ namespace AnnoDesigner
         /// </summary>
         public void Reset()
         {
-            foreach (var node in _instance.Items)
+            foreach (var node in Instance.Items)
             {
                 if (node is TreeViewItem treeViewItem)
                 {
@@ -160,12 +167,16 @@ namespace AnnoDesigner
                 }
                 else if (node is T obj)
                 {
-                    var t = _instance.ItemContainerGenerator.ContainerFromItem(obj) as TreeViewItem;
+                    var t = Instance.ItemContainerGenerator.ContainerFromItem(obj) as TreeViewItem;
                     t.Visibility = Visibility.Visible;
                 }
             }
         }
 
+        /// <summary>
+        /// Recursively traverses a TreeViewItem, making all branches and leaves visible, collapsing any branches.
+        /// </summary>
+        /// <param name="item"></param>
         private void Reset(TreeViewItem item)
         {
             item.IsExpanded = false;
@@ -192,7 +203,7 @@ namespace AnnoDesigner
         /// <returns></returns>
         public void EnsureItemContainersGenerated()
         {
-            foreach (var node in _instance.Items)
+            foreach (var node in Instance.Items)
             {
                 if (node is TreeViewItem treeViewItem)
                 {
@@ -243,6 +254,12 @@ namespace AnnoDesigner
             }
         }
 
+        /// <summary>
+        /// Retrieves the ItemContainer from an object. Ensures the container has been generated.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         private TreeViewItem GetItemContainer(TreeViewItem item, object obj)
         {
             if (item.ItemContainerGenerator.Status == GeneratorStatus.NotStarted)
