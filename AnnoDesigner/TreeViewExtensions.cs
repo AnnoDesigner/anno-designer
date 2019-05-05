@@ -9,6 +9,11 @@ namespace AnnoDesigner
 {
     public static class TreeViewExtensions
     {
+        /// <summary>
+        /// Saves the state of the TreeView to a List&lt;bool&gt;. Call <c>SetTreeViewState()</c> to restore.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
         public static List<bool> GetTreeViewState(this TreeView t)
         {
             var nodeList = new List<bool>();
@@ -42,6 +47,11 @@ namespace AnnoDesigner
             return nodeList;
         }
 
+        /// <summary>
+        /// Restores the state of a TreeView from a List&lt;bool&gt; generated with GetTreeViewState().
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="nodeStateList"></param>
         public static void SetTreeViewState(this TreeView t, List<bool> nodeStateList)
         {
             int currentIndex = -1;
@@ -97,7 +107,7 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Expands all ancestors for the given item. Returns a Dictionary that represents the previous expansion state.
+        /// Expands all ancestors for the this <c>TreeViewItem</c>. Returns a Dictionary that represents the previous expansion state.
         /// </summary>
         /// <param name="item">The item to expand</param>
         public static List<KeyValuePair<TreeViewItem, bool>> ExpandAncestors(this TreeViewItem item, List<KeyValuePair<TreeViewItem, bool>> previousExpansionState)
