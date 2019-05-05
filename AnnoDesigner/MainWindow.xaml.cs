@@ -624,7 +624,6 @@ namespace AnnoDesigner
 
         private void TextBoxSearchPresetsGotFocus(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("GotFocus");
             if (e.Source is TextBox textBox)
             {
                 if (textBox.Text == "")
