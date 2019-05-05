@@ -360,6 +360,34 @@
                             TabIndex="12" />
                 </StackPanel>
             </GroupBox>
+
+            <GroupBox Header="Search:"
+                      Name="GroupBoxSearchPresets"
+                      IsEnabled="True"
+                      Height="Auto"
+                      HorizontalAlignment="Stretch"
+                      DockPanel.Dock="Top">
+                <Grid>
+                    <TextBox Grid.Column="0"
+                             Height="23"
+                             x:Name="TextBoxSearchPresets"
+                             KeyUp="TextBoxSearchPresetsKeyUp"
+                             GotFocus="TextBoxSearchPresetsGotFocus"
+                             VerticalContentAlignment="Center"
+                             Text="{Binding Source={x:Static properties:Settings.Default},Path=TreeViewSearchText, Mode=TwoWay}">
+                    </TextBox>
+                    <!-- Maybe add a clear text box button eventually. (Needs styling etc)-->
+                    <!--<Button Grid.Column="1"
+                            Content="X"
+                            Height="20"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,2,0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            />-->
+                </Grid>
+            </GroupBox>
             <GroupBox Header="Building presets - not loaded"
                       Name="GroupBoxPresets"
                       IsEnabled="True"
@@ -367,7 +395,9 @@
                 <TreeView Name="treeViewPresets"
                           MouseDoubleClick="TreeViewPresetsMouseDoubleClick"
                           KeyDown="TreeViewPresetsKeyDown"
-                          TabIndex="13" />
+                          TabIndex="13"
+                          Loaded="TreeViewPresets_Loaded"
+                          />
             </GroupBox>
         </DockPanel>
         <StatusBar Grid.Row="2" Grid.ColumnSpan="3">
