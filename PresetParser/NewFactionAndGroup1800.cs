@@ -17,14 +17,14 @@ namespace PresetParser
         /// <2> wil be the Group under <1>, like Production, Public, etc
         /// </summary>
         /// Public Buildings
-        private static readonly List<string> ChangeBuildingsToAW_Public_1800 = new List<string> { "Institution_01 (Police)", "Institution_02 (Fire Department)", "Institution_03 (Hospital)" };
-        private static readonly List<string> ChangeBuildingsToNW1_Public_1800 = new List<string> { "Logistic_01 (Marketplace)", "Service_01 (Pub)" };
-        private static readonly List<string> ChangeBuildingsToNW2_Public_1800 = new List<string> { "Service_04 (Church)", "Service_02 (School)" };
-        private static readonly List<string> ChangeBuildingsToNW3_Public_1800 = new List<string> { "Service_05 (Cabaret)", "Service_07 (University)",};
+        //private static readonly List<string> ChangeBuildingsToAW_Public_1800 = new List<string> { "" };
+        private static readonly List<string> ChangeBuildingsToNW1_Public_1800 = new List<string> { "Logistic_01 (Marketplace)", "Service_01 (Pub)", "Institution_02 (Fire Department)",};
+        private static readonly List<string> ChangeBuildingsToNW2_Public_1800 = new List<string> { "Institution_01 (Police)" , "Service_04 (Church)", "Service_02 (School)" };
+        private static readonly List<string> ChangeBuildingsToNW3_Public_1800 = new List<string> { "Institution_03 (Hospital)" , "Service_05 (Cabaret)", "Service_07 (University)",};
         private static readonly List<string> ChangeBuildingsToNW4_Public_1800 = new List<string> { "Service_03 (Bank)" };
         private static readonly List<string> ChangeBuildingsToNW5_Public_1800 = new List<string> { "Service_09 (Club House)" };
-        private static readonly List<string> ChangeBuildingsToOW1_Public_1800 = new List<string> { "Service_colony01_01 (Marketplace)", "Service_colony01_02 (Chapel)" };
-        private static readonly List<string> ChangeBuildingsToOW2_Public_1800 = new List<string> { "Service_colony01_03 (Boxing Arena)" };
+        private static readonly List<string> ChangeBuildingsToOW1_Public_1800 = new List<string> { "Institution_colony01_02 (Fire Department)", "Institution_colony01_01 (Police)", "Service_colony01_01 (Marketplace)", "Service_colony01_02 (Chapel)" };
+        private static readonly List<string> ChangeBuildingsToOW2_Public_1800 = new List<string> { "Institution_colony01_03 (Hospital)", "Service_colony01_03 (Boxing Arena)" };
         /// Production Buildings
         // private static readonly List<string> ChangeBuildingsToAW_Productions_1800 = new List<string> { "" };
         private static readonly List<string> ChangeBuildingsToNW1_Productions_1800 = new List<string> { "Coastal_01 (Fish Coast Building)", "Processing_04 (Weavery)", "Food_06 (Schnapps Maker)", "Factory_03 (Timber Factory)", "Agriculture_05 (Timber Yard)" };
@@ -55,7 +55,7 @@ namespace PresetParser
         public static string[] get(string identifierName, string factionName, string groupName)
         {
             //public buildings
-            if (identifierName.IsPartOf(ChangeBuildingsToAW_Public_1800)) { factionName = "All Worlds"; groupName = "Public Buildings"; }
+            //if (identifierName.IsPartOf(ChangeBuildingsToAW_Public_1800)) { factionName = "All Worlds"; groupName = "Public Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToNW1_Public_1800)) { factionName = "(1) Farmers"; groupName = "Public Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToNW2_Public_1800)) { factionName = "(2) Workers"; groupName = "Public Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToNW3_Public_1800)) { factionName = "(3) Artisans"; groupName = "Public Buildings"; }

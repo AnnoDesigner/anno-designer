@@ -28,7 +28,7 @@ namespace PresetParser
         public const string ANNO_VERSION_2205 = "2205";
         public const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "3.0.1";
+        private const string BUILDING_PRESETS_VERSION = "3.1.1";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "polish", "russian" };
@@ -81,7 +81,7 @@ namespace PresetParser
         private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding",
             "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding"};
-        private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358" };
+        private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358", "1010462", "1010463", "1010464"};
         //private static readonly List<string> ExcludeBuildingsGUID1800 = new List<string> { "102139", "102140", "102141", "102142", "102143", "102828" };
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System",
             "module_01_birds", "module_02_peacock", "(Warehouse II)", "(Warehouse III)", "logistic_colony01_01 (Warehouse I)", "Kontor_main_02", "Kontor_main_03", "kontor_main_colony01",
@@ -310,22 +310,22 @@ namespace PresetParser
                 //Execute for all Anno Presets in one
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
-                Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_1404, ANNO_VERSION_1404);
+                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1404, ANNO_VERSION_1404);
                 BASE_PATH = BASE_PATH_1404;
                 DoAnnoPreset(ANNO_VERSION_1404);
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
-                Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_2070, ANNO_VERSION_2070);
+                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2070, ANNO_VERSION_2070);
                 BASE_PATH = BASE_PATH_2070;
                 DoAnnoPreset(ANNO_VERSION_2070);
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
-                Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_2205, ANNO_VERSION_2205);
+                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2205, ANNO_VERSION_2205);
                 BASE_PATH = BASE_PATH_2205;
                 DoAnnoPreset(ANNO_VERSION_2205);
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
-                Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_1800, ANNO_VERSION_1800);
+                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1800, ANNO_VERSION_1800);
                 BASE_PATH = BASE_PATH_1800;
                 DoAnnoPreset(ANNO_VERSION_1800);
             }
@@ -1115,6 +1115,9 @@ namespace PresetParser
                     case "Service_colony01_01 (Marketplace)": b.IconFileName = replaceName + "market.png"; break;
                     case "Service_colony01_02 (Chapel)": b.IconFileName = replaceName + "church.png"; break;
                     case "Kontor_main_01": b.IconFileName = replaceName + "harbour_buildings.png"; break;
+                    case "Institution_colony01_01 (Police)": b.IconFileName = replaceName + "police.png"; break;  //set NW Police Station Icon
+                    case "Institution_colony01_02 (Fire Department)": b.IconFileName = replaceName + "fire_house.png"; break; //set NW Fire Staion Icon
+                    case "Institution_colony01_03 (Hospital)": b.IconFileName = replaceName + "hospital.png"; break;  //set NW Hospital Icon
                 }
             }
             #endregion
