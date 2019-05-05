@@ -94,10 +94,24 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Expands all ancestors for the given item.
+        /// Expands all ancestors for this <c>TreeViewItem</c>.
         /// </summary>
-        /// <param name="item">The item to expand</param>
+        /// <param name="item">The <c>TreeViewItem</c> to expand</param>
         public static void ExpandAncestors(this TreeViewItem item)
+        {
+            if (item.Parent is TreeViewItem treeViewItem)
+            {
+                //Make sure to only expand **ancestors** - this is the reason we need a separate function
+                //it would better if this could be rewritten to use a single recursive function,
+                ExpandAncestorsToRoot(treeViewItem);
+            }
+        }
+
+        /// <summary>
+        /// Expands all ancestors for this <c>TreeViewItem</c>.
+        /// </summary>
+        /// <param name="item"></param>
+        private static void ExpandAncestorsToRoot(TreeViewItem item)
         {
             item.IsExpanded = true;
             if (item.Parent is TreeViewItem treeViewItem)
@@ -111,6 +125,25 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="item">The item to expand</param>
         public static List<KeyValuePair<TreeViewItem, bool>> ExpandAncestors(this TreeViewItem item, List<KeyValuePair<TreeViewItem, bool>> previousExpansionState)
+        {
+            if (previousExpansionState == null)
+            {
+                previousExpansionState = new List<KeyValuePair<TreeViewItem, bool>>();
+            }
+            //Make sure to only expand **ancestors** - this is the reason we need a separate function
+            //it would better if this could be rewritten to use a single recursive function,
+            if (item.Parent is TreeViewItem treeViewItem)
+            {
+                return ExpandAncestorsToRoot(treeViewItem, previousExpansionState);
+            }
+            return previousExpansionState;
+        }
+
+        /// <summary>
+        /// Expands all ancestors for the this <c>TreeViewItem</c>. Returns a Dictionary that represents the previous expansion state.
+        /// </summary>
+        /// <param name="item">The item to expand</param>
+        public static List<KeyValuePair<TreeViewItem, bool>> ExpandAncestorsToRoot(this TreeViewItem item, List<KeyValuePair<TreeViewItem, bool>> previousExpansionState)
         {
             if (previousExpansionState == null)
             {
