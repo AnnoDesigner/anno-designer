@@ -372,6 +372,7 @@
                              Height="23"
                              x:Name="TextBoxSearchPresets"
                              KeyUp="TextBoxSearchPresetsKeyUp"
+                             GotFocus="TextBoxSearchPresetsGotFocus"
                              VerticalContentAlignment="Center"
                              Text="{Binding Source={x:Static properties:Settings.Default},Path=TreeViewSearchText, Mode=TwoWay}">
                     </TextBox>

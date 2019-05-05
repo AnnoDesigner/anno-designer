@@ -448,6 +448,8 @@ namespace AnnoDesigner
             }
         }
 
+        #region Menu Events
+
         private void MenuItemExportImageClick(object sender, RoutedEventArgs e)
         {
             annoCanvas.ExportImage(MenuItemExportZoom.IsChecked, MenuItemExportSelection.IsChecked);
@@ -586,6 +588,8 @@ namespace AnnoDesigner
             SelectedLanguageChanged();
         }
 
+        #endregion
+
         private void ComboxBoxInfluenceType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var cbx = sender as ComboBox;
@@ -618,19 +622,18 @@ namespace AnnoDesigner
             }
         }
 
-        #region TreeView events
-        private void TreeViewPresetsMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void TextBoxSearchPresetsGotFocus(object sender, RoutedEventArgs e)
         {
-            ApplyPreset();
-        }
-
-        private void TreeViewPresetsKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Return)
+            Debug.WriteLine("GotFocus");
+            if (e.Source is TextBox textBox)
             {
-                ApplyPreset();
+                if (textBox.Text == "")
+                {
+                    _treeViewState = treeViewPresets.GetTreeViewState();
+                }
             }
         }
+
         private void TextBoxSearchPresetsKeyUp(object sender, KeyEventArgs e)
         {
             var txt = sender as TextBox;
@@ -639,6 +642,7 @@ namespace AnnoDesigner
                 if (txt.Text == "")
                 {
                     _treeViewSearch.Reset();
+                    treeViewPresets.SetTreeViewState(_treeViewState);
                 }
                 else
                 {
@@ -652,6 +656,19 @@ namespace AnnoDesigner
             }
         }
 
+        private void TreeViewPresetsMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ApplyPreset();
+        }
+
+        private void TreeViewPresetsKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                ApplyPreset();
+            }
+        }
+       
         private void TreeViewPresets_Loaded(object sender, RoutedEventArgs e)
         {
             //Intialise tree view and ensure that item containers are generated.
@@ -682,13 +699,15 @@ namespace AnnoDesigner
                 }
             }
         }
-        #endregion
 
         #endregion
         private void WindowClosing(object sender, CancelEventArgs e)
         {
             Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
+            Settings.Default.TreeViewSearchText = TextBoxSearchPresets.Text; //Set explicity despite the data binding as UpdateProperty is only called on LostFocus
             Settings.Default.Save();
         }
+
+      
     }
 }
