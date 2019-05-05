@@ -164,8 +164,8 @@ namespace AnnoDesigner
             comboxBoxInfluenceType.SelectedIndex = 0;
 
             // check for updates on startup
-            MenuItemVersion.Header = "Version: " + Constants.Version;
-            MenuItemFileVersion.Header = "File version: " + Constants.FileVersion;
+            MenuItemVersion.Header = string.Format("{0}: {1}", Localization.Localization.Translations[language]["Version"], Constants.Version);
+            MenuItemFileVersion.Header = string.Format("{0}: {1}", Localization.Localization.Translations[language]["FileVersion"], Constants.Version);
             CheckForUpdates(false);
 
             // load color presets
@@ -197,8 +197,8 @@ namespace AnnoDesigner
             if (presets != null)
             {
                 presets.AddToTree(treeViewPresets);
-                GroupBoxPresets.Header = string.Format("Building presets - loaded v{0}", presets.Version);
-                MenuItemPresetsVersion.Header = "Presets version: " + presets.Version;
+                GroupBoxPresets.Header = string.Format("{0} - v{1}", Localization.Localization.Translations[language]["PresetsLoaded"], presets.Version);
+                MenuItemPresetsVersion.Header = string.Format("{0}: {1}", Localization.Localization.Translations[language]["PresetsVersion"], presets.Version);
             }
             else
             {
@@ -354,7 +354,7 @@ namespace AnnoDesigner
 
         private void ClipboardChanged(List<AnnoObject> l)
         {
-            StatusBarItemClipboardStatus.Content = "Items on clipboard: " + l.Count;
+            StatusBarItemClipboardStatus.Content = Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(SelectedLanguage)]["StatusBarItemsOnClipboard"] + ": " + l.Count;
         }
 
         #endregion
