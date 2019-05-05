@@ -16,14 +16,14 @@ using AnnoDesigner.Properties;
 using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace AnnoDesigner
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow
-        : Window
+    public partial class MainWindow : Window
     {
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
@@ -51,12 +51,12 @@ namespace AnnoDesigner
             }
         }
 
-        private static Localization.MainWindow mainWindowLocalization;
+        private static Localization.MainWindow _mainWindowLocalization;
         //About window does not need to be called, as it get's instantiated and used when the about window is created
 
         private void SelectedLanguageChanged()
         {
-            mainWindowLocalization.UpdateLanguage();
+            _mainWindowLocalization.UpdateLanguage();
             _instance.RepopulateTreeView();
             foreach (MenuItem item in LanguageMenu.Items)
             {
@@ -69,6 +69,19 @@ namespace AnnoDesigner
                     item.IsChecked = false;
                 }
             }
+
+            //refresh localized influence types in combo box
+            comboxBoxInfluenceType.Items.Clear();
+            string[] rangeTypes = Enum.GetNames(typeof(BuildingInfluenceType));
+            string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+
+            foreach (string rangeType in rangeTypes)
+            {
+                comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
+            }
+            comboxBoxInfluenceType.SelectedIndex = 0;
+
+            //update settings
             Settings.Default.SelectedLanguage = SelectedLanguage;
         }
 
@@ -89,7 +102,7 @@ namespace AnnoDesigner
 
             //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
             DependencyObject dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
-            mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
+            _mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
 
             //If language is not recognized, bring up the language selection screen
             if (!Localization.Localization.LanguageCodeMap.ContainsKey(Settings.Default.SelectedLanguage))
@@ -136,6 +149,16 @@ namespace AnnoDesigner
                 comboBoxIcon.Items.Add(icon.Value);
             }
             comboBoxIcon.SelectedIndex = 0;
+
+            string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+            //add localized influence types to combo box
+            comboxBoxInfluenceType.Items.Clear();
+            string[] rangeTypes = Enum.GetNames(typeof(BuildingInfluenceType));
+            foreach (string rangeType in rangeTypes)
+            {
+                comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
+            }
+            comboxBoxInfluenceType.SelectedIndex = 0;
 
             // check for updates on startup
             MenuItemVersion.Header = "Version: " + Constants.Version;
@@ -300,6 +323,27 @@ namespace AnnoDesigner
             textBoxRadius.Value = obj.Radius;
             //InfluenceRadius
             textBoxInfluenceRange.Text = obj.InfluenceRange.ToString();
+
+            //Set Influence Type combo box
+            if (obj.Radius > 0 && obj.InfluenceRange > 0)
+            {
+                //Building uses both a radius and an influence
+                //Has to be set manually 
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Both;
+            } 
+            else if (obj.Radius > 0)
+            {
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Radius;
+            }
+            else if (obj.InfluenceRange > 0)
+            {
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Distance;
+            }
+            else
+            {
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.None;
+            }
+
             // flags
             //checkBoxLabel.IsChecked = !string.IsNullOrEmpty(obj.Label);
             checkBoxBorderless.IsChecked = obj.Borderless;
@@ -338,7 +382,7 @@ namespace AnnoDesigner
             AnnoObject obj = new AnnoObject
             {
                 Size = new Size(textBoxWidth?.Value ?? 1, textBoxHeight?.Value ?? 1),
-                Color = colorPicker.SelectedColor.HasValue ? colorPicker.SelectedColor.Value : Colors.Red,
+                Color = colorPicker.SelectedColor ?? Colors.Red,
                 Label = IsChecked(checkBoxLabel) ? textBoxLabel.Text : "",
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
                 Radius = textBoxRadius?.Value ?? 0,
@@ -368,7 +412,7 @@ namespace AnnoDesigner
                 {
                     UpdateUIFromObject(new AnnoObject(selectedItem)
                     {
-                        Color = colorPicker.SelectedColor.HasValue ? colorPicker.SelectedColor.Value : Colors.Red,
+                        Color = colorPicker.SelectedColor ?? Colors.Red,
                     });
                     ApplyCurrentObject();
                 }
@@ -480,7 +524,7 @@ namespace AnnoDesigner
             // registers the .ad file extension to the anno_designer class
             Registry.SetValue(@"HKEY_CURRENT_USER\Software\Classes\.ad", null, "anno_designer");
 
-            showRegistrationMessageBox(isDeregistration: false);
+            ShowRegistrationMessageBox(isDeregistration: false);
         }
 
         private void MenuItemUnregisterExtensionClick(object sender, RoutedEventArgs e)
@@ -492,11 +536,11 @@ namespace AnnoDesigner
                 Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\anno_designer");
                 Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\.ad");
 
-                showRegistrationMessageBox(isDeregistration: true);
+                ShowRegistrationMessageBox(isDeregistration: true);
             }
         }
 
-        private void showRegistrationMessageBox(bool isDeregistration)
+        private void ShowRegistrationMessageBox(bool isDeregistration)
         {
             string language = AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
             var message = isDeregistration ? AnnoDesigner.Localization.Localization.Translations[language]["UnregisterFileExtensionSuccessful"] : AnnoDesigner.Localization.Localization.Translations[language]["RegisterFileExtensionSuccessful"];
@@ -560,17 +604,48 @@ namespace AnnoDesigner
 
             }
         }
+        private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
+        {
+            SelectedLanguageChanged();
+        }
+
+        private void ComboxBoxInfluenceType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var cbx = sender as ComboBox;
+            if (cbx.SelectedValue != null)
+            {
+                var influenceType = (BuildingInfluenceType)((KeyValuePair<BuildingInfluenceType, string>)cbx.SelectedItem).Key;
+                switch (influenceType)
+                {
+                    case BuildingInfluenceType.None:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
+                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        break;
+                    case BuildingInfluenceType.Radius:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Visible;
+                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        break;
+                    case BuildingInfluenceType.Distance:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
+                        dockPanelInfluenceRange.Visibility = Visibility.Visible;
+                        break;
+                    case BuildingInfluenceType.Both:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Visible;
+                        dockPanelInfluenceRange.Visibility = Visibility.Visible;
+                        break;
+                    default:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
+                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        break;
+                }
+            }
+        }
         #endregion
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
             Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
             Settings.Default.Save();
-        }
-
-        private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
-        {
-            SelectedLanguageChanged();
         }
 
     }

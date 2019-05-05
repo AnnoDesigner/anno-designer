@@ -111,4 +111,15 @@ namespace AnnoDesigner.Presets
             return Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
         }
     }
+
+    /// <summary>
+    /// Holds the influence type of a building - not stored in the buildingInfo object itself, this is used in MainWindow.
+    /// </summary>
+    public enum BuildingInfluenceType
+    {
+        None,
+        Radius,
+        Distance,
+        Both = Radius | Distance,
+    }
 }
