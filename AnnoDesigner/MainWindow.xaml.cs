@@ -590,13 +590,6 @@ namespace AnnoDesigner
             ApplyPreset();
         }
 
-            }
-        }
-        private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
-        {
-            SelectedLanguageChanged();
-        }
-
         private void ComboxBoxInfluenceType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var cbx = sender as ComboBox;
@@ -626,6 +619,9 @@ namespace AnnoDesigner
                         dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
                         break;
                 }
+            }
+        }
+
         private void TreeViewPresetsKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
