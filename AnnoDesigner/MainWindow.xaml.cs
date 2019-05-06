@@ -363,7 +363,7 @@ namespace AnnoDesigner
 
         private void ClipboardChanged(List<AnnoObject> l)
         {
-            StatusBarItemClipboardStatus.Content = Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(SelectedLanguage)]["StatusBarItemsOnClipboard"] + ": " + l.Count;
+            StatusBarItemClipboardStatus.Content = _mainWindowLocalization.StatusBarItemsOnClipboard + ": " + l.Count;
         }
 
         #endregion
