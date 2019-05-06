@@ -65,6 +65,7 @@ namespace AnnoDesigner.Localization
                         { "InfluenceType" , "Influence Type" },
                         { "None" , "None" },
                         { "Radius" , "Radius" },
+                        { "Range" , "Range" },
                         { "Distance" , "Distance" },
                         { "Both" , "Both" },
                         { "Options" , "Options" },
@@ -87,16 +88,19 @@ namespace AnnoDesigner.Localization
                         { "GoToFandom" , "Go to Fandom" },
                         { "Close" , "Close" },
                         { "StatusBarControls" , "Mouse controls: left - place, select, move // right - stop placement, remove // both - move all // double click - copy // wheel - zoom // wheel-click - rotate." },
+                        { "StatusBarItemsOnClipboard" , "Items on clipboard" },
                         { "StatNothingPlaced" , "Nothing Placed" },
                         { "StatBoundingBox" , "Bounding Box" },
                         { "StatMinimumArea" , "Minimum Area" },
                         { "StatSpaceEfficiency" , "Space Efficiency" },
                         { "StatBuildings" , "Buildings" },
                         { "StatBuildingsSelected" , "Buildings Selected" },
+                        { "StatTiles" , "Tiles" },
+                        { "StatNameNotFound" , "Building name not found" },
                         { "UnknownObject" , "Unknown Object" },
                         { "PresetsLoaded" , "Building presets loaded" }
                     }
-                    },
+                 },
                 {
                     "ger", new Dictionary<string, string>() {
                         { "File" , "Datei" },
@@ -141,6 +145,7 @@ namespace AnnoDesigner.Localization
                         { "InfluenceType" , "Einflusstyp" },
                         { "None" , "Keine" },
                         { "Radius" , "Radius" },
+                        { "Range" , "Bereich" },
                         { "Distance" , "Entfernung" },
                         { "Both" , "Beide" },
                         { "Options" , "Optionen" },
@@ -163,16 +168,19 @@ namespace AnnoDesigner.Localization
                         { "GoToFandom" , "Fandom Seite" },
                         { "Close" , "Schließen" },
                         { "StatusBarControls" , "Maussteuerung: Links - Platzieren, Auswählen, Verschieben // Rechts - Platzieren stoppen // Beide - Alle verschieben // Doppelklicken - Kopieren // Rad Zoom // Klickrad - Drehen" },
+                        { "StatusBarItemsOnClipboard" , "Elemente in der Zwischenablage" },
                         { "StatNothingPlaced" , "Nichts platziert" },
                         { "StatBoundingBox" , "Begrenzungsbox" },
                         { "StatMinimumArea" , "Minimale Fläche" },
                         { "StatSpaceEfficiency" , "Raumeffizienz" },
                         { "StatBuildings" , "Gebäude" },
                         { "StatBuildingsSelected" , "Ausgewählte Gebäude" },
+                        { "StatTiles" , "Kacheln" },
+                        { "StatNameNotFound" , "Gebäudename nicht gefunden" },
                         { "UnknownObject" , "Unbekanntes Objekt" },
                         { "PresetsLoaded" , "Gebäudevorlagen geladen" }
                     }
-                    },
+                 },
                 {
                     "pol", new Dictionary<string, string>() {
                         { "File" , "Plik" },
@@ -217,6 +225,7 @@ namespace AnnoDesigner.Localization
                         { "InfluenceType" , "Rodzaj wpływu Typ" },
                         { "None" , "Nie ma" },
                         { "Radius" , "Promień" },
+                        { "Range" , "Zasięg" },
                         { "Distance" , "Odległość" },
                         { "Both" , "Obydwoje" },
                         { "Options" , "Opcje" },
@@ -239,16 +248,19 @@ namespace AnnoDesigner.Localization
                         { "GoToFandom" , "Przejdź do strony Fandom" },
                         { "Close" , "Zamknij" },
                         { "StatusBarControls" , "Sterowanie myszą: w lewo - miejsce, zaznacz, przesuń // zatrzymanie w prawo, usuń // oba - przenieś wszystko // podwójne kliknięcie - kopiuj // kółko - powiększ // kółko - obracaj." },
+                        { "StatusBarItemsOnClipboard" , "pozycje w schowku" },
                         { "StatNothingPlaced" , "Nic nie postawiono" },
                         { "StatBoundingBox" , "Ramka Ograniczająca" },
                         { "StatMinimumArea" , "Minimalna Powierzchnia" },
                         { "StatSpaceEfficiency" , "Wykorzystanie Przestrzeni" },
                         { "StatBuildings" , "Budynki" },
                         { "StatBuildingsSelected" , "Wybrane Budynki" },
+                        { "StatTiles" , "Płytki" },
+                        { "StatNameNotFound" , "Nie znaleziono nazwy budynku" },
                         { "UnknownObject" , "Obiekt nieznany" },
                         { "PresetsLoaded" , "Presety budynków załadowano" }
                     }
-                    },
+                 },
                 {
                     "rus", new Dictionary<string, string>() {
                         { "File" , "Файл" },
@@ -293,6 +305,7 @@ namespace AnnoDesigner.Localization
                         { "InfluenceType" , "Тип влияния" },
                         { "None" , "Нет" },
                         { "Radius" , "Радиус" },
+                        { "Range" , "Диапазон" },
                         { "Distance" , "Расстояние" },
                         { "Both" , "Оба" },
                         { "Options" , "Параметры" },
@@ -315,16 +328,19 @@ namespace AnnoDesigner.Localization
                         { "GoToFandom" , "Перейти к Фэндом" },
                         { "Close" , "Закрыть" },
                         { "StatusBarControls" , "Управление мышью: влево - разместить, выбрать, переместить // вправо - прекратить размещение, удалить // оба - переместить все // двойной щелчок - копировать // колесо - масштабировать // колесико щелкнуть - повернуть." },
+                        { "StatusBarItemsOnClipboard" , "элементы в буфере обмена" },
                         { "StatNothingPlaced" , "Ничего не размещено" },
                         { "StatBoundingBox" , "Ограничительная рамка" },
                         { "StatMinimumArea" , "Минимальная площадь" },
                         { "StatSpaceEfficiency" , "Космическая эффективность" },
                         { "StatBuildings" , "Здания" },
                         { "StatBuildingsSelected" , "Выбранные здания" },
+                        { "StatTiles" , "Плитка" },
+                        { "StatNameNotFound" , "Название здания не найдено" },
                         { "UnknownObject" , "Неизвестный объект" },
                         { "PresetsLoaded" , "Загружаются пресеты зданий" }
                     }
-                    },
+                 },
             };
         }
 
