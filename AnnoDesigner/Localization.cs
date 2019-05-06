@@ -1226,6 +1226,16 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _statusBarControls, value);
             }
         }
+
+        private string _statusBarItemsOnClipboard;
+        public string StatusBarItemsOnClipboard
+        {
+            get { return _statusBarItemsOnClipboard; }
+            set
+            {
+                UpdateProperty(ref _statusBarItemsOnClipboard, value);
+            }
+        }
     }
 
     public class Welcome : Notify
