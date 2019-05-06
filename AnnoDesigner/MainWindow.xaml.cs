@@ -23,7 +23,8 @@ namespace AnnoDesigner
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
+        : Window
     {
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
@@ -101,7 +102,6 @@ namespace AnnoDesigner
             annoCanvas.OnStatusMessageChanged += StatusMessageChanged;
             annoCanvas.OnLoadedFileChanged += LoadedFileChanged;
             annoCanvas.OnClipboardChanged += ClipboardChanged;
-            DpiChanged += MainWindow_DpiChanged;
 
             //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
             DependencyObject dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
@@ -431,11 +431,6 @@ namespace AnnoDesigner
         #endregion
 
         #region UI events
-        private void MainWindow_DpiChanged(object sender, DpiChangedEventArgs e)
-        {
-            App.DpiScale = e.NewDpi;
-            //TODO: Redraw statistics when change is merged.
-        }
 
         private void MenuItemCloseClick(object sender, RoutedEventArgs e)
         {
