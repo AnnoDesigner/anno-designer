@@ -361,7 +361,8 @@
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Search:"
+            <GroupBox Header="{Binding Path=Search}" 
+                      HeaderStringFormat=" {0}:"
                       Name="GroupBoxSearchPresets"
                       IsEnabled="True"
                       Height="Auto"
