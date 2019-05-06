@@ -417,10 +417,10 @@
                     <TextBox Grid.Column="0"
                              Height="23"
                              x:Name="TextBoxSearchPresets"
-                             KeyUp="TextBoxSearchPresetsKeyUp"
+                             KeyUp="TextBoxSearchPresetsKeyUp"                             
                              GotFocus="TextBoxSearchPresetsGotFocus"
                              VerticalContentAlignment="Center"
-                             Text="{Binding Source={x:Static properties:Settings.Default},Path=TreeViewSearchText, Mode=TwoWay}">
+                             Text="{Binding PresetsSearchText, UpdateSourceTrigger=PropertyChanged}">
                     </TextBox>
                     <!-- Maybe add a clear text box button eventually. (Needs styling etc)-->
                     <!--<Button Grid.Column="1"

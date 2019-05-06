@@ -625,10 +625,11 @@ namespace AnnoDesigner
 
         private void TextBoxSearchPresetsGotFocus(object sender, RoutedEventArgs e)
         {
-            if (e.Source is TextBox textBox)
+            if (e.Source is TextBox)
             {
-                if (textBox.Text == "")
+                if (_mainWindowLocalization.PresetsSearchText.Length == 0)
                 {
+                    _treeViewSearch.Reset();
                     _treeViewState = treeViewPresets.GetTreeViewState();
                 }
             }
@@ -636,17 +637,21 @@ namespace AnnoDesigner
 
         private void TextBoxSearchPresetsKeyUp(object sender, KeyEventArgs e)
         {
-            var txt = sender as TextBox;
             try
             {
-                if (txt.Text == "")
+                if (e.Key == Key.Escape)
+                {
+                    _mainWindowLocalization.PresetsSearchText = string.Empty;
+                }
+
+                if (_mainWindowLocalization.PresetsSearchText.Length == 0)
                 {
                     _treeViewSearch.Reset();
                     treeViewPresets.SetTreeViewState(_treeViewState);
                 }
                 else
                 {
-                    _treeViewSearch.Search(txt.Text);
+                    _treeViewSearch.Search(_mainWindowLocalization.PresetsSearchText);
                 }
             }
             catch (Exception ex)

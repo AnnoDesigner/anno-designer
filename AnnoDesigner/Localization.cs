@@ -636,6 +636,8 @@ namespace AnnoDesigner.Localization
         public MainWindow()
         {
             UpdateLanguage();
+
+            PresetsSearchText = Properties.Settings.Default.TreeViewSearchText;
         }
 
         public void UpdateLanguage()
@@ -1194,6 +1196,16 @@ namespace AnnoDesigner.Localization
             set
             {
                 UpdateProperty(ref _statusBarControls, value);
+            }
+        }
+
+        private string _presetsSearchText;
+        public string PresetsSearchText
+        {
+            get { return _presetsSearchText; }
+            set
+            {
+                UpdateProperty(ref _presetsSearchText, value);
             }
         }
     }
