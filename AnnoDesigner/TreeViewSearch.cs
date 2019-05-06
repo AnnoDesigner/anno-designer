@@ -263,6 +263,7 @@ namespace AnnoDesigner
         /// <param name="treeViewItem"></param>
         private void GenerateItemContainers(TreeViewItem treeViewItem)
         {
+            Debug.WriteLine("Generating ItemContainer for: " + treeViewItem.ToString());
             var expandedState = treeViewItem.IsExpanded;
             treeViewItem.IsExpanded = true;
             var previousStates = treeViewItem.ExpandAncestors(new List<KeyValuePair<TreeViewItem, bool>>());
