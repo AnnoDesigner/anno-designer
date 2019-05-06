@@ -92,6 +92,9 @@ namespace AnnoDesigner
         public MainWindow()
         {
             InitializeComponent();
+
+            App.DpiScale = VisualTreeHelper.GetDpi(this);
+
             _instance = this;
             // initialize web client
             _webClient = new WebClient();
@@ -101,6 +104,7 @@ namespace AnnoDesigner
             annoCanvas.OnStatusMessageChanged += StatusMessageChanged;
             annoCanvas.OnLoadedFileChanged += LoadedFileChanged;
             annoCanvas.OnClipboardChanged += ClipboardChanged;
+            DpiChanged += MainWindow_DpiChanged;
 
             //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
             DependencyObject dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
@@ -430,6 +434,11 @@ namespace AnnoDesigner
         #endregion
 
         #region UI events
+        private void MainWindow_DpiChanged(object sender, DpiChangedEventArgs e)
+        {
+            App.DpiScale = e.NewDpi;
+            //TODO: Redraw statistics when change is merged.
+        }
 
         private void MenuItemCloseClick(object sender, RoutedEventArgs e)
         {
