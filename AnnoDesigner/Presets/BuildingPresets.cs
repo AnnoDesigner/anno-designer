@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Controls;
+using AnnoDesigner;
 
 namespace AnnoDesigner.Presets
 {
@@ -21,6 +22,7 @@ namespace AnnoDesigner.Presets
 
         public void AddToTree(TreeView treeView)
         {
+            var language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
             var excludedTemplates = new[] { "Ark", "Harbour", "OrnamentBuilding" };
             var excludedFactions = new[] { "third party", "Facility Modules" };
             var list = Buildings
@@ -44,11 +46,11 @@ namespace AnnoDesigner.Presets
                 var headerItem = new TreeViewItem { Header = header.Key };
                 foreach (var secondLevel in header.GroupBy(_ => _.Faction).OrderBy(_ => _.Key))
                 {
-                    var secondLevelItem = new TreeViewItem { Header = secondLevel.Key };
+                    var secondLevelItem = new TreeViewItem { Header = TreeLocalization.TreeLocalization.Translations[language][secondLevel.Key.Replace(" ", String.Empty)] };
 
                     foreach (var thirdLevel in secondLevel.Where(_ => _.Group != null).GroupBy(_ => _.Group).OrderBy(_ => _.Key))
                     {
-                        var thirdLevelItem = new TreeViewItem { Header = thirdLevel.Key };
+                        var thirdLevelItem = new TreeViewItem { Header = TreeLocalization.TreeLocalization.Translations[language][thirdLevel.Key.Replace(" ", String.Empty)]};
                         foreach (var buildingInfo in thirdLevel.OrderBy(_ => _.GetOrderParameter()))
                         {
                             thirdLevelItem.Items.Add(buildingInfo.ToAnnoObject());
@@ -56,7 +58,7 @@ namespace AnnoDesigner.Presets
                         //For 2205 only
                         //Add building modules to element list.
                         //Group will be the same for elements in the list.
-                        var fourthLevelItem = new TreeViewItem { Header = thirdLevel.ElementAt(0).Group + " Modules" };
+                        var fourthLevelItem = new TreeViewItem { Header = TreeLocalization.TreeLocalization.Translations[language][thirdLevel.ElementAt(0).Group.Replace(" ", String.Empty)] + TreeLocalization.TreeLocalization.Translations[language]["SpaceModules"] };
                         foreach (var fourthLevel in modulesList
                             .Where(_ => _.Group == thirdLevel.ElementAt(0).Group))
                         {
