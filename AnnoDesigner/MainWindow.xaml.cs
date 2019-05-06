@@ -72,7 +72,7 @@ namespace AnnoDesigner
                     item.IsChecked = false;
                 }
             }
-            
+
             //refresh localized influence types in combo box
             comboxBoxInfluenceType.Items.Clear();
             string[] rangeTypes = Enum.GetNames(typeof(BuildingInfluenceType));
@@ -87,7 +87,7 @@ namespace AnnoDesigner
             //update settings
             Settings.Default.SelectedLanguage = SelectedLanguage;
 
-            mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
+            _mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
                 annoCanvas.SelectedObjects,
                 annoCanvas.BuildingPresets);
         }
@@ -111,7 +111,7 @@ namespace AnnoDesigner
 
             //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
             var dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
-            mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
+            _mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
 
             //If language is not recognized, bring up the language selection screen
             if (!Localization.Localization.LanguageCodeMap.ContainsKey(Settings.Default.SelectedLanguage))
@@ -136,7 +136,7 @@ namespace AnnoDesigner
 
         private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)
         {
-            mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
+            _mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
                 annoCanvas.SelectedObjects,
                 annoCanvas.BuildingPresets);
         }
@@ -334,7 +334,7 @@ namespace AnnoDesigner
                 //Building uses both a radius and an influence
                 //Has to be set manually 
                 comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Both;
-            } 
+            }
             else if (obj.Radius > 0)
             {
                 comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Radius;
@@ -507,10 +507,10 @@ namespace AnnoDesigner
 
         private void ToggleBuildingList(bool showBuildingList)
         {
-            mainWindowLocalization.StatisticsViewModel.ShowBuildingList = showBuildingList;
+            _mainWindowLocalization.StatisticsViewModel.ShowBuildingList = showBuildingList;
             if (showBuildingList)
             {
-                mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
+                _mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
                     annoCanvas.SelectedObjects,
                     annoCanvas.BuildingPresets);
             }
@@ -705,7 +705,7 @@ namespace AnnoDesigner
                 ApplyPreset();
             }
         }
-       
+
         private void TreeViewPresets_Loaded(object sender, RoutedEventArgs e)
         {
             //Intialise tree view and ensure that item containers are generated.
