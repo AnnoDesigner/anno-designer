@@ -62,7 +62,11 @@ namespace AnnoDesigner.Localization
                         { "Color" , "Color" },
                         { "Label" , "Label" },
                         { "Icon" , "Icon" },
+                        { "InfluenceType" , "Influence Type" },
+                        { "None" , "None" },
                         { "Radius" , "Radius" },
+                        { "Distance" , "Distance" },
+                        { "Both" , "Both" },
                         { "Options" , "Options" },
                         { "EnableLabel" , "Enable label" },
                         { "Borderless" , "Borderless" },
@@ -89,9 +93,10 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Space Efficiency" },
                         { "StatBuildings" , "Buildings" },
                         { "StatBuildingsSelected" , "Buildings Selected" },
+                        { "UnknownObject" , "Unknown Object" },
                         { "PresetsLoaded" , "Building presets loaded" }
                     }
-                 },
+                    },
                 {
                     "ger", new Dictionary<string, string>() {
                         { "File" , "Datei" },
@@ -133,7 +138,11 @@ namespace AnnoDesigner.Localization
                         { "Color" , "Farbe" },
                         { "Label" , "Bezeichnung" },
                         { "Icon" , "Zeichen/Icon" },
+                        { "InfluenceType" , "Einflusstyp" },
+                        { "None" , "Keine" },
                         { "Radius" , "Radius" },
+                        { "Distance" , "Entfernung" },
+                        { "Both" , "Beide" },
                         { "Options" , "Optionen" },
                         { "EnableLabel" , "Bezeichnung aktivieren" },
                         { "Borderless" , "Randlos" },
@@ -160,9 +169,10 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Raumeffizienz" },
                         { "StatBuildings" , "Gebäude" },
                         { "StatBuildingsSelected" , "Ausgewählte Gebäude" },
+                        { "UnknownObject" , "Unbekanntes Objekt" },
                         { "PresetsLoaded" , "Gebäudevorlagen geladen" }
                     }
-                 },
+                    },
                 {
                     "pol", new Dictionary<string, string>() {
                         { "File" , "Plik" },
@@ -204,7 +214,11 @@ namespace AnnoDesigner.Localization
                         { "Color" , "Kolor" },
                         { "Label" , "Podpis" },
                         { "Icon" , "Ikona" },
+                        { "InfluenceType" , "Rodzaj wpływu Typ" },
+                        { "None" , "Nie ma" },
                         { "Radius" , "Promień" },
+                        { "Distance" , "Odległość" },
+                        { "Both" , "Obydwoje" },
                         { "Options" , "Opcje" },
                         { "EnableLabel" , "Pokaż etykietę" },
                         { "Borderless" , "Bez obramowania" },
@@ -231,9 +245,10 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Wykorzystanie Przestrzeni" },
                         { "StatBuildings" , "Budynki" },
                         { "StatBuildingsSelected" , "Wybrane Budynki" },
+                        { "UnknownObject" , "Obiekt nieznany" },
                         { "PresetsLoaded" , "Presety budynków załadowano" }
                     }
-                 },
+                    },
                 {
                     "rus", new Dictionary<string, string>() {
                         { "File" , "Файл" },
@@ -275,7 +290,11 @@ namespace AnnoDesigner.Localization
                         { "Color" , "Цвет" },
                         { "Label" , "Название" },
                         { "Icon" , "Значок" },
+                        { "InfluenceType" , "Тип влияния" },
+                        { "None" , "Нет" },
                         { "Radius" , "Радиус" },
+                        { "Distance" , "Расстояние" },
+                        { "Both" , "Оба" },
                         { "Options" , "Параметры" },
                         { "EnableLabel" , "Показывать название" },
                         { "Borderless" , "Без полей" },
@@ -302,9 +321,10 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Космическая эффективность" },
                         { "StatBuildings" , "Здания" },
                         { "StatBuildingsSelected" , "Выбранные здания" },
+                        { "UnknownObject" , "Неизвестный объект" },
                         { "PresetsLoaded" , "Загружаются пресеты зданий" }
                     }
-                 },
+                    },
             };
         }
 
@@ -672,7 +692,11 @@ namespace AnnoDesigner.Localization
             Color = Localization.Translations[language]["Color"];
             Label = Localization.Translations[language]["Label"];
             Icon = Localization.Translations[language]["Icon"];
+            InfluenceType = Localization.Translations[language]["InfluenceType"];
+            None = Localization.Translations[language]["None"];
             Radius = Localization.Translations[language]["Radius"];
+            Distance = Localization.Translations[language]["Distance"];
+            Both = Localization.Translations[language]["Both"];
             Options = Localization.Translations[language]["Options"];
             EnableLabel = Localization.Translations[language]["EnableLabel"];
             Borderless = Localization.Translations[language]["Borderless"];
@@ -1027,6 +1051,7 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _label, value);
             }
         }
+
         private string _icon;
         public string Icon
         {
@@ -1036,6 +1061,24 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _icon, value);
             }
         }
+        private string _influenceType;
+        public string InfluenceType
+        {
+            get { return _influenceType; }
+            set
+            {
+                UpdateProperty(ref _influenceType, value);
+            }
+        }
+        private string _none;
+        public string None
+        {
+            get { return _none; }
+            set
+            {
+                UpdateProperty(ref _none, value);
+            }
+        }
         private string _radius;
         public string Radius
         {
@@ -1043,6 +1086,24 @@ namespace AnnoDesigner.Localization
             set
             {
                 UpdateProperty(ref _radius, value);
+            }
+        }
+        private string _distance;
+        public string Distance
+        {
+            get { return _distance; }
+            set
+            {
+                UpdateProperty(ref _distance, value);
+            }
+        }
+        private string _both;
+        public string Both
+        {
+            get { return _both; }
+            set
+            {
+                UpdateProperty(ref _both, value);
             }
         }
         private string _options;
@@ -1101,27 +1162,38 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _statusBarControls, value);
             }
         }
+    }
 
-        public class Welcome : Notify
+    public class Welcome : Notify
+    {
+        //Generated from:
+        //...
+        //public string Prop1 {get; set;}
+        //public string Prop2 {get; set;}
+        //...
+        //find expr: public (string) (.+?) {.+
+        //With the following regex (in a compatible editor that supports lowercasing of values
+        //within regex expressions):
+        //private $1 _\l$2; \r\n public $1 $2 \r\n { \r\n get { return _\l$2; } \r\n set \r\n { \r\n UpdateProperty\(ref _\l$2, value\); \r\n}\r\n}
+
+
+        private string _continue;
+        public string Continue
         {
-            private string _continue;
-            public string Continue
+            get { return _continue; }
+            set
             {
-                get { return _continue; }
-                set
-                {
-                    UpdateProperty(ref _continue, value);
-                }
+                UpdateProperty(ref _continue, value);
             }
+        }
 
-            private string _selectALanguageWarning;
-            public string SelectALanguageWarning
+        private string _selectALanguageWarning;
+        public string SelectALanguageWarning
+        {
+            get { return _selectALanguageWarning; }
+            set
             {
-                get { return _selectALanguageWarning; }
-                set
-                {
-                    UpdateProperty(ref _selectALanguageWarning, value);
-                }
+                UpdateProperty(ref _selectALanguageWarning, value);
             }
         }
     }

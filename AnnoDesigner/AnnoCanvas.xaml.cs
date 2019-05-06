@@ -444,6 +444,7 @@ namespace AnnoDesigner
                 {
                     MessageBox.Show(ex.Message, "Loading of the building presets failed");
                 }
+
                 // load icon name mapping
                 List<IconNameMap> iconNameMap = null;
                 try
@@ -454,29 +455,38 @@ namespace AnnoDesigner
                 {
                     MessageBox.Show(ex.Message, "Loading of the icon names failed");
                 }
+
+                // load icons
+                var pathToIconFolder = Path.Combine(App.ApplicationPath, Constants.IconFolder);
                 var icons = new Dictionary<string, IconImage>();
-                foreach (var path in Directory.GetFiles(Path.Combine(App.ApplicationPath, Constants.IconFolder), Constants.IconFolderFilter))
+
+                foreach (var path in Directory.EnumerateFiles(pathToIconFolder, Constants.IconFolderFilter))
                 {
                     var filenameWithExt = Path.GetFileName(path);
                     var filenameWithoutExt = Path.GetFileNameWithoutExtension(path);
-                    if (!string.IsNullOrEmpty(filenameWithoutExt))
+
+                    if (string.IsNullOrWhiteSpace(filenameWithoutExt))
                     {
-                        // try mapping to the icon translations
-                        Dictionary<string, string> localizations = null;
-                        if (iconNameMap != null)
-                        {
-                            var map = iconNameMap.Find(_ => _.IconFilename == filenameWithExt);
-                            if (map != null)
-                            {
-                                localizations = map.Localizations.Dict;
-                            }
-                        }
-                        // add the current icon
-                        icons.Add(filenameWithoutExt, new IconImage(filenameWithoutExt, localizations, new BitmapImage(new Uri(path))));
+                        continue;
                     }
+
+                    // try mapping to the icon translations
+                    Dictionary<string, string> localizations = null;
+                    if (iconNameMap != null)
+                    {
+                        var map = iconNameMap.Find(x => x.IconFilename == filenameWithExt);
+                        if (map != null)
+                        {
+                            localizations = map.Localizations.Dict;
+                        }
+                    }
+
+                    // add the current icon
+                    icons.Add(filenameWithoutExt, new IconImage(filenameWithoutExt, localizations, new BitmapImage(new Uri(path))));
                 }
-                // sort icons by its DisplayName
-                Icons = icons.OrderBy(_ => _.Value.DisplayName).ToDictionary(_ => _.Key, _ => _.Value);
+
+                // sort icons by their DisplayName
+                Icons = icons.OrderBy(x => x.Value.DisplayName).ToDictionary(x => x.Key, x => x.Value);
             }
 
             const int dpiFactor = 1;

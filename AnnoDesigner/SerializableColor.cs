@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using System.Windows.Media;
 
 namespace AnnoDesigner
@@ -8,12 +9,20 @@ namespace AnnoDesigner
     /// Provides a serializable representation of the System.Windows.Media.Color class
     /// </summary>
     [Serializable]
+    [DataContract]
     [DebuggerDisplay("{A},{R},{G},{B}")]
     public struct SerializableColor
     {
+        [DataMember(Order = 0)]
         public byte A;
+
+        [DataMember(Order = 1)]
         public byte R;
+
+        [DataMember(Order = 2)]
         public byte G;
+
+        [DataMember(Order = 3)]
         public byte B;
 
         public SerializableColor(byte a, byte r, byte g, byte b)
