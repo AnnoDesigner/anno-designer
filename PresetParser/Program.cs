@@ -28,7 +28,7 @@ namespace PresetParser
         public const string ANNO_VERSION_2205 = "2205";
         public const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "3.0.0";
+        private const string BUILDING_PRESETS_VERSION = "3.1.1";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "polish", "russian" };
@@ -81,7 +81,7 @@ namespace PresetParser
         private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding",
             "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding"};
-        private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358" };
+        private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358", "1010462", "1010463", "1010464"};
         //private static readonly List<string> ExcludeBuildingsGUID1800 = new List<string> { "102139", "102140", "102141", "102142", "102143", "102828" };
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System",
             "module_01_birds", "module_02_peacock", "(Warehouse II)", "(Warehouse III)", "logistic_colony01_01 (Warehouse I)", "Kontor_main_02", "Kontor_main_03", "kontor_main_colony01",
@@ -95,11 +95,11 @@ namespace PresetParser
         ///              OW1 (Old World - Jornaleros) and OW2 (Old World - Obreros)
         /// <2> wil be the Group under <1>, like Production, Public, etc
         /// </summary>
-            #endregion
+        #endregion
 
-            #endregion
+        #endregion
 
-            #region Set Icon File Name seperations
+        #region Set Icon File Name seperations
         private static string GetIconFilename(XmlNode iconNode, string annoVersion)
         {
             string annoIdexNumber = "";
@@ -310,22 +310,22 @@ namespace PresetParser
                 //Execute for all Anno Presets in one
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
-                Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_1404, ANNO_VERSION_1404);
+                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1404, ANNO_VERSION_1404);
                 BASE_PATH = BASE_PATH_1404;
                 DoAnnoPreset(ANNO_VERSION_1404);
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
-                Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_2070, ANNO_VERSION_2070);
+                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2070, ANNO_VERSION_2070);
                 BASE_PATH = BASE_PATH_2070;
                 DoAnnoPreset(ANNO_VERSION_2070);
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
-                Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_2205, ANNO_VERSION_2205);
+                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2205, ANNO_VERSION_2205);
                 BASE_PATH = BASE_PATH_2205;
                 DoAnnoPreset(ANNO_VERSION_2205);
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
-                Console.WriteLine("Tesing RDA data from {0} for anno version {1}.", BASE_PATH_1800, ANNO_VERSION_1800);
+                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1800, ANNO_VERSION_1800);
                 BASE_PATH = BASE_PATH_1800;
                 DoAnnoPreset(ANNO_VERSION_1800);
             }
@@ -447,40 +447,47 @@ namespace PresetParser
         }
         #endregion
 
-        /// Extra Preset Parsing Part for All Anno's
-        #region Add extra preset buildings to the Anno version preset file
-        // Thus can be added in ExtraPresets.cs
+
+        #region Add extra preset buildings to the Anno version preset file       
+
+        /// <summary>
+        /// Add some extra presets for a specific version of Anno.
+        /// </summary>
+        /// <param name="annoVersion">The version of Anno.</param>
+        /// <param name="buildings">The already existing buildings.</param>
         private static void AddExtraPreset(string annoVersion, List<BuildingInfo> buildings)
         {
-            if (ExtraPresets.getList(annoVersion))
+            foreach (var curExtraPreset in ExtraPresets.GetExtraPresets(annoVersion))
             {
-                foreach (var ep in ExtraPresets.ExtraPresetList)
+                BuildingInfo buildingToAdd = new BuildingInfo
                 {
-                    BuildingInfo b = new BuildingInfo
-                    {
-                        Header = ep.Header,
-                        Faction = ep.Faction,
-                        Group = ep.Group,
-                        IconFileName = ep.IconFileName,
-                        Identifier = ep.Identifier,
-                        InfluenceRadius = ep.InfluenceRadius,
-                        InfluenceRange = ep.InfluenceRange,
-                        Template = ep.Template,
-                    };
-                    Console.WriteLine("Extra Building : {0}", b.Identifier);
-                    b.BuildBlocker = new SerializableDictionary<int>();
-                    b.BuildBlocker["x"] = Convert.ToInt32(ep.BuildBlockerX);
-                    b.BuildBlocker["z"] = Convert.ToInt32(ep.BuildBlockerZ);
-                    b.Localization = new SerializableDictionary<string>();
-                    b.Localization["eng"] = ep.LocaEng;
-                    b.Localization["ger"] = ep.LocaGer;
-                    b.Localization["pol"] = ep.LocaPol;
-                    b.Localization["rus"] = ep.LocaRus;
-                    annoBuildingsListCount++;
-                    buildings.Add(b);
-                }
+                    Header = curExtraPreset.Header,
+                    Faction = curExtraPreset.Faction,
+                    Group = curExtraPreset.Group,
+                    IconFileName = curExtraPreset.IconFileName,
+                    Identifier = curExtraPreset.Identifier,
+                    InfluenceRadius = curExtraPreset.InfluenceRadius,
+                    InfluenceRange = curExtraPreset.InfluenceRange,
+                    Template = curExtraPreset.Template,
+                };
+
+                Console.WriteLine("Extra Building : {0}", buildingToAdd.Identifier);
+
+                buildingToAdd.BuildBlocker = new SerializableDictionary<int>();
+                buildingToAdd.BuildBlocker["x"] = Convert.ToInt32(curExtraPreset.BuildBlockerX);
+                buildingToAdd.BuildBlocker["z"] = Convert.ToInt32(curExtraPreset.BuildBlockerZ);
+                buildingToAdd.Localization = new SerializableDictionary<string>();
+                buildingToAdd.Localization["eng"] = curExtraPreset.LocaEng;
+                buildingToAdd.Localization["ger"] = curExtraPreset.LocaGer;
+                buildingToAdd.Localization["pol"] = curExtraPreset.LocaPol;
+                buildingToAdd.Localization["rus"] = curExtraPreset.LocaRus;
+
+                annoBuildingsListCount++;
+
+                buildings.Add(buildingToAdd);
             }
         }
+
         #endregion
 
         /// Parsing Part for 1404 and 2070
@@ -601,7 +608,7 @@ namespace PresetParser
             //because this number is not exists yet, we set this to '0'
             b.InfluenceRange = 0;
             #endregion
-            
+
             #region Parse building blocker
             // parse building blocker
             if (!RetrieveBuildingBlocker(b, values["Object"]["Variations"].FirstChild["Filename"].InnerText, annoVersion))
@@ -851,7 +858,8 @@ namespace PresetParser
                 string translation = "";
                 XmlNode translationNodes = langDocument.SelectNodes(langNodeStartPath)
                     .Cast<XmlNode>().SingleOrDefault(_ => _["GUID"].InnerText == buildingGuid);
-                if (translationNodes != null) {
+                if (translationNodes != null)
+                {
                     translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
                     if (buildingGuid == "7000422")
                     {
@@ -1071,7 +1079,8 @@ namespace PresetParser
             {
                 /// Split the Value <IconFilenames>innertext</IconFilenames> to get only the Name.png
                 string[] sIcons = icon.Split('/');
-                if (sIcons.LastOrDefault().StartsWith("icon_")){
+                if (sIcons.LastOrDefault().StartsWith("icon_"))
+                {
                     icon = sIcons.LastOrDefault().Replace("icon_", replaceName);
                 }
                 else /* Put the Replace name on front*/
@@ -1106,6 +1115,9 @@ namespace PresetParser
                     case "Service_colony01_01 (Marketplace)": b.IconFileName = replaceName + "market.png"; break;
                     case "Service_colony01_02 (Chapel)": b.IconFileName = replaceName + "church.png"; break;
                     case "Kontor_main_01": b.IconFileName = replaceName + "harbour_buildings.png"; break;
+                    case "Institution_colony01_01 (Police)": b.IconFileName = replaceName + "police.png"; break;  //set NW Police Station Icon
+                    case "Institution_colony01_02 (Fire Department)": b.IconFileName = replaceName + "fire_house.png"; break; //set NW Fire Staion Icon
+                    case "Institution_colony01_03 (Hospital)": b.IconFileName = replaceName + "hospital.png"; break;  //set NW Hospital Icon
                 }
             }
             #endregion
@@ -1213,7 +1225,7 @@ namespace PresetParser
                             case 3: { translation = "Боковая изгородь (образного)"; break; }
                         }
                     }
-                    if (buildingGuid== "102161")
+                    if (buildingGuid == "102161")
                     {
                         switch (languageCount)
                         {
@@ -1262,7 +1274,7 @@ namespace PresetParser
                     }
                     translation = values["Standard"]["Name"].InnerText;
                 }
-                if (templateName == "FarmBuilding" || templateName=="Farmfield")
+                if (templateName == "FarmBuilding" || templateName == "Farmfield")
                 {
                     string fieldAmountValue = null, fieldGuidValue = null;
                     switch (templateName)
@@ -1293,7 +1305,7 @@ namespace PresetParser
                 languageCount++;
             }
             #endregion
-           
+
             #endregion
             // add building to the list
             annoBuildingsListCount++;
@@ -1538,7 +1550,7 @@ namespace PresetParser
                                 {
                                     Language = language,
                                     Guid = guid,
-                                    GuidReference = "A5_"+translation.Substring(13, translation.Length - 14)
+                                    GuidReference = "A5_" + translation.Substring(13, translation.Length - 14)
                                 });
                             }
                         }
@@ -1570,7 +1582,7 @@ namespace PresetParser
             foreach (XmlNode iconNode in iconNodes)
             {
                 string guid = iconNode["GUID"].InnerText;
-                string iconFilename = GetIconFilename(iconNode["Icons"].FirstChild,annoVersion);
+                string iconFilename = GetIconFilename(iconNode["Icons"].FirstChild, annoVersion);
                 if (!localizations.ContainsKey(guid) || mapping.Exists(_ => _.IconFilename == iconFilename))
                 {
                     continue;
@@ -1587,7 +1599,7 @@ namespace PresetParser
             }
             else
             {
-                Console.WriteLine("TIS IS A TEST: No icon.sjon File is writen") ;
+                Console.WriteLine("TIS IS A TEST: No icon.sjon File is writen");
             }
 
         }
@@ -1622,8 +1634,8 @@ namespace PresetParser
             {
                 Path = path;
                 XPath = xPath;
-               // YPath = yPath;
-               // InnerNameTag = innerNameTag;
+                // YPath = yPath;
+                // InnerNameTag = innerNameTag;
             }
 
             public PathRef(string path)

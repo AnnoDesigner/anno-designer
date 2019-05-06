@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Threading;
+using System.Collections.ObjectModel;
 
 namespace AnnoDesigner
 {
@@ -28,6 +29,8 @@ namespace AnnoDesigner
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
         private static MainWindow _instance;
+        private TreeViewSearch<AnnoObject> _treeViewSearch;
+        private List<bool> _treeViewState;
 
         private static string _selectedLanguage;
         public static string SelectedLanguage
@@ -51,12 +54,12 @@ namespace AnnoDesigner
             }
         }
 
-        private static Localization.MainWindow mainWindowLocalization;
+        private static Localization.MainWindow _mainWindowLocalization;
         //About window does not need to be called, as it get's instantiated and used when the about window is created
 
         private void SelectedLanguageChanged()
         {
-            mainWindowLocalization.UpdateLanguage();
+            _mainWindowLocalization.UpdateLanguage();
             _instance.RepopulateTreeView();
             foreach (MenuItem item in LanguageMenu.Items)
             {
@@ -69,7 +72,19 @@ namespace AnnoDesigner
                     item.IsChecked = false;
                 }
             }
+            
+            //refresh localized influence types in combo box
+            comboxBoxInfluenceType.Items.Clear();
+            string[] rangeTypes = Enum.GetNames(typeof(BuildingInfluenceType));
+            string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
 
+            foreach (string rangeType in rangeTypes)
+            {
+                comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
+            }
+            comboxBoxInfluenceType.SelectedIndex = 0;
+
+            //update settings
             Settings.Default.SelectedLanguage = SelectedLanguage;
 
             mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
@@ -137,6 +152,7 @@ namespace AnnoDesigner
             ShowGrid.IsChecked = Settings.Default.ShowGrid;
             ShowIcons.IsChecked = Settings.Default.ShowIcons;
             ShowLabels.IsChecked = Settings.Default.ShowLabels;
+            _treeViewState = Settings.Default.TreeViewState ?? null;
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -150,6 +166,16 @@ namespace AnnoDesigner
                 comboBoxIcon.Items.Add(icon.Value);
             }
             comboBoxIcon.SelectedIndex = 0;
+
+            string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+            //add localized influence types to combo box
+            comboxBoxInfluenceType.Items.Clear();
+            string[] rangeTypes = Enum.GetNames(typeof(BuildingInfluenceType));
+            foreach (string rangeType in rangeTypes)
+            {
+                comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
+            }
+            comboxBoxInfluenceType.SelectedIndex = 0;
 
             // check for updates on startup
             MenuItemVersion.Header = "Version: " + Constants.Version;
@@ -191,19 +217,6 @@ namespace AnnoDesigner
             else
             {
                 GroupBoxPresets.Header = "Building presets - load failed";
-            }
-
-            if (Settings.Default.TreeViewState != null && Settings.Default.TreeViewState.Count > 0)
-            {
-                try
-                {
-                    treeViewPresets.SetTreeViewState(Settings.Default.TreeViewState);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Failed to restore previous preset menu settings.");
-                    App.WriteToErrorLog("TreeView SetTreeViewState Error", ex.Message, ex.StackTrace);
-                }
             }
 
             // load file given by argument
@@ -294,16 +307,47 @@ namespace AnnoDesigner
             // icon
             try
             {
-                comboBoxIcon.SelectedItem = string.IsNullOrEmpty(obj.Icon) ? _noIconItem : comboBoxIcon.Items.Cast<IconImage>().Single(_ => _.Name == Path.GetFileNameWithoutExtension(obj.Icon));
+                if (string.IsNullOrWhiteSpace(obj.Icon))
+                {
+                    comboBoxIcon.SelectedItem = _noIconItem;
+                }
+                else
+                {
+                    var foundIconImage = comboBoxIcon.Items.Cast<IconImage>().SingleOrDefault(x => x.Name.Equals(Path.GetFileNameWithoutExtension(obj.Icon), StringComparison.OrdinalIgnoreCase));
+                    comboBoxIcon.SelectedItem = foundIconImage ?? _noIconItem;
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error finding {nameof(IconImage)} for value \"{obj.Icon}\".{Environment.NewLine}{ex}");
+
                 comboBoxIcon.SelectedItem = _noIconItem;
             }
             // radius
             textBoxRadius.Value = obj.Radius;
             //InfluenceRadius
             textBoxInfluenceRange.Text = obj.InfluenceRange.ToString();
+
+            //Set Influence Type combo box
+            if (obj.Radius > 0 && obj.InfluenceRange > 0)
+            {
+                //Building uses both a radius and an influence
+                //Has to be set manually 
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Both;
+            } 
+            else if (obj.Radius > 0)
+            {
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Radius;
+            }
+            else if (obj.InfluenceRange > 0)
+            {
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Distance;
+            }
+            else
+            {
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.None;
+            }
+
             // flags
             //checkBoxLabel.IsChecked = !string.IsNullOrEmpty(obj.Label);
             checkBoxBorderless.IsChecked = obj.Borderless;
@@ -417,6 +461,8 @@ namespace AnnoDesigner
             }
         }
 
+        #region Menu Events
+
         private void MenuItemExportImageClick(object sender, RoutedEventArgs e)
         {
             //annoCanvas.ExportImage(MenuItemExportZoom.IsChecked, MenuItemExportSelection.IsChecked);
@@ -473,19 +519,6 @@ namespace AnnoDesigner
         private void MenuItemVersionCheckImageClick(object sender, RoutedEventArgs e)
         {
             CheckForUpdates(true);
-        }
-
-        private void TreeViewPresetsMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            ApplyPreset();
-        }
-
-        private void TreeViewPresetsKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Return)
-            {
-                ApplyPreset();
-            }
         }
 
         private void MenuItemResetZoomClick(object sender, RoutedEventArgs e)
@@ -588,17 +621,139 @@ namespace AnnoDesigner
 
             }
         }
-        #endregion
-
-        private void WindowClosing(object sender, CancelEventArgs e)
-        {
-            Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
-            Settings.Default.Save();
-        }
-
         private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
         {
             SelectedLanguageChanged();
+        }
+
+        #endregion
+
+        private void ComboxBoxInfluenceType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var cbx = sender as ComboBox;
+            if (cbx.SelectedValue != null)
+            {
+                var influenceType = (BuildingInfluenceType)((KeyValuePair<BuildingInfluenceType, string>)cbx.SelectedItem).Key;
+                switch (influenceType)
+                {
+                    case BuildingInfluenceType.None:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
+                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        break;
+                    case BuildingInfluenceType.Radius:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Visible;
+                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        break;
+                    case BuildingInfluenceType.Distance:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
+                        dockPanelInfluenceRange.Visibility = Visibility.Visible;
+                        break;
+                    case BuildingInfluenceType.Both:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Visible;
+                        dockPanelInfluenceRange.Visibility = Visibility.Visible;
+                        break;
+                    default:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
+                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        break;
+                }
+            }
+        }
+
+        private void TextBoxSearchPresetsGotFocus(object sender, RoutedEventArgs e)
+        {
+            if (e.Source is TextBox textBox)
+            {
+                if (textBox.Text == "")
+                {
+                    _treeViewState = treeViewPresets.GetTreeViewState();
+                }
+            }
+        }
+
+        private void TextBoxSearchPresetsKeyUp(object sender, KeyEventArgs e)
+        {
+            var txt = sender as TextBox;
+            try
+            {
+                if (txt.Text == "")
+                {
+                    _treeViewSearch.Reset();
+                    treeViewPresets.SetTreeViewState(_treeViewState);
+                }
+                else
+                {
+                    _treeViewSearch.Search(txt.Text);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to execute search successfully.");
+                App.WriteToErrorLog("Failed to execute search successfully", ex.Message, ex.StackTrace);
+            }
+        }
+
+        private void TreeViewPresetsMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ApplyPreset();
+        }
+
+        private void TreeViewPresetsKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                ApplyPreset();
+            }
+        }
+       
+        private void TreeViewPresets_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Intialise tree view and ensure that item containers are generated.
+            _treeViewSearch = new TreeViewSearch<AnnoObject>(treeViewPresets, _ => _.Label)
+            {
+                MatchFullWordOnly = false,
+                IsCaseSensitive = false
+            };
+            _treeViewSearch.EnsureItemContainersGenerated();
+
+            var isSearchState = false;
+            if (!string.IsNullOrWhiteSpace(Settings.Default.TreeViewSearchText))
+            {
+                //Then apply the search **before** reloading state
+                _treeViewSearch.Search(Settings.Default.TreeViewSearchText);
+                isSearchState = true;
+            }
+
+            if (_treeViewState != null && _treeViewState.Count > 0)
+            {
+                try
+                {
+                    treeViewPresets.SetTreeViewState(_treeViewState);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Failed to restore previous preset menu settings.");
+                    App.WriteToErrorLog("TreeView SetTreeViewState Error", ex.Message, ex.StackTrace);
+                }
+            }
+
+            if (isSearchState)
+            {
+                //if the application was last closed in the middle of a search, set the previous state
+                //to an empty value, so that we don't just expand the results of the search as the 
+                //previous state
+
+                _treeViewState = new List<bool>();
+
+            }
+        }
+
+        #endregion
+        private void WindowClosing(object sender, CancelEventArgs e)
+        {
+            Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
+            Settings.Default.TreeViewSearchText = TextBoxSearchPresets.Text; //Set explicity despite the data binding as UpdateProperty is only called on LostFocus
+            Settings.Default.Save();
         }
 
         /// <summary>

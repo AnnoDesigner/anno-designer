@@ -27,6 +27,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -72,7 +74,9 @@
     <Compile Include="StatisticsView.xaml.cs">
       <DependentUpon>StatisticsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="TreeViewExtensions.cs" />
+    <Compile Include="TreeViewSearch.cs" />
     <Compile Include="UI\IconImage.xaml.cs" />
     <Compile Include="viewmodel\StatisticsViewModel.cs" />
     <Compile Include="Welcome.xaml.cs">

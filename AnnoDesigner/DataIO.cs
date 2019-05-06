@@ -94,7 +94,7 @@ namespace AnnoDesigner
         [DataContract]
         private class LayoutVersionContainer
         {
-            [DataMember]
+            [DataMember(Order = 0)]
             public int FileVersion { get; set; }
         }
 
@@ -102,10 +102,9 @@ namespace AnnoDesigner
         /// Container with file version and all objects
         /// </summary>
         [DataContract]
-        private class SavedLayout
-            : LayoutVersionContainer
+        private class SavedLayout : LayoutVersionContainer
         {
-            [DataMember]
+            [DataMember(Order = 1)]
             public List<AnnoObject> Objects { get; set; }
 
             public SavedLayout(List<AnnoObject> objects)

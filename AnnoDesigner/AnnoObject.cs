@@ -11,74 +11,7 @@ namespace AnnoDesigner
     [DebuggerDisplay("{Identifier}")]
     public class AnnoObject
     {
-        /// <summary>
-        /// Size in grid units
-        /// </summary>
-        [DataMember]
-        public Size Size { get; set; }
-
-        /// <summary>
-        /// Color used to fill this object
-        /// </summary>
-        [DataMember]
-        public SerializableColor Color { get; set; }
-
-        /// <summary>
-        /// Position in grid units
-        /// </summary>
-        [DataMember]
-        public Point Position { get; set; }
-
-        /// <summary>
-        /// Filename for an icon
-        /// </summary>
-        [DataMember]
-        public string Icon { get; set; }
-
-        /// <summary>
-        /// Label string
-        /// </summary>
-        [DataMember]
-        public string Label { get; set; }
-
-        /// <summary>
-        /// ObjName string
-        /// </summary>
-        [DataMember]
-        public string Identifier { get; set; }
-
-        /* /// <summary>
-        /// Localization string
-        /// </summary>
-        [DataMember]
-        public string[] Localization { get; set; }*/
-
-        /// <summary>
-        /// Influence radius in grid units
-        /// </summary>
-        [DataMember]
-        public double Radius { get; set; }
-
-        /// <summary>
-        /// Influence range in grid units
-        /// </summary>
-        [DataMember]
-        public double InfluenceRange { get; set; }
-
-        /// <summary>
-        /// Indicates whether the border should be omitted.
-        /// </summary>
-        [DataMember]
-        public bool Borderless { get; set; }
-
-        /// <summary>
-        /// Indicates whether the object is treated as a road tile.
-        /// </summary>
-        [DataMember]
-        public bool Road { get; set; }
-
-        //[DataMember]
-        //public SerializableDictionary<int> BuildCosts { get; set; }
+        #region ctor
 
         /// <summary>
         /// Empty constructor needed for deserialization
@@ -107,5 +40,76 @@ namespace AnnoDesigner
             // note: this is not really a copy, just a reference, but it is not supposed to change anyway
             //BuildCosts = obj.BuildCosts;
         }
+
+        #endregion
+
+        /// <summary>
+        /// The identifier of the object.
+        /// </summary>
+        [DataMember(Order = 0)]
+        public string Identifier { get; set; }
+
+        /// <summary>
+        /// The label of the object.
+        /// </summary>
+        [DataMember(Order = 1)]
+        public string Label { get; set; }
+
+        /// <summary>
+        /// Position in grid units
+        /// </summary>
+        [DataMember(Order = 2)]
+        public Point Position { get; set; }
+
+        /// <summary>
+        /// Size in grid units
+        /// </summary>
+        [DataMember(Order = 3)]
+        public Size Size { get; set; }
+
+        /// <summary>
+        /// Filename for an icon
+        /// </summary>
+        [DataMember(Order = 4)]
+        public string Icon { get; set; }
+
+        /// <summary>
+        /// Color used to fill this object
+        /// </summary>
+        [DataMember(Order = 5)]
+        public SerializableColor Color { get; set; }
+
+        /// <summary>
+        /// Indicates whether the border should be omitted.
+        /// </summary>
+        [DataMember(Order = 6)]
+        public bool Borderless { get; set; }
+
+        /// <summary>
+        /// Indicates whether the object is treated as a road tile.
+        /// </summary>
+        [DataMember(Order = 7)]
+        public bool Road { get; set; }
+
+        /// <summary>
+        /// Influence radius in grid units
+        /// </summary>
+        [DataMember(Order = 8)]
+        public double Radius { get; set; }
+
+        /// <summary>
+        /// Influence range in grid units
+        /// </summary>
+        [DataMember(Order = 9)]
+        public double InfluenceRange { get; set; }
+
+        ///// <summary>
+        ///// Localization string
+        ///// </summary>
+        //[DataMember]
+        //public string[] Localization { get; set; }
+
+        //[DataMember]
+        //public SerializableDictionary<int> BuildCosts { get; set; }
     }
 }
