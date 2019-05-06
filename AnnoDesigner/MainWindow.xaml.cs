@@ -76,6 +76,9 @@ namespace AnnoDesigner
         public MainWindow()
         {
             InitializeComponent();
+
+            App.DpiScale = VisualTreeHelper.GetDpi(this);
+
             _instance = this;
             // initialize web client
             _webClient = new WebClient();
