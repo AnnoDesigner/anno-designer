@@ -55,13 +55,23 @@
               Height="23"
               VerticalAlignment="Top"
               Grid.ColumnSpan="3">
-            <!--<Menu.Resources>
-               
+            <Menu.Resources>
+                <Style TargetType="{x:Type MenuItem}">
+                    <!--<Setter Property="Foreground"
+                            Value="Black" />-->
+                    <Style.Triggers>
+                        <Trigger Property="IsEnabled"
+                                 Value="False">
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
             </Menu.Resources>
-            <Menu.DataContext>
+            <!--<Menu.DataContext>
                 
-            </Menu.DataContext>-->
-            <!--<Menu.ItemsPanel>
+            </Menu.DataContext>
+            <Menu.ItemsPanel>
                 <ItemsPanelTemplate>
                     <DockPanel HorizontalAlignment="Stretch"/>
                 </ItemsPanelTemplate>
@@ -156,15 +166,45 @@
             <MenuItem Header="{Binding Path=Help}"
                       TabIndex="25"
                       HorizontalAlignment="Right">
-                <MenuItem Header="{Binding Path=Version}"
-                          Name="MenuItemVersion"
-                          IsEnabled="False" />
-                <MenuItem Header="{Binding Path=FileVersion}"
-                          Name="MenuItemFileVersion"
-                          IsEnabled="False" />
-                <MenuItem Header="{Binding Path=PresetsVersion}"
-                          Name="MenuItemPresetsVersion"
-                          IsEnabled="False" />
+                <MenuItem Name="MenuItemVersion"
+                          IsEnabled="False">
+                    <MenuItem.Header>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0}: {1}">
+                                    <Binding Path="Version" />
+                                    <Binding Path="VersionValue" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Name="MenuItemFileVersion"
+                          IsEnabled="False">
+                    <MenuItem.Header>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0}: {1}">
+                                    <Binding Path="FileVersion" />
+                                    <Binding Path="FileVersionValue" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Name="MenuItemPresetsVersion"
+                          IsEnabled="False">
+                    <MenuItem.Header>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0}: {1}">
+                                    <Binding Path="PresetsVersion" />
+                                    <Binding Path="PresetsVersionValue" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </MenuItem.Header>
+                </MenuItem>
                 <MenuItem Header="{Binding Path=CheckForUpdates}"
                           Click="MenuItemVersionCheckImageClick" />
                 <MenuItem Name="AutomaticUpdateCheck"
@@ -322,17 +362,23 @@
                             </ItemsPanelTemplate>
                         </ComboBox>
                     </DockPanel>
-                    <DockPanel LastChildFill="False" Height="26">
-                        <Label Content="{Binding Path=InfluenceType}"/>
-                        <ComboBox DockPanel.Dock="Right" Width="140" Height="22" IsEnabled="True" Name="comboxBoxInfluenceType" SelectedIndex="0" TabIndex="6" 
-                                  SelectedValuePath="Key" 
+                    <DockPanel LastChildFill="False"
+                               Height="26">
+                        <Label Content="{Binding Path=InfluenceType}" />
+                        <ComboBox DockPanel.Dock="Right"
+                                  Width="140"
+                                  Height="22"
+                                  IsEnabled="True"
+                                  Name="comboxBoxInfluenceType"
+                                  SelectedIndex="0"
+                                  TabIndex="6"
+                                  SelectedValuePath="Key"
                                   DisplayMemberPath="Value"
-      
-                                  SelectionChanged="ComboxBoxInfluenceType_SelectionChanged"/>
+                                  SelectionChanged="ComboxBoxInfluenceType_SelectionChanged" />
                     </DockPanel>
-                    <DockPanel Name="dockPanelInfluenceRadius" 
+                    <DockPanel Name="dockPanelInfluenceRadius"
                                LastChildFill="False"
-                               Height="26" 
+                               Height="26"
                                Visibility="Visible">
                         <Label Content="{Binding Path=Radius}" />
 
@@ -347,22 +393,22 @@
                                            Minimum="0"
                                            TabIndex="8" />
                     </DockPanel>
-                    <DockPanel Name="dockPanelInfluenceRange" 
-                               LastChildFill="False" 
-                               Height="26" 
+                    <DockPanel Name="dockPanelInfluenceRange"
+                               LastChildFill="False"
+                               Height="26"
                                Visibility="Visible">
                         <Label Content="{Binding Path=Distance}" />
                         <xctk:DoubleUpDown DockPanel.Dock="Right"
-                                           Height="23" 
+                                           Height="23"
                                            Width="140"
-                                           Name="textBoxInfluenceRange" 
-                                           IsEnabled="True" 
+                                           Name="textBoxInfluenceRange"
+                                           IsEnabled="True"
                                            DefaultValue="0"
                                            DisplayDefaultValueOnEmptyText="True"
                                            Increment="1"
                                            Minimum="0"
                                            AllowSpin="True"
-                                           TabIndex="9"/>
+                                           TabIndex="9" />
                     </DockPanel>
                     <DockPanel LastChildFill="False">
                         <Label Content="{Binding Path=Options}" />
@@ -393,7 +439,8 @@
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Search:"
+            <GroupBox Header="{Binding Path=Search}" 
+                      HeaderStringFormat=" {0}:"
                       Name="GroupBoxSearchPresets"
                       IsEnabled="True"
                       Height="Auto"
@@ -428,14 +475,18 @@
                           MouseDoubleClick="TreeViewPresetsMouseDoubleClick"
                           KeyDown="TreeViewPresetsKeyDown"
                           TabIndex="13"
-                          Loaded="TreeViewPresets_Loaded"
-                          />
+                          Loaded="TreeViewPresets_Loaded" />
             </GroupBox>
         </DockPanel>
-        <StatusBar Grid.Row="2" Grid.ColumnSpan="3">
+        <StatusBar Grid.Row="2"
+                   Grid.ColumnSpan="3">
             <StatusBarItem Content="{Binding StatusBarControls}" />
-            <StatusBarItem Name="StatusBarItemStatus" Content="Standard" Margin="10,0,0,0" />
-            <StatusBarItem Name="StatusBarItemClipboardStatus" Margin="10,0,0,0" HorizontalAlignment="Right" />
+            <StatusBarItem Name="StatusBarItemStatus"
+                           Content="Standard"
+                           Margin="10,0,0,0" />
+            <StatusBarItem Name="StatusBarItemClipboardStatus"
+                           Margin="10,0,0,0"
+                           HorizontalAlignment="Right" />
         </StatusBar>
     </Grid>
 </Window>

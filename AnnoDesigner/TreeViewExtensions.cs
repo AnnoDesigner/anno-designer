@@ -150,7 +150,7 @@ namespace AnnoDesigner
             item.IsExpanded = true;
             if (item.Parent is TreeViewItem treeViewItem)
             {
-                return ExpandAncestors(treeViewItem, previousExpansionState);
+                return ExpandAncestorsToRoot(treeViewItem, previousExpansionState);
             }
             return previousExpansionState;
         }

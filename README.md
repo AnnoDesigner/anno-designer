@@ -19,7 +19,7 @@ The **Anno Designer** is a standalone windows application that can be used for c
 
 ## Technology
 
-This application is written in C# (.Net Framework 4.5.2) and uses WPF.
+This application is written in C# (.Net Framework 4.7.2) and uses WPF.
 
 ## Game data and icons
 

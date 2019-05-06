@@ -24,7 +24,8 @@ namespace AnnoDesigner
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
+        : Window
     {
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
@@ -84,6 +85,9 @@ namespace AnnoDesigner
             }
             comboxBoxInfluenceType.SelectedIndex = 0;
 
+            //Force a language update on the clipboard status item.
+            if (StatusBarItemClipboardStatus.Content != null) ClipboardChanged(annoCanvas.ObjectClipboard);
+
             //update settings
             Settings.Default.SelectedLanguage = SelectedLanguage;
 
@@ -98,6 +102,8 @@ namespace AnnoDesigner
         {
             InitializeComponent();
 
+            App.DpiScale = VisualTreeHelper.GetDpi(this);
+
             _instance = this;
             // initialize web client
             _webClient = new WebClient();
@@ -108,6 +114,8 @@ namespace AnnoDesigner
             annoCanvas.OnLoadedFileChanged += LoadedFileChanged;
             annoCanvas.OnClipboardChanged += ClipboardChanged;
             annoCanvas.StatisticsUpdated += AnnoCanvas_StatisticsUpdated;
+
+            DpiChanged += MainWindow_DpiChanged;
 
             //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
             var dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
@@ -176,10 +184,11 @@ namespace AnnoDesigner
                 comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
             }
             comboxBoxInfluenceType.SelectedIndex = 0;
-
-            // check for updates on startup
-            MenuItemVersion.Header = "Version: " + Constants.Version;
-            MenuItemFileVersion.Header = "File version: " + Constants.FileVersion;
+            
+            // check for updates on startup            
+            _mainWindowLocalization.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
+            _mainWindowLocalization.FileVersionValue = Constants.FileVersion.ToString("0.#", CultureInfo.InvariantCulture);
+            
             CheckForUpdates(false);
 
             // load color presets
@@ -212,7 +221,7 @@ namespace AnnoDesigner
             {
                 presets.AddToTree(treeViewPresets);
                 GroupBoxPresets.Header = string.Format("Building presets - loaded v{0}", presets.Version);
-                MenuItemPresetsVersion.Header = "Presets version: " + presets.Version;
+                _mainWindowLocalization.PresetsVersionValue = presets.Version;
             }
             else
             {
@@ -368,7 +377,7 @@ namespace AnnoDesigner
 
         private void ClipboardChanged(List<AnnoObject> l)
         {
-            StatusBarItemClipboardStatus.Content = "Items on clipboard: " + l.Count;
+            StatusBarItemClipboardStatus.Content = _mainWindowLocalization.StatusBarItemsOnClipboard + ": " + l.Count;
         }
 
         #endregion
@@ -443,6 +452,11 @@ namespace AnnoDesigner
         #endregion
 
         #region UI events
+        private void MainWindow_DpiChanged(object sender, DpiChangedEventArgs e)
+        {
+            App.DpiScale = e.NewDpi;
+            //TODO: Redraw statistics when change is merged.
+        }
 
         private void MenuItemCloseClick(object sender, RoutedEventArgs e)
         {
