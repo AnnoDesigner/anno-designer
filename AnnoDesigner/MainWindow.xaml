@@ -421,7 +421,7 @@
                              KeyUp="TextBoxSearchPresetsKeyUp"                             
                              GotFocus="TextBoxSearchPresetsGotFocus"
                              VerticalContentAlignment="Center"
-                             Text="{Binding PresetsSearchText, UpdateSourceTrigger=PropertyChanged}">
+                             Text="{Binding TreeViewSearchText, UpdateSourceTrigger=PropertyChanged}">
                     </TextBox>
                     <!-- Maybe add a clear text box button eventually. (Needs styling etc)-->
                     <!--<Button Grid.Column="1"
