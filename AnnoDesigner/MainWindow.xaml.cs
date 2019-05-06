@@ -23,7 +23,8 @@ namespace AnnoDesigner
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
+        : Window
     {
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
@@ -166,10 +167,11 @@ namespace AnnoDesigner
                 comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
             }
             comboxBoxInfluenceType.SelectedIndex = 0;
-
-            // check for updates on startup
-            MenuItemVersion.Header = string.Format("{0}: {1}", Localization.Localization.Translations[language]["Version"], Constants.Version);
-            MenuItemFileVersion.Header = string.Format("{0}: {1}", Localization.Localization.Translations[language]["FileVersion"], Constants.Version);
+            
+            // check for updates on startup            
+            _mainWindowLocalization.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
+            _mainWindowLocalization.FileVersionValue = Constants.FileVersion.ToString("0.#", CultureInfo.InvariantCulture);
+            
             CheckForUpdates(false);
 
             // load color presets
@@ -201,8 +203,8 @@ namespace AnnoDesigner
             if (presets != null)
             {
                 presets.AddToTree(treeViewPresets);
-                GroupBoxPresets.Header = string.Format("{0} - v{1}", Localization.Localization.Translations[language]["PresetsLoaded"], presets.Version);
-                MenuItemPresetsVersion.Header = string.Format("{0}: {1}", Localization.Localization.Translations[language]["PresetsVersion"], presets.Version);
+                GroupBoxPresets.Header = string.Format("Building presets - loaded v{0}", presets.Version);
+                _mainWindowLocalization.PresetsVersionValue = presets.Version;
             }
             else
             {
@@ -324,7 +326,7 @@ namespace AnnoDesigner
                 //Building uses both a radius and an influence
                 //Has to be set manually 
                 comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Both;
-            } 
+            }
             else if (obj.Radius > 0)
             {
                 comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Radius;
@@ -676,7 +678,7 @@ namespace AnnoDesigner
                 ApplyPreset();
             }
         }
-       
+
         private void TreeViewPresets_Loaded(object sender, RoutedEventArgs e)
         {
             //Intialise tree view and ensure that item containers are generated.
@@ -727,6 +729,6 @@ namespace AnnoDesigner
             Settings.Default.Save();
         }
 
-      
+
     }
 }

@@ -929,6 +929,7 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _help, value);
             }
         }
+
         private string _version;
         public string Version
         {
@@ -938,6 +939,17 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _version, value);
             }
         }
+
+        private string _versionValue;
+        public string VersionValue
+        {
+            get { return _versionValue; }
+            set
+            {
+                UpdateProperty(ref _versionValue, value);
+            }
+        }
+
         private string _fileVersion;
         public string FileVersion
         {
@@ -947,6 +959,17 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _fileVersion, value);
             }
         }
+
+        private string _fileVersionValue;
+        public string FileVersionValue
+        {
+            get { return _fileVersionValue; }
+            set
+            {
+                UpdateProperty(ref _fileVersionValue, value);
+            }
+        }
+
         private string _presetsVersion;
         public string PresetsVersion
         {
@@ -956,6 +979,17 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _presetsVersion, value);
             }
         }
+
+        private string _presetsVersionValue;
+        public string PresetsVersionValue
+        {
+            get { return _presetsVersionValue; }
+            set
+            {
+                UpdateProperty(ref _presetsVersionValue, value);
+            }
+        }
+
         private string _checkForUpdates;
         public string CheckForUpdates
         {
