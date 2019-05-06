@@ -111,10 +111,6 @@ namespace AnnoDesigner
         /// <returns></returns>
         private bool Search(TreeViewItem item, string token, bool foundMatch)
         {
-            if (item.Header.ToString().Contains(token))
-            {
-                foundMatch = true;
-            }
             foreach (var node in item.Items)
             {
                 if (node is TreeViewItem treeViewItem)
