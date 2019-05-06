@@ -443,7 +443,7 @@
                           MouseDoubleClick="TreeViewPresetsMouseDoubleClick"
                           KeyDown="TreeViewPresetsKeyDown"
                           TabIndex="13"
-                          Loaded="TreeViewPresets_Loaded" />
+                          Loaded="TreeViewPresetsLoaded" />
             </GroupBox>
         </DockPanel>
         <StatusBar Grid.Row="2"

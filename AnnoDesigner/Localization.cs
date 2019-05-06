@@ -1227,7 +1227,15 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _statusBarControls, value);
             }
         }
-
+        private string _presetsSearchText;
+        public string TreeViewSearchText
+        {
+            get { return _presetsSearchText; }
+            set
+            {
+                UpdateProperty(ref _presetsSearchText, value);
+            }
+        }
         private string _statusBarItemsOnClipboard;
         public string StatusBarItemsOnClipboard
         {
