@@ -28,8 +28,6 @@ namespace AnnoDesigner
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
         private static MainWindow _instance;
-        private readonly AnnoCanvas annoCanvas;
-        private readonly StatisticsView statisticsView;
 
         private static string _selectedLanguage;
         public static string SelectedLanguage
@@ -89,18 +87,6 @@ namespace AnnoDesigner
             // initialize web client
             _webClient = new WebClient();
             _webClient.DownloadStringCompleted += WebClientDownloadStringCompleted;
-
-            //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
-            DependencyObject dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
-            mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
-
-            annoCanvas = new AnnoCanvas();
-            annoCanvas.RenderGrid = true;
-            annoCanvas.RenderIcon = true;
-            annoCanvas.RenderLabel = true;
-
-            mainControl.Canvas = annoCanvas;
-
             // add event handlers
             annoCanvas.OnCurrentObjectChanged += UpdateUIFromObject;
             annoCanvas.OnStatusMessageChanged += StatusMessageChanged;
@@ -108,15 +94,14 @@ namespace AnnoDesigner
             annoCanvas.OnClipboardChanged += ClipboardChanged;
             annoCanvas.StatisticsUpdated += AnnoCanvas_StatisticsUpdated;
 
-            statisticsView = new StatisticsView();
-            statisticsView.DataContext = mainWindowLocalization.StatisticsViewModel;
-
-            mainControl.Statistics = statisticsView;
+            //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
+            var dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
+            mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
 
             //If language is not recognized, bring up the language selection screen
             if (!Localization.Localization.LanguageCodeMap.ContainsKey(Settings.Default.SelectedLanguage))
             {
-                Welcome w = new Welcome();
+                var w = new Welcome();
                 w.ShowDialog();
             }
             else
@@ -196,7 +181,7 @@ namespace AnnoDesigner
             // manually add a road tile preset
             treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true, Identifier = "Road" });
             treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true, Identifier = "Road" });
-            BuildingPresets presets = annoCanvas.BuildingPresets;
+            var presets = annoCanvas.BuildingPresets;
             if (presets != null)
             {
                 presets.AddToTree(treeViewPresets);
@@ -354,10 +339,10 @@ namespace AnnoDesigner
         private void ApplyCurrentObject()
         {
             // parse user inputs and create new object
-            AnnoObject obj = new AnnoObject
+            var obj = new AnnoObject
             {
                 Size = new Size(textBoxWidth?.Value ?? 1, textBoxHeight?.Value ?? 1),
-                Color = colorPicker.SelectedColor.HasValue ? colorPicker.SelectedColor.Value : Colors.Red,
+                Color = colorPicker.SelectedColor ?? Colors.Red,
                 Label = IsChecked(checkBoxLabel) ? textBoxLabel.Text : "",
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
                 Radius = textBoxRadius?.Value ?? 0,
@@ -381,13 +366,12 @@ namespace AnnoDesigner
         {
             try
             {
-                //TDOD: Rewrite ApplyPreset();
-                AnnoObject selectedItem = treeViewPresets.SelectedItem as AnnoObject;
+                var selectedItem = treeViewPresets.SelectedItem as AnnoObject;
                 if (selectedItem != null)
                 {
                     UpdateUIFromObject(new AnnoObject(selectedItem)
                     {
-                        Color = colorPicker.SelectedColor.HasValue ? colorPicker.SelectedColor.Value : Colors.Red,
+                        Color = colorPicker.SelectedColor ?? Colors.Red,
                     });
                     ApplyCurrentObject();
                 }
@@ -461,7 +445,13 @@ namespace AnnoDesigner
 
         private void ToggleStatisticsView(bool showStatisticsView)
         {
-            mainControl.ToggleStatisticsView(showStatisticsView);
+            colStatisticsView.MinWidth = showStatisticsView ? 100 : 0;
+            colStatisticsView.Width = showStatisticsView ? GridLength.Auto : new GridLength(0);
+
+            statisticsView.Visibility = showStatisticsView ? Visibility.Visible : Visibility.Collapsed;
+            statisticsView.MinWidth = showStatisticsView ? 100 : 0;
+
+            splitterStatisticsView.Visibility = showStatisticsView ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void MenuItemStatsBuildingCountClick(object sender, RoutedEventArgs e)
@@ -534,7 +524,7 @@ namespace AnnoDesigner
 
         private void ShowRegistrationMessageBox(bool isDeregistration)
         {
-            string language = AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+            var language = AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
             var message = isDeregistration ? AnnoDesigner.Localization.Localization.Translations[language]["UnregisterFileExtensionSuccessful"] : AnnoDesigner.Localization.Localization.Translations[language]["RegisterFileExtensionSuccessful"];
 
             MessageBox.Show(message,
@@ -550,8 +540,10 @@ namespace AnnoDesigner
 
         private void MenuItemOpenWelcomeClick(object sender, RoutedEventArgs e)
         {
-            Welcome w = new Welcome();
-            w.Owner = this;
+            var w = new Welcome
+            {
+                Owner = this
+            };
             w.Show();
         }
 
@@ -567,8 +559,8 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         private void MenuItemLanguageClick(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = sender as MenuItem;
-            bool languageChecked = false;
+            var menuItem = sender as MenuItem;
+            var languageChecked = false;
             string language = null;
             foreach (MenuItem m in menuItem.Items)
             {
@@ -588,7 +580,7 @@ namespace AnnoDesigner
             }
             else
             {
-                string currentLanguage = SelectedLanguage;
+                var currentLanguage = SelectedLanguage;
                 if (language != currentLanguage)
                 {
                     SelectedLanguage = language;
@@ -632,7 +624,7 @@ namespace AnnoDesigner
             {
                 try
                 {
-                    RenderToFile(dialog.FileName, 1, exportZoom, exportSelection);
+                    RenderToFile(dialog.FileName, 1, exportZoom, exportSelection, statisticsView.IsVisible);
                 }
                 catch (Exception e)
                 {
@@ -642,72 +634,73 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Renders the current layout to file.
+        /// Asynchronously renders the current layout to file.
         /// </summary>
         /// <param name="filename">filename of the output image</param>
         /// <param name="border">normalization value used prior to exporting</param>
         /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
         /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
-        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection)
+        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection, bool renderStatistics)
         {
-            var statisticsDataContext = statisticsView.DataContext;
-
-            ThreadStart renderThread = delegate
+            if (annoCanvas.PlacedObjects.Count == 0)
             {
-                #region new AnnoCanvas
-
+                return;
+            }
+            // copy all objects
+            var allObjects = annoCanvas.PlacedObjects.Select(_ => new AnnoObject(_)).ToList();
+            // copy selected objects
+            // note: should be references to the correct copied objects from allObjects
+            var selectedObjects = annoCanvas.SelectedObjects.Select(_ => new AnnoObject(_)).ToList();
+            System.Diagnostics.Debug.WriteLine("UI thread: {0}", Thread.CurrentThread.ManagedThreadId);
+            void renderThread()
+            {
+                System.Diagnostics.Debug.WriteLine("Render thread: {0}", Thread.CurrentThread.ManagedThreadId);
                 // initialize output canvas
-                var newCanvas = new AnnoCanvas
+                var target = new AnnoCanvas
                 {
-                    PlacedObjects = annoCanvas.PlacedObjects,
+                    PlacedObjects = allObjects,
                     RenderGrid = annoCanvas.RenderGrid,
                     RenderIcon = annoCanvas.RenderIcon,
                     RenderLabel = annoCanvas.RenderLabel
                 };
                 // normalize layout
-                newCanvas.Normalize(border);
+                target.Normalize(border);
                 // set zoom level
                 if (exportZoom)
                 {
-                    newCanvas.GridSize = annoCanvas.GridSize;
+                    target.GridSize = annoCanvas.GridSize;
                 }
                 // set selection
                 if (exportSelection)
                 {
-                    newCanvas.SelectedObjects.AddRange(annoCanvas.SelectedObjects);
+                    target.SelectedObjects.AddRange(selectedObjects);
                 }
-                // calculate output size
-                var width = newCanvas.GridToScreen(annoCanvas.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border) + 1;
-                var height = newCanvas.GridToScreen(annoCanvas.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border) + 1;
 
-                newCanvas.Width = width;
-                newCanvas.Height = height;
+                // calculate output size
+                var width = target.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border) + 1;
+                var height = target.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border) + 1;
+
+                if (renderStatistics)
+                {
+                    var statisticsView = new StatisticsView
+                    {
+                        Margin = new Thickness(10, 0, 10, 0)
+                    };
+                    statisticsView.statisticsViewModel.UpdateStatistics(target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
+                    target.StatisticsPanel.Children.Add(statisticsView);
+                    width += Constants.StatisticsMargin + 10;
+                }
+
+                target.Width = width;
+                target.Height = height;
+                target.UpdateLayout();
                 // apply size
                 var outputSize = new Size(width, height);
-                newCanvas.Measure(outputSize);
-                newCanvas.Arrange(new Rect(outputSize));
-
-                #endregion
-
-                #region new StatisticsView
-
-                var newStatisticsView = new StatisticsView();
-                newStatisticsView.DataContext = statisticsDataContext;
-
-                #endregion
-
-                #region new MainControl
-
-                var newMainControl = new MainControl();
-                newMainControl.Canvas = newCanvas;
-                newMainControl.statisticsView = newStatisticsView;
-
-                #endregion
-
-                // render MainControl to file
-                DataIO.RenderToFile(newMainControl, filename);
-            };
-
+                target.Measure(outputSize);
+                target.Arrange(new Rect(outputSize));
+                // render canvas to file
+                DataIO.RenderToFile(target, filename);
+            }
             var thread = new Thread(renderThread);
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();

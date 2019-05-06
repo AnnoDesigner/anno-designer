@@ -199,10 +199,38 @@
                       Click="MenuItemIconClick"
                       TabIndex="28" />
         </Menu>
+        
+        <Grid x:Name="gridMain"
+              Grid.Row="1"
+              Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"
+                                  MinWidth="100" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition x:Name="colStatisticsView" Width="Auto"
+                                  MinWidth="100" />
+                <!-- 
+                                  MinWidth="100" -->
+            </Grid.ColumnDefinitions>
 
-        <my:MainControl x:Name="mainControl"
-                        Grid.Row="1"
-                        Grid.Column="0" />
+            <my:AnnoCanvas x:Name="annoCanvas"
+                           Grid.Column="0"
+                           RenderGrid="True"
+                           RenderIcon="True"
+                           RenderLabel="True" />
+
+            <GridSplitter x:Name="splitterStatisticsView"
+                          Grid.Column="1"
+                          Width="5"
+                          VerticalAlignment="Stretch"
+                          HorizontalAlignment="Center" />
+
+            <my:StatisticsView x:Name="statisticsView"
+                               Grid.Column="2"
+                               DataContext="{Binding StatisticsViewModel}">
+            </my:StatisticsView>
+
+        </Grid>
 
         <GridSplitter Grid.Row="1"
                       Grid.Column="1"
@@ -354,15 +382,10 @@
                           TabIndex="13" />
             </GroupBox>
         </DockPanel>
-        <StatusBar Grid.Row="2"
-                   Grid.ColumnSpan="3">
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="3">
             <StatusBarItem Content="{Binding StatusBarControls}" />
-            <StatusBarItem Name="StatusBarItemStatus"
-                           Content="Standard"
-                           Margin="10,0,0,0" />
-            <StatusBarItem Name="StatusBarItemClipboardStatus"
-                           Margin="10,0,0,0"
-                           HorizontalAlignment="Right" />
+            <StatusBarItem Name="StatusBarItemStatus" Content="Standard" Margin="10,0,0,0" />
+            <StatusBarItem Name="StatusBarItemClipboardStatus" Margin="10,0,0,0" HorizontalAlignment="Right" />
         </StatusBar>
     </Grid>
 </Window>
