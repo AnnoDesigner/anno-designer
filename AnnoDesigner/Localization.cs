@@ -73,6 +73,7 @@ namespace AnnoDesigner.Localization
                         { "Borderless" , "Borderless" },
                         { "Road" , "Road" },
                         { "PlaceBuilding" , "Place building" },
+                        { "Search", "Search" },
                         { "TitleAbout" , "About" },
                         { "Title" , "Modified" },
                         { "BuildingLayoutDesigner" , "A building layout designer for Ubisofts Anno-series" },
@@ -153,6 +154,7 @@ namespace AnnoDesigner.Localization
                         { "Borderless" , "Randlos" },
                         { "Road" , "Straße" },
                         { "PlaceBuilding" , "Gebäude platzieren" },
+                        { "Search", "Suche" },
                         { "TitleAbout" , "über" },
                         { "Title" , "überarbeiteter" },
                         { "BuildingLayoutDesigner" , "Ein Gebäudelayout Designer für Ubisofts Anno Reihe" },
@@ -233,6 +235,7 @@ namespace AnnoDesigner.Localization
                         { "Borderless" , "Bez obramowania" },
                         { "Road" , "Droga / Ulica" },
                         { "PlaceBuilding" , "Postaw budynek" },
+                        { "Search", "Wyszukiwanie" },
                         { "TitleAbout" , "Na temat / O" },
                         { "Title" , "zmodyfikowany" },
                         { "BuildingLayoutDesigner" , "Program do planowania zabudowy w serii Anno Ubisoftu" },
@@ -313,6 +316,7 @@ namespace AnnoDesigner.Localization
                         { "Borderless" , "Без полей" },
                         { "Road" , "Дорогa" },
                         { "PlaceBuilding" , "Выбрать здание" },
+                        { "Search" , "Поиск" },
                         { "TitleAbout" , "О программе" },
                         { "Title" , "обновлено" },
                         { "BuildingLayoutDesigner" , "Конструктор макета здания для Ubisofts Anno-серии" },
@@ -718,6 +722,7 @@ namespace AnnoDesigner.Localization
             Borderless = Localization.Translations[language]["Borderless"];
             Road = Localization.Translations[language]["Road"];
             PlaceBuilding = Localization.Translations[language]["PlaceBuilding"];
+            Search = Localization.Translations[language]["Search"];
 
             //Status Bar
             StatusBarControls = Localization.Translations[language]["StatusBarControls"];
@@ -1165,6 +1170,15 @@ namespace AnnoDesigner.Localization
             set
             {
                 UpdateProperty(ref _placeBuilding, value);
+            }
+        }
+        private string _search;
+        public string Search
+        {
+            get { return _search; }
+            set
+            {
+                UpdateProperty(ref _search, value);
             }
         }
 
