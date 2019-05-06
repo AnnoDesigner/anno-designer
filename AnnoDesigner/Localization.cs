@@ -726,6 +726,7 @@ namespace AnnoDesigner.Localization
 
             //Status Bar
             StatusBarControls = Localization.Translations[language]["StatusBarControls"];
+            StatusBarItemsOnClipboard = Localization.Translations[language]["StatusBarItemsOnClipboard"];
         }
 
         //Generated from:
@@ -1224,6 +1225,16 @@ namespace AnnoDesigner.Localization
             set
             {
                 UpdateProperty(ref _statusBarControls, value);
+            }
+        }
+
+        private string _statusBarItemsOnClipboard;
+        public string StatusBarItemsOnClipboard
+        {
+            get { return _statusBarItemsOnClipboard; }
+            set
+            {
+                UpdateProperty(ref _statusBarItemsOnClipboard, value);
             }
         }
     }
