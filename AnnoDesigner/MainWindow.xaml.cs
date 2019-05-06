@@ -164,9 +164,9 @@ namespace AnnoDesigner
             }
             comboxBoxInfluenceType.SelectedIndex = 0;
 
-            // check for updates on startup
-            MenuItemVersion.Header = "Version: " + Constants.Version;
-            MenuItemFileVersion.Header = "File version: " + Constants.FileVersion;
+            // check for updates on startup            
+            _mainWindowLocalization.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
+            _mainWindowLocalization.FileVersionValue = Constants.FileVersion.ToString("0.#", CultureInfo.InvariantCulture);
             CheckForUpdates(false);
 
             // load color presets
@@ -199,7 +199,7 @@ namespace AnnoDesigner
             {
                 presets.AddToTree(treeViewPresets);
                 GroupBoxPresets.Header = string.Format("Building presets - loaded v{0}", presets.Version);
-                MenuItemPresetsVersion.Header = "Presets version: " + presets.Version;
+                _mainWindowLocalization.PresetsVersionValue = presets.Version;
             }
             else
             {
@@ -321,7 +321,7 @@ namespace AnnoDesigner
                 //Building uses both a radius and an influence
                 //Has to be set manually 
                 comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Both;
-            } 
+            }
             else if (obj.Radius > 0)
             {
                 comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Radius;
@@ -673,7 +673,7 @@ namespace AnnoDesigner
                 ApplyPreset();
             }
         }
-       
+
         private void TreeViewPresets_Loaded(object sender, RoutedEventArgs e)
         {
             //Intialise tree view and ensure that item containers are generated.
@@ -724,6 +724,6 @@ namespace AnnoDesigner
             Settings.Default.Save();
         }
 
-      
+
     }
 }
