@@ -84,6 +84,9 @@ namespace AnnoDesigner
             }
             comboxBoxInfluenceType.SelectedIndex = 0;
 
+            //Force a language update on the clipboard status item.
+            if (StatusBarItemClipboardStatus.Content != null) ClipboardChanged(annoCanvas.ObjectClipboard);
+
             //update settings
             Settings.Default.SelectedLanguage = SelectedLanguage;
         }
@@ -360,7 +363,7 @@ namespace AnnoDesigner
 
         private void ClipboardChanged(List<AnnoObject> l)
         {
-            StatusBarItemClipboardStatus.Content = Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(SelectedLanguage)]["StatusBarItemsOnClipboard"] + ": " + l.Count;
+            StatusBarItemClipboardStatus.Content = _mainWindowLocalization.StatusBarItemsOnClipboard + ": " + l.Count;
         }
 
         #endregion
