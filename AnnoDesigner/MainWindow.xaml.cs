@@ -85,7 +85,7 @@ namespace AnnoDesigner
             comboxBoxInfluenceType.SelectedIndex = 0;
 
             //Force a language update on the clipboard status item.
-            if (StatusBarItemClipboardStatus.Content.ToString() != "") ClipboardChanged(annoCanvas.ObjectClipboard);
+            if (StatusBarItemClipboardStatus.Content != null) ClipboardChanged(annoCanvas.ObjectClipboard);
 
             //update settings
             Settings.Default.SelectedLanguage = SelectedLanguage;
