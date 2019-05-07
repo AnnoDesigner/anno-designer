@@ -89,6 +89,8 @@ namespace AnnoDesigner
 
             //update settings
             Settings.Default.SelectedLanguage = SelectedLanguage;
+
+            _mainWindowLocalization.TreeViewSearchText = string.Empty;
         }
 
         #region Initialization
@@ -171,11 +173,11 @@ namespace AnnoDesigner
                 comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
             }
             comboxBoxInfluenceType.SelectedIndex = 0;
-            
+
             // check for updates on startup            
             _mainWindowLocalization.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
             _mainWindowLocalization.FileVersionValue = Constants.FileVersion.ToString("0.#", CultureInfo.InvariantCulture);
-            
+
             CheckForUpdates(false);
 
             // load color presets
