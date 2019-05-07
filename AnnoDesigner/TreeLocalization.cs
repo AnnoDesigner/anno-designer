@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace AnnoDesigner.TreeLocalization
@@ -22,6 +23,8 @@ namespace AnnoDesigner.TreeLocalization
             {
                 {
                     "eng", new Dictionary<string, string>() {
+                        { "RoadTile" , "Road tile" },
+                        { "BorderlessRoadTile" , "Borderless road tile" },
                         { "Military" , "Military" },
                         { "Camps" , "Camps" },
                         { "Production" , "Production" },
@@ -94,6 +97,8 @@ namespace AnnoDesigner.TreeLocalization
                     },
                 {
                     "ger", new Dictionary<string, string>() {
+                        { "RoadTile" , "Straßenkachel" },
+                        { "BorderlessRoadTile" , "Straßenkachel (randlos)" },
                         { "Military" , "Militär" },
                         { "Camps" , "Lager" },
                         { "Production" , "Produktion" },
@@ -166,6 +171,8 @@ namespace AnnoDesigner.TreeLocalization
                     },
                 {
                     "pol", new Dictionary<string, string>() {
+                        { "RoadTile" , "Płytka drogowa" },
+                        { "BorderlessRoadTile" , "Płytka drogowa bez granic" },
                         { "Military" , "Wojsko" },
                         { "Camps" , "Obozy" },
                         { "Production" , "Produkcja" },
@@ -238,6 +245,8 @@ namespace AnnoDesigner.TreeLocalization
                     },
                 {
                     "rus", new Dictionary<string, string>() {
+                        { "RoadTile" , "Плитка для дорог" },
+                        { "BorderlessRoadTile" , "Плитка для безграничных дорог" },
                         { "Military" , "Военные" },
                         { "Camps" , "Лагеря" },
                         { "Production" , "Производство" },
@@ -316,18 +325,19 @@ namespace AnnoDesigner.TreeLocalization
             var language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
             try
             {
-                if (TreeLocalization.Translations[language][localizationHeader.Replace(" ", String.Empty)] != null)
+                if (TreeLocalization.Translations[language].TryGetValue(localizationHeader.Replace(" ", String.Empty), out string foundLocalization))
                 {
-                    var localization = TreeLocalization.Translations[language][localizationHeader.Replace(" ", String.Empty)];
-                    return localization;
+                    return foundLocalization;
                 }
                 else
                 {
+                    Debug.WriteLine($"found no localization ({language}) for: \"{localizationHeader}\"");
                     return localizationHeader;
                 }
             }
-            catch( Exception ex)
+            catch (Exception ex)
             {
+                Debug.WriteLine($"error getting localization ({language}) for: \"{localizationHeader}\"{Environment.NewLine}{ex}");
                 return localizationHeader;
             }
         }
