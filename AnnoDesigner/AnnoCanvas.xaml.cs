@@ -372,6 +372,13 @@ namespace AnnoDesigner
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
         private readonly List<AnnoObject> _selectedObjects;
+        public List<AnnoObject> SelectedObjects
+        {
+            get
+            {
+                return _selectedObjects;
+            }
+        }
 
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
 

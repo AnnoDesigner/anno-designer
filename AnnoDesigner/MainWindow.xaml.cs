@@ -170,11 +170,11 @@ namespace AnnoDesigner
                 comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
             }
             comboxBoxInfluenceType.SelectedIndex = 0;
-            
+
             // check for updates on startup            
             _mainWindowLocalization.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
             _mainWindowLocalization.FileVersionValue = Constants.FileVersion.ToString("0.#", CultureInfo.InvariantCulture);
-            
+
             CheckForUpdates(false);
 
             // load color presets
@@ -732,6 +732,23 @@ namespace AnnoDesigner
             Settings.Default.Save();
         }
 
+        private void ApplyColorButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (annoCanvas.SelectedObjects.Count == 1)
+            {
+                annoCanvas.SelectedObjects[0].Color = colorPicker.SelectedColor.Value;
+                annoCanvas.InvalidateVisual();
+            }
+        }
 
+        private void ApplyColorToAll_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var curSelectedObject in annoCanvas.SelectedObjects)
+            {
+                curSelectedObject.Color = colorPicker.SelectedColor.Value;
+            }
+
+            annoCanvas.InvalidateVisual();
+        }
     }
 }
