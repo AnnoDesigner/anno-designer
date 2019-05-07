@@ -271,6 +271,34 @@ namespace AnnoDesigner
         public event Action<string> OnStatusMessageChanged;
 
         /// <summary>
+        /// Backing field for the CanvasActionHistory property
+        /// </summary>
+        private List<CanvasAction> _canvasActionHistory;
+
+        /// <summary>
+        /// Holds the diffs between previous canvas states.
+        /// </summary>
+        public List<CanvasAction> CanvasActionHistory
+        {
+            get
+            {
+                return _canvasActionHistory;
+            }
+            set
+            {
+                _canvasActionHistory = value;
+                RebalanceActionHistory(); //Move this
+            }
+        }
+
+        private int _currentIndex;
+
+        /// <summary>
+        /// Event fired when a user undoes a Canvas action (Ctrl + Z).
+        /// </summary>
+        public event Action CanvasActionReverted;
+
+        /// <summary>
         /// Backing field of the LoadedFile property.
         /// </summary>
         private string _loadedFile;
@@ -1032,6 +1060,14 @@ namespace AnnoDesigner
             return newList;
         }
 
+        /// <summary>
+        /// Tries to balance the Actions history so that the user is in the "middle" of the list - an equal number of redo and undo statement diffs either side.
+        /// </summary>
+        private void RebalanceActionHistory()
+        {
+
+        }
+
         #endregion
 
         #region Coordinate and rectangle conversions
@@ -1499,6 +1535,11 @@ namespace AnnoDesigner
                 case Key.Delete:
                     // remove all currently selected objects from the grid and clear selection
                     _selectedObjects.ForEach(_ => _placedObjects.Remove(_));
+                    CanvasActionHistory.Add(new CanvasAction()
+                    {
+                        Action = ActionType.RemoveGroup,
+                        Objects = CloneList(_selectedObjects)
+                    });
                     _selectedObjects.Clear();
                     break;
                 case Key.C:
