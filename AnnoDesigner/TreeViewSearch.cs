@@ -111,10 +111,6 @@ namespace AnnoDesigner
         /// <returns></returns>
         private bool Search(TreeViewItem item, string token, bool foundMatch)
         {
-            if (item.Header.ToString().Contains(token))
-            {
-                foundMatch = true;
-            }
             foreach (var node in item.Items)
             {
                 if (node is TreeViewItem treeViewItem)
@@ -263,6 +259,7 @@ namespace AnnoDesigner
         /// <param name="treeViewItem"></param>
         private void GenerateItemContainers(TreeViewItem treeViewItem)
         {
+            Debug.WriteLine("Generating ItemContainer for: " + treeViewItem.ToString());
             var expandedState = treeViewItem.IsExpanded;
             treeViewItem.IsExpanded = true;
             var previousStates = treeViewItem.ExpandAncestors(new List<KeyValuePair<TreeViewItem, bool>>());
