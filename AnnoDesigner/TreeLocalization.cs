@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace AnnoDesigner.TreeLocalization
@@ -22,6 +23,8 @@ namespace AnnoDesigner.TreeLocalization
             {
                 {
                     "eng", new Dictionary<string, string>() {
+                        { "RoadTile" , "Road tile" },
+                        { "BorderlessRoadTile" , "Borderless road tile" },
                         { "Military" , "Military" },
                         { "Camps" , "Camps" },
                         { "Production" , "Production" },
@@ -89,11 +92,13 @@ namespace AnnoDesigner.TreeLocalization
                         { "Shipyards" , "Shipyards" },
                         { "SpecialBuildings" , "Special Buildings" },
                         { "MiningBuildings" , "Mining Buildings" },
-                        { "OrnamentalBuildings" , "Ornaments" },
+                        { "OrnamentalBuilding" , "Ornaments" },
                     }
                     },
                 {
                     "ger", new Dictionary<string, string>() {
+                        { "RoadTile" , "Straßenkachel" },
+                        { "BorderlessRoadTile" , "Straßenkachel (randlos)" },
                         { "Military" , "Militär" },
                         { "Camps" , "Lager" },
                         { "Production" , "Produktion" },
@@ -142,15 +147,15 @@ namespace AnnoDesigner.TreeLocalization
                         { "TundraModules" , "Tundra-Module" },
                         { "IndustryModules" , "Industriemodule" },
                         { "CentralTechUnitReactor" , "Zentraler Tech-Unit-Reaktor" },
-                        { "(1)Farmers" , "(1) Landwirte" },
-                        { "(2)Workers" , "(2) Arbeitnehmer" },
+                        { "(1)Farmers" , "(1) Bauern" },
+                        { "(2)Workers" , "(2) Arbeiter" },
                         { "(3)Artisans" , "(3) Handwerker" },
                         { "(4)Engineers" , "(4) Ingenieure" },
                         { "(5)Investors" , "(5) Investoren" },
                         { "(6)OldWorldFields" , "(6) Felder der Alten Welt" },
                         { "(7)Jornaleros" , "(7) Jornaleros" },
                         { "(8)Obreros" , "(8) Obreros" },
-                        { "(9)NewWorldFields" , "(9) Neue Weltfelder" },
+                        { "(9)NewWorldFields" , "(9) Felder der Neuen Welt" },
                         { "AllWorlds" , "Alle Welten" },
                         { "Attractiveness" , "Attraktivität" },
                         { "Electricity" , "Elektrizität" },
@@ -161,23 +166,25 @@ namespace AnnoDesigner.TreeLocalization
                         { "Shipyards" , "Schiffswerften" },
                         { "SpecialBuildings" , "Spezielle Gebäude" },
                         { "MiningBuildings" , "Bergbau Gebäude" },
-                        { "OrnamentalBuildings" , "Ornamente" }
+                        { "OrnamentalBuilding" , "Ornamente" }
                     }
                     },
                 {
                     "pol", new Dictionary<string, string>() {
+                        { "RoadTile" , "Płytka drogowa" },
+                        { "BorderlessRoadTile" , "Płytka drogowa bez granic" },
                         { "Military" , "Wojsko" },
                         { "Camps" , "Obozy" },
                         { "Production" , "Produkcja" },
                         { "Ornament" , "Ornamenty" },
-                        { "ManorialPalace" , "Pałac Manoriałów" },
-                        { "PlayerBuildings" , "Budynki dla graczy" },
+                        { "ManorialPalace" , "Pałac Dworski" },
+                        { "PlayerBuildings" , "Budynki graczy" },
                         { "Harbour" , "Port" },
                         { "Harbor" , "Port" },
                         { "Residence" , "Rezydencja" },
-                        { "Animalfarm" , "Gospodarstwo hodowlane" },
+                        { "Animalfarm" , "Hodowla" },
                         { "Factory" , "Fabryka" },
-                        { "Farm" , "Gospodarstwo" },
+                        { "Farm" , "Farma" },
                         { "FarmFields" , "Pola uprawne" },
                         { "Plantation" , "Plantacja" },
                         { "Resource" , "Zasoby" },
@@ -187,13 +194,13 @@ namespace AnnoDesigner.TreeLocalization
                         { "Marine" , "Żegluga morska" },
                         { "Special" , "Specjalne" },
                         { "Trade" , "Handel" },
-                        { "(1)Ecos" , "(1) Ecos" },
-                        { "(2)Tycoons" , "(2) Potentaci" },
-                        { "(3)Techs" , "(3) Techniki" },
+                        { "(1)Ecos" , "(1) Ekosi" },
+                        { "(2)Tycoons" , "(2) Fabryci" },
+                        { "(3)Techs" , "(3) Technosi" },
                         { "Others" , "Inne" },
                         { "Energy" , "Energia" },
-                        { "BlackSmokers(DeepSea)" , "Czarni palacze (Morze Głębokie)" },
-                        { "BlackSmokers(Normal)" , "Czarni palacze (normalni)" },
+                        { "BlackSmokers(DeepSea)" , "Kominy hydrotermalne (Błękitna Głębia)" },
+                        { "BlackSmokers(Normal)" , "Kominy hydrotermalne (normalnie)" },
                         { "(1)Earth" , "(1) Ziemia" },
                         { "(2)Arctic" , "(2) Arktyka" },
                         { "(3)Moon" , "(3) Księżyc" },
@@ -214,30 +221,32 @@ namespace AnnoDesigner.TreeLocalization
                         { "TundraModules" , "Moduły Tundra" },
                         { "IndustryModules" , "Moduły branżowe" },
                         { "CentralTechUnitReactor" , "Reaktor centralnej jednostki technicznej" },
-                        { "(1)Farmers" , "(1) Rolnicy" },
-                        { "(2)Workers" , "(2) Pracownicy" },
-                        { "(3)Artisans" , "(3) rzemieślnicy" },
+                        { "(1)Farmers" , "(1) Farmerzy" },
+                        { "(2)Workers" , "(2) Robotnicy" },
+                        { "(3)Artisans" , "(3) Rzemieślnicy" },
                         { "(4)Engineers" , "(4) Inżynierowie" },
                         { "(5)Investors" , "(5) Inwestorzy" },
                         { "(6)OldWorldFields" , "(6) Pola Starego Świata" },
                         { "(7)Jornaleros" , "(7) Jornaleros" },
                         { "(8)Obreros" , "(8) Obreros" },
-                        { "(9)NewWorldFields" , "(9) Nowe pola światowe" },
+                        { "(9)NewWorldFields" , "(9) Pola Nowego Świata" },
                         { "AllWorlds" , "Wszystkie światy" },
                         { "Attractiveness" , "Atrakcyjność" },
                         { "Electricity" , "Energia elektryczna" },
-                        { "FarmBuildings" , "Budynki gospodarcze" },
+                        { "FarmBuildings" , "Budynki rolnicze" },
                         { "ProductionBuildings" , "Budynki produkcyjne" },
                         { "Depots" , "Magazyny" },
                         { "Logistics" , "Logistyka" },
                         { "Shipyards" , "Stocznie" },
                         { "SpecialBuildings" , "Budynki specjalne" },
                         { "MiningBuildings" , "Budynki górnicze" },
-                        { "OrnamentalBuildings" , "Ornamenty" }
+                        { "OrnamentalBuilding" , "Ornamenty" }
                     }
                     },
                 {
                     "rus", new Dictionary<string, string>() {
+                        { "RoadTile" , "Плитка для дорог" },
+                        { "BorderlessRoadTile" , "Плитка для безграничных дорог" },
                         { "Military" , "Военные" },
                         { "Camps" , "Лагеря" },
                         { "Production" , "Производство" },
@@ -305,7 +314,7 @@ namespace AnnoDesigner.TreeLocalization
                         { "Shipyards" , "Судоремонтные заводы" },
                         { "SpecialBuildings" , "Специальные здания" },
                         { "MiningBuildings" , "Горнодобывающие здания" },
-                        { "OrnamentalBuildings" , "Орнаменты" }
+                        { "OrnamentalBuilding" , "Орнаменты" }
                     }
                     },
             };
@@ -316,18 +325,19 @@ namespace AnnoDesigner.TreeLocalization
             var language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
             try
             {
-                if (TreeLocalization.Translations[language][localizationHeader.Replace(" ", String.Empty)] != null)
+                if (TreeLocalization.Translations[language].TryGetValue(localizationHeader.Replace(" ", String.Empty), out string foundLocalization))
                 {
-                    var localization = TreeLocalization.Translations[language][localizationHeader.Replace(" ", String.Empty)];
-                    return localization;
+                    return foundLocalization;
                 }
                 else
                 {
+                    Debug.WriteLine($"found no localization ({language}) for: \"{localizationHeader}\"");
                     return localizationHeader;
                 }
             }
-            catch( Exception ex)
+            catch (Exception ex)
             {
+                Debug.WriteLine($"error getting localization ({language}) for: \"{localizationHeader}\"{Environment.NewLine}{ex}");
                 return localizationHeader;
             }
         }
