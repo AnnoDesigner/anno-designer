@@ -795,7 +795,6 @@ namespace AnnoDesigner
                 {
                     RenderToFile(dialog.FileName, 1, exportZoom, exportSelection, statisticsView.IsVisible);
 
-
                     MessageBox.Show(this,
                         Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(SelectedLanguage)]["ExportImageSuccessful"],
                         Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(SelectedLanguage)]["Successful"],
@@ -830,18 +829,32 @@ namespace AnnoDesigner
             // note: should be references to the correct copied objects from allObjects
             var selectedObjects = annoCanvas.SelectedObjects.Select(_ => new AnnoObject(_)).ToList();
 
-            Debug.WriteLine("UI thread: {0}", Thread.CurrentThread.ManagedThreadId);
+            Debug.WriteLine($"UI thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
             void renderThread()
             {
-                Debug.WriteLine("Render thread: {0}", Thread.CurrentThread.ManagedThreadId);
+                Debug.WriteLine($"Render thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
+                var icons = new Dictionary<string, IconImage>();
+                foreach (var curIcon in annoCanvas.Icons)
+                {
+                    icons.Add(curIcon.Key, new IconImage(curIcon.Value.Name, curIcon.Value.Localizations, curIcon.Value.IconPath));
+                }
+
                 // initialize output canvas
-                var target = new AnnoCanvas
+                var target = new AnnoCanvas(annoCanvas.BuildingPresets, icons)
                 {
                     PlacedObjects = allObjects,
                     RenderGrid = annoCanvas.RenderGrid,
                     RenderIcon = annoCanvas.RenderIcon,
                     RenderLabel = annoCanvas.RenderLabel
                 };
+
+                sw.Stop();
+                Debug.WriteLine($"creating canvas took: {sw.ElapsedMilliseconds}ms");
+
                 // normalize layout
                 target.Normalize(border);
                 // set zoom level
@@ -899,6 +912,7 @@ namespace AnnoDesigner
 
             var thread = new Thread(renderThread);
             thread.IsBackground = true;
+            thread.Name = "exportImage";
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             thread.Join(TimeSpan.FromSeconds(10));

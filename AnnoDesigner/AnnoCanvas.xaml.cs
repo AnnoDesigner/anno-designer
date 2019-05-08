@@ -384,9 +384,18 @@ namespace AnnoDesigner
         /// <summary>
         /// Constructor
         /// </summary>
-        public AnnoCanvas()
+        public AnnoCanvas() : this(null, null)
+        {
+
+        }
+
+        public AnnoCanvas(BuildingPresets presetsToUse, Dictionary<string, IconImage> iconsToUse)
         {
             InitializeComponent();
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             // control settings
             Focusable = true;
             ClipToBounds = true;
@@ -404,61 +413,92 @@ namespace AnnoDesigner
             color = Colors.LawnGreen;
             color.A = 32;
             _influencedBrush = new SolidColorBrush(color);
+
+            sw.Stop();
+            Debug.WriteLine($"init variables took: {sw.ElapsedMilliseconds}ms");
+
             // load presets and icons if not in design time
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
+                sw.Start();
                 // load presets
                 try
                 {
-                    BuildingPresets = DataIO.LoadFromFile<BuildingPresets>(Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile));
+                    if (presetsToUse == null)
+                    {
+                        BuildingPresets = DataIO.LoadFromFile<BuildingPresets>(Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile));
+                    }
+                    else
+                    {
+                        BuildingPresets = presetsToUse;
+                    }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Loading of the building presets failed");
                 }
 
+                sw.Stop();
+                Debug.WriteLine($"loading presets took: {sw.ElapsedMilliseconds}ms");
+
+                sw.Start();
                 // load icon name mapping
-                List<IconNameMap> iconNameMap = null;
-                try
+                if (iconsToUse == null)
                 {
-                    iconNameMap = DataIO.LoadFromFile<List<IconNameMap>>(Path.Combine(App.ApplicationPath, Constants.IconNameFile));
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Loading of the icon names failed");
-                }
-
-                // load icons
-                var pathToIconFolder = Path.Combine(App.ApplicationPath, Constants.IconFolder);
-                var icons = new Dictionary<string, IconImage>();
-
-                foreach (var path in Directory.EnumerateFiles(pathToIconFolder, Constants.IconFolderFilter))
-                {
-                    var filenameWithExt = Path.GetFileName(path);
-                    var filenameWithoutExt = Path.GetFileNameWithoutExtension(path);
-
-                    if (string.IsNullOrWhiteSpace(filenameWithoutExt))
+                    List<IconNameMap> iconNameMap = null;
+                    try
                     {
-                        continue;
+                        iconNameMap = DataIO.LoadFromFile<List<IconNameMap>>(Path.Combine(App.ApplicationPath, Constants.IconNameFile));
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Loading of the icon names failed");
                     }
 
-                    // try mapping to the icon translations
-                    Dictionary<string, string> localizations = null;
-                    if (iconNameMap != null)
+                    sw.Stop();
+                    Debug.WriteLine($"loading icon mapping took: {sw.ElapsedMilliseconds}ms");
+
+                    sw.Start();
+                    // load icons
+                    var pathToIconFolder = Path.Combine(App.ApplicationPath, Constants.IconFolder);
+                    var icons = new Dictionary<string, IconImage>();
+
+                    foreach (var path in Directory.EnumerateFiles(pathToIconFolder, Constants.IconFolderFilter))
                     {
-                        var map = iconNameMap.Find(x => x.IconFilename == filenameWithExt);
-                        if (map != null)
+                        var filenameWithExt = Path.GetFileName(path);
+                        var filenameWithoutExt = Path.GetFileNameWithoutExtension(path);
+
+                        if (string.IsNullOrWhiteSpace(filenameWithoutExt))
                         {
-                            localizations = map.Localizations.Dict;
+                            continue;
                         }
+
+                        // try mapping to the icon translations
+                        Dictionary<string, string> localizations = null;
+                        if (iconNameMap != null)
+                        {
+                            var map = iconNameMap.Find(x => x.IconFilename == filenameWithExt);
+                            if (map != null)
+                            {
+                                localizations = map.Localizations.Dict;
+                            }
+                        }
+
+                        // add the current icon
+                        var iconToAdd = new IconImage(filenameWithoutExt, localizations, path);
+                        icons.Add(filenameWithoutExt, iconToAdd);
                     }
 
-                    // add the current icon
-                    icons.Add(filenameWithoutExt, new IconImage(filenameWithoutExt, localizations, new BitmapImage(new Uri(path))));
-                }
+                    sw.Stop();
+                    Debug.WriteLine($"loading icons took: {sw.ElapsedMilliseconds}ms");
 
-                // sort icons by their DisplayName
-                Icons = icons.OrderBy(x => x.Value.DisplayName).ToDictionary(x => x.Key, x => x.Value);
+                    // sort icons by their DisplayName
+                    Icons = icons.OrderBy(x => x.Value.DisplayName).ToDictionary(x => x.Key, x => x.Value);
+                }
+                else
+                {
+                    Icons = iconsToUse;
+                }
             }
 
             const int dpiFactor = 1;
