@@ -794,10 +794,18 @@ namespace AnnoDesigner
                 try
                 {
                     RenderToFile(dialog.FileName, 1, exportZoom, exportSelection, statisticsView.IsVisible);
+
+
+                    MessageBox.Show(this,
+                        Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(SelectedLanguage)]["ExportImageSuccessful"],
+                        Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(SelectedLanguage)]["Successful"],
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.Message, "Something went wrong while saving/loading file.");
+                    App.WriteToErrorLog("Error exporting image", e.Message, e.StackTrace);
+                    MessageBox.Show(e.Message, "Something went wrong while exporting the image.");
                 }
             }
         }
@@ -815,15 +823,17 @@ namespace AnnoDesigner
             {
                 return;
             }
+
             // copy all objects
             var allObjects = annoCanvas.PlacedObjects.Select(_ => new AnnoObject(_)).ToList();
             // copy selected objects
             // note: should be references to the correct copied objects from allObjects
             var selectedObjects = annoCanvas.SelectedObjects.Select(_ => new AnnoObject(_)).ToList();
-            System.Diagnostics.Debug.WriteLine("UI thread: {0}", Thread.CurrentThread.ManagedThreadId);
+
+            Debug.WriteLine("UI thread: {0}", Thread.CurrentThread.ManagedThreadId);
             void renderThread()
             {
-                System.Diagnostics.Debug.WriteLine("Render thread: {0}", Thread.CurrentThread.ManagedThreadId);
+                Debug.WriteLine("Render thread: {0}", Thread.CurrentThread.ManagedThreadId);
                 // initialize output canvas
                 var target = new AnnoCanvas
                 {
@@ -862,33 +872,36 @@ namespace AnnoDesigner
                     target.StatisticsPanel.Children.Add(exportStatisticsView);
 
                     //according to https://stackoverflow.com/a/25507450
+                    // and https://stackoverflow.com/a/1320666
                     exportStatisticsView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                    //exportStatisticsView.Arrange(new Rect(new Point(0, 0), exportStatisticsView.DesiredSize));                  
+                    //exportStatisticsView.Arrange(new Rect(new Point(0, 0), exportStatisticsView.DesiredSize));
 
                     if (exportStatisticsView.DesiredSize.Height > height)
                     {
                         height = exportStatisticsView.DesiredSize.Height + target.LinePenThickness + border;
                     }
 
-                    //width += Constants.StatisticsMargin + target.GridSize;// + target.LinePenThickness;
-                    width += exportStatisticsView.DesiredSize.Width + target.LinePenThickness;// + target.GridSize;// + 10;
-                    //statisticsView.Background = Brushes.Transparent;
+                    width += exportStatisticsView.DesiredSize.Width + target.LinePenThickness;
                 }
 
                 target.Width = width;
                 target.Height = height;
                 target.UpdateLayout();
+
                 // apply size
                 var outputSize = new Size(width, height);
                 target.Measure(outputSize);
                 target.Arrange(new Rect(outputSize));
-                //target.Background = Brushes.Transparent;
+
                 // render canvas to file
                 DataIO.RenderToFile(target, filename);
             }
+
             var thread = new Thread(renderThread);
+            thread.IsBackground = true;
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
+            thread.Join(TimeSpan.FromSeconds(10));
         }
     }
 }
