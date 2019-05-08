@@ -857,6 +857,8 @@ namespace AnnoDesigner
                     };
                     exportStatisticsView.statisticsViewModel.UpdateStatistics(target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
                     exportStatisticsView.statisticsViewModel.CopyLocalization(_mainWindowLocalization.StatisticsViewModel);
+                    exportStatisticsView.statisticsViewModel.ShowBuildingList = _mainWindowLocalization.StatisticsViewModel.ShowBuildingList;
+
                     target.StatisticsPanel.Children.Add(exportStatisticsView);
 
                     //according to https://stackoverflow.com/a/25507450
