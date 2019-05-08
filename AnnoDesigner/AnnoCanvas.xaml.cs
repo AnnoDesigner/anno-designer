@@ -287,7 +287,6 @@ namespace AnnoDesigner
             set
             {
                 _canvasActionHistory = value;
-                RebalanceActionHistory(); //Move this
             }
         }
 
@@ -454,6 +453,7 @@ namespace AnnoDesigner
             _highlightPen = new Pen(Brushes.Yellow, 1);
             _radiusPen = new Pen(Brushes.Black, 1);
             _influencedPen = new Pen(Brushes.LawnGreen, 1);
+            _canvasActionHistory = new List<CanvasAction>();
             var color = Colors.LightYellow;
             color.A = 32;
             _lightBrush = new SolidColorBrush(color);
@@ -542,7 +542,7 @@ namespace AnnoDesigner
         {
             //var m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
             //var dpiFactor = 1 / m.M11;
-
+            Debug.WriteLine("OnRender Called");
             // assure pixel perfect drawing
             var halfPenWidth = _linePen.Thickness / 2;
             var guidelines = new GuidelineSet();
@@ -1053,6 +1053,11 @@ namespace AnnoDesigner
             return Math.Pow(A, 1.0 / N);
         }
 
+        /// <summary>
+        /// Creates a deep copy of an AnnoObject list.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
         static List<AnnoObject> CloneList(List<AnnoObject> list)
         {
             var newList = new List<AnnoObject>(list.Capacity);
@@ -1292,7 +1297,7 @@ namespace AnnoDesigner
             else if (e.LeftButton == MouseButtonState.Pressed && CurrentObjects.Count != 0)
             {
                 // place new object
-                TryPlaceCurrentObject();
+                TryPlaceCurrentObjects();
             }
             else if (e.LeftButton == MouseButtonState.Pressed && CurrentObjects.Count == 0)
             {
@@ -1346,6 +1351,7 @@ namespace AnnoDesigner
                 // check if the mouse has moved at least one grid cell in any direction
                 if (dx != 0 || dy != 0)
                 {
+                    CanvasActionHistory.Add(new CanvasAction(CloneList(_placedObjects), ActionType.MoveGroup));
                     foreach (var obj in _placedObjects)
                     {
                         obj.Position = new Point(obj.Position.X + dx, obj.Position.Y + dy);
@@ -1360,7 +1366,7 @@ namespace AnnoDesigner
                 if (CurrentObjects.Count != 0)
                 {
                     // place new object
-                    TryPlaceCurrentObject();
+                    TryPlaceCurrentObjects();
                 }
                 else
                 {
@@ -1411,6 +1417,7 @@ namespace AnnoDesigner
                             // if no collisions were found, permanently move all selected objects
                             if (!collisionsExist)
                             {
+                                CanvasActionHistory.Add(new CanvasAction(CloneList(_selectedObjects), ActionType.MoveGroup));
                                 foreach (var obj in _selectedObjects)
                                 {
                                     obj.Position = new Point(obj.Position.X + dx, obj.Position.Y + dy);
@@ -1496,6 +1503,7 @@ namespace AnnoDesigner
                             {
                                 // remove clicked object
                                 _placedObjects.Remove(obj);
+                                CanvasActionHistory.Add(new CanvasAction(obj, ActionType.Remove));
                                 _selectedObjects.Remove(obj);
                             }
                         }
@@ -1533,13 +1541,9 @@ namespace AnnoDesigner
             switch (e.Key)
             {
                 case Key.Delete:
+                    CanvasActionHistory.Add(new CanvasAction(CloneList(_placedObjects), ActionType.RemoveGroup));
                     // remove all currently selected objects from the grid and clear selection
                     _selectedObjects.ForEach(_ => _placedObjects.Remove(_));
-                    CanvasActionHistory.Add(new CanvasAction()
-                    {
-                        Action = ActionType.RemoveGroup,
-                        Objects = CloneList(_selectedObjects)
-                    });
                     _selectedObjects.Clear();
                     break;
                 case Key.C:
@@ -1572,7 +1576,18 @@ namespace AnnoDesigner
                         Rotate(CurrentObjects);
                     }
                     break;
-
+                case Key.Z:
+                    //Check that there is an action to undo
+                    if (CanvasActionHistory.Count > 0)
+                    {
+                        if (IsControlPressed())
+                        {
+                            _placedObjects = CanvasActionHistory[CanvasActionHistory.Count - 1].Objects;
+                            CanvasActionHistory.RemoveAt(CanvasActionHistory.Count - 1);
+                            _selectedObjects.Clear();
+                        }
+                    }
+                    break;
             }
             InvalidateVisual();
         }
@@ -1615,14 +1630,15 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Tries to place the current object on the grid.
+        /// Tries to place the current objects onto the grid.
         /// Fails if there are any collisions.
         /// </summary>
         /// <returns>true if placement succeeded, otherwise false</returns>
-        private bool TryPlaceCurrentObject()
+        private bool TryPlaceCurrentObjects()
         {
             if (CurrentObjects.Count != 0 && !_placedObjects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
             {
+                CanvasActionHistory.Add(new CanvasAction(CloneList(_placedObjects), _currentObjects.Count == 1 ? ActionType.Add : ActionType.AddGroup));
                 _placedObjects.AddRange(CloneList(CurrentObjects));
                 // sort the objects because borderless objects should be drawn first
                 _placedObjects.Sort((a, b) => b.Borderless.CompareTo(a.Borderless));
@@ -1687,6 +1703,7 @@ namespace AnnoDesigner
             }
             var dx = _placedObjects.Min(_ => _.Position.X) - border;
             var dy = _placedObjects.Min(_ => _.Position.Y) - border;
+            CanvasActionHistory.Add(new CanvasAction(CloneList(_placedObjects), ActionType.MoveGroup));
             _placedObjects.ForEach(_ => _.Position = new Point(_.Position.X - dx, _.Position.Y - dy));
             InvalidateVisual();
         }
@@ -1699,6 +1716,7 @@ namespace AnnoDesigner
         /// </summary>
         public void NewFile()
         {
+            CanvasActionHistory.Clear();
             _placedObjects.Clear();
             _selectedObjects.Clear();
             LoadedFile = "";
