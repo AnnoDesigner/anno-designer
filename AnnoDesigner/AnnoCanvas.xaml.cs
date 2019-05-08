@@ -1207,6 +1207,11 @@ namespace AnnoDesigner
         protected override void OnMouseLeave(MouseEventArgs e)
         {
             _mouseWithinControl = false;
+
+            //clear selection rectangle
+            CurrentMode = MouseMode.Standard;
+            _selectionRect = Rect.Empty;
+
             InvalidateVisual();
         }
 
