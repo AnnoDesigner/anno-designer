@@ -1215,13 +1215,13 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _statusBarControls, value);
             }
         }
-        
+
         private StatisticsViewModel _statisticsViewModel;
         public StatisticsViewModel StatisticsViewModel
         {
             get { return _statisticsViewModel; }
             set { _statisticsViewModel = value; }
-
+        }
 
         private string _statusBarItemsOnClipboard;
         public string StatusBarItemsOnClipboard
