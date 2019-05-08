@@ -858,13 +858,17 @@ namespace AnnoDesigner
                     statisticsView.statisticsViewModel.UpdateStatistics(target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
                     target.StatisticsPanel.Children.Add(statisticsView);
 
-                    //if (statisticsView.DesiredSize.Height > height)
-                    //{
-                    //    height = statisticsView.DesiredSize.Height;
-                    //}
+                    //according to https://stackoverflow.com/a/25507450
+                    statisticsView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    //statisticsView.Arrange(new Rect(new Point(0, 0), statisticsView.DesiredSize));                  
 
-                    width += Constants.StatisticsMargin + target.GridSize;// + target.LinePenThickness;
-                    //width += statisticsView.DesiredSize.Width + target.GridSize;// + 10;
+                    if (statisticsView.DesiredSize.Height > height)
+                    {
+                        height = statisticsView.DesiredSize.Height + target.LinePenThickness + border;
+                    }
+
+                    //width += Constants.StatisticsMargin + target.GridSize;// + target.LinePenThickness;
+                    width += statisticsView.DesiredSize.Width + target.LinePenThickness;// + target.GridSize;// + 10;
                     //statisticsView.Background = Brushes.Transparent;
                 }
 
