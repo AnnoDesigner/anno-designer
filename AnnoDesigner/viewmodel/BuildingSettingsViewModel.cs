@@ -29,9 +29,10 @@ namespace AnnoDesigner.viewmodel
         public BuildingSettingsViewModel()
         {
             ApplyColorToSelectionCommand = new RelayCommand(ApplyColorToSelection, CanApplyColorToSelection);
+            ApplyPredefinedColorToSelectionCommand = new RelayCommand(ApplyPredefinedColorToSelection, CanApplyPredefinedColorToSelection);
 
             TextApplyColorToSelection = "Apply color";
-            TextApplyColorToSelectionToolTip = "Aplly color to all buildings in current selection";
+            TextApplyColorToSelectionToolTip = "Apply color to all buildings in current selection";
             TextApplyPredefinedColorToSelection = "Apply predefined color";
             TextApplyPredefinedColorToSelectionToolTip = "Apply predefined color (if found) to all buildings in current selection";
             TextAvailableColors = "Available Colors";
@@ -133,10 +134,19 @@ namespace AnnoDesigner.viewmodel
             return AnnoCanvasToUse?.SelectedObjects.Count > 0;
         }
 
-        private void ApplyPredefinedColorToSelection()
+        public ICommand ApplyPredefinedColorToSelectionCommand { get; private set; }
+
+        private void ApplyPredefinedColorToSelection(object param)
         {
 
         }
+
+        private bool CanApplyPredefinedColorToSelection(object param)
+        {
+            return false;
+        }
+
+
 
         #endregion
     }

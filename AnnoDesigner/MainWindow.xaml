@@ -304,7 +304,8 @@
                         <xctk:SplitButton x:Name="ApplyColorButton"
                                           Width="48"
                                           DockPanel.Dock="Right"
-                                          Command="{Binding BuildingSettingsViewModel.ApplyColorToSelectionCommand}">
+                                          Command="{Binding BuildingSettingsViewModel.ApplyColorToSelectionCommand}"
+                                          ToolTip="{Binding BuildingSettingsViewModel.TextApplyColorToSelectionToolTip}">
                             <xctk:SplitButton.Resources>
                                 <Style x:Key="stylePath"
                                        TargetType="{x:Type Path}">
@@ -346,13 +347,10 @@
                                 </Grid>
                             </xctk:SplitButton.Content>
                             <xctk:SplitButton.DropDownContent>
-                                <Menu>
-                                    <MenuItem x:Name="ApplyColorToAll"
-                                              Header="Apply to all"
-                                              Click="ApplyColorToAll_Click" />
-                                    <MenuItem x:Name="ApplyPredefinedColor"
-                                              Header="Apply predefined color" />
-                                </Menu>
+                                <Button x:Name="ApplyPredefinedColor"
+                                        Command="{Binding BuildingSettingsViewModel.ApplyPredefinedColorToSelectionCommand}"
+                                        Content="{Binding BuildingSettingsViewModel.TextApplyPredefinedColorToSelection}"
+                                        ToolTip="{Binding BuildingSettingsViewModel.TextApplyPredefinedColorToSelectionToolTip}" />
                             </xctk:SplitButton.DropDownContent>
                         </xctk:SplitButton>
                     </DockPanel>

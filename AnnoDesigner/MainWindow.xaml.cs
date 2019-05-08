@@ -733,15 +733,5 @@ namespace AnnoDesigner
             Settings.Default.TreeViewSearchText = TextBoxSearchPresets.Text; //Set explicity despite the data binding as UpdateProperty is only called on LostFocus
             Settings.Default.Save();
         }
-
-        private void ApplyColorToAll_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (var curSelectedObject in annoCanvas.SelectedObjects)
-            {
-                curSelectedObject.Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor.Value;
-            }
-
-            annoCanvas.InvalidateVisual();
-        }
     }
 }
