@@ -292,26 +292,47 @@
                                           ShowAvailableColors="True"
                                           ShowRecentColors="True"
                                           AvailableColorsSortingMode="HueSaturationBrightness"
-                                          StandardColorsHeader="Standard Color Presets"
-                                          SelectedColor="Red" />
+                                          StandardButtonHeader="{Binding BuildingSettingsViewModel.TextStandard}"
+                                          AdvancedButtonHeader="{Binding BuildingSettingsViewModel.TextAdvanced}"
+                                          AvailableColorsHeader="{Binding BuildingSettingsViewModel.TextAvailableColors}"
+                                          StandardColorsHeader="{Binding BuildingSettingsViewModel.TextStandardColors}"
+                                          RecentColorsHeader="{Binding BuildingSettingsViewModel.TextRecentColors}"
+                                          SelectedColor="{Binding BuildingSettingsViewModel.SelectedColor}" />
                     </DockPanel>
                     <DockPanel LastChildFill="False"
                                Height="26">
                         <xctk:SplitButton x:Name="ApplyColorButton"
                                           Width="48"
                                           DockPanel.Dock="Right"
-                                          Click="ApplyColorButton_Click">
+                                          Command="{Binding BuildingSettingsViewModel.ApplyColorToSelectionCommand}">
+                            <xctk:SplitButton.Resources>
+                                <Style x:Key="stylePath"
+                                       TargetType="{x:Type Path}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled"
+                                                 Value="True">
+                                            <Setter Property="Fill"
+                                                    Value="#FF000000" />
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled"
+                                                 Value="False">
+                                            <Setter Property="Fill"
+                                                    Value="Gray" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </xctk:SplitButton.Resources>
                             <xctk:SplitButton.Content>
                                 <Grid Width="24"
                                       Height="24"
                                       Visibility="Visible">
                                     <Path Data="M10.237976,16.558633L15.362,21.68467C15.362,21.68467 15.362,32.671771 0,30.001748 3.9839783,29.020736 3.5959778,25.791718 5.9639893,20.122661 7.1269836,17.340638 10.237976,16.558633 10.237976,16.558633z M30.389984,0.00048406667C30.752991,0.0094867014 31.134979,0.14547426 31.494995,0.50648519 32.77597,1.7864956 31.215973,3.3455154 31.215973,3.3455152 31.215973,3.3455154 23.415985,11.147588 21.855988,12.708591 20.296997,14.270602 18.406982,18.619656 18.406982,18.619656L13.28299,13.495602C13.28299,13.495602 17.733978,11.707591 19.29599,10.147579 20.855988,8.5855531 28.655975,0.78248873 28.655975,0.78248861 28.655975,0.78248873 29.461975,-0.022526528 30.389984,0.00048406667z"
                                           Stretch="Uniform"
-                                          Fill="#FF000000"
                                           Width="16"
                                           Height="16"
                                           Margin="0,0,0,0"
-                                          RenderTransformOrigin="0.5,0.5">
+                                          RenderTransformOrigin="0.5,0.5"
+                                          Style="{StaticResource stylePath}">
                                         <Path.RenderTransform>
                                             <TransformGroup>
                                                 <TransformGroup.Children>

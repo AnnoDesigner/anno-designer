@@ -151,6 +151,8 @@ namespace AnnoDesigner
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
+            _mainWindowLocalization.BuildingSettingsViewModel.AnnoCanvasToUse = annoCanvas;
+
             // add icons to the combobox
             comboBoxIcon.Items.Clear();
             _noIconItem = new IconImage("None");
@@ -294,7 +296,7 @@ namespace AnnoDesigner
             textBoxWidth.Value = (int)obj.Size.Width;
             textBoxHeight.Value = (int)obj.Size.Height;
             // color
-            colorPicker.SelectedColor = obj.Color;
+            _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor = obj.Color;
             // label
             textBoxLabel.Text = obj.Label;
             // Ident
@@ -381,7 +383,7 @@ namespace AnnoDesigner
             AnnoObject obj = new AnnoObject
             {
                 Size = new Size(textBoxWidth?.Value ?? 1, textBoxHeight?.Value ?? 1),
-                Color = colorPicker.SelectedColor ?? Colors.Red,
+                Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
                 Label = IsChecked(checkBoxLabel) ? textBoxLabel.Text : "",
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
                 Radius = textBoxRadius?.Value ?? 0,
@@ -411,7 +413,7 @@ namespace AnnoDesigner
                 {
                     UpdateUIFromObject(new AnnoObject(selectedItem)
                     {
-                        Color = colorPicker.SelectedColor ?? Colors.Red,
+                        Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
                     });
                     ApplyCurrentObject();
                 }
@@ -732,20 +734,11 @@ namespace AnnoDesigner
             Settings.Default.Save();
         }
 
-        private void ApplyColorButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (annoCanvas.SelectedObjects.Count == 1)
-            {
-                annoCanvas.SelectedObjects[0].Color = colorPicker.SelectedColor.Value;
-                annoCanvas.InvalidateVisual();
-            }
-        }
-
         private void ApplyColorToAll_Click(object sender, RoutedEventArgs e)
         {
             foreach (var curSelectedObject in annoCanvas.SelectedObjects)
             {
-                curSelectedObject.Color = colorPicker.SelectedColor.Value;
+                curSelectedObject.Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor.Value;
             }
 
             annoCanvas.InvalidateVisual();
