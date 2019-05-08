@@ -268,5 +268,17 @@ namespace AnnoDesigner.viewmodel
 
             return result;
         }
+
+        public void CopyLocalization(StatisticsViewModel other)
+        {
+            TextNothingPlaced = other.TextNothingPlaced;
+            TextBoundingBox = other.TextBoundingBox;
+            TextMinimumArea = other.TextMinimumArea;
+            TextSpaceEfficiency = other.TextSpaceEfficiency;
+            TextBuildings = other.TextBuildings;
+            TextBuildingsSelected = other.TextBuildingsSelected;
+            TextTiles = other.TextTiles;
+            TextNameNotFound = other.TextNameNotFound;
+        }
     }
 }

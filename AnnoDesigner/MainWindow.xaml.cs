@@ -851,24 +851,25 @@ namespace AnnoDesigner
 
                 if (renderStatistics)
                 {
-                    var statisticsView = new StatisticsView
+                    var exportStatisticsView = new StatisticsView
                     {
                         Margin = new Thickness(5, 0, 0, 0)
                     };
-                    statisticsView.statisticsViewModel.UpdateStatistics(target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
-                    target.StatisticsPanel.Children.Add(statisticsView);
+                    exportStatisticsView.statisticsViewModel.UpdateStatistics(target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
+                    exportStatisticsView.statisticsViewModel.CopyLocalization(_mainWindowLocalization.StatisticsViewModel);
+                    target.StatisticsPanel.Children.Add(exportStatisticsView);
 
                     //according to https://stackoverflow.com/a/25507450
-                    statisticsView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                    //statisticsView.Arrange(new Rect(new Point(0, 0), statisticsView.DesiredSize));                  
+                    exportStatisticsView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    //exportStatisticsView.Arrange(new Rect(new Point(0, 0), exportStatisticsView.DesiredSize));                  
 
-                    if (statisticsView.DesiredSize.Height > height)
+                    if (exportStatisticsView.DesiredSize.Height > height)
                     {
-                        height = statisticsView.DesiredSize.Height + target.LinePenThickness + border;
+                        height = exportStatisticsView.DesiredSize.Height + target.LinePenThickness + border;
                     }
 
                     //width += Constants.StatisticsMargin + target.GridSize;// + target.LinePenThickness;
-                    width += statisticsView.DesiredSize.Width + target.LinePenThickness;// + target.GridSize;// + 10;
+                    width += exportStatisticsView.DesiredSize.Width + target.LinePenThickness;// + target.GridSize;// + 10;
                     //statisticsView.Background = Brushes.Transparent;
                 }
 
