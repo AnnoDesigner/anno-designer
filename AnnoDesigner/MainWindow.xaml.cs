@@ -174,7 +174,7 @@ namespace AnnoDesigner
             // check for updates on startup            
             _mainWindowLocalization.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
             _mainWindowLocalization.FileVersionValue = Constants.FileVersion.ToString("0.#", CultureInfo.InvariantCulture);
-
+            
             CheckForUpdates(false);
 
             // load color presets
@@ -199,7 +199,8 @@ namespace AnnoDesigner
 
             // load presets
             treeViewPresets.Items.Clear();
-            // manually add a road tile preset            
+
+            // manually add a road tile preset
             AddRoadTiles();
             BuildingPresets presets = annoCanvas.BuildingPresets;
             if (presets != null)
