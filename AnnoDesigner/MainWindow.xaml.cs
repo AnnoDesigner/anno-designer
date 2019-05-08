@@ -184,11 +184,11 @@ namespace AnnoDesigner
                 comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
             }
             comboxBoxInfluenceType.SelectedIndex = 0;
-            
+
             // check for updates on startup            
             _mainWindowLocalization.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
             _mainWindowLocalization.FileVersionValue = Constants.FileVersion.ToString("0.#", CultureInfo.InvariantCulture);
-            
+
             CheckForUpdates(false);
 
             // load color presets
@@ -853,11 +853,19 @@ namespace AnnoDesigner
                 {
                     var statisticsView = new StatisticsView
                     {
-                        Margin = new Thickness(10, 0, 10, 0)
+                        Margin = new Thickness(5, 0, 0, 0)
                     };
                     statisticsView.statisticsViewModel.UpdateStatistics(target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
                     target.StatisticsPanel.Children.Add(statisticsView);
-                    width += Constants.StatisticsMargin + 10;
+
+                    //if (statisticsView.DesiredSize.Height > height)
+                    //{
+                    //    height = statisticsView.DesiredSize.Height;
+                    //}
+
+                    width += Constants.StatisticsMargin + target.GridSize;// + target.LinePenThickness;
+                    //width += statisticsView.DesiredSize.Width + target.GridSize;// + 10;
+                    //statisticsView.Background = Brushes.Transparent;
                 }
 
                 target.Width = width;
@@ -867,6 +875,7 @@ namespace AnnoDesigner
                 var outputSize = new Size(width, height);
                 target.Measure(outputSize);
                 target.Arrange(new Rect(outputSize));
+                //target.Background = Brushes.Transparent;
                 // render canvas to file
                 DataIO.RenderToFile(target, filename);
             }

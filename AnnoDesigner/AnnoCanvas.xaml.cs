@@ -349,6 +349,11 @@ namespace AnnoDesigner
         /// </summary>
         private readonly Pen _linePen;
 
+        public double LinePenThickness
+        {
+            get { return _linePen.Thickness; }
+        }
+
         /// <summary>
         /// Used for selection and hover highlights and selection rect.
         /// </summary>
@@ -1540,7 +1545,7 @@ namespace AnnoDesigner
             var dx = _placedObjects.Min(_ => _.Position.X) - border;
             var dy = _placedObjects.Min(_ => _.Position.Y) - border;
             _placedObjects.ForEach(_ => _.Position = new Point(_.Position.X - dx, _.Position.Y - dy));
-            
+
             InvalidateVisual();
         }
 
