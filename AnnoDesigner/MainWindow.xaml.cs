@@ -657,6 +657,7 @@ namespace AnnoDesigner
                 if (e.Key == Key.Escape)
                 {
                     _mainWindowLocalization.TreeViewSearchText = string.Empty;
+                    TextBoxSearchPresets.UpdateLayout();
                 }
 
                 if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
