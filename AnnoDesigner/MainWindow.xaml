@@ -49,7 +49,6 @@
             <ColumnDefinition Width="240" />
         </Grid.ColumnDefinitions>
         <my:AnnoCanvas x:Name="annoCanvas"
-                       Grid.RowSpan="1"
                        Grid.Row="1"
                        RenderGrid="True"
                        RenderIcon="True"
@@ -478,7 +477,8 @@
                              KeyUp="TextBoxSearchPresetsKeyUp"
                              GotFocus="TextBoxSearchPresetsGotFocus"
                              VerticalContentAlignment="Center"
-                             Text="{Binding Source={x:Static properties:Settings.Default},Path=TreeViewSearchText, Mode=TwoWay}">
+                             ToolTip="{Binding TreeViewSearchToolTip}"
+                             Text="{Binding TreeViewSearchText, UpdateSourceTrigger=PropertyChanged}">
                     </TextBox>
                     <!-- Maybe add a clear text box button eventually. (Needs styling etc)-->
                     <!--<Button Grid.Column="1"
@@ -500,7 +500,7 @@
                           MouseDoubleClick="TreeViewPresetsMouseDoubleClick"
                           KeyDown="TreeViewPresetsKeyDown"
                           TabIndex="13"
-                          Loaded="TreeViewPresets_Loaded" />
+                          Loaded="TreeViewPresetsLoaded" />
             </GroupBox>
         </DockPanel>
         <StatusBar Grid.Row="2"
