@@ -102,9 +102,18 @@ namespace AnnoDesigner.Localization
                         { "StatTiles" , "Tiles" },
                         { "StatNameNotFound" , "Building name not found" },
                         { "UnknownObject" , "Unknown Object" },
-                        { "PresetsLoaded" , "Building presets loaded" }
+                        { "PresetsLoaded" , "Building presets loaded" },
+                        { "ApplyColorToSelection" , "Apply color" },
+                        { "ApplyColorToSelectionToolTip" , "Apply color to all buildings in current selection" },
+                        { "ApplyPredefinedColorToSelection" , "Apply predefined color" },
+                        { "ApplyPredefinedColorToSelectionToolTip" , "Apply predefined color (if found) to all buildings in current selection" },
+                        { "AvailableColors" , "Available Colors" },
+                        { "StandardColors" , "Predefined Colors" },
+                        { "RecentColors" , "Recent used Colors" },
+                        { "Standard" , "Standard" },
+                        { "Advanced" , "Advanced" },
                     }
-                 },
+                },
                 {
                     "ger", new Dictionary<string, string>() {
                         { "File" , "Datei" },
@@ -184,7 +193,16 @@ namespace AnnoDesigner.Localization
                         { "StatTiles" , "Kacheln" },
                         { "StatNameNotFound" , "Gebäudename nicht gefunden" },
                         { "UnknownObject" , "Unbekanntes Objekt" },
-                        { "PresetsLoaded" , "Gebäudevorlagen geladen" }
+                        { "PresetsLoaded" , "Gebäudevorlagen geladen" },
+                        { "ApplyColorToSelection" , "Farbe anwenden" },
+                        { "ApplyColorToSelectionToolTip" , "Farbe auf alle Gebäude in der aktuellen Auswahl anwenden" },
+                        { "ApplyPredefinedColorToSelection" , "Vordefinierte Farbe anwenden" },
+                        { "ApplyPredefinedColorToSelectionToolTip" , "Vordefinierte Farbe (falls gefunden) auf alle Gebäude in der aktuellen Auswahl anwenden." },
+                        { "AvailableColors" , "Verfügbare Farben" },
+                        { "StandardColors" , "Vordefinierte Farben" },
+                        { "RecentColors" , "Zuletzt verwendete Farben" },
+                        { "Standard" , "Standard" },
+                        { "Advanced" , "Erweitert" },
                     }
                  },
                 {
@@ -266,7 +284,16 @@ namespace AnnoDesigner.Localization
                         { "StatTiles" , "Płytki" },
                         { "StatNameNotFound" , "Nie znaleziono nazwy budynku" },
                         { "UnknownObject" , "Obiekt nieznany" },
-                        { "PresetsLoaded" , "Presety budynków załadowano" }
+                        { "PresetsLoaded" , "Presety budynków załadowano" },
+                        { "ApplyColorToSelection" , "Zastosuj kolor" },
+                        { "ApplyColorToSelectionToolTip" , "Zastosowanie koloru do wszystkich budynków w bieżącym wyborze" },
+                        { "ApplyPredefinedColorToSelection" , "Zastosuj predefiniowany kolor" },
+                        { "ApplyPredefinedColorToSelectionToolTip" , "Zastosuj predefiniowany kolor (jeśli został znaleziony) do wszystkich budynków w bieżącym wyborze." },
+                        { "AvailableColors" , "Dostępne kolory" },
+                        { "StandardColors" , "Predefiniowane kolory" },
+                        { "RecentColors" , "Ostatnio używane kolory" },
+                        { "Standard" , "Standard" },
+                        { "Advanced" , "Zaawansowane" },
                     }
                  },
                 {
@@ -348,7 +375,16 @@ namespace AnnoDesigner.Localization
                         { "StatTiles" , "Плитка" },
                         { "StatNameNotFound" , "Название здания не найдено" },
                         { "UnknownObject" , "Неизвестный объект" },
-                        { "PresetsLoaded" , "Загружаются пресеты зданий" }
+                        { "PresetsLoaded" , "Загружаются пресеты зданий" },
+                        { "ApplyColorToSelection" , "Применить цвет" },
+                        { "ApplyColorToSelectionToolTip" , "Применить цвет ко всем зданиям в текущем выборе" },
+                        { "ApplyPredefinedColorToSelection" , "Применить предопределенный цвет" },
+                        { "ApplyPredefinedColorToSelectionToolTip" , "Применить предопределенный цвет (если он найден) ко всем зданиям в текущем выборе." },
+                        { "AvailableColors" , "Доступные цвета" },
+                        { "StandardColors" , "Предварительно определенные цвета" },
+                        { "RecentColors" , "Последние использованные цвета" },
+                        { "Standard" , "Стандарт" },
+                        { "Advanced" , "Расширенный" },
                     }
                  },
             };
@@ -706,6 +742,15 @@ namespace AnnoDesigner.Localization
             BuildingSettingsViewModel.TextPlaceBuilding = Localization.Translations[language]["PlaceBuilding"];
             Search = Localization.Translations[language]["Search"];
             TreeViewSearchToolTip = Localization.Translations[language]["SearchToolTip"];
+            BuildingSettingsViewModel.TextApplyColorToSelection = Localization.Translations[language]["ApplyColorToSelection"];
+            BuildingSettingsViewModel.TextApplyColorToSelectionToolTip = Localization.Translations[language]["ApplyColorToSelectionToolTip"];
+            BuildingSettingsViewModel.TextApplyPredefinedColorToSelection = Localization.Translations[language]["ApplyPredefinedColorToSelection"];
+            BuildingSettingsViewModel.TextApplyPredefinedColorToSelectionToolTip = Localization.Translations[language]["ApplyPredefinedColorToSelectionToolTip"];
+            BuildingSettingsViewModel.TextAvailableColors = Localization.Translations[language]["AvailableColors"];
+            BuildingSettingsViewModel.TextStandardColors = Localization.Translations[language]["StandardColors"];
+            BuildingSettingsViewModel.TextRecentColors = Localization.Translations[language]["RecentColors"];
+            BuildingSettingsViewModel.TextStandard = Localization.Translations[language]["Standard"];
+            BuildingSettingsViewModel.TextAdvanced = Localization.Translations[language]["Advanced"];
 
             //Status Bar
             StatusBarControls = Localization.Translations[language]["StatusBarControls"];
