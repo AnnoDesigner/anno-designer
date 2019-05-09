@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace AnnoDesigner
@@ -107,16 +110,34 @@ namespace AnnoDesigner
             {
                 var updateHelper = new UpdateHelper();
                 var pathToUpdatedPresetsFile = updateHelper.PathToUpdatedPresetsFile;
+                var pathToUpdatedPresetsAndIconsFile = updateHelper.PathToUpdatedPresetsAndIconsFile;
                 if (!String.IsNullOrWhiteSpace(pathToUpdatedPresetsFile) && File.Exists(pathToUpdatedPresetsFile))
                 {
                     var originalPathToPresetsFile = Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile);
                     File.Delete(originalPathToPresetsFile);
                     File.Move(pathToUpdatedPresetsFile, originalPathToPresetsFile);
                 }
+                else if (!String.IsNullOrWhiteSpace(pathToUpdatedPresetsAndIconsFile) && File.Exists(pathToUpdatedPresetsAndIconsFile))
+                {
+                    using (var archive = ZipFile.OpenRead(pathToUpdatedPresetsAndIconsFile))
+                    {
+                        foreach (var curEntry in archive.Entries)
+                        {
+                            curEntry.ExtractToFile(Path.Combine(ApplicationPath, curEntry.FullName), true);
+                        }
+                    }
+
+                    //wait extra time for extraction to finish
+                    Task.Delay(TimeSpan.FromMilliseconds(200)).GetAwaiter().GetResult();
+
+                    File.Delete(pathToUpdatedPresetsAndIconsFile);
+                }
             }
             catch (Exception ex)
             {
                 WriteToErrorLog("error replacing updated presets file", ex.Message, ex.StackTrace);
+
+                MessageBox.Show("Error installing update");
             }
         }
     }
