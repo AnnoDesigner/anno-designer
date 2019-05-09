@@ -239,7 +239,7 @@
                       Click="MenuItemIconClick"
                       TabIndex="28" />
         </Menu>
-        
+
         <Grid x:Name="gridMain"
               Grid.Row="1"
               Grid.Column="0">
@@ -247,7 +247,8 @@
                 <ColumnDefinition Width="*"
                                   MinWidth="100" />
                 <ColumnDefinition Width="5" />
-                <ColumnDefinition x:Name="colStatisticsView" Width="Auto"
+                <ColumnDefinition x:Name="colStatisticsView"
+                                  Width="Auto"
                                   MinWidth="100" />
                 <!-- 
                                   MinWidth="100" -->
@@ -439,7 +440,7 @@
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="{Binding Path=Search}" 
+            <GroupBox Header="{Binding Path=Search}"
                       HeaderStringFormat=" {0}:"
                       Name="GroupBoxSearchPresets"
                       IsEnabled="True"
@@ -453,7 +454,8 @@
                              KeyUp="TextBoxSearchPresetsKeyUp"
                              GotFocus="TextBoxSearchPresetsGotFocus"
                              VerticalContentAlignment="Center"
-                             Text="{Binding Source={x:Static properties:Settings.Default},Path=TreeViewSearchText, Mode=TwoWay}">
+                             ToolTip="{Binding TreeViewSearchToolTip}"
+                             Text="{Binding TreeViewSearchText, UpdateSourceTrigger=PropertyChanged}">
                     </TextBox>
                     <!-- Maybe add a clear text box button eventually. (Needs styling etc)-->
                     <!--<Button Grid.Column="1"
@@ -475,7 +477,7 @@
                           MouseDoubleClick="TreeViewPresetsMouseDoubleClick"
                           KeyDown="TreeViewPresetsKeyDown"
                           TabIndex="13"
-                          Loaded="TreeViewPresets_Loaded" />
+                          Loaded="TreeViewPresetsLoaded" />
             </GroupBox>
         </DockPanel>
         <StatusBar Grid.Row="2"

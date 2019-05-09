@@ -94,6 +94,8 @@ namespace AnnoDesigner
             _mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
                 annoCanvas.SelectedObjects,
                 annoCanvas.BuildingPresets);
+
+            _mainWindowLocalization.TreeViewSearchText = string.Empty;
         }
 
         #region Initialization
@@ -161,6 +163,7 @@ namespace AnnoDesigner
             ShowIcons.IsChecked = Settings.Default.ShowIcons;
             ShowLabels.IsChecked = Settings.Default.ShowLabels;
             _treeViewState = Settings.Default.TreeViewState ?? null;
+            _mainWindowLocalization.TreeViewSearchText = Settings.Default.TreeViewSearchText ?? "";
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -676,9 +679,9 @@ namespace AnnoDesigner
 
         private void TextBoxSearchPresetsGotFocus(object sender, RoutedEventArgs e)
         {
-            if (e.Source is TextBox textBox)
+            if (e.Source is TextBox)
             {
-                if (textBox.Text == "")
+                if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
                 {
                     _treeViewState = treeViewPresets.GetTreeViewState();
                 }
@@ -687,17 +690,22 @@ namespace AnnoDesigner
 
         private void TextBoxSearchPresetsKeyUp(object sender, KeyEventArgs e)
         {
-            var txt = sender as TextBox;
             try
             {
-                if (txt.Text == "")
+                if (e.Key == Key.Escape)
+                {
+                    _mainWindowLocalization.TreeViewSearchText = string.Empty;
+                    TextBoxSearchPresets.UpdateLayout();
+                }
+
+                if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
                 {
                     _treeViewSearch.Reset();
                     treeViewPresets.SetTreeViewState(_treeViewState);
                 }
                 else
                 {
-                    _treeViewSearch.Search(txt.Text);
+                    _treeViewSearch.Search(_mainWindowLocalization.TreeViewSearchText);
                 }
             }
             catch (Exception ex)
@@ -720,7 +728,7 @@ namespace AnnoDesigner
             }
         }
 
-        private void TreeViewPresets_Loaded(object sender, RoutedEventArgs e)
+        private void TreeViewPresetsLoaded(object sender, RoutedEventArgs e)
         {
             //Intialise tree view and ensure that item containers are generated.
             _treeViewSearch = new TreeViewSearch<AnnoObject>(treeViewPresets, _ => _.Label)
@@ -766,7 +774,7 @@ namespace AnnoDesigner
         private void WindowClosing(object sender, CancelEventArgs e)
         {
             Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
-            Settings.Default.TreeViewSearchText = TextBoxSearchPresets.Text; //Set explicity despite the data binding as UpdateProperty is only called on LostFocus
+            Settings.Default.TreeViewSearchText = _mainWindowLocalization.TreeViewSearchText;
             Settings.Default.Save();
         }
 

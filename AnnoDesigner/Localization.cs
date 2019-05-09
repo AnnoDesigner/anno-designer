@@ -77,6 +77,7 @@ namespace AnnoDesigner.Localization
                         { "Road" , "Road" },
                         { "PlaceBuilding" , "Place building" },
                         { "Search", "Search" },
+                        { "SearchToolTip", "ESC to clear search text" },
                         { "TitleAbout" , "About" },
                         { "Title" , "Modified" },
                         { "BuildingLayoutDesigner" , "A building layout designer for Ubisofts Anno-series" },
@@ -159,6 +160,7 @@ namespace AnnoDesigner.Localization
                         { "Road" , "Straße" },
                         { "PlaceBuilding" , "Gebäude platzieren" },
                         { "Search", "Suche" },
+                        { "SearchToolTip", "ESC um Suchtext zu leeren" },
                         { "TitleAbout" , "über" },
                         { "Title" , "überarbeiteter" },
                         { "BuildingLayoutDesigner" , "Ein Gebäudelayout Designer für Ubisofts Anno Reihe" },
@@ -241,6 +243,7 @@ namespace AnnoDesigner.Localization
                         { "Road" , "Droga / Ulica" },
                         { "PlaceBuilding" , "Postaw budynek" },
                         { "Search", "Wyszukiwanie" },
+                        { "SearchToolTip", "ESC aby wyczyścić tekst do przeszukiwania" },
                         { "TitleAbout" , "Na temat / O" },
                         { "Title" , "zmodyfikowany" },
                         { "BuildingLayoutDesigner" , "Program do planowania zabudowy w serii Anno Ubisoftu" },
@@ -323,6 +326,7 @@ namespace AnnoDesigner.Localization
                         { "Road" , "Дорогa" },
                         { "PlaceBuilding" , "Выбрать здание" },
                         { "Search" , "Поиск" },
+                        { "SearchToolTip", "ESC чтобы очистить текст поиска" },
                         { "TitleAbout" , "О программе" },
                         { "Title" , "обновлено" },
                         { "BuildingLayoutDesigner" , "Конструктор макета здания для Ubisofts Anno-серии" },
@@ -715,6 +719,7 @@ namespace AnnoDesigner.Localization
             Road = Localization.Translations[language]["Road"];
             PlaceBuilding = Localization.Translations[language]["PlaceBuilding"];
             Search = Localization.Translations[language]["Search"];
+            TreeViewSearchToolTip = Localization.Translations[language]["SearchToolTip"];
 
             //Status Bar
             StatusBarControls = Localization.Translations[language]["StatusBarControls"];
@@ -731,7 +736,8 @@ namespace AnnoDesigner.Localization
         //within regex expressions):
         //private $1 _\l$2; \r\n public $1 $2 \r\n { \r\n get { return _\l$2; } \r\n set \r\n { \r\n UpdateProperty\(ref _\l$2, value\); \r\n}\r\n}
 
-        //File Menu
+        #region File Menu
+
         private string _file;
         public string File
         {
@@ -787,7 +793,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Extras Menu
+        #endregion
+
+        #region Extras Menu
+
         private string _extras;
         public string Extras
         {
@@ -834,7 +843,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Export Menu
+        #endregion
+
+        #region Export Menu
+
         private string _export;
         public string Export
         {
@@ -872,7 +884,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Language Menu
+        #endregion
+
+        #region Language Menu
+
         private string _language;
         public string Language
         {
@@ -883,7 +898,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Managa Stats Menu
+        #endregion
+
+        #region Manage Stats Menu
+
         private string _ManageStats;
         public string ManageStats
         {
@@ -912,7 +930,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Help Menu
+        #endregion
+
+        #region Help Menu
+
         private string _help;
         public string Help
         {
@@ -1033,7 +1054,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Other
+        #endregion
+
+        #region Other options
+
         private string _showGrid;
         public string ShowGrid
         {
@@ -1062,7 +1086,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //DockPanel
+        #endregion
+
+        #region DockPanel
+
         private string _buildingSettings;
         public string BuildingSettings
         {
@@ -1208,8 +1235,29 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _search, value);
             }
         }
+        private string _treeViewSearchToolTip;
+        public string TreeViewSearchToolTip
+        {
+            get { return _treeViewSearchToolTip; }
+            set
+            {
+                UpdateProperty(ref _treeViewSearchToolTip, value);
+            }
+        }
+        private string _treeViewSearchText;
+        public string TreeViewSearchText
+        {
+            get { return _treeViewSearchText; }
+            set
+            {
+                UpdateProperty(ref _treeViewSearchText, value);
+            }
+        }
 
-        //Status Bar
+        #endregion
+
+        #region Status Bar
+
         private string _statusBarControls;
         public string StatusBarControls
         {
@@ -1220,13 +1268,6 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        private StatisticsViewModel _statisticsViewModel;
-        public StatisticsViewModel StatisticsViewModel
-        {
-            get { return _statisticsViewModel; }
-            set { _statisticsViewModel = value; }
-        }
-
         private string _statusBarItemsOnClipboard;
         public string StatusBarItemsOnClipboard
         {
@@ -1235,6 +1276,15 @@ namespace AnnoDesigner.Localization
             {
                 UpdateProperty(ref _statusBarItemsOnClipboard, value);
             }
+        }
+
+        #endregion
+
+        private StatisticsViewModel _statisticsViewModel;
+        public StatisticsViewModel StatisticsViewModel
+        {
+            get { return _statisticsViewModel; }
+            set { _statisticsViewModel = value; }
         }
     }
 
