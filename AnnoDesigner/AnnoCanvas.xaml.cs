@@ -372,6 +372,13 @@ namespace AnnoDesigner
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
         private readonly List<AnnoObject> _selectedObjects;
+        public List<AnnoObject> SelectedObjects
+        {
+            get
+            {
+                return _selectedObjects;
+            }
+        }
 
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
 
@@ -1271,7 +1278,7 @@ namespace AnnoDesigner
                     // user clicked nothing: start dragging the selection rect
                     CurrentMode = MouseMode.SelectionRectStart;
                 }
-                else if (!IsControlPressed())
+                else if (!(IsControlPressed() || IsShiftPressed()))
                 {
                     CurrentMode = _selectedObjects.Contains(obj) ? MouseMode.DragSelectionStart : MouseMode.DragSingleStart;
                 }
@@ -1337,7 +1344,7 @@ namespace AnnoDesigner
                     switch (CurrentMode)
                     {
                         case MouseMode.SelectionRect:
-                            if (IsControlPressed())
+                            if ((IsControlPressed() || IsShiftPressed()))
                             {
                                 // remove previously selected by the selection rect
                                 _selectedObjects.RemoveAll(_ => GetObjectScreenRect(_).IntersectsWith(_selectionRect));
@@ -1415,7 +1422,7 @@ namespace AnnoDesigner
                 {
                     default:
                         // clear selection if no key is pressed
-                        if (!IsControlPressed())
+                        if (!(IsControlPressed() || IsShiftPressed()))
                         {
                             _selectedObjects.Clear();
                         }
@@ -1455,7 +1462,7 @@ namespace AnnoDesigner
                             var obj = GetObjectAt(_mousePosition);
                             if (obj == null)
                             {
-                                if (!IsControlPressed())
+                                if (!(IsControlPressed() || IsShiftPressed()))
                                 {
                                     // clear selection
                                     _selectedObjects.Clear();
@@ -1507,16 +1514,22 @@ namespace AnnoDesigner
                     _selectedObjects.Clear();
                     break;
                 case Key.C:
-                    if (_selectedObjects.Count != 0)
+                    if (IsControlPressed())
                     {
-                        ObjectClipboard = CloneList(_selectedObjects);
+                        if (_selectedObjects.Count != 0)
+                        {
+                            ObjectClipboard = CloneList(_selectedObjects);
+                        }
                     }
                     break;
                 case Key.V:
-                    if (ObjectClipboard.Count != 0)
+                    if (IsControlPressed())
                     {
-                        CurrentObjects = CloneList(ObjectClipboard);
-                        MoveCurrentObjectsToMouse();
+                        if (ObjectClipboard.Count != 0)
+                        {
+                            CurrentObjects = CloneList(ObjectClipboard);
+                            MoveCurrentObjectsToMouse();
+                        }
                     }
                     break;
                 case Key.R:
@@ -1542,12 +1555,21 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Checks whether the user is pressing keys to signal that he wants to select multiple objects
+        /// Checks whether the user is pressing the control key.
         /// </summary>
         /// <returns></returns>
         private static bool IsControlPressed()
         {
             return Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
+        }
+
+        /// <summary>
+        /// Checks whether the user is pressing the shift key.
+        /// </summary>
+        /// <returns></returns>
+        private static bool IsShiftPressed()
+        {
+            return Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
         }
 
         #endregion
