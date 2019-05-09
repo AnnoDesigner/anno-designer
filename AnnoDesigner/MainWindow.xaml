@@ -37,45 +37,47 @@
     <Window.DataContext>
         <Binding Source="{StaticResource localization}"></Binding>
     </Window.DataContext>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="27*" />
-            <ColumnDefinition Width="13*" />
-            <ColumnDefinition Width="240" />
-        </Grid.ColumnDefinitions>
-        <my:AnnoCanvas x:Name="annoCanvas"
-                       Grid.Row="1"
-                       RenderGrid="True"
-                       RenderIcon="True"
-                       RenderLabel="True"
-                       RenderStats="True"
-                       Grid.ColumnSpan="2" />
-        <GridSplitter Grid.Row="1"
-                      Width="6"
-                      Grid.Column="1" />
-        <Menu Name="Menu"
-              Height="23"
-              VerticalAlignment="Top"
-              Grid.ColumnSpan="3">
-            <Menu.Resources>
-                <Style TargetType="{x:Type MenuItem}">
-                    <!--<Setter Property="Foreground"
+    <xctk:BusyIndicator x:Name="busyIndicator">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="27*" />
+                <ColumnDefinition Width="13*" />
+                <ColumnDefinition Width="240" />
+            </Grid.ColumnDefinitions>
+            <my:AnnoCanvas x:Name="annoCanvas"
+                           Grid.Row="1"
+                           RenderGrid="True"
+                           RenderIcon="True"
+                           RenderLabel="True"
+                           RenderStats="True"
+                           Grid.ColumnSpan="2" />
+            <GridSplitter Grid.Row="1"
+                          Width="6"
+                          Grid.Column="1" />
+
+            <Menu Name="Menu"
+                  Height="23"
+                  VerticalAlignment="Top"
+                  Grid.ColumnSpan="3">
+                <Menu.Resources>
+                    <Style TargetType="{x:Type MenuItem}">
+                        <!--<Setter Property="Foreground"
                             Value="Black" />-->
-                    <Style.Triggers>
-                        <Trigger Property="IsEnabled"
-                                 Value="False">
-                            <Setter Property="Foreground"
-                                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Menu.Resources>
-            <!--<Menu.DataContext>
+                        <Style.Triggers>
+                            <Trigger Property="IsEnabled"
+                                     Value="False">
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Menu.Resources>
+                <!--<Menu.DataContext>
                 
             </Menu.DataContext>
             <Menu.ItemsPanel>
@@ -83,348 +85,348 @@
                     <DockPanel HorizontalAlignment="Stretch"/>
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>-->
-            <MenuItem Header="{Binding Path=File}"
-                      TabIndex="20">
-                <MenuItem Header="{Binding Path=NewCanvas}"
-                          Command="ApplicationCommands.New"
-                          CommandTarget="{Binding ElementName=annoCanvas}" />
-                <MenuItem Header="{Binding Path=Open}"
-                          Command="ApplicationCommands.Open"
-                          CommandTarget="{Binding ElementName=annoCanvas}" />
-                <MenuItem Header="{Binding Path=Save}"
-                          Command="ApplicationCommands.Save"
-                          CommandTarget="{Binding ElementName=annoCanvas}" />
-                <MenuItem Header="{Binding Path=SaveAs}"
-                          Command="ApplicationCommands.SaveAs"
-                          CommandTarget="{Binding ElementName=annoCanvas}" />
-                <Separator />
-                <MenuItem Header="{Binding Path=Exit}"
-                          Click="MenuItemCloseClick" />
-            </MenuItem>
-            <MenuItem Header="{Binding Path=Extras}"
-                      TabIndex="21">
-                <!--<MenuItem Header="Prefer local presets" IsCheckable="True" IsEnabled="False" />
+                <MenuItem Header="{Binding Path=File}"
+                          TabIndex="20">
+                    <MenuItem Header="{Binding Path=NewCanvas}"
+                              Command="ApplicationCommands.New"
+                              CommandTarget="{Binding ElementName=annoCanvas}" />
+                    <MenuItem Header="{Binding Path=Open}"
+                              Command="ApplicationCommands.Open"
+                              CommandTarget="{Binding ElementName=annoCanvas}" />
+                    <MenuItem Header="{Binding Path=Save}"
+                              Command="ApplicationCommands.Save"
+                              CommandTarget="{Binding ElementName=annoCanvas}" />
+                    <MenuItem Header="{Binding Path=SaveAs}"
+                              Command="ApplicationCommands.SaveAs"
+                              CommandTarget="{Binding ElementName=annoCanvas}" />
+                    <Separator />
+                    <MenuItem Header="{Binding Path=Exit}"
+                              Click="MenuItemCloseClick" />
+                </MenuItem>
+                <MenuItem Header="{Binding Path=Extras}"
+                          TabIndex="21">
+                    <!--<MenuItem Header="Prefer local presets" IsCheckable="True" IsEnabled="False" />
                 <MenuItem Header="Apply automatic color scheme" IsEnabled="False" />-->
-                <MenuItem Header="{Binding Path=Normalize}"
-                          Click="MenuItemNormalizeClick" />
-                <MenuItem Header="{Binding Path=ResetZoom}"
-                          Click="MenuItemResetZoomClick" />
-                <Separator />
-                <MenuItem Header="{Binding Path=RegisterFileExtension}"
-                          Click="MenuItemRegisterExtensionClick" />
-                <MenuItem Header="{Binding Path=UnregisterFileExtension}"
-                          Click="MenuItemUnregisterExtensionClick" />
-            </MenuItem>
-            <MenuItem Header="{Binding Path=Export}"
-                      TabIndex="22">
-                <MenuItem Header="{Binding Path=ExportImage}"
-                          Click="MenuItemExportImageClick" />
-                <Separator />
-                <MenuItem Header="{Binding Path=UseCurrentZoomOnExportedImage}"
-                          IsCheckable="True"
-                          IsChecked="False"
-                          Name="MenuItemExportZoom" />
-                <MenuItem Header="{Binding Path=RenderSelectionHighlightsOnExportedImage}"
-                          IsCheckable="True"
-                          IsChecked="False"
-                          Name="MenuItemExportSelection" />
-            </MenuItem>
-            <MenuItem Name="LanguageMenu"
-                      Header="{Binding Path=Language}"
-                      TabIndex="23"
-                      Click="MenuItemLanguageClick"
-                      SubmenuClosed="LanguageMenuSubmenuClosed">
-                <MenuItem Header="English"
-                          IsCheckable="True"
-                          IsChecked="True"
-                          Name="MenuItemLanguageEng" />
-                <MenuItem Header="Deutsch"
-                          IsCheckable="True"
-                          IsChecked="False"
-                          Name="MenuItemLanguageGer" />
-                <!--<MenuItem Header="Français" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageFra" />-->
-                <!--<MenuItem Header="Español" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageEsp" />-->
-                <!--<MenuItem Header="Italiano" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageIta" />-->
-                <MenuItem Header="Polski"
-                          IsCheckable="True"
-                          IsChecked="False"
-                          Name="MenuItemLanguagePol" />
-                <MenuItem Header="Русский"
-                          IsCheckable="True"
-                          IsChecked="False"
-                          Name="MenuItemLanguageRus" />
-                <!--<MenuItem Header="český" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageCze" />-->
-            </MenuItem>
-            <MenuItem Header="{Binding Path=ManageStats}"
-                      TabIndex="24"
-                      HorizontalAlignment="Right">
-                <MenuItem Header="{Binding Path=ShowStats}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowStats, Mode=TwoWay}"
-                          Click="MenuItemStatsShowStatsClick" />
-                <Separator></Separator>
-                <MenuItem Name="MenuItemStatsBuildingCount"
-                          Header="{Binding Path=BuildingCount}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowBuildingCount, Mode=TwoWay}"
-                          IsEnabled="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowStats, Mode=OneWay}"
-                          Click="MenuItemStatsBuildingCountClick" />
-            </MenuItem>
-            <MenuItem Header="{Binding Path=Help}"
-                      TabIndex="25"
-                      HorizontalAlignment="Right">
-                <MenuItem Name="MenuItemVersion"
-                          IsEnabled="False">
-                    <MenuItem.Header>
-                        <TextBlock>
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0}: {1}">
-                                    <Binding Path="Version" />
-                                    <Binding Path="VersionValue" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </MenuItem.Header>
+                    <MenuItem Header="{Binding Path=Normalize}"
+                              Click="MenuItemNormalizeClick" />
+                    <MenuItem Header="{Binding Path=ResetZoom}"
+                              Click="MenuItemResetZoomClick" />
+                    <Separator />
+                    <MenuItem Header="{Binding Path=RegisterFileExtension}"
+                              Click="MenuItemRegisterExtensionClick" />
+                    <MenuItem Header="{Binding Path=UnregisterFileExtension}"
+                              Click="MenuItemUnregisterExtensionClick" />
                 </MenuItem>
-                <MenuItem Name="MenuItemFileVersion"
-                          IsEnabled="False">
-                    <MenuItem.Header>
-                        <TextBlock>
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0}: {1}">
-                                    <Binding Path="FileVersion" />
-                                    <Binding Path="FileVersionValue" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </MenuItem.Header>
+                <MenuItem Header="{Binding Path=Export}"
+                          TabIndex="22">
+                    <MenuItem Header="{Binding Path=ExportImage}"
+                              Click="MenuItemExportImageClick" />
+                    <Separator />
+                    <MenuItem Header="{Binding Path=UseCurrentZoomOnExportedImage}"
+                              IsCheckable="True"
+                              IsChecked="False"
+                              Name="MenuItemExportZoom" />
+                    <MenuItem Header="{Binding Path=RenderSelectionHighlightsOnExportedImage}"
+                              IsCheckable="True"
+                              IsChecked="False"
+                              Name="MenuItemExportSelection" />
                 </MenuItem>
-                <MenuItem Name="MenuItemPresetsVersion"
-                          IsEnabled="False">
-                    <MenuItem.Header>
-                        <TextBlock>
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0}: {1}">
-                                    <Binding Path="PresetsVersion" />
-                                    <Binding Path="PresetsVersionValue" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </MenuItem.Header>
+                <MenuItem Name="LanguageMenu"
+                          Header="{Binding Path=Language}"
+                          TabIndex="23"
+                          Click="MenuItemLanguageClick"
+                          SubmenuClosed="LanguageMenuSubmenuClosed">
+                    <MenuItem Header="English"
+                              IsCheckable="True"
+                              IsChecked="True"
+                              Name="MenuItemLanguageEng" />
+                    <MenuItem Header="Deutsch"
+                              IsCheckable="True"
+                              IsChecked="False"
+                              Name="MenuItemLanguageGer" />
+                    <!--<MenuItem Header="Français" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageFra" />-->
+                    <!--<MenuItem Header="Español" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageEsp" />-->
+                    <!--<MenuItem Header="Italiano" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageIta" />-->
+                    <MenuItem Header="Polski"
+                              IsCheckable="True"
+                              IsChecked="False"
+                              Name="MenuItemLanguagePol" />
+                    <MenuItem Header="Русский"
+                              IsCheckable="True"
+                              IsChecked="False"
+                              Name="MenuItemLanguageRus" />
+                    <!--<MenuItem Header="český" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageCze" />-->
                 </MenuItem>
-                <MenuItem Header="{Binding Path=CheckForUpdates}"
-                          Click="MenuItemVersionCheckImageClick" />
-                <MenuItem Name="AutomaticUpdateCheck"
-                          IsCheckable="True"
-                          Header="{Binding Path=EnableAutomaticUpdateCheck}"
-                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=EnableAutomaticUpdateCheck, Mode=TwoWay}"></MenuItem>
+                <MenuItem Header="{Binding Path=ManageStats}"
+                          TabIndex="24"
+                          HorizontalAlignment="Right">
+                    <MenuItem Header="{Binding Path=ShowStats}"
+                              IsCheckable="True"
+                              IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowStats, Mode=TwoWay}"
+                              Click="MenuItemStatsShowStatsClick" />
+                    <Separator></Separator>
+                    <MenuItem Name="MenuItemStatsBuildingCount"
+                              Header="{Binding Path=BuildingCount}"
+                              IsCheckable="True"
+                              IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowBuildingCount, Mode=TwoWay}"
+                              IsEnabled="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowStats, Mode=OneWay}"
+                              Click="MenuItemStatsBuildingCountClick" />
+                </MenuItem>
+                <MenuItem Header="{Binding Path=Help}"
+                          TabIndex="25"
+                          HorizontalAlignment="Right">
+                    <MenuItem Name="MenuItemVersion"
+                              IsEnabled="False">
+                        <MenuItem.Header>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}: {1}">
+                                        <Binding Path="Version" />
+                                        <Binding Path="VersionValue" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <MenuItem Name="MenuItemFileVersion"
+                              IsEnabled="False">
+                        <MenuItem.Header>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}: {1}">
+                                        <Binding Path="FileVersion" />
+                                        <Binding Path="FileVersionValue" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <MenuItem Name="MenuItemPresetsVersion"
+                              IsEnabled="False">
+                        <MenuItem.Header>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}: {1}">
+                                        <Binding Path="PresetsVersion" />
+                                        <Binding Path="PresetsVersionValue" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <MenuItem Header="{Binding Path=CheckForUpdates}"
+                              Click="MenuItemVersionCheckImageClick" />
+                    <MenuItem Name="AutomaticUpdateCheck"
+                              IsCheckable="True"
+                              Header="{Binding Path=EnableAutomaticUpdateCheck}"
+                              IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=EnableAutomaticUpdateCheck, Mode=TwoWay}"></MenuItem>
+                    <Separator />
+                    <MenuItem Header="{Binding Path=GoToProjectHomepage}"
+                              Click="MenuItemHomepageClick" />
+                    <MenuItem Header="{Binding Path=OpenWelcomePage}"
+                              Click="MenuItemOpenWelcomeClick"></MenuItem>
+                    <MenuItem Header="{Binding Path=AboutAnnoDesigner}"
+                              Click="MenuItemAboutClick" />
+                </MenuItem>
                 <Separator />
-                <MenuItem Header="{Binding Path=GoToProjectHomepage}"
-                          Click="MenuItemHomepageClick" />
-                <MenuItem Header="{Binding Path=OpenWelcomePage}"
-                          Click="MenuItemOpenWelcomeClick"></MenuItem>
-                <MenuItem Header="{Binding Path=AboutAnnoDesigner}"
-                          Click="MenuItemAboutClick" />
-            </MenuItem>
-            <Separator />
-            <MenuItem Name="ShowGrid"
-                      Header="{Binding Path=ShowGrid}"
-                      IsCheckable="True"
-                      IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowGrid, Mode=TwoWay}"
-                      Click="MenuItemGridClick"
-                      TabIndex="26" />
-            <MenuItem Name="ShowLabels"
-                      Header="{Binding Path=ShowLabels}"
-                      IsCheckable="True"
-                      IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowLabels, Mode=TwoWay}"
-                      Click="MenuItemLabelClick"
-                      TabIndex="27" />
-            <MenuItem Name="ShowIcons"
-                      Header="{Binding Path=ShowIcons}"
-                      IsCheckable="True"
-                      IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowIcons, Mode=TwoWay}"
-                      Click="MenuItemIconClick"
-                      TabIndex="28" />
-        </Menu>
-        <DockPanel Grid.Column="2"
-                   Grid.Row="1"
-                   LastChildFill="True">
-            <GroupBox Header="{Binding Path=BuildingSettings}"
-                      DockPanel.Dock="Top">
-                <StackPanel>
-                    <DockPanel LastChildFill="False"
-                               Height="26">
-                        <Label Content="{Binding Path=Size}" />
-                        <xctk:IntegerUpDown DockPanel.Dock="Right"
-                                            Height="23"
-                                            IsEnabled="True"
-                                            Name="textBoxHeight"
-                                            Width="50"
-                                            DefaultValue="4"
-                                            DisplayDefaultValueOnEmptyText="True"
-                                            Increment="1"
-                                            Minimum="1"
-                                            TabIndex="1" />
-                        <Label Content="x"
-                               DockPanel.Dock="Right" />
-                        <xctk:IntegerUpDown DockPanel.Dock="Right"
-                                            Height="23"
-                                            IsEnabled="True"
-                                            Name="textBoxWidth"
-                                            Width="50"
-                                            DefaultValue="4"
-                                            DisplayDefaultValueOnEmptyText="True"
-                                            Increment="1"
-                                            Minimum="1"
-                                            TabIndex="0" />
-                    </DockPanel>
-                    <DockPanel LastChildFill="False"
-                               Height="26">
-                        <Label Content="{Binding Path=Color}" />
-                        <xctk:ColorPicker x:Name="colorPicker"
-                                          DockPanel.Dock="Right"
-                                          Width="140"
-                                          TabIndex="2"
-                                          DisplayColorAndName="True"
-                                          DisplayColorTooltip="True"
-                                          ShowDropDownButton="True"
-                                          ShowAvailableColors="True"
-                                          ShowRecentColors="True"
-                                          AvailableColorsSortingMode="HueSaturationBrightness"
-                                          StandardColorsHeader="Standard Color Presets"
-                                          SelectedColor="Red" />
-                    </DockPanel>
-                    <DockPanel LastChildFill="False"
-                               Height="26">
-                        <Label Content="{Binding Path=Label}" />
-                        <TextBox DockPanel.Dock="Right"
-                                 Height="23"
-                                 IsEnabled="True"
-                                 Name="textBoxLabel"
-                                 Text="Building"
-                                 Width="140"
-                                 TabIndex="4" />
-                        <TextBox DockPanel.Dock="Right"
-                                 Height="10"
-                                 IsEnabled="False"
-                                 Name="textBoxIdentifier"
-                                 Text=""
-                                 Visibility="Hidden"
-                                 Width="140" />
-                    </DockPanel>
-                    <DockPanel LastChildFill="False"
-                               Height="46">
-                        <Label Content="{Binding Path=Icon}"
-                               VerticalAlignment="Center" />
-                        <ComboBox DockPanel.Dock="Right"
-                                  Width="140"
-                                  Height="46"
-                                  IsEnabled="True"
-                                  Name="comboBoxIcon"
-                                  SelectedIndex="0"
-                                  TabIndex="6"
-                                  TextSearch.TextPath="DisplayName">
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True"
-                                                        VirtualizingStackPanel.VirtualizationMode="Recycling"></VirtualizingStackPanel>
-                            </ItemsPanelTemplate>
-                        </ComboBox>
-                    </DockPanel>
-                    <DockPanel LastChildFill="False"
-                               Height="26">
-                        <Label Content="{Binding Path=InfluenceType}" />
-                        <ComboBox DockPanel.Dock="Right"
-                                  Width="140"
-                                  Height="22"
-                                  IsEnabled="True"
-                                  Name="comboxBoxInfluenceType"
-                                  SelectedIndex="0"
-                                  TabIndex="6"
-                                  SelectedValuePath="Key"
-                                  DisplayMemberPath="Value"
-                                  SelectionChanged="ComboxBoxInfluenceType_SelectionChanged" />
-                    </DockPanel>
-                    <DockPanel Name="dockPanelInfluenceRadius"
-                               LastChildFill="False"
-                               Height="26"
-                               Visibility="Visible">
-                        <Label Content="{Binding Path=Radius}" />
-                        <xctk:DoubleUpDown DockPanel.Dock="Right"
-                                           Height="23"
-                                           Width="140"
-                                           Name="textBoxRadius"
-                                           IsEnabled="True"
-                                           DefaultValue="0"
-                                           DisplayDefaultValueOnEmptyText="True"
-                                           Increment="1"
-                                           Minimum="0"
-                                           TabIndex="8" />
-                    </DockPanel>
-                    <DockPanel Name="dockPanelInfluenceRange"
-                               LastChildFill="False"
-                               Height="26"
-                               Visibility="Visible">
-                        <Label Content="{Binding Path=Distance}" />
-                        <xctk:DoubleUpDown DockPanel.Dock="Right"
-                                           Height="23"
-                                           Width="140"
-                                           Name="textBoxInfluenceRange"
-                                           IsEnabled="True"
-                                           DefaultValue="0"
-                                           DisplayDefaultValueOnEmptyText="True"
-                                           Increment="1"
-                                           Minimum="0"
-                                           AllowSpin="True"
-                                           TabIndex="9" />
-                    </DockPanel>
-                    <DockPanel LastChildFill="False">
-                        <Label Content="{Binding Path=Options}" />
-                        <StackPanel Orientation="Vertical"
-                                    DockPanel.Dock="Right">
-                            <CheckBox Content="{Binding Path=EnableLabel}"
-                                      Name="checkBoxLabel"
-                                      Margin="0,5,0,5"
-                                      VerticalAlignment="Center"
-                                      TabIndex="9"
-                                      IsChecked="False" />
-                            <CheckBox Content="{Binding Path=Borderless}"
-                                      Name="checkBoxBorderless"
-                                      Margin="0,0,0,5"
-                                      VerticalAlignment="Center"
-                                      TabIndex="10" />
-                            <CheckBox Content="{Binding Path=Road}"
-                                      Name="checkBoxRoad"
-                                      Margin="0,0,0,5"
-                                      VerticalAlignment="Center"
-                                      TabIndex="11" />
-                        </StackPanel>
-                    </DockPanel>
-                    <Button Click="ButtonPlaceBuildingClick"
-                            Content="{Binding Path=PlaceBuilding}"
-                            Height="23"
-                            TabIndex="12" />
-                </StackPanel>
-            </GroupBox>
+                <MenuItem Name="ShowGrid"
+                          Header="{Binding Path=ShowGrid}"
+                          IsCheckable="True"
+                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowGrid, Mode=TwoWay}"
+                          Click="MenuItemGridClick"
+                          TabIndex="26" />
+                <MenuItem Name="ShowLabels"
+                          Header="{Binding Path=ShowLabels}"
+                          IsCheckable="True"
+                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowLabels, Mode=TwoWay}"
+                          Click="MenuItemLabelClick"
+                          TabIndex="27" />
+                <MenuItem Name="ShowIcons"
+                          Header="{Binding Path=ShowIcons}"
+                          IsCheckable="True"
+                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowIcons, Mode=TwoWay}"
+                          Click="MenuItemIconClick"
+                          TabIndex="28" />
+            </Menu>
+            <DockPanel Grid.Column="2"
+                       Grid.Row="1"
+                       LastChildFill="True">
+                <GroupBox Header="{Binding Path=BuildingSettings}"
+                          DockPanel.Dock="Top">
+                    <StackPanel>
+                        <DockPanel LastChildFill="False"
+                                   Height="26">
+                            <Label Content="{Binding Path=Size}" />
+                            <xctk:IntegerUpDown DockPanel.Dock="Right"
+                                                Height="23"
+                                                IsEnabled="True"
+                                                Name="textBoxHeight"
+                                                Width="50"
+                                                DefaultValue="4"
+                                                DisplayDefaultValueOnEmptyText="True"
+                                                Increment="1"
+                                                Minimum="1"
+                                                TabIndex="1" />
+                            <Label Content="x"
+                                   DockPanel.Dock="Right" />
+                            <xctk:IntegerUpDown DockPanel.Dock="Right"
+                                                Height="23"
+                                                IsEnabled="True"
+                                                Name="textBoxWidth"
+                                                Width="50"
+                                                DefaultValue="4"
+                                                DisplayDefaultValueOnEmptyText="True"
+                                                Increment="1"
+                                                Minimum="1"
+                                                TabIndex="0" />
+                        </DockPanel>
+                        <DockPanel LastChildFill="False"
+                                   Height="26">
+                            <Label Content="{Binding Path=Color}" />
+                            <xctk:ColorPicker x:Name="colorPicker"
+                                              DockPanel.Dock="Right"
+                                              Width="140"
+                                              TabIndex="2"
+                                              DisplayColorAndName="True"
+                                              DisplayColorTooltip="True"
+                                              ShowDropDownButton="True"
+                                              ShowAvailableColors="True"
+                                              ShowRecentColors="True"
+                                              AvailableColorsSortingMode="HueSaturationBrightness"
+                                              StandardColorsHeader="Standard Color Presets"
+                                              SelectedColor="Red" />
+                        </DockPanel>
+                        <DockPanel LastChildFill="False"
+                                   Height="26">
+                            <Label Content="{Binding Path=Label}" />
+                            <TextBox DockPanel.Dock="Right"
+                                     Height="23"
+                                     IsEnabled="True"
+                                     Name="textBoxLabel"
+                                     Text="Building"
+                                     Width="140"
+                                     TabIndex="4" />
+                            <TextBox DockPanel.Dock="Right"
+                                     Height="10"
+                                     IsEnabled="False"
+                                     Name="textBoxIdentifier"
+                                     Text=""
+                                     Visibility="Hidden"
+                                     Width="140" />
+                        </DockPanel>
+                        <DockPanel LastChildFill="False"
+                                   Height="46">
+                            <Label Content="{Binding Path=Icon}"
+                                   VerticalAlignment="Center" />
+                            <ComboBox DockPanel.Dock="Right"
+                                      Width="140"
+                                      Height="46"
+                                      IsEnabled="True"
+                                      Name="comboBoxIcon"
+                                      SelectedIndex="0"
+                                      TabIndex="6"
+                                      TextSearch.TextPath="DisplayName">
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True"
+                                                            VirtualizingStackPanel.VirtualizationMode="Recycling"></VirtualizingStackPanel>
+                                </ItemsPanelTemplate>
+                            </ComboBox>
+                        </DockPanel>
+                        <DockPanel LastChildFill="False"
+                                   Height="26">
+                            <Label Content="{Binding Path=InfluenceType}" />
+                            <ComboBox DockPanel.Dock="Right"
+                                      Width="140"
+                                      Height="22"
+                                      IsEnabled="True"
+                                      Name="comboxBoxInfluenceType"
+                                      SelectedIndex="0"
+                                      TabIndex="6"
+                                      SelectedValuePath="Key"
+                                      DisplayMemberPath="Value"
+                                      SelectionChanged="ComboxBoxInfluenceType_SelectionChanged" />
+                        </DockPanel>
+                        <DockPanel Name="dockPanelInfluenceRadius"
+                                   LastChildFill="False"
+                                   Height="26"
+                                   Visibility="Visible">
+                            <Label Content="{Binding Path=Radius}" />
+                            <xctk:DoubleUpDown DockPanel.Dock="Right"
+                                               Height="23"
+                                               Width="140"
+                                               Name="textBoxRadius"
+                                               IsEnabled="True"
+                                               DefaultValue="0"
+                                               DisplayDefaultValueOnEmptyText="True"
+                                               Increment="1"
+                                               Minimum="0"
+                                               TabIndex="8" />
+                        </DockPanel>
+                        <DockPanel Name="dockPanelInfluenceRange"
+                                   LastChildFill="False"
+                                   Height="26"
+                                   Visibility="Visible">
+                            <Label Content="{Binding Path=Distance}" />
+                            <xctk:DoubleUpDown DockPanel.Dock="Right"
+                                               Height="23"
+                                               Width="140"
+                                               Name="textBoxInfluenceRange"
+                                               IsEnabled="True"
+                                               DefaultValue="0"
+                                               DisplayDefaultValueOnEmptyText="True"
+                                               Increment="1"
+                                               Minimum="0"
+                                               AllowSpin="True"
+                                               TabIndex="9" />
+                        </DockPanel>
+                        <DockPanel LastChildFill="False">
+                            <Label Content="{Binding Path=Options}" />
+                            <StackPanel Orientation="Vertical"
+                                        DockPanel.Dock="Right">
+                                <CheckBox Content="{Binding Path=EnableLabel}"
+                                          Name="checkBoxLabel"
+                                          Margin="0,5,0,5"
+                                          VerticalAlignment="Center"
+                                          TabIndex="9"
+                                          IsChecked="False" />
+                                <CheckBox Content="{Binding Path=Borderless}"
+                                          Name="checkBoxBorderless"
+                                          Margin="0,0,0,5"
+                                          VerticalAlignment="Center"
+                                          TabIndex="10" />
+                                <CheckBox Content="{Binding Path=Road}"
+                                          Name="checkBoxRoad"
+                                          Margin="0,0,0,5"
+                                          VerticalAlignment="Center"
+                                          TabIndex="11" />
+                            </StackPanel>
+                        </DockPanel>
+                        <Button Click="ButtonPlaceBuildingClick"
+                                Content="{Binding Path=PlaceBuilding}"
+                                Height="23"
+                                TabIndex="12" />
+                    </StackPanel>
+                </GroupBox>
 
-            <GroupBox Header="{Binding Path=Search}"
-                      HeaderStringFormat=" {0}:"
-                      Name="GroupBoxSearchPresets"
-                      IsEnabled="True"
-                      Height="Auto"
-                      HorizontalAlignment="Stretch"
-                      DockPanel.Dock="Top">
-                <Grid>
-                    <TextBox Grid.Column="0"
-                             Height="23"
-                             x:Name="TextBoxSearchPresets"
-                             KeyUp="TextBoxSearchPresetsKeyUp"
-                             GotFocus="TextBoxSearchPresetsGotFocus"
-                             VerticalContentAlignment="Center"
-                             ToolTip="{Binding TreeViewSearchToolTip}"
-                             Text="{Binding TreeViewSearchText, UpdateSourceTrigger=PropertyChanged}">
-                    </TextBox>
-                    <!-- Maybe add a clear text box button eventually. (Needs styling etc)-->
-                    <!--<Button Grid.Column="1"
+                <GroupBox Header="{Binding Path=Search}"
+                          HeaderStringFormat=" {0}:"
+                          Name="GroupBoxSearchPresets"
+                          IsEnabled="True"
+                          Height="Auto"
+                          HorizontalAlignment="Stretch"
+                          DockPanel.Dock="Top">
+                    <Grid>
+                        <TextBox Grid.Column="0"
+                                 Height="23"
+                                 x:Name="TextBoxSearchPresets"
+                                 KeyUp="TextBoxSearchPresetsKeyUp"
+                                 GotFocus="TextBoxSearchPresetsGotFocus"
+                                 VerticalContentAlignment="Center"
+                                 ToolTip="{Binding TreeViewSearchToolTip}"
+                                 Text="{Binding TreeViewSearchText, UpdateSourceTrigger=PropertyChanged}">
+                        </TextBox>
+                        <!-- Maybe add a clear text box button eventually. (Needs styling etc)-->
+                        <!--<Button Grid.Column="1"
                             Content="X"
                             Height="20"
                             HorizontalAlignment="Right"
@@ -433,28 +435,29 @@
                             Background="Transparent"
                             BorderThickness="0"
                             />-->
-                </Grid>
-            </GroupBox>
-            <GroupBox Header="Building presets - not loaded"
-                      Name="GroupBoxPresets"
-                      IsEnabled="True"
-                      DockPanel.Dock="Top">
-                <TreeView Name="treeViewPresets"
-                          MouseDoubleClick="TreeViewPresetsMouseDoubleClick"
-                          KeyDown="TreeViewPresetsKeyDown"
-                          TabIndex="13"
-                          Loaded="TreeViewPresetsLoaded" />
-            </GroupBox>
-        </DockPanel>
-        <StatusBar Grid.Row="2"
-                   Grid.ColumnSpan="3">
-            <StatusBarItem Content="{Binding StatusBarControls}" />
-            <StatusBarItem Name="StatusBarItemStatus"
-                           Content="Standard"
-                           Margin="10,0,0,0" />
-            <StatusBarItem Name="StatusBarItemClipboardStatus"
-                           Margin="10,0,0,0"
-                           HorizontalAlignment="Right" />
-        </StatusBar>
-    </Grid>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Building presets - not loaded"
+                          Name="GroupBoxPresets"
+                          IsEnabled="True"
+                          DockPanel.Dock="Top">
+                    <TreeView Name="treeViewPresets"
+                              MouseDoubleClick="TreeViewPresetsMouseDoubleClick"
+                              KeyDown="TreeViewPresetsKeyDown"
+                              TabIndex="13"
+                              Loaded="TreeViewPresetsLoaded" />
+                </GroupBox>
+            </DockPanel>
+            <StatusBar Grid.Row="2"
+                       Grid.ColumnSpan="3">
+                <StatusBarItem Content="{Binding StatusBarControls}" />
+                <StatusBarItem Name="StatusBarItemStatus"
+                               Content="Standard"
+                               Margin="10,0,0,0" />
+                <StatusBarItem Name="StatusBarItemClipboardStatus"
+                               Margin="10,0,0,0"
+                               HorizontalAlignment="Right" />
+            </StatusBar>
+        </Grid>
+    </xctk:BusyIndicator>
 </Window>

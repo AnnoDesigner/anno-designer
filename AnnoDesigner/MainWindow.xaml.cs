@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace AnnoDesigner
 {
@@ -228,10 +229,35 @@ namespace AnnoDesigner
 
         #region Version check
 
+        private async Task DownloadNewPresets()
+        {
+            var updateHelper = new UpdateHelper();
+            var isnewPresetAvailable = await updateHelper.IsNewPresetFileAvailableAsync(new Version(annoCanvas.BuildingPresets.Version));
+            if (isnewPresetAvailable)
+            {
+                if (MessageBox.Show($"An updated version of the preset file is available.{Environment.NewLine}Do you want to download it and restart the application?",
+                    "Update available",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Asterisk,
+                    MessageBoxResult.OK) == MessageBoxResult.Yes)
+                {
+                    busyIndicator.IsBusy = true;
+
+                    var newLocation = await updateHelper.DownloadLatestPresetFile();
+
+                    var process = Process.Start(App.ExecutablePath);
+
+                    Environment.Exit(-1);
+                }
+            }
+        }
+
         private void CheckForUpdates(bool forcedCheck)
         {
             if (Settings.Default.EnableAutomaticUpdateCheck || forcedCheck)
             {
+                DownloadNewPresets();
+
                 _webClient.DownloadStringAsync(new Uri("https://raw.githubusercontent.com/AgmasGold/anno-designer/master/version.txt"), forcedCheck);
             }
         }

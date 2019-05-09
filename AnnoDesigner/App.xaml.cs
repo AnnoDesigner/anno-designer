@@ -42,8 +42,11 @@ namespace AnnoDesigner
             {
                 FilenameArgument = e.Args[0];
             }
+
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+
+            ReplaceUpdatedPresetFile();
         }
 
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
@@ -96,6 +99,25 @@ namespace AnnoDesigner
         /// <summary>
         /// The DPI information for the current monitor.
         /// </summary>
-        public static DpiScale DpiScale { get; set; } 
+        public static DpiScale DpiScale { get; set; }
+
+        private void ReplaceUpdatedPresetFile()
+        {
+            try
+            {
+                var updateHelper = new UpdateHelper();
+                var pathToUpdatedPresetsFile = updateHelper.PathToUpdatedPresetsFile;
+                if (!String.IsNullOrWhiteSpace(pathToUpdatedPresetsFile) && File.Exists(pathToUpdatedPresetsFile))
+                {
+                    var originalPathToPresetsFile = Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile);
+                    File.Delete(originalPathToPresetsFile);
+                    File.Move(pathToUpdatedPresetsFile, originalPathToPresetsFile);
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteToErrorLog("error replacing updated presets file", ex.Message, ex.StackTrace);
+            }
+        }
     }
 }
