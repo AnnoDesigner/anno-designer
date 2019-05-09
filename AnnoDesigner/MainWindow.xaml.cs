@@ -154,6 +154,8 @@ namespace AnnoDesigner
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
+            _mainWindowLocalization.BuildingSettingsViewModel.AnnoCanvasToUse = annoCanvas;
+
             // add icons to the combobox
             comboBoxIcon.Items.Clear();
             _noIconItem = new IconImage("None");
@@ -294,14 +296,15 @@ namespace AnnoDesigner
                 return;
             }
             // size
-            textBoxWidth.Value = (int)obj.Size.Width;
-            textBoxHeight.Value = (int)obj.Size.Height;
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingWidth = (int)obj.Size.Width;
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingHeight = (int)obj.Size.Height;
             // color
-            colorPicker.SelectedColor = obj.Color;
+            _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor = obj.Color;
             // label
-            textBoxLabel.Text = obj.Label;
-            // Ident
-            textBoxIdentifier.Text = obj.Identifier;
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingName = obj.Label;
+            // Identifier
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier = obj.Identifier;
+
             // icon
             try
             {
@@ -321,10 +324,11 @@ namespace AnnoDesigner
 
                 comboBoxIcon.SelectedItem = _noIconItem;
             }
+
             // radius
-            textBoxRadius.Value = obj.Radius;
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius = obj.Radius;
             //InfluenceRadius
-            textBoxInfluenceRange.Text = obj.InfluenceRange.ToString();
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = obj.InfluenceRange;
 
             //Set Influence Type combo box
             if (obj.Radius > 0 && obj.InfluenceRange > 0)
@@ -346,10 +350,10 @@ namespace AnnoDesigner
                 comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.None;
             }
 
-            // flags
-            //checkBoxLabel.IsChecked = !string.IsNullOrEmpty(obj.Label);
-            checkBoxBorderless.IsChecked = obj.Borderless;
-            checkBoxRoad.IsChecked = obj.Road;
+            // flags            
+            //_mainWindowLocalization.BuildingSettingsViewModel.IsEnableLabelChecked = !string.IsNullOrEmpty(obj.Label);
+            _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked = obj.Borderless;
+            _mainWindowLocalization.BuildingSettingsViewModel.IsRoadChecked = obj.Road;
         }
 
         private void StatusMessageChanged(string message)
@@ -383,15 +387,15 @@ namespace AnnoDesigner
             // parse user inputs and create new object
             AnnoObject obj = new AnnoObject
             {
-                Size = new Size(textBoxWidth?.Value ?? 1, textBoxHeight?.Value ?? 1),
-                Color = colorPicker.SelectedColor ?? Colors.Red,
-                Label = IsChecked(checkBoxLabel) ? textBoxLabel.Text : "",
+                Size = new Size(_mainWindowLocalization.BuildingSettingsViewModel.BuildingWidth, _mainWindowLocalization.BuildingSettingsViewModel.BuildingHeight),
+                Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
+                Label = _mainWindowLocalization.BuildingSettingsViewModel.IsEnableLabelChecked ? _mainWindowLocalization.BuildingSettingsViewModel.BuildingName : string.Empty,
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
-                Radius = textBoxRadius?.Value ?? 0,
-                InfluenceRange = string.IsNullOrEmpty(textBoxInfluenceRange.Text) ? 0 : double.Parse(textBoxInfluenceRange.Text, CultureInfo.InvariantCulture),
-                Borderless = IsChecked(checkBoxBorderless),
-                Road = IsChecked(checkBoxRoad),
-                Identifier = textBoxIdentifier.Text,
+                Radius = _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius,
+                InfluenceRange = _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange,
+                Borderless = _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked,
+                Road = _mainWindowLocalization.BuildingSettingsViewModel.IsRoadChecked,
+                Identifier = _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier,
             };
             // do some sanity checks
             if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
@@ -414,7 +418,7 @@ namespace AnnoDesigner
                 {
                     UpdateUIFromObject(new AnnoObject(selectedItem)
                     {
-                        Color = colorPicker.SelectedColor ?? Colors.Red,
+                        Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
                     });
                     ApplyCurrentObject();
                 }
@@ -739,7 +743,5 @@ namespace AnnoDesigner
             Settings.Default.TreeViewSearchText = _mainWindowLocalization.TreeViewSearchText;
             Settings.Default.Save();
         }
-
-
     }
 }
