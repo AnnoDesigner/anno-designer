@@ -1252,13 +1252,13 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _treeViewSearchToolTip, value);
             }
         }
-        private string _presetsSearchText;
+        private string _treeViewSearchText;
         public string TreeViewSearchText
         {
-            get { return _presetsSearchText; }
+            get { return _treeViewSearchText; }
             set
             {
-                UpdateProperty(ref _presetsSearchText, value);
+                UpdateProperty(ref _treeViewSearchText, value);
             }
         }
 
