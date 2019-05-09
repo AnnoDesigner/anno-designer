@@ -685,21 +685,21 @@ namespace AnnoDesigner.Localization
             ShowIcons = Localization.Translations[language]["ShowIcons"];
 
             //DockPanel
-            BuildingSettings = Localization.Translations[language]["BuildingSettings"];
-            Size = Localization.Translations[language]["Size"];
-            Color = Localization.Translations[language]["Color"];
-            Label = Localization.Translations[language]["Label"];
-            Icon = Localization.Translations[language]["Icon"];
-            InfluenceType = Localization.Translations[language]["InfluenceType"];
+            BuildingSettingsViewModel.TextHeader = Localization.Translations[language]["BuildingSettings"];
+            BuildingSettingsViewModel.TextSize = Localization.Translations[language]["Size"];
+            BuildingSettingsViewModel.TextColor = Localization.Translations[language]["Color"];
+            BuildingSettingsViewModel.TextBuildingName = Localization.Translations[language]["Label"];
+            BuildingSettingsViewModel.TextIcon = Localization.Translations[language]["Icon"];
+            BuildingSettingsViewModel.TextInfluenceType = Localization.Translations[language]["InfluenceType"];
             None = Localization.Translations[language]["None"];
-            Radius = Localization.Translations[language]["Radius"];
-            Distance = Localization.Translations[language]["Distance"];
+            BuildingSettingsViewModel.TextRadius = Localization.Translations[language]["Radius"];
+            BuildingSettingsViewModel.TextDistance = Localization.Translations[language]["Distance"];
             Both = Localization.Translations[language]["Both"];
-            Options = Localization.Translations[language]["Options"];
-            EnableLabel = Localization.Translations[language]["EnableLabel"];
-            Borderless = Localization.Translations[language]["Borderless"];
-            Road = Localization.Translations[language]["Road"];
-            PlaceBuilding = Localization.Translations[language]["PlaceBuilding"];
+            BuildingSettingsViewModel.TextOptions = Localization.Translations[language]["Options"];
+            BuildingSettingsViewModel.TextEnableLabel = Localization.Translations[language]["EnableLabel"];
+            BuildingSettingsViewModel.TextBorderless = Localization.Translations[language]["Borderless"];
+            BuildingSettingsViewModel.TextRoad = Localization.Translations[language]["Road"];
+            BuildingSettingsViewModel.TextPlaceBuilding = Localization.Translations[language]["PlaceBuilding"];
             Search = Localization.Translations[language]["Search"];
 
             //Status Bar
@@ -1049,61 +1049,7 @@ namespace AnnoDesigner.Localization
         }
 
         //DockPanel
-        private string _buildingSettings;
-        public string BuildingSettings
-        {
-            get { return _buildingSettings; }
-            set
-            {
-                UpdateProperty(ref _buildingSettings, value);
-            }
-        }
-        private string _size;
-        public string Size
-        {
-            get { return _size; }
-            set
-            {
-                UpdateProperty(ref _size, value);
-            }
-        }
-        private string _color;
-        public string Color
-        {
-            get { return _color; }
-            set
-            {
-                UpdateProperty(ref _color, value);
-            }
-        }
-        private string _label;
-        public string Label
-        {
-            get { return _label; }
-            set
-            {
-                UpdateProperty(ref _label, value);
-            }
-        }
 
-        private string _icon;
-        public string Icon
-        {
-            get { return _icon; }
-            set
-            {
-                UpdateProperty(ref _icon, value);
-            }
-        }
-        private string _influenceType;
-        public string InfluenceType
-        {
-            get { return _influenceType; }
-            set
-            {
-                UpdateProperty(ref _influenceType, value);
-            }
-        }
         private string _none;
         public string None
         {
@@ -1113,24 +1059,7 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _none, value);
             }
         }
-        private string _radius;
-        public string Radius
-        {
-            get { return _radius; }
-            set
-            {
-                UpdateProperty(ref _radius, value);
-            }
-        }
-        private string _distance;
-        public string Distance
-        {
-            get { return _distance; }
-            set
-            {
-                UpdateProperty(ref _distance, value);
-            }
-        }
+
         private string _both;
         public string Both
         {
@@ -1140,51 +1069,7 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _both, value);
             }
         }
-        private string _options;
-        public string Options
-        {
-            get { return _options; }
-            set
-            {
-                UpdateProperty(ref _options, value);
-            }
-        }
-        private string _enableLabel;
-        public string EnableLabel
-        {
-            get { return _enableLabel; }
-            set
-            {
-                UpdateProperty(ref _enableLabel, value);
-            }
-        }
-        private string _borderless;
-        public string Borderless
-        {
-            get { return _borderless; }
-            set
-            {
-                UpdateProperty(ref _borderless, value);
-            }
-        }
-        private string _road;
-        public string Road
-        {
-            get { return _road; }
-            set
-            {
-                UpdateProperty(ref _road, value);
-            }
-        }
-        private string _placeBuilding;
-        public string PlaceBuilding
-        {
-            get { return _placeBuilding; }
-            set
-            {
-                UpdateProperty(ref _placeBuilding, value);
-            }
-        }
+
         private string _search;
         public string Search
         {
