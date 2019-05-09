@@ -16,29 +16,18 @@ namespace AnnoDesigner
     {
         public static string ExecutablePath
         {
-            get
-            {
-                return Assembly.GetEntryAssembly().Location;
-            }
+            get { return Assembly.GetEntryAssembly().Location; }
 
         }
 
         public static string ApplicationPath
         {
-            get
-            {
-                return Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            }
+            get { return Path.GetDirectoryName(Assembly.GetEntryAssembly().Location); }
         }
 
-        public static string FilenameArgument
-        {
-            get;
-            private set;
-        }
+        public static string FilenameArgument { get; private set; }
 
-
-        private void AppOnStartup(object sender, StartupEventArgs e)
+        protected override void OnStartup(StartupEventArgs e)
         {
             // retrieve file argument if given
             if (e.Args.Length > 0)
@@ -49,7 +38,43 @@ namespace AnnoDesigner
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
 
-            ReplaceUpdatedPresetFile();
+            using (var mutexAnnoDesigner = new Mutex(true, MutexHelper.MUTEX_ANNO_DESIGNER, out bool createdNewMutex))
+            {
+                //Are there other processes still running?
+                if (!createdNewMutex)
+                {
+                    try
+                    {
+                        var currentTry = 0;
+                        const int maxTrys = 10;
+                        while (!createdNewMutex && currentTry < maxTrys)
+                        {
+                            Trace.WriteLine($"Waiting for other processes to finish. Try {currentTry} of {maxTrys}");
+                            //File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"Waiting for other processes to finish.Try { currentTry} of { maxTrys}{Environment.NewLine}");
+
+                            createdNewMutex = mutexAnnoDesigner.WaitOne(TimeSpan.FromSeconds(1), true);
+                            currentTry++;
+                        }
+
+                        if (!createdNewMutex)
+                        {
+                            MessageBox.Show($"Another instance of the app is already running.");
+                            Environment.Exit(-1);
+                        }
+                    }
+                    catch (AbandonedMutexException ex)
+                    {
+                        //mutex was killed
+                        createdNewMutex = true;
+                    }
+                }
+
+                //File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"start cleanup{Environment.NewLine}");
+                ReplaceUpdatedPresetFile();
+
+                MainWindow = new MainWindow();
+                MainWindow.ShowDialog();
+            }
         }
 
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
@@ -108,6 +133,15 @@ namespace AnnoDesigner
         {
             try
             {
+                ////wait for old process to finish
+                //while (Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Length > 1)
+                //{
+                //    //File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"another process is running{Environment.NewLine}");
+                //    Task.Delay(TimeSpan.FromMilliseconds(100)).GetAwaiter().GetResult();
+                //}
+
+                ////File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"no other processese are running{Environment.NewLine}");
+
                 var updateHelper = new UpdateHelper();
                 var pathToUpdatedPresetsFile = updateHelper.PathToUpdatedPresetsFile;
                 var pathToUpdatedPresetsAndIconsFile = updateHelper.PathToUpdatedPresetsAndIconsFile;
@@ -119,6 +153,8 @@ namespace AnnoDesigner
                 }
                 else if (!String.IsNullOrWhiteSpace(pathToUpdatedPresetsAndIconsFile) && File.Exists(pathToUpdatedPresetsAndIconsFile))
                 {
+                    //File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"start extraction{Environment.NewLine}");
+
                     using (var archive = ZipFile.OpenRead(pathToUpdatedPresetsAndIconsFile))
                     {
                         foreach (var curEntry in archive.Entries)
@@ -127,9 +163,12 @@ namespace AnnoDesigner
                         }
                     }
 
+                    //File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"end extratcion{Environment.NewLine}");
+
                     //wait extra time for extraction to finish
                     Task.Delay(TimeSpan.FromMilliseconds(200)).GetAwaiter().GetResult();
 
+                    //File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"delete zip{Environment.NewLine}");
                     File.Delete(pathToUpdatedPresetsAndIconsFile);
                 }
             }

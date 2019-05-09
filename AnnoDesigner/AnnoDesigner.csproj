@@ -52,6 +52,7 @@
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="Localization.cs" />
+    <Compile Include="MutexHelper.cs" />
     <Compile Include="Presets\BuildingInfo.cs" />
     <Compile Include="Presets\BuildingPresets.cs" />
     <Compile Include="Constants.cs" />
