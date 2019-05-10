@@ -5,4 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="200"
-             d:DesignWidth="200"></UserControl>
+             d:DesignWidth="200">
+    <Grid Name="StatisticsPanel"
+          HorizontalAlignment="Right" 
+          Background="White">
+        
+    </Grid>
+</UserControl>
