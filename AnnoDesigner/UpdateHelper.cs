@@ -23,7 +23,8 @@ namespace AnnoDesigner
             None,
             Presets,
             PresetsAndIcons,
-            IconMapping
+            IconMapping,
+            PredefinedColors
         }
 
         private const string GITHUB_USERNAME = "AgmasGold";
@@ -33,6 +34,10 @@ namespace AnnoDesigner
 
         private GitHubClient _apiClient;
         private HttpClient _httpClient;
+        private string _pathToUpdatedPresetsFile;
+        private string _pathToUpdatedPresetsAndIconsFile;
+        private string _pathToUpdatedIconMappingFile;
+        private string _pathToUpdatedPredefinedColorsFile;
 
         public UpdateHelper()
         {
@@ -87,17 +92,22 @@ namespace AnnoDesigner
 
         public string PathToUpdatedPresetsFile
         {
-            get { return Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + Constants.BuildingPresetsFile); }
+            get { return _pathToUpdatedPresetsFile ?? (_pathToUpdatedPresetsFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + Constants.BuildingPresetsFile)); }
         }
 
         public string PathToUpdatedPresetsAndIconsFile
         {
-            get { return Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + "PresetsAndIcons.zip"); }
+            get { return _pathToUpdatedPresetsAndIconsFile ?? (_pathToUpdatedPresetsAndIconsFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + "PresetsAndIcons.zip")); }
         }
 
         public string PathToUpdatedIconMappingFile
         {
-            get { return Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + Constants.IconNameFile); }
+            get { return _pathToUpdatedIconMappingFile ?? (_pathToUpdatedIconMappingFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + Constants.IconNameFile)); }
+        }
+
+        public string PathToUpdatedPredefinedColorsFile
+        {
+            get { return _pathToUpdatedPredefinedColorsFile ?? (_pathToUpdatedPredefinedColorsFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + Constants.ColorPresetsFile)); }
         }
 
         private IReadOnlyList<Release> AllReleases { get; set; }
@@ -204,6 +214,20 @@ namespace AnnoDesigner
                     }
                 }
 
+                //check colors.json
+                if (latestPresetAsset == null)
+                {
+                    latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(Constants.ColorPresetsFile, StringComparison.OrdinalIgnoreCase));
+                    if (latestPresetAsset == null)
+                    {
+                        Debug.WriteLine($"No asset found for latest preset update. ({Constants.ColorPresetsFile})");
+                    }
+                    else
+                    {
+                        LatestPresetReleaseType = AssetType.PredefinedColors;
+                    }
+                }
+
                 //still no supported asset found
                 if (latestPresetAsset == null)
                 {
@@ -254,6 +278,16 @@ namespace AnnoDesigner
                     tempFileInfo.MoveTo(PathToUpdatedIconMappingFile);
                     result = PathToUpdatedIconMappingFile;
                 }
+                else if (LatestPresetReleaseType == AssetType.PredefinedColors)
+                {
+                    if (File.Exists(PathToUpdatedPredefinedColorsFile))
+                    {
+                        File.Delete(PathToUpdatedPredefinedColorsFile);
+                    }
+
+                    tempFileInfo.MoveTo(PathToUpdatedPredefinedColorsFile);
+                    result = PathToUpdatedPredefinedColorsFile;
+                }
 
                 return result;
             }
@@ -289,19 +323,15 @@ namespace AnnoDesigner
             {
                 await Task.Run(async () =>
                     {
-                        var pathToUpdatedPresetsFile = PathToUpdatedPresetsFile;
-                        var pathToUpdatedPresetsAndIconsFile = PathToUpdatedPresetsAndIconsFile;
-                        var pathToUpdatedIconMappingFile = PathToUpdatedIconMappingFile;
-
-                        if (!String.IsNullOrWhiteSpace(pathToUpdatedPresetsFile) && File.Exists(pathToUpdatedPresetsFile))
+                        if (!String.IsNullOrWhiteSpace(PathToUpdatedPresetsFile) && File.Exists(PathToUpdatedPresetsFile))
                         {
                             var originalPathToPresetsFile = Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile);
                             File.Delete(originalPathToPresetsFile);
-                            File.Move(pathToUpdatedPresetsFile, originalPathToPresetsFile);
+                            File.Move(PathToUpdatedPresetsFile, originalPathToPresetsFile);
                         }
-                        else if (!String.IsNullOrWhiteSpace(pathToUpdatedPresetsAndIconsFile) && File.Exists(pathToUpdatedPresetsAndIconsFile))
+                        else if (!String.IsNullOrWhiteSpace(PathToUpdatedPresetsAndIconsFile) && File.Exists(PathToUpdatedPresetsAndIconsFile))
                         {
-                            using (var archive = ZipFile.OpenRead(pathToUpdatedPresetsAndIconsFile))
+                            using (var archive = ZipFile.OpenRead(PathToUpdatedPresetsAndIconsFile))
                             {
                                 foreach (var curEntry in archive.Entries)
                                 {
@@ -312,13 +342,19 @@ namespace AnnoDesigner
                             //wait extra time for extraction to finish (sometimes the disk needs extra time)
                             await Task.Delay(TimeSpan.FromMilliseconds(200));
 
-                            File.Delete(pathToUpdatedPresetsAndIconsFile);
+                            File.Delete(PathToUpdatedPresetsAndIconsFile);
                         }
-                        else if (!String.IsNullOrWhiteSpace(pathToUpdatedIconMappingFile) && File.Exists(pathToUpdatedIconMappingFile))
+                        else if (!String.IsNullOrWhiteSpace(PathToUpdatedIconMappingFile) && File.Exists(PathToUpdatedIconMappingFile))
                         {
                             var originalPathToIconMappingFile = Path.Combine(App.ApplicationPath, Constants.IconNameFile);
                             File.Delete(originalPathToIconMappingFile);
-                            File.Move(pathToUpdatedIconMappingFile, originalPathToIconMappingFile);
+                            File.Move(PathToUpdatedIconMappingFile, originalPathToIconMappingFile);
+                        }
+                        else if (!String.IsNullOrWhiteSpace(PathToUpdatedPredefinedColorsFile) && File.Exists(PathToUpdatedPredefinedColorsFile))
+                        {
+                            var originalPathToPredefinedColorsFile = Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile);
+                            File.Delete(originalPathToPredefinedColorsFile);
+                            File.Move(PathToUpdatedPredefinedColorsFile, originalPathToPredefinedColorsFile);
                         }
                     });
             }
