@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Xceed.Wpf.Toolkit;
 
 namespace AnnoDesigner
 {
@@ -76,9 +78,9 @@ namespace AnnoDesigner
 
                 AllReleases = releases;
 
-                //var latestPresetRelease = releases.FirstOrDefault(x => !x.Draft && !x.Prerelease && x.TagName.StartsWith(RELEASE_PRESET_TAG, StringComparison.OrdinalIgnoreCase));
+                var latestPresetRelease = releases.FirstOrDefault(x => !x.Draft && !x.Prerelease && x.TagName.StartsWith(RELEASE_PRESET_TAG, StringComparison.OrdinalIgnoreCase));
                 //for testing - latest preset and icons release
-                var latestPresetRelease = releases.FirstOrDefault(x => !x.Draft && !x.Prerelease && x.TagName.StartsWith("Presetsv3.0.0", StringComparison.OrdinalIgnoreCase));
+                //var latestPresetRelease = releases.FirstOrDefault(x => !x.Draft && !x.Prerelease && x.TagName.StartsWith("Presetsv3.0.0", StringComparison.OrdinalIgnoreCase));
                 if (latestPresetRelease == null)
                 {
                     LatestPresetRelease = null;
@@ -210,6 +212,59 @@ namespace AnnoDesigner
             {
                 Debug.WriteLine($"Error downloading file ({url}).{Environment.NewLine}{ex}");
                 return string.Empty;
+            }
+        }
+
+        public async Task ReplaceUpdatedPresetFile()
+        {
+            try
+            {
+                await Task.Run(() =>
+                    {
+                        ////wait for old process to finish
+                        //while (Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Length > 1)
+                        //{
+                        //    //File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"another process is running{Environment.NewLine}");
+                        //    Task.Delay(TimeSpan.FromMilliseconds(100)).GetAwaiter().GetResult();
+                        //}
+
+                        ////File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"no other processese are running{Environment.NewLine}");
+
+                        var pathToUpdatedPresetsFile = PathToUpdatedPresetsFile;
+                        var pathToUpdatedPresetsAndIconsFile = PathToUpdatedPresetsAndIconsFile;
+                        if (!String.IsNullOrWhiteSpace(pathToUpdatedPresetsFile) && File.Exists(pathToUpdatedPresetsFile))
+                        {
+                            var originalPathToPresetsFile = Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile);
+                            File.Delete(originalPathToPresetsFile);
+                            File.Move(pathToUpdatedPresetsFile, originalPathToPresetsFile);
+                        }
+                        else if (!String.IsNullOrWhiteSpace(pathToUpdatedPresetsAndIconsFile) && File.Exists(pathToUpdatedPresetsAndIconsFile))
+                        {
+                            //File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"start extraction{Environment.NewLine}");
+
+                            using (var archive = ZipFile.OpenRead(pathToUpdatedPresetsAndIconsFile))
+                            {
+                                foreach (var curEntry in archive.Entries)
+                                {
+                                    curEntry.ExtractToFile(Path.Combine(App.ApplicationPath, curEntry.FullName), true);
+                                }
+                            }
+
+                            //File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"end extratcion{Environment.NewLine}");
+
+                            //wait extra time for extraction to finish
+                            Task.Delay(TimeSpan.FromMilliseconds(200)).GetAwaiter().GetResult();
+
+                            //File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"delete zip{Environment.NewLine}");
+                            File.Delete(pathToUpdatedPresetsAndIconsFile);
+                        }
+                    });
+            }
+            catch (Exception ex)
+            {
+                App.WriteToErrorLog("error replacing updated presets file", ex.Message, ex.StackTrace);
+
+                MessageBox.Show("Error installing update");
             }
         }
     }

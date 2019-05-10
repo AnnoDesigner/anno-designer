@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace AnnoDesigner
@@ -26,56 +24,6 @@ namespace AnnoDesigner
         }
 
         public static string FilenameArgument { get; private set; }
-
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            // retrieve file argument if given
-            if (e.Args.Length > 0)
-            {
-                FilenameArgument = e.Args[0];
-            }
-
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
-
-            using (var mutexAnnoDesigner = new Mutex(true, MutexHelper.MUTEX_ANNO_DESIGNER, out bool createdNewMutex))
-            {
-                //Are there other processes still running?
-                if (!createdNewMutex)
-                {
-                    try
-                    {
-                        var currentTry = 0;
-                        const int maxTrys = 10;
-                        while (!createdNewMutex && currentTry < maxTrys)
-                        {
-                            Trace.WriteLine($"Waiting for other processes to finish. Try {currentTry} of {maxTrys}");
-                            //File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"Waiting for other processes to finish.Try { currentTry} of { maxTrys}{Environment.NewLine}");
-
-                            createdNewMutex = mutexAnnoDesigner.WaitOne(TimeSpan.FromSeconds(1), true);
-                            currentTry++;
-                        }
-
-                        if (!createdNewMutex)
-                        {
-                            MessageBox.Show($"Another instance of the app is already running.");
-                            Environment.Exit(-1);
-                        }
-                    }
-                    catch (AbandonedMutexException ex)
-                    {
-                        //mutex was killed
-                        createdNewMutex = true;
-                    }
-                }
-
-                //File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"start cleanup{Environment.NewLine}");
-                ReplaceUpdatedPresetFile();
-
-                MainWindow = new MainWindow();
-                MainWindow.ShowDialog();
-            }
-        }
 
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
@@ -129,54 +77,65 @@ namespace AnnoDesigner
         /// </summary>
         public static DpiScale DpiScale { get; set; }
 
-        private void ReplaceUpdatedPresetFile()
+        private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            try
+            // retrieve file argument if given
+            if (e.Args.Length > 0)
             {
-                ////wait for old process to finish
-                //while (Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Length > 1)
-                //{
-                //    //File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"another process is running{Environment.NewLine}");
-                //    Task.Delay(TimeSpan.FromMilliseconds(100)).GetAwaiter().GetResult();
-                //}
+                FilenameArgument = e.Args[0];
+            }
 
-                ////File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"no other processese are running{Environment.NewLine}");
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
 
-                var updateHelper = new UpdateHelper();
-                var pathToUpdatedPresetsFile = updateHelper.PathToUpdatedPresetsFile;
-                var pathToUpdatedPresetsAndIconsFile = updateHelper.PathToUpdatedPresetsAndIconsFile;
-                if (!String.IsNullOrWhiteSpace(pathToUpdatedPresetsFile) && File.Exists(pathToUpdatedPresetsFile))
+            using (var mutexAnnoDesigner = new Mutex(true, MutexHelper.MUTEX_ANNO_DESIGNER, out bool createdNewMutex))
+            {
+                //Are there other processes still running?
+                if (!createdNewMutex)
                 {
-                    var originalPathToPresetsFile = Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile);
-                    File.Delete(originalPathToPresetsFile);
-                    File.Move(pathToUpdatedPresetsFile, originalPathToPresetsFile);
-                }
-                else if (!String.IsNullOrWhiteSpace(pathToUpdatedPresetsAndIconsFile) && File.Exists(pathToUpdatedPresetsAndIconsFile))
-                {
-                    //File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"start extraction{Environment.NewLine}");
-
-                    using (var archive = ZipFile.OpenRead(pathToUpdatedPresetsAndIconsFile))
+                    try
                     {
-                        foreach (var curEntry in archive.Entries)
+                        var currentTry = 0;
+                        const int maxTrys = 10;
+                        while (!createdNewMutex && currentTry < maxTrys)
                         {
-                            curEntry.ExtractToFile(Path.Combine(ApplicationPath, curEntry.FullName), true);
+                            Trace.WriteLine($"Waiting for other processes to finish. Try {currentTry} of {maxTrys}");
+                            //File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"Waiting for other processes to finish.Try { currentTry} of { maxTrys}{Environment.NewLine}");
+
+                            createdNewMutex = mutexAnnoDesigner.WaitOne(TimeSpan.FromSeconds(1), true);
+                            currentTry++;
+                        }
+
+                        if (!createdNewMutex)
+                        {
+                            MessageBox.Show($"Another instance of the app is already running.");
+                            Environment.Exit(-1);
                         }
                     }
-
-                    //File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"end extratcion{Environment.NewLine}");
-
-                    //wait extra time for extraction to finish
-                    Task.Delay(TimeSpan.FromMilliseconds(200)).GetAwaiter().GetResult();
-
-                    //File.AppendAllText(Path.Combine(App.ApplicationPath, $"activity-{Process.GetCurrentProcess().Id}.txt"), $"delete zip{Environment.NewLine}");
-                    File.Delete(pathToUpdatedPresetsAndIconsFile);
+                    catch (AbandonedMutexException ex)
+                    {
+                        //mutex was killed
+                        createdNewMutex = true;
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                WriteToErrorLog("error replacing updated presets file", ex.Message, ex.StackTrace);
 
-                MessageBox.Show("Error installing update");
+                //var updateWindow = new UpdateWindow();
+
+                //File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"start cleanup{Environment.NewLine}");
+                var updateHelper = new UpdateHelper();
+                await updateHelper.ReplaceUpdatedPresetFile();
+
+                //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
+                MainWindow = new MainWindow();
+                //MainWindow.Loaded += (s, args) => { updateWindow.Close(); };
+
+                //updateWindow.Show();
+
+
+
+                MainWindow.ShowDialog();
+
+                base.OnStartup(e);
             }
         }
     }
