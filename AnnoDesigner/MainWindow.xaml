@@ -282,38 +282,38 @@
         <DockPanel Grid.Column="2"
                    Grid.Row="1"
                    LastChildFill="True">
-            <GroupBox Header="{Binding Path=BuildingSettings}"
+            <GroupBox Header="{Binding BuildingSettingsViewModel.TextHeader}"
                       DockPanel.Dock="Top">
                 <StackPanel>
                     <DockPanel LastChildFill="False"
                                Height="26">
-                        <Label Content="{Binding Path=Size}" />
+                        <Label Content="{Binding BuildingSettingsViewModel.TextSize}" />
                         <xctk:IntegerUpDown DockPanel.Dock="Right"
                                             Height="23"
                                             IsEnabled="True"
-                                            Name="textBoxHeight"
                                             Width="50"
                                             DefaultValue="4"
                                             DisplayDefaultValueOnEmptyText="True"
                                             Increment="1"
                                             Minimum="1"
-                                            TabIndex="1" />
+                                            TabIndex="1"
+                                            Value="{Binding BuildingSettingsViewModel.BuildingHeight}" />
                         <Label Content="x"
                                DockPanel.Dock="Right" />
                         <xctk:IntegerUpDown DockPanel.Dock="Right"
                                             Height="23"
                                             IsEnabled="True"
-                                            Name="textBoxWidth"
                                             Width="50"
                                             DefaultValue="4"
                                             DisplayDefaultValueOnEmptyText="True"
                                             Increment="1"
                                             Minimum="1"
-                                            TabIndex="0" />
+                                            TabIndex="0"
+                                            Value="{Binding BuildingSettingsViewModel.BuildingWidth}" />
                     </DockPanel>
                     <DockPanel LastChildFill="False"
                                Height="26">
-                        <Label Content="{Binding Path=Color}" />
+                        <Label Content="{Binding BuildingSettingsViewModel.TextColor}" />
                         <xctk:ColorPicker x:Name="colorPicker"
                                           DockPanel.Dock="Right"
                                           Width="140"
@@ -324,36 +324,137 @@
                                           ShowAvailableColors="True"
                                           ShowRecentColors="True"
                                           AvailableColorsSortingMode="HueSaturationBrightness"
-                                          StandardColorsHeader="Standard Color Presets"
-                                          SelectedColor="Red" />
+                                          StandardButtonHeader="{Binding BuildingSettingsViewModel.TextStandard}"
+                                          AdvancedButtonHeader="{Binding BuildingSettingsViewModel.TextAdvanced}"
+                                          AvailableColorsHeader="{Binding BuildingSettingsViewModel.TextAvailableColors}"
+                                          StandardColorsHeader="{Binding BuildingSettingsViewModel.TextStandardColors}"
+                                          RecentColorsHeader="{Binding BuildingSettingsViewModel.TextRecentColors}"
+                                          SelectedColor="{Binding BuildingSettingsViewModel.SelectedColor}" />
                     </DockPanel>
                     <DockPanel LastChildFill="False"
                                Height="26">
-                        <Label Content="{Binding Path=Label}" />
+                        <Button Width="32"
+                                DockPanel.Dock="Right"
+                                Command="{Binding BuildingSettingsViewModel.ApplyColorToSelectionCommand}"
+                                ToolTip="{Binding BuildingSettingsViewModel.TextApplyColorToSelectionToolTip}">
+                            <Button.Resources>
+                                <Style x:Key="stylePath"
+                                       TargetType="{x:Type Path}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled"
+                                                 Value="True">
+                                            <Setter Property="Fill"
+                                                    Value="#FF000000" />
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled"
+                                                 Value="False">
+                                            <Setter Property="Fill"
+                                                    Value="Gray" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Resources>
+                            <Button.Content>
+                                <Grid Width="24"
+                                      Height="24"
+                                      Visibility="Visible">
+                                    <Path Data="M10.237976,16.558633L15.362,21.68467C15.362,21.68467 15.362,32.671771 0,30.001748 3.9839783,29.020736 3.5959778,25.791718 5.9639893,20.122661 7.1269836,17.340638 10.237976,16.558633 10.237976,16.558633z M30.389984,0.00048406667C30.752991,0.0094867014 31.134979,0.14547426 31.494995,0.50648519 32.77597,1.7864956 31.215973,3.3455154 31.215973,3.3455152 31.215973,3.3455154 23.415985,11.147588 21.855988,12.708591 20.296997,14.270602 18.406982,18.619656 18.406982,18.619656L13.28299,13.495602C13.28299,13.495602 17.733978,11.707591 19.29599,10.147579 20.855988,8.5855531 28.655975,0.78248873 28.655975,0.78248861 28.655975,0.78248873 29.461975,-0.022526528 30.389984,0.00048406667z"
+                                          Stretch="Uniform"
+                                          Width="16"
+                                          Height="16"
+                                          Margin="0,0,0,0"
+                                          RenderTransformOrigin="0.5,0.5"
+                                          Style="{StaticResource stylePath}">
+                                        <Path.RenderTransform>
+                                            <TransformGroup>
+                                                <TransformGroup.Children>
+                                                    <RotateTransform Angle="0" />
+                                                    <ScaleTransform ScaleX="1"
+                                                                    ScaleY="1" />
+                                                </TransformGroup.Children>
+                                            </TransformGroup>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                </Grid>
+                            </Button.Content>
+                        </Button>
+                        <!-- used when predefined colors are available -->
+                        <!--<xctk:SplitButton Width="48"
+                                          DockPanel.Dock="Right"
+                                          Command="{Binding BuildingSettingsViewModel.ApplyColorToSelectionCommand}"
+                                          ToolTip="{Binding BuildingSettingsViewModel.TextApplyColorToSelectionToolTip}">
+                            <xctk:SplitButton.Resources>
+                                <Style x:Key="stylePath"
+                                       TargetType="{x:Type Path}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled"
+                                                 Value="True">
+                                            <Setter Property="Fill"
+                                                    Value="#FF000000" />
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled"
+                                                 Value="False">
+                                            <Setter Property="Fill"
+                                                    Value="Gray" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </xctk:SplitButton.Resources>
+                            <xctk:SplitButton.Content>
+                                <Grid Width="24"
+                                      Height="24"
+                                      Visibility="Visible">
+                                    <Path Data="M10.237976,16.558633L15.362,21.68467C15.362,21.68467 15.362,32.671771 0,30.001748 3.9839783,29.020736 3.5959778,25.791718 5.9639893,20.122661 7.1269836,17.340638 10.237976,16.558633 10.237976,16.558633z M30.389984,0.00048406667C30.752991,0.0094867014 31.134979,0.14547426 31.494995,0.50648519 32.77597,1.7864956 31.215973,3.3455154 31.215973,3.3455152 31.215973,3.3455154 23.415985,11.147588 21.855988,12.708591 20.296997,14.270602 18.406982,18.619656 18.406982,18.619656L13.28299,13.495602C13.28299,13.495602 17.733978,11.707591 19.29599,10.147579 20.855988,8.5855531 28.655975,0.78248873 28.655975,0.78248861 28.655975,0.78248873 29.461975,-0.022526528 30.389984,0.00048406667z"
+                                          Stretch="Uniform"
+                                          Width="16"
+                                          Height="16"
+                                          Margin="0,0,0,0"
+                                          RenderTransformOrigin="0.5,0.5"
+                                          Style="{StaticResource stylePath}">
+                                        <Path.RenderTransform>
+                                            <TransformGroup>
+                                                <TransformGroup.Children>
+                                                    <RotateTransform Angle="0" />
+                                                    <ScaleTransform ScaleX="1"
+                                                                    ScaleY="1" />
+                                                </TransformGroup.Children>
+                                            </TransformGroup>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                </Grid>
+                            </xctk:SplitButton.Content>
+                            <xctk:SplitButton.DropDownContent>
+                                <Button Command="{Binding BuildingSettingsViewModel.ApplyPredefinedColorToSelectionCommand}"
+                                        Content="{Binding BuildingSettingsViewModel.TextApplyPredefinedColorToSelection}"
+                                        ToolTip="{Binding BuildingSettingsViewModel.TextApplyPredefinedColorToSelectionToolTip}" />
+                            </xctk:SplitButton.DropDownContent>
+                        </xctk:SplitButton>-->
+                    </DockPanel>
+                    <DockPanel LastChildFill="False"
+                               Height="26">
+                        <Label Content="{Binding BuildingSettingsViewModel.TextBuildingName}" />
                         <TextBox DockPanel.Dock="Right"
                                  Height="23"
                                  IsEnabled="True"
-                                 Name="textBoxLabel"
-                                 Text="Building"
+                                 Text="{Binding BuildingSettingsViewModel.BuildingName}"
                                  Width="140"
                                  TabIndex="4" />
                         <TextBox DockPanel.Dock="Right"
                                  Height="10"
                                  IsEnabled="False"
-                                 Name="textBoxIdentifier"
-                                 Text=""
-                                 Visibility="Hidden"
+                                 Text="{Binding BuildingSettingsViewModel.BuildingIdentifier}"
+                                 Visibility="Collapsed"
                                  Width="140" />
                     </DockPanel>
                     <DockPanel LastChildFill="False"
                                Height="46">
-                        <Label Content="{Binding Path=Icon}"
+                        <Label Content="{Binding BuildingSettingsViewModel.TextIcon}"
                                VerticalAlignment="Center" />
                         <ComboBox DockPanel.Dock="Right"
                                   Width="140"
                                   Height="46"
                                   IsEnabled="True"
-                                  Name="comboBoxIcon"
+                                  x:Name="comboBoxIcon"
                                   SelectedIndex="0"
                                   TabIndex="6"
                                   TextSearch.TextPath="DisplayName">
@@ -365,76 +466,77 @@
                     </DockPanel>
                     <DockPanel LastChildFill="False"
                                Height="26">
-                        <Label Content="{Binding Path=InfluenceType}" />
+                        <Label Content="{Binding BuildingSettingsViewModel.TextInfluenceType}" />
                         <ComboBox DockPanel.Dock="Right"
                                   Width="140"
                                   Height="22"
                                   IsEnabled="True"
-                                  Name="comboxBoxInfluenceType"
+                                  x:Name="comboxBoxInfluenceType"
                                   SelectedIndex="0"
                                   TabIndex="6"
                                   SelectedValuePath="Key"
                                   DisplayMemberPath="Value"
                                   SelectionChanged="ComboxBoxInfluenceType_SelectionChanged" />
                     </DockPanel>
-                    <DockPanel Name="dockPanelInfluenceRadius"
+                    <DockPanel x:Name="dockPanelInfluenceRadius"
                                LastChildFill="False"
                                Height="26"
                                Visibility="Visible">
-                        <Label Content="{Binding Path=Radius}" />
-
+                        <Label Content="{Binding BuildingSettingsViewModel.TextRadius}" />
                         <xctk:DoubleUpDown DockPanel.Dock="Right"
                                            Height="23"
                                            Width="140"
-                                           Name="textBoxRadius"
                                            IsEnabled="True"
                                            DefaultValue="0"
                                            DisplayDefaultValueOnEmptyText="True"
                                            Increment="1"
                                            Minimum="0"
-                                           TabIndex="8" />
+                                           TabIndex="8"
+                                           Value="{Binding BuildingSettingsViewModel.BuildingRadius}" />
                     </DockPanel>
-                    <DockPanel Name="dockPanelInfluenceRange"
+                    <DockPanel x:Name="dockPanelInfluenceRange"
                                LastChildFill="False"
                                Height="26"
                                Visibility="Visible">
-                        <Label Content="{Binding Path=Distance}" />
+                        <Label Content="{Binding BuildingSettingsViewModel.TextDistance}" />
                         <xctk:DoubleUpDown DockPanel.Dock="Right"
                                            Height="23"
                                            Width="140"
-                                           Name="textBoxInfluenceRange"
                                            IsEnabled="True"
                                            DefaultValue="0"
                                            DisplayDefaultValueOnEmptyText="True"
                                            Increment="1"
                                            Minimum="0"
                                            AllowSpin="True"
-                                           TabIndex="9" />
+                                           TabIndex="9"
+                                           Value="{Binding BuildingSettingsViewModel.BuildingInfluenceRange}" />
                     </DockPanel>
                     <DockPanel LastChildFill="False">
-                        <Label Content="{Binding Path=Options}" />
+                        <Label Content="{Binding BuildingSettingsViewModel.TextOptions}" />
                         <StackPanel Orientation="Vertical"
                                     DockPanel.Dock="Right">
-                            <CheckBox Content="{Binding Path=EnableLabel}"
-                                      Name="checkBoxLabel"
+                            <CheckBox Content="{Binding BuildingSettingsViewModel.TextEnableLabel}"
                                       Margin="0,5,0,5"
                                       VerticalAlignment="Center"
                                       TabIndex="9"
-                                      IsChecked="False" />
-                            <CheckBox Content="{Binding Path=Borderless}"
-                                      Name="checkBoxBorderless"
+                                      IsThreeState="False"
+                                      IsChecked="{Binding BuildingSettingsViewModel.IsEnableLabelChecked}" />
+                            <CheckBox Content="{Binding BuildingSettingsViewModel.TextBorderless}"
                                       Margin="0,0,0,5"
                                       VerticalAlignment="Center"
-                                      TabIndex="10" />
-                            <CheckBox Content="{Binding Path=Road}"
-                                      Name="checkBoxRoad"
+                                      TabIndex="10"
+                                      IsThreeState="False"
+                                      IsChecked="{Binding BuildingSettingsViewModel.IsBorderlessChecked}" />
+                            <CheckBox Content="{Binding BuildingSettingsViewModel.TextRoad}"
                                       Margin="0,0,0,5"
                                       VerticalAlignment="Center"
-                                      TabIndex="11" />
+                                      TabIndex="11"
+                                      IsThreeState="False"
+                                      IsChecked="{Binding BuildingSettingsViewModel.IsRoadChecked}" />
                         </StackPanel>
                     </DockPanel>
                     <Button Click="ButtonPlaceBuildingClick"
-                            Content="{Binding Path=PlaceBuilding}"
+                            Content="{Binding BuildingSettingsViewModel.TextPlaceBuilding}"
                             Height="23"
                             TabIndex="12" />
                 </StackPanel>
