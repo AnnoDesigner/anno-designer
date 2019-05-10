@@ -52,7 +52,7 @@ namespace AnnoDesigner
         /// <param name="filename">input JSON filename</param>
         public static void LoadFromFile<T>(out T obj, string filename)
         {
-            using (var stream = File.Open(filename, FileMode.Open))
+            using (var stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 var serializer = new DataContractJsonSerializer(typeof(T));
                 obj = (T)serializer.ReadObject(stream);
