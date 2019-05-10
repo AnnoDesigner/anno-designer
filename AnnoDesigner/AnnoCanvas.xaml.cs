@@ -433,6 +433,7 @@ namespace AnnoDesigner
             color = Colors.LawnGreen;
             color.A = 32;
             _influencedBrush = new SolidColorBrush(color);
+
             // load presets and icons if not in design time
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
@@ -447,11 +448,11 @@ namespace AnnoDesigner
                 }
 
                 // load icon name mapping
-                IconMappingPresets iconNameMap = null;
+                IconMappingPresets iconNameMapping = null;
                 try
                 {
                     IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
-                    iconNameMap = loader.Load();
+                    iconNameMapping = loader.Load();
                 }
                 catch (Exception ex)
                 {
@@ -459,36 +460,8 @@ namespace AnnoDesigner
                 }
 
                 // load icons
-                var pathToIconFolder = Path.Combine(App.ApplicationPath, Constants.IconFolder);
-                var icons = new Dictionary<string, IconImage>();
-
-                foreach (var path in Directory.EnumerateFiles(pathToIconFolder, Constants.IconFolderFilter))
-                {
-                    var filenameWithExt = Path.GetFileName(path);
-                    var filenameWithoutExt = Path.GetFileNameWithoutExtension(path);
-
-                    if (string.IsNullOrWhiteSpace(filenameWithoutExt))
-                    {
-                        continue;
-                    }
-
-                    // try mapping to the icon translations
-                    Dictionary<string, string> localizations = null;
-                    if (iconNameMap?.IconNameMappings != null)
-                    {
-                        var map = iconNameMap.IconNameMappings.Find(x => x.IconFilename == filenameWithExt);
-                        if (map != null)
-                        {
-                            localizations = map.Localizations.Dict;
-                        }
-                    }
-
-                    // add the current icon
-                    icons.Add(filenameWithoutExt, new IconImage(filenameWithoutExt, localizations, new BitmapImage(new Uri(path))));
-                }
-
-                // sort icons by their DisplayName
-                Icons = icons.OrderBy(x => x.Value.DisplayName).ToDictionary(x => x.Key, x => x.Value);
+                var iconLoader = new IconLoader();
+                Icons = iconLoader.Load(iconNameMapping);
             }
 
             const int dpiFactor = 1;
