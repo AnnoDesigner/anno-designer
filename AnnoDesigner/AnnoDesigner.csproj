@@ -58,6 +58,8 @@
     <Compile Include="model\IUpdateHelper.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="MutexHelper.cs" />
+    <Compile Include="model\Notify.cs" />
+    <Compile Include="model\RelayCommand.cs" />
     <Compile Include="Presets\BuildingInfo.cs" />
     <Compile Include="Presets\BuildingPresets.cs" />
     <Compile Include="Constants.cs" />
@@ -83,6 +85,7 @@
     <Compile Include="UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="viewmodel\BuildingSettingsViewModel.cs" />
     <Compile Include="Welcome.xaml.cs">
       <DependentUpon>Welcome.xaml</DependentUpon>
     </Compile>
