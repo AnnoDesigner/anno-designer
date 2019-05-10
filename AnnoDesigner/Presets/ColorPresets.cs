@@ -6,6 +6,12 @@ namespace AnnoDesigner.Presets
     [DataContract]
     public class ColorPresets
     {
+        public ColorPresets()
+        {
+            Version = string.Empty;
+            AvailableSchemes = new List<ColorScheme>();
+        }
+
         [DataMember(Order = 0)]
         public string Version { get; set; }
 
