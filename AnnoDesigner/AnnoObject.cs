@@ -31,6 +31,7 @@ namespace AnnoDesigner
             Position = obj.Position;
             Label = obj.Label;
             Identifier = obj.Identifier;
+            Template = obj.Template;
             //Localization = obj.Localization;
             Icon = obj.Icon;
             Radius = obj.Radius;
@@ -74,28 +75,28 @@ namespace AnnoDesigner
         public string Icon { get; set; }
 
         /// <summary>
-        /// Color used to fill this object
+        /// ObjName string
         /// </summary>
         [DataMember(Order = 5)]
+        public string Template;
+
+        /// <summary>
+        /// Color used to fill this object
+        /// </summary>
+        [DataMember(Order = 6)]
         public SerializableColor Color { get; set; }
 
         /// <summary>
         /// Indicates whether the border should be omitted.
         /// </summary>
-        [DataMember(Order = 6)]
+        [DataMember(Order = 7)]
         public bool Borderless { get; set; }
 
         /// <summary>
         /// Indicates whether the object is treated as a road tile.
         /// </summary>
-        [DataMember(Order = 7)]
+        [DataMember(Order = 8)]
         public bool Road { get; set; }
-
-        /// <summary>
-        /// ObjName string
-        /// </summary>
-        [DataMember]
-        public string Template;
 
         //[DataMember]
         //public SerializableDictionary<int> BuildCosts { get; set; }
@@ -103,13 +104,13 @@ namespace AnnoDesigner
         /// <summary>
         /// Influence radius in grid units
         /// </summary>
-        [DataMember(Order = 8)]
+        [DataMember(Order = 9)]
         public double Radius { get; set; }
 
         /// <summary>
         /// Influence range in grid units
         /// </summary>
-        [DataMember(Order = 9)]
+        [DataMember(Order = 10)]
         public double InfluenceRange { get; set; }
 
         ///// <summary>
@@ -120,23 +121,5 @@ namespace AnnoDesigner
 
         //[DataMember]
         //public SerializableDictionary<int> BuildCosts { get; set; }
-        /// <param name="obj"></param>
-        public AnnoObject(AnnoObject obj)
-        {
-            Size = obj.Size;
-            Color = obj.Color;
-            Position = obj.Position;
-            Label = obj.Label;
-            Identifier = obj.Identifier;
-            Template = obj.Template;
-            //Localization = obj.Localization;
-            Icon = obj.Icon;
-            Radius = obj.Radius;
-            InfluenceRange = obj.InfluenceRange;
-            Borderless = obj.Borderless;
-            Road = obj.Road;
-            // note: this is not really a copy, just a reference, but it is not supposed to change anyway
-            //BuildCosts = obj.BuildCosts;
-        }
     }
 }

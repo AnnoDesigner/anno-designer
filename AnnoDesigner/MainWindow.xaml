@@ -449,7 +449,7 @@
                         <TextBox DockPanel.Dock="Right"
                                  Height="23" 
                                  IsEnabled="False" 
-                                 Name="textBoxTemlateName" 
+                                 Name="textBoxTemplateName" 
                                  Text="" 
                                  Visibility="Hidden" 
                                  Width="140" />

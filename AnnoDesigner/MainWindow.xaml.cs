@@ -322,12 +322,8 @@ namespace AnnoDesigner
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingName = obj.Label;
             // Identifier
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier = obj.Identifier;
-
-            textBoxLabel.Text = obj.Label;
-            // Ident
-            textBoxIdentifier.Text = obj.Identifier;
-            // templatename 
-            textBoxTemlateName.Text = obj.Template;
+            // Template
+            textBoxTemplateName.Text = obj.Template;
             // icon
             try
             {
@@ -419,12 +415,7 @@ namespace AnnoDesigner
                 Borderless = _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked,
                 Road = _mainWindowLocalization.BuildingSettingsViewModel.IsRoadChecked,
                 Identifier = _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier,
-                Radius = textBoxRadius?.Value ?? 0,
-                InfluenceRange = string.IsNullOrEmpty(textBoxInfluenceRange.Text) ? 0 : double.Parse(textBoxInfluenceRange.Text, CultureInfo.InvariantCulture),
-                Borderless = IsChecked(checkBoxBorderless),
-                Road = IsChecked(checkBoxRoad),
-                Identifier = textBoxIdentifier.Text,
-                Template = textBoxTemlateName.Text,
+                Template = textBoxTemplateName.Text,
             };
             // Turn obj.Icon into a checkable filename *iconFileNameCheck*
             if (!string.IsNullOrEmpty(obj.Icon))
@@ -445,6 +436,8 @@ namespace AnnoDesigner
                 {
                     ///--> the text 'Uknown Object' is localized within AnnoCanvas.xaml.cs in the RenderStatistics method <--///
                     //gets icons origin building info
+
+      
                     var buildingsIconCheck = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName == iconFileNameCheck);
                     if (buildingsIconCheck != null)
                     {
@@ -460,7 +453,7 @@ namespace AnnoDesigner
                             obj.Identifier = buildingsIconCheck.Identifier;
                         }
                     }
-                    else if (textBoxTemlateName.Text.ToLower().Contains("field") == false) //check if the icon is removed from a template field
+                    else if (textBoxTemplateName.Text.ToLower().Contains("field") == false) //check if the icon is removed from a template field
                     {
                         obj.Identifier = "Unknown Object";
                     }
@@ -471,7 +464,7 @@ namespace AnnoDesigner
                     var buildingsIconCheck = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == obj.Identifier);
                     if (buildingsIconCheck != null)
                     {
-                        if (iconFileNameCheck != buildingsIconCheck.IconFileName)
+                        if (iconFileNameCheck.ToLower() != buildingsIconCheck.IconFileName.ToLower())
                         {
                             obj.Icon = buildingsIconCheck.IconFileName.Remove(buildingsIconCheck.IconFileName.Length - 4, 4); //rmeove the .png for the comboBoxIcon
                             try
@@ -489,7 +482,7 @@ namespace AnnoDesigner
                         obj.Identifier = "Unknown Object";
                     }
                 }
-                if (textBoxTemlateName.Text.ToLower().Contains("field") == false && string.IsNullOrEmpty(obj.Icon))
+                if (textBoxTemplateName.Text.ToLower().Contains("field") == false && string.IsNullOrEmpty(obj.Icon))
                 {
                     obj.Identifier = "Unknown Object";
                 }
@@ -515,9 +508,9 @@ namespace AnnoDesigner
                     ApplyCurrentObject();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show("Something went wrong while applying the preset.");
+                MessageBox.Show("Something went wrong while applying the preset. (ApplyPreset) " +ex);
             }
         }
         /// <summary>
