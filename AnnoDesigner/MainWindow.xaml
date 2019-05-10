@@ -135,7 +135,10 @@
                           IsCheckable="True"
                           IsChecked="False"
                           Name="MenuItemLanguageGer" />
-                <!--<MenuItem Header="Français" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageFra" />-->
+                <MenuItem Header="Français"
+                          IsCheckable="True"
+                          IsChecked="False"
+                          Name="MenuItemLanguageFra" />
                 <!--<MenuItem Header="Español" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageEsp" />-->
                 <!--<MenuItem Header="Italiano" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageIta" />-->
                 <MenuItem Header="Polski"
