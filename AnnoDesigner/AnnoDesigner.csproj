@@ -52,6 +52,7 @@
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commons.cs" />
+    <Compile Include="PresetsLoader\IconMappingPresetsLoader.cs" />
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
     <Compile Include="Localization.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Presets\ColorPresets.cs" />
     <Compile Include="Presets\ColorScheme.cs" />
     <Compile Include="Presets\ColorTarget.cs" />
+    <Compile Include="Presets\IconMappingPresets.cs" />
     <Compile Include="Presets\IconNameMap.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

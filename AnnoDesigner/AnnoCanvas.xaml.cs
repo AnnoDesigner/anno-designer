@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AnnoDesigner.Presets;
+using AnnoDesigner.PresetsLoader;
 using AnnoDesigner.UI;
 using Microsoft.Win32;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
@@ -446,10 +447,11 @@ namespace AnnoDesigner
                 }
 
                 // load icon name mapping
-                List<IconNameMap> iconNameMap = null;
+                IconMappingPresets iconNameMap = null;
                 try
                 {
-                    iconNameMap = DataIO.LoadFromFile<List<IconNameMap>>(Path.Combine(App.ApplicationPath, Constants.IconNameFile));
+                    IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
+                    iconNameMap = loader.Load();
                 }
                 catch (Exception ex)
                 {
@@ -472,9 +474,9 @@ namespace AnnoDesigner
 
                     // try mapping to the icon translations
                     Dictionary<string, string> localizations = null;
-                    if (iconNameMap != null)
+                    if (iconNameMap?.IconNameMappings != null)
                     {
-                        var map = iconNameMap.Find(x => x.IconFilename == filenameWithExt);
+                        var map = iconNameMap.IconNameMappings.Find(x => x.IconFilename == filenameWithExt);
                         if (map != null)
                         {
                             localizations = map.Localizations.Dict;

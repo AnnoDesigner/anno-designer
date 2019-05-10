@@ -129,7 +129,7 @@ namespace AnnoDesigner
 
                 MainWindow.ShowDialog();
 
-                base.OnStartup(e);
+                //base.OnStartup(e);//needed?
             }
         }
     }

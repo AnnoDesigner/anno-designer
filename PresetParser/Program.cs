@@ -81,7 +81,7 @@ namespace PresetParser
         private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding",
             "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding"};
-        private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358", "1010462", "1010463", "1010464"};
+        private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358", "1010462", "1010463", "1010464" };
         //private static readonly List<string> ExcludeBuildingsGUID1800 = new List<string> { "102139", "102140", "102141", "102142", "102143", "102828" };
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System",
             "module_01_birds", "module_02_peacock", "(Warehouse II)", "(Warehouse III)", "logistic_colony01_01 (Warehouse I)", "Kontor_main_02", "Kontor_main_03", "kontor_main_colony01",
@@ -399,7 +399,7 @@ namespace PresetParser
             {
                 // prepare localizations
                 // This call will set the extra Anno Version Number on the icon translation for Anno 1404 ('A4_')
-                // and Anno 2070 ('A5_') that will be seen in the Icons Selection tree of the program (icon.json)
+                // and Anno 2070 ('A5_') that will be seen in the Icons Selection tree of the program (icons.json)
                 Dictionary<string, SerializableDictionary<string>> localizations = GetLocalizations(annoVersion, 1);
                 #region Preparing icon.json file
                 // prepare icon mapping
@@ -1578,28 +1578,36 @@ namespace PresetParser
         #region Writting the icons.json File (Anno 1404 / Anno 2070)
         private static void WriteIconNameMapping(IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string annoVersion, string BUILDING_PRESETS_VERSION)
         {
-            List<IconNameMap> mapping = new List<IconNameMap>();
+            IconMappingPresets iconNameMappings = new IconMappingPresets()
+            {
+                Version = BUILDING_PRESETS_VERSION
+            };
+
             foreach (XmlNode iconNode in iconNodes)
             {
                 string guid = iconNode["GUID"].InnerText;
                 string iconFilename = GetIconFilename(iconNode["Icons"].FirstChild, annoVersion);
-                if (!localizations.ContainsKey(guid) || mapping.Exists(_ => _.IconFilename == iconFilename))
+                if (!localizations.ContainsKey(guid) || iconNameMappings.IconNameMappings.Exists(_ => _.IconFilename == iconFilename))
                 {
                     continue;
                 }
-                mapping.Add(new IconNameMap
+
+                iconNameMappings.IconNameMappings.Add(new IconNameMap
                 {
                     IconFilename = iconFilename,
                     Localizations = localizations[guid]
                 });
             }
+
             if (!testVersion)
             {
-                DataIO.SaveToFile(mapping, "icons-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
+                var fileName = "icons-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json";
+                DataIO.SaveToFile(iconNameMappings, fileName);
+                Console.WriteLine($"saved icon name mapping file: {fileName}");
             }
             else
             {
-                Console.WriteLine("TIS IS A TEST: No icon.sjon File is writen");
+                Console.WriteLine("THIS IS A TEST: No icons.json file is writen");
             }
 
         }
