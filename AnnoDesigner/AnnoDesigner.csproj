@@ -51,6 +51,9 @@
     <Compile Include="About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Commons.cs" />
+    <Compile Include="model\ICommons.cs" />
+    <Compile Include="model\IUpdateHelper.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="MutexHelper.cs" />
     <Compile Include="Presets\BuildingInfo.cs" />

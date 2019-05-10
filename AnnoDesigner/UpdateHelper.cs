@@ -1,4 +1,5 @@
-﻿using Octokit;
+﻿using AnnoDesigner.model;
+using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,13 +8,15 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Xceed.Wpf.Toolkit;
 
 namespace AnnoDesigner
 {
-    public class UpdateHelper
+    public class UpdateHelper : IUpdateHelper
     {
         public enum AssetType
         {
@@ -27,23 +30,57 @@ namespace AnnoDesigner
         private const string RELEASE_PRESET_TAG = "Presetsv";
         private const string ASSET_NAME_PRESETS_AND_ICONS = "Presets.and.Icons.Update";
 
-        private GitHubClient _gitHubClient;
+        private GitHubClient _apiClient;
+        private HttpClient _httpClient;
 
         public UpdateHelper()
         {
             LatestPresetReleaseType = AssetType.None;
         }
 
-        private GitHubClient Client
+        private GitHubClient ApiClient
         {
             get
             {
-                if (_gitHubClient == null)
+                if (_apiClient == null)
                 {
-                    _gitHubClient = new GitHubClient(new ProductHeaderValue($"anno-designer-{Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture)}"));
+                    _apiClient = new GitHubClient(new Octokit.ProductHeaderValue($"anno-designer-{Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture)}", "1.0"));
                 }
 
-                return _gitHubClient;
+                return _apiClient;
+            }
+        }
+
+        private HttpClient LocalHttpClient
+        {
+            get
+            {
+                if (_httpClient == null)
+                {
+                    var handler = new HttpClientHandler();
+                    if (handler.SupportsAutomaticDecompression)
+                    {
+                        handler.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+                    }
+
+                    _httpClient = new HttpClient(handler, true);
+                    _httpClient.Timeout = TimeSpan.FromSeconds(30);
+                    _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue($"anno-designer-{Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture)}", "1.0"));
+
+                    //detect DNS changes (default is infinite)
+                    //ServicePointManager.FindServicePoint(new Uri(BASE_URI)).ConnectionLeaseTimeout = (int)TimeSpan.FromMinutes(1).TotalMilliseconds;
+                    //defaut is 2 minutes
+                    ServicePointManager.DnsRefreshTimeout = (int)TimeSpan.FromMinutes(1).TotalMilliseconds;
+                    //increases the concurrent outbound connections
+                    if (ServicePointManager.DefaultConnectionLimit < 1024)
+                    {
+                        ServicePointManager.DefaultConnectionLimit = 1024;
+                    }
+                    //only allow secure protocols
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+                }
+
+                return _httpClient;
             }
         }
 
@@ -69,7 +106,7 @@ namespace AnnoDesigner
             {
                 var result = false;
 
-                var releases = await Client.Repository.Release.GetAll(GITHUB_USERNAME, GITHUB_PROJECTNAME).ConfigureAwait(false);
+                var releases = await ApiClient.Repository.Release.GetAll(GITHUB_USERNAME, GITHUB_PROJECTNAME).ConfigureAwait(false);
                 if (releases == null || releases.Count < 1)
                 {
                     AllReleases = null;
@@ -201,9 +238,10 @@ namespace AnnoDesigner
         {
             try
             {
-                using (WebClient webClient = new WebClient())
+                var stream = await LocalHttpClient.GetStreamAsync(url).ConfigureAwait(false);
+                using (var fileStream = new FileStream(pathToSavedFile, System.IO.FileMode.Create))
                 {
-                    await webClient.DownloadFileTaskAsync(url, pathToSavedFile).ConfigureAwait(false);
+                    await stream.CopyToAsync(fileStream).ConfigureAwait(false);
                 }
 
                 return pathToSavedFile;
@@ -219,17 +257,8 @@ namespace AnnoDesigner
         {
             try
             {
-                await Task.Run(() =>
+                await Task.Run(async () =>
                     {
-                        ////wait for old process to finish
-                        //while (Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Length > 1)
-                        //{
-                        //    //File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"another process is running{Environment.NewLine}");
-                        //    Task.Delay(TimeSpan.FromMilliseconds(100)).GetAwaiter().GetResult();
-                        //}
-
-                        ////File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"no other processese are running{Environment.NewLine}");
-
                         var pathToUpdatedPresetsFile = PathToUpdatedPresetsFile;
                         var pathToUpdatedPresetsAndIconsFile = PathToUpdatedPresetsAndIconsFile;
                         if (!String.IsNullOrWhiteSpace(pathToUpdatedPresetsFile) && File.Exists(pathToUpdatedPresetsFile))
@@ -240,8 +269,6 @@ namespace AnnoDesigner
                         }
                         else if (!String.IsNullOrWhiteSpace(pathToUpdatedPresetsAndIconsFile) && File.Exists(pathToUpdatedPresetsAndIconsFile))
                         {
-                            //File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"start extraction{Environment.NewLine}");
-
                             using (var archive = ZipFile.OpenRead(pathToUpdatedPresetsAndIconsFile))
                             {
                                 foreach (var curEntry in archive.Entries)
@@ -250,12 +277,9 @@ namespace AnnoDesigner
                                 }
                             }
 
-                            //File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"end extratcion{Environment.NewLine}");
+                            //wait extra time for extraction to finish (sometimes the disk needs extra time)
+                            await Task.Delay(TimeSpan.FromMilliseconds(200));
 
-                            //wait extra time for extraction to finish
-                            Task.Delay(TimeSpan.FromMilliseconds(200)).GetAwaiter().GetResult();
-
-                            //File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"delete zip{Environment.NewLine}");
                             File.Delete(pathToUpdatedPresetsAndIconsFile);
                         }
                     });

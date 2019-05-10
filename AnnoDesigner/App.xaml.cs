@@ -100,7 +100,6 @@ namespace AnnoDesigner
                         while (!createdNewMutex && currentTry < maxTrys)
                         {
                             Trace.WriteLine($"Waiting for other processes to finish. Try {currentTry} of {maxTrys}");
-                            //File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"Waiting for other processes to finish.Try { currentTry} of { maxTrys}{Environment.NewLine}");
 
                             createdNewMutex = mutexAnnoDesigner.WaitOne(TimeSpan.FromSeconds(1), true);
                             currentTry++;
@@ -120,18 +119,13 @@ namespace AnnoDesigner
                 }
 
                 //var updateWindow = new UpdateWindow();
-
-                //File.AppendAllText(Path.Combine(App.ApplicationPath, $"update-activity-{Process.GetCurrentProcess().Id}.txt"), $"start cleanup{Environment.NewLine}");
-                var updateHelper = new UpdateHelper();
-                await updateHelper.ReplaceUpdatedPresetFile();
+                await Commons.Instance.UpdateHelper.ReplaceUpdatedPresetFile();
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
-                MainWindow = new MainWindow();
+                MainWindow = new MainWindow(Commons.Instance);
                 //MainWindow.Loaded += (s, args) => { updateWindow.Close(); };
 
                 //updateWindow.Show();
-
-
 
                 MainWindow.ShowDialog();
 

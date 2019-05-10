@@ -18,6 +18,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using AnnoDesigner.model;
 
 namespace AnnoDesigner
 {
@@ -94,11 +95,18 @@ namespace AnnoDesigner
             _mainWindowLocalization.TreeViewSearchText = string.Empty;
         }
 
+        private readonly ICommons _commons;
+
         #region Initialization
 
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public MainWindow(ICommons commonsToUse) : this()
+        {
+            _commons = commonsToUse;
 
             App.DpiScale = VisualTreeHelper.GetDpi(this);
 
@@ -231,8 +239,7 @@ namespace AnnoDesigner
 
         private async Task DownloadNewPresets()
         {
-            var updateHelper = new UpdateHelper();
-            var isnewPresetAvailable = await updateHelper.IsNewPresetFileAvailableAsync(new Version(annoCanvas.BuildingPresets.Version));
+            var isnewPresetAvailable = await _commons.UpdateHelper.IsNewPresetFileAvailableAsync(new Version(annoCanvas.BuildingPresets.Version));
             if (isnewPresetAvailable)
             {
                 if (MessageBox.Show($"An updated version of the preset file is available.{Environment.NewLine}Do you want to download it and restart the application?",
@@ -243,7 +250,7 @@ namespace AnnoDesigner
                 {
                     busyIndicator.IsBusy = true;
 
-                    var newLocation = await updateHelper.DownloadLatestPresetFile();
+                    var newLocation = await _commons.UpdateHelper.DownloadLatestPresetFile().ConfigureAwait(false);
 
                     var process = Process.Start(App.ExecutablePath);
 
