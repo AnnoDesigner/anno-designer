@@ -204,6 +204,7 @@ namespace AnnoDesigner
 
             // load presets
             treeViewPresets.Items.Clear();
+
             // manually add a road tile preset
             AddRoadTiles();
             BuildingPresets presets = annoCanvas.BuildingPresets;
