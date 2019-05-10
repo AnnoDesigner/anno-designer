@@ -22,7 +22,8 @@ namespace AnnoDesigner
         {
             None,
             Presets,
-            PresetsAndIcons
+            PresetsAndIcons,
+            IconMapping
         }
 
         private const string GITHUB_USERNAME = "AgmasGold";
@@ -92,6 +93,11 @@ namespace AnnoDesigner
         public string PathToUpdatedPresetsAndIconsFile
         {
             get { return Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + "PresetsAndIcons.zip"); }
+        }
+
+        public string PathToUpdatedIconMappingFile
+        {
+            get { return Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + Constants.IconNameFile); }
         }
 
         private IReadOnlyList<Release> AllReleases { get; set; }
@@ -184,6 +190,20 @@ namespace AnnoDesigner
                     }
                 }
 
+                //check icons.json
+                if (latestPresetAsset == null)
+                {
+                    latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(Constants.IconNameFile, StringComparison.OrdinalIgnoreCase));
+                    if (latestPresetAsset == null)
+                    {
+                        Debug.WriteLine($"No asset found for latest preset update. ({Constants.IconNameFile})");
+                    }
+                    else
+                    {
+                        LatestPresetReleaseType = AssetType.IconMapping;
+                    }
+                }
+
                 //still no supported asset found
                 if (latestPresetAsset == null)
                 {
@@ -224,6 +244,16 @@ namespace AnnoDesigner
                     tempFileInfo.MoveTo(PathToUpdatedPresetsAndIconsFile);
                     result = PathToUpdatedPresetsAndIconsFile;
                 }
+                else if (LatestPresetReleaseType == AssetType.IconMapping)
+                {
+                    if (File.Exists(PathToUpdatedIconMappingFile))
+                    {
+                        File.Delete(PathToUpdatedIconMappingFile);
+                    }
+
+                    tempFileInfo.MoveTo(PathToUpdatedIconMappingFile);
+                    result = PathToUpdatedIconMappingFile;
+                }
 
                 return result;
             }
@@ -261,6 +291,8 @@ namespace AnnoDesigner
                     {
                         var pathToUpdatedPresetsFile = PathToUpdatedPresetsFile;
                         var pathToUpdatedPresetsAndIconsFile = PathToUpdatedPresetsAndIconsFile;
+                        var pathToUpdatedIconMappingFile = PathToUpdatedIconMappingFile;
+
                         if (!String.IsNullOrWhiteSpace(pathToUpdatedPresetsFile) && File.Exists(pathToUpdatedPresetsFile))
                         {
                             var originalPathToPresetsFile = Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile);
@@ -281,6 +313,12 @@ namespace AnnoDesigner
                             await Task.Delay(TimeSpan.FromMilliseconds(200));
 
                             File.Delete(pathToUpdatedPresetsAndIconsFile);
+                        }
+                        else if (!String.IsNullOrWhiteSpace(pathToUpdatedIconMappingFile) && File.Exists(pathToUpdatedIconMappingFile))
+                        {
+                            var originalPathToIconMappingFile = Path.Combine(App.ApplicationPath, Constants.IconNameFile);
+                            File.Delete(originalPathToIconMappingFile);
+                            File.Move(pathToUpdatedIconMappingFile, originalPathToIconMappingFile);
                         }
                     });
             }
