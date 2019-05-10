@@ -57,10 +57,9 @@
     <Compile Include="Presets\BuildingInfo.cs" />
     <Compile Include="Presets\BuildingPresets.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Presets\ColorInfo.cs" />
+    <Compile Include="Presets\PredefinedColor.cs" />
     <Compile Include="Presets\ColorPresets.cs" />
     <Compile Include="Presets\ColorScheme.cs" />
-    <Compile Include="Presets\ColorTarget.cs" />
     <Compile Include="Presets\IconNameMap.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -118,7 +117,7 @@
     <None Include="colors.json" />
     <None Include="icons.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </None>    
     <None Include="presets.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -135,7 +134,7 @@
     <None Include="Stuff\Original Icons\icon61_web.png" />
     <None Include="Stuff\Original Icons\icon64.png" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup>    
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />

@@ -6,10 +6,10 @@ namespace AnnoDesigner.Presets
     [DataContract]
     public class ColorScheme
     {
-        [DataMember]
+        [DataMember(Order = 0, Name = "Name")]
         public string Name { get; set; }
 
-        [DataMember]
-        public List<ColorInfo> ColorInfos { get; set; }
+        [DataMember(Order = 1, Name = "Colors")]
+        public List<PredefinedColor> Colors { get; set; }
     }
 }
