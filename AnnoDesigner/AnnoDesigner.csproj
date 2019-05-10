@@ -1107,6 +1107,9 @@
     <None Include="icons\A7_benches.png" />
     <None Include="icons\A7_beta_reward_2x2.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Flags\France.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <!-- <PostBuildEvent>del $(TargetDir)icons /Q -->
