@@ -1,4 +1,5 @@
 ﻿using AnnoDesigner.model;
+using AnnoDesigner.Properties;
 using Octokit;
 using System;
 using System.Collections.Generic;
@@ -145,7 +146,7 @@ namespace AnnoDesigner
                 var latestPresetVersionString = latestPresetRelease.TagName.Replace(RELEASE_PRESET_TAG, string.Empty).Trim();
                 if (String.IsNullOrWhiteSpace(latestPresetVersionString))
                 {
-                    Debug.WriteLine($"Could not get version of latest preset release. {nameof(latestPresetRelease.TagName)}: {latestPresetRelease.TagName}");
+                    Trace.WriteLine($"Could not get version of latest preset release. {nameof(latestPresetRelease.TagName)}: {latestPresetRelease.TagName}");
                     return result;
                 }
 
@@ -159,7 +160,7 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error getting info about preset updates.{Environment.NewLine}{ex}");
+                Trace.WriteLine($"Error getting info about preset updates.{Environment.NewLine}{ex}");
                 return false;
             }
         }
@@ -179,7 +180,7 @@ namespace AnnoDesigner
                 var latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(Constants.BuildingPresetsFile, StringComparison.OrdinalIgnoreCase));
                 if (latestPresetAsset == null)
                 {
-                    Debug.WriteLine($"No asset found for latest preset update. ({Constants.BuildingPresetsFile})");
+                    Trace.WriteLine($"No asset found for latest preset update. ({Constants.BuildingPresetsFile})");
                 }
                 else
                 {
@@ -192,7 +193,7 @@ namespace AnnoDesigner
                     latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.StartsWith(ASSET_NAME_PRESETS_AND_ICONS, StringComparison.OrdinalIgnoreCase));
                     if (latestPresetAsset == null)
                     {
-                        Debug.WriteLine($"No asset found for latest preset update. ({ASSET_NAME_PRESETS_AND_ICONS})");
+                        Trace.WriteLine($"No asset found for latest preset update. ({ASSET_NAME_PRESETS_AND_ICONS})");
                     }
                     else
                     {
@@ -206,7 +207,7 @@ namespace AnnoDesigner
                     latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(Constants.IconNameFile, StringComparison.OrdinalIgnoreCase));
                     if (latestPresetAsset == null)
                     {
-                        Debug.WriteLine($"No asset found for latest preset update. ({Constants.IconNameFile})");
+                        Trace.WriteLine($"No asset found for latest preset update. ({Constants.IconNameFile})");
                     }
                     else
                     {
@@ -220,7 +221,7 @@ namespace AnnoDesigner
                     latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(Constants.ColorPresetsFile, StringComparison.OrdinalIgnoreCase));
                     if (latestPresetAsset == null)
                     {
-                        Debug.WriteLine($"No asset found for latest preset update. ({Constants.ColorPresetsFile})");
+                        Trace.WriteLine($"No asset found for latest preset update. ({Constants.ColorPresetsFile})");
                     }
                     else
                     {
@@ -231,7 +232,7 @@ namespace AnnoDesigner
                 //still no supported asset found
                 if (latestPresetAsset == null)
                 {
-                    Debug.WriteLine("No supported asset found for latest preset update.");
+                    Trace.WriteLine("No supported asset found for latest preset update.");
                     return result;
                 }
 
@@ -293,7 +294,7 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error downloading latest preset file.{Environment.NewLine}{ex}");
+                Trace.WriteLine($"Error downloading latest preset file.{Environment.NewLine}{ex}");
                 return string.Empty;
             }
         }
@@ -312,7 +313,7 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error downloading file ({url}).{Environment.NewLine}{ex}");
+                Trace.WriteLine($"Error downloading file ({url}).{Environment.NewLine}{ex}");
                 return string.Empty;
             }
         }
@@ -362,7 +363,12 @@ namespace AnnoDesigner
             {
                 App.WriteToErrorLog("error replacing updated presets file", ex.Message, ex.StackTrace);
 
-                MessageBox.Show("Error installing update");
+                string language = Localization.Localization.GetLanguageCodeFromName(Settings.Default.SelectedLanguage);
+                MessageBox.Show(Localization.Localization.Translations[language]["UpdateErrorPresetMessage"],
+                            Localization.Localization.Translations[language]["Error"],
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error,
+                            MessageBoxResult.OK);
             }
         }
     }

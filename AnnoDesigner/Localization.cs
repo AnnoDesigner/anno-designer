@@ -39,6 +39,7 @@ namespace AnnoDesigner.Localization
                         { "UnregisterFileExtension" , "Unregister File Extension" },
                         { "UnregisterFileExtensionSuccessful" , "Deregistration of file extension was successful." },
                         { "Successful" , "Successful" },
+                        { "Error" , "Error" },
                         { "Export" , "Export" },
                         { "ExportImage" , "Export Image" },
                         { "UseCurrentZoomOnExportedImage" , "Use current zoom on exported image" },
@@ -112,6 +113,11 @@ namespace AnnoDesigner.Localization
                         { "RecentColors" , "Recent used Colors" },
                         { "Standard" , "Standard" },
                         { "Advanced" , "Advanced" },
+                        { "UpdateAvailableHeader" , "Update available" },
+                        { "UpdateAvailablePresetMessage" , $"An updated version of the preset file is available.{Environment.NewLine}Do you want to download it and restart the application?" },
+                        { "AdminRightsRequired" , "Admin rights required" },
+                        { "UpdateRequiresAdminRightsMessage" , "To download the update the application needs write access. Please provide credentials." },
+                        { "UpdateErrorPresetMessage" , "There was an error installing the update." },
                     }
                 },
                 {
@@ -130,6 +136,7 @@ namespace AnnoDesigner.Localization
                         { "UnregisterFileExtension" , "Dateierweiterung entfernen" },
                         { "UnregisterFileExtensionSuccessful" , "Registrierung der Dateierweiterung wurde entfernt." },
                         { "Successful" , "Erfolg" },
+                        { "Error" , "Fehler" },
                         { "Export" , "Exportieren" },
                         { "ExportImage" , "Exportiere Bild / Speichere als Bild" },
                         { "UseCurrentZoomOnExportedImage" , "Wende aktuellen Zomm auf exportiertes Bild an" },
@@ -203,6 +210,11 @@ namespace AnnoDesigner.Localization
                         { "RecentColors" , "Zuletzt verwendete Farben" },
                         { "Standard" , "Standard" },
                         { "Advanced" , "Erweitert" },
+                        { "UpdateAvailableHeader" , "Update verfügbar" },
+                        { "UpdateAvailablePresetMessage" , $"Eine aktualisierte Version der Vorlagen ist verfügbar.{Environment.NewLine}Möchten Sie sie herunterladen und die Anwendung neu starten?" },
+                        { "AdminRightsRequired" , "Admin-Rechte erforderlich" },
+                        { "UpdateRequiresAdminRightsMessage" , "To download the update the application needs write access. Please provide credentials." },
+                        { "UpdateErrorPresetMessage" , "Es gab einen Fehler bei der Installation des Updates." },
                     }
                  },
                 {
@@ -221,6 +233,7 @@ namespace AnnoDesigner.Localization
                         { "UnregisterFileExtension" , "Wyrejestruj rozszerzenie pliku" },
                         { "UnregisterFileExtensionSuccessful" , "Wyrejestrowanie rozszerzenia pliku zakończyło się sukcesem." },
                         { "Successful" , "Udało się." },
+                        { "Error" , "Błąd" },
                         { "Export" , "Eksportuj" },
                         { "ExportImage" , "Eksportuj obraz" },
                         { "UseCurrentZoomOnExportedImage" , "Użyj obecnego powiększenia na eksportowanym obrazie" },
@@ -294,6 +307,11 @@ namespace AnnoDesigner.Localization
                         { "RecentColors" , "Ostatnio używane kolory" },
                         { "Standard" , "Standard" },
                         { "Advanced" , "Zaawansowane" },
+                        { "UpdateAvailableHeader" , "Dostępna aktualizacja" },
+                        { "UpdateAvailablePresetMessage" , $"Dostępna jest zaktualizowana wersja presetów.{Environment.NewLine}Chcesz ją pobrać i zrestartować aplikację?" },
+                        { "AdminRightsRequired" , "Wymagane prawa administratora" },
+                        { "UpdateRequiresAdminRightsMessage" , "Aby pobrać aktualizację, aplikacja musi mieć dostęp do zapisu. Proszę podać dane uwierzytelniające." },
+                        { "UpdateErrorPresetMessage" , "Wystąpił błąd podczas instalacji aktualizacji." },
                     }
                  },
                 {
@@ -312,6 +330,7 @@ namespace AnnoDesigner.Localization
                         { "UnregisterFileExtension" , "Отмена регистрации расширения файла" },
                         { "UnregisterFileExtensionSuccessful" , "Отмена регистрации продления файлов прошла успешно." },
                         { "Successful" , "Успешный" },
+                        { "Error" , "Ошибка" },
                         { "Export" , "Экспорт" },
                         { "ExportImage" , "Экспортировать изображение" },
                         { "UseCurrentZoomOnExportedImage" , "Использовать текущее масштабирование экспортируемого изображения" },
@@ -385,6 +404,11 @@ namespace AnnoDesigner.Localization
                         { "RecentColors" , "Последние использованные цвета" },
                         { "Standard" , "Стандарт" },
                         { "Advanced" , "Расширенный" },
+                        { "UpdateAvailableHeader" , "Обновление доступно" },
+                        { "UpdateAvailablePresetMessage" , $"Доступна обновленная версия предустановок.{Environment.NewLine}Вы хотите скачать его и перезапустить приложение?" },
+                        { "AdminRightsRequired" , "Требуемые права администратора" },
+                        { "UpdateRequiresAdminRightsMessage" , "Для загрузки обновления приложению необходим доступ на запись. Пожалуйста, предоставьте полномочия." },
+                        { "UpdateErrorPresetMessage" , "Произошла ошибка при установке обновления." },
                     }
                  },
             };

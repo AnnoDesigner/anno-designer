@@ -244,8 +244,10 @@ namespace AnnoDesigner
             var isnewPresetAvailable = await _commons.UpdateHelper.IsNewPresetFileAvailableAsync(new Version(annoCanvas.BuildingPresets.Version));
             if (isnewPresetAvailable)
             {
-                if (MessageBox.Show($"An updated version of the preset file is available.{Environment.NewLine}Do you want to download it and restart the application?",
-                    "Update available",
+                string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+
+                if (MessageBox.Show(Localization.Localization.Translations[language]["UpdateAvailablePresetMessage"],
+                    Localization.Localization.Translations[language]["UpdateAvailableHeader"],
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Asterisk,
                     MessageBoxResult.OK) == MessageBoxResult.Yes)
@@ -254,8 +256,8 @@ namespace AnnoDesigner
 
                     if (!Commons.CanWriteInFolder())
                     {
-                        MessageBox.Show("To download the update the application needs write access. Please provide credentials.",
-                            "Needs elevation",
+                        MessageBox.Show(Localization.Localization.Translations[language]["UpdateRequiresAdminRightsMessage"],
+                            Localization.Localization.Translations[language]["AdminRightsRequired"],
                             MessageBoxButton.OK,
                             MessageBoxImage.Information,
                             MessageBoxResult.OK);

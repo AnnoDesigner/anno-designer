@@ -107,7 +107,7 @@ namespace AnnoDesigner
 
                         if (!createdNewMutex)
                         {
-                            MessageBox.Show($"Another instance of the app is already running.");
+                            MessageBox.Show("Another instance of the app is already running.");
                             Environment.Exit(-1);
                         }
                     }
