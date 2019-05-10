@@ -252,9 +252,20 @@ namespace AnnoDesigner
                 {
                     busyIndicator.IsBusy = true;
 
+                    if (!Commons.CanWriteInFolder())
+                    {
+                        MessageBox.Show("To download the update the application needs write access. Please provide credentials.",
+                            "Needs elevation",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information,
+                            MessageBoxResult.OK);
+
+                        Commons.RestartApplication(true, null, App.ExecutablePath);
+                    }
+
                     var newLocation = await _commons.UpdateHelper.DownloadLatestPresetFile().ConfigureAwait(false);
 
-                    var process = Process.Start(App.ExecutablePath);
+                    Commons.RestartApplication(false, null, App.ExecutablePath);
 
                     Environment.Exit(-1);
                 }

@@ -12,7 +12,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Xceed.Wpf.Toolkit;
+using System.Windows;
 
 namespace AnnoDesigner
 {
