@@ -17,19 +17,21 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Threading;
+using System.Collections.ObjectModel;
 
 namespace AnnoDesigner
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
+        : Window
     {
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
         private static MainWindow _instance;
-        private readonly AnnoCanvas annoCanvas;
-        private readonly StatisticsView statisticsView;
+        private TreeViewSearch<AnnoObject> _treeViewSearch;
+        private List<bool> _treeViewState;
 
         private static string _selectedLanguage;
         //for identifier checking process
@@ -57,12 +59,12 @@ namespace AnnoDesigner
             }
         }
 
-        private static Localization.MainWindow mainWindowLocalization;
+        private static Localization.MainWindow _mainWindowLocalization;
         //About window does not need to be called, as it get's instantiated and used when the about window is created
 
         private void SelectedLanguageChanged()
         {
-            mainWindowLocalization.UpdateLanguage();
+            _mainWindowLocalization.UpdateLanguage();
             _instance.RepopulateTreeView();
             foreach (MenuItem item in LanguageMenu.Items)
             {
@@ -76,11 +78,28 @@ namespace AnnoDesigner
                 }
             }
 
+            //refresh localized influence types in combo box
+            comboxBoxInfluenceType.Items.Clear();
+            string[] rangeTypes = Enum.GetNames(typeof(BuildingInfluenceType));
+            string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+
+            foreach (string rangeType in rangeTypes)
+            {
+                comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
+            }
+            comboxBoxInfluenceType.SelectedIndex = 0;
+
+            //Force a language update on the clipboard status item.
+            if (StatusBarItemClipboardStatus.Content != null) ClipboardChanged(annoCanvas.ObjectClipboard);
+
+            //update settings
             Settings.Default.SelectedLanguage = SelectedLanguage;
 
-            mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
+            _mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
                 annoCanvas.SelectedObjects,
                 annoCanvas.BuildingPresets);
+
+            _mainWindowLocalization.TreeViewSearchText = string.Empty;
         }
 
         #region Initialization
@@ -89,22 +108,12 @@ namespace AnnoDesigner
         {
             InitializeComponent();
 
+            App.DpiScale = VisualTreeHelper.GetDpi(this);
+
             _instance = this;
             // initialize web client
             _webClient = new WebClient();
             _webClient.DownloadStringCompleted += WebClientDownloadStringCompleted;
-
-            //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
-            DependencyObject dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
-            mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
-
-            annoCanvas = new AnnoCanvas();
-            annoCanvas.RenderGrid = true;
-            annoCanvas.RenderIcon = true;
-            annoCanvas.RenderLabel = true;
-
-            mainControl.Canvas = annoCanvas;
-
             // add event handlers
             annoCanvas.OnCurrentObjectChanged += UpdateUIFromObject;
             annoCanvas.OnStatusMessageChanged += StatusMessageChanged;
@@ -112,15 +121,16 @@ namespace AnnoDesigner
             annoCanvas.OnClipboardChanged += ClipboardChanged;
             annoCanvas.StatisticsUpdated += AnnoCanvas_StatisticsUpdated;
 
-            statisticsView = new StatisticsView();
-            statisticsView.DataContext = mainWindowLocalization.StatisticsViewModel;
+            DpiChanged += MainWindow_DpiChanged;
 
-            mainControl.Statistics = statisticsView;
+            //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
+            var dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
+            _mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
 
             //If language is not recognized, bring up the language selection screen
             if (!Localization.Localization.LanguageCodeMap.ContainsKey(Settings.Default.SelectedLanguage))
             {
-                Welcome w = new Welcome();
+                var w = new Welcome();
                 w.ShowDialog();
             }
             else
@@ -140,7 +150,7 @@ namespace AnnoDesigner
 
         private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)
         {
-            mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
+            _mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
                 annoCanvas.SelectedObjects,
                 annoCanvas.BuildingPresets);
         }
@@ -156,10 +166,14 @@ namespace AnnoDesigner
             ShowGrid.IsChecked = Settings.Default.ShowGrid;
             ShowIcons.IsChecked = Settings.Default.ShowIcons;
             ShowLabels.IsChecked = Settings.Default.ShowLabels;
+            _treeViewState = Settings.Default.TreeViewState ?? null;
+            _mainWindowLocalization.TreeViewSearchText = Settings.Default.TreeViewSearchText ?? "";
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
+            _mainWindowLocalization.BuildingSettingsViewModel.AnnoCanvasToUse = annoCanvas;
+
             // add icons to the combobox
             comboBoxIcon.Items.Clear();
             _noIconItem = new IconImage("None");
@@ -170,9 +184,20 @@ namespace AnnoDesigner
             }
             comboBoxIcon.SelectedIndex = 0;
 
-            // check for updates on startup
-            MenuItemVersion.Header = "Version: " + Constants.Version;
-            MenuItemFileVersion.Header = "File version: " + Constants.FileVersion;
+            string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+            //add localized influence types to combo box
+            comboxBoxInfluenceType.Items.Clear();
+            string[] rangeTypes = Enum.GetNames(typeof(BuildingInfluenceType));
+            foreach (string rangeType in rangeTypes)
+            {
+                comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
+            }
+            comboxBoxInfluenceType.SelectedIndex = 0;
+
+            // check for updates on startup            
+            _mainWindowLocalization.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
+            _mainWindowLocalization.FileVersionValue = Constants.FileVersion.ToString("0.#", CultureInfo.InvariantCulture);
+
             CheckForUpdates(false);
 
             // load color presets
@@ -200,29 +225,16 @@ namespace AnnoDesigner
             // manually add a road tile preset
             treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true, Identifier = "Road" });
             treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true, Identifier = "Road" });
-            BuildingPresets presets = annoCanvas.BuildingPresets;
+            var presets = annoCanvas.BuildingPresets;
             if (presets != null)
             {
                 presets.AddToTree(treeViewPresets);
                 GroupBoxPresets.Header = string.Format("Building presets - loaded v{0}", presets.Version);
-                MenuItemPresetsVersion.Header = "Presets version: " + presets.Version;
+                _mainWindowLocalization.PresetsVersionValue = presets.Version;
             }
             else
             {
                 GroupBoxPresets.Header = "Building presets - load failed";
-            }
-
-            if (Settings.Default.TreeViewState != null && Settings.Default.TreeViewState.Count > 0)
-            {
-                try
-                {
-                    treeViewPresets.SetTreeViewState(Settings.Default.TreeViewState);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Failed to restore previous preset menu settings.");
-                    App.WriteToErrorLog("TreeView SetTreeViewState Error", ex.Message, ex.StackTrace);
-                }
             }
 
             // load file given by argument
@@ -302,11 +314,15 @@ namespace AnnoDesigner
                 return;
             }
             // size
-            textBoxWidth.Value = (int)obj.Size.Width;
-            textBoxHeight.Value = (int)obj.Size.Height;
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingWidth = (int)obj.Size.Width;
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingHeight = (int)obj.Size.Height;
             // color
-            colorPicker.SelectedColor = obj.Color;
+            _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor = obj.Color;
             // label
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingName = obj.Label;
+            // Identifier
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier = obj.Identifier;
+
             textBoxLabel.Text = obj.Label;
             // Ident
             textBoxIdentifier.Text = obj.Identifier;
@@ -315,20 +331,52 @@ namespace AnnoDesigner
             // icon
             try
             {
-                comboBoxIcon.SelectedItem = string.IsNullOrEmpty(obj.Icon) ? _noIconItem : comboBoxIcon.Items.Cast<IconImage>().Single(_ => _.Name == Path.GetFileNameWithoutExtension(obj.Icon));
+                if (string.IsNullOrWhiteSpace(obj.Icon))
+                {
+                    comboBoxIcon.SelectedItem = _noIconItem;
+                }
+                else
+                {
+                    var foundIconImage = comboBoxIcon.Items.Cast<IconImage>().SingleOrDefault(x => x.Name.Equals(Path.GetFileNameWithoutExtension(obj.Icon), StringComparison.OrdinalIgnoreCase));
+                    comboBoxIcon.SelectedItem = foundIconImage ?? _noIconItem;
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error finding {nameof(IconImage)} for value \"{obj.Icon}\".{Environment.NewLine}{ex}");
+
                 comboBoxIcon.SelectedItem = _noIconItem;
             }
+
             // radius
-            textBoxRadius.Value = obj.Radius;
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius = obj.Radius;
             //InfluenceRadius
-            textBoxInfluenceRange.Text = obj.InfluenceRange.ToString();
-            // flags
-            //checkBoxLabel.IsChecked = !string.IsNullOrEmpty(obj.Label);
-            checkBoxBorderless.IsChecked = obj.Borderless;
-            checkBoxRoad.IsChecked = obj.Road;
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = obj.InfluenceRange;
+
+            //Set Influence Type combo box
+            if (obj.Radius > 0 && obj.InfluenceRange > 0)
+            {
+                //Building uses both a radius and an influence
+                //Has to be set manually 
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Both;
+            }
+            else if (obj.Radius > 0)
+            {
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Radius;
+            }
+            else if (obj.InfluenceRange > 0)
+            {
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Distance;
+            }
+            else
+            {
+                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.None;
+            }
+
+            // flags            
+            //_mainWindowLocalization.BuildingSettingsViewModel.IsEnableLabelChecked = !string.IsNullOrEmpty(obj.Label);
+            _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked = obj.Borderless;
+            _mainWindowLocalization.BuildingSettingsViewModel.IsRoadChecked = obj.Road;
         }
 
         private void StatusMessageChanged(string message)
@@ -345,7 +393,7 @@ namespace AnnoDesigner
 
         private void ClipboardChanged(List<AnnoObject> l)
         {
-            StatusBarItemClipboardStatus.Content = "Items on clipboard: " + l.Count;
+            StatusBarItemClipboardStatus.Content = _mainWindowLocalization.StatusBarItemsOnClipboard + ": " + l.Count;
         }
 
         #endregion
@@ -360,12 +408,17 @@ namespace AnnoDesigner
         private void ApplyCurrentObject()
         {
             // parse user inputs and create new object
-            AnnoObject obj = new AnnoObject
+            var obj = new AnnoObject
             {
-                Size = new Size(textBoxWidth?.Value ?? 1, textBoxHeight?.Value ?? 1),
-                Color = colorPicker.SelectedColor.HasValue ? colorPicker.SelectedColor.Value : Colors.Red,
-                Label = IsChecked(checkBoxLabel) ? textBoxLabel.Text : "",
+                Size = new Size(_mainWindowLocalization.BuildingSettingsViewModel.BuildingWidth, _mainWindowLocalization.BuildingSettingsViewModel.BuildingHeight),
+                Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
+                Label = _mainWindowLocalization.BuildingSettingsViewModel.IsEnableLabelChecked ? _mainWindowLocalization.BuildingSettingsViewModel.BuildingName : string.Empty,
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
+                Radius = _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius,
+                InfluenceRange = _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange,
+                Borderless = _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked,
+                Road = _mainWindowLocalization.BuildingSettingsViewModel.IsRoadChecked,
+                Identifier = _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier,
                 Radius = textBoxRadius?.Value ?? 0,
                 InfluenceRange = string.IsNullOrEmpty(textBoxInfluenceRange.Text) ? 0 : double.Parse(textBoxInfluenceRange.Text, CultureInfo.InvariantCulture),
                 Borderless = IsChecked(checkBoxBorderless),
@@ -452,13 +505,12 @@ namespace AnnoDesigner
         {
             try
             {
-                //TDOD: Rewrite ApplyPreset();
-                AnnoObject selectedItem = treeViewPresets.SelectedItem as AnnoObject;
+                var selectedItem = treeViewPresets.SelectedItem as AnnoObject;
                 if (selectedItem != null)
                 {
                     UpdateUIFromObject(new AnnoObject(selectedItem)
                     {
-                        Color = colorPicker.SelectedColor.HasValue ? colorPicker.SelectedColor.Value : Colors.Red,
+                        Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
                     });
                     ApplyCurrentObject();
                 }
@@ -486,6 +538,11 @@ namespace AnnoDesigner
         #endregion
 
         #region UI events
+        private void MainWindow_DpiChanged(object sender, DpiChangedEventArgs e)
+        {
+            App.DpiScale = e.NewDpi;
+            //TODO: Redraw statistics when change is merged.
+        }
 
         private void MenuItemCloseClick(object sender, RoutedEventArgs e)
         {
@@ -503,6 +560,8 @@ namespace AnnoDesigner
                 MessageBox.Show("Error: Invalid building configuration.");
             }
         }
+
+        #region Menu Events
 
         private void MenuItemExportImageClick(object sender, RoutedEventArgs e)
         {
@@ -532,7 +591,13 @@ namespace AnnoDesigner
 
         private void ToggleStatisticsView(bool showStatisticsView)
         {
-            mainControl.ToggleStatisticsView(showStatisticsView);
+            colStatisticsView.MinWidth = showStatisticsView ? 100 : 0;
+            colStatisticsView.Width = showStatisticsView ? GridLength.Auto : new GridLength(0);
+
+            statisticsView.Visibility = showStatisticsView ? Visibility.Visible : Visibility.Collapsed;
+            statisticsView.MinWidth = showStatisticsView ? 100 : 0;
+
+            splitterStatisticsView.Visibility = showStatisticsView ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void MenuItemStatsBuildingCountClick(object sender, RoutedEventArgs e)
@@ -542,10 +607,10 @@ namespace AnnoDesigner
 
         private void ToggleBuildingList(bool showBuildingList)
         {
-            mainWindowLocalization.StatisticsViewModel.ShowBuildingList = showBuildingList;
+            _mainWindowLocalization.StatisticsViewModel.ShowBuildingList = showBuildingList;
             if (showBuildingList)
             {
-                mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
+                _mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
                     annoCanvas.SelectedObjects,
                     annoCanvas.BuildingPresets);
             }
@@ -554,19 +619,6 @@ namespace AnnoDesigner
         private void MenuItemVersionCheckImageClick(object sender, RoutedEventArgs e)
         {
             CheckForUpdates(true);
-        }
-
-        private void TreeViewPresetsMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            ApplyPreset();
-        }
-
-        private void TreeViewPresetsKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Return)
-            {
-                ApplyPreset();
-            }
         }
 
         private void MenuItemResetZoomClick(object sender, RoutedEventArgs e)
@@ -605,7 +657,7 @@ namespace AnnoDesigner
 
         private void ShowRegistrationMessageBox(bool isDeregistration)
         {
-            string language = AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+            var language = AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
             var message = isDeregistration ? AnnoDesigner.Localization.Localization.Translations[language]["UnregisterFileExtensionSuccessful"] : AnnoDesigner.Localization.Localization.Translations[language]["RegisterFileExtensionSuccessful"];
 
             MessageBox.Show(message,
@@ -621,8 +673,10 @@ namespace AnnoDesigner
 
         private void MenuItemOpenWelcomeClick(object sender, RoutedEventArgs e)
         {
-            Welcome w = new Welcome();
-            w.Owner = this;
+            var w = new Welcome
+            {
+                Owner = this
+            };
             w.Show();
         }
 
@@ -638,8 +692,8 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         private void MenuItemLanguageClick(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = sender as MenuItem;
-            bool languageChecked = false;
+            var menuItem = sender as MenuItem;
+            var languageChecked = false;
             string language = null;
             foreach (MenuItem m in menuItem.Items)
             {
@@ -659,7 +713,7 @@ namespace AnnoDesigner
             }
             else
             {
-                string currentLanguage = SelectedLanguage;
+                var currentLanguage = SelectedLanguage;
                 if (language != currentLanguage)
                 {
                     SelectedLanguage = language;
@@ -667,17 +721,144 @@ namespace AnnoDesigner
 
             }
         }
-        #endregion
-
-        private void WindowClosing(object sender, CancelEventArgs e)
-        {
-            Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
-            Settings.Default.Save();
-        }
-
         private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
         {
             SelectedLanguageChanged();
+        }
+
+        #endregion
+
+        private void ComboxBoxInfluenceType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var cbx = sender as ComboBox;
+            if (cbx.SelectedValue != null)
+            {
+                var influenceType = (BuildingInfluenceType)((KeyValuePair<BuildingInfluenceType, string>)cbx.SelectedItem).Key;
+                switch (influenceType)
+                {
+                    case BuildingInfluenceType.None:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
+                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        break;
+                    case BuildingInfluenceType.Radius:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Visible;
+                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        break;
+                    case BuildingInfluenceType.Distance:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
+                        dockPanelInfluenceRange.Visibility = Visibility.Visible;
+                        break;
+                    case BuildingInfluenceType.Both:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Visible;
+                        dockPanelInfluenceRange.Visibility = Visibility.Visible;
+                        break;
+                    default:
+                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
+                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        break;
+                }
+            }
+        }
+
+        private void TextBoxSearchPresetsGotFocus(object sender, RoutedEventArgs e)
+        {
+            if (e.Source is TextBox)
+            {
+                if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
+                {
+                    _treeViewState = treeViewPresets.GetTreeViewState();
+                }
+            }
+        }
+
+        private void TextBoxSearchPresetsKeyUp(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.Key == Key.Escape)
+                {
+                    _mainWindowLocalization.TreeViewSearchText = string.Empty;
+                    TextBoxSearchPresets.UpdateLayout();
+                }
+
+                if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
+                {
+                    _treeViewSearch.Reset();
+                    treeViewPresets.SetTreeViewState(_treeViewState);
+                }
+                else
+                {
+                    _treeViewSearch.Search(_mainWindowLocalization.TreeViewSearchText);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to execute search successfully.");
+                App.WriteToErrorLog("Failed to execute search successfully", ex.Message, ex.StackTrace);
+            }
+        }
+
+        private void TreeViewPresetsMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ApplyPreset();
+        }
+
+        private void TreeViewPresetsKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                ApplyPreset();
+            }
+        }
+
+        private void TreeViewPresetsLoaded(object sender, RoutedEventArgs e)
+        {
+            //Intialise tree view and ensure that item containers are generated.
+            _treeViewSearch = new TreeViewSearch<AnnoObject>(treeViewPresets, _ => _.Label)
+            {
+                MatchFullWordOnly = false,
+                IsCaseSensitive = false
+            };
+            _treeViewSearch.EnsureItemContainersGenerated();
+
+            var isSearchState = false;
+            if (!string.IsNullOrWhiteSpace(Settings.Default.TreeViewSearchText))
+            {
+                //Then apply the search **before** reloading state
+                _treeViewSearch.Search(Settings.Default.TreeViewSearchText);
+                isSearchState = true;
+            }
+
+            if (_treeViewState != null && _treeViewState.Count > 0)
+            {
+                try
+                {
+                    treeViewPresets.SetTreeViewState(_treeViewState);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Failed to restore previous preset menu settings.");
+                    App.WriteToErrorLog("TreeView SetTreeViewState Error", ex.Message, ex.StackTrace);
+                }
+            }
+
+            if (isSearchState)
+            {
+                //if the application was last closed in the middle of a search, set the previous state
+                //to an empty value, so that we don't just expand the results of the search as the 
+                //previous state
+
+                _treeViewState = new List<bool>();
+
+            }
+        }
+
+        #endregion
+        private void WindowClosing(object sender, CancelEventArgs e)
+        {
+            Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
+            Settings.Default.TreeViewSearchText = _mainWindowLocalization.TreeViewSearchText;
+            Settings.Default.Save();
         }
 
         /// <summary>
@@ -703,85 +884,129 @@ namespace AnnoDesigner
             {
                 try
                 {
-                    RenderToFile(dialog.FileName, 1, exportZoom, exportSelection);
+                    RenderToFile(dialog.FileName, 1, exportZoom, exportSelection, statisticsView.IsVisible);
+
+                    MessageBox.Show(this,
+                        Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(SelectedLanguage)]["ExportImageSuccessful"],
+                        Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(SelectedLanguage)]["Successful"],
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.Message, "Something went wrong while saving/loading file.");
+                    App.WriteToErrorLog("Error exporting image", e.Message, e.StackTrace);
+                    MessageBox.Show(e.Message, "Something went wrong while exporting the image.");
                 }
             }
         }
 
         /// <summary>
-        /// Renders the current layout to file.
+        /// Asynchronously renders the current layout to file.
         /// </summary>
         /// <param name="filename">filename of the output image</param>
         /// <param name="border">normalization value used prior to exporting</param>
         /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
         /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
-        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection)
+        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection, bool renderStatistics)
         {
-            var statisticsDataContext = statisticsView.DataContext;
-
-            ThreadStart renderThread = delegate
+            if (annoCanvas.PlacedObjects.Count == 0)
             {
-                #region new AnnoCanvas
+                return;
+            }
+
+            // copy all objects
+            var allObjects = annoCanvas.PlacedObjects.Select(_ => new AnnoObject(_)).ToList();
+            // copy selected objects
+            // note: should be references to the correct copied objects from allObjects
+            var selectedObjects = annoCanvas.SelectedObjects.Select(_ => new AnnoObject(_)).ToList();
+
+            Debug.WriteLine($"UI thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
+            void renderThread()
+            {
+                Debug.WriteLine($"Render thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
+                var icons = new Dictionary<string, IconImage>();
+                foreach (var curIcon in annoCanvas.Icons)
+                {
+                    icons.Add(curIcon.Key, new IconImage(curIcon.Value.Name, curIcon.Value.Localizations, curIcon.Value.IconPath));
+                }
 
                 // initialize output canvas
-                var newCanvas = new AnnoCanvas
+                var target = new AnnoCanvas(annoCanvas.BuildingPresets, icons)
                 {
-                    PlacedObjects = annoCanvas.PlacedObjects,
+                    PlacedObjects = allObjects,
                     RenderGrid = annoCanvas.RenderGrid,
                     RenderIcon = annoCanvas.RenderIcon,
                     RenderLabel = annoCanvas.RenderLabel
                 };
+
+                sw.Stop();
+                Debug.WriteLine($"creating canvas took: {sw.ElapsedMilliseconds}ms");
+
                 // normalize layout
-                newCanvas.Normalize(border);
+                target.Normalize(border);
                 // set zoom level
                 if (exportZoom)
                 {
-                    newCanvas.GridSize = annoCanvas.GridSize;
+                    target.GridSize = annoCanvas.GridSize;
                 }
                 // set selection
                 if (exportSelection)
                 {
-                    newCanvas.SelectedObjects.AddRange(annoCanvas.SelectedObjects);
+                    target.SelectedObjects.AddRange(selectedObjects);
                 }
-                // calculate output size
-                var width = newCanvas.GridToScreen(annoCanvas.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border) + 1;
-                var height = newCanvas.GridToScreen(annoCanvas.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border) + 1;
 
-                newCanvas.Width = width;
-                newCanvas.Height = height;
+                // calculate output size
+                var width = target.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border);//if +1 then there are weird black lines next to the statistics view
+                var height = target.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border) + 1;//+1 for black grid line at bottom
+
+                if (renderStatistics)
+                {
+                    var exportStatisticsView = new StatisticsView
+                    {
+                        Margin = new Thickness(5, 0, 0, 0)
+                    };
+                    exportStatisticsView.statisticsViewModel.UpdateStatistics(target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
+                    exportStatisticsView.statisticsViewModel.CopyLocalization(_mainWindowLocalization.StatisticsViewModel);
+                    exportStatisticsView.statisticsViewModel.ShowBuildingList = _mainWindowLocalization.StatisticsViewModel.ShowBuildingList;
+
+                    target.StatisticsPanel.Children.Add(exportStatisticsView);
+
+                    //according to https://stackoverflow.com/a/25507450
+                    // and https://stackoverflow.com/a/1320666
+                    exportStatisticsView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    //exportStatisticsView.Arrange(new Rect(new Point(0, 0), exportStatisticsView.DesiredSize));
+
+                    if (exportStatisticsView.DesiredSize.Height > height)
+                    {
+                        height = exportStatisticsView.DesiredSize.Height + target.LinePenThickness + border;
+                    }
+
+                    width += exportStatisticsView.DesiredSize.Width + target.LinePenThickness;
+                }
+
+                target.Width = width;
+                target.Height = height;
+                target.UpdateLayout();
+
                 // apply size
                 var outputSize = new Size(width, height);
-                newCanvas.Measure(outputSize);
-                newCanvas.Arrange(new Rect(outputSize));
+                target.Measure(outputSize);
+                target.Arrange(new Rect(outputSize));
 
-                #endregion
-
-                #region new StatisticsView
-
-                var newStatisticsView = new StatisticsView();
-                newStatisticsView.DataContext = statisticsDataContext;
-
-                #endregion
-
-                #region new MainControl
-
-                var newMainControl = new MainControl();
-                newMainControl.Canvas = newCanvas;
-                newMainControl.statisticsView = newStatisticsView;
-
-                #endregion
-
-                // render MainControl to file
-                DataIO.RenderToFile(newMainControl, filename);
-            };
+                // render canvas to file
+                DataIO.RenderToFile(target, filename);
+            }
 
             var thread = new Thread(renderThread);
+            thread.IsBackground = true;
+            thread.Name = "exportImage";
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
+            thread.Join(TimeSpan.FromSeconds(10));
         }
     }
 }

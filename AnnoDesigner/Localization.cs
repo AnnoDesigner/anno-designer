@@ -41,6 +41,7 @@ namespace AnnoDesigner.Localization
                         { "Successful" , "Successful" },
                         { "Export" , "Export" },
                         { "ExportImage" , "Export Image" },
+                        { "ExportImageSuccessful" , "Image was successfully exported." },
                         { "UseCurrentZoomOnExportedImage" , "Use current zoom on exported image" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Render selection highlights on exported image" },
                         { "Language" , "Language" },
@@ -64,12 +65,19 @@ namespace AnnoDesigner.Localization
                         { "Color" , "Color" },
                         { "Label" , "Label" },
                         { "Icon" , "Icon" },
+                        { "InfluenceType" , "Influence Type" },
+                        { "None" , "None" },
                         { "Radius" , "Radius" },
+                        { "Range" , "Range" },
+                        { "Distance" , "Distance" },
+                        { "Both" , "Both" },
                         { "Options" , "Options" },
                         { "EnableLabel" , "Enable label" },
                         { "Borderless" , "Borderless" },
                         { "Road" , "Road" },
                         { "PlaceBuilding" , "Place building" },
+                        { "Search", "Search" },
+                        { "SearchToolTip", "ESC to clear search text" },
                         { "TitleAbout" , "About" },
                         { "Title" , "Modified" },
                         { "BuildingLayoutDesigner" , "A building layout designer for Ubisofts Anno-series" },
@@ -85,6 +93,7 @@ namespace AnnoDesigner.Localization
                         { "GoToFandom" , "Go to Fandom" },
                         { "Close" , "Close" },
                         { "StatusBarControls" , "Mouse controls: left - place, select, move // right - stop placement, remove // both - move all // double click - copy // wheel - zoom // wheel-click - rotate." },
+                        { "StatusBarItemsOnClipboard" , "Items on clipboard" },
                         { "StatNothingPlaced" , "Nothing Placed" },
                         { "StatBoundingBox" , "Bounding Box" },
                         { "StatMinimumArea" , "Minimum Area" },
@@ -94,9 +103,18 @@ namespace AnnoDesigner.Localization
                         { "StatTiles" , "Tiles"},
                         { "StatNameNotFound" , "Building name not found"},
                         { "UnknownObject" , "Unknown Object" },
-                        { "PresetsLoaded" , "Building presets loaded" }
+                        { "PresetsLoaded" , "Building presets loaded" },
+                        { "ApplyColorToSelection" , "Apply color" },
+                        { "ApplyColorToSelectionToolTip" , "Apply color to all buildings in current selection" },
+                        { "ApplyPredefinedColorToSelection" , "Apply predefined color" },
+                        { "ApplyPredefinedColorToSelectionToolTip" , "Apply predefined color (if found) to all buildings in current selection" },
+                        { "AvailableColors" , "Available Colors" },
+                        { "StandardColors" , "Predefined Colors" },
+                        { "RecentColors" , "Recent used Colors" },
+                        { "Standard" , "Standard" },
+                        { "Advanced" , "Advanced" },
                     }
-                 },
+                },
                 {
                     "ger", new Dictionary<string, string>() {
                         { "File" , "Datei" },
@@ -115,6 +133,7 @@ namespace AnnoDesigner.Localization
                         { "Successful" , "Erfolg" },
                         { "Export" , "Exportieren" },
                         { "ExportImage" , "Exportiere Bild / Speichere als Bild" },
+                        { "ExportImageSuccessful" , "Das Bild wurde erfolgreich exportiert." },
                         { "UseCurrentZoomOnExportedImage" , "Wende aktuellen Zomm auf exportiertes Bild an" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Exportiere Bild mit Selektionen" },
                         { "Language" , "Sprache" },
@@ -138,12 +157,19 @@ namespace AnnoDesigner.Localization
                         { "Color" , "Farbe" },
                         { "Label" , "Bezeichnung" },
                         { "Icon" , "Zeichen/Icon" },
+                        { "InfluenceType" , "Einflusstyp" },
+                        { "None" , "Keine" },
                         { "Radius" , "Radius" },
+                        { "Range" , "Bereich" },
+                        { "Distance" , "Entfernung" },
+                        { "Both" , "Beide" },
                         { "Options" , "Optionen" },
                         { "EnableLabel" , "Bezeichnung aktivieren" },
                         { "Borderless" , "Randlos" },
                         { "Road" , "Straße" },
                         { "PlaceBuilding" , "Gebäude platzieren" },
+                        { "Search", "Suche" },
+                        { "SearchToolTip", "ESC um Suchtext zu leeren" },
                         { "TitleAbout" , "über" },
                         { "Title" , "überarbeiteter" },
                         { "BuildingLayoutDesigner" , "Ein Gebäudelayout Designer für Ubisofts Anno Reihe" },
@@ -159,16 +185,26 @@ namespace AnnoDesigner.Localization
                         { "GoToFandom" , "Fandom Seite" },
                         { "Close" , "Schließen" },
                         { "StatusBarControls" , "Maussteuerung: Links - Platzieren, Auswählen, Verschieben // Rechts - Platzieren stoppen // Beide - Alle verschieben // Doppelklicken - Kopieren // Rad Zoom // Klickrad - Drehen" },
+                        { "StatusBarItemsOnClipboard" , "Elemente in der Zwischenablage" },
                         { "StatNothingPlaced" , "Nichts platziert" },
                         { "StatBoundingBox" , "Begrenzungsbox" },
                         { "StatMinimumArea" , "Minimale Fläche" },
                         { "StatSpaceEfficiency" , "Raumeffizienz" },
                         { "StatBuildings" , "Gebäude" },
                         { "StatBuildingsSelected" , "Ausgewählte Gebäude" },
-                        { "StatTiles" , "Kacheln"},
-                        { "StatNameNotFound" , "Gebäudename nicht gefunden"},
+                        { "StatTiles" , "Kacheln" },
+                        { "StatNameNotFound" , "Gebäudename nicht gefunden" },
                         { "UnknownObject" , "Unbekanntes Objekt" },
-                        { "PresetsLoaded" , "Gebäudevorlagen geladen" }
+                        { "PresetsLoaded" , "Gebäudevorlagen geladen" },
+                        { "ApplyColorToSelection" , "Farbe anwenden" },
+                        { "ApplyColorToSelectionToolTip" , "Farbe auf alle Gebäude in der aktuellen Auswahl anwenden" },
+                        { "ApplyPredefinedColorToSelection" , "Vordefinierte Farbe anwenden" },
+                        { "ApplyPredefinedColorToSelectionToolTip" , "Vordefinierte Farbe (falls gefunden) auf alle Gebäude in der aktuellen Auswahl anwenden." },
+                        { "AvailableColors" , "Verfügbare Farben" },
+                        { "StandardColors" , "Vordefinierte Farben" },
+                        { "RecentColors" , "Zuletzt verwendete Farben" },
+                        { "Standard" , "Standard" },
+                        { "Advanced" , "Erweitert" },
                     }
                  },
                 {
@@ -189,6 +225,7 @@ namespace AnnoDesigner.Localization
                         { "Successful" , "Udało się." },
                         { "Export" , "Eksportuj" },
                         { "ExportImage" , "Eksportuj obraz" },
+                        { "ExportImageSuccessful" , "Obraz został pomyślnie wyeksportowany." },
                         { "UseCurrentZoomOnExportedImage" , "Użyj obecnego powiększenia na eksportowanym obrazie" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Pokaż podświetlenie wybranych elementów na eksportowanym obrazie" },
                         { "Language" , "Język" },
@@ -212,12 +249,19 @@ namespace AnnoDesigner.Localization
                         { "Color" , "Kolor" },
                         { "Label" , "Podpis" },
                         { "Icon" , "Ikona" },
+                        { "InfluenceType" , "Rodzaj wpływu Typ" },
+                        { "None" , "Nie ma" },
                         { "Radius" , "Promień" },
+                        { "Range" , "Zasięg" },
+                        { "Distance" , "Odległość" },
+                        { "Both" , "Obydwoje" },
                         { "Options" , "Opcje" },
                         { "EnableLabel" , "Pokaż etykietę" },
                         { "Borderless" , "Bez obramowania" },
                         { "Road" , "Droga / Ulica" },
                         { "PlaceBuilding" , "Postaw budynek" },
+                        { "Search", "Wyszukiwanie" },
+                        { "SearchToolTip", "ESC aby wyczyścić tekst do przeszukiwania" },
                         { "TitleAbout" , "Na temat / O" },
                         { "Title" , "zmodyfikowany" },
                         { "BuildingLayoutDesigner" , "Program do planowania zabudowy w serii Anno Ubisoftu" },
@@ -233,6 +277,7 @@ namespace AnnoDesigner.Localization
                         { "GoToFandom" , "Przejdź do strony Fandom" },
                         { "Close" , "Zamknij" },
                         { "StatusBarControls" , "Sterowanie myszą: w lewo - miejsce, zaznacz, przesuń // zatrzymanie w prawo, usuń // oba - przenieś wszystko // podwójne kliknięcie - kopiuj // kółko - powiększ // kółko - obracaj." },
+                        { "StatusBarItemsOnClipboard" , "pozycje w schowku" },
                         { "StatNothingPlaced" , "Nic nie postawiono" },
                         { "StatBoundingBox" , "Ramka Ograniczająca" },
                         { "StatMinimumArea" , "Minimalna Powierzchnia" },
@@ -242,7 +287,16 @@ namespace AnnoDesigner.Localization
                         { "StatTiles" , "Płytki"},
                         { "StatNameNotFound" , "Nie znaleziono nazwy budynku"},
                         { "UnknownObject" , "Obiekt nieznany" },
-                        { "PresetsLoaded" , "Presety budynków załadowano" }
+                        { "PresetsLoaded" , "Presety budynków załadowano" },
+                        { "ApplyColorToSelection" , "Zastosuj kolor" },
+                        { "ApplyColorToSelectionToolTip" , "Zastosowanie koloru do wszystkich budynków w bieżącym wyborze" },
+                        { "ApplyPredefinedColorToSelection" , "Zastosuj predefiniowany kolor" },
+                        { "ApplyPredefinedColorToSelectionToolTip" , "Zastosuj predefiniowany kolor (jeśli został znaleziony) do wszystkich budynków w bieżącym wyborze." },
+                        { "AvailableColors" , "Dostępne kolory" },
+                        { "StandardColors" , "Predefiniowane kolory" },
+                        { "RecentColors" , "Ostatnio używane kolory" },
+                        { "Standard" , "Standard" },
+                        { "Advanced" , "Zaawansowane" },
                     }
                  },
                 {
@@ -263,6 +317,7 @@ namespace AnnoDesigner.Localization
                         { "Successful" , "Успешный" },
                         { "Export" , "Экспорт" },
                         { "ExportImage" , "Экспортировать изображение" },
+                        { "ExportImageSuccessful" , "Изображение было успешно экспортировано." },
                         { "UseCurrentZoomOnExportedImage" , "Использовать текущее масштабирование экспортируемого изображения" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Выделение выделенного фрагмента на экспортируемом изображении" },
                         { "Language" , "язык" },
@@ -286,12 +341,19 @@ namespace AnnoDesigner.Localization
                         { "Color" , "Цвет" },
                         { "Label" , "Название" },
                         { "Icon" , "Значок" },
+                        { "InfluenceType" , "Тип влияния" },
+                        { "None" , "Нет" },
                         { "Radius" , "Радиус" },
+                        { "Range" , "Диапазон" },
+                        { "Distance" , "Расстояние" },
+                        { "Both" , "Оба" },
                         { "Options" , "Параметры" },
                         { "EnableLabel" , "Показывать название" },
                         { "Borderless" , "Без полей" },
                         { "Road" , "Дорогa" },
                         { "PlaceBuilding" , "Выбрать здание" },
+                        { "Search" , "Поиск" },
+                        { "SearchToolTip", "ESC чтобы очистить текст поиска" },
                         { "TitleAbout" , "О программе" },
                         { "Title" , "обновлено" },
                         { "BuildingLayoutDesigner" , "Конструктор макета здания для Ubisofts Anno-серии" },
@@ -307,6 +369,7 @@ namespace AnnoDesigner.Localization
                         { "GoToFandom" , "Перейти к Фэндом" },
                         { "Close" , "Закрыть" },
                         { "StatusBarControls" , "Управление мышью: влево - разместить, выбрать, переместить // вправо - прекратить размещение, удалить // оба - переместить все // двойной щелчок - копировать // колесо - масштабировать // колесико щелкнуть - повернуть." },
+                        { "StatusBarItemsOnClipboard" , "элементы в буфере обмена" },
                         { "StatNothingPlaced" , "Ничего не размещено" },
                         { "StatBoundingBox" , "Ограничительная рамка" },
                         { "StatMinimumArea" , "Минимальная площадь" },
@@ -316,7 +379,16 @@ namespace AnnoDesigner.Localization
                         { "StatTiles" , "Плитка"},
                         { "StatNameNotFound" , "Название здания не найдено"},
                         { "UnknownObject" , "Неизвестный объект" },
-                        { "PresetsLoaded" , "Загружаются пресеты зданий" }
+                        { "PresetsLoaded" , "Загружаются пресеты зданий" },
+                        { "ApplyColorToSelection" , "Применить цвет" },
+                        { "ApplyColorToSelectionToolTip" , "Применить цвет ко всем зданиям в текущем выборе" },
+                        { "ApplyPredefinedColorToSelection" , "Применить предопределенный цвет" },
+                        { "ApplyPredefinedColorToSelectionToolTip" , "Применить предопределенный цвет (если он найден) ко всем зданиям в текущем выборе." },
+                        { "AvailableColors" , "Доступные цвета" },
+                        { "StandardColors" , "Предварительно определенные цвета" },
+                        { "RecentColors" , "Последние использованные цвета" },
+                        { "Standard" , "Стандарт" },
+                        { "Advanced" , "Расширенный" },
                     }
                  },
             };
@@ -604,6 +676,7 @@ namespace AnnoDesigner.Localization
         public MainWindow()
         {
             _statisticsViewModel = new StatisticsViewModel();
+            _buildingSettingsViewModel = new BuildingSettingsViewModel();
 
             UpdateLanguage();
         }
@@ -667,20 +740,36 @@ namespace AnnoDesigner.Localization
             ShowIcons = Localization.Translations[language]["ShowIcons"];
 
             //DockPanel
-            BuildingSettings = Localization.Translations[language]["BuildingSettings"];
-            Size = Localization.Translations[language]["Size"];
-            Color = Localization.Translations[language]["Color"];
-            Label = Localization.Translations[language]["Label"];
-            Icon = Localization.Translations[language]["Icon"];
-            Radius = Localization.Translations[language]["Radius"];
-            Options = Localization.Translations[language]["Options"];
-            EnableLabel = Localization.Translations[language]["EnableLabel"];
-            Borderless = Localization.Translations[language]["Borderless"];
-            Road = Localization.Translations[language]["Road"];
-            PlaceBuilding = Localization.Translations[language]["PlaceBuilding"];
+            BuildingSettingsViewModel.TextHeader = Localization.Translations[language]["BuildingSettings"];
+            BuildingSettingsViewModel.TextSize = Localization.Translations[language]["Size"];
+            BuildingSettingsViewModel.TextColor = Localization.Translations[language]["Color"];
+            BuildingSettingsViewModel.TextBuildingName = Localization.Translations[language]["Label"];
+            BuildingSettingsViewModel.TextIcon = Localization.Translations[language]["Icon"];
+            BuildingSettingsViewModel.TextInfluenceType = Localization.Translations[language]["InfluenceType"];
+            None = Localization.Translations[language]["None"];
+            BuildingSettingsViewModel.TextRadius = Localization.Translations[language]["Radius"];
+            BuildingSettingsViewModel.TextDistance = Localization.Translations[language]["Distance"];
+            Both = Localization.Translations[language]["Both"];
+            BuildingSettingsViewModel.TextOptions = Localization.Translations[language]["Options"];
+            BuildingSettingsViewModel.TextEnableLabel = Localization.Translations[language]["EnableLabel"];
+            BuildingSettingsViewModel.TextBorderless = Localization.Translations[language]["Borderless"];
+            BuildingSettingsViewModel.TextRoad = Localization.Translations[language]["Road"];
+            BuildingSettingsViewModel.TextPlaceBuilding = Localization.Translations[language]["PlaceBuilding"];
+            Search = Localization.Translations[language]["Search"];
+            TreeViewSearchToolTip = Localization.Translations[language]["SearchToolTip"];
+            BuildingSettingsViewModel.TextApplyColorToSelection = Localization.Translations[language]["ApplyColorToSelection"];
+            BuildingSettingsViewModel.TextApplyColorToSelectionToolTip = Localization.Translations[language]["ApplyColorToSelectionToolTip"];
+            BuildingSettingsViewModel.TextApplyPredefinedColorToSelection = Localization.Translations[language]["ApplyPredefinedColorToSelection"];
+            BuildingSettingsViewModel.TextApplyPredefinedColorToSelectionToolTip = Localization.Translations[language]["ApplyPredefinedColorToSelectionToolTip"];
+            BuildingSettingsViewModel.TextAvailableColors = Localization.Translations[language]["AvailableColors"];
+            BuildingSettingsViewModel.TextStandardColors = Localization.Translations[language]["StandardColors"];
+            BuildingSettingsViewModel.TextRecentColors = Localization.Translations[language]["RecentColors"];
+            BuildingSettingsViewModel.TextStandard = Localization.Translations[language]["Standard"];
+            BuildingSettingsViewModel.TextAdvanced = Localization.Translations[language]["Advanced"];
 
             //Status Bar
             StatusBarControls = Localization.Translations[language]["StatusBarControls"];
+            StatusBarItemsOnClipboard = Localization.Translations[language]["StatusBarItemsOnClipboard"];
         }
 
         //Generated from:
@@ -693,7 +782,8 @@ namespace AnnoDesigner.Localization
         //within regex expressions):
         //private $1 _\l$2; \r\n public $1 $2 \r\n { \r\n get { return _\l$2; } \r\n set \r\n { \r\n UpdateProperty\(ref _\l$2, value\); \r\n}\r\n}
 
-        //File Menu
+        #region File Menu
+
         private string _file;
         public string File
         {
@@ -749,7 +839,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Extras Menu
+        #endregion
+
+        #region Extras Menu
+
         private string _extras;
         public string Extras
         {
@@ -796,7 +889,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Export Menu
+        #endregion
+
+        #region Export Menu
+
         private string _export;
         public string Export
         {
@@ -834,7 +930,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Language Menu
+        #endregion
+
+        #region Language Menu
+
         private string _language;
         public string Language
         {
@@ -845,7 +944,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Managa Stats Menu
+        #endregion
+
+        #region Manage Stats Menu
+
         private string _ManageStats;
         public string ManageStats
         {
@@ -874,7 +976,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Help Menu
+        #endregion
+
+        #region Help Menu
+
         private string _help;
         public string Help
         {
@@ -884,6 +989,7 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _help, value);
             }
         }
+
         private string _version;
         public string Version
         {
@@ -893,6 +999,17 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _version, value);
             }
         }
+
+        private string _versionValue;
+        public string VersionValue
+        {
+            get { return _versionValue; }
+            set
+            {
+                UpdateProperty(ref _versionValue, value);
+            }
+        }
+
         private string _fileVersion;
         public string FileVersion
         {
@@ -902,6 +1019,17 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _fileVersion, value);
             }
         }
+
+        private string _fileVersionValue;
+        public string FileVersionValue
+        {
+            get { return _fileVersionValue; }
+            set
+            {
+                UpdateProperty(ref _fileVersionValue, value);
+            }
+        }
+
         private string _presetsVersion;
         public string PresetsVersion
         {
@@ -911,6 +1039,17 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _presetsVersion, value);
             }
         }
+
+        private string _presetsVersionValue;
+        public string PresetsVersionValue
+        {
+            get { return _presetsVersionValue; }
+            set
+            {
+                UpdateProperty(ref _presetsVersionValue, value);
+            }
+        }
+
         private string _checkForUpdates;
         public string CheckForUpdates
         {
@@ -961,7 +1100,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Other
+        #endregion
+
+        #region Other options
+
         private string _showGrid;
         public string ShowGrid
         {
@@ -990,108 +1132,62 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //DockPanel
-        private string _buildingSettings;
-        public string BuildingSettings
+        #endregion
+
+        #region DockPanel       
+
+        private string _none;
+        public string None
         {
-            get { return _buildingSettings; }
+            get { return _none; }
             set
             {
-                UpdateProperty(ref _buildingSettings, value);
-            }
-        }
-        private string _size;
-        public string Size
-        {
-            get { return _size; }
-            set
-            {
-                UpdateProperty(ref _size, value);
-            }
-        }
-        private string _color;
-        public string Color
-        {
-            get { return _color; }
-            set
-            {
-                UpdateProperty(ref _color, value);
-            }
-        }
-        private string _label;
-        public string Label
-        {
-            get { return _label; }
-            set
-            {
-                UpdateProperty(ref _label, value);
-            }
-        }
-        private string _icon;
-        public string Icon
-        {
-            get { return _icon; }
-            set
-            {
-                UpdateProperty(ref _icon, value);
-            }
-        }
-        private string _radius;
-        public string Radius
-        {
-            get { return _radius; }
-            set
-            {
-                UpdateProperty(ref _radius, value);
-            }
-        }
-        private string _options;
-        public string Options
-        {
-            get { return _options; }
-            set
-            {
-                UpdateProperty(ref _options, value);
-            }
-        }
-        private string _enableLabel;
-        public string EnableLabel
-        {
-            get { return _enableLabel; }
-            set
-            {
-                UpdateProperty(ref _enableLabel, value);
-            }
-        }
-        private string _borderless;
-        public string Borderless
-        {
-            get { return _borderless; }
-            set
-            {
-                UpdateProperty(ref _borderless, value);
-            }
-        }
-        private string _road;
-        public string Road
-        {
-            get { return _road; }
-            set
-            {
-                UpdateProperty(ref _road, value);
-            }
-        }
-        private string _placeBuilding;
-        public string PlaceBuilding
-        {
-            get { return _placeBuilding; }
-            set
-            {
-                UpdateProperty(ref _placeBuilding, value);
+                UpdateProperty(ref _none, value);
             }
         }
 
-        //Status Bar
+        private string _both;
+        public string Both
+        {
+            get { return _both; }
+            set
+            {
+                UpdateProperty(ref _both, value);
+            }
+        }
+
+        private string _search;
+        public string Search
+        {
+            get { return _search; }
+            set
+            {
+                UpdateProperty(ref _search, value);
+            }
+        }
+        private string _treeViewSearchToolTip;
+        public string TreeViewSearchToolTip
+        {
+            get { return _treeViewSearchToolTip; }
+            set
+            {
+                UpdateProperty(ref _treeViewSearchToolTip, value);
+            }
+        }
+        private string _treeViewSearchText;
+        public string TreeViewSearchText
+        {
+            get { return _treeViewSearchText; }
+            set
+            {
+                UpdateProperty(ref _treeViewSearchText, value);
+            }
+        }
+
+        #endregion
+
+        #region Status Bar
+
         private string _statusBarControls;
         public string StatusBarControls
         {
@@ -1102,33 +1198,62 @@ namespace AnnoDesigner.Localization
             }
         }
 
+        private string _statusBarItemsOnClipboard;
+        public string StatusBarItemsOnClipboard
+        {
+            get { return _statusBarItemsOnClipboard; }
+            set
+            {
+                UpdateProperty(ref _statusBarItemsOnClipboard, value);
+            }
+        }
+
+        #endregion
+
         private StatisticsViewModel _statisticsViewModel;
         public StatisticsViewModel StatisticsViewModel
         {
             get { return _statisticsViewModel; }
             set { _statisticsViewModel = value; }
         }
-
-        public class Welcome : Notify
+        
+        private BuildingSettingsViewModel _buildingSettingsViewModel;
+        public BuildingSettingsViewModel BuildingSettingsViewModel
         {
-            private string _continue;
-            public string Continue
-            {
-                get { return _continue; }
-                set
-                {
-                    UpdateProperty(ref _continue, value);
-                }
-            }
+            get { return _buildingSettingsViewModel; }
+            set { _buildingSettingsViewModel = value; }
+        }
+    }
 
-            private string _selectALanguageWarning;
-            public string SelectALanguageWarning
+    public class Welcome : Notify
+    {
+        //Generated from:
+        //...
+        //public string Prop1 {get; set;}
+        //public string Prop2 {get; set;}
+        //...
+        //find expr: public (string) (.+?) {.+
+        //With the following regex (in a compatible editor that supports lowercasing of values
+        //within regex expressions):
+        //private $1 _\l$2; \r\n public $1 $2 \r\n { \r\n get { return _\l$2; } \r\n set \r\n { \r\n UpdateProperty\(ref _\l$2, value\); \r\n}\r\n}
+
+        private string _continue;
+        public string Continue
+        {
+            get { return _continue; }
+            set
             {
-                get { return _selectALanguageWarning; }
-                set
-                {
-                    UpdateProperty(ref _selectALanguageWarning, value);
-                }
+                UpdateProperty(ref _continue, value);
+            }
+        }
+
+        private string _selectALanguageWarning;
+        public string SelectALanguageWarning
+        {
+            get { return _selectALanguageWarning; }
+            set
+            {
+                UpdateProperty(ref _selectALanguageWarning, value);
             }
         }
     }

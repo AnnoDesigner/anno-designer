@@ -27,7 +27,7 @@ namespace AnnoDesigner.viewmodel
         private string _efficiency;
         private bool _areStatisticsAvailable;
         private bool _showBuildingList;
-        private bool _showSelectedBuildingList;
+        //private bool _showSelectedBuildingList;
         private ObservableCollection<StatisticsBuilding> _buildings;
         private ObservableCollection<StatisticsBuilding> _selectedBuildings;
 
@@ -215,8 +215,8 @@ namespace AnnoDesigner.viewmodel
                 var groupedBuildings = placedObjects.GroupBy(_ => _.Identifier);
                 var groupedSelectedBuildings = selectedObjects.Count > 0 ? selectedObjects.GroupBy(_ => _.Identifier) : null;
 
-                Buildings = getStatisticBuildings(groupedBuildings, buildingPresets);
-                SelectedBuildings = getStatisticBuildings(groupedSelectedBuildings, buildingPresets);
+                Buildings = GetStatisticBuildings(groupedBuildings, buildingPresets);
+                SelectedBuildings = GetStatisticBuildings(groupedSelectedBuildings, buildingPresets);
             }
             else
             {
@@ -224,7 +224,7 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
-        private ObservableCollection<StatisticsBuilding> getStatisticBuildings(IEnumerable<IGrouping<string, AnnoObject>> groupedBuildingsByIdentifier, BuildingPresets buildingPresets)
+        private ObservableCollection<StatisticsBuilding> GetStatisticBuildings(IEnumerable<IGrouping<string, AnnoObject>> groupedBuildingsByIdentifier, BuildingPresets buildingPresets)
         {
             var result = new ObservableCollection<StatisticsBuilding>();
 
@@ -275,6 +275,18 @@ namespace AnnoDesigner.viewmodel
             }
 
             return result;
+        }
+
+        public void CopyLocalization(StatisticsViewModel other)
+        {
+            TextNothingPlaced = other.TextNothingPlaced;
+            TextBoundingBox = other.TextBoundingBox;
+            TextMinimumArea = other.TextMinimumArea;
+            TextSpaceEfficiency = other.TextSpaceEfficiency;
+            TextBuildings = other.TextBuildings;
+            TextBuildingsSelected = other.TextBuildingsSelected;
+            TextTiles = other.TextTiles;
+            TextNameNotFound = other.TextNameNotFound;
         }
     }
 }

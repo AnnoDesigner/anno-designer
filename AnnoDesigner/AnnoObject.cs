@@ -11,70 +11,84 @@ namespace AnnoDesigner
     [DebuggerDisplay("{Identifier}")]
     public class AnnoObject
     {
-        /// <summary>
-        /// Size in grid units
-        /// </summary>
-        [DataMember]
-        public Size Size { get; set; }
+        #region ctor
 
         /// <summary>
-        /// Color used to fill this object
+        /// Empty constructor needed for deserialization
         /// </summary>
-        [DataMember]
-        public SerializableColor Color { get; set; }
+        public AnnoObject()
+        {
+        }
+
+        /// <summary>
+        /// Copy constructor used to place independent objects on the grid
+        /// </summary>
+        /// <param name="obj"></param>
+        public AnnoObject(AnnoObject obj)
+        {
+            Size = obj.Size;
+            Color = obj.Color;
+            Position = obj.Position;
+            Label = obj.Label;
+            Identifier = obj.Identifier;
+            //Localization = obj.Localization;
+            Icon = obj.Icon;
+            Radius = obj.Radius;
+            InfluenceRange = obj.InfluenceRange;
+            Borderless = obj.Borderless;
+            Road = obj.Road;
+            // note: this is not really a copy, just a reference, but it is not supposed to change anyway
+            //BuildCosts = obj.BuildCosts;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// The identifier of the object.
+        /// </summary>
+        [DataMember(Order = 0)]
+        public string Identifier { get; set; }
+
+        /// <summary>
+        /// The label of the object.
+        /// </summary>
+        [DataMember(Order = 1)]
+        public string Label { get; set; }
 
         /// <summary>
         /// Position in grid units
         /// </summary>
-        [DataMember]
+        [DataMember(Order = 2)]
         public Point Position { get; set; }
+
+        /// <summary>
+        /// Size in grid units
+        /// </summary>
+        [DataMember(Order = 3)]
+        public Size Size { get; set; }
 
         /// <summary>
         /// Filename for an icon
         /// </summary>
-        [DataMember]
+        [DataMember(Order = 4)]
         public string Icon { get; set; }
 
         /// <summary>
-        /// Label string
+        /// Color used to fill this object
         /// </summary>
-        [DataMember]
-        public string Label { get; set; }
-
-        /// <summary>
-        /// ObjName string
-        /// </summary>
-        [DataMember]
-        public string Identifier { get; set; }
-
-        /* /// <summary>
-        /// Localization string
-        /// </summary>
-        [DataMember]
-        public string[] Localization { get; set; }*/
-
-        /// <summary>
-        /// Influence radius in grid units
-        /// </summary>
-        [DataMember]
-        public double Radius { get; set; }
-
-        /// <summary>
-        /// Influence range in grid units
-        /// </summary>
-        [DataMember]
-        public double InfluenceRange { get; set; }
+        [DataMember(Order = 5)]
+        public SerializableColor Color { get; set; }
 
         /// <summary>
         /// Indicates whether the border should be omitted.
         /// </summary>
-        [DataMember]
+        [DataMember(Order = 6)]
         public bool Borderless { get; set; }
 
         /// <summary>
         /// Indicates whether the object is treated as a road tile.
         /// </summary>
-        [DataMember]
+        [DataMember(Order = 7)]
         public bool Road { get; set; }
 
         /// <summary>
@@ -87,15 +101,25 @@ namespace AnnoDesigner
         //public SerializableDictionary<int> BuildCosts { get; set; }
 
         /// <summary>
-        /// Empty constructor needed for deserialization
+        /// Influence radius in grid units
         /// </summary>
-        public AnnoObject()
-        {
-        }
+        [DataMember(Order = 8)]
+        public double Radius { get; set; }
 
         /// <summary>
-        /// Copy constructor used to place independent objects on the grid
+        /// Influence range in grid units
         /// </summary>
+        [DataMember(Order = 9)]
+        public double InfluenceRange { get; set; }
+
+        ///// <summary>
+        ///// Localization string
+        ///// </summary>
+        //[DataMember]
+        //public string[] Localization { get; set; }
+
+        //[DataMember]
+        //public SerializableDictionary<int> BuildCosts { get; set; }
         /// <param name="obj"></param>
         public AnnoObject(AnnoObject obj)
         {

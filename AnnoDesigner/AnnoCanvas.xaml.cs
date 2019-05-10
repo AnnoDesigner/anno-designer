@@ -27,7 +27,6 @@ namespace AnnoDesigner
         public event EventHandler StatisticsUpdated;
 
         #region Properties
-
         /// <summary>
         /// Contains all loaded icons as a mapping of name (the filename without extension) to loaded BitmapImage.
         /// </summary>
@@ -350,6 +349,11 @@ namespace AnnoDesigner
         /// </summary>
         private readonly Pen _linePen;
 
+        public double LinePenThickness
+        {
+            get { return _linePen.Thickness; }
+        }
+
         /// <summary>
         /// Used for selection and hover highlights and selection rect.
         /// </summary>
@@ -380,9 +384,18 @@ namespace AnnoDesigner
         /// <summary>
         /// Constructor
         /// </summary>
-        public AnnoCanvas()
+        public AnnoCanvas() : this(null, null)
+        {
+
+        }
+
+        public AnnoCanvas(BuildingPresets presetsToUse, Dictionary<string, IconImage> iconsToUse)
         {
             InitializeComponent();
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             // control settings
             Focusable = true;
             ClipToBounds = true;
@@ -400,51 +413,92 @@ namespace AnnoDesigner
             color = Colors.LawnGreen;
             color.A = 32;
             _influencedBrush = new SolidColorBrush(color);
+
+            sw.Stop();
+            Debug.WriteLine($"init variables took: {sw.ElapsedMilliseconds}ms");
+
             // load presets and icons if not in design time
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
+                sw.Start();
                 // load presets
                 try
                 {
-                    BuildingPresets = DataIO.LoadFromFile<BuildingPresets>(Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile));
+                    if (presetsToUse == null)
+                    {
+                        BuildingPresets = DataIO.LoadFromFile<BuildingPresets>(Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile));
+                    }
+                    else
+                    {
+                        BuildingPresets = presetsToUse;
+                    }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Loading of the building presets failed");
                 }
+
+                sw.Stop();
+                Debug.WriteLine($"loading presets took: {sw.ElapsedMilliseconds}ms");
+
+                sw.Start();
                 // load icon name mapping
-                List<IconNameMap> iconNameMap = null;
-                try
+                if (iconsToUse == null)
                 {
-                    iconNameMap = DataIO.LoadFromFile<List<IconNameMap>>(Path.Combine(App.ApplicationPath, Constants.IconNameFile));
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Loading of the icon names failed");
-                }
-                var icons = new Dictionary<string, IconImage>();
-                foreach (var path in Directory.GetFiles(Path.Combine(App.ApplicationPath, Constants.IconFolder), Constants.IconFolderFilter))
-                {
-                    var filenameWithExt = Path.GetFileName(path);
-                    var filenameWithoutExt = Path.GetFileNameWithoutExtension(path);
-                    if (!string.IsNullOrEmpty(filenameWithoutExt))
+                    List<IconNameMap> iconNameMap = null;
+                    try
                     {
+                        iconNameMap = DataIO.LoadFromFile<List<IconNameMap>>(Path.Combine(App.ApplicationPath, Constants.IconNameFile));
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Loading of the icon names failed");
+                    }
+
+                    sw.Stop();
+                    Debug.WriteLine($"loading icon mapping took: {sw.ElapsedMilliseconds}ms");
+
+                    sw.Start();
+                    // load icons
+                    var pathToIconFolder = Path.Combine(App.ApplicationPath, Constants.IconFolder);
+                    var icons = new Dictionary<string, IconImage>();
+
+                    foreach (var path in Directory.EnumerateFiles(pathToIconFolder, Constants.IconFolderFilter))
+                    {
+                        var filenameWithExt = Path.GetFileName(path);
+                        var filenameWithoutExt = Path.GetFileNameWithoutExtension(path);
+
+                        if (string.IsNullOrWhiteSpace(filenameWithoutExt))
+                        {
+                            continue;
+                        }
+
                         // try mapping to the icon translations
                         Dictionary<string, string> localizations = null;
                         if (iconNameMap != null)
                         {
-                            var map = iconNameMap.Find(_ => _.IconFilename == filenameWithExt);
+                            var map = iconNameMap.Find(x => x.IconFilename == filenameWithExt);
                             if (map != null)
                             {
                                 localizations = map.Localizations.Dict;
                             }
                         }
+
                         // add the current icon
-                        icons.Add(filenameWithoutExt, new IconImage(filenameWithoutExt, localizations, new BitmapImage(new Uri(path))));
+                        var iconToAdd = new IconImage(filenameWithoutExt, localizations, path);
+                        icons.Add(filenameWithoutExt, iconToAdd);
                     }
+
+                    sw.Stop();
+                    Debug.WriteLine($"loading icons took: {sw.ElapsedMilliseconds}ms");
+
+                    // sort icons by their DisplayName
+                    Icons = icons.OrderBy(x => x.Value.DisplayName).ToDictionary(x => x.Key, x => x.Value);
                 }
-                // sort icons by its DisplayName
-                Icons = icons.OrderBy(_ => _.Value.DisplayName).ToDictionary(_ => _.Key, _ => _.Value);
+                else
+                {
+                    Icons = iconsToUse;
+                }
             }
 
             const int dpiFactor = 1;
@@ -658,7 +712,7 @@ namespace AnnoDesigner
                 {
                     var textPoint = objRect.TopLeft;
                     var text = new FormattedText(obj.Label, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                                 TYPEFACE, 12, Brushes.Black, null, TextFormattingMode.Display)
+                                                 TYPEFACE, 12, Brushes.Black, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
                     {
                         MaxTextWidth = objRect.Width,
                         MaxTextHeight = objRect.Height
@@ -1075,6 +1129,11 @@ namespace AnnoDesigner
         protected override void OnMouseLeave(MouseEventArgs e)
         {
             _mouseWithinControl = false;
+
+            //clear selection rectangle
+            CurrentMode = MouseMode.Standard;
+            _selectionRect = Rect.Empty;
+
             InvalidateVisual();
         }
 
@@ -1134,7 +1193,7 @@ namespace AnnoDesigner
                     // user clicked nothing: start dragging the selection rect
                     CurrentMode = MouseMode.SelectionRectStart;
                 }
-                else if (!IsControlPressed())
+                else if (!(IsControlPressed() || IsShiftPressed()))
                 {
                     CurrentMode = _selectedObjects.Contains(obj) ? MouseMode.DragSelectionStart : MouseMode.DragSingleStart;
                 }
@@ -1202,7 +1261,7 @@ namespace AnnoDesigner
                     switch (CurrentMode)
                     {
                         case MouseMode.SelectionRect:
-                            if (IsControlPressed())
+                            if ((IsControlPressed() || IsShiftPressed()))
                             {
                                 // remove previously selected by the selection rect
                                 _selectedObjects.RemoveAll(_ => GetObjectScreenRect(_).IntersectsWith(_selectionRect));
@@ -1285,7 +1344,7 @@ namespace AnnoDesigner
                 {
                     default:
                         // clear selection if no key is pressed
-                        if (!IsControlPressed())
+                        if (!(IsControlPressed() || IsShiftPressed()))
                         {
                             _selectedObjects.Clear();
                         }
@@ -1327,7 +1386,7 @@ namespace AnnoDesigner
                             var obj = GetObjectAt(_mousePosition);
                             if (obj == null)
                             {
-                                if (!IsControlPressed())
+                                if (!(IsControlPressed() || IsShiftPressed()))
                                 {
                                     // clear selection
                                     _selectedObjects.Clear();
@@ -1382,16 +1441,22 @@ namespace AnnoDesigner
                     StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                     break;
                 case Key.C:
-                    if (_selectedObjects.Count != 0)
+                    if (IsControlPressed())
                     {
-                        ObjectClipboard = CloneList(_selectedObjects);
+                        if (_selectedObjects.Count != 0)
+                        {
+                            ObjectClipboard = CloneList(_selectedObjects);
+                        }
                     }
                     break;
                 case Key.V:
-                    if (ObjectClipboard.Count != 0)
+                    if (IsControlPressed())
                     {
-                        CurrentObjects = CloneList(ObjectClipboard);
-                        MoveCurrentObjectsToMouse();
+                        if (ObjectClipboard.Count != 0)
+                        {
+                            CurrentObjects = CloneList(ObjectClipboard);
+                            MoveCurrentObjectsToMouse();
+                        }
                     }
                     break;
                 case Key.R:
@@ -1417,12 +1482,21 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Checks whether the user is pressing keys to signal that he wants to select multiple objects
+        /// Checks whether the user is pressing the control key.
         /// </summary>
         /// <returns></returns>
         private static bool IsControlPressed()
         {
             return Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
+        }
+
+        /// <summary>
+        /// Checks whether the user is pressing the shift key.
+        /// </summary>
+        /// <returns></returns>
+        private static bool IsShiftPressed()
+        {
+            return Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
         }
 
         #endregion
@@ -1531,7 +1605,7 @@ namespace AnnoDesigner
             var dx = _placedObjects.Min(_ => _.Position.X) - border;
             var dy = _placedObjects.Min(_ => _.Position.Y) - border;
             _placedObjects.ForEach(_ => _.Position = new Point(_.Position.X - dx, _.Position.Y - dy));
-            
+
             InvalidateVisual();
         }
 

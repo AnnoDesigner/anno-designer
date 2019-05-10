@@ -90,5 +90,10 @@ namespace AnnoDesigner
         /// Filter used for the export image dialog.
         /// </summary>
         public const string ExportDialogFilter = "PNG (*.png)|*.png|All Files (*.*)|*.*";
+    
+        /// <summary>
+        /// Used to provide space for the statistics panel when exporting a layout as an image.
+        /// </summary>
+        public const int StatisticsMargin = 142;
     }
 }
