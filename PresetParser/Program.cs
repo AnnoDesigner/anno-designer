@@ -28,11 +28,11 @@ namespace PresetParser
         public const string ANNO_VERSION_2205 = "2205";
         public const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "3.1.1";
+        private const string BUILDING_PRESETS_VERSION = "3.2.1";
         // Initalisizing Language Directory's and Filenames
-        private static readonly string[] Languages = new[] { "eng", "ger", "pol", "rus" };
-        private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "polish", "russian" };
-        private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "polish", "russian" };
+        private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
+        private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
+        private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "french", "polish", "russian" };
         // Internal Program Buildings List to skipp double buildings
         public static List<string> annoBuildingLists = new List<string>();
         public static int annoBuildingsListCount = 0, printTestText = 0;
@@ -479,8 +479,10 @@ namespace PresetParser
                 buildingToAdd.Localization = new SerializableDictionary<string>();
                 buildingToAdd.Localization["eng"] = curExtraPreset.LocaEng;
                 buildingToAdd.Localization["ger"] = curExtraPreset.LocaGer;
+                //buildingToAdd.Localization["fra"] = curExtraPreset.LocaFra;
                 buildingToAdd.Localization["pol"] = curExtraPreset.LocaPol;
                 buildingToAdd.Localization["rus"] = curExtraPreset.LocaRus;
+                
 
                 annoBuildingsListCount++;
 
