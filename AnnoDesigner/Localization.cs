@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using AnnoDesigner.model;
+using AnnoDesigner.viewmodel;
 
 namespace AnnoDesigner.Localization
 {
@@ -74,6 +76,7 @@ namespace AnnoDesigner.Localization
                         { "Road" , "Road" },
                         { "PlaceBuilding" , "Place building" },
                         { "Search", "Search" },
+                        { "SearchToolTip", "ESC to clear search text" },
                         { "TitleAbout" , "About" },
                         { "Title" , "Modified" },
                         { "BuildingLayoutDesigner" , "A building layout designer for Ubisofts Anno-series" },
@@ -99,9 +102,18 @@ namespace AnnoDesigner.Localization
                         { "StatTiles" , "Tiles" },
                         { "StatNameNotFound" , "Building name not found" },
                         { "UnknownObject" , "Unknown Object" },
-                        { "PresetsLoaded" , "Building presets loaded" }
+                        { "PresetsLoaded" , "Building presets loaded" },
+                        { "ApplyColorToSelection" , "Apply color" },
+                        { "ApplyColorToSelectionToolTip" , "Apply color to all buildings in current selection" },
+                        { "ApplyPredefinedColorToSelection" , "Apply predefined color" },
+                        { "ApplyPredefinedColorToSelectionToolTip" , "Apply predefined color (if found) to all buildings in current selection" },
+                        { "AvailableColors" , "Available Colors" },
+                        { "StandardColors" , "Predefined Colors" },
+                        { "RecentColors" , "Recent used Colors" },
+                        { "Standard" , "Standard" },
+                        { "Advanced" , "Advanced" },
                     }
-                 },
+                },
                 {
                     "ger", new Dictionary<string, string>() {
                         { "File" , "Datei" },
@@ -155,6 +167,7 @@ namespace AnnoDesigner.Localization
                         { "Road" , "Straße" },
                         { "PlaceBuilding" , "Gebäude platzieren" },
                         { "Search", "Suche" },
+                        { "SearchToolTip", "ESC um Suchtext zu leeren" },
                         { "TitleAbout" , "über" },
                         { "Title" , "überarbeiteter" },
                         { "BuildingLayoutDesigner" , "Ein Gebäudelayout Designer für Ubisofts Anno Reihe" },
@@ -180,7 +193,16 @@ namespace AnnoDesigner.Localization
                         { "StatTiles" , "Kacheln" },
                         { "StatNameNotFound" , "Gebäudename nicht gefunden" },
                         { "UnknownObject" , "Unbekanntes Objekt" },
-                        { "PresetsLoaded" , "Gebäudevorlagen geladen" }
+                        { "PresetsLoaded" , "Gebäudevorlagen geladen" },
+                        { "ApplyColorToSelection" , "Farbe anwenden" },
+                        { "ApplyColorToSelectionToolTip" , "Farbe auf alle Gebäude in der aktuellen Auswahl anwenden" },
+                        { "ApplyPredefinedColorToSelection" , "Vordefinierte Farbe anwenden" },
+                        { "ApplyPredefinedColorToSelectionToolTip" , "Vordefinierte Farbe (falls gefunden) auf alle Gebäude in der aktuellen Auswahl anwenden." },
+                        { "AvailableColors" , "Verfügbare Farben" },
+                        { "StandardColors" , "Vordefinierte Farben" },
+                        { "RecentColors" , "Zuletzt verwendete Farben" },
+                        { "Standard" , "Standard" },
+                        { "Advanced" , "Erweitert" },
                     }
                  },
                 {
@@ -236,6 +258,7 @@ namespace AnnoDesigner.Localization
                         { "Road" , "Droga / Ulica" },
                         { "PlaceBuilding" , "Postaw budynek" },
                         { "Search", "Wyszukiwanie" },
+                        { "SearchToolTip", "ESC aby wyczyścić tekst do przeszukiwania" },
                         { "TitleAbout" , "Na temat / O" },
                         { "Title" , "zmodyfikowany" },
                         { "BuildingLayoutDesigner" , "Program do planowania zabudowy w serii Anno Ubisoftu" },
@@ -261,7 +284,16 @@ namespace AnnoDesigner.Localization
                         { "StatTiles" , "Płytki" },
                         { "StatNameNotFound" , "Nie znaleziono nazwy budynku" },
                         { "UnknownObject" , "Obiekt nieznany" },
-                        { "PresetsLoaded" , "Presety budynków załadowano" }
+                        { "PresetsLoaded" , "Presety budynków załadowano" },
+                        { "ApplyColorToSelection" , "Zastosuj kolor" },
+                        { "ApplyColorToSelectionToolTip" , "Zastosowanie koloru do wszystkich budynków w bieżącym wyborze" },
+                        { "ApplyPredefinedColorToSelection" , "Zastosuj predefiniowany kolor" },
+                        { "ApplyPredefinedColorToSelectionToolTip" , "Zastosuj predefiniowany kolor (jeśli został znaleziony) do wszystkich budynków w bieżącym wyborze." },
+                        { "AvailableColors" , "Dostępne kolory" },
+                        { "StandardColors" , "Predefiniowane kolory" },
+                        { "RecentColors" , "Ostatnio używane kolory" },
+                        { "Standard" , "Standard" },
+                        { "Advanced" , "Zaawansowane" },
                     }
                  },
                 {
@@ -317,6 +349,7 @@ namespace AnnoDesigner.Localization
                         { "Road" , "Дорогa" },
                         { "PlaceBuilding" , "Выбрать здание" },
                         { "Search" , "Поиск" },
+                        { "SearchToolTip", "ESC чтобы очистить текст поиска" },
                         { "TitleAbout" , "О программе" },
                         { "Title" , "обновлено" },
                         { "BuildingLayoutDesigner" , "Конструктор макета здания для Ubisofts Anno-серии" },
@@ -342,7 +375,16 @@ namespace AnnoDesigner.Localization
                         { "StatTiles" , "Плитка" },
                         { "StatNameNotFound" , "Название здания не найдено" },
                         { "UnknownObject" , "Неизвестный объект" },
-                        { "PresetsLoaded" , "Загружаются пресеты зданий" }
+                        { "PresetsLoaded" , "Загружаются пресеты зданий" },
+                        { "ApplyColorToSelection" , "Применить цвет" },
+                        { "ApplyColorToSelectionToolTip" , "Применить цвет ко всем зданиям в текущем выборе" },
+                        { "ApplyPredefinedColorToSelection" , "Применить предопределенный цвет" },
+                        { "ApplyPredefinedColorToSelectionToolTip" , "Применить предопределенный цвет (если он найден) ко всем зданиям в текущем выборе." },
+                        { "AvailableColors" , "Доступные цвета" },
+                        { "StandardColors" , "Предварительно определенные цвета" },
+                        { "RecentColors" , "Последние использованные цвета" },
+                        { "Standard" , "Стандарт" },
+                        { "Advanced" , "Расширенный" },
                     }
                  },
             };
@@ -372,32 +414,6 @@ namespace AnnoDesigner.Localization
 
 
     }
-
-    /// <summary>
-    /// Holds the base INotifyPropertyChanged implementation plus helper methods
-    /// //https://stackoverflow.com/questions/1315621/implementing-inotifypropertychanged-does-a-better-way-exist
-    /// </summary>
-    public class Notify : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            //Invoke event if not null
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        protected bool UpdateProperty<T>(ref T field, T value, [CallerMemberName] string name = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-            {
-                return false;
-            }
-
-            field = value;
-            OnPropertyChanged(name);
-            return true;
-        }
-    }
-
 
     //These classes cannot be nested as they are used for data binding
 
@@ -655,6 +671,8 @@ namespace AnnoDesigner.Localization
     {
         public MainWindow()
         {
+            _buildingSettingsViewModel = new BuildingSettingsViewModel();
+
             UpdateLanguage();
         }
 
@@ -707,22 +725,32 @@ namespace AnnoDesigner.Localization
             ShowIcons = Localization.Translations[language]["ShowIcons"];
 
             //DockPanel
-            BuildingSettings = Localization.Translations[language]["BuildingSettings"];
-            Size = Localization.Translations[language]["Size"];
-            Color = Localization.Translations[language]["Color"];
-            Label = Localization.Translations[language]["Label"];
-            Icon = Localization.Translations[language]["Icon"];
-            InfluenceType = Localization.Translations[language]["InfluenceType"];
+            BuildingSettingsViewModel.TextHeader = Localization.Translations[language]["BuildingSettings"];
+            BuildingSettingsViewModel.TextSize = Localization.Translations[language]["Size"];
+            BuildingSettingsViewModel.TextColor = Localization.Translations[language]["Color"];
+            BuildingSettingsViewModel.TextBuildingName = Localization.Translations[language]["Label"];
+            BuildingSettingsViewModel.TextIcon = Localization.Translations[language]["Icon"];
+            BuildingSettingsViewModel.TextInfluenceType = Localization.Translations[language]["InfluenceType"];
             None = Localization.Translations[language]["None"];
-            Radius = Localization.Translations[language]["Radius"];
-            Distance = Localization.Translations[language]["Distance"];
+            BuildingSettingsViewModel.TextRadius = Localization.Translations[language]["Radius"];
+            BuildingSettingsViewModel.TextDistance = Localization.Translations[language]["Distance"];
             Both = Localization.Translations[language]["Both"];
-            Options = Localization.Translations[language]["Options"];
-            EnableLabel = Localization.Translations[language]["EnableLabel"];
-            Borderless = Localization.Translations[language]["Borderless"];
-            Road = Localization.Translations[language]["Road"];
-            PlaceBuilding = Localization.Translations[language]["PlaceBuilding"];
+            BuildingSettingsViewModel.TextOptions = Localization.Translations[language]["Options"];
+            BuildingSettingsViewModel.TextEnableLabel = Localization.Translations[language]["EnableLabel"];
+            BuildingSettingsViewModel.TextBorderless = Localization.Translations[language]["Borderless"];
+            BuildingSettingsViewModel.TextRoad = Localization.Translations[language]["Road"];
+            BuildingSettingsViewModel.TextPlaceBuilding = Localization.Translations[language]["PlaceBuilding"];
             Search = Localization.Translations[language]["Search"];
+            TreeViewSearchToolTip = Localization.Translations[language]["SearchToolTip"];
+            BuildingSettingsViewModel.TextApplyColorToSelection = Localization.Translations[language]["ApplyColorToSelection"];
+            BuildingSettingsViewModel.TextApplyColorToSelectionToolTip = Localization.Translations[language]["ApplyColorToSelectionToolTip"];
+            BuildingSettingsViewModel.TextApplyPredefinedColorToSelection = Localization.Translations[language]["ApplyPredefinedColorToSelection"];
+            BuildingSettingsViewModel.TextApplyPredefinedColorToSelectionToolTip = Localization.Translations[language]["ApplyPredefinedColorToSelectionToolTip"];
+            BuildingSettingsViewModel.TextAvailableColors = Localization.Translations[language]["AvailableColors"];
+            BuildingSettingsViewModel.TextStandardColors = Localization.Translations[language]["StandardColors"];
+            BuildingSettingsViewModel.TextRecentColors = Localization.Translations[language]["RecentColors"];
+            BuildingSettingsViewModel.TextStandard = Localization.Translations[language]["Standard"];
+            BuildingSettingsViewModel.TextAdvanced = Localization.Translations[language]["Advanced"];
 
             //Status Bar
             StatusBarControls = Localization.Translations[language]["StatusBarControls"];
@@ -739,7 +767,8 @@ namespace AnnoDesigner.Localization
         //within regex expressions):
         //private $1 _\l$2; \r\n public $1 $2 \r\n { \r\n get { return _\l$2; } \r\n set \r\n { \r\n UpdateProperty\(ref _\l$2, value\); \r\n}\r\n}
 
-        //File Menu
+        #region File Menu
+
         private string _file;
         public string File
         {
@@ -795,7 +824,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Extras Menu
+        #endregion
+
+        #region Extras Menu
+
         private string _extras;
         public string Extras
         {
@@ -842,7 +874,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Export Menu
+        #endregion
+
+        #region Export Menu
+
         private string _export;
         public string Export
         {
@@ -880,7 +915,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Language Menu
+        #endregion
+
+        #region Language Menu
+
         private string _language;
         public string Language
         {
@@ -891,7 +929,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Managa Stats Menu
+        #endregion
+
+        #region Manage Stats Menu
+
         private string _ManageStats;
         public string ManageStats
         {
@@ -920,7 +961,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Help Menu
+        #endregion
+
+        #region Help Menu
+
         private string _help;
         public string Help
         {
@@ -1041,7 +1085,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //Other
+        #endregion
+
+        #region Other options
+
         private string _showGrid;
         public string ShowGrid
         {
@@ -1070,62 +1117,10 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        //DockPanel
-        private string _buildingSettings;
-        public string BuildingSettings
-        {
-            get { return _buildingSettings; }
-            set
-            {
-                UpdateProperty(ref _buildingSettings, value);
-            }
-        }
-        private string _size;
-        public string Size
-        {
-            get { return _size; }
-            set
-            {
-                UpdateProperty(ref _size, value);
-            }
-        }
-        private string _color;
-        public string Color
-        {
-            get { return _color; }
-            set
-            {
-                UpdateProperty(ref _color, value);
-            }
-        }
-        private string _label;
-        public string Label
-        {
-            get { return _label; }
-            set
-            {
-                UpdateProperty(ref _label, value);
-            }
-        }
+        #endregion
 
-        private string _icon;
-        public string Icon
-        {
-            get { return _icon; }
-            set
-            {
-                UpdateProperty(ref _icon, value);
-            }
-        }
-        private string _influenceType;
-        public string InfluenceType
-        {
-            get { return _influenceType; }
-            set
-            {
-                UpdateProperty(ref _influenceType, value);
-            }
-        }
+        #region DockPanel       
+
         private string _none;
         public string None
         {
@@ -1135,24 +1130,7 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _none, value);
             }
         }
-        private string _radius;
-        public string Radius
-        {
-            get { return _radius; }
-            set
-            {
-                UpdateProperty(ref _radius, value);
-            }
-        }
-        private string _distance;
-        public string Distance
-        {
-            get { return _distance; }
-            set
-            {
-                UpdateProperty(ref _distance, value);
-            }
-        }
+
         private string _both;
         public string Both
         {
@@ -1162,51 +1140,7 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _both, value);
             }
         }
-        private string _options;
-        public string Options
-        {
-            get { return _options; }
-            set
-            {
-                UpdateProperty(ref _options, value);
-            }
-        }
-        private string _enableLabel;
-        public string EnableLabel
-        {
-            get { return _enableLabel; }
-            set
-            {
-                UpdateProperty(ref _enableLabel, value);
-            }
-        }
-        private string _borderless;
-        public string Borderless
-        {
-            get { return _borderless; }
-            set
-            {
-                UpdateProperty(ref _borderless, value);
-            }
-        }
-        private string _road;
-        public string Road
-        {
-            get { return _road; }
-            set
-            {
-                UpdateProperty(ref _road, value);
-            }
-        }
-        private string _placeBuilding;
-        public string PlaceBuilding
-        {
-            get { return _placeBuilding; }
-            set
-            {
-                UpdateProperty(ref _placeBuilding, value);
-            }
-        }
+
         private string _search;
         public string Search
         {
@@ -1216,8 +1150,29 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _search, value);
             }
         }
+        private string _treeViewSearchToolTip;
+        public string TreeViewSearchToolTip
+        {
+            get { return _treeViewSearchToolTip; }
+            set
+            {
+                UpdateProperty(ref _treeViewSearchToolTip, value);
+            }
+        }
+        private string _treeViewSearchText;
+        public string TreeViewSearchText
+        {
+            get { return _treeViewSearchText; }
+            set
+            {
+                UpdateProperty(ref _treeViewSearchText, value);
+            }
+        }
 
-        //Status Bar
+        #endregion
+
+        #region Status Bar
+
         private string _statusBarControls;
         public string StatusBarControls
         {
@@ -1227,7 +1182,6 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _statusBarControls, value);
             }
         }
-
         private string _statusBarItemsOnClipboard;
         public string StatusBarItemsOnClipboard
         {
@@ -1236,6 +1190,15 @@ namespace AnnoDesigner.Localization
             {
                 UpdateProperty(ref _statusBarItemsOnClipboard, value);
             }
+        }
+
+        #endregion
+
+        private BuildingSettingsViewModel _buildingSettingsViewModel;
+        public BuildingSettingsViewModel BuildingSettingsViewModel
+        {
+            get { return _buildingSettingsViewModel; }
+            set { _buildingSettingsViewModel = value; }
         }
     }
 

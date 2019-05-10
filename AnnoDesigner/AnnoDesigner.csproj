@@ -53,6 +53,8 @@
     </Compile>
     <Compile Include="TreeLocalization.cs" />
     <Compile Include="Localization.cs" />
+    <Compile Include="model\Notify.cs" />
+    <Compile Include="model\RelayCommand.cs" />
     <Compile Include="Presets\BuildingInfo.cs" />
     <Compile Include="Presets\BuildingPresets.cs" />
     <Compile Include="Constants.cs" />
@@ -73,6 +75,7 @@
     <Compile Include="TreeViewExtensions.cs" />
     <Compile Include="TreeViewSearch.cs" />
     <Compile Include="UI\IconImage.xaml.cs" />
+    <Compile Include="viewmodel\BuildingSettingsViewModel.cs" />
     <Compile Include="Welcome.xaml.cs">
       <DependentUpon>Welcome.xaml</DependentUpon>
     </Compile>

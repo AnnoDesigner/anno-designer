@@ -14,6 +14,7 @@
         public string Template { get; set; }
         public string LocaEng { get; set; }
         public string LocaGer { get; set; }
+        public string LocaFra { get; set; }
         public string LocaPol { get; set; }
         public string LocaRus { get; set; }
     }

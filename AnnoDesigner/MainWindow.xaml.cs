@@ -89,6 +89,8 @@ namespace AnnoDesigner
 
             //update settings
             Settings.Default.SelectedLanguage = SelectedLanguage;
+
+            _mainWindowLocalization.TreeViewSearchText = string.Empty;
         }
 
         #region Initialization
@@ -147,10 +149,13 @@ namespace AnnoDesigner
             ShowIcons.IsChecked = Settings.Default.ShowIcons;
             ShowLabels.IsChecked = Settings.Default.ShowLabels;
             _treeViewState = Settings.Default.TreeViewState ?? null;
+            _mainWindowLocalization.TreeViewSearchText = Settings.Default.TreeViewSearchText ?? "";
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
+            _mainWindowLocalization.BuildingSettingsViewModel.AnnoCanvasToUse = annoCanvas;
+
             // add icons to the combobox
             comboBoxIcon.Items.Clear();
             _noIconItem = new IconImage("None");
@@ -170,11 +175,11 @@ namespace AnnoDesigner
                 comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
             }
             comboxBoxInfluenceType.SelectedIndex = 0;
-            
+
             // check for updates on startup            
             _mainWindowLocalization.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
             _mainWindowLocalization.FileVersionValue = Constants.FileVersion.ToString("0.#", CultureInfo.InvariantCulture);
-            
+
             CheckForUpdates(false);
 
             // load color presets
@@ -290,14 +295,15 @@ namespace AnnoDesigner
                 return;
             }
             // size
-            textBoxWidth.Value = (int)obj.Size.Width;
-            textBoxHeight.Value = (int)obj.Size.Height;
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingWidth = (int)obj.Size.Width;
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingHeight = (int)obj.Size.Height;
             // color
-            colorPicker.SelectedColor = obj.Color;
+            _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor = obj.Color;
             // label
-            textBoxLabel.Text = obj.Label;
-            // Ident
-            textBoxIdentifier.Text = obj.Identifier;
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingName = obj.Label;
+            // Identifier
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier = obj.Identifier;
+
             // icon
             try
             {
@@ -317,10 +323,11 @@ namespace AnnoDesigner
 
                 comboBoxIcon.SelectedItem = _noIconItem;
             }
+
             // radius
-            textBoxRadius.Value = obj.Radius;
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius = obj.Radius;
             //InfluenceRadius
-            textBoxInfluenceRange.Text = obj.InfluenceRange.ToString();
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = obj.InfluenceRange;
 
             //Set Influence Type combo box
             if (obj.Radius > 0 && obj.InfluenceRange > 0)
@@ -342,10 +349,10 @@ namespace AnnoDesigner
                 comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.None;
             }
 
-            // flags
-            //checkBoxLabel.IsChecked = !string.IsNullOrEmpty(obj.Label);
-            checkBoxBorderless.IsChecked = obj.Borderless;
-            checkBoxRoad.IsChecked = obj.Road;
+            // flags            
+            //_mainWindowLocalization.BuildingSettingsViewModel.IsEnableLabelChecked = !string.IsNullOrEmpty(obj.Label);
+            _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked = obj.Borderless;
+            _mainWindowLocalization.BuildingSettingsViewModel.IsRoadChecked = obj.Road;
         }
 
         private void StatusMessageChanged(string message)
@@ -379,15 +386,15 @@ namespace AnnoDesigner
             // parse user inputs and create new object
             AnnoObject obj = new AnnoObject
             {
-                Size = new Size(textBoxWidth?.Value ?? 1, textBoxHeight?.Value ?? 1),
-                Color = colorPicker.SelectedColor ?? Colors.Red,
-                Label = IsChecked(checkBoxLabel) ? textBoxLabel.Text : "",
+                Size = new Size(_mainWindowLocalization.BuildingSettingsViewModel.BuildingWidth, _mainWindowLocalization.BuildingSettingsViewModel.BuildingHeight),
+                Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
+                Label = _mainWindowLocalization.BuildingSettingsViewModel.IsEnableLabelChecked ? _mainWindowLocalization.BuildingSettingsViewModel.BuildingName : string.Empty,
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
-                Radius = textBoxRadius?.Value ?? 0,
-                InfluenceRange = string.IsNullOrEmpty(textBoxInfluenceRange.Text) ? 0 : double.Parse(textBoxInfluenceRange.Text, CultureInfo.InvariantCulture),
-                Borderless = IsChecked(checkBoxBorderless),
-                Road = IsChecked(checkBoxRoad),
-                Identifier = textBoxIdentifier.Text,
+                Radius = _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius,
+                InfluenceRange = _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange,
+                Borderless = _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked,
+                Road = _mainWindowLocalization.BuildingSettingsViewModel.IsRoadChecked,
+                Identifier = _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier,
             };
             // do some sanity checks
             if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
@@ -410,7 +417,7 @@ namespace AnnoDesigner
                 {
                     UpdateUIFromObject(new AnnoObject(selectedItem)
                     {
-                        Color = colorPicker.SelectedColor ?? Colors.Red,
+                        Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
                     });
                     ApplyCurrentObject();
                 }
@@ -642,9 +649,9 @@ namespace AnnoDesigner
 
         private void TextBoxSearchPresetsGotFocus(object sender, RoutedEventArgs e)
         {
-            if (e.Source is TextBox textBox)
+            if (e.Source is TextBox)
             {
-                if (textBox.Text == "")
+                if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
                 {
                     _treeViewState = treeViewPresets.GetTreeViewState();
                 }
@@ -653,17 +660,22 @@ namespace AnnoDesigner
 
         private void TextBoxSearchPresetsKeyUp(object sender, KeyEventArgs e)
         {
-            var txt = sender as TextBox;
             try
             {
-                if (txt.Text == "")
+                if (e.Key == Key.Escape)
+                {
+                    _mainWindowLocalization.TreeViewSearchText = string.Empty;
+                    TextBoxSearchPresets.UpdateLayout();
+                }
+
+                if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
                 {
                     _treeViewSearch.Reset();
                     treeViewPresets.SetTreeViewState(_treeViewState);
                 }
                 else
                 {
-                    _treeViewSearch.Search(txt.Text);
+                    _treeViewSearch.Search(_mainWindowLocalization.TreeViewSearchText);
                 }
             }
             catch (Exception ex)
@@ -686,7 +698,7 @@ namespace AnnoDesigner
             }
         }
 
-        private void TreeViewPresets_Loaded(object sender, RoutedEventArgs e)
+        private void TreeViewPresetsLoaded(object sender, RoutedEventArgs e)
         {
             //Intialise tree view and ensure that item containers are generated.
             _treeViewSearch = new TreeViewSearch<AnnoObject>(treeViewPresets, _ => _.Label)
@@ -732,10 +744,8 @@ namespace AnnoDesigner
         private void WindowClosing(object sender, CancelEventArgs e)
         {
             Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
-            Settings.Default.TreeViewSearchText = TextBoxSearchPresets.Text; //Set explicity despite the data binding as UpdateProperty is only called on LostFocus
+            Settings.Default.TreeViewSearchText = _mainWindowLocalization.TreeViewSearchText;
             Settings.Default.Save();
         }
-
-
     }
 }
