@@ -54,7 +54,7 @@
     <Compile Include="converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="model\StatisticsBuilding.cs" />
-    <Compile Include="model\Notify.cs" />    
+    <Compile Include="model\Notify.cs" />
     <Compile Include="model\RelayCommand.cs" />
     <Compile Include="Presets\BuildingInfo.cs" />
     <Compile Include="Presets\BuildingPresets.cs" />
@@ -891,6 +891,9 @@
     <None Include="icons\icon_30_41.png" />
     <None Include="icons\icon_30_7.png" />
     <None Include="icons\icon_30_8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Flags\France.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
