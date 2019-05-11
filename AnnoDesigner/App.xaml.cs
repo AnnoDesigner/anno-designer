@@ -41,7 +41,7 @@ namespace AnnoDesigner
         /// Writes an exception to the error log
         /// </summary>
         /// <param name="e"></param>
-        private void LogErrorMessage(Exception e)
+        public static void LogErrorMessage(Exception e)
         {
             try
             {

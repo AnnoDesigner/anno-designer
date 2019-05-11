@@ -294,7 +294,8 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error downloading latest preset file.{Environment.NewLine}{ex}");
+                //Trace.WriteLine($"Error downloading latest preset file.{Environment.NewLine}{ex}");
+                App.LogErrorMessage(ex);
                 return string.Empty;
             }
         }
@@ -313,7 +314,8 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error downloading file ({url}).{Environment.NewLine}{ex}");
+                //Trace.WriteLine($"Error downloading file ({url}).{Environment.NewLine}{ex}");
+                App.WriteToErrorLog($"Error downloading file ({url}).", ex.Message, ex.StackTrace);
                 return string.Empty;
             }
         }
