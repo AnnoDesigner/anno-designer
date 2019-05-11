@@ -1,0 +1,129 @@
+﻿<UserControl x:Class="AnnoDesigner.StatisticsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:AnnoDesigner"
+             xmlns:viewmodel="clr-namespace:AnnoDesigner.viewmodel"
+             xmlns:converter="clr-namespace:AnnoDesigner.converter"
+             mc:Ignorable="d"
+             d:DesignHeight="350"
+             d:DesignWidth="200"
+             Background="Transparent">
+    <UserControl.DataContext>
+        <viewmodel:StatisticsViewModel x:Name="statisticsViewModel" />
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <converter:BoolToVisibilityConverter x:Key="boolToVisConverter"
+                                             TrueValue="Visible"
+                                             FalseValue="Collapsed" />
+        <converter:BoolToVisibilityConverter x:Key="invertedBoolToVisConverter"
+                                             TrueValue="Collapsed"
+                                             FalseValue="Visible" />
+
+        <Style x:Key="styleGroupBox"
+               TargetType="GroupBox">
+            <Setter Property="Margin"
+                    Value="2,5" />
+            <Setter Property="Padding"
+                    Value="2" />
+        </Style>
+        <Style x:Key="styleGroupEntry"
+               TargetType="TextBlock">
+            <Setter Property="Padding"
+                    Value="5,0,0,0" />
+        </Style>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Auto">
+        <StackPanel>
+            <TextBlock x:Name="tblNothingPlaced"
+                       Text="{Binding TextNothingPlaced}"
+                       Margin="5"
+                       Visibility="{Binding AreStatisticsAvailable, Converter={StaticResource invertedBoolToVisConverter}}" />
+
+            <StackPanel Visibility="{Binding AreStatisticsAvailable, Converter={StaticResource boolToVisConverter}}">
+                <GroupBox x:Name="grpBoundingBox"
+                          Header="{Binding TextBoundingBox}"
+                          Style="{StaticResource styleGroupBox}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding UsedArea}"
+                                   Style="{StaticResource styleGroupEntry}" />
+                        <TextBlock Style="{StaticResource styleGroupEntry}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} {1}">
+                                    <Binding Path="UsedTiles" />
+                                    <Binding Path="TextTiles" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox x:Name="grpMinArea"
+                          Header="{Binding TextMinimumArea}"
+                          Style="{StaticResource styleGroupBox}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource styleGroupEntry}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} {1}">
+                                    <Binding Path="MinTiles" />
+                                    <Binding Path="TextTiles" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox x:Name="grpEfficiency"
+                          Header="{Binding TextSpaceEfficiency}"
+                          Style="{StaticResource styleGroupBox}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Efficiency}"
+                                   Style="{StaticResource styleGroupEntry}" />
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox x:Name="grpBuildings"
+                          Header="{Binding TextBuildings}"
+                          Style="{StaticResource styleGroupBox}"
+                          Visibility="{Binding ShowBuildingList , Converter={StaticResource boolToVisConverter}}">
+                    <ItemsControl ItemsSource="{Binding Buildings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} x {1}">
+                                            <Binding Path="Count" />
+                                            <Binding Path="Name" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </GroupBox>
+
+                <GroupBox x:Name="grpSelectedBuildings"
+                          Header="{Binding TextBuildingsSelected}"
+                          Style="{StaticResource styleGroupBox}"
+                          Visibility="{Binding ShowSelectedBuildingList, Converter={StaticResource boolToVisConverter}}">
+                    <ItemsControl ItemsSource="{Binding SelectedBuildings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} x {1}">
+                                            <Binding Path="Count" />
+                                            <Binding Path="Name" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </GroupBox>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
