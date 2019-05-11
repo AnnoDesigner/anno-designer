@@ -25,6 +25,8 @@ namespace AnnoDesigner
     /// </summary>
     public partial class AnnoCanvas : UserControl
     {
+        public event EventHandler StatisticsUpdated;
+
         #region Properties
         /// <summary>
         /// Contains all loaded icons as a mapping of name (the filename without extension) to loaded BitmapImage.
@@ -132,51 +134,6 @@ namespace AnnoDesigner
                     InvalidateVisual();
                 }
                 _renderIcon = value;
-            }
-        }
-
-        /// <summary>
-        /// Backing field of the RenderStats property.
-        /// </summary>
-        private bool _renderStats;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the calculated statistics of the layout should be rendered.
-        /// </summary>
-        public bool RenderStats
-        {
-            get
-            {
-                return _renderStats;
-            }
-            set
-            {
-                if (_renderStats != value)
-                {
-                    InvalidateVisual();
-                }
-                _renderStats = value;
-            }
-        }
-
-        private bool _renderBuildingCount = false;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the calculated building statistics of the layout should be rendered.
-        /// </summary>
-        public bool RenderBuildingCount
-        {
-            get
-            {
-                return _renderBuildingCount;
-            }
-            set
-            {
-                if (_renderBuildingCount != value)
-                {
-                    InvalidateVisual();
-                }
-                _renderBuildingCount = value;
             }
         }
 
@@ -367,18 +324,21 @@ namespace AnnoDesigner
         /// List of all currently placed objects.
         /// </summary>
         private List<AnnoObject> _placedObjects;
+        public List<AnnoObject> PlacedObjects
+        {
+            get { return _placedObjects; }
+            set { _placedObjects = value; }
+        }
 
         /// <summary>
         /// List of all currently selected objects.
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
-        private readonly List<AnnoObject> _selectedObjects;
+        private List<AnnoObject> _selectedObjects;
         public List<AnnoObject> SelectedObjects
         {
-            get
-            {
-                return _selectedObjects;
-            }
+            get { return _selectedObjects; }
+            set { _selectedObjects = value; }
         }
 
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
@@ -389,6 +349,11 @@ namespace AnnoDesigner
         /// Used for grid lines and object borders.
         /// </summary>
         private readonly Pen _linePen;
+
+        public double LinePenThickness
+        {
+            get { return _linePen.Thickness; }
+        }
 
         /// <summary>
         /// Used for selection and hover highlights and selection rect.
@@ -420,9 +385,18 @@ namespace AnnoDesigner
         /// <summary>
         /// Constructor
         /// </summary>
-        public AnnoCanvas()
+        public AnnoCanvas() : this(null, null)
+        {
+
+        }
+
+        public AnnoCanvas(BuildingPresets presetsToUse, Dictionary<string, IconImage> iconsToUse)
         {
             InitializeComponent();
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             // control settings
             Focusable = true;
             ClipToBounds = true;
@@ -441,34 +415,65 @@ namespace AnnoDesigner
             color.A = 32;
             _influencedBrush = new SolidColorBrush(color);
 
+            sw.Stop();
+            Debug.WriteLine($"init variables took: {sw.ElapsedMilliseconds}ms");
+
             // load presets and icons if not in design time
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
+                sw.Start();
                 // load presets
                 try
                 {
-                    BuildingPresets = DataIO.LoadFromFile<BuildingPresets>(Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile));
+                    if (presetsToUse == null)
+                    {
+                        BuildingPresets = DataIO.LoadFromFile<BuildingPresets>(Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile));
+                    }
+                    else
+                    {
+                        BuildingPresets = presetsToUse;
+                    }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Loading of the building presets failed");
                 }
 
-                // load icon name mapping
-                IconMappingPresets iconNameMapping = null;
-                try
-                {
-                    IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
-                    iconNameMapping = loader.Load();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Loading of the icon names failed");
-                }
+                sw.Stop();
+                Debug.WriteLine($"loading presets took: {sw.ElapsedMilliseconds}ms");
 
-                // load icons
-                var iconLoader = new IconLoader();
-                Icons = iconLoader.Load(iconNameMapping);
+                if (iconsToUse == null)
+                {
+                    sw.Start();
+
+                    // load icon name mapping
+                    IconMappingPresets iconNameMapping = null;
+                    try
+                    {
+                        IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
+                        iconNameMapping = loader.Load();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Loading of the icon names failed");
+                    }
+
+                    sw.Stop();
+                    Debug.WriteLine($"loading icon mapping took: {sw.ElapsedMilliseconds}ms");
+
+                    sw.Start();
+
+                    // load icons
+                    var iconLoader = new IconLoader();
+                    Icons = iconLoader.Load(iconNameMapping);
+
+                    sw.Stop();
+                    Debug.WriteLine($"loading icons took: {sw.ElapsedMilliseconds}ms");
+                }
+                else
+                {
+                    Icons = iconsToUse;
+                }
             }
 
             const int dpiFactor = 1;
@@ -483,6 +488,8 @@ namespace AnnoDesigner
             _influencedPen.Freeze();
             _lightBrush.Freeze();
             _influencedBrush.Freeze();
+
+            StatisticsUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
@@ -508,12 +515,6 @@ namespace AnnoDesigner
 
             var width = RenderSize.Width;
             var height = RenderSize.Height;
-
-            // apply offset when rendering statistics
-            if (RenderStats)
-            {
-                width -= Constants.StatisticsMargin;
-            }
 
             // draw background
             drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(new Point(), RenderSize));
@@ -572,11 +573,11 @@ namespace AnnoDesigner
                 drawingContext.DrawRectangle(_lightBrush, _highlightPen, _selectionRect);
             }
 
-            // draw additional information
-            if (RenderStats)
-            {
-                RenderStatistics(drawingContext);
-            }
+            //// draw additional information
+            //if (RenderStats)
+            //{
+            //    RenderStatistics(drawingContext);
+            //}
 
             // pop back guidlines set
             drawingContext.Pop();
@@ -914,91 +915,6 @@ namespace AnnoDesigner
             }
         }
 
-        /// <summary>
-        /// Renders calculated statistics of the current layout like the bounding box and space efficiency
-        /// </summary>
-        /// <param name="drawingContext">context used for rendering</param>
-        protected void RenderStatistics(DrawingContext drawingContext)
-        {
-            var language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
-            var informationLines = new StringBuilder(128 * 2);//16=minimum; 127=empty box
-
-            if (!_placedObjects.Any())
-            {
-                informationLines.AppendLine(Localization.Localization.Translations[language]["StatNothingPlaced"]);
-            }
-            else
-            {
-                // calculate bouding box
-                var boxX = _placedObjects.Max(_ => _.Position.X + _.Size.Width) - _placedObjects.Min(_ => _.Position.X);
-                var boxY = _placedObjects.Max(_ => _.Position.Y + _.Size.Height) - _placedObjects.Min(_ => _.Position.Y);
-                // calculate area of all buildings
-                var minTiles = _placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
-
-                // format lines
-                informationLines.AppendLine(Localization.Localization.Translations[language]["StatBoundingBox"]);
-                informationLines.AppendFormat(" {0}x{1}", boxX, boxY).AppendLine();
-                informationLines.AppendFormat(" {0} Tiles", boxX * boxY).AppendLine();
-                informationLines.AppendLine("");
-                informationLines.AppendLine(Localization.Localization.Translations[language]["StatMinimumArea"]);
-                informationLines.AppendFormat(" {0} Tiles", minTiles).AppendLine();
-                informationLines.AppendLine("");
-                informationLines.AppendLine(Localization.Localization.Translations[language]["StatSpaceEfficiency"]);
-                informationLines.AppendFormat(" {0}%", Math.Round(minTiles / boxX / boxY * 100)).AppendLine();
-
-                if (_renderBuildingCount)
-                {
-                    informationLines.AppendLine("");
-
-                    IEnumerable<IGrouping<string, AnnoObject>> groupedBuildings;
-                    if (_selectedObjects.Count > 0)
-                    {
-                        informationLines.AppendLine(Localization.Localization.Translations[language]["StatBuildingsSelected"]);
-                        groupedBuildings = _selectedObjects.GroupBy(_ => _.Identifier);
-                    }
-                    else
-                    {
-                        informationLines.AppendLine(Localization.Localization.Translations[language]["StatBuildings"]);
-                        groupedBuildings = _placedObjects.GroupBy(_ => _.Identifier);
-                    }
-
-                    foreach (var item in groupedBuildings
-                        .Where(_ => !_.ElementAt(0).Road && _.ElementAt(0).Identifier != null)
-                        .OrderByDescending(_ => _.Count()))
-                    {
-                        if (!string.IsNullOrWhiteSpace(item.ElementAt(0).Identifier))
-                        {
-                            var building = BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
-                            if (building != null)
-                            {
-                                informationLines.AppendFormat("{0} x {1}", item.Count(), building.Localization[language]).AppendLine();
-                            }
-                            else
-                            {
-                                item.ElementAt(0).Identifier = "";
-                                informationLines.AppendFormat("{0} x Building name not found", item.Count()).AppendLine();
-                            }
-                        }
-                        else
-                        {
-                            informationLines.AppendFormat("{0} x Building name not found", item.Count()).AppendLine();
-                        }
-                    }
-                }
-            }
-
-            // render all the lines            
-            var text = informationLines.ToString();
-            var f = new FormattedText(text, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                           TYPEFACE, 12, Brushes.Black, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
-            {
-                MaxTextWidth = Constants.StatisticsMargin - 20,
-                MaxTextHeight = RenderSize.Height,
-                TextAlignment = TextAlignment.Left
-            };
-            drawingContext.DrawText(f, new Point(RenderSize.Width - Constants.StatisticsMargin + 10, 10));
-        }
-
         //I was really just checking to see if there was a built in function, but this works
         //https://stackoverflow.com/questions/18657508/c-sharp-find-nth-root
         [Pure]
@@ -1039,7 +955,6 @@ namespace AnnoDesigner
         {
             return new Point(Math.Round(screenPoint.X / _gridStep), Math.Round(screenPoint.Y / _gridStep));
         }
-
 
         /// <summary>
         /// Converts a length given in (pixel-)units to grid coordinate by determining which grid edge is nearest.
@@ -1091,7 +1006,7 @@ namespace AnnoDesigner
         /// <param name="gridLength"></param>
         /// <returns></returns>
         [Pure]
-        private double GridToScreen(double gridLength)
+        public double GridToScreen(double gridLength)
         {
             return gridLength * _gridStep;
         }
@@ -1304,6 +1219,8 @@ namespace AnnoDesigner
                     // adjust the drag start to compensate the amount we already moved
                     _mouseDragStart.X += GridToScreen(dx);
                     _mouseDragStart.Y += GridToScreen(dy);
+
+                    StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                 }
             }
             else if (e.LeftButton == MouseButtonState.Pressed)
@@ -1332,6 +1249,8 @@ namespace AnnoDesigner
                             _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                             // select intersecting objects
                             _selectedObjects.AddRange(_placedObjects.FindAll(_ => GetObjectScreenRect(_).IntersectsWith(_selectionRect)));
+
+                            StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                             break;
                         case MouseMode.DragSelection:
                             // move all selected objects
@@ -1340,6 +1259,7 @@ namespace AnnoDesigner
                             // check if the mouse has moved at least one grid cell in any direction
                             if (dx == 0 && dy == 0)
                             {
+                                StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                                 break;
                             }
                             var unselected = _placedObjects.FindAll(_ => !_selectedObjects.Contains(_));
@@ -1370,6 +1290,8 @@ namespace AnnoDesigner
                                 _mouseDragStart.X += GridToScreen(dx);
                                 _mouseDragStart.Y += GridToScreen(dy);
                             }
+
+                            StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                             break;
                     }
                 }
@@ -1414,6 +1336,8 @@ namespace AnnoDesigner
                                 _selectedObjects.Add(obj);
                             }
                         }
+
+                        StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                         // return to standard mode, i.e. clear any drag-start modes
                         CurrentMode = MouseMode.Standard;
                         break;
@@ -1455,6 +1379,8 @@ namespace AnnoDesigner
                             // cancel placement of object
                             CurrentObjects.Clear();
                         }
+
+                        StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                         break;
                 }
             }
@@ -1487,6 +1413,7 @@ namespace AnnoDesigner
                     // remove all currently selected objects from the grid and clear selection
                     _selectedObjects.ForEach(_ => _placedObjects.Remove(_));
                     _selectedObjects.Clear();
+                    StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                     break;
                 case Key.C:
                     if (IsControlPressed())
@@ -1587,6 +1514,9 @@ namespace AnnoDesigner
                 _placedObjects.AddRange(CloneList(CurrentObjects));
                 // sort the objects because borderless objects should be drawn first
                 _placedObjects.Sort((a, b) => b.Borderless.CompareTo(a.Borderless));
+
+                StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+
                 return true;
             }
             return false;
@@ -1646,11 +1576,14 @@ namespace AnnoDesigner
             {
                 return;
             }
+
             var dx = _placedObjects.Min(_ => _.Position.X) - border;
             var dy = _placedObjects.Min(_ => _.Position.Y) - border;
             _placedObjects.ForEach(_ => _.Position = new Point(_.Position.X - dx, _.Position.Y - dy));
+
             InvalidateVisual();
         }
+
         #endregion
 
         #region New/Save/Load/Export methods
@@ -1752,95 +1685,91 @@ namespace AnnoDesigner
             }
         }
 
-        /// <summary>
-        /// Renders the current layout to file.
-        /// </summary>
-        /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
-        /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
-        public void ExportImage(bool exportZoom, bool exportSelection)
-        {
-            var dialog = new SaveFileDialog
-            {
-                DefaultExt = Constants.ExportedImageExtension,
-                Filter = Constants.ExportDialogFilter
-            };
-            if (!string.IsNullOrEmpty(LoadedFile))
-            {
-                // default the filename to the same name as the saved layout
-                dialog.FileName = Path.GetFileNameWithoutExtension(LoadedFile);
-            }
-            if (dialog.ShowDialog() == true)
-            {
-                try
-                {
-                    RenderToFile(dialog.FileName, 1, exportZoom, exportSelection);
-                }
-                catch (Exception e)
-                {
-                    IOErrorMessageBox(e);
-                }
-            }
-        }
+        ///// <summary>
+        ///// Renders the current layout to file.
+        ///// </summary>
+        ///// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
+        ///// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
+        //public void ExportImage(bool exportZoom, bool exportSelection)
+        //{
+        //    var dialog = new SaveFileDialog
+        //    {
+        //        DefaultExt = Constants.ExportedImageExtension,
+        //        Filter = Constants.ExportDialogFilter
+        //    };
+        //    if (!string.IsNullOrEmpty(LoadedFile))
+        //    {
+        //        // default the filename to the same name as the saved layout
+        //        dialog.FileName = Path.GetFileNameWithoutExtension(LoadedFile);
+        //    }
+        //    if (dialog.ShowDialog() == true)
+        //    {
+        //        try
+        //        {
+        //            RenderToFile(dialog.FileName, 1, exportZoom, exportSelection);
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            IOErrorMessageBox(e);
+        //        }
+        //    }
+        //}
 
-        /// <summary>
-        /// Asynchronously renders the current layout to file.
-        /// </summary>
-        /// <param name="filename">filename of the output image</param>
-        /// <param name="border">normalization value used prior to exporting</param>
-        /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
-        /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
-        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection)
-        {
-            // copy all objects
-            var allObjects = _placedObjects.Select(_ => new AnnoObject(_)).ToList();
-            // copy selected objects
-            // note: should be references to the correct copied objects from allObjects
-            var selectedObjects = _selectedObjects.Select(_ => new AnnoObject(_)).ToList();
-            System.Diagnostics.Debug.WriteLine("UI thread: {0}", Thread.CurrentThread.ManagedThreadId);
-            ThreadStart renderThread = delegate
-            {
-                System.Diagnostics.Debug.WriteLine("Render thread: {0}", Thread.CurrentThread.ManagedThreadId);
-                // initialize output canvas
-                var target = new AnnoCanvas
-                {
-                    _placedObjects = allObjects,
-                    RenderGrid = RenderGrid,
-                    RenderIcon = RenderIcon,
-                    RenderLabel = RenderLabel,
-                    RenderStats = RenderStats
-                };
-                // normalize layout
-                target.Normalize(border);
-                // set zoom level
-                if (exportZoom)
-                {
-                    target.GridSize = GridSize;
-                }
-                // set selection
-                if (exportSelection)
-                {
-                    target._selectedObjects.AddRange(selectedObjects);
-                }
-                // calculate output size
-                var width = target.GridToScreen(_placedObjects.Max(_ => _.Position.X + _.Size.Width) + border) + 1;
-                var height = target.GridToScreen(_placedObjects.Max(_ => _.Position.Y + _.Size.Height) + border) + 1;
-                if (RenderStats)
-                {
-                    width += Constants.StatisticsMargin - 0.5;
-                }
-                target.Width = width;
-                target.Height = height;
-                // apply size
-                var outputSize = new Size(width, height);
-                target.Measure(outputSize);
-                target.Arrange(new Rect(outputSize));
-                // render canvas to file
-                DataIO.RenderToFile(target, filename);
-            };
-            var thread = new Thread(renderThread);
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-        }
+        ///// <summary>
+        ///// Asynchronously renders the current layout to file.
+        ///// </summary>
+        ///// <param name="filename">filename of the output image</param>
+        ///// <param name="border">normalization value used prior to exporting</param>
+        ///// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
+        ///// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
+        //private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection)
+        //{
+        //    // copy all objects
+        //    var allObjects = _placedObjects.Select(_ => new AnnoObject(_)).ToList();
+        //    // copy selected objects
+        //    // note: should be references to the correct copied objects from allObjects
+        //    var selectedObjects = _selectedObjects.Select(_ => new AnnoObject(_)).ToList();
+        //    System.Diagnostics.Debug.WriteLine("UI thread: {0}", Thread.CurrentThread.ManagedThreadId);
+        //    ThreadStart renderThread = delegate
+        //    {
+        //        System.Diagnostics.Debug.WriteLine("Render thread: {0}", Thread.CurrentThread.ManagedThreadId);
+        //        // initialize output canvas
+        //        var target = new AnnoCanvas
+        //        {
+        //            _placedObjects = allObjects,
+        //            RenderGrid = RenderGrid,
+        //            RenderIcon = RenderIcon,
+        //            RenderLabel = RenderLabel
+        //        };
+        //        // normalize layout
+        //        target.Normalize(border);
+        //        // set zoom level
+        //        if (exportZoom)
+        //        {
+        //            target.GridSize = GridSize;
+        //        }
+        //        // set selection
+        //        if (exportSelection)
+        //        {
+        //            target._selectedObjects.AddRange(selectedObjects);
+        //        }
+        //        // calculate output size
+        //        var width = target.GridToScreen(_placedObjects.Max(_ => _.Position.X + _.Size.Width) + border) + 1;
+        //        var height = target.GridToScreen(_placedObjects.Max(_ => _.Position.Y + _.Size.Height) + border) + 1;
+
+        //        target.Width = width;
+        //        target.Height = height;
+        //        // apply size
+        //        var outputSize = new Size(width, height);
+        //        target.Measure(outputSize);
+        //        target.Arrange(new Rect(outputSize));
+        //        // render canvas to file
+        //        DataIO.RenderToFile(target, filename);
+        //    };
+        //    var thread = new Thread(renderThread);
+        //    thread.SetApartmentState(ApartmentState.STA);
+        //    thread.Start();
+        //}
 
         /// <summary>
         /// Displays a message box containing some error information.

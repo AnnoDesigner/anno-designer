@@ -56,11 +56,6 @@ namespace AnnoDesigner
         public const int GridStepDefault = 20;
 
         /// <summary>
-        /// Defines the margin in pixels on the right side of the layout which is used to render the statistics
-        /// </summary>
-        public const int StatisticsMargin = 142;
-
-        /// <summary>
         /// The value that affects the rendering sizes of icons on the anno canvas. 1 produces an icon of the biggest size.
         /// </summary>
         public const double IconSizeFactor = 1.1;
@@ -100,5 +95,10 @@ namespace AnnoDesigner
         /// Filter used for the export image dialog.
         /// </summary>
         public const string ExportDialogFilter = "PNG (*.png)|*.png|All Files (*.*)|*.*";
+    
+        /// <summary>
+        /// Used to provide space for the statistics panel when exporting a layout as an image.
+        /// </summary>
+        public const int StatisticsMargin = 142;
     }
 }

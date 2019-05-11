@@ -45,7 +45,7 @@ namespace AnnoDesigner.PresetsLoader
                     }
 
                     // add the current icon
-                    result.Add(filenameWithoutExt, new IconImage(filenameWithoutExt, localizations, new BitmapImage(new Uri(path))));
+                    result.Add(filenameWithoutExt, new IconImage(filenameWithoutExt, localizations, path));
                 }
 
                 // sort icons by their DisplayName

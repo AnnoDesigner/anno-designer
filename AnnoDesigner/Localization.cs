@@ -42,6 +42,7 @@ namespace AnnoDesigner.Localization
                         { "Error" , "Error" },
                         { "Export" , "Export" },
                         { "ExportImage" , "Export Image" },
+                        { "ExportImageSuccessful" , "Image was successfully exported." },
                         { "UseCurrentZoomOnExportedImage" , "Use current zoom on exported image" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Render selection highlights on exported image" },
                         { "Language" , "Language" },
@@ -100,8 +101,8 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Space Efficiency" },
                         { "StatBuildings" , "Buildings" },
                         { "StatBuildingsSelected" , "Buildings Selected" },
-                        { "StatTiles" , "Tiles" },
-                        { "StatNameNotFound" , "Building name not found" },
+                        { "StatTiles" , "Tiles"},
+                        { "StatNameNotFound" , "Building name not found"},
                         { "UnknownObject" , "Unknown Object" },
                         { "PresetsLoaded" , "Building presets loaded" },
                         { "ApplyColorToSelection" , "Apply color" },
@@ -139,6 +140,7 @@ namespace AnnoDesigner.Localization
                         { "Error" , "Fehler" },
                         { "Export" , "Exportieren" },
                         { "ExportImage" , "Exportiere Bild / Speichere als Bild" },
+                        { "ExportImageSuccessful" , "Das Bild wurde erfolgreich exportiert." },
                         { "UseCurrentZoomOnExportedImage" , "Wende aktuellen Zomm auf exportiertes Bild an" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Exportiere Bild mit Selektionen" },
                         { "Language" , "Sprache" },
@@ -236,6 +238,7 @@ namespace AnnoDesigner.Localization
                         { "Error" , "Błąd" },
                         { "Export" , "Eksportuj" },
                         { "ExportImage" , "Eksportuj obraz" },
+                        { "ExportImageSuccessful" , "Obraz został pomyślnie wyeksportowany." },
                         { "UseCurrentZoomOnExportedImage" , "Użyj obecnego powiększenia na eksportowanym obrazie" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Pokaż podświetlenie wybranych elementów na eksportowanym obrazie" },
                         { "Language" , "Język" },
@@ -294,8 +297,8 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Wykorzystanie Przestrzeni" },
                         { "StatBuildings" , "Budynki" },
                         { "StatBuildingsSelected" , "Wybrane Budynki" },
-                        { "StatTiles" , "Płytki" },
-                        { "StatNameNotFound" , "Nie znaleziono nazwy budynku" },
+                        { "StatTiles" , "Płytki"},
+                        { "StatNameNotFound" , "Nie znaleziono nazwy budynku"},
                         { "UnknownObject" , "Obiekt nieznany" },
                         { "PresetsLoaded" , "Presety budynków załadowano" },
                         { "ApplyColorToSelection" , "Zastosuj kolor" },
@@ -333,6 +336,7 @@ namespace AnnoDesigner.Localization
                         { "Error" , "Ошибка" },
                         { "Export" , "Экспорт" },
                         { "ExportImage" , "Экспортировать изображение" },
+                        { "ExportImageSuccessful" , "Изображение было успешно экспортировано." },
                         { "UseCurrentZoomOnExportedImage" , "Использовать текущее масштабирование экспортируемого изображения" },
                         { "RenderSelectionHighlightsOnExportedImage" , "Выделение выделенного фрагмента на экспортируемом изображении" },
                         { "Language" , "язык" },
@@ -391,8 +395,8 @@ namespace AnnoDesigner.Localization
                         { "StatSpaceEfficiency" , "Космическая эффективность" },
                         { "StatBuildings" , "Здания" },
                         { "StatBuildingsSelected" , "Выбранные здания" },
-                        { "StatTiles" , "Плитка" },
-                        { "StatNameNotFound" , "Название здания не найдено" },
+                        { "StatTiles" , "Плитка"},
+                        { "StatNameNotFound" , "Название здания не найдено"},
                         { "UnknownObject" , "Неизвестный объект" },
                         { "PresetsLoaded" , "Загружаются пресеты зданий" },
                         { "ApplyColorToSelection" , "Применить цвет" },
@@ -695,6 +699,7 @@ namespace AnnoDesigner.Localization
     {
         public MainWindow()
         {
+            _statisticsViewModel = new StatisticsViewModel();
             _buildingSettingsViewModel = new BuildingSettingsViewModel();
 
             UpdateLanguage();
@@ -703,6 +708,16 @@ namespace AnnoDesigner.Localization
         public void UpdateLanguage()
         {
             string language = Localization.GetLanguageCodeFromName(AnnoDesigner.MainWindow.SelectedLanguage);
+
+            StatisticsViewModel.TextNothingPlaced = Localization.Translations[language]["StatNothingPlaced"];
+            StatisticsViewModel.TextBoundingBox = Localization.Translations[language]["StatBoundingBox"];
+            StatisticsViewModel.TextMinimumArea = Localization.Translations[language]["StatMinimumArea"];
+            StatisticsViewModel.TextSpaceEfficiency = Localization.Translations[language]["StatSpaceEfficiency"];
+            StatisticsViewModel.TextBuildings = Localization.Translations[language]["StatBuildings"];
+            StatisticsViewModel.TextBuildingsSelected = Localization.Translations[language]["StatBuildingsSelected"];
+            StatisticsViewModel.TextTiles = Localization.Translations[language]["StatTiles"];
+            StatisticsViewModel.TextNameNotFound = Localization.Translations[language]["StatNameNotFound"];
+
             //File Menu
             File = Localization.Translations[language]["File"];
             NewCanvas = Localization.Translations[language]["NewCanvas"];
@@ -1206,6 +1221,7 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _statusBarControls, value);
             }
         }
+
         private string _statusBarItemsOnClipboard;
         public string StatusBarItemsOnClipboard
         {
@@ -1218,6 +1234,13 @@ namespace AnnoDesigner.Localization
 
         #endregion
 
+        private StatisticsViewModel _statisticsViewModel;
+        public StatisticsViewModel StatisticsViewModel
+        {
+            get { return _statisticsViewModel; }
+            set { _statisticsViewModel = value; }
+        }
+        
         private BuildingSettingsViewModel _buildingSettingsViewModel;
         public BuildingSettingsViewModel BuildingSettingsViewModel
         {
@@ -1237,7 +1260,6 @@ namespace AnnoDesigner.Localization
         //With the following regex (in a compatible editor that supports lowercasing of values
         //within regex expressions):
         //private $1 _\l$2; \r\n public $1 $2 \r\n { \r\n get { return _\l$2; } \r\n set \r\n { \r\n UpdateProperty\(ref _\l$2, value\); \r\n}\r\n}
-
 
         private string _continue;
         public string Continue

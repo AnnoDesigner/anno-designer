@@ -57,8 +57,10 @@
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
     <Compile Include="Localization.cs" />
-    <Compile Include="MutexHelper.cs" />
-    <Compile Include="model\Notify.cs" />
+    <Compile Include="MutexHelper.cs" />    
+    <Compile Include="converter\BoolToVisibilityConverter.cs" />    
+    <Compile Include="model\StatisticsBuilding.cs" />
+    <Compile Include="model\Notify.cs" />    
     <Compile Include="model\RelayCommand.cs" />
     <Compile Include="Presets\BuildingInfo.cs" />
     <Compile Include="Presets\BuildingPresets.cs" />
@@ -77,6 +79,9 @@
     <Compile Include="SerializableColor.cs" />
     <Compile Include="DataIO.cs" />
     <Compile Include="SerializableDictionary.cs" />
+    <Compile Include="StatisticsView.xaml.cs">
+      <DependentUpon>StatisticsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StringExtensions.cs" />
     <Compile Include="TreeViewExtensions.cs" />
     <Compile Include="TreeViewSearch.cs" />
@@ -85,6 +90,7 @@
     <Compile Include="UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="viewmodel\StatisticsViewModel.cs" />
     <Compile Include="viewmodel\BuildingSettingsViewModel.cs" />
     <Compile Include="Welcome.xaml.cs">
       <DependentUpon>Welcome.xaml</DependentUpon>
@@ -114,6 +120,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UpdateWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
