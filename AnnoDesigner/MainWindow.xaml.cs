@@ -270,16 +270,30 @@ namespace AnnoDesigner
 
                     if (!Commons.CanWriteInFolder())
                     {
+                        //already asked for admin rights?
+                        if (Environment.GetCommandLineArgs().Any(x => x.Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            MessageBox.Show($"You have no write access to the folder.{Environment.NewLine}The update can not be installed.",
+                                Localization.Localization.Translations[language]["Error"],
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+
+                            busyIndicator.IsBusy = false;
+                            return;
+                        }
+
                         MessageBox.Show(Localization.Localization.Translations[language]["UpdateRequiresAdminRightsMessage"],
                             Localization.Localization.Translations[language]["AdminRightsRequired"],
                             MessageBoxButton.OK,
                             MessageBoxImage.Information,
                             MessageBoxResult.OK);
 
-                        Commons.RestartApplication(true, null, App.ExecutablePath);
+                        Commons.RestartApplication(true, Constants.Argument_Ask_For_Admin, App.ExecutablePath);
                     }
 
                     var newLocation = await _commons.UpdateHelper.DownloadLatestPresetFileAsync().ConfigureAwait(false);
+
+                    busyIndicator.IsBusy = false;
 
                     Commons.RestartApplication(false, null, App.ExecutablePath);
 

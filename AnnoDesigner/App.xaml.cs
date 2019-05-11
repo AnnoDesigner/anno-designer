@@ -82,7 +82,10 @@ namespace AnnoDesigner
             // retrieve file argument if given
             if (e.Args.Length > 0)
             {
-                FilenameArgument = e.Args[0];
+                if (!e.Args[0].Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase))
+                {
+                    FilenameArgument = e.Args[0];
+                }
             }
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
