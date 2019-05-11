@@ -165,7 +165,7 @@ namespace AnnoDesigner
             }
         }
 
-        public async Task<string> DownloadLatestPresetFile()
+        public async Task<string> DownloadLatestPresetFileAsync()
         {
             try
             {
@@ -238,7 +238,7 @@ namespace AnnoDesigner
 
                 //download file to temp directory
                 var tempFileName = Path.GetTempFileName();
-                var pathToDownloadedFile = await DownloadFile(latestPresetAsset.BrowserDownloadUrl, tempFileName).ConfigureAwait(false);
+                var pathToDownloadedFile = await DownloadFileAsync(latestPresetAsset.BrowserDownloadUrl, tempFileName).ConfigureAwait(false);
                 if (String.IsNullOrWhiteSpace(pathToDownloadedFile))
                 {
                     return result;
@@ -299,7 +299,7 @@ namespace AnnoDesigner
             }
         }
 
-        private async Task<string> DownloadFile(string url, string pathToSavedFile)
+        private async Task<string> DownloadFileAsync(string url, string pathToSavedFile)
         {
             try
             {
@@ -318,7 +318,7 @@ namespace AnnoDesigner
             }
         }
 
-        public async Task ReplaceUpdatedPresetFile()
+        public async Task ReplaceUpdatedPresetFileAsync()
         {
             try
             {

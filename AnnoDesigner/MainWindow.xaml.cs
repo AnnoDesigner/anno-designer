@@ -253,7 +253,7 @@ namespace AnnoDesigner
 
         #region Version check
 
-        private async Task DownloadNewPresets()
+        private async Task DownloadNewPresetsAsync()
         {
             var isnewPresetAvailable = await _commons.UpdateHelper.IsNewPresetFileAvailableAsync(new Version(annoCanvas.BuildingPresets.Version));
             if (isnewPresetAvailable)
@@ -279,7 +279,7 @@ namespace AnnoDesigner
                         Commons.RestartApplication(true, null, App.ExecutablePath);
                     }
 
-                    var newLocation = await _commons.UpdateHelper.DownloadLatestPresetFile().ConfigureAwait(false);
+                    var newLocation = await _commons.UpdateHelper.DownloadLatestPresetFileAsync().ConfigureAwait(false);
 
                     Commons.RestartApplication(false, null, App.ExecutablePath);
 
@@ -292,7 +292,7 @@ namespace AnnoDesigner
         {
             if (Settings.Default.EnableAutomaticUpdateCheck || forcedCheck)
             {
-                DownloadNewPresets();
+                DownloadNewPresetsAsync();
 
                 _webClient.DownloadStringAsync(new Uri("https://raw.githubusercontent.com/AgmasGold/anno-designer/master/version.txt"), forcedCheck);
             }

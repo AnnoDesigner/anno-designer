@@ -8,8 +8,8 @@ namespace AnnoDesigner.model
         string PathToUpdatedPresetsAndIconsFile { get; }
         string PathToUpdatedPresetsFile { get; }
 
-        Task<string> DownloadLatestPresetFile();
+        Task<string> DownloadLatestPresetFileAsync();
         Task<bool> IsNewPresetFileAvailableAsync(Version currentPresetVersion);
-        Task ReplaceUpdatedPresetFile();
+        Task ReplaceUpdatedPresetFileAsync();
     }
 }
