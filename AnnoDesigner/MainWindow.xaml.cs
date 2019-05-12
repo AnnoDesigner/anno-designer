@@ -779,6 +779,10 @@ namespace AnnoDesigner
         {
             Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
             Settings.Default.TreeViewSearchText = _mainWindowLocalization.TreeViewSearchText;
+            if (WindowState == WindowState.Minimized)
+            {
+                WindowState = WindowState.Normal;
+            }
             Settings.Default.Save();
         }
 
