@@ -430,6 +430,7 @@ namespace AnnoDesigner
                     objIconFileName = obj.Icon + ".png";
                 }
             }
+
             // do some sanity checks
             if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
             {
@@ -437,19 +438,21 @@ namespace AnnoDesigner
                 {
                     //the identifier text 'Uknown Object' is localized within the StatisticsView, which is why it's not localized here  
                     //gets icons origin building info
-                    var buildingIcon = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName.Equals(objIconFileName, StringComparison.OrdinalIgnoreCase));
-                    if (buildingIcon != null)
+                    var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName?.Equals(objIconFileName, StringComparison.OrdinalIgnoreCase) ?? false);
+                    if (buildingInfo != null)
                     {
                         // Check X and Z Sizes of the Building Info, if one or both not right, the Object will be Unknown
-                        if ((obj.Size.Width != buildingIcon.BuildBlocker["x"] && obj.Size.Width != buildingIcon.BuildBlocker["z"]) || (obj.Size.Height != buildingIcon.BuildBlocker["x"] && obj.Size.Height != buildingIcon.BuildBlocker["z"]))
+                        //Building could be in rotated form - so 5x4 should be equivalent to checking for 4x5
+                        if ((obj.Size.Width == buildingInfo.BuildBlocker["x"] && obj.Size.Height == buildingInfo.BuildBlocker["z"]) 
+                            || (obj.Size.Height == buildingInfo.BuildBlocker["x"] && obj.Size.Width == buildingInfo.BuildBlocker["z"]))
                         {
-                            //Size X is not correct on Building Info, call it Unknown Object
-                            obj.Identifier = "Unknown Object";
+                            //if sizes match and icon is a existing building in the presets, call it that object
+                            obj.Identifier = buildingInfo.Identifier;
                         }
                         else
                         {
-                            //if sizes match and icon is a existing building in the presets, call it that object
-                            obj.Identifier = buildingIcon.Identifier;
+                            //Sizes and icon do not match
+                            obj.Identifier = "Unknown Object";
                         }
                     }
                     else if (textBoxTemplateName.Text.ToLower().Contains("field") == false) //check if the icon is removed from a template field
@@ -460,12 +463,12 @@ namespace AnnoDesigner
                 else if (!string.IsNullOrEmpty(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck) == true)
                 {
                     //Check if Field Icon belongs to the field identifier, else set the official icon
-                    var buildingsIconCheck = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == obj.Identifier);
-                    if (buildingsIconCheck != null)
+                    var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == obj.Identifier);
+                    if (buildingInfo != null)
                     {
-                        if (objIconFileName.ToLower() != buildingsIconCheck.IconFileName.ToLower())
+                        if (string.Equals(objIconFileName, buildingInfo.IconFileName, StringComparison.OrdinalIgnoreCase))
                         {
-                            obj.Icon = buildingsIconCheck.IconFileName.Remove(buildingsIconCheck.IconFileName.Length - 4, 4); //rmeove the .png for the comboBoxIcon
+                            obj.Icon = buildingInfo.IconFileName.Remove(buildingInfo.IconFileName.Length - 4, 4); //rmeove the .png for the comboBoxIcon
                             try
                             {
                                 comboBoxIcon.SelectedItem = string.IsNullOrEmpty(obj.Icon) ? _noIconItem : comboBoxIcon.Items.Cast<IconImage>().Single(_ => _.Name == Path.GetFileNameWithoutExtension(obj.Icon));
