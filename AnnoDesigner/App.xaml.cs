@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
 
 namespace AnnoDesigner
@@ -13,38 +14,16 @@ namespace AnnoDesigner
     {
         public static string ExecutablePath
         {
-            get
-            {
-                return Assembly.GetEntryAssembly().Location;
-            }
+            get { return Assembly.GetEntryAssembly().Location; }
 
         }
 
         public static string ApplicationPath
         {
-            get
-            {
-                return Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            }
+            get { return Path.GetDirectoryName(Assembly.GetEntryAssembly().Location); }
         }
 
-        public static string FilenameArgument
-        {
-            get;
-            private set;
-        }
-
-
-        private void AppOnStartup(object sender, StartupEventArgs e)
-        {
-            // retrieve file argument if given
-            if (e.Args.Length > 0)
-            {
-                FilenameArgument = e.Args[0];
-            }
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
-        }
+        public static string FilenameArgument { get; private set; }
 
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
@@ -62,7 +41,7 @@ namespace AnnoDesigner
         /// Writes an exception to the error log
         /// </summary>
         /// <param name="e"></param>
-        private void LogErrorMessage(Exception e)
+        public static void LogErrorMessage(Exception e)
         {
             try
             {
@@ -96,6 +75,65 @@ namespace AnnoDesigner
         /// <summary>
         /// The DPI information for the current monitor.
         /// </summary>
-        public static DpiScale DpiScale { get; set; } 
+        public static DpiScale DpiScale { get; set; }
+
+        private async void Application_Startup(object sender, StartupEventArgs e)
+        {
+            // retrieve file argument if given
+            if (e.Args.Length > 0)
+            {
+                if (!e.Args[0].Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase))
+                {
+                    FilenameArgument = e.Args[0];
+                }
+            }
+
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+
+            using (var mutexAnnoDesigner = new Mutex(true, MutexHelper.MUTEX_ANNO_DESIGNER, out bool createdNewMutex))
+            {
+                //Are there other processes still running?
+                if (!createdNewMutex)
+                {
+                    try
+                    {
+                        var currentTry = 0;
+                        const int maxTrys = 10;
+                        while (!createdNewMutex && currentTry < maxTrys)
+                        {
+                            Trace.WriteLine($"Waiting for other processes to finish. Try {currentTry} of {maxTrys}");
+
+                            createdNewMutex = mutexAnnoDesigner.WaitOne(TimeSpan.FromSeconds(1), true);
+                            currentTry++;
+                        }
+
+                        if (!createdNewMutex)
+                        {
+                            MessageBox.Show("Another instance of the app is already running.");
+                            Environment.Exit(-1);
+                        }
+                    }
+                    catch (AbandonedMutexException ex)
+                    {
+                        //mutex was killed
+                        createdNewMutex = true;
+                    }
+                }
+
+                //var updateWindow = new UpdateWindow();
+                await Commons.Instance.UpdateHelper.ReplaceUpdatedPresetFileAsync();
+
+                //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
+                MainWindow = new MainWindow(Commons.Instance);
+                //MainWindow.Loaded += (s, args) => { updateWindow.Close(); };
+
+                //updateWindow.Show();
+
+                MainWindow.ShowDialog();
+
+                //base.OnStartup(e);//needed?
+            }
+        }
     }
 }

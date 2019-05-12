@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AnnoDesigner.Presets;
+using AnnoDesigner.PresetsLoader;
 using AnnoDesigner.UI;
 using Microsoft.Win32;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
@@ -441,14 +442,16 @@ namespace AnnoDesigner
                 sw.Stop();
                 Debug.WriteLine($"loading presets took: {sw.ElapsedMilliseconds}ms");
 
-                sw.Start();
-                // load icon name mapping
                 if (iconsToUse == null)
                 {
-                    List<IconNameMap> iconNameMap = null;
+                    sw.Start();
+
+                    // load icon name mapping
+                    IconMappingPresets iconNameMapping = null;
                     try
                     {
-                        iconNameMap = DataIO.LoadFromFile<List<IconNameMap>>(Path.Combine(App.ApplicationPath, Constants.IconNameFile));
+                        IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
+                        iconNameMapping = loader.Load();
                     }
                     catch (Exception ex)
                     {
@@ -459,41 +462,13 @@ namespace AnnoDesigner
                     Debug.WriteLine($"loading icon mapping took: {sw.ElapsedMilliseconds}ms");
 
                     sw.Start();
+
                     // load icons
-                    var pathToIconFolder = Path.Combine(App.ApplicationPath, Constants.IconFolder);
-                    var icons = new Dictionary<string, IconImage>();
-
-                    foreach (var path in Directory.EnumerateFiles(pathToIconFolder, Constants.IconFolderFilter))
-                    {
-                        var filenameWithExt = Path.GetFileName(path);
-                        var filenameWithoutExt = Path.GetFileNameWithoutExtension(path);
-
-                        if (string.IsNullOrWhiteSpace(filenameWithoutExt))
-                        {
-                            continue;
-                        }
-
-                        // try mapping to the icon translations
-                        Dictionary<string, string> localizations = null;
-                        if (iconNameMap != null)
-                        {
-                            var map = iconNameMap.Find(x => x.IconFilename == filenameWithExt);
-                            if (map != null)
-                            {
-                                localizations = map.Localizations.Dict;
-                            }
-                        }
-
-                        // add the current icon
-                        var iconToAdd = new IconImage(filenameWithoutExt, localizations, path);
-                        icons.Add(filenameWithoutExt, iconToAdd);
-                    }
+                    var iconLoader = new IconLoader();
+                    Icons = iconLoader.Load(iconNameMapping);
 
                     sw.Stop();
                     Debug.WriteLine($"loading icons took: {sw.ElapsedMilliseconds}ms");
-
-                    // sort icons by their DisplayName
-                    Icons = icons.OrderBy(x => x.Value.DisplayName).ToDictionary(x => x.Key, x => x.Value);
                 }
                 else
                 {
