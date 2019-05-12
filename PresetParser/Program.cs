@@ -479,7 +479,7 @@ namespace PresetParser
                 buildingToAdd.Localization = new SerializableDictionary<string>();
                 buildingToAdd.Localization["eng"] = curExtraPreset.LocaEng;
                 buildingToAdd.Localization["ger"] = curExtraPreset.LocaGer;
-                //buildingToAdd.Localization["fra"] = curExtraPreset.LocaFra;
+                buildingToAdd.Localization["fra"] = curExtraPreset.LocaFra;
                 buildingToAdd.Localization["pol"] = curExtraPreset.LocaPol;
                 buildingToAdd.Localization["rus"] = curExtraPreset.LocaRus;
                 
