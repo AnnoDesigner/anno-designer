@@ -58,9 +58,9 @@
     <Compile Include="model\IUpdateHelper.cs" />
     <Compile Include="TreeLocalization.cs" />
     <Compile Include="converter\BoolToVisibilityConverter.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="MutexHelper.cs" />
-    <Compile Include="converter\BoolToVisibilityConverter.cs" />
     <Compile Include="model\StatisticsBuilding.cs" />
     <Compile Include="model\Notify.cs" />
     <Compile Include="model\RelayCommand.cs" />
@@ -706,7 +706,7 @@
     <None Include="icons\A7_fur.png" />
     <None Include="icons\A7_fur_coats.png" />
     <None Include="icons\A7_general_module_01.png" />
-    <None Include="icons\A7_glass.png" />
+    <None Include="icons\A7_Glass.png" />
     <None Include="icons\A7_glasses.png" />
     <None Include="icons\A7_glass_window_2.png" />
     <None Include="icons\A7_glass_window_3.png" />
@@ -929,6 +929,185 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Flags\France.png" />
+  </ItemGroup>
+    <None Include="icons\A7_world_fair_2.png" />
+    <None Include="icons\A7_Zoo module.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\A7_statue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\A7_porte.png" />
+    <None Include="icons\A7_porte02.png" />
+    <None Include="icons\A7_preorder_statue_back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\A7_park_1x1_01.png" />
+    <None Include="icons\A7_park_1x1_02.png" />
+    <None Include="icons\A7_park_1x1_03.png" />
+    <None Include="icons\A7_park_1x1_04.png" />
+    <None Include="icons\A7_park_1x1_05.png" />
+    <None Include="icons\A7_park_1x1_06.png" />
+    <None Include="icons\A7_park_1x1_07.png" />
+    <None Include="icons\A7_park_2x2_02.png" />
+    <None Include="icons\A7_park_2x2_03.png" />
+    <None Include="icons\A7_park_2x2_04.png" />
+    <None Include="icons\A7_park_2x2_05.png" />
+    <None Include="icons\A7_park_3x3_02.png" />
+    <None Include="icons\A7_park_3x3_03.png" />
+    <None Include="icons\A7_park_props2x2_03.png" />
+    <None Include="icons\A7_park_props3x3_02.png" />
+    <None Include="icons\A7_park_props_1x1_01.png" />
+    <None Include="icons\A7_park_props_1x1_03.png" />
+    <None Include="icons\A7_park_props_1x1_05.png" />
+    <None Include="icons\A7_park_props_1x1_06.png" />
+    <None Include="icons\A7_park_props_1x1_07.png" />
+    <None Include="icons\A7_park_props_1x1_08.png" />
+    <None Include="icons\A7_park_props_1x1_09.png" />
+    <None Include="icons\A7_park_props_1x1_10.png" />
+    <None Include="icons\A7_park_props_1x1_11.png" />
+    <None Include="icons\A7_park_props_1x1_12.png" />
+    <None Include="icons\A7_park_props_1x1_13.png" />
+    <None Include="icons\A7_park_props_1x1_14.png" />
+    <None Include="icons\A7_park_props_1x1_15.png" />
+    <None Include="icons\A7_park_props_1x1_17.png" />
+    <None Include="icons\A7_park_props_1x1_18.png" />
+    <None Include="icons\A7_park_props_1x1_2.png" />
+    <None Include="icons\A7_park_props_1x1_21.png" />
+    <None Include="icons\A7_park_props_1x1_22.png" />
+    <None Include="icons\A7_park_props_1x1_23.png" />
+    <None Include="icons\A7_park_props_1x1_26.png" />
+    <None Include="icons\A7_park_props_1x1_27.png" />
+    <None Include="icons\A7_park_props_1x1_28.png" />
+    <None Include="icons\A7_park_props_1x1_29.png" />
+    <None Include="icons\A7_park_props_1x1_30.png" />
+    <None Include="icons\A7_park_props_1x1_31.png" />
+    <None Include="icons\A7_park_props_1x1_32.png" />
+    <None Include="icons\A7_park_props_2x2_02.png" />
+    <None Include="icons\A7_park_props_2x2_04.png" />
+    <None Include="icons\A7_park_props_2x2_05.png" />
+    <None Include="icons\A7_park_props_2x2_06.png" />
+    <None Include="icons\A7_park_props_3x3_04.png" />
+    <None Include="icons\A7_park_props_system_1x1_20_back.png" />
+    <None Include="icons\A7_park_props_system_1x1_36.png" />
+    <None Include="icons\A7_park_props_system_1x1_37.png" />
+    <None Include="icons\A7_park_props_system_1x1_38.png" />
+    <None Include="icons\A7_park_props_system_1x1_39.png" />
+    <None Include="icons\A7_park_props_system_1x1_40.png" />
+    <None Include="icons\A7_park_props_system_1x1_43.png" />
+    <None Include="icons\A7_park_props_system_1x1_44.png" />
+    <None Include="icons\A7_park_props_system_1x1_45.png" />
+    <None Include="icons\A7_park_props_system_1x1_46.png" />
+    <None Include="icons\A7_park_props_system_1x1_colonyforest.png" />
+    <None Include="icons\A7_park_props_system_1x1_temperateforest.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\A7_Museum module.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\A7_icon_city_ornament_base.png" />
+    <None Include="icons\A7_icon_city_ornament_club_base.png" />
+    <None Include="icons\A7_icon_city_ornament_large.png" />
+    <None Include="icons\A7_icon_city_ornament_medium.png" />
+    <None Include="icons\A7_icon_city_ornament_small.png" />
+    <None Include="icons\A7_icon_park_ornament_base.png" />
+    <None Include="icons\A7_icon_park_ornament_large.png" />
+    <None Include="icons\A7_icon_park_ornament_medium.png" />
+    <None Include="icons\A7_icon_park_ornament_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\A7_grille04.png" />
+    <None Include="icons\A7_grille05.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\A7_cultural_1x1_01.png" />
+    <None Include="icons\A7_cultural_1x1_02.png" />
+    <None Include="icons\A7_cultural_1x1_03.png" />
+    <None Include="icons\A7_cultural_1x1_04.png" />
+    <None Include="icons\A7_cultural_1x1_05.png" />
+    <None Include="icons\A7_cultural_1x1_06.png" />
+    <None Include="icons\A7_cultural_1x1_07.png" />
+    <None Include="icons\A7_cultural_1x1_08.png" />
+    <None Include="icons\A7_cultural_1x1_09.png" />
+    <None Include="icons\A7_cultural_1x1_10.png" />
+    <None Include="icons\A7_cultural_1x1_11.png" />
+    <None Include="icons\A7_cultural_1x1_12.png" />
+    <None Include="icons\A7_cultural_1x1_13.png" />
+    <None Include="icons\A7_cultural_1x1_14.png" />
+    <None Include="icons\A7_cultural_props_1x1_01.png" />
+    <None Include="icons\A7_cultural_props_1x1_02.png" />
+    <None Include="icons\A7_cultural_props_1x1_03.png" />
+    <None Include="icons\A7_cultural_props_1x1_04.png" />
+    <None Include="icons\A7_cultural_props_1x1_05.png" />
+    <None Include="icons\A7_cultural_props_1x1_05_front.png" />
+    <None Include="icons\A7_cultural_props_1x1_06.png" />
+    <None Include="icons\A7_cultural_props_1x1_06_back.png" />
+    <None Include="icons\A7_cultural_props_1x1_07.png" />
+    <None Include="icons\A7_cultural_props_1x1_08.png" />
+    <None Include="icons\A7_cultural_props_1x1_09.png" />
+    <None Include="icons\A7_cultural_props_1x1_10.png" />
+    <None Include="icons\A7_cultural_props_1x1_11.png" />
+    <None Include="icons\A7_cultural_props_1x1_12.png" />
+    <None Include="icons\A7_cultural_props_1x1_13.png" />
+    <None Include="icons\A7_cultural_props_1x1_14.png" />
+    <None Include="icons\A7_cultural_props_1x1_15.png" />
+    <None Include="icons\A7_cultural_props_1x1_16_front.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\A7_col_park_props_1x1_20.png" />
+    <None Include="icons\A7_col_park_props_1x1_21.png" />
+    <None Include="icons\A7_col_park_props_1x1_22.png" />
+    <None Include="icons\A7_col_park_props_1x1_23.png" />
+    <None Include="icons\A7_col_park_props_1x1_24.png" />
+    <None Include="icons\A7_col_park_props_system_1x1_16_back.png" />
+    <None Include="icons\A7_col_park_props_system_1x1_17_front.png" />
+    <None Include="icons\A7_col_park_props_system_1x1_21_back.png" />
+    <None Include="icons\A7_col_park_props_system_1x1_23_back.png" />
+    <None Include="icons\A7_col_park_props_system_1x1_24_back.png" />
+    <None Include="icons\A7_col_park_props_system_1x1_35_front.png" />
+    <None Include="icons\A7_col_park_props_system_2x2_03_back.png" />
+    <None Include="icons\A7_col_park_props_system_3x3_02_front.png" />
+    <None Include="icons\A7_col_park_props_system_3x3_03_back.png" />
+    <None Include="icons\A7_col_props_1x1_03_back.png" />
+    <None Include="icons\A7_col_props_1x1_05_back.png" />
+    <None Include="icons\A7_col_props_1x1_06_front.png" />
+    <None Include="icons\A7_col_props_1x1_07_back.png" />
+    <None Include="icons\A7_col_props_1x1_08_front.png" />
+    <None Include="icons\A7_col_props_1x1_09_back.png" />
+    <None Include="icons\A7_col_props_1x1_11_back.png" />
+    <None Include="icons\A7_col_props_1x1_12_back.png" />
+    <None Include="icons\A7_col_props_1x1_13_back.png" />
+    <None Include="icons\A7_col_props_1x1_14_back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\A7_clubrewards_pond_2x2.png" />
+    <None Include="icons\A7_clubrewards_statue_1x2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\A7_city_1x1_01.png" />
+    <None Include="icons\A7_city_1x1_02.png" />
+    <None Include="icons\A7_city_1x1_03.png" />
+    <None Include="icons\A7_city_2x2_02.png" />
+    <None Include="icons\A7_city_2x2_03.png" />
+    <None Include="icons\A7_city_2x2_04.png" />
+    <None Include="icons\A7_city_3x3_02.png" />
+    <None Include="icons\A7_city_3x3_03.png" />
+    <None Include="icons\A7_city_ornament_base.png" />
+    <None Include="icons\A7_city_ornament_club_base.png" />
+    <None Include="icons\A7_city_ornament_large.png" />
+    <None Include="icons\A7_city_ornament_medium.png" />
+    <None Include="icons\A7_city_ornament_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\A7_bush01.png" />
+    <None Include="icons\A7_bush02.png" />
+    <None Include="icons\A7_bush03.png" />
+    <None Include="icons\A7_bush04.png" />
+    <None Include="icons\A7_bush05.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\A7_benches.png" />
+    <None Include="icons\A7_beta_reward_2x2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
