@@ -18,12 +18,6 @@ namespace AnnoDesigner.UI
             Localizations = null;
         }
 
-        public IconImage(string name, Dictionary<string, string> localizations, BitmapImage icon) : this(name)
-        {
-            Localizations = localizations;
-            _icon = icon;
-        }
-
         public IconImage(string name, Dictionary<string, string> localizations, string iconPath) : this(name)
         {
             Localizations = localizations;

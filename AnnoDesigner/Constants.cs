@@ -31,6 +31,11 @@ namespace AnnoDesigner
         public const string BuildingPresetsFile = "presets.json";
 
         /// <summary>
+        /// Prefix for temporary updated presets file.
+        /// </summary>
+        public const string PrefixTempBuildingPresetsFile = "temp_";
+
+        /// <summary>
         /// Json encoded file containing the localized names for the icons
         /// </summary>
         public const string IconNameFile = "icons.json";
@@ -90,10 +95,15 @@ namespace AnnoDesigner
         /// Filter used for the export image dialog.
         /// </summary>
         public const string ExportDialogFilter = "PNG (*.png)|*.png|All Files (*.*)|*.*";
-    
+
         /// <summary>
         /// Used to provide space for the statistics panel when exporting a layout as an image.
         /// </summary>
         public const int StatisticsMargin = 142;
+
+        /// <summary>
+        /// Used to prevent endless loop on updates.
+        /// </summary>
+        public const string Argument_Ask_For_Admin = "-askAdmin";
     }
 }
