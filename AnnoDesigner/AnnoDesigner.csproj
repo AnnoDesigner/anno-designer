@@ -51,6 +51,7 @@
     <Compile Include="About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TreeLocalization.cs" />
     <Compile Include="converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="model\StatisticsBuilding.cs" />
