@@ -280,7 +280,8 @@
                           VerticalAlignment="Stretch"
                           HorizontalAlignment="Center" />
 
-            <DockPanel Grid.Column="2"
+            <DockPanel Name="BuildingsPanel"
+                       Grid.Column="2"
                        Grid.Row="1"
                        LastChildFill="True">
                 <GroupBox Header="{Binding BuildingSettingsViewModel.TextHeader}"
@@ -575,6 +576,7 @@
                 <GroupBox Header="Building presets - not loaded"
                           Name="GroupBoxPresets"
                           IsEnabled="True"
+                          Width="{Binding ElementName=BuildingsPanel, Path=ActualWidth, Mode=OneWay}"
                           DockPanel.Dock="Top">
                     <TreeView Name="treeViewPresets"
                               MouseDoubleClick="TreeViewPresetsMouseDoubleClick"
