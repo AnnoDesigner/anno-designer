@@ -28,7 +28,7 @@ namespace PresetParser
         public const string ANNO_VERSION_2205 = "2205";
         public const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "3.2.1";
+        private const string BUILDING_PRESETS_VERSION = "3.2.2";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -1471,6 +1471,7 @@ namespace PresetParser
         private static Dictionary<string, SerializableDictionary<string>> GetLocalizations(string annoVersion, int DoExtraAnumber)
         {
             string[] files = { "icons.txt", "guids.txt", "addon/texts.txt" };
+
             Dictionary<string, SerializableDictionary<string>> localizations = new Dictionary<string, SerializableDictionary<string>>();
             List<GuidRef> references = new List<GuidRef>();
             foreach (string language in Languages)
@@ -1514,6 +1515,7 @@ namespace PresetParser
                             {
                                 if (language == "eng") { translation = "Black Smoker"; }
                                 if (language == "ger") { translation = "Black Smoker"; }
+                                if (language == "fra") { translation = "Convertisseur de métal"; }
                                 if (language == "pol") { translation = "Komin hydrotermalny"; }
                                 if (language == "rus") { translation = "Черный курильщик"; }
                             }
