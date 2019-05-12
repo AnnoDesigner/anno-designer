@@ -161,7 +161,7 @@ namespace AnnoDesigner
             }
             else
             {
-                return KeySelector(obj).Contains(token, CurrentComparison);
+                return KeySelector(obj)?.Contains(token, CurrentComparison) ?? false;
             }
         }
 
