@@ -56,6 +56,8 @@
     <Compile Include="PresetsLoader\IconMappingPresetsLoader.cs" />
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
+    <Compile Include="TreeLocalization.cs" />
+    <Compile Include="converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="MutexHelper.cs" />
     <Compile Include="converter\BoolToVisibilityConverter.cs" />
