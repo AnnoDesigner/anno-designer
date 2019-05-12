@@ -18,6 +18,8 @@ using System.Globalization;
 using System.Collections.Generic;
 using System.Threading;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using AnnoDesigner.model;
 
 namespace AnnoDesigner
 {
@@ -98,11 +100,18 @@ namespace AnnoDesigner
             _mainWindowLocalization.TreeViewSearchText = string.Empty;
         }
 
+        private readonly ICommons _commons;
+
         #region Initialization
 
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public MainWindow(ICommons commonsToUse) : this()
+        {
+            _commons = commonsToUse;
 
             App.DpiScale = VisualTreeHelper.GetDpi(this);
 
@@ -244,10 +253,61 @@ namespace AnnoDesigner
 
         #region Version check
 
+        private async Task DownloadNewPresetsAsync()
+        {
+            var isnewPresetAvailable = await _commons.UpdateHelper.IsNewPresetFileAvailableAsync(new Version(annoCanvas.BuildingPresets.Version));
+            if (isnewPresetAvailable)
+            {
+                string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+
+                if (MessageBox.Show(Localization.Localization.Translations[language]["UpdateAvailablePresetMessage"],
+                    Localization.Localization.Translations[language]["UpdateAvailableHeader"],
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Asterisk,
+                    MessageBoxResult.OK) == MessageBoxResult.Yes)
+                {
+                    busyIndicator.IsBusy = true;
+
+                    if (!Commons.CanWriteInFolder())
+                    {
+                        //already asked for admin rights?
+                        if (Environment.GetCommandLineArgs().Any(x => x.Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            MessageBox.Show($"You have no write access to the folder.{Environment.NewLine}The update can not be installed.",
+                                Localization.Localization.Translations[language]["Error"],
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+
+                            busyIndicator.IsBusy = false;
+                            return;
+                        }
+
+                        MessageBox.Show(Localization.Localization.Translations[language]["UpdateRequiresAdminRightsMessage"],
+                            Localization.Localization.Translations[language]["AdminRightsRequired"],
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information,
+                            MessageBoxResult.OK);
+
+                        Commons.RestartApplication(true, Constants.Argument_Ask_For_Admin, App.ExecutablePath);
+                    }
+
+                    var newLocation = await _commons.UpdateHelper.DownloadLatestPresetFileAsync().ConfigureAwait(false);
+
+                    busyIndicator.IsBusy = false;
+
+                    Commons.RestartApplication(false, null, App.ExecutablePath);
+
+                    Environment.Exit(-1);
+                }
+            }
+        }
+
         private void CheckForUpdates(bool forcedCheck)
         {
             if (Settings.Default.EnableAutomaticUpdateCheck || forcedCheck)
             {
+                DownloadNewPresetsAsync();
+
                 _webClient.DownloadStringAsync(new Uri("https://raw.githubusercontent.com/AgmasGold/anno-designer/master/version.txt"), forcedCheck);
             }
         }
