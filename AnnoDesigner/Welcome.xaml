@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         xmlns:l="clr-namespace:AnnoDesigner.Localization"
         Title="Welcome" 
-        Height="600" 
+        Height="705" 
         Width="525" 
         MinHeight="300" 
         MinWidth="300"
