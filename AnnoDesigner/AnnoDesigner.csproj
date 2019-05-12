@@ -60,7 +60,6 @@
     <Compile Include="converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="MutexHelper.cs" />
-    <Compile Include="converter\BoolToVisibilityConverter.cs" />
     <Compile Include="model\StatisticsBuilding.cs" />
     <Compile Include="model\Notify.cs" />
     <Compile Include="model\RelayCommand.cs" />
