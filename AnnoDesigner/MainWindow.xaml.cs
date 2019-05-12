@@ -382,7 +382,7 @@ namespace AnnoDesigner
             // Identifier
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier = obj.Identifier;
             // Template
-            textBoxTemplateName.Text = obj.Template;
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate = obj.Template;
             // icon
             try
             {
@@ -474,7 +474,7 @@ namespace AnnoDesigner
                 Borderless = _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked,
                 Road = _mainWindowLocalization.BuildingSettingsViewModel.IsRoadChecked,
                 Identifier = _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier,
-                Template = textBoxTemplateName.Text,
+                Template = _mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate
             };
 
             var objIconFileName = "";
@@ -503,7 +503,7 @@ namespace AnnoDesigner
                     {
                         // Check X and Z Sizes of the Building Info, if one or both not right, the Object will be Unknown
                         //Building could be in rotated form - so 5x4 should be equivalent to checking for 4x5
-                        if ((obj.Size.Width == buildingInfo.BuildBlocker["x"] && obj.Size.Height == buildingInfo.BuildBlocker["z"]) 
+                        if ((obj.Size.Width == buildingInfo.BuildBlocker["x"] && obj.Size.Height == buildingInfo.BuildBlocker["z"])
                             || (obj.Size.Height == buildingInfo.BuildBlocker["x"] && obj.Size.Width == buildingInfo.BuildBlocker["z"]))
                         {
                             //if sizes match and icon is a existing building in the presets, call it that object
@@ -515,7 +515,7 @@ namespace AnnoDesigner
                             obj.Identifier = "Unknown Object";
                         }
                     }
-                    else if (textBoxTemplateName.Text.ToLower().Contains("field") == false) //check if the icon is removed from a template field
+                    else if (_mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate.ToLower().Contains("field") == false) //check if the icon is removed from a template field
                     {
                         obj.Identifier = "Unknown Object";
                     }
@@ -544,7 +544,7 @@ namespace AnnoDesigner
                         obj.Identifier = "Unknown Object";
                     }
                 }
-                if (string.IsNullOrEmpty(obj.Icon) && textBoxTemplateName.Text.ToLower().Contains("field") == false)
+                if (string.IsNullOrEmpty(obj.Icon) && _mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate.ToLower().Contains("field") == false)
                 {
                     obj.Identifier = "Unknown Object";
                 }
