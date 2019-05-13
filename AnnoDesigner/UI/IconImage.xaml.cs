@@ -5,7 +5,7 @@ using System.Windows.Media.Imaging;
 
 namespace AnnoDesigner.UI
 {
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class IconImage
     {
         private BitmapImage _icon;
