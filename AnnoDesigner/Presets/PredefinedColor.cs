@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 
 namespace AnnoDesigner.Presets
 {
     [DataContract]
+    [DebuggerDisplay("{" + nameof(TargetTemplate) + "}")]
     public class PredefinedColor
     {
         public PredefinedColor()

@@ -20,6 +20,7 @@ using System.Threading;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using AnnoDesigner.model;
+using AnnoDesigner.PresetsLoader;
 
 namespace AnnoDesigner
 {
@@ -214,13 +215,12 @@ namespace AnnoDesigner
             colorPicker.ShowStandardColors = false;
             //try
             //{
-            //    ColorPresets colorPresets = DataIO.LoadFromFile<ColorPresets>(Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile));
-            //    foreach (ColorScheme colorScheme in colorPresets.ColorSchemes)
+            //    ColorPresetsLoader loader = new ColorPresetsLoader();
+            //    var defaultScheme = loader.LoadDefaultScheme();
+            //    foreach (var curPredefinedColor in defaultScheme.Colors.GroupBy(x => x.Color).Select(x => x.Key))
             //    {
-            //        foreach (ColorInfo colorInfo in colorScheme.ColorInfos)
-            //        {
-            //            colorPicker.StandardColors.Add(new ColorItem(colorInfo.Color, string.Format("{0} ({1})", colorInfo.ColorTarget, colorScheme.Name)));
-            //        }
+            //        //colorPicker.StandardColors.Add(new Xceed.Wpf.Toolkit.ColorItem(curPredefinedColor.Color, $"{curPredefinedColor.TargetTemplate}"));
+            //        colorPicker.StandardColors.Add(new Xceed.Wpf.Toolkit.ColorItem(curPredefinedColor, curPredefinedColor.ToHex()));
             //    }
             //}
             //catch (Exception ex)

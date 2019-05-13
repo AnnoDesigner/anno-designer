@@ -52,6 +52,7 @@
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commons.cs" />
+    <Compile Include="PresetsLoader\ColorPresetsLoader.cs" />
     <Compile Include="PresetsLoader\IconLoader.cs" />
     <Compile Include="PresetsLoader\IconMappingPresetsLoader.cs" />
     <Compile Include="model\ICommons.cs" />
@@ -141,7 +142,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="colors.json" />
+    <None Include="colors.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="icons.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

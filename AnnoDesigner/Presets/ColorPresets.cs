@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 
 namespace AnnoDesigner.Presets
 {
     [DataContract]
+    [DebuggerDisplay("{" + nameof(Version) + "}")]
     public class ColorPresets
     {
         public ColorPresets()
