@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using AnnoDesigner.model;
 
 namespace AnnoDesigner
 {
@@ -12,6 +13,13 @@ namespace AnnoDesigner
     /// </summary>
     public partial class App : Application
     {
+        private static readonly ICommons _commons;
+
+        static App()
+        {
+            _commons = Commons.Instance;
+        }
+
         public static string ExecutablePath
         {
             get { return Assembly.GetEntryAssembly().Location; }
@@ -121,8 +129,8 @@ namespace AnnoDesigner
                     }
                 }
 
-                //var updateWindow = new UpdateWindow();
-                await Commons.Instance.UpdateHelper.ReplaceUpdatedPresetFileAsync();
+                //var updateWindow = new UpdateWindow();                
+                await _commons.UpdateHelper.ReplaceUpdatedPresetFileAsync();
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
                 MainWindow = new MainWindow(Commons.Instance);
