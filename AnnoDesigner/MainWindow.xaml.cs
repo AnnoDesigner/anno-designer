@@ -18,6 +18,8 @@ using System.Globalization;
 using System.Collections.Generic;
 using System.Threading;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using AnnoDesigner.model;
 
 namespace AnnoDesigner
 {
@@ -34,6 +36,9 @@ namespace AnnoDesigner
         private List<bool> _treeViewState;
 
         private static string _selectedLanguage;
+        //for identifier checking process
+        private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
+        public BuildingPresets BuildingPresets { get; }
         public static string SelectedLanguage
         {
             get
@@ -98,11 +103,18 @@ namespace AnnoDesigner
             _mainWindowLocalization.TreeViewSearchText = string.Empty;
         }
 
+        private readonly ICommons _commons;
+
         #region Initialization
 
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public MainWindow(ICommons commonsToUse) : this()
+        {
+            _commons = commonsToUse;
 
             App.DpiScale = VisualTreeHelper.GetDpi(this);
 
@@ -218,10 +230,10 @@ namespace AnnoDesigner
 
             // load presets
             treeViewPresets.Items.Clear();
+
             // manually add a road tile preset
-            treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true, Identifier = "Road" });
-            treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true, Identifier = "Road" });
-            var presets = annoCanvas.BuildingPresets;
+            AddRoadTiles();
+            BuildingPresets presets = annoCanvas.BuildingPresets;
             if (presets != null)
             {
                 presets.AddToTree(treeViewPresets);
@@ -244,10 +256,61 @@ namespace AnnoDesigner
 
         #region Version check
 
+        private async Task DownloadNewPresetsAsync()
+        {
+            var isnewPresetAvailable = await _commons.UpdateHelper.IsNewPresetFileAvailableAsync(new Version(annoCanvas.BuildingPresets.Version));
+            if (isnewPresetAvailable)
+            {
+                string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+
+                if (MessageBox.Show(Localization.Localization.Translations[language]["UpdateAvailablePresetMessage"],
+                    Localization.Localization.Translations[language]["UpdateAvailableHeader"],
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Asterisk,
+                    MessageBoxResult.OK) == MessageBoxResult.Yes)
+                {
+                    busyIndicator.IsBusy = true;
+
+                    if (!Commons.CanWriteInFolder())
+                    {
+                        //already asked for admin rights?
+                        if (Environment.GetCommandLineArgs().Any(x => x.Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            MessageBox.Show($"You have no write access to the folder.{Environment.NewLine}The update can not be installed.",
+                                Localization.Localization.Translations[language]["Error"],
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+
+                            busyIndicator.IsBusy = false;
+                            return;
+                        }
+
+                        MessageBox.Show(Localization.Localization.Translations[language]["UpdateRequiresAdminRightsMessage"],
+                            Localization.Localization.Translations[language]["AdminRightsRequired"],
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information,
+                            MessageBoxResult.OK);
+
+                        Commons.RestartApplication(true, Constants.Argument_Ask_For_Admin, App.ExecutablePath);
+                    }
+
+                    var newLocation = await _commons.UpdateHelper.DownloadLatestPresetFileAsync().ConfigureAwait(false);
+
+                    busyIndicator.IsBusy = false;
+
+                    Commons.RestartApplication(false, null, App.ExecutablePath);
+
+                    Environment.Exit(-1);
+                }
+            }
+        }
+
         private void CheckForUpdates(bool forcedCheck)
         {
             if (Settings.Default.EnableAutomaticUpdateCheck || forcedCheck)
             {
+                DownloadNewPresetsAsync();
+
                 _webClient.DownloadStringAsync(new Uri("https://raw.githubusercontent.com/AgmasGold/anno-designer/master/version.txt"), forcedCheck);
             }
         }
@@ -318,7 +381,8 @@ namespace AnnoDesigner
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingName = obj.Label;
             // Identifier
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier = obj.Identifier;
-
+            // Template
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate = obj.Template;
             // icon
             try
             {
@@ -410,10 +474,80 @@ namespace AnnoDesigner
                 Borderless = _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked,
                 Road = _mainWindowLocalization.BuildingSettingsViewModel.IsRoadChecked,
                 Identifier = _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier,
+                Template = _mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate
             };
+
+            var objIconFileName = "";
+            //Parse the Icon path into something we can check.
+            if (!string.IsNullOrEmpty(obj.Icon))
+            {
+                if (obj.Icon.StartsWith("A5_"))
+                {
+                    objIconFileName = obj.Icon.Remove(0, 3) + ".png"; //when Anno 2070, it use not A5_ in the original naming.
+                }
+                else
+                {
+                    objIconFileName = obj.Icon + ".png";
+                }
+            }
+
             // do some sanity checks
             if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
             {
+                if (!string.IsNullOrEmpty(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck) == false)
+                {
+                    //the identifier text 'Uknown Object' is localized within the StatisticsView, which is why it's not localized here  
+                    //gets icons origin building info
+                    var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName?.Equals(objIconFileName, StringComparison.OrdinalIgnoreCase) ?? false);
+                    if (buildingInfo != null)
+                    {
+                        // Check X and Z Sizes of the Building Info, if one or both not right, the Object will be Unknown
+                        //Building could be in rotated form - so 5x4 should be equivalent to checking for 4x5
+                        if ((obj.Size.Width == buildingInfo.BuildBlocker["x"] && obj.Size.Height == buildingInfo.BuildBlocker["z"])
+                            || (obj.Size.Height == buildingInfo.BuildBlocker["x"] && obj.Size.Width == buildingInfo.BuildBlocker["z"]))
+                        {
+                            //if sizes match and icon is a existing building in the presets, call it that object
+                            obj.Identifier = buildingInfo.Identifier;
+                        }
+                        else
+                        {
+                            //Sizes and icon do not match
+                            obj.Identifier = "Unknown Object";
+                        }
+                    }
+                    else if (_mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate.ToLower().Contains("field") == false) //check if the icon is removed from a template field
+                    {
+                        obj.Identifier = "Unknown Object";
+                    }
+                }
+                else if (!string.IsNullOrEmpty(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck) == true)
+                {
+                    //Check if Field Icon belongs to the field identifier, else set the official icon
+                    var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == obj.Identifier);
+                    if (buildingInfo != null)
+                    {
+                        if (!string.Equals(objIconFileName, buildingInfo.IconFileName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            obj.Icon = buildingInfo.IconFileName.Remove(buildingInfo.IconFileName.Length - 4, 4); //rmeove the .png for the comboBoxIcon
+                            try
+                            {
+                                comboBoxIcon.SelectedItem = string.IsNullOrEmpty(obj.Icon) ? _noIconItem : comboBoxIcon.Items.Cast<IconImage>().Single(_ => _.Name == Path.GetFileNameWithoutExtension(obj.Icon));
+                            }
+                            catch (Exception)
+                            {
+                                comboBoxIcon.SelectedItem = _noIconItem;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        obj.Identifier = "Unknown Object";
+                    }
+                }
+                if (string.IsNullOrEmpty(obj.Icon) && _mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate.ToLower().Contains("field") == false)
+                {
+                    obj.Identifier = "Unknown Object";
+                }
                 annoCanvas.SetCurrentObject(obj);
             }
             else
@@ -436,8 +570,9 @@ namespace AnnoDesigner
                     ApplyCurrentObject();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                App.WriteToErrorLog("Error in ApplyPreset()", ex.Message, ex.StackTrace);
                 MessageBox.Show("Something went wrong while applying the preset.");
             }
         }
@@ -450,10 +585,15 @@ namespace AnnoDesigner
             if (annoCanvas.BuildingPresets != null)
             {
                 // manually add a road tile preset
-                treeViewPresets.Items.Add(new AnnoObject { Label = "Road tile", Size = new Size(1, 1), Radius = 0, Road = true, Identifier = "Road" });
-                treeViewPresets.Items.Add(new AnnoObject { Label = "Borderless road tile", Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true, Identifier = "Road" });
+                AddRoadTiles();
                 annoCanvas.BuildingPresets.AddToTree(treeViewPresets);
             }
+        }
+
+        private void AddRoadTiles()
+        {
+            treeViewPresets.Items.Add(new AnnoObject { Label = TreeLocalization.TreeLocalization.GetTreeLocalization("RoadTile"), Size = new Size(1, 1), Radius = 0, Road = true, Identifier = "Road" });
+            treeViewPresets.Items.Add(new AnnoObject { Label = TreeLocalization.TreeLocalization.GetTreeLocalization("BorderlessRoadTile"), Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true, Identifier = "Road" });
         }
 
         #endregion
@@ -779,6 +919,10 @@ namespace AnnoDesigner
         {
             Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
             Settings.Default.TreeViewSearchText = _mainWindowLocalization.TreeViewSearchText;
+            if (WindowState == WindowState.Minimized)
+            {
+                WindowState = WindowState.Normal;
+            }
             Settings.Default.Save();
         }
 

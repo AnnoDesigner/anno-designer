@@ -37,6 +37,7 @@ namespace AnnoDesigner.viewmodel
         private Color? _selectedColor;
         private int _buildingHeight;
         private int _buildingWidth;
+        private string _buildingTemplate;
         private string _buildingName;
         private string _buildingIdentifier;
         private double _buildingRadius;
@@ -80,8 +81,9 @@ namespace AnnoDesigner.viewmodel
             SelectedColor = Colors.Red;
             BuildingHeight = 4;
             BuildingWidth = 4;
-            BuildingName = String.Empty;
-            BuildingIdentifier = String.Empty;
+            BuildingTemplate = string.Empty;
+            BuildingName = string.Empty;
+            BuildingIdentifier = string.Empty;
             BuildingRadius = 0;
             BuildingInfluenceRange = 0;
             IsEnableLabelChecked = false;
@@ -241,6 +243,12 @@ namespace AnnoDesigner.viewmodel
         {
             get { return _buildingWidth; }
             set { UpdateProperty(ref _buildingWidth, value); }
+        }
+
+        public string BuildingTemplate
+        {
+            get { return _buildingTemplate; }
+            set { UpdateProperty(ref _buildingTemplate, value); }
         }
 
         public string BuildingName

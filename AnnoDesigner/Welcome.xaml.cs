@@ -39,6 +39,11 @@ namespace AnnoDesigner
                 },
                 new SupportedLanguage()
                 {
+                    Name = "Français",
+                    FlagPath = "Flags/France.png"
+                },
+                new SupportedLanguage()
+                {
                     Name = "Polski",
                     FlagPath = "Flags/Poland.png"
                 },
