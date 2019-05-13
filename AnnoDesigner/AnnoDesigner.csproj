@@ -86,7 +86,7 @@
     <Compile Include="StringExtensions.cs" />
     <Compile Include="TreeViewExtensions.cs" />
     <Compile Include="TreeViewSearch.cs" />
-    <Compile Include="UI\IconImage.cs" />
+    <Compile Include="model\IconImage.cs" />
     <Compile Include="UpdateHelper.cs" />
     <Compile Include="UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>

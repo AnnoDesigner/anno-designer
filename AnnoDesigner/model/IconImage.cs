@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
 
-namespace AnnoDesigner.UI
+namespace AnnoDesigner.model
 {
     [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class IconImage

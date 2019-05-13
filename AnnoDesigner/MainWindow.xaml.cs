@@ -1,5 +1,4 @@
 ﻿using AnnoDesigner.Presets;
-using AnnoDesigner.UI;
 using Microsoft.Win32;
 using System;
 using System.IO;
