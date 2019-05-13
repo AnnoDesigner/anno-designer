@@ -123,6 +123,19 @@ namespace AnnoDesigner
             {
                 var result = false;
 
+                if (!await ConnectivityHelper.IsConnected())
+                {
+                    Trace.WriteLine("Could not establish a connection to the internet.");
+
+                    string language = Localization.Localization.GetLanguageCodeFromName(Settings.Default.SelectedLanguage);
+                    MessageBox.Show(Localization.Localization.Translations[language]["UpdateNoConnectionMessage"],
+                        Localization.Localization.Translations[language]["Error"],
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+
+                    return result;
+                }
+
                 var releases = await ApiClient.Repository.Release.GetAll(GITHUB_USERNAME, GITHUB_PROJECTNAME).ConfigureAwait(false);
                 if (releases == null || releases.Count < 1)
                 {
