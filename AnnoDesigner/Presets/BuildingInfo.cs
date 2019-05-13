@@ -94,9 +94,12 @@ namespace AnnoDesigner.Presets
 
         public AnnoObject ToAnnoObject()
         {
+            var labelLocalization = Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
+            if (string.IsNullOrEmpty(labelLocalization)) { labelLocalization = Localization["eng"]; }
             return new AnnoObject
             {
-                Label = (Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]),
+                //Label = (Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]),
+                Label = labelLocalization,
                 Icon = IconFileName,
                 Radius = InfluenceRadius,
                 InfluenceRange = InfluenceRange,
@@ -109,7 +112,10 @@ namespace AnnoDesigner.Presets
 
         public string GetOrderParameter()
         {
-            return Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
+            var labelLocalization = Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
+            if (string.IsNullOrEmpty(labelLocalization)) { labelLocalization = Localization["eng"]; }
+            //return Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
+            return labelLocalization;
         }
     }
 
