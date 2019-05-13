@@ -14,7 +14,47 @@ namespace AnnoDesigner
             {
                 return true;
             }
+
             return false;
+        }
+
+        public static bool Contains(this string s, IEnumerable<string> tokens)
+        {
+            foreach (string token in tokens)
+            {
+                if (s.Contains(token, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static bool IsPartOf(this string s, IEnumerable<string> tokens)
+        {
+            foreach (string token in tokens)
+            {
+                if (token.Contains(s, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static string FirstCharToUpper(this string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return string.Empty;
+            }
+
+            var tempCharArray = input.ToCharArray();
+            tempCharArray[0] = char.ToUpper(tempCharArray[0]);
+
+            return new string(tempCharArray);
         }
     }
 }
