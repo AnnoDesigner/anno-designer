@@ -357,13 +357,24 @@ namespace AnnoDesigner
                             {
                                 foreach (var curEntry in archive.Entries)
                                 {
-                                    var destionPath = Path.Combine(App.ApplicationPath, curEntry.FullName);
-                                    if (File.Exists(destionPath))
+                                    var destinationPath = Path.Combine(App.ApplicationPath, curEntry.FullName);
+                                    var destinationDirectory = Path.GetDirectoryName(destinationPath);
+
+                                    if (!Directory.Exists(destinationDirectory))
                                     {
-                                        FileHelper.ResetFileAttributes(destionPath);
+                                        Directory.CreateDirectory(destinationDirectory);
                                     }
 
-                                    curEntry.ExtractToFile(destionPath, true);
+                                    if (File.Exists(destinationPath))
+                                    {
+                                        FileHelper.ResetFileAttributes(destinationPath);
+                                    }
+
+                                    //Sometimes an entry has no name. (Temporary file? Directory?)
+                                    if (!string.IsNullOrWhiteSpace(curEntry.Name))
+                                    {
+                                        curEntry.ExtractToFile(destinationPath, true);
+                                    }
                                 }
                             }
 
