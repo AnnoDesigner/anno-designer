@@ -39,7 +39,7 @@ namespace AnnoDesigner.UI
         {
             get
             {
-                if (_icon == null && !String.IsNullOrWhiteSpace(IconPath))
+                if (_icon == null && !string.IsNullOrWhiteSpace(IconPath))
                 {
                     _icon = new BitmapImage(new Uri(IconPath));
                 }
