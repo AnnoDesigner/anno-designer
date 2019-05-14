@@ -1004,6 +1004,9 @@ namespace PresetParser
                 case "RepairCrane": { factionName = "Harbor"; groupName = "Special Buildings"; break; }
                 case "HarborOffice": { factionName = "Harbor"; groupName = "Special Buildings"; break; }
                 case "PowerplantBuilding": { factionName = "Electricity"; groupName = null; break; }
+                case "1010462": { templateName = "CityInstitutionBuilding"; break; }
+                case "1010463": { templateName = "CityInstitutionBuilding"; break; }
+                case "1010464": { templateName = "CityInstitutionBuilding"; break; }
                 default: groupName = templateName.FirstCharToUpper(); break;
             }
             if (groupName == "Farm Fields")
@@ -1134,8 +1137,18 @@ namespace PresetParser
             #endregion
 
             #region Get/Set InfluenceRange information
-            //because this number is not exists yet, we set this to 'null'
-            b.InfluenceRange = 0;
+            if (b.Template == "CityInstitutionBuilding")
+            {
+                b.InfluenceRange = 26; //Police - Fire stations and Hospiitals
+            }
+            else if (!string.IsNullOrEmpty(values?["PublicService"]?["FullSatisfactionDistance"]?.InnerText))
+            {
+                Console.WriteLine("Found InfluenceRangeNumer: Distance = {0}", values["PublicService"]["FullSatisfactionDistance"].InnerText);
+                b.InfluenceRange = Convert.ToInt32(values["PublicService"]["FullSatisfactionDistance"].InnerText);
+            }
+            else
+            { b.InfluenceRange = 0; }
+
             #endregion
             // Building the Localizations for building b
             #region Get localizations

@@ -407,6 +407,7 @@ namespace AnnoDesigner
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius = obj.Radius;
             //InfluenceRadius
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = obj.InfluenceRange;
+            _mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet = false;
 
             //Set Influence Type combo box
             if (obj.Radius > 0 && obj.InfluenceRange > 0)
@@ -422,6 +423,13 @@ namespace AnnoDesigner
             else if (obj.InfluenceRange > 0)
             {
                 comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Distance;
+                if (obj.PavedStreet)
+                {
+                    _mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet = obj.PavedStreet;
+                } else
+                {
+                    _mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet = false;
+                }
             }
             else
             {
@@ -471,6 +479,7 @@ namespace AnnoDesigner
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
                 Radius = _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius,
                 InfluenceRange = _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange,
+                PavedStreet = _mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet,
                 Borderless = _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked,
                 Road = _mainWindowLocalization.BuildingSettingsViewModel.IsRoadChecked,
                 Identifier = _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier,
@@ -619,6 +628,18 @@ namespace AnnoDesigner
             catch (Exception)
             {
                 MessageBox.Show("Error: Invalid building configuration.");
+            }
+        }
+
+        private void SelectPavedStraatClick(object sender, RoutedEventArgs o)
+        {
+            if (_mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet == false && _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange > 0)
+            {
+                _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = 30;
+            }
+            else if (_mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet == true && _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange > 0)
+            {
+                _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = 45;
             }
         }
 
@@ -800,22 +821,27 @@ namespace AnnoDesigner
                     case BuildingInfluenceType.None:
                         dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
                         dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        dockPanelPavedStreet.Visibility = Visibility.Collapsed;
                         break;
                     case BuildingInfluenceType.Radius:
                         dockPanelInfluenceRadius.Visibility = Visibility.Visible;
                         dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        dockPanelPavedStreet.Visibility = Visibility.Collapsed;
                         break;
                     case BuildingInfluenceType.Distance:
                         dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
                         dockPanelInfluenceRange.Visibility = Visibility.Visible;
+                        dockPanelPavedStreet.Visibility = Visibility.Visible;
                         break;
                     case BuildingInfluenceType.Both:
                         dockPanelInfluenceRadius.Visibility = Visibility.Visible;
                         dockPanelInfluenceRange.Visibility = Visibility.Visible;
+                        dockPanelPavedStreet.Visibility = Visibility.Visible;
                         break;
                     default:
                         dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
                         dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        dockPanelPavedStreet.Visibility = Visibility.Collapsed;
                         break;
                 }
             }

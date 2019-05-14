@@ -70,6 +70,7 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Range" },
                         { "Distance" , "Distance" },
                         { "Both" , "Both" },
+                        { "PavedStreet", "Paved Street" },
                         { "Options" , "Options" },
                         { "EnableLabel" , "Enable label" },
                         { "Borderless" , "Borderless" },
@@ -168,6 +169,7 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Bereich" },
                         { "Distance" , "Entfernung" },
                         { "Both" , "Beide" },
+                        { "PavedStreet", "Gepflasterte Straße" },
                         { "Options" , "Optionen" },
                         { "EnableLabel" , "Bezeichnung aktivieren" },
                         { "Borderless" , "Randlos" },
@@ -266,6 +268,7 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Zone de détection" },
                         { "Distance" , "Distance" },
                         { "Both" , "Tous les deux" },
+                        { "PavedStreet", "Rue pavée" },
                         { "Options" , "Options" },
                         { "EnableLabel" , "Activer les étiquettes" },
                         { "Borderless" , "Sans bordure" },
@@ -364,6 +367,7 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Zasięg" },
                         { "Distance" , "Odległość" },
                         { "Both" , "Obydwoje" },
+                        { "PavedStreet", "Droga Brukowana" },
                         { "Options" , "Opcje" },
                         { "EnableLabel" , "Pokaż etykietę" },
                         { "Borderless" , "Bez obramowania" },
@@ -462,6 +466,7 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Диапазон" },
                         { "Distance" , "Расстояние" },
                         { "Both" , "Оба" },
+                        { "PavedStreet", "Павед Стрит" },
                         { "Options" , "Параметры" },
                         { "EnableLabel" , "Показывать название" },
                         { "Borderless" , "Без полей" },
@@ -872,6 +877,7 @@ namespace AnnoDesigner.Localization
             BuildingSettingsViewModel.TextRadius = Localization.Translations[language]["Radius"];
             BuildingSettingsViewModel.TextDistance = Localization.Translations[language]["Distance"];
             Both = Localization.Translations[language]["Both"];
+            BuildingSettingsViewModel.TextPavedStreet = Localization.Translations[language]["PavedStreet"];
             BuildingSettingsViewModel.TextOptions = Localization.Translations[language]["Options"];
             BuildingSettingsViewModel.TextEnableLabel = Localization.Translations[language]["EnableLabel"];
             BuildingSettingsViewModel.TextBorderless = Localization.Translations[language]["Borderless"];
