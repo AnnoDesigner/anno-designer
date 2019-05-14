@@ -258,5 +258,17 @@ namespace AnnoDesigner.Properties {
                 this["TreeViewSearchText"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SettingsUpgradeNeeded {
+            get {
+                return ((bool)(this["SettingsUpgradeNeeded"]));
+            }
+            set {
+                this["SettingsUpgradeNeeded"] = value;
+            }
+        }
     }
 }

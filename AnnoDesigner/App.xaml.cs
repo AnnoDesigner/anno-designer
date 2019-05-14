@@ -121,6 +121,13 @@ namespace AnnoDesigner
                     }
                 }
 
+                if (AnnoDesigner.Properties.Settings.Default.SettingsUpgradeNeeded)
+                {
+                    AnnoDesigner.Properties.Settings.Default.Upgrade();
+                    AnnoDesigner.Properties.Settings.Default.SettingsUpgradeNeeded = false;
+                    AnnoDesigner.Properties.Settings.Default.Save();
+                }
+
                 //var updateWindow = new UpdateWindow();
                 await Commons.Instance.UpdateHelper.ReplaceUpdatedPresetFileAsync();
 
