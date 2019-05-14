@@ -5,6 +5,7 @@
         xmlns:my="clr-namespace:AnnoDesigner"
         xmlns:myUI="clr-namespace:AnnoDesigner.UI"
         xmlns:l="clr-namespace:AnnoDesigner.Localization"
+        xmlns:converter="clr-namespace:AnnoDesigner.converter"
         xmlns:i="clr-namespace:AnnoDesigner.Presets"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         Title="Anno Designer"
@@ -17,6 +18,10 @@
         Loaded="WindowLoaded"
         Closing="WindowClosing">
     <Window.Resources>
+        <converter:BoolToVisibilityConverter x:Key="converterBoolToVisibility"
+                                             TrueValue="Visible"
+                                             FalseValue="Hidden" />
+        <xctk:ColorToSolidColorBrushConverter x:Key="converterColorToSolidColorBrush" />
         <DataTemplate DataType="{x:Type myUI:IconImage}">
             <StackPanel Orientation="Horizontal">
                 <Viewbox Margin="5">
@@ -136,9 +141,9 @@
                               IsCheckable="True"
                               IsChecked="False"
                               Name="MenuItemLanguageGer" />
-                    <MenuItem Header="Français" 
-                              IsCheckable="True" 
-                              IsChecked="False" 
+                    <MenuItem Header="Français"
+                              IsCheckable="True"
+                              IsChecked="False"
                               Name="MenuItemLanguageFra" />
                     <!--<MenuItem Header="Español" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageEsp" />-->
                     <!--<MenuItem Header="Italiano" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageIta" />-->
@@ -434,6 +439,46 @@
                                         ToolTip="{Binding BuildingSettingsViewModel.TextApplyPredefinedColorToSelectionToolTip}" />
                             </xctk:SplitButton.DropDownContent>
                         </xctk:SplitButton>-->
+                        </DockPanel>
+                        <DockPanel>
+                            <DockPanel.Resources>
+                                <Style x:Key="styleRectangle"
+                                       TargetType="{x:Type Rectangle}">
+                                    <Setter Property="Margin"
+                                            Value="2" />
+                                </Style>
+                            </DockPanel.Resources>
+                            <Expander Header="{Binding BuildingSettingsViewModel.TextColorsInLayout}"
+                                      IsExpanded="False"
+                                      Visibility="{Binding BuildingSettingsViewModel.ShowColorsInLayout, Converter={StaticResource converterBoolToVisibility}}"
+                                      ToolTip="{Binding BuildingSettingsViewModel.TextColorsInLayoutToolTip}">
+                                <ItemsControl ItemsSource="{Binding BuildingSettingsViewModel.ColorsInLayout}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Rectangle Fill="{Binding MediaColor, Converter={StaticResource converterColorToSolidColorBrush}}"
+                                                       Style="{StaticResource styleRectangle}"
+                                                       Stroke="#FFABADB3"
+                                                       StrokeThickness="1"
+                                                       ToolTip="{Binding}">
+                                                <Rectangle.InputBindings>
+                                                    <MouseBinding Gesture="LeftDoubleClick"
+                                                                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.BuildingSettingsViewModel.UseColorInLayoutCommand}"
+                                                                  CommandParameter="{Binding}" />
+                                                </Rectangle.InputBindings>
+                                            </Rectangle>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal"
+                                                       HorizontalAlignment="Right"
+                                                       ItemHeight="20"
+                                                       ItemWidth="20"
+                                                       Margin="0" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </Expander>
                         </DockPanel>
                         <DockPanel LastChildFill="False"
                                    Height="26">

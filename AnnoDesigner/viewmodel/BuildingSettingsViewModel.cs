@@ -1,9 +1,8 @@
 ﻿using AnnoDesigner.model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -23,6 +22,8 @@ namespace AnnoDesigner.viewmodel
         private string _textRecentColors;
         private string _textStandard;
         private string _textAdvanced;
+        private string _textColorsInLayout;
+        private string _textColorsInLayoutToolTip;
         private string _textBuildingName;
         private string _textIcon;
         private string _textInfluenceType;
@@ -45,6 +46,9 @@ namespace AnnoDesigner.viewmodel
         private bool _isEnableLabelChecked;
         private bool _isBorderlessChecked;
         private bool _isRoadChecked;
+        private ObservableCollection<SerializableColor> _colorsInLayout;
+        private AnnoCanvas _annoCanvasToUse;
+        private ColorHueSaturationBrightnessComparer _colorSorter;
 
         /// <summary>
         /// only used for databinding
@@ -53,6 +57,7 @@ namespace AnnoDesigner.viewmodel
         {
             ApplyColorToSelectionCommand = new RelayCommand(ApplyColorToSelection, CanApplyColorToSelection);
             ApplyPredefinedColorToSelectionCommand = new RelayCommand(ApplyPredefinedColorToSelection, CanApplyPredefinedColorToSelection);
+            UseColorInLayoutCommand = new RelayCommand(UseColorInLayout, CanUseColorInLayout);
 
             //only used for WPF Desinger
             TextHeader = "Building Settings";
@@ -67,6 +72,8 @@ namespace AnnoDesigner.viewmodel
             TextRecentColors = "Recent Colors";
             TextStandard = "Standard";
             TextAdvanced = "Advanced";
+            TextColorsInLayout = "Colors in Layout";
+            TextColorsInLayoutToolTip = "Double click color to select it";
             TextBuildingName = "Label";
             TextIcon = "Icon";
             TextInfluenceType = "Influence Type";
@@ -89,6 +96,7 @@ namespace AnnoDesigner.viewmodel
             IsEnableLabelChecked = false;
             IsBorderlessChecked = false;
             IsRoadChecked = false;
+            ColorsInLayout = new ObservableCollection<SerializableColor>();
         }
 
         #region localization
@@ -163,6 +171,18 @@ namespace AnnoDesigner.viewmodel
         {
             get { return _textAdvanced; }
             set { UpdateProperty(ref _textAdvanced, value); }
+        }
+
+        public string TextColorsInLayout
+        {
+            get { return _textColorsInLayout; }
+            set { UpdateProperty(ref _textColorsInLayout, value); }
+        }
+
+        public string TextColorsInLayoutToolTip
+        {
+            get { return _textColorsInLayoutToolTip; }
+            set { UpdateProperty(ref _textColorsInLayoutToolTip, value); }
         }
 
         public string TextBuildingName
@@ -293,7 +313,40 @@ namespace AnnoDesigner.viewmodel
             set { UpdateProperty(ref _isRoadChecked, value); }
         }
 
-        public AnnoCanvas AnnoCanvasToUse { get; set; }
+        public AnnoCanvas AnnoCanvasToUse
+        {
+            get { return _annoCanvasToUse; }
+            set
+            {
+                if (_annoCanvasToUse != null)
+                {
+                    _annoCanvasToUse.StatisticsUpdated -= AnnoCanvasToUse_StatisticsUpdated;
+                }
+
+                _annoCanvasToUse = value;
+                _annoCanvasToUse.StatisticsUpdated += AnnoCanvasToUse_StatisticsUpdated;
+            }
+        }
+
+        public bool ShowColorsInLayout
+        {
+            get { return ColorsInLayout?.Count > 0; }
+        }
+
+        public ObservableCollection<SerializableColor> ColorsInLayout
+        {
+            get { return _colorsInLayout; }
+            set
+            {
+                UpdateProperty(ref _colorsInLayout, value);
+                OnPropertyChanged(nameof(ShowColorsInLayout));
+            }
+        }
+
+        private ColorHueSaturationBrightnessComparer ColorSorter
+        {
+            get { return _colorSorter ?? (_colorSorter = new ColorHueSaturationBrightnessComparer()); }
+        }
 
         #region commands
 
@@ -312,6 +365,8 @@ namespace AnnoDesigner.viewmodel
             }
 
             AnnoCanvasToUse.InvalidateVisual();
+
+            AnnoCanvasToUse_StatisticsUpdated(this, EventArgs.Empty);
         }
 
         private bool CanApplyColorToSelection(object param)
@@ -331,8 +386,33 @@ namespace AnnoDesigner.viewmodel
             return false;
         }
 
+        public ICommand UseColorInLayoutCommand { get; private set; }
 
+        private void UseColorInLayout(object param)
+        {
+            var clickedColor = (SerializableColor)param;
+            SelectedColor = clickedColor.MediaColor;
+        }
+
+        private bool CanUseColorInLayout(object param)
+        {
+            return true;
+        }
 
         #endregion
+
+        private void AnnoCanvasToUse_StatisticsUpdated(object sender, EventArgs e)
+        {
+            ColorsInLayout.Clear();
+
+            foreach (var curColor in _annoCanvasToUse.PlacedObjects.Select(x => x.Color)
+                .OrderBy(x => x.MediaColor, ColorSorter)
+                .Distinct())
+            {
+                ColorsInLayout.Add(curColor);
+            }
+
+            OnPropertyChanged(nameof(ShowColorsInLayout));
+        }
     }
 }

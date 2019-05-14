@@ -118,7 +118,9 @@ namespace AnnoDesigner.Localization
                         { "AdminRightsRequired" , "Admin rights required" },
                         { "UpdateRequiresAdminRightsMessage" , "To download the update the application needs write access. Please provide credentials." },
                         { "Error" , "Error" },
-                        { "UpdateErrorPresetMessage" , "There was an error installing the update." }
+                        { "UpdateErrorPresetMessage" , "There was an error installing the update." },
+                        { "ColorsInLayout" , "Colors in Layout" },
+                        { "ColorsInLayoutToolTip" , "Double click color to select it" },
                     }
                 },
                 {
@@ -216,7 +218,9 @@ namespace AnnoDesigner.Localization
                         { "AdminRightsRequired" , "Admin-Rechte erforderlich" },
                         { "UpdateRequiresAdminRightsMessage" , "Um das Update herunterzuladen, benötigt die Anwendung Schreibzugriff. Bitte geben Sie die Zugangsdaten an." },
                         { "Error" , "Fehler" },
-                        { "UpdateErrorPresetMessage" , "Es gab einen Fehler bei der Installation des Updates." }
+                        { "UpdateErrorPresetMessage" , "Es gab einen Fehler bei der Installation des Updates." },
+                        { "ColorsInLayout" , "Farben im Layout" },
+                        { "ColorsInLayoutToolTip" , "Doppelklicken Sie auf die Farbe, um sie auszuwählen." },
                     }
                 },
                 {
@@ -314,7 +318,9 @@ namespace AnnoDesigner.Localization
                         { "AdminRightsRequired" , "Droits d'administration requis" },
                         { "UpdateRequiresAdminRightsMessage" , "Pour télécharger la mise à jour, l'application a besoin d'un accès en écriture. Veuillez fournir vos justificatifs d'identité." },
                         { "Error" , "Erreur" },
-                        { "UpdateErrorPresetMessage" , "Il y a eu une erreur lors de l'installation de la mise à jour." }
+                        { "UpdateErrorPresetMessage" , "Il y a eu une erreur lors de l'installation de la mise à jour." },
+                        { "ColorsInLayout" , "Couleurs dans la mise en page" },
+                        { "ColorsInLayoutToolTip" , "Double-cliquez sur la couleur pour la sélectionner" },
                     }
                 },
                 {
@@ -412,7 +418,9 @@ namespace AnnoDesigner.Localization
                         { "AdminRightsRequired" , "Wymagane prawa administratora" },
                         { "UpdateRequiresAdminRightsMessage" , "Aby pobrać aktualizację, aplikacja musi mieć dostęp do zapisu. Proszę podać dane uwierzytelniające." },
                         { "Error" , "Błąd" },
-                        { "UpdateErrorPresetMessage" , "Wystąpił błąd podczas instalacji aktualizacji." }
+                        { "UpdateErrorPresetMessage" , "Wystąpił błąd podczas instalacji aktualizacji." },
+                        { "ColorsInLayout" , "Kolory w układzie" },
+                        { "ColorsInLayoutToolTip" , "Podwójne kliknięcie na kolor, aby go wybrać" },
                     }
                 },
                 {
@@ -510,7 +518,9 @@ namespace AnnoDesigner.Localization
                         { "AdminRightsRequired" , "Требуемые права администратора" },
                         { "UpdateRequiresAdminRightsMessage" , "Для загрузки обновления приложению необходим доступ на запись. Пожалуйста, предоставьте полномочия." },
                         { "Error" , "Ошибка" },
-                        { "UpdateErrorPresetMessage" , "Произошла ошибка при установке обновления." }
+                        { "UpdateErrorPresetMessage" , "Произошла ошибка при установке обновления." },
+                        { "ColorsInLayout" , "Цвета в макетах" },
+                        { "ColorsInLayoutToolTip" , "Дважды щелкните по цвету, чтобы выбрать его." },
                     }
                 },
             };
@@ -1338,7 +1348,7 @@ namespace AnnoDesigner.Localization
             get { return _statisticsViewModel; }
             set { _statisticsViewModel = value; }
         }
-        
+
         private BuildingSettingsViewModel _buildingSettingsViewModel;
         public BuildingSettingsViewModel BuildingSettingsViewModel
         {
