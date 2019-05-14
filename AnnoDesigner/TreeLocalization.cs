@@ -388,7 +388,7 @@ namespace AnnoDesigner.TreeLocalization
                         { "Shipyards" , "Судоремонтные заводы" },
                         { "SpecialBuildings" , "Специальные здания" },
                         { "MiningBuildings" , "Горнодобывающие здания" },
-                        { "OrnamentalBuilding" , "Орнаменты" }
+                        {"OrnamentalBuilding" , "Орнаменты" }
                     }
                     },
             };
@@ -405,8 +405,16 @@ namespace AnnoDesigner.TreeLocalization
                 }
                 else
                 {
-                    Debug.WriteLine($"found no localization ({language}) for: \"{localizationHeader}\"");
-                    return localizationHeader;
+                    Debug.WriteLine($"try to set localization to english for: : \"{localizationHeader}\"");
+                    if (TreeLocalization.Translations["eng"].TryGetValue(localizationHeader.Replace(" ", String.Empty), out string engLocalization))
+                    {
+                        return engLocalization;
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"found no localization (\"eng\") and ({language}) for : \"{localizationHeader}\"");
+                        return localizationHeader;
+                    }
                 }
             }
             catch (Exception ex)
