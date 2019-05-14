@@ -118,7 +118,8 @@ namespace AnnoDesigner.Localization
                         { "AdminRightsRequired" , "Admin rights required" },
                         { "UpdateRequiresAdminRightsMessage" , "To download the update the application needs write access. Please provide credentials." },
                         { "Error" , "Error" },
-                        { "UpdateErrorPresetMessage" , "There was an error installing the update." }
+                        { "UpdateErrorPresetMessage" , "There was an error installing the update." },
+                        { "UpdateNoConnectionMessage" , "Could not establish a connection to the internet." }
                     }
                 },
                 {
@@ -216,7 +217,8 @@ namespace AnnoDesigner.Localization
                         { "AdminRightsRequired" , "Admin-Rechte erforderlich" },
                         { "UpdateRequiresAdminRightsMessage" , "Um das Update herunterzuladen, benötigt die Anwendung Schreibzugriff. Bitte geben Sie die Zugangsdaten an." },
                         { "Error" , "Fehler" },
-                        { "UpdateErrorPresetMessage" , "Es gab einen Fehler bei der Installation des Updates." }
+                        { "UpdateErrorPresetMessage" , "Es gab einen Fehler bei der Installation des Updates." },
+                        { "UpdateNoConnectionMessage" , "Es konnte keine Verbindung zum Internet hergestellt werden." }
                     }
                 },
                 {
@@ -314,7 +316,8 @@ namespace AnnoDesigner.Localization
                         { "AdminRightsRequired" , "Droits d'administration requis" },
                         { "UpdateRequiresAdminRightsMessage" , "Pour télécharger la mise à jour, l'application a besoin d'un accès en écriture. Veuillez fournir vos justificatifs d'identité." },
                         { "Error" , "Erreur" },
-                        { "UpdateErrorPresetMessage" , "Il y a eu une erreur lors de l'installation de la mise à jour." }
+                        { "UpdateErrorPresetMessage" , "Il y a eu une erreur lors de l'installation de la mise à jour." },
+                        { "UpdateNoConnectionMessage" , "Impossible d'établir une connexion à Internet." }
                     }
                 },
                 {
@@ -412,7 +415,8 @@ namespace AnnoDesigner.Localization
                         { "AdminRightsRequired" , "Wymagane prawa administratora" },
                         { "UpdateRequiresAdminRightsMessage" , "Aby pobrać aktualizację, aplikacja musi mieć dostęp do zapisu. Proszę podać dane uwierzytelniające." },
                         { "Error" , "Błąd" },
-                        { "UpdateErrorPresetMessage" , "Wystąpił błąd podczas instalacji aktualizacji." }
+                        { "UpdateErrorPresetMessage" , "Wystąpił błąd podczas instalacji aktualizacji." },
+                        { "UpdateNoConnectionMessage" , "Nie udało się nawiązać połączenia z Internetem." }
                     }
                 },
                 {
@@ -510,7 +514,8 @@ namespace AnnoDesigner.Localization
                         { "AdminRightsRequired" , "Требуемые права администратора" },
                         { "UpdateRequiresAdminRightsMessage" , "Для загрузки обновления приложению необходим доступ на запись. Пожалуйста, предоставьте полномочия." },
                         { "Error" , "Ошибка" },
-                        { "UpdateErrorPresetMessage" , "Произошла ошибка при установке обновления." }
+                        { "UpdateErrorPresetMessage" , "Произошла ошибка при установке обновления." },
+                        { "UpdateNoConnectionMessage" , "Не смог установить соединение с интернетом." }
                     }
                 },
             };
@@ -1338,7 +1343,7 @@ namespace AnnoDesigner.Localization
             get { return _statisticsViewModel; }
             set { _statisticsViewModel = value; }
         }
-        
+
         private BuildingSettingsViewModel _buildingSettingsViewModel;
         public BuildingSettingsViewModel BuildingSettingsViewModel
         {
