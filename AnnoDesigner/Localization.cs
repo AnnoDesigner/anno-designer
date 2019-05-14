@@ -898,6 +898,8 @@ namespace AnnoDesigner.Localization
             BuildingSettingsViewModel.TextRecentColors = Localization.Translations[language]["RecentColors"];
             BuildingSettingsViewModel.TextStandard = Localization.Translations[language]["Standard"];
             BuildingSettingsViewModel.TextAdvanced = Localization.Translations[language]["Advanced"];
+            BuildingSettingsViewModel.TextColorsInLayout = Localization.Translations[language]["ColorsInLayout"];
+            BuildingSettingsViewModel.TextColorsInLayoutToolTip = Localization.Translations[language]["ColorsInLayoutToolTip"];
 
             //Status Bar
             StatusBarControls = Localization.Translations[language]["StatusBarControls"];
