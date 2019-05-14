@@ -521,7 +521,7 @@
                                    Height="25"
                                    Visibility="Visible">
                             <CheckBox Content="{Binding BuildingSettingsViewModel.TextPavedStreet}"
-                                      Click="SelectPavedStraatClick"
+                                      Click="CheckBoxPavedStreetClick"
                                       DockPanel.Dock="Right"
                                       Margin="0,3,0,5"
                                       IsThreeState="False"

@@ -287,6 +287,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Indicates the current mouse mode.
         /// </summary>
+        //private MouseMode CurrentMode
         private MouseMode CurrentMode
         {
             get

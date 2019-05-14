@@ -618,6 +618,7 @@ namespace AnnoDesigner
         {
             Close();
         }
+        //When changing 'SelectBox'
 
         private void ButtonPlaceBuildingClick(object sender, RoutedEventArgs e)
         {
@@ -628,18 +629,6 @@ namespace AnnoDesigner
             catch (Exception)
             {
                 MessageBox.Show("Error: Invalid building configuration.");
-            }
-        }
-
-        private void SelectPavedStraatClick(object sender, RoutedEventArgs o)
-        {
-            if (_mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet == false && _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange > 0)
-            {
-                _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = 30;
-            }
-            else if (_mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet == true && _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange > 0)
-            {
-                _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = 45;
             }
         }
 
@@ -845,6 +834,50 @@ namespace AnnoDesigner
                         break;
                 }
             }
+        }
+
+        //CheckBox PavedStreet : calculate distance range
+        private void CheckBoxPavedStreetClick(object sender, RoutedEventArgs o)
+        {
+            MessageBox.Show("Checking this option will change the Influence Range for buildings, representing the increased range they receive when using paved streets.","Paved Street Selecion");
+            if (!GetDistanceRange(_mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet))
+            { Debug.WriteLine("$Calculate Paved Street/Dirt Street Error: Can not obtain new Distance Value");} else
+            {
+                //Trying to see of Mouse has an object or not is mouse has Object then Renew Object, withouth placnig.
+                ApplyCurrentObject();
+            }
+        }
+        
+        public bool GetDistanceRange(bool value)
+        {
+            if (_mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange>0)
+            {
+                var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier);
+                if (value)
+                {
+                    //sum for range on paved street for Public Service Building = x*1.43
+                    //sum for range on paved street for City Institution Building = x*1.38
+                    if (buildingInfo.InfluenceRange > 0 && buildingInfo.Template == "CityInstitutionBuilding")
+                    {
+                        _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round((buildingInfo.InfluenceRange - 2) * 1.38);
+                    }
+                    else if (buildingInfo.InfluenceRange > 0)
+                    {
+                        _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round((buildingInfo.InfluenceRange - 2) *1.43 );
+                    }
+                    return true;
+                }
+                else
+                { 
+                    if (buildingInfo.InfluenceRange > 0)
+                    {
+                        _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = buildingInfo.InfluenceRange - 2;
+                        return true;
+                    }
+                }
+            }
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = 0;
+            return false;
         }
 
         private void TextBoxSearchPresetsGotFocus(object sender, RoutedEventArgs e)
