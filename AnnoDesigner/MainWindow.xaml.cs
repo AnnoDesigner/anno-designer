@@ -515,7 +515,7 @@ namespace AnnoDesigner
                             obj.Identifier = "Unknown Object";
                         }
                     }
-                    else if (_mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate.ToLower().Contains("field") == false) //check if the icon is removed from a template field
+                    else if (!_mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase)) //check if the icon is removed from a template field
                     {
                         obj.Identifier = "Unknown Object";
                     }
@@ -544,10 +544,12 @@ namespace AnnoDesigner
                         obj.Identifier = "Unknown Object";
                     }
                 }
-                if (string.IsNullOrEmpty(obj.Icon) && _mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate.ToLower().Contains("field") == false)
+
+                if (string.IsNullOrEmpty(obj.Icon) && !_mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase))
                 {
                     obj.Identifier = "Unknown Object";
                 }
+
                 annoCanvas.SetCurrentObject(obj);
             }
             else
@@ -567,6 +569,7 @@ namespace AnnoDesigner
                     {
                         Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
                     });
+
                     ApplyCurrentObject();
                 }
             }
@@ -592,8 +595,26 @@ namespace AnnoDesigner
 
         private void AddRoadTiles()
         {
-            treeViewPresets.Items.Add(new AnnoObject { Label = TreeLocalization.TreeLocalization.GetTreeLocalization("RoadTile"), Size = new Size(1, 1), Radius = 0, Road = true, Identifier = "Road" });
-            treeViewPresets.Items.Add(new AnnoObject { Label = TreeLocalization.TreeLocalization.GetTreeLocalization("BorderlessRoadTile"), Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true, Identifier = "Road" });
+            treeViewPresets.Items.Add(new AnnoObject
+            {
+                Label = TreeLocalization.TreeLocalization.GetTreeLocalization("RoadTile"),
+                Size = new Size(1, 1),
+                Radius = 0,
+                Road = true,
+                Identifier = "Road",
+                Template = "Road"
+            });
+
+            treeViewPresets.Items.Add(new AnnoObject
+            {
+                Label = TreeLocalization.TreeLocalization.GetTreeLocalization("BorderlessRoadTile"),
+                Size = new Size(1, 1),
+                Radius = 0,
+                Borderless = true,
+                Road = true,
+                Identifier = "Road",
+                Template = "Road"
+            });
         }
 
         #endregion
