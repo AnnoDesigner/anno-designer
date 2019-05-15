@@ -449,6 +449,7 @@
                                 </Style>
                             </DockPanel.Resources>
                             <Expander Header="{Binding BuildingSettingsViewModel.TextColorsInLayout}"
+                                      MaxWidth="{Binding ElementName=BuildingsPanel, Path=ActualWidth, Mode=OneWay}"
                                       IsExpanded="False"
                                       Visibility="{Binding BuildingSettingsViewModel.ShowColorsInLayout, Converter={StaticResource converterBoolToVisibility}}"
                                       ToolTip="{Binding BuildingSettingsViewModel.TextColorsInLayoutToolTip}">
