@@ -1152,6 +1152,7 @@ namespace PresetParser
                 {
                     case "Service_colony01_03 (Boxing Arena)": b.InfluenceRange = 30; break;
                     case "Service_colony01_01 (Marketplace)": b.InfluenceRange = 35; break;
+                    case "Electricity_02 (Oil Power Plant)": b.InfluenceRange = 30; break;
                 }
             }
             #endregion
