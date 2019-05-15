@@ -28,7 +28,7 @@ namespace PresetParser
         public const string ANNO_VERSION_2205 = "2205";
         public const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "3.2.2";
+        private const string BUILDING_PRESETS_VERSION = "3.2.3";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -1137,19 +1137,25 @@ namespace PresetParser
             #endregion
 
             #region Get/Set InfluenceRange information
+            b.InfluenceRange = 0;
             if (b.Template == "CityInstitutionBuilding")
             {
                 b.InfluenceRange = 26; //Police - Fire stations and Hospiitals
             }
             else if (!string.IsNullOrEmpty(values?["PublicService"]?["FullSatisfactionDistance"]?.InnerText))
             {
-                Console.WriteLine("Found InfluenceRangeNumer: Distance = {0}", values["PublicService"]["FullSatisfactionDistance"].InnerText);
                 b.InfluenceRange = Convert.ToInt32(values["PublicService"]["FullSatisfactionDistance"].InnerText);
             }
             else
-            { b.InfluenceRange = 0; }
-
+            {
+                switch (identifierName)
+                {
+                    case "Service_colony01_03 (Boxing Arena)": b.InfluenceRange = 30; break;
+                    case "Service_colony01_01 (Marketplace)": b.InfluenceRange = 35; break;
+                }
+            }
             #endregion
+
             // Building the Localizations for building b
             #region Get localizations
             /// find localization

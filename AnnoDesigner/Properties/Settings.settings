@@ -62,7 +62,7 @@
     <Setting Name="TreeViewSearchText" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="ShowPavedRoadsWarning" Type="System.Boolean" Scope="Application">
+    <Setting Name="ShowPavedRoadsWarning" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>

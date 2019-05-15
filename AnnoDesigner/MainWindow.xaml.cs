@@ -839,31 +839,43 @@ namespace AnnoDesigner
         //CheckBox PavedStreet : calculate distance range
         private void CheckBoxPavedStreetClick(object sender, RoutedEventArgs o)
         {
-            MessageBox.Show("Checking this option will change the Influence Range for buildings, representing the increased range they receive when using paved streets.","Paved Street Selecion");
-            if (!GetDistanceRange(_mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet))
-            { Debug.WriteLine("$Calculate Paved Street/Dirt Street Error: Can not obtain new Distance Value");} else
+            var language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);   
+            if (!Settings.Default.ShowPavedRoadsWarning)
             {
-                //Trying to see of Mouse has an object or not is mouse has Object then Renew Object, withouth placnig.
-                ApplyCurrentObject();
+                /*MessageBox.Show(Localization.Localization[language]["ToolTipPavedStreet1"], "Paved Street Selecion");*/
+                MessageBox.Show("Checking this option will change the Influence Range for buildings, \nrepresenting the increased range they receive when using paved streets.\nUse the 'Place Building' button to place object.", "Paved Street Selecion");
+                Settings.Default.ShowPavedRoadsWarning = true;
+            }
+            //Incase of Localization messageboxtexts, this tooltip need to be set alway's
+            /*this.CheckBoxPavedStreet.ToolTip = Localization.Localization[language]["ToolTipPavedStreet2"];*/
+            this.CheckBoxPavedStreet.ToolTip = "Checking this option will change the Influence Range for buildings, \nrepresenting the increased range they receive when using paved streets.\nUse the 'Place Building' button to place object.";
+            if (!GetDistanceRange(this.CheckBoxPavedStreet.IsChecked.Value))
+            {
+                Debug.WriteLine("$Calculate Paved Street/Dirt Street Error: Can not obtain new Distance Value, value set to 0");
+            }
+            else
+            {
+                //I like to have here a isObjectOnMouse routine, to check of the command 'ApplyCurrentObject();' must be excecuted or not: 
+                //Check of Mouse has an object or not -> if mouse has Object then Renew Object, withouth placnig. (do ApplyCurrentObject();)
             }
         }
         
         public bool GetDistanceRange(bool value)
         {
-            if (_mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange>0)
+            if (_mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange > 0)
             {
                 var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier);
                 if (value)
-                {
-                    //sum for range on paved street for Public Service Building = x*1.43
-                    //sum for range on paved street for City Institution Building = x*1.38
+                { 
+                    //sum for range on paved street for City Institution Building = n*1.38 (Police, Fire stations and Hospials)
                     if (buildingInfo.InfluenceRange > 0 && buildingInfo.Template == "CityInstitutionBuilding")
                     {
-                        _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round((buildingInfo.InfluenceRange - 2) * 1.38);
+                        _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round((buildingInfo.InfluenceRange * 1.38) - 2);
                     }
+                    //sum for range on paved street for Public Service Building = n*1.43 (Marketplaces, Pubs, Banks, ... (etc))
                     else if (buildingInfo.InfluenceRange > 0)
                     {
-                        _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round((buildingInfo.InfluenceRange - 2) *1.43 );
+                        _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round((buildingInfo.InfluenceRange * 1.43) - 2);
                     }
                     return true;
                 }
@@ -872,8 +884,8 @@ namespace AnnoDesigner
                     if (buildingInfo.InfluenceRange > 0)
                     {
                         _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = buildingInfo.InfluenceRange - 2;
-                        return true;
                     }
+                    return true;
                 }
             }
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = 0;

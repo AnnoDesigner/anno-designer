@@ -259,12 +259,15 @@ namespace AnnoDesigner.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ShowPavedRoadsWarning {
             get {
                 return ((bool)(this["ShowPavedRoadsWarning"]));
+            }
+            set {
+                this["ShowPavedRoadsWarning"] = value;
             }
         }
     }

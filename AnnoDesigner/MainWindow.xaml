@@ -521,11 +521,13 @@
                                    Height="25"
                                    Visibility="Visible">
                             <CheckBox Content="{Binding BuildingSettingsViewModel.TextPavedStreet}"
+                                      Name="CheckBoxPavedStreet"
+                                      ToolTip=""
                                       Click="CheckBoxPavedStreetClick"
                                       DockPanel.Dock="Right"
                                       Margin="0,3,0,5"
                                       IsThreeState="False"
-                                      IsChecked="{Binding BuildingSettingsViewModel.IsPavedStreet}" />
+                                      IsChecked="{Binding BuildingSettingsViewModel.IsPavedStreet}"/>
                         </DockPanel>
                         <DockPanel LastChildFill="False">
                             <Label Content="{Binding BuildingSettingsViewModel.TextOptions}" />
