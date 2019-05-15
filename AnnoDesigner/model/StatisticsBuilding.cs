@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AnnoDesigner.model
 {
-    [DebuggerDisplay("{Count,nq} x {Name}")]
+    [DebuggerDisplay("{" + nameof(Count) + ",nq} x {" + nameof(Name) + "}")]
     public class StatisticsBuilding : Notify
     {
         private int _count;
