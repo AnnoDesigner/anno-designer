@@ -591,8 +591,26 @@ namespace AnnoDesigner
 
         private void AddRoadTiles()
         {
-            treeViewPresets.Items.Add(new AnnoObject { Label = TreeLocalization.TreeLocalization.GetTreeLocalization("RoadTile"), Size = new Size(1, 1), Radius = 0, Road = true, Identifier = "Road" });
-            treeViewPresets.Items.Add(new AnnoObject { Label = TreeLocalization.TreeLocalization.GetTreeLocalization("BorderlessRoadTile"), Size = new Size(1, 1), Radius = 0, Borderless = true, Road = true, Identifier = "Road" });
+            treeViewPresets.Items.Add(new AnnoObject
+            {
+                Label = TreeLocalization.TreeLocalization.GetTreeLocalization("RoadTile"),
+                Size = new Size(1, 1),
+                Radius = 0,
+                Road = true,
+                Identifier = "Road",
+                Template = "Road"
+            });
+
+            treeViewPresets.Items.Add(new AnnoObject
+            {
+                Label = TreeLocalization.TreeLocalization.GetTreeLocalization("BorderlessRoadTile"),
+                Size = new Size(1, 1),
+                Radius = 0,
+                Borderless = true,
+                Road = true,
+                Identifier = "Road",
+                Template = "Road"
+            });
         }
 
         #endregion
