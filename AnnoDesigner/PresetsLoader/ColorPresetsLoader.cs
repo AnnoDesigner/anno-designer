@@ -11,13 +11,20 @@ namespace AnnoDesigner.PresetsLoader
 {
     public class ColorPresetsLoader
     {
-        public ColorPresets Load()
+        public ColorPresets Load(string colorPresetsFilePath = null)
         {
             ColorPresets result = null;
 
             try
             {
-                result = DataIO.LoadFromFile<ColorPresets>(Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile));
+                if (String.IsNullOrWhiteSpace(colorPresetsFilePath))
+                {
+                    result = DataIO.LoadFromFile<ColorPresets>(Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile));
+                }
+                else
+                {
+                    result = DataIO.LoadFromFile<ColorPresets>(colorPresetsFilePath);
+                }
             }
             catch (Exception ex)
             {
@@ -28,13 +35,13 @@ namespace AnnoDesigner.PresetsLoader
             return result;
         }
 
-        public ColorScheme LoadDefaultScheme()
+        public ColorScheme LoadDefaultScheme(string colorPresetsFilePath = null)
         {
             ColorScheme result = null;
 
             try
             {
-                var colorPresets = DataIO.LoadFromFile<ColorPresets>(Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile));
+                var colorPresets = Load(colorPresetsFilePath);
 
                 result = colorPresets?.AvailableSchemes.FirstOrDefault(x => x.Name.Equals("Default", StringComparison.OrdinalIgnoreCase));
             }
