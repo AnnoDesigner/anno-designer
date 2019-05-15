@@ -121,6 +121,7 @@ namespace AnnoDesigner.Localization
                         { "UpdateErrorPresetMessage" , "There was an error installing the update." },
                         { "ColorsInLayout" , "Colors in Layout" },
                         { "ColorsInLayoutToolTip" , "Double click color to select it" },
+                        { "UpdateNoConnectionMessage" , "Could not establish a connection to the internet." }
                     }
                 },
                 {
@@ -221,6 +222,7 @@ namespace AnnoDesigner.Localization
                         { "UpdateErrorPresetMessage" , "Es gab einen Fehler bei der Installation des Updates." },
                         { "ColorsInLayout" , "Farben im Layout" },
                         { "ColorsInLayoutToolTip" , "Doppelklicken Sie auf die Farbe, um sie auszuwählen." },
+                        { "UpdateNoConnectionMessage" , "Es konnte keine Verbindung zum Internet hergestellt werden." }
                     }
                 },
                 {
@@ -321,6 +323,7 @@ namespace AnnoDesigner.Localization
                         { "UpdateErrorPresetMessage" , "Il y a eu une erreur lors de l'installation de la mise à jour." },
                         { "ColorsInLayout" , "Couleurs dans la mise en page" },
                         { "ColorsInLayoutToolTip" , "Double-cliquez sur la couleur pour la sélectionner" },
+                        { "UpdateNoConnectionMessage" , "Impossible d'établir une connexion à Internet." }
                     }
                 },
                 {
@@ -421,6 +424,7 @@ namespace AnnoDesigner.Localization
                         { "UpdateErrorPresetMessage" , "Wystąpił błąd podczas instalacji aktualizacji." },
                         { "ColorsInLayout" , "Kolory w układzie" },
                         { "ColorsInLayoutToolTip" , "Podwójne kliknięcie na kolor, aby go wybrać" },
+                        { "UpdateNoConnectionMessage" , "Nie udało się nawiązać połączenia z Internetem." }
                     }
                 },
                 {
@@ -521,6 +525,7 @@ namespace AnnoDesigner.Localization
                         { "UpdateErrorPresetMessage" , "Произошла ошибка при установке обновления." },
                         { "ColorsInLayout" , "Цвета в макетах" },
                         { "ColorsInLayoutToolTip" , "Дважды щелкните по цвету, чтобы выбрать его." },
+                        { "UpdateNoConnectionMessage" , "Не смог установить соединение с интернетом." }
                     }
                 },
             };

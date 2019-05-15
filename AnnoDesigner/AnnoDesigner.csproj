@@ -53,6 +53,8 @@
     </Compile>
     <Compile Include="ColorHueSaturationBrightnessComparer.cs" />
     <Compile Include="Commons.cs" />
+    <Compile Include="ConnectivityHelper.cs" />
+    <Compile Include="FileHelper.cs" />
     <Compile Include="PresetsLoader\IconLoader.cs" />
     <Compile Include="PresetsLoader\IconMappingPresetsLoader.cs" />
     <Compile Include="model\ICommons.cs" />
