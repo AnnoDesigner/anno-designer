@@ -274,7 +274,7 @@ namespace AnnoDesigner
                     if (!Commons.CanWriteInFolder())
                     {
                         //already asked for admin rights?
-                        if (Environment.GetCommandLineArgs().Any(x => x.Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase)))
+                        if (Environment.GetCommandLineArgs().Any(x => x.Trim().Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase)))
                         {
                             MessageBox.Show($"You have no write access to the folder.{Environment.NewLine}The update can not be installed.",
                                 Localization.Localization.Translations[language]["Error"],

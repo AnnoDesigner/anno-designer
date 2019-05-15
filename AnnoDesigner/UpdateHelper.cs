@@ -123,6 +123,19 @@ namespace AnnoDesigner
             {
                 var result = false;
 
+                if (!await ConnectivityHelper.IsConnected())
+                {
+                    Trace.WriteLine("Could not establish a connection to the internet.");
+
+                    string language = Localization.Localization.GetLanguageCodeFromName(Settings.Default.SelectedLanguage);
+                    MessageBox.Show(Localization.Localization.Translations[language]["UpdateNoConnectionMessage"],
+                        Localization.Localization.Translations[language]["Error"],
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+
+                    return result;
+                }
+
                 var releases = await ApiClient.Repository.Release.GetAll(GITHUB_USERNAME, GITHUB_PROJECTNAME).ConfigureAwait(false);
                 if (releases == null || releases.Count < 1)
                 {
@@ -144,7 +157,7 @@ namespace AnnoDesigner
                 LatestPresetRelease = latestPresetRelease;
 
                 var latestPresetVersionString = latestPresetRelease.TagName.Replace(RELEASE_PRESET_TAG, string.Empty).Trim();
-                if (String.IsNullOrWhiteSpace(latestPresetVersionString))
+                if (string.IsNullOrWhiteSpace(latestPresetVersionString))
                 {
                     Trace.WriteLine($"Could not get version of latest preset release. {nameof(latestPresetRelease.TagName)}: {latestPresetRelease.TagName}");
                     return result;
@@ -239,7 +252,7 @@ namespace AnnoDesigner
                 //download file to temp directory
                 var tempFileName = Path.GetTempFileName();
                 var pathToDownloadedFile = await DownloadFileAsync(latestPresetAsset.BrowserDownloadUrl, tempFileName).ConfigureAwait(false);
-                if (String.IsNullOrWhiteSpace(pathToDownloadedFile))
+                if (string.IsNullOrWhiteSpace(pathToDownloadedFile))
                 {
                     return result;
                 }
@@ -253,6 +266,7 @@ namespace AnnoDesigner
                 {
                     if (File.Exists(PathToUpdatedPresetsFile))
                     {
+                        FileHelper.ResetFileAttributes(PathToUpdatedPresetsFile);
                         File.Delete(PathToUpdatedPresetsFile);
                     }
 
@@ -263,6 +277,7 @@ namespace AnnoDesigner
                 {
                     if (File.Exists(PathToUpdatedPresetsAndIconsFile))
                     {
+                        FileHelper.ResetFileAttributes(PathToUpdatedPresetsAndIconsFile);
                         File.Delete(PathToUpdatedPresetsAndIconsFile);
                     }
 
@@ -273,6 +288,7 @@ namespace AnnoDesigner
                 {
                     if (File.Exists(PathToUpdatedIconMappingFile))
                     {
+                        FileHelper.ResetFileAttributes(PathToUpdatedIconMappingFile);
                         File.Delete(PathToUpdatedIconMappingFile);
                     }
 
@@ -283,6 +299,7 @@ namespace AnnoDesigner
                 {
                     if (File.Exists(PathToUpdatedPredefinedColorsFile))
                     {
+                        FileHelper.ResetFileAttributes(PathToUpdatedPredefinedColorsFile);
                         File.Delete(PathToUpdatedPredefinedColorsFile);
                     }
 
@@ -326,19 +343,38 @@ namespace AnnoDesigner
             {
                 await Task.Run(async () =>
                     {
-                        if (!String.IsNullOrWhiteSpace(PathToUpdatedPresetsFile) && File.Exists(PathToUpdatedPresetsFile))
+                        if (!string.IsNullOrWhiteSpace(PathToUpdatedPresetsFile) && File.Exists(PathToUpdatedPresetsFile))
                         {
                             var originalPathToPresetsFile = Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile);
+
+                            FileHelper.ResetFileAttributes(originalPathToPresetsFile);
                             File.Delete(originalPathToPresetsFile);
                             File.Move(PathToUpdatedPresetsFile, originalPathToPresetsFile);
                         }
-                        else if (!String.IsNullOrWhiteSpace(PathToUpdatedPresetsAndIconsFile) && File.Exists(PathToUpdatedPresetsAndIconsFile))
+                        else if (!string.IsNullOrWhiteSpace(PathToUpdatedPresetsAndIconsFile) && File.Exists(PathToUpdatedPresetsAndIconsFile))
                         {
                             using (var archive = ZipFile.OpenRead(PathToUpdatedPresetsAndIconsFile))
                             {
                                 foreach (var curEntry in archive.Entries)
                                 {
-                                    curEntry.ExtractToFile(Path.Combine(App.ApplicationPath, curEntry.FullName), true);
+                                    var destinationPath = Path.Combine(App.ApplicationPath, curEntry.FullName);
+                                    var destinationDirectory = Path.GetDirectoryName(destinationPath);
+
+                                    if (!Directory.Exists(destinationDirectory))
+                                    {
+                                        Directory.CreateDirectory(destinationDirectory);
+                                    }
+
+                                    if (File.Exists(destinationPath))
+                                    {
+                                        FileHelper.ResetFileAttributes(destinationPath);
+                                    }
+
+                                    //Sometimes an entry has no name. (Temporary file? Directory?)
+                                    if (!string.IsNullOrWhiteSpace(curEntry.Name))
+                                    {
+                                        curEntry.ExtractToFile(destinationPath, true);
+                                    }
                                 }
                             }
 
@@ -347,15 +383,19 @@ namespace AnnoDesigner
 
                             File.Delete(PathToUpdatedPresetsAndIconsFile);
                         }
-                        else if (!String.IsNullOrWhiteSpace(PathToUpdatedIconMappingFile) && File.Exists(PathToUpdatedIconMappingFile))
+                        else if (!string.IsNullOrWhiteSpace(PathToUpdatedIconMappingFile) && File.Exists(PathToUpdatedIconMappingFile))
                         {
                             var originalPathToIconMappingFile = Path.Combine(App.ApplicationPath, Constants.IconNameFile);
+
+                            FileHelper.ResetFileAttributes(originalPathToIconMappingFile);
                             File.Delete(originalPathToIconMappingFile);
                             File.Move(PathToUpdatedIconMappingFile, originalPathToIconMappingFile);
                         }
-                        else if (!String.IsNullOrWhiteSpace(PathToUpdatedPredefinedColorsFile) && File.Exists(PathToUpdatedPredefinedColorsFile))
+                        else if (!string.IsNullOrWhiteSpace(PathToUpdatedPredefinedColorsFile) && File.Exists(PathToUpdatedPredefinedColorsFile))
                         {
                             var originalPathToPredefinedColorsFile = Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile);
+
+                            FileHelper.ResetFileAttributes(originalPathToPredefinedColorsFile);
                             File.Delete(originalPathToPredefinedColorsFile);
                             File.Move(PathToUpdatedPredefinedColorsFile, originalPathToPredefinedColorsFile);
                         }
