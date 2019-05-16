@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:my="clr-namespace:AnnoDesigner"
-        xmlns:myUI="clr-namespace:AnnoDesigner.UI"
         xmlns:l="clr-namespace:AnnoDesigner.Localization"
         xmlns:converter="clr-namespace:AnnoDesigner.converter"
         xmlns:i="clr-namespace:AnnoDesigner.Presets"
+        xmlns:model="clr-namespace:AnnoDesigner.model"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         Title="Anno Designer"
         Icon="/AnnoDesigner;component/icon.ico"
@@ -22,7 +22,7 @@
                                              TrueValue="Visible"
                                              FalseValue="Hidden" />
         <xctk:ColorToSolidColorBrushConverter x:Key="converterColorToSolidColorBrush" />
-        <DataTemplate DataType="{x:Type myUI:IconImage}">
+        <DataTemplate DataType="{x:Type model:IconImage}">
             <StackPanel Orientation="Horizontal">
                 <Viewbox Margin="5">
                     <Image Width="23"

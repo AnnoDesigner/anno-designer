@@ -1,5 +1,4 @@
 ﻿using AnnoDesigner.Presets;
-using AnnoDesigner.UI;
 using Microsoft.Win32;
 using System;
 using System.IO;
@@ -479,7 +478,7 @@ namespace AnnoDesigner
 
             var objIconFileName = "";
             //Parse the Icon path into something we can check.
-            if (!string.IsNullOrEmpty(obj.Icon))
+            if (!string.IsNullOrWhiteSpace(obj.Icon))
             {
                 if (obj.Icon.StartsWith("A5_"))
                 {
@@ -494,7 +493,7 @@ namespace AnnoDesigner
             // do some sanity checks
             if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
             {
-                if (!string.IsNullOrEmpty(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck) == false)
+                if (!string.IsNullOrWhiteSpace(obj.Icon) && !obj.Icon.Contains(IconFieldNamesCheck))
                 {
                     //the identifier text 'Uknown Object' is localized within the StatisticsView, which is why it's not localized here  
                     //gets icons origin building info
@@ -520,7 +519,7 @@ namespace AnnoDesigner
                         obj.Identifier = "Unknown Object";
                     }
                 }
-                else if (!string.IsNullOrEmpty(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck) == true)
+                else if (!string.IsNullOrWhiteSpace(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck))
                 {
                     //Check if Field Icon belongs to the field identifier, else set the official icon
                     var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == obj.Identifier);
@@ -544,7 +543,6 @@ namespace AnnoDesigner
                         obj.Identifier = "Unknown Object";
                     }
                 }
-
                 if (string.IsNullOrEmpty(obj.Icon) && !_mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase))
                 {
                     obj.Identifier = "Unknown Object";
