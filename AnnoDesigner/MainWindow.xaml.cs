@@ -547,6 +547,7 @@ namespace AnnoDesigner
                 {
                     obj.Identifier = "Unknown Object";
                 }
+
                 annoCanvas.SetCurrentObject(obj);
             }
             else
@@ -566,6 +567,7 @@ namespace AnnoDesigner
                     {
                         Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
                     });
+
                     ApplyCurrentObject();
                 }
             }

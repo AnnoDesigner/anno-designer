@@ -176,6 +176,7 @@ namespace AnnoDesigner.viewmodel
             get { return _buildings; }
             set { UpdateProperty(ref _buildings, value); }
         }
+
         public ObservableCollection<StatisticsBuilding> SelectedBuildings
         {
             get { return _selectedBuildings; }
@@ -244,7 +245,7 @@ namespace AnnoDesigner.viewmodel
                 if (!string.IsNullOrWhiteSpace(item.ElementAt(0).Identifier))
                 {
                     var building = buildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
-                    if (building != null || item.ElementAt(0).Identifier=="Unknown Object")
+                    if (building != null || item.ElementAt(0).Identifier == "Unknown Object")
                     {
                         if (item.ElementAt(0).Identifier == "Unknown Object")
                         {
