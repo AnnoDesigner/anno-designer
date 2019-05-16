@@ -1,0 +1,620 @@
+﻿<Window x:Class="ColorPresetsDesigner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ColorPresetsDesigner"
+        xmlns:views="clr-namespace:ColorPresetsDesigner.Views"
+        xmlns:viewModels="clr-namespace:ColorPresetsDesigner.ViewModels"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:converter="clr-namespace:AnnoDesigner.converter;assembly=AnnoDesigner"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel, IsDesignTimeCreatable=True}"
+        d:DesignHeight="480"
+        d:DesignWidth="640"
+        WindowStartupLocation="CenterScreen"
+        MinHeight="720"
+        MinWidth="1280"
+        Title="{Binding Title}">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding ClosingWindowCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Window.DataContext>
+        <viewModels:MainWindowViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <xctk:ColorToSolidColorBrushConverter x:Key="converterColorToSolidColorBrush" />
+        <converter:BoolToVisibilityConverter x:Key="converterBoolToVisibility"
+                                             TrueValue="Visible"
+                                             FalseValue="Hidden" />
+    </Window.Resources>
+    <DockPanel LastChildFill="True">
+        <Border BorderBrush="Gray"
+                DockPanel.Dock="Top"
+                BorderThickness="1"
+                Padding="3"
+                Margin="1,1,1,10">
+            <views:SelectFileView DataContext="{Binding PresetsVM}" />
+        </Border>
+
+        <Border BorderBrush="Gray"
+                DockPanel.Dock="Top"
+                BorderThickness="1"
+                Padding="3"
+                Margin="1,1,1,10">
+            <views:SelectFileView DataContext="{Binding ColorsVM}" />
+        </Border>
+
+        <Button Content="Load data"
+                Command="{Binding LoadPresetDataCommand}"
+                DockPanel.Dock="Top"
+                HorizontalAlignment="Center"
+                MinWidth="200"
+                Height="24"
+                Margin="0,10,0,10" />
+
+        <Border BorderBrush="Gray"
+                DockPanel.Dock="Top"
+                BorderThickness="1"
+                Padding="3"
+                Margin="1,1,1,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="32" />
+                </Grid.RowDefinitions>
+
+                <Border BorderBrush="Gray"
+                        DockPanel.Dock="Top"
+                        BorderThickness="1"
+                        Padding="3"
+                        Margin="1,1,5,1"
+                        Grid.Column="0"
+                        Grid.Row="0">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top"
+                                   Padding="3"
+                                   Background="WhiteSmoke">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}presets: v{0} | colors: v{1}">
+                                    <Binding Path="PresetsVersion" />
+                                    <Binding Path="ColorPresetsVersion" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+
+                        <Grid DockPanel.Dock="Top"
+                              Margin="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="New Version:" />
+                            <xctk:MaskedTextBox Grid.Column="1"
+                                                Mask="0\.0\.0\.0"
+                                                Value="{Binding ColorPresetsVersionUpdated}"
+                                                ValueDataType="{x:Type system:String}" />
+                        </Grid>
+
+                        <Grid DockPanel.Dock="Bottom"
+                              Height="28">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <xctk:WatermarkTextBox Grid.Column="0"
+                                                   Text="{Binding NewColorSchemeName, UpdateSourceTrigger=PropertyChanged}"
+                                                   Margin="3"
+                                                   Watermark="Name for new ColorScheme" />
+                            <Button Grid.Column="1"
+                                    ToolTip="add ColorScheme"
+                                    Margin="3"
+                                    Command="{Binding AddColorSchemeCommand}">
+                                <Button.Resources>
+                                    <Style x:Key="stylePath"
+                                           TargetType="{x:Type Path}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="True">
+                                                <Setter Property="Fill"
+                                                        Value="Green" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="False">
+                                                <Setter Property="Fill"
+                                                        Value="Gray" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Resources>
+                                <Button.Content>
+                                    <Path Data="M12.126984,0L19.872009,0 19.872009,12.128 32,12.128 32,19.872999 19.872009,19.872999 19.872009,31.999 12.126984,31.999 12.126984,19.872999 0,19.872999 0,12.128 12.126984,12.128z"
+                                          Stretch="Uniform"
+                                          Width="12"
+                                          Height="12"
+                                          Margin="0,0,0,0"
+                                          RenderTransformOrigin="0.5,0.5"
+                                          Style="{StaticResource stylePath}">
+                                        <Path.RenderTransform>
+                                            <TransformGroup>
+                                                <TransformGroup.Children>
+                                                    <RotateTransform Angle="0" />
+                                                    <ScaleTransform ScaleX="1"
+                                                                    ScaleY="1" />
+                                                </TransformGroup.Children>
+                                            </TransformGroup>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                </Button.Content>
+                            </Button>
+                            <Button Grid.Column="2"
+                                    ToolTip="delete ColorScheme"
+                                    Margin="3"
+                                    Command="{Binding DeleteColorSchemeCommand}">
+                                <Button.Resources>
+                                    <Style x:Key="stylePath"
+                                           TargetType="{x:Type Path}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="True">
+                                                <Setter Property="Fill"
+                                                        Value="Red" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="False">
+                                                <Setter Property="Fill"
+                                                        Value="Gray" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Resources>
+                                <Button.Content>
+                                    <Path Data="M0,0L32,0 32,5.3 0,5.3z"
+                                          Stretch="Uniform"
+                                          Width="12"
+                                          Height="12"
+                                          Margin="0,0,0,0"
+                                          RenderTransformOrigin="0.5,0.5"
+                                          Style="{StaticResource stylePath}">
+                                        <Path.RenderTransform>
+                                            <TransformGroup>
+                                                <TransformGroup.Children>
+                                                    <RotateTransform Angle="0" />
+                                                    <ScaleTransform ScaleX="1"
+                                                                    ScaleY="1" />
+                                                </TransformGroup.Children>
+                                            </TransformGroup>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ListBox ItemsSource="{Binding AvailableColorSchemes}"
+                                     SelectedItem="{Binding SelectedColorScheme}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Border>
+
+                <Border BorderBrush="Gray"
+                        DockPanel.Dock="Top"
+                        BorderThickness="1"
+                        Padding="3"
+                        Margin="1,1,5,1"
+                        Grid.Column="1"
+                        Grid.Row="0">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top"
+                                   Padding="3"
+                                   Text="{Binding SelectedColorScheme.Name, FallbackValue='colors in scheme', StringFormat='colors in scheme &quot;{0}&quot;'}"
+                                   Background="WhiteSmoke" />
+
+                        <Grid DockPanel.Dock="Bottom"
+                              Height="28">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0"
+                                    ToolTip="add PredefinedColor"
+                                    Margin="3"
+                                    Command="{Binding AddColorCommand}">
+                                <Button.Resources>
+                                    <Style x:Key="stylePath"
+                                           TargetType="{x:Type Path}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="True">
+                                                <Setter Property="Fill"
+                                                        Value="Green" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="False">
+                                                <Setter Property="Fill"
+                                                        Value="Gray" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Resources>
+                                <Button.Content>
+                                    <Path Data="M12.126984,0L19.872009,0 19.872009,12.128 32,12.128 32,19.872999 19.872009,19.872999 19.872009,31.999 12.126984,31.999 12.126984,19.872999 0,19.872999 0,12.128 12.126984,12.128z"
+                                          Stretch="Uniform"
+                                          Width="12"
+                                          Height="12"
+                                          Margin="0,0,0,0"
+                                          RenderTransformOrigin="0.5,0.5"
+                                          Style="{StaticResource stylePath}">
+                                        <Path.RenderTransform>
+                                            <TransformGroup>
+                                                <TransformGroup.Children>
+                                                    <RotateTransform Angle="0" />
+                                                    <ScaleTransform ScaleX="1"
+                                                                    ScaleY="1" />
+                                                </TransformGroup.Children>
+                                            </TransformGroup>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                </Button.Content>
+                            </Button>
+                            <Button Grid.Column="1"
+                                    ToolTip="delete PredefinedColor"
+                                    Margin="3"
+                                    Command="{Binding DeleteColorCommand}">
+                                <Button.Resources>
+                                    <Style x:Key="stylePath"
+                                           TargetType="{x:Type Path}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="True">
+                                                <Setter Property="Fill"
+                                                        Value="Red" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="False">
+                                                <Setter Property="Fill"
+                                                        Value="Gray" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Resources>
+                                <Button.Content>
+                                    <Path Data="M0,0L32,0 32,5.3 0,5.3z"
+                                          Stretch="Uniform"
+                                          Width="12"
+                                          Height="12"
+                                          Margin="0,0,0,0"
+                                          RenderTransformOrigin="0.5,0.5"
+                                          Style="{StaticResource stylePath}">
+                                        <Path.RenderTransform>
+                                            <TransformGroup>
+                                                <TransformGroup.Children>
+                                                    <RotateTransform Angle="0" />
+                                                    <ScaleTransform ScaleX="1"
+                                                                    ScaleY="1" />
+                                                </TransformGroup.Children>
+                                            </TransformGroup>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                </Button.Content>
+                            </Button>
+                            <Button Grid.Column="2"
+                                    ToolTip="copy PredefinedColor"
+                                    Margin="3"
+                                    Command="{Binding CopyColorCommand}">
+                                <Button.Resources>
+                                    <Style x:Key="stylePath"
+                                           TargetType="{x:Type Path}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="True">
+                                                <Setter Property="Fill"
+                                                        Value="Black" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="False">
+                                                <Setter Property="Fill"
+                                                        Value="Gray" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Resources>
+                                <Button.Content>
+                                    <Path Data="M15.844,11.559021L15.844,15.695984C15.844,15.695984,15.764998,18.413025,12.761999,18.177002L9.253997,18.194031 9.253997,29.643982C9.253997,29.908997,9.4619972,30.117004,9.7219984,30.117004L22.904995,30.117004C23.163998,30.117004,23.371998,29.90802,23.371998,29.643982L23.374996,29.643982 23.374996,12.026978C23.374996,11.768982,23.166996,11.559021,22.906994,11.559021z M10.267996,2.28302L10.267996,7.3029785C10.267996,7.3029785,10.176001,10.598999,6.5360023,10.315002L2.2779993,10.333008 2.2779993,24.223022C2.2779995,24.536987,2.5360028,24.79303,2.8560022,24.79303L7.368003,24.79303 7.368003,17.700012 13.235998,11.47998 13.251997,11.47998 14.971998,9.6740112 19.405996,9.6740112 19.405996,2.8499756C19.405996,2.5369873,19.151999,2.28302,18.835997,2.28302z M9.2209999,0L18.837996,0C20.415999,0,21.695997,1.2789917,21.695997,2.8530273L21.695997,9.677002 22.902996,9.677002 22.905995,9.6749878C24.202999,9.6749878,25.258999,10.728027,25.258999,12.028015L25.258999,29.643982C25.258999,30.945984,24.202999,32,22.905995,32L9.7229978,32C8.4230033,32,7.3690025,30.944031,7.3690025,29.643982L7.3690025,27.078003 2.8570017,27.078003C1.2770001,27.078003,-1.3611906E-07,25.798035,1.4210855E-14,24.221985L1.4210855E-14,9.7319946 7.1129981,2.1940308 7.140998,2.1940308z"
+                                          Stretch="Uniform"
+                                          Width="16"
+                                          Height="16"
+                                          Margin="0,0,0,0"
+                                          RenderTransformOrigin="0.5,0.5"
+                                          Style="{StaticResource stylePath}">
+                                        <Path.RenderTransform>
+                                            <TransformGroup>
+                                                <TransformGroup.Children>
+                                                    <RotateTransform Angle="0" />
+                                                    <ScaleTransform ScaleX="1"
+                                                                    ScaleY="1" />
+                                                </TransformGroup.Children>
+                                            </TransformGroup>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ScrollViewer.Resources>
+                                <CollectionViewSource x:Key="viewSortedColors"
+                                                      Source="{Binding AvailablePredefinedColors}">
+                                    <CollectionViewSource.SortDescriptions>
+                                        <scm:SortDescription PropertyName="TargetTemplate" />
+                                    </CollectionViewSource.SortDescriptions>
+                                </CollectionViewSource>
+                            </ScrollViewer.Resources>
+                            <ListBox ItemsSource="{Binding Source={StaticResource viewSortedColors}}"
+                                     SelectedItem="{Binding SelectedPredefinedColor}">
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="HorizontalContentAlignment"
+                                                Value="Stretch" />
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} ({1} Identifiers)">
+                                                        <Binding Path="TargetTemplate" />
+                                                        <Binding Path="TargetIdentifiers.Count" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                            <Rectangle Grid.Column="1"
+                                                       Width="16"
+                                                       Fill="{Binding SelectedColor, Converter={StaticResource converterColorToSolidColorBrush}}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ScrollViewer>
+
+                    </DockPanel>
+                </Border>
+
+                <Border BorderBrush="Gray"
+                        DockPanel.Dock="Top"
+                        BorderThickness="1"
+                        Padding="3"
+                        Margin="1,1,5,1"
+                        Grid.Column="2"
+                        Grid.Row="0"
+                        DataContext="{Binding SelectedPredefinedColor}">
+                    <DockPanel Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowColorEdit, Converter={StaticResource converterBoolToVisibility}}">
+                        <Grid DockPanel.Dock="Top"
+                              Margin="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="TemplateName:" />
+                            <xctk:WatermarkComboBox Grid.Column="1"
+                                                    Watermark="select TargetTemplate"
+                                                    ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.AvailableTemplates}"
+                                                    SelectedItem="{Binding TargetTemplate}">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True"
+                                                                VirtualizingStackPanel.VirtualizationMode="Recycling"></VirtualizingStackPanel>
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </xctk:WatermarkComboBox>
+                        </Grid>
+
+                        <Grid DockPanel.Dock="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Padding="3"
+                                       Text="Color:"
+                                       Height="23" />
+                            <xctk:ColorPicker Grid.Column="1"
+                                              DisplayColorAndName="True"
+                                              DisplayColorTooltip="True"
+                                              ShowDropDownButton="True"
+                                              ShowAvailableColors="True"
+                                              ShowStandardColors="False"
+                                              ShowRecentColors="True"
+                                              AvailableColorsSortingMode="HueSaturationBrightness"
+                                              SelectedColor="{Binding SelectedColor}" />
+                        </Grid>
+
+                        <TextBlock DockPanel.Dock="Top"
+                                   Padding="3"
+                                   Text="{Binding TargetIdentifiers.Count, FallbackValue='Identifiers (0):', StringFormat='Identifiers ({0}):'}" />
+
+                        <Grid DockPanel.Dock="Bottom"
+                              Height="28">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <xctk:WatermarkComboBox Grid.Column="0"
+                                                    Watermark="select new TargetIdentifier"
+                                                    ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.AvailableIdentifiers}"
+                                                    SelectedItem="{Binding NewIdentifier}"
+                                                    Margin="3">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True"
+                                                                VirtualizingStackPanel.VirtualizationMode="Recycling"></VirtualizingStackPanel>
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </xctk:WatermarkComboBox>
+                            <Button Grid.Column="1"
+                                    Margin="3"
+                                    ToolTip="add Identifier"
+                                    Command="{Binding AddIdentifierCommand}">
+                                <Button.Resources>
+                                    <Style x:Key="stylePath"
+                                           TargetType="{x:Type Path}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="True">
+                                                <Setter Property="Fill"
+                                                        Value="Green" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="False">
+                                                <Setter Property="Fill"
+                                                        Value="Gray" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Resources>
+                                <Button.Content>
+                                    <Path Data="M12.126984,0L19.872009,0 19.872009,12.128 32,12.128 32,19.872999 19.872009,19.872999 19.872009,31.999 12.126984,31.999 12.126984,19.872999 0,19.872999 0,12.128 12.126984,12.128z"
+                                          Stretch="Uniform"
+                                          Width="12"
+                                          Height="12"
+                                          Margin="0,0,0,0"
+                                          RenderTransformOrigin="0.5,0.5"
+                                          Style="{StaticResource stylePath}">
+                                        <Path.RenderTransform>
+                                            <TransformGroup>
+                                                <TransformGroup.Children>
+                                                    <RotateTransform Angle="0" />
+                                                    <ScaleTransform ScaleX="1"
+                                                                    ScaleY="1" />
+                                                </TransformGroup.Children>
+                                            </TransformGroup>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                </Button.Content>
+                            </Button>
+                            <Button Grid.Column="2"
+                                    ToolTip="delete Identifier"
+                                    Margin="3"
+                                    Command="{Binding DeleteIdentifierCommand}">
+                                <Button.Resources>
+                                    <Style x:Key="stylePath"
+                                           TargetType="{x:Type Path}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="True">
+                                                <Setter Property="Fill"
+                                                        Value="Red" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="False">
+                                                <Setter Property="Fill"
+                                                        Value="Gray" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Resources>
+                                <Button.Content>
+                                    <Path Data="M0,0L32,0 32,5.3 0,5.3z"
+                                          Stretch="Uniform"
+                                          Width="12"
+                                          Height="12"
+                                          Margin="0,0,0,0"
+                                          RenderTransformOrigin="0.5,0.5"
+                                          Style="{StaticResource stylePath}">
+                                        <Path.RenderTransform>
+                                            <TransformGroup>
+                                                <TransformGroup.Children>
+                                                    <RotateTransform Angle="0" />
+                                                    <ScaleTransform ScaleX="1"
+                                                                    ScaleY="1" />
+                                                </TransformGroup.Children>
+                                            </TransformGroup>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ScrollViewer.Resources>
+                                <CollectionViewSource x:Key="viewSortedIdentifiers"
+                                                      Source="{Binding TargetIdentifiers}">
+                                    <CollectionViewSource.SortDescriptions>
+                                        <scm:SortDescription PropertyName="." />
+                                    </CollectionViewSource.SortDescriptions>
+                                </CollectionViewSource>
+                            </ScrollViewer.Resources>
+                            <ListBox DockPanel.Dock="Top"
+                                     ItemsSource="{Binding Source={StaticResource viewSortedIdentifiers}}"
+                                     SelectedItem="{Binding SelectedIdentifier}"
+                                     Height="Auto">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Border>
+
+                <Button Grid.Row="1"
+                        Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        Margin="3"
+                        Command="{Binding SaveCommand}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="M5.4189969,24.678986L5.4189969,27.915009 26.188982,27.915009 26.188982,24.678986z M8.2970601,0.038998604L12.289056,0.038998604 12.289056,8.1850023 8.2970601,8.1850023z M0,0L5.2730013,0 5.2730013,9.7799988 26.188982,9.7799988 26.188982,0 31.653999,0 31.653999,32 0,32z"
+                                  Stretch="Uniform"
+                                  Fill="#FF000000"
+                                  Width="12"
+                                  Height="12"
+                                  Margin="3,0,0,0"
+                                  RenderTransformOrigin="0.5,0.5">
+                                <Path.RenderTransform>
+                                    <TransformGroup>
+                                        <TransformGroup.Children>
+                                            <RotateTransform Angle="0" />
+                                            <ScaleTransform ScaleX="1"
+                                                            ScaleY="1" />
+                                        </TransformGroup.Children>
+                                    </TransformGroup>
+                                </Path.RenderTransform>
+                            </Path>
+                            <TextBlock Padding="5,0"
+                                       Text="Save colors.json" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </Grid>
+        </Border>
+    </DockPanel>
+</Window>

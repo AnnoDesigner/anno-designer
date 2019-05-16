@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorPresetsDesigner", "ColorPresetsDesigner\ColorPresetsDesigner.csproj", "{8F90723B-C6E0-4980-9D0F-5B67239AD54A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E07B50E1-4CAA-4FA7-96DB-FAADA02F4981}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8F90723B-C6E0-4980-9D0F-5B67239AD54A}.Debug|x86.ActiveCfg = Debug|x86
+		{8F90723B-C6E0-4980-9D0F-5B67239AD54A}.Debug|x86.Build.0 = Debug|x86
+		{8F90723B-C6E0-4980-9D0F-5B67239AD54A}.Release|x86.ActiveCfg = Release|x86
+		{8F90723B-C6E0-4980-9D0F-5B67239AD54A}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {82F84F3E-5C78-4175-9CB1-64677F8BCAFE}
+	EndGlobalSection
+EndGlobal
