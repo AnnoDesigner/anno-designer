@@ -21,7 +21,7 @@ namespace PresetParser
         private static readonly List<string> ChangeBuildingsToNW1_Public_1800 = new List<string> { "Logistic_01 (Marketplace)", "Service_01 (Pub)", "Institution_02 (Fire Department)",};
         private static readonly List<string> ChangeBuildingsToNW2_Public_1800 = new List<string> { "Institution_01 (Police)" , "Service_04 (Church)", "Service_02 (School)" };
         private static readonly List<string> ChangeBuildingsToNW3_Public_1800 = new List<string> { "Institution_03 (Hospital)" , "Service_05 (Cabaret)", "Service_07 (University)",};
-        private static readonly List<string> ChangeBuildingsToNW4_Public_1800 = new List<string> { "Service_03 (Bank)" };
+        private static readonly List<string> ChangeBuildingsToNW4_Public_1800 = new List<string> { "Service_03 (Bank)", "Electricity_02 (Oil Power Plant)" };
         private static readonly List<string> ChangeBuildingsToNW5_Public_1800 = new List<string> { "Service_09 (Club House)" };
         private static readonly List<string> ChangeBuildingsToOW1_Public_1800 = new List<string> { "Institution_colony01_02 (Fire Department)", "Institution_colony01_01 (Police)", "Service_colony01_01 (Marketplace)", "Service_colony01_02 (Chapel)" };
         private static readonly List<string> ChangeBuildingsToOW2_Public_1800 = new List<string> { "Institution_colony01_03 (Hospital)", "Service_colony01_03 (Boxing Arena)" };
