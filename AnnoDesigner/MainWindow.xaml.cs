@@ -1012,7 +1012,7 @@ namespace AnnoDesigner
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
 
-                var icons = new Dictionary<string, IconImage>();
+                var icons = new Dictionary<string, IconImage>(StringComparer.OrdinalIgnoreCase);
                 foreach (var curIcon in annoCanvas.Icons)
                 {
                     icons.Add(curIcon.Key, new IconImage(curIcon.Value.Name, curIcon.Value.Localizations, curIcon.Value.IconPath));

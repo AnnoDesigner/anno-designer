@@ -12,8 +12,10 @@ namespace AnnoDesigner.PresetsHelper
     public class ColorPresetsHelper
     {
         private readonly ColorPresetsLoader _colorPresetsLoader;
+        private readonly BuildingPresetsLoader _buildingPresetsLoader;
         private ColorPresets _loadedColorPresets;
         private ColorScheme _loadedDefaultColorScheme;
+        private BuildingPresets _loadedBuildingPresets;
 
         #region ctor
 
@@ -27,52 +29,54 @@ namespace AnnoDesigner.PresetsHelper
         private ColorPresetsHelper()
         {
             _colorPresetsLoader = new ColorPresetsLoader();
+            _buildingPresetsLoader = new BuildingPresetsLoader();
         }
 
         #endregion
 
         private ColorPresets LoadedColorPresets
         {
-            get
-            {
-                if (_loadedColorPresets == null)
-                {
-                    _loadedColorPresets = _colorPresetsLoader.Load();
-                }
-
-                return _loadedColorPresets;
-            }
+            get { return _loadedColorPresets ?? (_loadedColorPresets = _colorPresetsLoader.Load()); }
         }
 
         private ColorScheme LoadedDefaultColorScheme
         {
-            get
-            {
-                if (_loadedDefaultColorScheme == null)
-                {
-                    _loadedDefaultColorScheme = _colorPresetsLoader.LoadDefaultScheme();
-                }
-
-                return _loadedDefaultColorScheme;
-            }
+            get { return _loadedDefaultColorScheme ?? (_loadedDefaultColorScheme = _colorPresetsLoader.LoadDefaultScheme()); }
         }
 
+        private BuildingPresets LoadedBuildingPresets
+        {
+            get { return _loadedBuildingPresets ?? (_loadedBuildingPresets = _buildingPresetsLoader.Load()); }
+        }
 
         public Color? GetPredefinedColor(AnnoObject annoObject)
         {
             Color? result = null;
 
+            var templateName = annoObject.Template;
+
+            //template name defined?
             if (string.IsNullOrWhiteSpace(annoObject.Template))
             {
-                return result;
+                var foundTemplate = FindTemplateByIdentifier(annoObject.Identifier);
+                if (string.IsNullOrWhiteSpace(foundTemplate))
+                {
+                    return result;
+                }
+
+                templateName = foundTemplate;
+                //set template so it is saved when the layout is saved again
+                annoObject.Template = templateName;
             }
 
-            var colorsForTemplate = LoadedDefaultColorScheme.Colors.Where(x => x.TargetTemplate.Equals(annoObject.Template, StringComparison.OrdinalIgnoreCase)).ToList();
+            //colors for template defined?
+            var colorsForTemplate = LoadedDefaultColorScheme.Colors.Where(x => x.TargetTemplate.Equals(templateName, StringComparison.OrdinalIgnoreCase)).ToList();
             if (!colorsForTemplate.Any())
             {
                 return result;
             }
 
+            //specific color for identifier defined?
             var colorForTemplateContainingIdentifier = colorsForTemplate.FirstOrDefault(x => x.TargetIdentifiers.Contains(annoObject.Identifier, StringComparer.OrdinalIgnoreCase));
             if (colorForTemplateContainingIdentifier != null)
             {
@@ -82,6 +86,15 @@ namespace AnnoDesigner.PresetsHelper
             {
                 result = colorsForTemplate.First().Color;
             }
+
+            return result;
+        }
+
+        private string FindTemplateByIdentifier(string identifier)
+        {
+            string result = null;
+
+            result = LoadedBuildingPresets.Buildings.FirstOrDefault(x => x.Identifier.Equals(identifier, StringComparison.OrdinalIgnoreCase))?.Template;
 
             return result;
         }

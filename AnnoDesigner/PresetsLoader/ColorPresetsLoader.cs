@@ -17,7 +17,7 @@ namespace AnnoDesigner.PresetsLoader
 
             try
             {
-                if (String.IsNullOrWhiteSpace(colorPresetsFilePath))
+                if (string.IsNullOrWhiteSpace(colorPresetsFilePath))
                 {
                     result = DataIO.LoadFromFile<ColorPresets>(Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile));
                 }

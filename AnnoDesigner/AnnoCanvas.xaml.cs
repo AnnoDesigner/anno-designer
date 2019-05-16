@@ -427,7 +427,8 @@ namespace AnnoDesigner
                 {
                     if (presetsToUse == null)
                     {
-                        BuildingPresets = DataIO.LoadFromFile<BuildingPresets>(Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile));
+                        BuildingPresetsLoader loader = new BuildingPresetsLoader();
+                        BuildingPresets = loader.Load();
                     }
                     else
                     {
