@@ -52,6 +52,7 @@
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commons.cs" />
+    <Compile Include="PresetsHelper\ColorPresetsHelper.cs" />
     <Compile Include="PresetsLoader\ColorPresetsLoader.cs" />
     <Compile Include="ConnectivityHelper.cs" />
     <Compile Include="FileHelper.cs" />

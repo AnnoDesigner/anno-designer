@@ -338,7 +338,7 @@
                         </DockPanel>
                         <DockPanel LastChildFill="False"
                                    Height="26">
-                            <Button Width="32"
+                            <!--<Button Width="32"
                                     DockPanel.Dock="Right"
                                     Command="{Binding BuildingSettingsViewModel.ApplyColorToSelectionCommand}"
                                     ToolTip="{Binding BuildingSettingsViewModel.TextApplyColorToSelectionToolTip}">
@@ -382,9 +382,9 @@
                                         </Path>
                                     </Grid>
                                 </Button.Content>
-                            </Button>
+                            </Button>-->
                             <!-- used when predefined colors are available -->
-                            <!--<xctk:SplitButton Width="48"
+                            <xctk:SplitButton Width="48"
                                           DockPanel.Dock="Right"
                                           Command="{Binding BuildingSettingsViewModel.ApplyColorToSelectionCommand}"
                                           ToolTip="{Binding BuildingSettingsViewModel.TextApplyColorToSelectionToolTip}">
@@ -433,7 +433,7 @@
                                         Content="{Binding BuildingSettingsViewModel.TextApplyPredefinedColorToSelection}"
                                         ToolTip="{Binding BuildingSettingsViewModel.TextApplyPredefinedColorToSelectionToolTip}" />
                             </xctk:SplitButton.DropDownContent>
-                        </xctk:SplitButton>-->
+                        </xctk:SplitButton>
                         </DockPanel>
                         <DockPanel LastChildFill="False"
                                    Height="26">

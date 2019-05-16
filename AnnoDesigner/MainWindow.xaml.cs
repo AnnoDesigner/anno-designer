@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using AnnoDesigner.model;
 using AnnoDesigner.PresetsLoader;
+using AnnoDesigner.PresetsHelper;
 
 namespace AnnoDesigner
 {
@@ -375,7 +376,7 @@ namespace AnnoDesigner
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingWidth = (int)obj.Size.Width;
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingHeight = (int)obj.Size.Height;
             // color
-            _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor = obj.Color;
+            _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor = ColorPresetsHelper.Instance.GetPredefinedColor(obj) ?? obj.Color;
             // label
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingName = obj.Label;
             // Identifier
@@ -575,6 +576,7 @@ namespace AnnoDesigner
                 MessageBox.Show("Something went wrong while applying the preset.");
             }
         }
+
         /// <summary>
         /// Called when localisation is changed, to repopulate the tree view
         /// </summary>
