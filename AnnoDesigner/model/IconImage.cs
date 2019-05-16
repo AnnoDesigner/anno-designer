@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
 
-namespace AnnoDesigner.UI
+namespace AnnoDesigner.model
 {
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class IconImage
     {
         private BitmapImage _icon;
@@ -39,7 +39,7 @@ namespace AnnoDesigner.UI
         {
             get
             {
-                if (_icon == null && !String.IsNullOrWhiteSpace(IconPath))
+                if (_icon == null && !string.IsNullOrWhiteSpace(IconPath))
                 {
                     _icon = new BitmapImage(new Uri(IconPath));
                 }

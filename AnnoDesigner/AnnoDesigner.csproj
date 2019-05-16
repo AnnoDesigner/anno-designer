@@ -55,14 +55,15 @@
     <Compile Include="PresetsLoader\ColorPresetsLoader.cs" />
     <Compile Include="ConnectivityHelper.cs" />
     <Compile Include="FileHelper.cs" />
+    <Compile Include="model\LayoutVersionContainer.cs" />
     <Compile Include="PresetsLoader\IconLoader.cs" />
     <Compile Include="PresetsLoader\IconMappingPresetsLoader.cs" />
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
     <Compile Include="Presets\IconMappingPresets.cs" />
+    <Compile Include="model\SavedLayout.cs" />
     <Compile Include="TreeLocalization.cs" />
     <Compile Include="converter\BoolToVisibilityConverter.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="MutexHelper.cs" />
     <Compile Include="model\StatisticsBuilding.cs" />
@@ -89,7 +90,7 @@
     <Compile Include="StringExtensions.cs" />
     <Compile Include="TreeViewExtensions.cs" />
     <Compile Include="TreeViewSearch.cs" />
-    <Compile Include="UI\IconImage.xaml.cs" />
+    <Compile Include="model\IconImage.cs" />
     <Compile Include="UpdateHelper.cs" />
     <Compile Include="UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>

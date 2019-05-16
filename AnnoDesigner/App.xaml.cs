@@ -129,11 +129,18 @@ namespace AnnoDesigner
                     }
                 }
 
+                if (AnnoDesigner.Properties.Settings.Default.SettingsUpgradeNeeded)
+                {
+                    AnnoDesigner.Properties.Settings.Default.Upgrade();
+                    AnnoDesigner.Properties.Settings.Default.SettingsUpgradeNeeded = false;
+                    AnnoDesigner.Properties.Settings.Default.Save();
+                }
+                
                 //var updateWindow = new UpdateWindow();                
                 await _commons.UpdateHelper.ReplaceUpdatedPresetFileAsync();
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
-                MainWindow = new MainWindow(Commons.Instance);
+                MainWindow = new MainWindow(_commons);
                 //MainWindow.Loaded += (s, args) => { updateWindow.Close(); };
 
                 //updateWindow.Show();
