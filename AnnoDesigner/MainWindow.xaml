@@ -2,10 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:my="clr-namespace:AnnoDesigner"
-        xmlns:myUI="clr-namespace:AnnoDesigner.UI"
+        xmlns:my="clr-namespace:AnnoDesigner"        
         xmlns:l="clr-namespace:AnnoDesigner.Localization"
         xmlns:i="clr-namespace:AnnoDesigner.Presets"
+        xmlns:model="clr-namespace:AnnoDesigner.model"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         Title="Anno Designer"
         Icon="/AnnoDesigner;component/icon.ico"
@@ -17,7 +17,7 @@
         Loaded="WindowLoaded"
         Closing="WindowClosing">
     <Window.Resources>
-        <DataTemplate DataType="{x:Type myUI:IconImage}">
+        <DataTemplate DataType="{x:Type model:IconImage}">
             <StackPanel Orientation="Horizontal">
                 <Viewbox Margin="5">
                     <Image Width="23"

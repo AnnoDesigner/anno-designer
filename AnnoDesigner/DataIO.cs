@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using AnnoDesigner.model;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner
@@ -87,32 +87,6 @@ namespace AnnoDesigner
         #endregion
 
         #region Layout saving and loading
-
-        /// <summary>
-        /// Container with just the file version number
-        /// </summary>
-        [DataContract]
-        private class LayoutVersionContainer
-        {
-            [DataMember(Order = 0)]
-            public int FileVersion { get; set; }
-        }
-
-        /// <summary>
-        /// Container with file version and all objects
-        /// </summary>
-        [DataContract]
-        private class SavedLayout : LayoutVersionContainer
-        {
-            [DataMember(Order = 1)]
-            public List<AnnoObject> Objects { get; set; }
-
-            public SavedLayout(List<AnnoObject> objects)
-            {
-                FileVersion = Constants.FileVersion;
-                Objects = objects;
-            }
-        }
 
         /// <summary>
         /// Saves the given objects to the given file and includes the current file version number.

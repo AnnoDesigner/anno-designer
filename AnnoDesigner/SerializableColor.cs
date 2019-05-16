@@ -10,7 +10,7 @@ namespace AnnoDesigner
     /// </summary>
     [Serializable]
     [DataContract]
-    [DebuggerDisplay("{A},{R},{G},{B}")]
+    [DebuggerDisplay("{" + nameof(A) + "},{" + nameof(R) + "},{" + nameof(G) + "},{" + nameof(B) + "}")]
     public struct SerializableColor
     {
         [DataMember(Order = 0)]

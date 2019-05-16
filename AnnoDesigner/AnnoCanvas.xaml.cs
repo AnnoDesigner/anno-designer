@@ -12,9 +12,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using AnnoDesigner.model;
 using AnnoDesigner.Presets;
 using AnnoDesigner.PresetsLoader;
-using AnnoDesigner.UI;
 using Microsoft.Win32;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
