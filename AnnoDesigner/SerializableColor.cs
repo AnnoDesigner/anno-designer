@@ -10,7 +10,7 @@ namespace AnnoDesigner
     /// </summary>
     [Serializable]
     [DataContract]
-    [DebuggerDisplay("{A},{R},{G},{B}")]
+    [DebuggerDisplay("{" + nameof(A) + "},{" + nameof(R) + "},{" + nameof(G) + "},{" + nameof(B) + "}")]
     public struct SerializableColor
     {
         [DataMember(Order = 0)]
@@ -38,6 +38,9 @@ namespace AnnoDesigner
         {
         }
 
+        //Needed for Databinding. Implicit converter is not called
+        public Color MediaColor { get { return this; } }
+
         public static implicit operator SerializableColor(Color color)
         {
             return new SerializableColor(color);
@@ -46,6 +49,21 @@ namespace AnnoDesigner
         public static implicit operator Color(SerializableColor color)
         {
             return Color.FromArgb(color.A, color.R, color.G, color.B);
+        }
+
+        public override string ToString()
+        {
+            return ToArgbString();
+        }
+
+        public string ToArgbString()
+        {
+            return $"{A}, {R}, {G}, {B}";
+        }
+
+        public string ToHexString()
+        {
+            return $"#{A:X2}{R:X2}{G:X2}{B:X2}";
         }
     }
 }

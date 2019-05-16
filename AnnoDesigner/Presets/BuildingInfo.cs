@@ -8,7 +8,7 @@ namespace AnnoDesigner.Presets
     /// Contains information for one building type, deserialized from presets.json.
     /// </summary>
     [DataContract]
-    [DebuggerDisplay("{Header} - {Identifier}")]
+    [DebuggerDisplay("{" + nameof(Header) + "} - {" + nameof(Identifier) + "}")]
     public class BuildingInfo
     {
         #region properties used for grouping

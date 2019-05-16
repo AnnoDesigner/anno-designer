@@ -122,6 +122,8 @@ namespace AnnoDesigner.Localization
                         { "UpdateRequiresAdminRightsMessage" , "To download the update the application needs write access. Please provide credentials." },
                         { "Error" , "Error" },
                         { "UpdateErrorPresetMessage" , "There was an error installing the update." },
+                        { "ColorsInLayout" , "Colors in Layout" },
+                        { "ColorsInLayoutToolTip" , "Double click color to select it" },
                         { "UpdateNoConnectionMessage" , "Could not establish a connection to the internet." }
                     }
                 },
@@ -224,6 +226,8 @@ namespace AnnoDesigner.Localization
                         { "UpdateRequiresAdminRightsMessage" , "Um das Update herunterzuladen, benötigt die Anwendung Schreibzugriff. Bitte geben Sie die Zugangsdaten an." },
                         { "Error" , "Fehler" },
                         { "UpdateErrorPresetMessage" , "Es gab einen Fehler bei der Installation des Updates." },
+                        { "ColorsInLayout" , "Farben im Layout" },
+                        { "ColorsInLayoutToolTip" , "Doppelklicken Sie auf die Farbe, um sie auszuwählen." },
                         { "UpdateNoConnectionMessage" , "Es konnte keine Verbindung zum Internet hergestellt werden." }
                     }
                 },
@@ -326,6 +330,8 @@ namespace AnnoDesigner.Localization
                         { "UpdateRequiresAdminRightsMessage" , "Pour télécharger la mise à jour, l'application a besoin d'un accès en écriture. Veuillez fournir vos justificatifs d'identité." },
                         { "Error" , "Erreur" },
                         { "UpdateErrorPresetMessage" , "Il y a eu une erreur lors de l'installation de la mise à jour." },
+                        { "ColorsInLayout" , "Couleurs dans la mise en page" },
+                        { "ColorsInLayoutToolTip" , "Double-cliquez sur la couleur pour la sélectionner" },
                         { "UpdateNoConnectionMessage" , "Impossible d'établir une connexion à Internet." }
                     }
                 },
@@ -428,6 +434,8 @@ namespace AnnoDesigner.Localization
                         { "UpdateRequiresAdminRightsMessage" , "Aby pobrać aktualizację, aplikacja musi mieć dostęp do zapisu. Proszę podać dane uwierzytelniające." },
                         { "Error" , "Błąd" },
                         { "UpdateErrorPresetMessage" , "Wystąpił błąd podczas instalacji aktualizacji." },
+                        { "ColorsInLayout" , "Kolory w układzie" },
+                        { "ColorsInLayoutToolTip" , "Podwójne kliknięcie na kolor, aby go wybrać" },
                         { "UpdateNoConnectionMessage" , "Nie udało się nawiązać połączenia z Internetem." }
                     }
                 },
@@ -530,6 +538,8 @@ namespace AnnoDesigner.Localization
                         { "UpdateRequiresAdminRightsMessage" , "Для загрузки обновления приложению необходим доступ на запись. Пожалуйста, предоставьте полномочия." },
                         { "Error" , "Ошибка" },
                         { "UpdateErrorPresetMessage" , "Произошла ошибка при установке обновления." },
+                        { "ColorsInLayout" , "Цвета в макетах" },
+                        { "ColorsInLayoutToolTip" , "Дважды щелкните по цвету, чтобы выбрать его." },
                         { "UpdateNoConnectionMessage" , "Не смог установить соединение с интернетом." }
                     }
                 },
@@ -909,6 +919,8 @@ namespace AnnoDesigner.Localization
             BuildingSettingsViewModel.TextRecentColors = Localization.Translations[language]["RecentColors"];
             BuildingSettingsViewModel.TextStandard = Localization.Translations[language]["Standard"];
             BuildingSettingsViewModel.TextAdvanced = Localization.Translations[language]["Advanced"];
+            BuildingSettingsViewModel.TextColorsInLayout = Localization.Translations[language]["ColorsInLayout"];
+            BuildingSettingsViewModel.TextColorsInLayoutToolTip = Localization.Translations[language]["ColorsInLayoutToolTip"];
 
             //Status Bar
             StatusBarControls = Localization.Translations[language]["StatusBarControls"];

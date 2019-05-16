@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace AnnoDesigner.Presets
 {
     [DataContract]
-    [DebuggerDisplay("{IconFilename}")]
+    [DebuggerDisplay("{" + nameof(IconFilename) + "}")]
     public class IconNameMap
     {
         [DataMember(Order = 0)]

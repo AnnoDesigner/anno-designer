@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AnnoDesigner;
 
 namespace PresetParser
 {
@@ -32,7 +33,7 @@ namespace PresetParser
         private static readonly List<string> ChangeBuildingsToNW3_Productions_1800 = new List<string> { "Food_03 (Goulash Factory)", "Food_05 (Canned Food Factory)", "Processing_06 (Glass Processing)", "Factory_07 (Window Factory)", "Agriculture_09 (Hunter's Cabin)", "Factory_05 (Fur Coat Workshop)", "Workshop_03 (Sewing Machines Factory)" };
         private static readonly List<string> ChangeBuildingsToNW4_Productions_1800 = new List<string> { "Factory_06 (Light Bulb Factory)", "Processing_08 (Carbon Filament Processing)", "Workshop_02 (Pocket Watch Workshop)", "Workshop_05 (Gold Workshop)", "Heavy_07 (Steam Motors Heavy Industry)", "Workshop_01 (High-Wheeler Workshop)", "Heavy_06 (Advanced Weapons Heavy Industry)", "Processing_05 (Dynamite Processing)", "Coastal_02 (Niter Coast Building)", "Workshop_07 (Glasses Workshop)", "Heavy_09 (Brass Heavy Industry)", "Heavy_10 (Oil Heavy Industry)", "Factory_01 (Concrete Factory)", "Heavy_10_field (Oil Pump)" };
         private static readonly List<string> ChangeBuildingsToNW5_Productions_1800 = new List<string> { "Heavy_08 (Steam Carriages Heavy Industry)", "Factory_10 (Chassis Factory)", "Workshop_04 (Phonographs Workshop)", "Processing_07 (Inlay Processing)", "Workshop_06 (Jewelry Workshop)", "Food_08 (Champagne Maker)" };
-        private static readonly List<string> ChangeBuildingsToOW1_Productions_1800 = new List<string> { "Processing_colony01_02 (Poncho Maker)", "Coastal_colony01_01 (Pearls Coast Building)", "Food_colony01_04 (Fried Banana Maker)", "Coastal_colony01_02 (Fish Coast Building)", "Factory_colony01_02 (Sailcloth Factory)", "Factory_colony01_01 (Timber Factory)", "Agriculture_colony01_06 (Timber Yard)", "Factory_colony01_03 (Cotton Cloth Processing)", "Food_colony01_01 (Rum Maker)"};
+        private static readonly List<string> ChangeBuildingsToOW1_Productions_1800 = new List<string> { "Processing_colony01_02 (Poncho Maker)", "Coastal_colony01_01 (Pearls Coast Building)", "Food_colony01_04 (Fried Banana Maker)", "Coastal_colony01_02 (Fish Coast Building)", "Factory_colony01_02 (Sailcloth Factory)", "Factory_colony01_01 (Timber Factory)", "Agriculture_colony01_06 (Timber Yard)", "Factory_colony01_03 (Cotton Cloth Processing)", "Food_colony01_01 (Rum Maker)" };
         private static readonly List<string> ChangeBuildingsToOW2_Productions_1800 = new List<string> { "Food_colony01_02 (Chocolate Maker)", "Workshop_colony01_01 (Cigars Workshop)", "Factory_colony01_07 (Bombin Maker)", "Factory_colony01_06 (Felt Maker)", "Food_colony01_03 (Coffee Maker)", "Food_colony01_05 (Burrito Maker)", "Processing_colony01_01 (Sugar Processing)", "Processing_colony01_03 (Inlay Processing)", "Heavy_colony01_01 (Oil Heavy Industry)", "Heavy_colony01_01_field (Oil Pump)" };
         /// Farm Building
         //private static readonly List<string> ChangeBuildingsToAW_FarmBuilding_1800 = new List<string> { "" };
