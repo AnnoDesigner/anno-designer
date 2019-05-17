@@ -58,6 +58,11 @@
                 Height="24"
                 Margin="0,10,0,10" />
 
+        <StatusBar DockPanel.Dock="Bottom"
+                   Height="23">
+            <StatusBarItem Content="{Binding StatusMessage}" />
+        </StatusBar>
+
         <Border BorderBrush="Gray"
                 DockPanel.Dock="Top"
                 BorderThickness="1"

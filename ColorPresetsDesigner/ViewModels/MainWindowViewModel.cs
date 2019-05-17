@@ -20,7 +20,7 @@ namespace ColorPresetsDesigner.ViewModels
 {
     public class MainWindowViewModel : BaseModel
     {
-        //        private const string DEFAULT_BUSY_CONTENT = "Prüfung läuft ...";
+        //private const string DEFAULT_BUSY_CONTENT = "Please wait ...";
 
         private readonly SelectFileViewModel vmPresets;
         private readonly SelectFileViewModel vmColors;
@@ -29,11 +29,12 @@ namespace ColorPresetsDesigner.ViewModels
         private string _colorPresetsVersion;
         private string _colorPresetsVersionUpdated;
         private string _presetsVersion;
+        private string _statusMessage;
         private PredefinedColorViewModel _selectedPredefinedColor;
         private ObservableCollection<PredefinedColorViewModel> _availablePredefinedColors;
         private ObservableCollection<string> _availableTemplates;
         private ObservableCollection<string> _availableIdentifiers;
-        //        private string busyContent;        
+        //private string busyContent;
         private string _title = "Color Presets Designer";
         private string _newColorSchemeName;
 
@@ -53,7 +54,7 @@ namespace ColorPresetsDesigner.ViewModels
                 vmColors.SelectedFile = Properties.Settings.Default.LastSelectedColorsFilePath;
             }
 
-            //            BusyContent = DEFAULT_BUSY_CONTENT;
+            //BusyContent = DEFAULT_BUSY_CONTENT;
 
             ClosingWindowCommand = new RelayCommand(ClosingWindow, null);
             LoadPresetDataCommand = new RelayCommand(LoadPresetData, CanLoadPresetData);
@@ -68,10 +69,11 @@ namespace ColorPresetsDesigner.ViewModels
             AvailablePredefinedColors = new ObservableCollection<PredefinedColorViewModel>();
             AvailableTemplates = new ObservableCollection<string>();
             AvailableIdentifiers = new ObservableCollection<string>();
-            PresetsVersion = String.Empty;
-            ColorPresetsVersion = String.Empty;
-            ColorPresetsVersionUpdated = String.Empty;
-            NewColorSchemeName = String.Empty;
+            PresetsVersion = string.Empty;
+            ColorPresetsVersion = string.Empty;
+            ColorPresetsVersionUpdated = string.Empty;
+            NewColorSchemeName = string.Empty;
+            StatusMessage = string.Empty;
 
             var oldTitle = Title;
             try
@@ -123,7 +125,22 @@ namespace ColorPresetsDesigner.ViewModels
         {
             //IsBusy = true;
 
-            var buildingPresets = DataIO.LoadFromFile<BuildingPresets>(PresetsVM.SelectedFile);
+            StatusMessage = string.Empty;
+
+            BuildingPresets buildingPresets = null;
+            try
+            {
+                buildingPresets = DataIO.LoadFromFile<BuildingPresets>(PresetsVM.SelectedFile);
+            }
+            catch (Exception ex)
+            {
+                var message = $"Error parsing {nameof(BuildingPresets)}.";
+                Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                StatusMessage = $"{message} -> Maybe wrong selected file?";
+                return;
+            }
 
             PresetsVersion = buildingPresets.Version;
 
@@ -132,8 +149,22 @@ namespace ColorPresetsDesigner.ViewModels
 
             AvailableColorSchemes.Clear();
 
-            ColorPresetsLoader loader = new ColorPresetsLoader();
-            var colorPresets = loader.Load(ColorsVM.SelectedFile);
+            ColorPresets colorPresets = null;
+            try
+            {
+                ColorPresetsLoader loader = new ColorPresetsLoader();
+                colorPresets = loader.Load(ColorsVM.SelectedFile);
+            }
+            catch (Exception ex)
+            {
+                var message = $"Error parsing {nameof(ColorPresets)}.";
+                Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                StatusMessage = $"{message} -> Maybe wrong selected file?";
+                return;
+            }
+
             foreach (var curScheme in colorPresets.AvailableSchemes)
             {
                 AvailableColorSchemes.Add(new ColorSchemeViewModel(curScheme));
@@ -181,7 +212,7 @@ namespace ColorPresetsDesigner.ViewModels
             SelectedColorScheme.Colors.Remove(SelectedPredefinedColor);
             updateAvailablePredefinedColors();
 
-            SelectedPredefinedColor = AvailablePredefinedColors.First();
+            SelectedPredefinedColor = AvailablePredefinedColors.FirstOrDefault();
         }
 
         private bool CanDeleteColor(object param)
@@ -248,32 +279,48 @@ namespace ColorPresetsDesigner.ViewModels
 
         private void Save(object param)
         {
-            var colorPresets = new ColorPresets
+            try
             {
-                Version = ColorPresetsVersionUpdated
-            };
+                StatusMessage = string.Empty;
 
-            colorPresets.AvailableSchemes.AddRange(AvailableColorSchemes.Select(x => new ColorScheme
-            {
-                Name = x.Name,
-                Colors = x.Colors.Select(color => new PredefinedColor
+                var colorPresets = new ColorPresets
                 {
-                    TargetTemplate = color.TargetTemplate,
-                    TargetIdentifiers = color.TargetIdentifiers.ToList(),
-                    Color = color.SelectedColor.Value
-                }).ToList()
-            }));
+                    Version = ColorPresetsVersionUpdated
+                };
 
-            File.Copy(vmColors.SelectedFile, vmColors.SelectedFile + ".bak", true);
-            //DataIO.SaveToFile<ColorPresets>(colorPresets, "test.json");
-            DataIO.SaveToFile<ColorPresets>(colorPresets, vmColors.SelectedFile);
+                colorPresets.AvailableSchemes.AddRange(AvailableColorSchemes.Select(x => new ColorScheme
+                {
+                    Name = x.Name,
+                    Colors = x.Colors.Select(color => new PredefinedColor
+                    {
+                        TargetTemplate = color.TargetTemplate,
+                        TargetIdentifiers = color.TargetIdentifiers.ToList(),
+                        Color = color.SelectedColor.Value
+                    }).ToList()
+                }));
 
-            MessageBox.Show("New colors.json was saved.", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+                var backupFilePath = vmColors.SelectedFile + ".bak";
+                File.Copy(vmColors.SelectedFile, backupFilePath, true);
+                DataIO.SaveToFile<ColorPresets>(colorPresets, vmColors.SelectedFile);
+
+                MessageBox.Show("New colors.json was saved.", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                StatusMessage = $"Backup created \"{backupFilePath}\".";
+            }
+            catch (Exception ex)
+            {
+                var message = "Error saving colors.json.";
+                Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                StatusMessage = $"{message} -> Could not save to \"{vmColors.SelectedFile}\"";
+                return;
+            }
         }
 
         private bool CanSave(object param)
         {
-            //detect changes
+            //TODO detect changes
             return true;
         }
 
@@ -306,6 +353,12 @@ namespace ColorPresetsDesigner.ViewModels
         private void updateAvailablePredefinedColors()
         {
             AvailablePredefinedColors.Clear();
+
+            if (SelectedColorScheme == null)
+            {
+                return;
+            }
+
             foreach (var curColor in SelectedColorScheme.Colors)
             {
                 AvailablePredefinedColors.Add(curColor);
@@ -351,6 +404,12 @@ namespace ColorPresetsDesigner.ViewModels
         public bool ShowColorEdit
         {
             get { return SelectedPredefinedColor != null; }
+        }
+
+        public string StatusMessage
+        {
+            get { return _statusMessage; }
+            set { SetPropertyAndNotify(ref _statusMessage, value); }
         }
 
         public ObservableCollection<string> AvailableTemplates
