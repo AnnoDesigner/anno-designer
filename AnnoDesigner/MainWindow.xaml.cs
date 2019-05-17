@@ -176,7 +176,7 @@ namespace AnnoDesigner
             _treeViewState = Settings.Default.TreeViewState ?? null;
             _mainWindowLocalization.TreeViewSearchText = Settings.Default.TreeViewSearchText ?? "";
             CheckBoxPavedStreet.IsChecked = Settings.Default.IsPavedStreet;
-            DoCheckBoxPavedStreetColorChange();
+            SetPavedStreetCheckboxColor();
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -414,7 +414,7 @@ namespace AnnoDesigner
             else
             {
                 GetDistanceRange(true);
-                DoCheckBoxPavedStreetColorChange();
+                SetPavedStreetCheckboxColor();
             }
             //Set Influence Type combo box
             if (obj.Radius > 0 && obj.InfluenceRange > 0)
@@ -882,7 +882,7 @@ namespace AnnoDesigner
         {
             Settings.Default.IsPavedStreet = value;
             var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier);
-            DoCheckBoxPavedStreetColorChange();
+            SetPavedStreetCheckboxColor();
             if (buildingInfo  != null)
             {
                 if (buildingInfo.InfluenceRange > 0)
@@ -919,7 +919,7 @@ namespace AnnoDesigner
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = 0;
             return false;
         }
-        public void DoCheckBoxPavedStreetColorChange()
+        public void SetPavedStreetCheckboxColor()
         {
             if (this.CheckBoxPavedStreet.IsChecked == true)
             {

@@ -72,7 +72,7 @@ namespace AnnoDesigner.Localization
                         { "Both" , "Both" },
                         { "PavedStreet", "Paved Street" },
                         { "PavedStreetWarningTitle", "Paved Street Selection" },
-                        { "PavedStreetToolTip", "Checking this option will change the Influence Range for buildings,\nrepresenting the increased range they receive when using paved streets.\nUse the 'Place Building' button to place object." },
+                        { "PavedStreetToolTip", "Checking this option will change the Influence Range for buildings,\nrepresenting the increased range they receive when using paved streets.\nUse the 'Place Building' button to place an object." },
                         { "Options" , "Options" },
                         { "EnableLabel" , "Enable label" },
                         { "Borderless" , "Borderless" },
