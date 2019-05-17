@@ -70,6 +70,9 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Range" },
                         { "Distance" , "Distance" },
                         { "Both" , "Both" },
+                        { "PavedStreet", "Paved Street" },
+                        { "PavedStreetWarningTitle", "Paved Street Selection" },
+                        { "PavedStreetToolTip", "Checking this option will change the Influence Range for buildings,\nrepresenting the increased range they receive when using paved streets.\nUse the 'Place Building' button to place an object." },
                         { "Options" , "Options" },
                         { "EnableLabel" , "Enable label" },
                         { "Borderless" , "Borderless" },
@@ -171,6 +174,9 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Bereich" },
                         { "Distance" , "Entfernung" },
                         { "Both" , "Beide" },
+                        { "PavedStreet", "Gepflasterte Straße" },
+                        { "PavedStreetWarningTitle", "Auswahl der gepflasterten Straße" },
+                        { "PavedStreetToolTip", "Wenn Sie diese Option aktivieren, wird der Einflussbereich für Gebäude geändert,\ndie die erhöhte Reichweite darstellen, die sie bei der Nutzung gepflasterter Straßen erhalten.\nVerwenden Sie die Schaltfläche 'Gebäude platzieren', um ein Objekt zu platzieren." },
                         { "Options" , "Optionen" },
                         { "EnableLabel" , "Bezeichnung aktivieren" },
                         { "Borderless" , "Randlos" },
@@ -272,6 +278,9 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Zone de détection" },
                         { "Distance" , "Distance" },
                         { "Both" , "Tous les deux" },
+                        { "PavedStreet", "Rue pavée" },
+                        { "PavedStreetWarningTitle", "Sélection de rues pavées" },
+                        { "PavedStreetToolTip", "Si vous cochez cette option, la plage d'influence des bâtiments sera modifiée,\nce qui représente la portée accrue qu'ils reçoivent lorsqu'ils utilisent des rues pavées.\nUtilisez le bouton 'Placer le bâtiment' pour placer l'objet." },
                         { "Options" , "Options" },
                         { "EnableLabel" , "Activer les étiquettes" },
                         { "Borderless" , "Sans bordure" },
@@ -373,6 +382,9 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Zasięg" },
                         { "Distance" , "Odległość" },
                         { "Both" , "Obydwoje" },
+                        { "PavedStreet", "Droga Brukowana" },
+                        { "PavedStreetWarningTitle", "Wybór Drogi Brukowanej" },
+                        { "PavedStreetToolTip", "Zaznaczenie tej opcji spowoduje zmianę zakresu wpływu dla budynków, \nreprezentujący zwiększony zasięg, jaki otrzymują, gdy używając brukowanych ulic.\nUżyj przycisku 'Postaw budynek', aby umieścić obiekt." },
                         { "Options" , "Opcje" },
                         { "EnableLabel" , "Pokaż etykietę" },
                         { "Borderless" , "Bez obramowania" },
@@ -474,6 +486,9 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Диапазон" },
                         { "Distance" , "Расстояние" },
                         { "Both" , "Оба" },
+                        { "PavedStreet", "Павед Стрит" },
+                        { "PavedStreetWarningTitle", "Выбор улицы Павед Стрит" },
+                        { "PavedStreetToolTip", "Установив этот флажок, можно изменить диапазон влияния для зданий,\nпредставляет собой увеличенную дальность, которую они получают при использовании мощеных улиц.\nИспользуйте кнопку 'Выбрать здание', чтобы поместить объект." },
                         { "Options" , "Параметры" },
                         { "EnableLabel" , "Показывать название" },
                         { "Borderless" , "Без полей" },
@@ -887,6 +902,9 @@ namespace AnnoDesigner.Localization
             BuildingSettingsViewModel.TextRadius = Localization.Translations[language]["Radius"];
             BuildingSettingsViewModel.TextDistance = Localization.Translations[language]["Distance"];
             Both = Localization.Translations[language]["Both"];
+            BuildingSettingsViewModel.TextPavedStreet = Localization.Translations[language]["PavedStreet"];
+            BuildingSettingsViewModel.TextPavedStreetWarningTitle = Localization.Translations[language]["PavedStreetWarningTitle"];      
+            BuildingSettingsViewModel.TextPavedStreetToolTip = Localization.Translations[language]["PavedStreetToolTip"];
             BuildingSettingsViewModel.TextOptions = Localization.Translations[language]["Options"];
             BuildingSettingsViewModel.TextEnableLabel = Localization.Translations[language]["EnableLabel"];
             BuildingSettingsViewModel.TextBorderless = Localization.Translations[language]["Borderless"];

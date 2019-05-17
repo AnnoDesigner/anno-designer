@@ -102,7 +102,7 @@ namespace AnnoDesigner.Presets
                 Label = labelLocalization,
                 Icon = IconFileName,
                 Radius = InfluenceRadius,
-                InfluenceRange = InfluenceRange,
+                InfluenceRange = InfluenceRange -2,
                 Identifier = Identifier,
                 Size = BuildBlocker == null ? new Size() : new Size(BuildBlocker["x"], BuildBlocker["z"]),
                 Template = Template

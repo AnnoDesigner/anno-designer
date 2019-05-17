@@ -28,7 +28,7 @@ namespace PresetParser
         public const string ANNO_VERSION_2205 = "2205";
         public const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "3.2.2";
+        private const string BUILDING_PRESETS_VERSION = "3.2.3";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -86,7 +86,7 @@ namespace PresetParser
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System",
             "module_01_birds", "module_02_peacock", "(Warehouse II)", "(Warehouse III)", "logistic_colony01_01 (Warehouse I)", "Kontor_main_02", "Kontor_main_03", "kontor_main_colony01",
             "Fake Ornament [test 2nd party]", "Kontor_imperial_02", "Kontor_imperial_03","(Oil Harbor II)","(Oil Harbor III)", "Third_party_", "CQO_", "Kontor_imperial_01", "- Pirates",
-            "Harbor_colony01_09 (tourism_pier_01)", "Ai_", "AarhantLighthouseFake", "CO_Tunnel_Entrance01_Fake","Park_1x1_fence"};
+            "Harbor_colony01_09 (tourism_pier_01)", "Ai_", "AarhantLighthouseFake", "CO_Tunnel_Entrance01_Fake","Park_1x1_fence", "Electricity_01"};
         /// <summary>
         /// in NewFactionAndGroup1800.cs are made the following lists
         /// ChangeBuildingTo<1>_<2>_1800 
@@ -1004,6 +1004,9 @@ namespace PresetParser
                 case "RepairCrane": { factionName = "Harbor"; groupName = "Special Buildings"; break; }
                 case "HarborOffice": { factionName = "Harbor"; groupName = "Special Buildings"; break; }
                 case "PowerplantBuilding": { factionName = "Electricity"; groupName = null; break; }
+                case "1010462": { templateName = "CityInstitutionBuilding"; break; }
+                case "1010463": { templateName = "CityInstitutionBuilding"; break; }
+                case "1010464": { templateName = "CityInstitutionBuilding"; break; }
                 default: groupName = templateName.FirstCharToUpper(); break;
             }
             if (groupName == "Farm Fields")
@@ -1134,9 +1137,26 @@ namespace PresetParser
             #endregion
 
             #region Get/Set InfluenceRange information
-            //because this number is not exists yet, we set this to 'null'
             b.InfluenceRange = 0;
+            if (b.Template == "CityInstitutionBuilding")
+            {
+                b.InfluenceRange = 26; //Police - Fire stations and Hospiitals
+            }
+            else if (!string.IsNullOrEmpty(values?["PublicService"]?["FullSatisfactionDistance"]?.InnerText))
+            {
+                b.InfluenceRange = Convert.ToInt32(values["PublicService"]["FullSatisfactionDistance"].InnerText);
+            }
+            else
+            {
+                switch (identifierName)
+                {
+                    case "Service_colony01_03 (Boxing Arena)": b.InfluenceRange = 30; break;
+                    case "Service_colony01_01 (Marketplace)": b.InfluenceRange = 35; break;
+                    case "Electricity_02 (Oil Power Plant)": b.InfluenceRange = 35; break;
+                }
+            }
             #endregion
+
             // Building the Localizations for building b
             #region Get localizations
             /// find localization
