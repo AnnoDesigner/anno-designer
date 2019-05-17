@@ -30,6 +30,8 @@ namespace AnnoDesigner.viewmodel
         private string _textRadius;
         private string _textDistance;
         private string _textPavedStreet;
+        private string _textPavedStreetWarningTitle;
+        private string _textPavedStreetToolTip;
         private string _textOptions;
         private string _textEnableLabel;
         private string _textBorderless;
@@ -82,6 +84,8 @@ namespace AnnoDesigner.viewmodel
             TextRadius = "Radius";
             TextDistance = "Distance";
             TextPavedStreet = "Paved Street";
+            TextPavedStreetWarningTitle = "Paved Street Selection";
+            TextPavedStreetToolTip = "Checking this option will change the Influence Range for buildings,\nrepresenting the increased range they receive when using paved streets.\nUse the 'Place Building' button to place object.";
             TextOptions = "Options";
             TextEnableLabel = "Enable label";
             TextBorderless = "Borderless";
@@ -222,6 +226,18 @@ namespace AnnoDesigner.viewmodel
         {
             get { return _textPavedStreet; }
             set { UpdateProperty(ref _textPavedStreet, value); }
+        }
+
+        public string TextPavedStreetWarningTitle
+        {
+            get { return _textPavedStreetWarningTitle; }
+            set { UpdateProperty(ref _textPavedStreetWarningTitle, value); }
+        }
+
+        public string TextPavedStreetToolTip
+        {
+            get { return _textPavedStreetToolTip; }
+            set { UpdateProperty(ref _textPavedStreetToolTip, value); }
         }
 
         public string TextOptions

@@ -82,7 +82,6 @@ namespace AnnoDesigner
             comboxBoxInfluenceType.Items.Clear();
             string[] rangeTypes = Enum.GetNames(typeof(BuildingInfluenceType));
             string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
-            _instance.CheckBoxPavedStreet.ToolTip = Localization.Localization.Translations[language]["ToolTipPavedStreet"];
 
             foreach (string rangeType in rangeTypes)
             {
@@ -177,7 +176,7 @@ namespace AnnoDesigner
             _treeViewState = Settings.Default.TreeViewState ?? null;
             _mainWindowLocalization.TreeViewSearchText = Settings.Default.TreeViewSearchText ?? "";
             CheckBoxPavedStreet.IsChecked = Settings.Default.IsPavedStreet;
-            DoCheckBoxPavedStreetColorChange("1");
+            DoCheckBoxPavedStreetColorChange();
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -415,7 +414,7 @@ namespace AnnoDesigner
             else
             {
                 GetDistanceRange(true);
-                DoCheckBoxPavedStreetColorChange("1");
+                DoCheckBoxPavedStreetColorChange();
             }
             //Set Influence Type combo box
             if (obj.Radius > 0 && obj.InfluenceRange > 0)
@@ -863,14 +862,11 @@ namespace AnnoDesigner
         //CheckBox PavedStreet : calculate distance range
         private void CheckBoxPavedStreetClick(object sender, RoutedEventArgs o)
         {
-            var language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);   
             if (!Settings.Default.ShowPavedRoadsWarning)
             {
-                MessageBox.Show(Localization.Localization.Translations[language]["ToolTipPavedStreet"], Localization.Localization.Translations[language]["WarningPavedStreetTitle"]);
-                this.CheckBoxPavedStreet.ToolTip = Localization.Localization.Translations[language]["ToolTipPavedStreet"];
+                MessageBox.Show(_mainWindowLocalization.BuildingSettingsViewModel.TextPavedStreetToolTip, _mainWindowLocalization.BuildingSettingsViewModel.TextPavedStreetWarningTitle);
                 Settings.Default.ShowPavedRoadsWarning = true;
             }
-            DoCheckBoxPavedStreetColorChange("1");
             if (!GetDistanceRange(this.CheckBoxPavedStreet.IsChecked.Value))
             {
                 Debug.WriteLine("$Calculate Paved Street/Dirt Street Error: Can not obtain new Distance Value, value set to 0");
@@ -886,6 +882,7 @@ namespace AnnoDesigner
         {
             Settings.Default.IsPavedStreet = value;
             var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier);
+            DoCheckBoxPavedStreetColorChange();
             if (buildingInfo  != null)
             {
                 if (buildingInfo.InfluenceRange > 0)
@@ -910,7 +907,6 @@ namespace AnnoDesigner
                     }
                     else
                     {
-                        this.CheckBoxPavedStreet.Background = Brushes.White;
                         if (buildingInfo.InfluenceRange > 0)
                         {
                             //WYSWYG : the minus 2 is what gamers see as they count the Dark Green area on Dirt Road
@@ -923,28 +919,15 @@ namespace AnnoDesigner
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = 0;
             return false;
         }
-        public void DoCheckBoxPavedStreetColorChange(string choicTypandColor)
+        public void DoCheckBoxPavedStreetColorChange()
         {
-            var bc = new BrushConverter();
             if (this.CheckBoxPavedStreet.IsChecked == true)
             {
-                switch (choicTypandColor)
-                {
-                    case "1": this.CheckBoxPavedStreet.Background = (Brush)bc.ConvertFrom("#FFEE7711"); break;
-                    case "2": this.CheckBoxPavedStreet.Background = (Brush)bc.ConvertFrom("#FF40E0D0"); break;
-                    case "3": this.CheckBoxPavedStreet.BorderBrush = (Brush)bc.ConvertFrom("#FFEE7711"); break;
-                    case "4": this.CheckBoxPavedStreet.BorderBrush = (Brush)bc.ConvertFrom("#FF40E0D0"); break;
-                }
+                this.CheckBoxPavedStreet.Background = Brushes.OrangeRed;
             }
             else
             {
-                switch (choicTypandColor)
-                {
-                    case "1": this.CheckBoxPavedStreet.Background = (Brush)bc.ConvertFrom("#FFFFFFFF"); break;
-                    case "2": this.CheckBoxPavedStreet.Background = (Brush)bc.ConvertFrom("#FFFFFFFF"); break;
-                    case "3": this.CheckBoxPavedStreet.BorderBrush = (Brush)bc.ConvertFrom("#FF707070"); break;
-                    case "4": this.CheckBoxPavedStreet.BorderBrush = (Brush)bc.ConvertFrom("#FF707070"); break;
-                }
+                this.CheckBoxPavedStreet.Background = Brushes.White;
             }
         }
 

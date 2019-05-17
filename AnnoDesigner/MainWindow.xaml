@@ -568,9 +568,7 @@
                                    Visibility="Visible">
                             <CheckBox Content="{Binding BuildingSettingsViewModel.TextPavedStreet}"
                                       Name="CheckBoxPavedStreet" 
-                                      Background="#FFFFFFFF"
-                                      BorderBrush="#FF707070"
-                                      ToolTip=""
+                                      ToolTip="{Binding BuildingSettingsViewModel.TextPavedStreetToolTip}"
                                       Click="CheckBoxPavedStreetClick"
                                       DockPanel.Dock="Right"
                                       Margin="0,3,0,5"
