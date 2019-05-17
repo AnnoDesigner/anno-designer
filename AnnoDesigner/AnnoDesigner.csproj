@@ -150,6 +150,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="colors.json" />
+    <None Include="fandomNameMapping.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="icons.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
