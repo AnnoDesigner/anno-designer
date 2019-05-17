@@ -21,6 +21,7 @@ namespace ColorPresetsDesigner.ViewModels
     public class MainWindowViewModel : BaseModel
     {
         //private const string DEFAULT_BUSY_CONTENT = "Please wait ...";
+        private const string NO_TEMPLATE_NAME = "NO_TEMPLATE";
 
         private readonly SelectFileViewModel vmPresets;
         private readonly SelectFileViewModel vmColors;
@@ -34,6 +35,7 @@ namespace ColorPresetsDesigner.ViewModels
         private ObservableCollection<PredefinedColorViewModel> _availablePredefinedColors;
         private ObservableCollection<string> _availableTemplates;
         private ObservableCollection<string> _availableIdentifiers;
+        private Dictionary<string, List<string>> _templateIdentifierMapping;
         //private string busyContent;
         private string _title = "Color Presets Designer";
         private string _newColorSchemeName;
@@ -55,6 +57,8 @@ namespace ColorPresetsDesigner.ViewModels
             }
 
             //BusyContent = DEFAULT_BUSY_CONTENT;
+
+            _templateIdentifierMapping = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
             ClosingWindowCommand = new RelayCommand(ClosingWindow, null);
             LoadPresetDataCommand = new RelayCommand(LoadPresetData, CanLoadPresetData);
@@ -146,6 +150,7 @@ namespace ColorPresetsDesigner.ViewModels
 
             fillAvailableTemplates(buildingPresets);
             fillAvailableIdentifiers(buildingPresets);
+            fillTemplateIdentifierMapping(buildingPresets);
 
             AvailableColorSchemes.Clear();
 
@@ -376,9 +381,20 @@ namespace ColorPresetsDesigner.ViewModels
             get { return _selectedPredefinedColor; }
             set
             {
+                if (_selectedPredefinedColor != null)
+                {
+                    _selectedPredefinedColor.OnTargetTemplateChanged -= _selectedPredefinedColor_OnTargetTemplateChanged;
+                }
+
                 if (SetPropertyAndNotify(ref _selectedPredefinedColor, value))
                 {
                     OnPropertyChanged(nameof(ShowColorEdit));
+                    OnPropertyChanged(nameof(AvailableIdentifiersForTemplate));
+                }
+
+                if (_selectedPredefinedColor != null)
+                {
+                    _selectedPredefinedColor.OnTargetTemplateChanged += _selectedPredefinedColor_OnTargetTemplateChanged;
                 }
             }
         }
@@ -424,6 +440,40 @@ namespace ColorPresetsDesigner.ViewModels
             set { SetPropertyAndNotify(ref _availableIdentifiers, value); }
         }
 
+        public ObservableCollection<string> AvailableIdentifiersForTemplate
+        {
+            get
+            {
+                var result = new ObservableCollection<string>();
+
+                if (SelectedPredefinedColor == null ||
+                    string.IsNullOrWhiteSpace(SelectedPredefinedColor.TargetTemplate) ||
+                    !_templateIdentifierMapping.ContainsKey(SelectedPredefinedColor.TargetTemplate))
+                {
+                    return result;
+                }
+
+                //add identifiers for template
+                var filteredIdentifiers = _templateIdentifierMapping[SelectedPredefinedColor.TargetTemplate];
+                foreach (var curIdentifierName in filteredIdentifiers)
+                {
+                    result.Add(curIdentifierName);
+                }
+
+                //add identifiers without template
+                if (_templateIdentifierMapping.ContainsKey(NO_TEMPLATE_NAME))
+                {
+                    var identifiersWithoutTemplate = _templateIdentifierMapping[NO_TEMPLATE_NAME];
+                    foreach (var curIdentifierName in identifiersWithoutTemplate)
+                    {
+                        result.Add(curIdentifierName);
+                    }
+                }
+
+                return result;
+            }
+        }
+
         public string NewColorSchemeName
         {
             get { return _newColorSchemeName; }
@@ -437,7 +487,7 @@ namespace ColorPresetsDesigner.ViewModels
             var allTemplates = new Dictionary<string, int>();
             foreach (var curBuilding in buildingPresets.Buildings)
             {
-                if (String.IsNullOrWhiteSpace(curBuilding.Template))
+                if (string.IsNullOrWhiteSpace(curBuilding.Template))
                 {
                     continue;
                 }
@@ -468,7 +518,7 @@ namespace ColorPresetsDesigner.ViewModels
             var allIdentifiers = new Dictionary<string, int>();
             foreach (var curBuilding in buildingPresets.Buildings)
             {
-                if (String.IsNullOrWhiteSpace(curBuilding.Identifier))
+                if (string.IsNullOrWhiteSpace(curBuilding.Identifier))
                 {
                     continue;
                 }
@@ -490,6 +540,39 @@ namespace ColorPresetsDesigner.ViewModels
             {
                 AvailableIdentifiers.Add(curIdentifierName);
             }
+        }
+
+        private void fillTemplateIdentifierMapping(BuildingPresets buildingPresets)
+        {
+            _templateIdentifierMapping.Clear();
+
+            foreach (var curBuilding in buildingPresets.Buildings)
+            {
+                if (string.IsNullOrWhiteSpace(curBuilding.Identifier))
+                {
+                    continue;
+                }
+
+                var templateName = curBuilding.Template;
+                if (string.IsNullOrWhiteSpace(templateName))
+                {
+                    templateName = NO_TEMPLATE_NAME;
+                }
+
+                if (!_templateIdentifierMapping.ContainsKey(templateName))
+                {
+                    _templateIdentifierMapping.Add(templateName, new List<string> { curBuilding.Identifier });
+                }
+                else
+                {
+                    _templateIdentifierMapping[templateName].Add(curBuilding.Identifier);
+                }
+            }
+        }
+
+        private void _selectedPredefinedColor_OnTargetTemplateChanged(object sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(AvailableIdentifiersForTemplate));
         }
 
         //        public bool IsBusy

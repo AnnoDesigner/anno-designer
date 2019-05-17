@@ -473,7 +473,7 @@
                             </Grid.ColumnDefinitions>
                             <xctk:WatermarkComboBox Grid.Column="0"
                                                     Watermark="select new TargetIdentifier"
-                                                    ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.AvailableIdentifiers}"
+                                                    ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.AvailableIdentifiersForTemplate}"
                                                     SelectedItem="{Binding NewIdentifier}"
                                                     Margin="3">
                                 <ComboBox.ItemsPanel>

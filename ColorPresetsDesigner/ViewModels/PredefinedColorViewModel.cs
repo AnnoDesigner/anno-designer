@@ -13,6 +13,8 @@ namespace ColorPresetsDesigner.ViewModels
 {
     public class PredefinedColorViewModel : BaseModel
     {
+        public event EventHandler OnTargetTemplateChanged;
+
         private string _targetTemplate;
         private ObservableCollection<string> _targetIdentifiers;
         private Color? _selectedColor;
@@ -44,7 +46,13 @@ namespace ColorPresetsDesigner.ViewModels
         public string TargetTemplate
         {
             get { return _targetTemplate; }
-            set { SetPropertyAndNotify(ref _targetTemplate, value); }
+            set
+            {
+                if (SetPropertyAndNotify(ref _targetTemplate, value))
+                {
+                    OnTargetTemplateChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
 
         public ObservableCollection<string> TargetIdentifiers
