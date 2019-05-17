@@ -19,6 +19,7 @@ using System.Threading;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using AnnoDesigner.model;
+using AnnoDesigner.Export;
 
 namespace AnnoDesigner
 {
@@ -1091,6 +1092,12 @@ namespace AnnoDesigner
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             thread.Join(TimeSpan.FromSeconds(10));
+        }
+
+        private void MenuFandomExport_Click(object sender, RoutedEventArgs e)
+        {
+            var exporter = new FandomExporter();
+            exporter.StartExport(_mainWindowLocalization.StatisticsViewModel, annoCanvas.PlacedObjects, BuildingPresets, menuFandomExportUnsupportedTags.IsChecked);
         }
     }
 }

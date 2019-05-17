@@ -54,6 +54,9 @@
     <Compile Include="ColorHueSaturationBrightnessComparer.cs" />
     <Compile Include="Commons.cs" />
     <Compile Include="ConnectivityHelper.cs" />
+    <Compile Include="Export\FandomExporter.cs" />
+    <Compile Include="Export\FandomNameMapping.cs" />
+    <Compile Include="Export\FandomNameMappingPresets.cs" />
     <Compile Include="FileHelper.cs" />
     <Compile Include="model\LayoutVersionContainer.cs" />
     <Compile Include="PresetsLoader\IconLoader.cs" />

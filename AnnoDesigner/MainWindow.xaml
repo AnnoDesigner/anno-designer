@@ -127,6 +127,15 @@
                               IsCheckable="True"
                               IsChecked="False"
                               Name="MenuItemExportSelection" />
+                    <Separator />
+                    <MenuItem x:Name="menuFandomExport"
+                              Header="Fandom Export (Anno 1800)"
+                              IsCheckable="False"
+                              Click="MenuFandomExport_Click" />
+                    <MenuItem x:Name="menuFandomExportUnsupportedTags"
+                              Header="export unsupported Fandom Tags"
+                              IsCheckable="True"
+                              IsChecked="True" />
                 </MenuItem>
                 <MenuItem Name="LanguageMenu"
                           Header="{Binding Path=Language}"

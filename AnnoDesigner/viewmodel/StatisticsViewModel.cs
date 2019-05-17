@@ -132,6 +132,16 @@ namespace AnnoDesigner.viewmodel
             set { UpdateProperty(ref _usedArea, value); }
         }
 
+        /// <summary>
+        /// Used for export to wiki template.
+        /// </summary>
+        public double UsedAreaX { get; private set; }
+
+        /// <summary>
+        /// Used for export to wiki template.
+        /// </summary>
+        public double UsedAreaY { get; private set; }
+
         public double UsedTiles
         {
             get { return _usedTiles; }
@@ -206,6 +216,8 @@ namespace AnnoDesigner.viewmodel
             var minTiles = placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
 
             UsedArea = string.Format("{0}x{1}", boxX, boxY);
+            UsedAreaX = boxX;
+            UsedAreaY = boxY;
             UsedTiles = boxX * boxY;
 
             MinTiles = minTiles;

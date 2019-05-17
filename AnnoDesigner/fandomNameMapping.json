@@ -1,0 +1,21 @@
+{
+  "Version": "0.1",
+  "Names": [
+    {
+      "FandomName": "Warehouse",
+      "Identifiers": [ "Logistic_02 (Warehouse I)" ]
+    },
+	{
+      "FandomName": "Potato",
+      "Identifiers": [ "Agriculture_04 (Potato Farm)" ]
+    },
+	{
+      "FandomName": "Schnapps",
+      "Identifiers": [ "Food_06 (Schnapps Maker)" ]
+    },
+	{
+      "FandomName": "Farm module",
+      "Identifiers": [ "Agriculture_04_field (Potato Field)" ]
+    }
+  ]
+}
