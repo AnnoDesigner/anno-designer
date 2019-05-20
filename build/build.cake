@@ -7,6 +7,18 @@
 var target = Argument<string>("target", "Default");
 var configuration = Argument<string>("configuration", "DEBUG");
 
+//from cake source:
+/// <summary>
+/// MSBuild tool version: <c>Visual Studio 2017</c>
+/// </summary>
+//VS2017 = 6,
+/// <summary>
+/// MSBuild tool version: <c>Visual Studio 2019</c>
+/// </summary>
+//VS2019 = 7
+
+var msbuildVersion = Argument<int>("msbuildVersion", 7);
+
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
 //////////////////////////////////////////////////////////////////////
@@ -112,7 +124,7 @@ var buildTask = Task("Build")
         {
             Configuration = configuration,
             PlatformTarget = PlatformTarget.x86,
-            ToolVersion = MSBuildToolVersion.VS2017,
+            ToolVersion = (Cake.Common.Tools.MSBuild.MSBuildToolVersion)msbuildVersion,
             MaxCpuCount = 0,//use all available
             NoConsoleLogger = true,
             BinaryLogger = new MSBuildBinaryLogSettings

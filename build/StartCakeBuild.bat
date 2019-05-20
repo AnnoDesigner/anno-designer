@@ -25,11 +25,35 @@ echo not supported BUILD_MODE: %BUILD_MODE%
 goto :BUILD_MODE_PROMPT
 )
 
+@rem get MSBUILD_VERSION
+set "MSBUILD_VERSION=%~1"
+goto :MSBUILD_VERSION_CHECK
+:MSBUILD_VERSION_PROMPT
+set /p "MSBUILD_VERSION=Enter MSBUILD_VERSION (VS2017[6] | VS2019[7]): "
+:MSBUILD_VERSION_CHECK
+if "%MSBUILD_VERSION%"=="" goto :MSBUILD_VERSION_PROMPT
+set MSBUILD_VERSION_RESULT=false
+if "%MSBUILD_VERSION%"=="6" set MSBUILD_VERSION_RESULT=true
+if "%MSBUILD_VERSION%"=="7" set MSBUILD_VERSION_RESULT=true
+if "%MSBUILD_VERSION%"=="VS2017" (
+set MSBUILD_VERSION_RESULT=true
+set MSBUILD_VERSION=6
+)
+if "%MSBUILD_VERSION%"=="VS2019" (
+set MSBUILD_VERSION_RESULT=true
+set MSBUILD_VERSION=7
+)
+if "%MSBUILD_VERSION_RESULT%"=="false" (
+echo not supported MSBUILD_VERSION: %MSBUILD_VERSION%
+goto :MSBUILD_VERSION_PROMPT
+)
+
 echo:
 echo BUILD_MODE=%BUILD_MODE%
+echo MSBUILD_VERSION=%MSBUILD_VERSION%
 echo:
 
-Powershell.exe -NoProfile -ExecutionPolicy ByPass -File "%~dp0\build.ps1" -configuration %BUILD_MODE%
+Powershell.exe -NoProfile -ExecutionPolicy ByPass -File "%~dp0\build.ps1" -configuration %BUILD_MODE% -msbuildVersion=%MSBUILD_VERSION%
 
 :EXIT
 echo finished
