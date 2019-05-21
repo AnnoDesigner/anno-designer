@@ -29,6 +29,9 @@ namespace AnnoDesigner.viewmodel
         private string _textInfluenceType;
         private string _textRadius;
         private string _textDistance;
+        private string _textPavedStreet;
+        private string _textPavedStreetWarningTitle;
+        private string _textPavedStreetToolTip;
         private string _textOptions;
         private string _textEnableLabel;
         private string _textBorderless;
@@ -43,6 +46,7 @@ namespace AnnoDesigner.viewmodel
         private string _buildingIdentifier;
         private double _buildingRadius;
         private double _buildingInfluenceRange;
+        private bool _isPavedStreet;
         private bool _isEnableLabelChecked;
         private bool _isBorderlessChecked;
         private bool _isRoadChecked;
@@ -79,6 +83,9 @@ namespace AnnoDesigner.viewmodel
             TextInfluenceType = "Influence Type";
             TextRadius = "Radius";
             TextDistance = "Distance";
+            TextPavedStreet = "Paved Street";
+            TextPavedStreetWarningTitle = "Paved Street Selection";
+            TextPavedStreetToolTip = "Checking this option will change the Influence Range for buildings,\nrepresenting the increased range they receive when using paved streets.\nUse the 'Place Building' button to place object.";
             TextOptions = "Options";
             TextEnableLabel = "Enable label";
             TextBorderless = "Borderless";
@@ -215,6 +222,24 @@ namespace AnnoDesigner.viewmodel
             set { UpdateProperty(ref _textDistance, value); }
         }
 
+        public string TextPavedStreet
+        {
+            get { return _textPavedStreet; }
+            set { UpdateProperty(ref _textPavedStreet, value); }
+        }
+
+        public string TextPavedStreetWarningTitle
+        {
+            get { return _textPavedStreetWarningTitle; }
+            set { UpdateProperty(ref _textPavedStreetWarningTitle, value); }
+        }
+
+        public string TextPavedStreetToolTip
+        {
+            get { return _textPavedStreetToolTip; }
+            set { UpdateProperty(ref _textPavedStreetToolTip, value); }
+        }
+
         public string TextOptions
         {
             get { return _textOptions; }
@@ -294,7 +319,11 @@ namespace AnnoDesigner.viewmodel
             get { return _buildingInfluenceRange; }
             set { UpdateProperty(ref _buildingInfluenceRange, value); }
         }
-
+        public bool IsPavedStreet
+        {
+            get { return _isPavedStreet; }
+            set { UpdateProperty(ref _isPavedStreet, value); }
+        }
         public bool IsEnableLabelChecked
         {
             get { return _isEnableLabelChecked; }

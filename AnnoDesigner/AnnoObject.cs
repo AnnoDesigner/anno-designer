@@ -36,6 +36,7 @@ namespace AnnoDesigner
             Icon = obj.Icon;
             Radius = obj.Radius;
             InfluenceRange = obj.InfluenceRange;
+            PavedStreet = obj.PavedStreet;
             Borderless = obj.Borderless;
             Road = obj.Road;
             // note: this is not really a copy, just a reference, but it is not supposed to change anyway
@@ -112,6 +113,12 @@ namespace AnnoDesigner
         /// </summary>
         [DataMember(Order = 10)]
         public double InfluenceRange { get; set; }
+
+        /// <summary>
+        /// If PavedStreet is selected
+        /// </summary>
+        [DataMember(Order = 11)]
+        public bool PavedStreet { get; set; }
 
         ///// <summary>
         ///// Localization string

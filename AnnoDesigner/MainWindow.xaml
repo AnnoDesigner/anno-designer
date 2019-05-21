@@ -571,6 +571,19 @@
                                                TabIndex="9"
                                                Value="{Binding BuildingSettingsViewModel.BuildingInfluenceRange}" />
                         </DockPanel>
+                        <DockPanel x:Name="dockPanelPavedStreet"
+                                   LastChildFill="False"
+                                   Height="25"
+                                   Visibility="Visible">
+                            <CheckBox Content="{Binding BuildingSettingsViewModel.TextPavedStreet}"
+                                      Name="CheckBoxPavedStreet" 
+                                      ToolTip="{Binding BuildingSettingsViewModel.TextPavedStreetToolTip}"
+                                      Click="CheckBoxPavedStreetClick"
+                                      DockPanel.Dock="Right"
+                                      Margin="0,3,0,5"
+                                      IsThreeState="False"
+                                      IsChecked="{Binding BuildingSettingsViewModel.IsPavedStreet}"/>
+                        </DockPanel>
                         <DockPanel LastChildFill="False">
                             <Label Content="{Binding BuildingSettingsViewModel.TextOptions}" />
                             <StackPanel Orientation="Vertical"
