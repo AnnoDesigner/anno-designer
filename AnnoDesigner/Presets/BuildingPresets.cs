@@ -72,7 +72,7 @@ namespace AnnoDesigner.Presets
                         }
                         secondLevelItem.Items.Add(thirdLevelItem);
                     }
-                    foreach (var thirdLevel in secondLevel.Where(_ => _.Group == null).OrderBy(_ => _.Group))
+                    foreach (var thirdLevel in secondLevel.Where(_ => _.Group == null).OrderBy(_ => _.GetOrderParameter()))
                     {
                         secondLevelItem.Items.Add(thirdLevel.ToAnnoObject());
                     }
