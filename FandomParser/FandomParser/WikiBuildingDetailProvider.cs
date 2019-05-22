@@ -209,6 +209,16 @@ namespace FandomParser
                         }
                     }
 
+                    //handle special cases
+                    switch (buildingName)
+                    {
+                        case "Bombin Weaver":
+                            buildingName = "Bomb­ín Weaver";
+                            break;
+                        default:
+                            break;
+                    }
+
                     //multiple entries possible e.g. "Police Station"
                     var foundWikiBuildingInfos = wikiBuildingInfoList.Infos.Where(x => x.Name.Equals(buildingName, StringComparison.OrdinalIgnoreCase));
                     foreach (var curBuilding in foundWikiBuildingInfos)

@@ -5,17 +5,21 @@
       "FandomName": "Warehouse",
       "Identifiers": [ "Logistic_02 (Warehouse I)" ]
     },
-	{
+    {
       "FandomName": "Potato",
       "Identifiers": [ "Agriculture_04 (Potato Farm)" ]
     },
-	{
+    {
       "FandomName": "Schnapps",
       "Identifiers": [ "Food_06 (Schnapps Maker)" ]
     },
-	{
+    {
       "FandomName": "Farm module",
       "Identifiers": [ "Agriculture_04_field (Potato Field)" ]
+    },
+    {
+      "FandomName": "Bomb­ín Weaver",
+      "Identifiers": [ "Factory_colony01_07 (Bombin Maker)" ]
     }
   ]
 }

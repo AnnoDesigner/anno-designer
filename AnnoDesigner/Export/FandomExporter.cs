@@ -64,6 +64,7 @@ namespace AnnoDesigner.Export
             //https://anno1800.fandom.com/wiki/Template:Production_layout/doc
             //https://anno1800.fandom.com/wiki/Category:Template_documentation
             //TODO warn user when layout contains more than 15 building types because template only supports 1-15
+            //template only supports 1-8 for "Production x Type" and "Production x per minute"
             //TODO warn user (or exit) when layout contains buildings other than Anno 1800
 
             var exportString = new StringBuilder(900);//best guess on minimal layout
@@ -72,13 +73,15 @@ namespace AnnoDesigner.Export
                 .AppendLine(HEADER_PRODUCTION_LAYOUT)
                 .Append(TEMPLATE_LINE_START).Append(HEADER_ICON).AppendLine(TEMPLATE_ENTRY_DELIMITER)
                 .Append(TEMPLATE_LINE_START).Append(HEADER_LAYOUT_NAME).AppendLine(TEMPLATE_ENTRY_DELIMITER)
-                .Append(TEMPLATE_LINE_START).Append(HEADER_LAYOUT_IMAGE).AppendLine(TEMPLATE_ENTRY_DELIMITER)
-                .Append(TEMPLATE_LINE_START).Append(HEADER_LAYOUT_DESCRIPTION).AppendLine(TEMPLATE_ENTRY_DELIMITER);
+                .Append(TEMPLATE_LINE_START).Append(HEADER_LAYOUT_IMAGE).AppendLine(TEMPLATE_ENTRY_DELIMITER);
+
 
             //add buildings
             exportString = addBuildingInfo(exportString, placedObjects, buildingPresets);
 
-            exportString.Append(TEMPLATE_LINE_START).Append(HEADER_SIZE).Append(TEMPLATE_ENTRY_DELIMITER).Append(statisticsViewModel.UsedAreaX).Append(TEMPLATE_SIZE_ENTRY_DELIMITER).AppendLine(statisticsViewModel.UsedAreaY.ToString())
+            exportString.Append(TEMPLATE_LINE_START).Append(HEADER_LAYOUT_DESCRIPTION).AppendLine(TEMPLATE_ENTRY_DELIMITER)
+                //add production info
+                .Append(TEMPLATE_LINE_START).Append(HEADER_SIZE).Append(TEMPLATE_ENTRY_DELIMITER).Append(statisticsViewModel.UsedAreaX).Append(TEMPLATE_SIZE_ENTRY_DELIMITER).AppendLine(statisticsViewModel.UsedAreaY.ToString())
                 .Append(TEMPLATE_LINE_START).Append(HEADER_TILES).Append(TEMPLATE_ENTRY_DELIMITER).AppendLine(statisticsViewModel.UsedTiles.ToString())
                 .Append(TEMPLATE_LINE_START).Append(HEADER_AUTHOR).AppendLine(TEMPLATE_ENTRY_DELIMITER)
                 .Append(TEMPLATE_LINE_START).Append(HEADER_SOURCE).AppendLine(TEMPLATE_ENTRY_DELIMITER);

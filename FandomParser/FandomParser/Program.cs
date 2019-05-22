@@ -9,6 +9,7 @@ using FandomParser.WikiText;
 
 namespace FandomParser
 {
+    //TODO add url to building page in wiki e.g. "https://anno1800.fandom.com/wiki/Schnapps_Distillery"
 
     public static class Program
     {
