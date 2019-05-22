@@ -12,10 +12,13 @@ namespace FandomParser
     {
         public ProductionInfo()
         {
-
+            InputProducts = new List<InputProduct>();
         }
 
         [DataMember(Order = 0)]
         public EndProduct EndProduct { get; set; }
+
+        [DataMember(Order = 1)]
+        public List<InputProduct> InputProducts { get; set; }
     }
 }

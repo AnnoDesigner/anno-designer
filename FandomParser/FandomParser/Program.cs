@@ -67,7 +67,7 @@ namespace FandomParser
                 if (fetchBuildingDetails)
                 {
                     var wikiDetailProvider = new WikiBuildingDetailProvider();
-                    wikiDetailProvider.FetchBuildingDetails(wikibuildingList);
+                    wikibuildingList = wikiDetailProvider.FetchBuildingDetails(wikibuildingList);
                 }
 
                 SerializationHelper.SaveToFile(wikibuildingList, "wiki_info_parsed.json");

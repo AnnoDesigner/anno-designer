@@ -10,7 +10,7 @@ namespace FandomParser
 {
     [DebuggerDisplay("{" + nameof(Icon) + "}")]
     [DataContract]
-    public class EndProduct
+    public class InputProduct
     {
         [DataMember(Order = 0)]
         public double Amount { get; set; }
@@ -20,5 +20,7 @@ namespace FandomParser
 
         [DataMember(Order = 2)]
         public string Icon { get; set; }
+
+        public int Order { get; set; }
     }
 }

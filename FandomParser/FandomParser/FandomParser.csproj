@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="BuildingType.cs" />
     <Compile Include="EndProduct.cs" />
+    <Compile Include="InputProduct.cs" />
     <Compile Include="ProductionInfo.cs" />
     <Compile Include="WikiBuildingDetailProvider.cs" />
     <Compile Include="WikiBuildingInfoProvider.cs" />
