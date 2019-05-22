@@ -19,6 +19,7 @@ namespace FandomParser
             ConstructionInfos = new List<ConstructionInfo>();
             MaintenanceInfos = new List<MaintenanceInfo>();
             Region = WorldRegion.Unknown;
+            Type = BuildingType.Unknown;
         }
 
         [DataMember(Order = 0)]
@@ -34,15 +35,21 @@ namespace FandomParser
         public string Tier { get; set; }
 
         [DataMember(Order = 4)]
-        public Size BuildingSize { get; set; }
+        public BuildingType Type { get; set; }
 
         [DataMember(Order = 5)]
-        public string Radius { get; set; }
+        public Size BuildingSize { get; set; }
 
         [DataMember(Order = 6)]
-        public List<ConstructionInfo> ConstructionInfos { get; set; }
+        public string Radius { get; set; }
 
         [DataMember(Order = 7)]
+        public List<ConstructionInfo> ConstructionInfos { get; set; }
+
+        [DataMember(Order = 8)]
         public List<MaintenanceInfo> MaintenanceInfos { get; set; }
+
+        [DataMember(Order = 9)]
+        public ProductionInfo ProductionInfos { get; set; }
     }
 }

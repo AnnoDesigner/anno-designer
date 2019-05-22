@@ -30,8 +30,8 @@ namespace FandomParser
             {
                 result.Region = entry.Region;
                 result.Tier = entry.Tier;
-                result.Name = entry.Name.Replace("[[", String.Empty).Replace("]]", String.Empty);
-                result.Icon = entry.Icon.Replace("[[File:", String.Empty).Replace("|40px]]", String.Empty);
+                result.Name = entry.Name.Replace("[[", string.Empty).Replace("]]", string.Empty);
+                result.Icon = entry.Icon.Replace("[[File:", string.Empty).Replace("|40px]]", string.Empty);
 
                 if (entry.Size.Contains(Environment.NewLine))
                 {

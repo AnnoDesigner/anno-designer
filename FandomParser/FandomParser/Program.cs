@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace FandomParser
     {
         private const string ARG_NO_WAIT = "--noWait";
         private const string ARG_FORCE_DOWNLOAD = "--forceDownload";
+        private const string ARG_FETCH_BUILDING_DETAILS = "--fetchBuildingDetails";
 
         public static async Task Main(string[] args)
         {
@@ -30,7 +32,14 @@ namespace FandomParser
                     noWait = true;
                 }
 
+                var fetchBuildingDetails = false;
+                if (args?.Any(x => x.Equals(ARG_FETCH_BUILDING_DETAILS, StringComparison.OrdinalIgnoreCase)) == true)
+                {
+                    fetchBuildingDetails = true;
+                }
+
                 Console.WriteLine($"{nameof(foceDownload)}: {foceDownload}");
+                Console.WriteLine($"{nameof(fetchBuildingDetails)}: {fetchBuildingDetails}");
 
                 TableEntryList list = null;
 
@@ -53,6 +62,13 @@ namespace FandomParser
 
                 var wikiBuildingInfoProvider = new WikiBuildingInfoProvider();
                 var wikibuildingList = wikiBuildingInfoProvider.GetWikiBuildingInfos(list);
+
+                //get production info of all buildings
+                if (fetchBuildingDetails)
+                {
+                    var wikiDetailProvider = new WikiBuildingDetailProvider();
+                    wikiDetailProvider.FetchBuildingDetails(wikibuildingList);
+                }
 
                 SerializationHelper.SaveToFile(wikibuildingList, "wiki_info_parsed.json");
 

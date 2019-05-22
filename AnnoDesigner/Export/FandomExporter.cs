@@ -61,7 +61,9 @@ namespace AnnoDesigner.Export
         public void StartExport(StatisticsViewModel statisticsViewModel, List<AnnoObject> placedObjects, BuildingPresets buildingPresets, bool exportUnsupportedTags)
         {
             //https://anno1800.fandom.com/wiki/Template:Production_layout
-            //TODO warn user when layout contains more than 8 building types because template only supports 1-8
+            //https://anno1800.fandom.com/wiki/Template:Production_layout/doc
+            //https://anno1800.fandom.com/wiki/Category:Template_documentation
+            //TODO warn user when layout contains more than 15 building types because template only supports 1-15
             //TODO warn user (or exit) when layout contains buildings other than Anno 1800
 
             var exportString = new StringBuilder(900);//best guess on minimal layout

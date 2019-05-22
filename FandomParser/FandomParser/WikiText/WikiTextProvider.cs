@@ -16,7 +16,7 @@ namespace FandomParser.WikiText
 
         //this is using https://github.com/CXuesong/WikiClientLibrary
 
-        public async Task<string> GetWikiTextAsync()
+        public async Task<string> GetWikiTextAsync(string pageToFetch = "Buildings")
         {
             var wikiText = string.Empty;
 
@@ -27,7 +27,7 @@ namespace FandomParser.WikiText
                 var mainSite = new WikiSite(wikiClient, new SiteOptions("https://anno1800.fandom.com/api.php"));
                 await mainSite.Initialization;
 
-                var page = new WikiPage(mainSite, "Buildings");
+                var page = new WikiPage(mainSite, pageToFetch);
                 await page.RefreshAsync(PageQueryOptions.FetchContent);
 
                 if (!page.Exists)

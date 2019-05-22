@@ -151,7 +151,7 @@ namespace FandomParser.WikiText
             foreach (var curTable in tableList)
             {
                 var splittedTable = curTable.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                var tableWithLineBreaks = String.Join(Environment.NewLine, splittedTable);
+                var tableWithLineBreaks = string.Join(Environment.NewLine, splittedTable);
 
                 tablesWithLineBreaks.Add(tableWithLineBreaks);
             }
@@ -206,6 +206,7 @@ namespace FandomParser.WikiText
             TableEntry curEntry = null;
             var entryCounter = 0;
             //read string line by line
+            //TODO use StringReader
             foreach (var curLine in curTable.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 //line contains description
