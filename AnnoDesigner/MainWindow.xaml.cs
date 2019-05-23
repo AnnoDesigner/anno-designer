@@ -295,7 +295,8 @@ namespace AnnoDesigner
                         Commons.RestartApplication(true, Constants.Argument_Ask_For_Admin, App.ExecutablePath);
                     }
 
-                    var newLocation = await _commons.UpdateHelper.DownloadLatestPresetFileAsync().ConfigureAwait(false);
+                    //Context is required here, do not use ConfigureAwait(false)
+                    var newLocation = await _commons.UpdateHelper.DownloadLatestPresetFileAsync();
 
                     busyIndicator.IsBusy = false;
 
