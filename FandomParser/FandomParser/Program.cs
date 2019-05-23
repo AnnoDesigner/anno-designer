@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FandomParser.Core;
 using FandomParser.WikiText;
 
 namespace FandomParser
@@ -67,7 +68,7 @@ namespace FandomParser
                 //get production info of all buildings
                 if (fetchBuildingDetails)
                 {
-                    var wikiDetailProvider = new WikiBuildingDetailProvider();
+                    var wikiDetailProvider = new WikiBuildingDetailProvider(Commons.Instance);
                     wikibuildingList = wikiDetailProvider.FetchBuildingDetails(wikibuildingList);
                 }
 

@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FandomParser
+namespace FandomParser.Core
 {
     [DebuggerDisplay("{" + nameof(Icon) + "}")]
     [DataContract]

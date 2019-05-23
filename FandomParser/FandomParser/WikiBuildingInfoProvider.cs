@@ -13,7 +13,7 @@ namespace FandomParser
         public WikiBuildingInfoList GetWikiBuildingInfos(TableEntryList list)
         {
             var wikibuildingList = new WikiBuildingInfoList();
-            wikibuildingList.Version = new Version(0, 0, 0, 2);
+            wikibuildingList.Version = new Version(0, 2, 0, 0);
             foreach (var curentry in list.Entries)
             {
                 wikibuildingList.Infos.Add(parseWikiBuildingInfo(curentry));

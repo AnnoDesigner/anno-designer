@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using FandomParser.Core;
+
+namespace InfoboxParser.Models
+{
+    public class Infobox : IInfobox
+    {
+        public string Name { get; set; }
+
+        public BuildingType Type { get; set; }
+
+        public ProductionInfo ProductionInfos { get; set; }
+    }
+}

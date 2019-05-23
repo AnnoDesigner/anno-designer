@@ -5,6 +5,19 @@ VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FandomParser", "FandomParser\FandomParser.csproj", "{4D887D16-7D1B-4AFC-88D1-030B287EEB01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfoboxParser", "InfoboxParser\InfoboxParser.csproj", "{7A621E6C-A32B-46C2-8A3A-7E5DE65B379B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FandomParser.Core", "FandomParser.Core\FandomParser.Core.csproj", "{64EC51C9-33FB-48CB-8C7D-1EA881D565EF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2BD70A94-60D8-4C2D-B547-22E66D606653}"
+	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{04144C51-0371-41AF-A893-338D6CD0A6ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfoboxParser.Tests", "Tests\InfoboxParser.Tests\InfoboxParser.Tests.csproj", "{DD498223-FFDE-4720-82F0-692DBAB0DC43}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +28,24 @@ Global
 		{4D887D16-7D1B-4AFC-88D1-030B287EEB01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D887D16-7D1B-4AFC-88D1-030B287EEB01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D887D16-7D1B-4AFC-88D1-030B287EEB01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A621E6C-A32B-46C2-8A3A-7E5DE65B379B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A621E6C-A32B-46C2-8A3A-7E5DE65B379B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A621E6C-A32B-46C2-8A3A-7E5DE65B379B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A621E6C-A32B-46C2-8A3A-7E5DE65B379B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64EC51C9-33FB-48CB-8C7D-1EA881D565EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64EC51C9-33FB-48CB-8C7D-1EA881D565EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64EC51C9-33FB-48CB-8C7D-1EA881D565EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64EC51C9-33FB-48CB-8C7D-1EA881D565EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD498223-FFDE-4720-82F0-692DBAB0DC43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD498223-FFDE-4720-82F0-692DBAB0DC43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD498223-FFDE-4720-82F0-692DBAB0DC43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD498223-FFDE-4720-82F0-692DBAB0DC43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DD498223-FFDE-4720-82F0-692DBAB0DC43} = {04144C51-0371-41AF-A893-338D6CD0A6ED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7775E001-8A5D-48AC-8A7F-1D561DD6D481}

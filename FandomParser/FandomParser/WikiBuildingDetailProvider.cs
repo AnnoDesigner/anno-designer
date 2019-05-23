@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using FandomParser.Core;
 using FandomParser.WikiText;
 
 namespace FandomParser
@@ -17,18 +16,17 @@ namespace FandomParser
         private const string DIRECTORY_BUILDING_DETAILS = "building_infos_detailed";
         private const string DIRECTORY_BUILDING_INFOBOX = "building_infoboxes_extracted";
         private const string FILENAME_MISSING_INFOS = "_missing_info.txt";
-        private const string INFOBOX_TEMPLATE_START = "{{Infobox Buildings";
-        private const string INFOBOX_TEMPLATE_BOTH_WORLDS_START = "{{Infobox Buildings Old and New World";
-        private const string INFOBOX_TEMPLATE_END = "}}";
         private const string FILE_ENDING_WIKITEXT = ".txt";
         private const string FILE_ENDING_INFOBOX = ".infobox";
 
         private string _pathToDetailsFolder;
         private string _pathToExtractedInfoboxesFolder;
+        private readonly ICommons _commons;
 
-        private Regex regexInputAmount = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private Regex regexInputAmountElectricity = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private Regex regexInputIcon = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Icon)\s*(?<equalSign>[=])\s*(?<fileName>(\w*\s*)+([\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        public WikiBuildingDetailProvider(ICommons commons)
+        {
+            _commons = commons;
+        }
 
         public string PathToDetailsFolder
         {
@@ -140,8 +138,8 @@ namespace FandomParser
 
                     var fileContent = File.ReadAllText(curFile, Encoding.UTF8);
 
-                    var indexInfoboxBothWorldsStart = fileContent.IndexOf(INFOBOX_TEMPLATE_BOTH_WORLDS_START, StringComparison.OrdinalIgnoreCase);
-                    var indexInfoboxStart = fileContent.IndexOf(INFOBOX_TEMPLATE_START, StringComparison.OrdinalIgnoreCase);
+                    var indexInfoboxBothWorldsStart = fileContent.IndexOf(_commons.InfoboxTemplateStartBothWorlds, StringComparison.OrdinalIgnoreCase);
+                    var indexInfoboxStart = fileContent.IndexOf(_commons.InfoboxTemplateStart, StringComparison.OrdinalIgnoreCase);
 
                     var startIndex = indexInfoboxBothWorldsStart == -1 ? indexInfoboxStart : indexInfoboxBothWorldsStart;
 
@@ -151,8 +149,8 @@ namespace FandomParser
                         continue;
                     }
 
-                    var endIndex = fileContent.IndexOf(INFOBOX_TEMPLATE_END, startIndex, StringComparison.OrdinalIgnoreCase);
-                    int length = endIndex - startIndex + INFOBOX_TEMPLATE_END.Length;
+                    var endIndex = fileContent.IndexOf(_commons.InfoboxTemplateEnd, startIndex, StringComparison.OrdinalIgnoreCase);
+                    int length = endIndex - startIndex + _commons.InfoboxTemplateEnd.Length;
 
                     var infoBox = fileContent.Substring(startIndex, length);
                     if (!string.IsNullOrWhiteSpace(infoBox))
@@ -183,48 +181,19 @@ namespace FandomParser
 
             try
             {
+                var infoboxParser = new InfoboxParser.InfoboxParser(_commons);
+
                 foreach (var curFile in Directory.EnumerateFiles(PathToExtractedInfoboxesFolder, $"*{FILE_ENDING_INFOBOX}", SearchOption.TopDirectoryOnly))
                 {
                     var fileContent = File.ReadAllText(curFile, Encoding.UTF8);
-
-                    var buildingName = getBuildingName(fileContent);
-                    if (string.IsNullOrWhiteSpace(buildingName))
-                    {
-                    }
-
-                    var buildingType = getBuildingType(fileContent);
-                    if (buildingType == BuildingType.Unknown)
-                    {
-
-                    }
-
-                    ProductionInfo productionInfo = null;
-                    //TODO parse infoboxes containing information of multiple worlds
-                    if (!fileContent.StartsWith(INFOBOX_TEMPLATE_BOTH_WORLDS_START))
-                    {
-                        productionInfo = getProductionInfo(fileContent);
-                        if (productionInfo == null && buildingType == BuildingType.Production)
-                        {
-
-                        }
-                    }
-
-                    //handle special cases
-                    switch (buildingName)
-                    {
-                        case "Bombin Weaver":
-                            buildingName = "Bomb­ín Weaver";
-                            break;
-                        default:
-                            break;
-                    }
+                    var infobox = infoboxParser.GetInfobox(fileContent);
 
                     //multiple entries possible e.g. "Police Station"
-                    var foundWikiBuildingInfos = wikiBuildingInfoList.Infos.Where(x => x.Name.Equals(buildingName, StringComparison.OrdinalIgnoreCase));
+                    var foundWikiBuildingInfos = wikiBuildingInfoList.Infos.Where(x => x.Name.Equals(infobox.Name, StringComparison.OrdinalIgnoreCase));
                     foreach (var curBuilding in foundWikiBuildingInfos)
                     {
-                        curBuilding.Type = buildingType;
-                        curBuilding.ProductionInfos = productionInfo;
+                        curBuilding.Type = infobox.Type;
+                        curBuilding.ProductionInfos = infobox.ProductionInfos;
                     }
                 }
             }
@@ -248,238 +217,10 @@ namespace FandomParser
 
         private static string getLineBreakAlignedWikiText(string wikiText)
         {
-            //better? return Regex.Replace(wikiText, @"\r\n|\n\r|\n|\r", Environment.NewLine);
-            return wikiText.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", Environment.NewLine);
-        }
-
-        private static BuildingType getBuildingType(string infobox)
-        {
-            var result = BuildingType.Unknown;
-
-            if (!infobox.Contains("|Building Type"))
-            {
-                return result;
-            }
-
-            using (var reader = new StringReader(infobox))
-            {
-                string curLine;
-                while ((curLine = reader.ReadLine()) != null)
-                {
-                    curLine = curLine.Replace(INFOBOX_TEMPLATE_END, string.Empty);
-
-                    if (curLine.StartsWith("|Building Type", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var buildingType = curLine.Replace("|Building Type (OW)", string.Empty)
-                            .Replace("|Building Type (NW)", string.Empty)
-                            .Replace("|Building Type", string.Empty)
-                            .Replace("=", string.Empty)
-                            .Trim();
-
-                        if (Enum.TryParse(buildingType, ignoreCase: true, out BuildingType parsedBuildingType))
-                        {
-                            result = parsedBuildingType;
-                        }
-
-                        break;
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        private static string getBuildingName(string infobox)
-        {
-            var result = string.Empty;
-
-            if (!infobox.Contains("|Title"))
-            {
-                return result;
-            }
-
-            using (var reader = new StringReader(infobox))
-            {
-                string curLine;
-                while ((curLine = reader.ReadLine()) != null)
-                {
-                    curLine = curLine.Replace(INFOBOX_TEMPLATE_END, string.Empty);
-
-                    if (curLine.StartsWith("|Title", StringComparison.OrdinalIgnoreCase))
-                    {
-                        result = curLine.Replace("|Title", string.Empty)
-                            .Replace("=", string.Empty)
-                            .Trim();
-                        break;
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        private ProductionInfo getProductionInfo(string infobox)
-        {
-            ProductionInfo result = null;
-
-            //short circuit infoboxes without production info
-            if (!infobox.Contains("|Produces Amount"))
-            {
-                return result;
-            }
-
-            result = new ProductionInfo();
-            result.EndProduct = new EndProduct();
-
-            using (var reader = new StringReader(infobox))
-            {
-                string curLine;
-                while ((curLine = reader.ReadLine()) != null)
-                {
-                    curLine = curLine.Replace(INFOBOX_TEMPLATE_END, string.Empty);
-
-                    if (curLine.StartsWith("|Produces Amount Electricity", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var productionAmountElectricity = curLine.Replace("|Produces Amount Electricity", string.Empty)
-                            .Replace("=", string.Empty)
-                            .Trim();
-
-                        if (double.TryParse(productionAmountElectricity, out double parsedProductionAmountElectricity))
-                        {
-                            result.EndProduct.AmountElectricity = parsedProductionAmountElectricity;
-                        }
-                    }
-                    else if (curLine.StartsWith("|Produces Amount", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var productionAmount = curLine.Replace("|Produces Amount", string.Empty)
-                            .Replace("=", string.Empty)
-                            .Trim();
-
-                        if (double.TryParse(productionAmount, out double parsedProductionAmount))
-                        {
-                            result.EndProduct.Amount = parsedProductionAmount;
-                        }
-                    }
-                    else if (curLine.StartsWith("|Produces Icon", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var icon = curLine.Replace("|Produces Icon", string.Empty)
-                            .Replace("=", string.Empty)
-                            .Trim();
-
-                        result.EndProduct.Icon = icon;
-                    }
-                    else if (curLine.StartsWith("|Input ", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var matchAmount = regexInputAmount.Match(curLine);
-                        if (matchAmount.Success)
-                        {
-                            var matchedCounter = matchAmount.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
-                            {
-                                throw new Exception("could not find counter");
-                            }
-
-                            //handle entry with no value e.g. "|Input 2 Amount     = "
-                            var matchedValue = matchAmount.Groups["value"].Value.Replace(",", ".");
-                            if (string.IsNullOrWhiteSpace(matchedValue))
-                            {
-                                continue;
-                            }
-
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double inputValue))
-                            {
-                                throw new Exception("could not find value for input");
-                            }
-
-                            var foundInputProduct = result.InputProducts.FirstOrDefault(x => x.Order == counter);
-                            if (foundInputProduct == null)
-                            {
-                                foundInputProduct = new InputProduct
-                                {
-                                    Order = counter
-                                };
-
-                                result.InputProducts.Add(foundInputProduct);
-                            }
-
-                            foundInputProduct.Amount = inputValue;
-
-                            continue;
-                        }
-
-                        var matchAmountElectricity = regexInputAmountElectricity.Match(curLine);
-                        if (matchAmountElectricity.Success)
-                        {
-                            var matchedCounter = matchAmountElectricity.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
-                            {
-                                throw new Exception("could not find counter");
-                            }
-
-                            //handle entry with no value e.g. "|Input 1 Amount Electricity    = "
-                            var matchedValue = matchAmountElectricity.Groups["value"].Value.Replace(",", ".");
-                            if (string.IsNullOrWhiteSpace(matchedValue))
-                            {
-                                continue;
-                            }
-
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double inputValue))
-                            {
-                                throw new Exception("could not find value for input");
-                            }
-
-                            var foundInputProduct = result.InputProducts.FirstOrDefault(x => x.Order == counter);
-                            if (foundInputProduct == null)
-                            {
-                                foundInputProduct = new InputProduct
-                                {
-                                    Order = counter
-                                };
-
-                                result.InputProducts.Add(foundInputProduct);
-                            }
-
-                            foundInputProduct.AmountElectricity = inputValue;
-
-                            continue;
-                        }
-
-                        var matchIcon = regexInputIcon.Match(curLine);
-                        if (matchIcon.Success)
-                        {
-                            var matchedCounter = matchIcon.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
-                            {
-                                throw new Exception("could not find counter");
-                            }
-
-                            //handle entry with no value e.g. "|Input 1 Icon = "
-                            var matchedFileName = matchIcon.Groups["fileName"].Value;
-                            if (string.IsNullOrWhiteSpace(matchedFileName))
-                            {
-                                continue;
-                            }
-
-                            var foundInputProduct = result.InputProducts.FirstOrDefault(x => x.Order == counter);
-                            if (foundInputProduct == null)
-                            {
-                                foundInputProduct = new InputProduct
-                                {
-                                    Order = counter
-                                };
-
-                                result.InputProducts.Add(foundInputProduct);
-                            }
-
-                            foundInputProduct.Icon = matchedFileName;
-
-                            continue;
-                        }
-                    }
-                }
-            }
-
-            return result;
+            //based on benchmarks, a Regex.Replace is slower and allocates more memory -> NOT better: return Regex.Replace(wikiText, @"\r\n|\n\r|\n|\r", Environment.NewLine);
+            return wikiText.Replace("\r\n", "\n")
+                .Replace("\r", "\n")
+                .Replace("\n", Environment.NewLine);
         }
     }
 }
