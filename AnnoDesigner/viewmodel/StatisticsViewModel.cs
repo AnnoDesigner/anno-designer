@@ -176,6 +176,7 @@ namespace AnnoDesigner.viewmodel
             get { return _buildings; }
             set { UpdateProperty(ref _buildings, value); }
         }
+
         public ObservableCollection<StatisticsBuilding> SelectedBuildings
         {
             get { return _selectedBuildings; }
@@ -234,6 +235,7 @@ namespace AnnoDesigner.viewmodel
             }
 
             var language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+            var tempList = new List<StatisticsBuilding>();
 
             foreach (var item in groupedBuildingsByIdentifier
                         .Where(_ => !_.ElementAt(0).Road && _.ElementAt(0).Identifier != null)
@@ -244,7 +246,7 @@ namespace AnnoDesigner.viewmodel
                 if (!string.IsNullOrWhiteSpace(item.ElementAt(0).Identifier))
                 {
                     var building = buildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
-                    if (building != null || item.ElementAt(0).Identifier=="Unknown Object")
+                    if (building != null || item.ElementAt(0).Identifier == "Unknown Object")
                     {
                         if (item.ElementAt(0).Identifier == "Unknown Object")
                         {
@@ -271,7 +273,12 @@ namespace AnnoDesigner.viewmodel
                     statisticBuilding.Name = TextNameNotFound;
                 }
 
-                result.Add(statisticBuilding);
+                tempList.Add(statisticBuilding);
+            }
+
+            foreach (var curBuilding in tempList.OrderByDescending(x => x.Count).ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase))
+            {
+                result.Add(curBuilding);
             }
 
             return result;

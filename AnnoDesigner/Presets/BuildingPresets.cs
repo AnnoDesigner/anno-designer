@@ -59,20 +59,22 @@ namespace AnnoDesigner.Presets
                         //For 2205 only
                         //Add building modules to element list.
                         //Group will be the same for elements in the list.
-                        var fourthLevelItem = new TreeViewItem { Header = TreeLocalization.TreeLocalization.GetTreeLocalization(thirdLevel.ElementAt(0).Group) + " " + TreeLocalization.TreeLocalization.GetTreeLocalization("Modules") };
-                        foreach (var fourthLevel in modulesList
-                            .Where(_ => _.Group == thirdLevel.ElementAt(0).Group))
+                        if (header.Key == "(A6) Anno 2205")
                         {
-                            fourthLevelItem.Items.Add(fourthLevel.ToAnnoObject());
-                        }
-                        if (fourthLevelItem.Items.Count > 0)
-                        {
-                            thirdLevelItem.Items.Add(fourthLevelItem);
+                            var fourthLevelItem = new TreeViewItem { Header = TreeLocalization.TreeLocalization.GetTreeLocalization(thirdLevel.ElementAt(0).Group) + " " + TreeLocalization.TreeLocalization.GetTreeLocalization("Modules") };
+                            foreach (var fourthLevel in modulesList
+                                .Where(_ => _.Group == thirdLevel.ElementAt(0).Group))
+                            {
+                                fourthLevelItem.Items.Add(fourthLevel.ToAnnoObject());
+                            }
+                            if (fourthLevelItem.Items.Count > 0)
+                            {
+                                thirdLevelItem.Items.Add(fourthLevelItem);
+                            }
                         }
                         secondLevelItem.Items.Add(thirdLevelItem);
                     }
-
-                    foreach (var thirdLevel in secondLevel.Where(_ => _.Group == null).OrderBy(_ => _.Group))
+                    foreach (var thirdLevel in secondLevel.Where(_ => _.Group == null).OrderBy(_ => _.GetOrderParameter()))
                     {
                         secondLevelItem.Items.Add(thirdLevel.ToAnnoObject());
                     }
