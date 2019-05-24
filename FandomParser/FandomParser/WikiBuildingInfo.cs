@@ -52,5 +52,11 @@ namespace FandomParser
 
         [DataMember(Order = 9)]
         public ProductionInfo ProductionInfos { get; set; }
+
+        [DataMember(Order = 10)]
+        public SupplyInfo SupplyInfos { get; set; }
+
+        [DataMember(Order = 11)]
+        public UnlockInfo UnlockInfos { get; set; }
     }
 }

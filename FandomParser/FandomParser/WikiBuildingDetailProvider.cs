@@ -194,6 +194,8 @@ namespace FandomParser
                     {
                         curBuilding.Type = infobox.Type;
                         curBuilding.ProductionInfos = infobox.ProductionInfos;
+                        curBuilding.SupplyInfos = infobox.SupplyInfos;
+                        curBuilding.UnlockInfos = infobox.UnlockInfos;
                     }
                 }
             }

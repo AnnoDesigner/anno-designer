@@ -11,5 +11,9 @@ namespace FandomParser.Core
         BuildingType Type { get; set; }
 
         ProductionInfo ProductionInfos { get; set; }
+
+        SupplyInfo SupplyInfos { get; set; }
+
+        UnlockInfo UnlockInfos { get; set; }
     }
 }

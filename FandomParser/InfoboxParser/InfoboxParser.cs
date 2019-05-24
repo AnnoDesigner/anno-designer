@@ -19,6 +19,18 @@ namespace InfoboxParser
         //|Input 1 Icon = Potato.png
         private static readonly Regex regexInputIcon = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Icon)\s*(?<equalSign>[=])\s*(?<fileName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        //|Supplies 1 Type = Farmers
+        private static readonly Regex regexSupplyType = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Supplies 1 Amount = 2
+        private static readonly Regex regexSupplyAmount = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Supplies 1 Amount Electricity = 4
+        private static readonly Regex regexSupplyAmountElectricity = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        //|Unlock Condition 1 Type = Farmers
+        private static readonly Regex regexUnlockConditionType = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Unlock Condition 1 Amount = 100
+        private static readonly Regex regexUnlockConditionAmount = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         private readonly ICommons _commons;
 
         public InfoboxParser(ICommons commons)
@@ -47,6 +59,8 @@ namespace InfoboxParser
             }
 
             ProductionInfo productionInfo = null;
+            SupplyInfo supplyInfo = null;
+            UnlockInfo unlockInfo = null;
             //TODO parse infoboxes containing information of multiple worlds
             if (!wikiText.StartsWith(_commons.InfoboxTemplateStartBothWorlds))
             {
@@ -55,6 +69,9 @@ namespace InfoboxParser
                 {
 
                 }
+
+                supplyInfo = getSupplyInfo(wikiText);
+                unlockInfo = getUnlockInfo(wikiText);
             }
 
             //handle special cases
@@ -70,6 +87,8 @@ namespace InfoboxParser
             result.Name = buildingName;
             result.Type = buildingType;
             result.ProductionInfos = productionInfo;
+            result.SupplyInfos = supplyInfo;
+            result.UnlockInfos = unlockInfo;
 
             return result;
         }
@@ -302,6 +321,244 @@ namespace InfoboxParser
                     }
                 }
             }
+
+            //order by number from infobox
+            result.InputProducts = result.InputProducts.OrderBy(x => x.Order).ToList();
+
+            return result;
+        }
+
+        private SupplyInfo getSupplyInfo(string infobox)
+        {
+            SupplyInfo result = null;
+
+            //short circuit infoboxes without supply info
+            if (!infobox.Contains("|Supplies "))
+            {
+                return result;
+            }
+
+            result = new SupplyInfo();
+
+            using (var reader = new StringReader(infobox))
+            {
+                string curLine;
+                while ((curLine = reader.ReadLine()) != null)
+                {
+                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
+
+                    if (curLine.StartsWith("|Supplies ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var matchAmount = regexSupplyAmount.Match(curLine);
+                        if (matchAmount.Success)
+                        {
+                            var matchedCounter = matchAmount.Groups["counter"].Value;
+                            if (!int.TryParse(matchedCounter, out int counter))
+                            {
+                                throw new Exception("could not find counter");
+                            }
+
+                            //handle entry with no value e.g. "|Supplies 2 Amount     = "
+                            var matchedValue = matchAmount.Groups["value"].Value.Replace(",", ".");
+                            if (string.IsNullOrWhiteSpace(matchedValue))
+                            {
+                                continue;
+                            }
+
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double supplyValue))
+                            {
+                                throw new Exception("could not find value for input");
+                            }
+
+                            var foundSupplyEntry = result.SupplyEntries.FirstOrDefault(x => x.Order == counter);
+                            if (foundSupplyEntry == null)
+                            {
+                                foundSupplyEntry = new SupplyEntry
+                                {
+                                    Order = counter
+                                };
+
+                                result.SupplyEntries.Add(foundSupplyEntry);
+                            }
+
+                            foundSupplyEntry.Amount = supplyValue;
+
+                            continue;
+                        }
+
+                        var matchAmountElectricity = regexSupplyAmountElectricity.Match(curLine);
+                        if (matchAmountElectricity.Success)
+                        {
+                            var matchedCounter = matchAmountElectricity.Groups["counter"].Value;
+                            if (!int.TryParse(matchedCounter, out int counter))
+                            {
+                                throw new Exception("could not find counter");
+                            }
+
+                            //handle entry with no value e.g. "|Supplies 1 Amount Electricity    = "
+                            var matchedValue = matchAmountElectricity.Groups["value"].Value.Replace(",", ".");
+                            if (string.IsNullOrWhiteSpace(matchedValue))
+                            {
+                                continue;
+                            }
+
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double supplyValue))
+                            {
+                                throw new Exception("could not find value for input");
+                            }
+
+                            var foundSupplyEntry = result.SupplyEntries.FirstOrDefault(x => x.Order == counter);
+                            if (foundSupplyEntry == null)
+                            {
+                                foundSupplyEntry = new SupplyEntry
+                                {
+                                    Order = counter
+                                };
+
+                                result.SupplyEntries.Add(foundSupplyEntry);
+                            }
+
+                            foundSupplyEntry.AmountElectricity = supplyValue;
+
+                            continue;
+                        }
+
+                        var matchType = regexSupplyType.Match(curLine);
+                        if (matchType.Success)
+                        {
+                            var matchedCounter = matchType.Groups["counter"].Value;
+                            if (!int.TryParse(matchedCounter, out int counter))
+                            {
+                                throw new Exception("could not find counter");
+                            }
+
+                            //handle entry with no value e.g. "|Supplies 1 Type = "
+                            var matchedTypeName = matchType.Groups["typeName"].Value;
+                            if (string.IsNullOrWhiteSpace(matchedTypeName))
+                            {
+                                continue;
+                            }
+
+                            var foundSupplyEntry = result.SupplyEntries.FirstOrDefault(x => x.Order == counter);
+                            if (foundSupplyEntry == null)
+                            {
+                                foundSupplyEntry = new SupplyEntry
+                                {
+                                    Order = counter
+                                };
+
+                                result.SupplyEntries.Add(foundSupplyEntry);
+                            }
+
+                            foundSupplyEntry.Type = matchedTypeName;
+
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            //order by number from infobox
+            result.SupplyEntries = result.SupplyEntries.OrderBy(x => x.Order).ToList();
+
+            return result;
+        }
+
+        private UnlockInfo getUnlockInfo(string infobox)
+        {
+            UnlockInfo result = null;
+
+            //short circuit infoboxes without supply info
+            if (!infobox.Contains("|Unlock "))
+            {
+                return result;
+            }
+
+            result = new UnlockInfo();
+
+            using (var reader = new StringReader(infobox))
+            {
+                string curLine;
+                while ((curLine = reader.ReadLine()) != null)
+                {
+                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
+
+                    if (curLine.StartsWith("|Unlock Condition ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var matchAmount = regexUnlockConditionAmount.Match(curLine);
+                        if (matchAmount.Success)
+                        {
+                            var matchedCounter = matchAmount.Groups["counter"].Value;
+                            if (!int.TryParse(matchedCounter, out int counter))
+                            {
+                                throw new Exception("could not find counter");
+                            }
+
+                            //handle entry with no value e.g. "|Unlock Condition 1 Amount = "
+                            var matchedValue = matchAmount.Groups["value"].Value.Replace(",", ".");
+                            if (string.IsNullOrWhiteSpace(matchedValue))
+                            {
+                                continue;
+                            }
+
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double conditionValue))
+                            {
+                                throw new Exception("could not find value for input");
+                            }
+
+                            var foundUnlockCondition = result.UnlockConditions.FirstOrDefault(x => x.Order == counter);
+                            if (foundUnlockCondition == null)
+                            {
+                                foundUnlockCondition = new UnlockCondition
+                                {
+                                    Order = counter
+                                };
+
+                                result.UnlockConditions.Add(foundUnlockCondition);
+                            }
+
+                            foundUnlockCondition.Amount = conditionValue;
+
+                            continue;
+                        }
+
+                        var matchType = regexUnlockConditionType.Match(curLine);
+                        if (matchType.Success)
+                        {
+                            var matchedCounter = matchType.Groups["counter"].Value;
+                            if (!int.TryParse(matchedCounter, out int counter))
+                            {
+                                throw new Exception("could not find counter");
+                            }
+
+                            //handle entry with no value e.g. "|Unlock Condition 1 Type = "
+                            var matchedTypeName = matchType.Groups["typeName"].Value;
+                            if (string.IsNullOrWhiteSpace(matchedTypeName))
+                            {
+                                continue;
+                            }
+
+                            var foundUnlockCondition = result.UnlockConditions.FirstOrDefault(x => x.Order == counter);
+                            if (foundUnlockCondition == null)
+                            {
+                                foundUnlockCondition = new UnlockCondition
+                                {
+                                    Order = counter
+                                };
+
+                                result.UnlockConditions.Add(foundUnlockCondition);
+                            }
+
+                            foundUnlockCondition.Type = matchedTypeName;
+
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            //order by number from infobox
+            result.UnlockConditions = result.UnlockConditions.OrderBy(x => x.Order).ToList();
 
             return result;
         }

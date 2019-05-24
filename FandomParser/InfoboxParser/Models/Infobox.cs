@@ -14,5 +14,9 @@ namespace InfoboxParser.Models
         public BuildingType Type { get; set; }
 
         public ProductionInfo ProductionInfos { get; set; }
+
+        public SupplyInfo SupplyInfos { get; set; }
+
+        public UnlockInfo UnlockInfos { get; set; }
     }
 }

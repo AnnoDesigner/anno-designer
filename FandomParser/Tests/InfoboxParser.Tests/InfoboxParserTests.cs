@@ -467,6 +467,18 @@ namespace InfoboxParser.Tests
             Assert.Equal(0.667, result.ProductionInfos.InputProducts[1].Amount);
             Assert.Equal(1.333, result.ProductionInfos.InputProducts[1].AmountElectricity);
             Assert.Equal("Iron.png", result.ProductionInfos.InputProducts[1].Icon);
+
+            Assert.Equal(2, result.SupplyInfos.SupplyEntries.Count);
+            Assert.Equal(65, result.SupplyInfos.SupplyEntries[0].Amount);
+            Assert.Equal(130, result.SupplyInfos.SupplyEntries[0].AmountElectricity);
+            Assert.Equal("Artisans", result.SupplyInfos.SupplyEntries[0].Type);
+            Assert.Equal(32.5, result.SupplyInfos.SupplyEntries[1].Amount);
+            Assert.Equal(65, result.SupplyInfos.SupplyEntries[1].AmountElectricity);
+            Assert.Equal("Engineers", result.SupplyInfos.SupplyEntries[1].Type);
+
+            Assert.Single(result.UnlockInfos.UnlockConditions);
+            Assert.Equal(1, result.UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal("Artisans", result.UnlockInfos.UnlockConditions[0].Type);
         }
 
         [Fact]
@@ -488,8 +500,20 @@ namespace InfoboxParser.Tests
             Assert.Equal(1, result.ProductionInfos.InputProducts[0].Amount);
             Assert.Equal(2, result.ProductionInfos.InputProducts[0].AmountElectricity);
             Assert.Equal("Flour.png", result.ProductionInfos.InputProducts[0].Icon);
+
+            Assert.Equal(2, result.SupplyInfos.SupplyEntries.Count);
+            Assert.Equal(55, result.SupplyInfos.SupplyEntries[0].Amount);
+            Assert.Equal(110, result.SupplyInfos.SupplyEntries[0].AmountElectricity);
+            Assert.Equal("Workers", result.SupplyInfos.SupplyEntries[0].Type);
+            Assert.Equal(27.5, result.SupplyInfos.SupplyEntries[1].Amount);
+            Assert.Equal(55, result.SupplyInfos.SupplyEntries[1].AmountElectricity);
+            Assert.Equal("Artisans", result.SupplyInfos.SupplyEntries[1].Type);
+
+            Assert.Single(result.UnlockInfos.UnlockConditions);
+            Assert.Equal(150, result.UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal("Workers", result.UnlockInfos.UnlockConditions[0].Type);
         }
 
-        #endregion
+        #endregion        
     }
 }
