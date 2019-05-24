@@ -53,6 +53,9 @@
     </Compile>
     <Compile Include="ColorHueSaturationBrightnessComparer.cs" />
     <Compile Include="Commons.cs" />
+    <Compile Include="PresetsHelper\ColorPresetsHelper.cs" />
+    <Compile Include="PresetsLoader\BuildingPresetsLoader.cs" />
+    <Compile Include="PresetsLoader\ColorPresetsLoader.cs" />
     <Compile Include="ConnectivityHelper.cs" />
     <Compile Include="FileHelper.cs" />
     <Compile Include="model\LayoutVersionContainer.cs" />
@@ -60,6 +63,7 @@
     <Compile Include="PresetsLoader\IconMappingPresetsLoader.cs" />
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
+    <Compile Include="Presets\IconMappingPresets.cs" />
     <Compile Include="model\SavedLayout.cs" />
     <Compile Include="TreeLocalization.cs" />
     <Compile Include="converter\BoolToVisibilityConverter.cs" />
@@ -71,11 +75,9 @@
     <Compile Include="Presets\BuildingInfo.cs" />
     <Compile Include="Presets\BuildingPresets.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Presets\ColorInfo.cs" />
+    <Compile Include="Presets\PredefinedColor.cs" />
     <Compile Include="Presets\ColorPresets.cs" />
     <Compile Include="Presets\ColorScheme.cs" />
-    <Compile Include="Presets\ColorTarget.cs" />
-    <Compile Include="Presets\IconMappingPresets.cs" />
     <Compile Include="Presets\IconNameMap.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -146,7 +148,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="colors.json" />
+    <None Include="colors.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="icons.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

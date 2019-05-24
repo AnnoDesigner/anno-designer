@@ -25,6 +25,9 @@ namespace AnnoDesigner
         [DataMember(Order = 3)]
         public byte B;
 
+        //Needed for Databinding. Implicit converter is not called
+        public Color MediaColor { get { return this; } }
+
         public SerializableColor(byte a, byte r, byte g, byte b)
         {
             A = a;

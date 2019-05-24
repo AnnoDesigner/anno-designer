@@ -1,12 +1,23 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 
 namespace AnnoDesigner.Presets
 {
     [DataContract]
+    [DebuggerDisplay("{" + nameof(Version) + "}")]
     public class ColorPresets
     {
-        [DataMember]
-        public List<ColorScheme> ColorSchemes { get; set; }
+        public ColorPresets()
+        {
+            Version = string.Empty;
+            AvailableSchemes = new List<ColorScheme>();
+        }
+
+        [DataMember(Order = 0)]
+        public string Version { get; set; }
+
+        [DataMember(Order = 1, Name = "AvailableSchemes")]
+        public List<ColorScheme> AvailableSchemes { get; set; }
     }
 }

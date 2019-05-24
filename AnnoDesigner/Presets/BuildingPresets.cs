@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Controls;
@@ -12,6 +13,7 @@ namespace AnnoDesigner.Presets
     /// some radii are curiously missing, e.g. coffee plantation
     /// </summary>
     [DataContract]
+    [DebuggerDisplay("{" + nameof(Version) + "}")]
     public class BuildingPresets
     {
         [DataMember(Order = 0)]
