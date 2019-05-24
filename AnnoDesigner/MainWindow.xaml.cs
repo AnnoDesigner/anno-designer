@@ -175,6 +175,8 @@ namespace AnnoDesigner
             ShowLabels.IsChecked = Settings.Default.ShowLabels;
             _treeViewState = Settings.Default.TreeViewState ?? null;
             _mainWindowLocalization.TreeViewSearchText = Settings.Default.TreeViewSearchText ?? "";
+            CheckBoxPavedStreet.IsChecked = Settings.Default.IsPavedStreet;
+            SetPavedStreetCheckboxColor();
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -293,7 +295,8 @@ namespace AnnoDesigner
                         Commons.RestartApplication(true, Constants.Argument_Ask_For_Admin, App.ExecutablePath);
                     }
 
-                    var newLocation = await _commons.UpdateHelper.DownloadLatestPresetFileAsync().ConfigureAwait(false);
+                    //Context is required here, do not use ConfigureAwait(false)
+                    var newLocation = await _commons.UpdateHelper.DownloadLatestPresetFileAsync();
 
                     busyIndicator.IsBusy = false;
 
@@ -405,8 +408,15 @@ namespace AnnoDesigner
             // radius
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius = obj.Radius;
             //InfluenceRadius
-            _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = obj.InfluenceRange;
-
+            if (_mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet == false)
+            {
+                _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = obj.InfluenceRange;
+            }
+            else
+            {
+                GetDistanceRange(true);
+                SetPavedStreetCheckboxColor();
+            }
             //Set Influence Type combo box
             if (obj.Radius > 0 && obj.InfluenceRange > 0)
             {
@@ -421,12 +431,15 @@ namespace AnnoDesigner
             else if (obj.InfluenceRange > 0)
             {
                 comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Distance;
+                if (obj.PavedStreet)
+                {
+                    _mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet = obj.PavedStreet;
+                }
             }
             else
             {
                 comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.None;
             }
-
             // flags            
             //_mainWindowLocalization.BuildingSettingsViewModel.IsEnableLabelChecked = !string.IsNullOrEmpty(obj.Label);
             _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked = obj.Borderless;
@@ -470,6 +483,7 @@ namespace AnnoDesigner
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
                 Radius = _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius,
                 InfluenceRange = _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange,
+                PavedStreet = _mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet,
                 Borderless = _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked,
                 Road = _mainWindowLocalization.BuildingSettingsViewModel.IsRoadChecked,
                 Identifier = _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier,
@@ -547,6 +561,7 @@ namespace AnnoDesigner
                 {
                     obj.Identifier = "Unknown Object";
                 }
+
                 annoCanvas.SetCurrentObject(obj);
             }
             else
@@ -566,6 +581,7 @@ namespace AnnoDesigner
                     {
                         Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
                     });
+
                     ApplyCurrentObject();
                 }
             }
@@ -626,6 +642,7 @@ namespace AnnoDesigner
         {
             Close();
         }
+        //When changing 'SelectBox'
 
         private void ButtonPlaceBuildingClick(object sender, RoutedEventArgs e)
         {
@@ -817,24 +834,101 @@ namespace AnnoDesigner
                     case BuildingInfluenceType.None:
                         dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
                         dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        dockPanelPavedStreet.Visibility = Visibility.Collapsed;
                         break;
                     case BuildingInfluenceType.Radius:
                         dockPanelInfluenceRadius.Visibility = Visibility.Visible;
                         dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        dockPanelPavedStreet.Visibility = Visibility.Collapsed;
                         break;
                     case BuildingInfluenceType.Distance:
                         dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
                         dockPanelInfluenceRange.Visibility = Visibility.Visible;
+                        dockPanelPavedStreet.Visibility = Visibility.Visible;
                         break;
                     case BuildingInfluenceType.Both:
                         dockPanelInfluenceRadius.Visibility = Visibility.Visible;
                         dockPanelInfluenceRange.Visibility = Visibility.Visible;
+                        dockPanelPavedStreet.Visibility = Visibility.Visible;
                         break;
                     default:
                         dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
                         dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
+                        dockPanelPavedStreet.Visibility = Visibility.Collapsed;
                         break;
                 }
+            }
+        }
+
+        //CheckBox PavedStreet : calculate distance range
+        private void CheckBoxPavedStreetClick(object sender, RoutedEventArgs o)
+        {
+            if (!Settings.Default.ShowPavedRoadsWarning)
+            {
+                MessageBox.Show(_mainWindowLocalization.BuildingSettingsViewModel.TextPavedStreetToolTip, _mainWindowLocalization.BuildingSettingsViewModel.TextPavedStreetWarningTitle);
+                Settings.Default.ShowPavedRoadsWarning = true;
+            }
+            if (!GetDistanceRange(this.CheckBoxPavedStreet.IsChecked.Value))
+            {
+                Debug.WriteLine("$Calculate Paved Street/Dirt Street Error: Can not obtain new Distance Value, value set to 0");
+            }
+            else
+            {
+                //I like to have here a isObjectOnMouse routine, to check of the command 'ApplyCurrentObject();' must be excecuted or not: 
+                //Check of Mouse has an object or not -> if mouse has Object then Renew Object, withouth placnig. (do ApplyCurrentObject();)
+            }
+        }
+        
+        public bool GetDistanceRange(bool value)
+        {
+            Settings.Default.IsPavedStreet = value;
+            var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier);
+            SetPavedStreetCheckboxColor();
+            if (buildingInfo  != null)
+            {
+                if (buildingInfo.InfluenceRange > 0)
+                {
+                    if (value)
+                    {
+                        //sum for range on paved street for City Institution Building = n*1.38 (Police, Fire stations and Hospials)
+                        //to round up, there must be ad 0.5 to the numbers after the multiplier
+                        //WYSWYG : the minus 2 is what gamers see as they count the Dark Green area on Paved Street
+                        if (buildingInfo.InfluenceRange > 0 && buildingInfo.Template == "CityInstitutionBuilding")
+                        {
+                            _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round(((buildingInfo.InfluenceRange * 1.38) + 0.5) - 2);
+                        }
+                        //sum for range on paved street for Public Service Building = n*1.43 (Marketplaces, Pubs, Banks, ... (etc))
+                        //to round up, there must be ad 0.5 to the numbers after the multiplier
+                        //WYSWYG : the minus 2 is what gamers see as they count the Dark Green area on Paved Street
+                        else if (buildingInfo.InfluenceRange > 0)
+                        {
+                            _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round(((buildingInfo.InfluenceRange * 1.43) + 0.5) - 2);
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        if (buildingInfo.InfluenceRange > 0)
+                        {
+                            //WYSWYG : the minus 2 is what gamers see as they count the Dark Green area on Dirt Road
+                            _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = buildingInfo.InfluenceRange - 2;
+                        }
+                        return true;
+                    }
+                }
+            }
+            _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = 0;
+            return false;
+        }
+        public void SetPavedStreetCheckboxColor()
+        {
+            if (this.CheckBoxPavedStreet.IsChecked == true)
+            {
+                this.CheckBoxPavedStreet.Background = Brushes.OrangeRed;
+            }
+            else
+            {
+                this.CheckBoxPavedStreet.Background = Brushes.White;
             }
         }
 
@@ -1010,7 +1104,7 @@ namespace AnnoDesigner
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
 
-                var icons = new Dictionary<string, IconImage>();
+                var icons = new Dictionary<string, IconImage>(StringComparer.OrdinalIgnoreCase);
                 foreach (var curIcon in annoCanvas.Icons)
                 {
                     icons.Add(curIcon.Key, new IconImage(curIcon.Value.Name, curIcon.Value.Localizations, curIcon.Value.IconPath));

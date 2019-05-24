@@ -49,7 +49,7 @@ namespace AnnoDesigner.PresetsLoader
                 }
 
                 // sort icons by their DisplayName
-                result = result.OrderBy(x => x.Value.DisplayName).ToDictionary(x => x.Key, x => x.Value);
+                result = result.OrderBy(x => x.Value.DisplayName).ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase);//make sure ContainsKey is caseInSensitive
             }
             catch (Exception ex)
             {

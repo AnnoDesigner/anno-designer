@@ -287,6 +287,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Indicates the current mouse mode.
         /// </summary>
+        //private MouseMode CurrentMode
         private MouseMode CurrentMode
         {
             get
@@ -1597,6 +1598,8 @@ namespace AnnoDesigner
             _selectedObjects.Clear();
             LoadedFile = "";
             InvalidateVisual();
+
+            StatisticsUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -1677,6 +1680,8 @@ namespace AnnoDesigner
                     _placedObjects = layout;
                     LoadedFile = filename;
                     Normalize(1);
+
+                    StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                 }
             }
             catch (Exception e)
