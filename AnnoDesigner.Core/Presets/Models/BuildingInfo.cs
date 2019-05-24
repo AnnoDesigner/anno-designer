@@ -1,8 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Windows;
+using AnnoDesigner.Core.Models;
 
-namespace AnnoDesigner.Presets
+namespace AnnoDesigner.Core.Presets.Models
 {
     /// <summary>
     /// Contains information for one building type, deserialized from presets.json.
@@ -91,42 +92,5 @@ namespace AnnoDesigner.Presets
         //public string ProductName { get; set; }
         //[DataMember(Name = "Production.Product.Eng1")]
         //public string ProductEng1 { get; set; }
-
-        public AnnoObject ToAnnoObject()
-        {
-            var labelLocalization = Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
-            if (string.IsNullOrEmpty(labelLocalization)) { labelLocalization = Localization["eng"]; }
-            return new AnnoObject
-            {
-                //Label = (Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]),
-                Label = labelLocalization,
-                Icon = IconFileName,
-                Radius = InfluenceRadius,
-                InfluenceRange = InfluenceRange -2,
-                Identifier = Identifier,
-                Size = BuildBlocker == null ? new Size() : new Size(BuildBlocker["x"], BuildBlocker["z"]),
-                Template = Template
-                //BuildCosts = BuildCost
-            };
-        }
-
-        public string GetOrderParameter()
-        {
-            var labelLocalization = Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
-            if (string.IsNullOrEmpty(labelLocalization)) { labelLocalization = Localization["eng"]; }
-            //return Localization == null ? Identifier : Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
-            return labelLocalization;
-        }
-    }
-
-    /// <summary>
-    /// Holds the influence type of a building - not stored in the buildingInfo object itself, this is used in MainWindow.
-    /// </summary>
-    public enum BuildingInfluenceType
-    {
-        None,
-        Radius,
-        Distance,
-        Both = Radius | Distance,
     }
 }

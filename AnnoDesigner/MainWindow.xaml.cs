@@ -1,5 +1,4 @@
-﻿using AnnoDesigner.Presets;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Linq;
@@ -19,6 +18,10 @@ using System.Threading;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using AnnoDesigner.model;
+using AnnoDesigner.Core.Extensions;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core;
+using AnnoDesigner.Core.Presets.Models;
 
 namespace AnnoDesigner
 {
@@ -205,7 +208,7 @@ namespace AnnoDesigner
 
             // check for updates on startup            
             _mainWindowLocalization.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
-            _mainWindowLocalization.FileVersionValue = Constants.FileVersion.ToString("0.#", CultureInfo.InvariantCulture);
+            _mainWindowLocalization.FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
 
             CheckForUpdates(false);
 
@@ -408,7 +411,7 @@ namespace AnnoDesigner
             // radius
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius = obj.Radius;
             //InfluenceRadius
-            if (_mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet == false)
+            if (!_mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet)
             {
                 _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = obj.InfluenceRange;
             }
@@ -878,13 +881,13 @@ namespace AnnoDesigner
                 //Check of Mouse has an object or not -> if mouse has Object then Renew Object, withouth placnig. (do ApplyCurrentObject();)
             }
         }
-        
+
         public bool GetDistanceRange(bool value)
         {
             Settings.Default.IsPavedStreet = value;
             var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier);
             SetPavedStreetCheckboxColor();
-            if (buildingInfo  != null)
+            if (buildingInfo != null)
             {
                 if (buildingInfo.InfluenceRange > 0)
                 {
@@ -1091,7 +1094,7 @@ namespace AnnoDesigner
             }
 
             // copy all objects
-            var allObjects = annoCanvas.PlacedObjects.Select(_ => new AnnoObject(_)).ToList();
+            var allObjects = annoCanvas.PlacedObjects.Select(_ => new AnnoObject(_)).Cast<AnnoObject>().ToList();
             // copy selected objects
             // note: should be references to the correct copied objects from allObjects
             var selectedObjects = annoCanvas.SelectedObjects.Select(_ => new AnnoObject(_)).ToList();

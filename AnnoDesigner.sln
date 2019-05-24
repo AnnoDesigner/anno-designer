@@ -12,20 +12,36 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnnoDesigner.Core", "AnnoDesigner.Core\AnnoDesigner.Core.csproj", "{C73FBFF0-1A11-40FC-8F1F-29637699419A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3AF4C58B-FEF0-485F-8DBF-CC61F9AF6FAD}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{3AF4C58B-FEF0-485F-8DBF-CC61F9AF6FAD}.Debug|x86.ActiveCfg = Debug|x86
 		{3AF4C58B-FEF0-485F-8DBF-CC61F9AF6FAD}.Debug|x86.Build.0 = Debug|x86
+		{3AF4C58B-FEF0-485F-8DBF-CC61F9AF6FAD}.Release|Any CPU.ActiveCfg = Release|x86
 		{3AF4C58B-FEF0-485F-8DBF-CC61F9AF6FAD}.Release|x86.ActiveCfg = Release|x86
 		{3AF4C58B-FEF0-485F-8DBF-CC61F9AF6FAD}.Release|x86.Build.0 = Release|x86
+		{F6EA37DC-F9E0-445D-B727-F742E6E61D91}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{F6EA37DC-F9E0-445D-B727-F742E6E61D91}.Debug|x86.ActiveCfg = Debug|x86
 		{F6EA37DC-F9E0-445D-B727-F742E6E61D91}.Debug|x86.Build.0 = Debug|x86
+		{F6EA37DC-F9E0-445D-B727-F742E6E61D91}.Release|Any CPU.ActiveCfg = Release|x86
 		{F6EA37DC-F9E0-445D-B727-F742E6E61D91}.Release|x86.ActiveCfg = Release|x86
 		{F6EA37DC-F9E0-445D-B727-F742E6E61D91}.Release|x86.Build.0 = Release|x86
+		{C73FBFF0-1A11-40FC-8F1F-29637699419A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C73FBFF0-1A11-40FC-8F1F-29637699419A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C73FBFF0-1A11-40FC-8F1F-29637699419A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C73FBFF0-1A11-40FC-8F1F-29637699419A}.Debug|x86.Build.0 = Debug|Any CPU
+		{C73FBFF0-1A11-40FC-8F1F-29637699419A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C73FBFF0-1A11-40FC-8F1F-29637699419A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C73FBFF0-1A11-40FC-8F1F-29637699419A}.Release|x86.ActiveCfg = Release|Any CPU
+		{C73FBFF0-1A11-40FC-8F1F-29637699419A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

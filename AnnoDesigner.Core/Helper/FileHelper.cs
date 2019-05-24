@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnnoDesigner
+namespace AnnoDesigner.Core.Helper
 {
     public static class FileHelper
     {
@@ -46,7 +46,7 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                string errorMessage = $"The attributes of the file \"{filePath}\" could not be set to 'normal'.";
+                var errorMessage = $"The attributes of the file \"{filePath}\" could not be set to 'normal'.";
                 throw new IOException(errorMessage, ex);
             }
         }

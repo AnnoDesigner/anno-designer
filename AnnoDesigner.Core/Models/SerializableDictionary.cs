@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace AnnoDesigner
+namespace AnnoDesigner.Core.Models
 {
     [Serializable]
     public class SerializableDictionary<T>
         : ISerializable
     {
         public readonly Dictionary<string, T> Dict;
-        
+
         public SerializableDictionary()
         {
             Dict = new Dictionary<string, T>();
@@ -36,12 +36,12 @@ namespace AnnoDesigner
         {
             get
             {
-                return Dict.ContainsKey(key) ? Dict[key] : default(T);
+                return Dict.ContainsKey(key) ? Dict[key] : default;
             }
             set
             {
                 Dict[key] = value;
             }
         }
-    }  
+    }
 }

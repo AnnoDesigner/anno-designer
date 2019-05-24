@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 
-namespace AnnoDesigner
+namespace AnnoDesigner.Core.Models
 {
     /// <summary>
     /// Provides a serializable representation of the System.Windows.Media.Color class

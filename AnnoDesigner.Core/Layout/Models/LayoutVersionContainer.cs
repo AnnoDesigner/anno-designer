@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace AnnoDesigner.model
+namespace AnnoDesigner.Core.Layout.Models
 {
     /// <summary>
     /// Container with just the file version number

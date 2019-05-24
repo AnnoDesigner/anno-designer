@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Presets
 {

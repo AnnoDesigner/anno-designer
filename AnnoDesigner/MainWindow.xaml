@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:my="clr-namespace:AnnoDesigner"
+        xmlns:coreModels="clr-namespace:AnnoDesigner.Core.Models;assembly=AnnoDesigner.Core"
         xmlns:l="clr-namespace:AnnoDesigner.Localization"
         xmlns:converter="clr-namespace:AnnoDesigner.converter"
         xmlns:i="clr-namespace:AnnoDesigner.Presets"
@@ -22,7 +23,7 @@
                                              TrueValue="Visible"
                                              FalseValue="Hidden" />
         <xctk:ColorToSolidColorBrushConverter x:Key="converterColorToSolidColorBrush" />
-        <DataTemplate DataType="{x:Type model:IconImage}">
+        <DataTemplate DataType="{x:Type coreModels:IconImage}">
             <StackPanel Orientation="Horizontal">
                 <Viewbox Margin="5">
                     <Image Width="23"
@@ -34,7 +35,7 @@
                            Text="{Binding Path=DisplayName}" />
             </StackPanel>
         </DataTemplate>
-        <HierarchicalDataTemplate DataType="{x:Type my:AnnoObject}">
+        <HierarchicalDataTemplate DataType="{x:Type coreModels:AnnoObject}">
             <TextBlock Text="{Binding Label}" />
         </HierarchicalDataTemplate>
         <l:MainWindow x:Key="localization"></l:MainWindow>
@@ -567,13 +568,13 @@
                                    Height="25"
                                    Visibility="Visible">
                             <CheckBox Content="{Binding BuildingSettingsViewModel.TextPavedStreet}"
-                                      Name="CheckBoxPavedStreet" 
+                                      Name="CheckBoxPavedStreet"
                                       ToolTip="{Binding BuildingSettingsViewModel.TextPavedStreetToolTip}"
                                       Click="CheckBoxPavedStreetClick"
                                       DockPanel.Dock="Right"
                                       Margin="0,3,0,5"
                                       IsThreeState="False"
-                                      IsChecked="{Binding BuildingSettingsViewModel.IsPavedStreet}"/>
+                                      IsChecked="{Binding BuildingSettingsViewModel.IsPavedStreet}" />
                         </DockPanel>
                         <DockPanel LastChildFill="False">
                             <Label Content="{Binding BuildingSettingsViewModel.TextOptions}" />

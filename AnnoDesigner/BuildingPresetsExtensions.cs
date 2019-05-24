@@ -1,42 +1,33 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Controls;
-using AnnoDesigner;
+using AnnoDesigner.Core.Presets.Comparer;
+using AnnoDesigner.Core.Presets.Models;
 
-namespace AnnoDesigner.Presets
+namespace AnnoDesigner
 {
-    /// <summary>
-    /// Notes:
-    /// some radii are curiously missing, e.g. coffee plantation
-    /// </summary>
-    [DataContract]
-    public class BuildingPresets
+    public static class BuildingPresetsExtensions
     {
-        [DataMember(Order = 0)]
-        public string Version { get; set; }
-
-        [DataMember(Order = 1)]
-        public List<BuildingInfo> Buildings { get; set; }
-
-        public void AddToTree(TreeView treeView)
+        public static void AddToTree(this BuildingPresets buildingPresets, TreeView treeView)
         {
             var excludedTemplates = new[] { "Ark", "Harbour", "OrnamentBuilding" };
             var excludedFactions = new[] { "third party", "Facility Modules" };
-            var list = Buildings
+            var list = buildingPresets.Buildings
                 .Where(_ => !excludedTemplates.Contains(_.Template))
                 .Where(_ => !excludedFactions.Contains(_.Faction));
 
             //For Anno 2205 only
-            var modulesList = Buildings
+            var modulesList = buildingPresets.Buildings
                             .Where(_ => _.Header == "(A6) Anno 2205")
                             .Where(_ => _.Faction == "Facility Modules")
                             .Where(_ => _.Faction != "Facilities")
                             .ToList();
             var facilityList = list.Where(_ => _.Faction == "Facilities").ToList();
             //Get a list of nonMatchedModules;
-            var nonMatchedModulesList = modulesList.Except(facilityList, new BuildingInfoModuleComparer()).ToList();
+            var nonMatchedModulesList = modulesList.Except(facilityList, new BuildingInfoComparer()).ToList();
             //These appear to all match. The below statement should notify the progammer if we need to add handling for non matching lists
             System.Diagnostics.Debug.Assert(nonMatchedModulesList.Count == 0, "Module lists do not match, implement handling for this");
 
@@ -81,30 +72,6 @@ namespace AnnoDesigner.Presets
                 }
                 treeView.Items.Add(headerItem);
             }
-        }
-    }
-
-    /// <summary>
-    /// Comparer used to check if two BuildingInfo groups match
-    /// </summary>
-    public class BuildingInfoModuleComparer : IEqualityComparer<BuildingInfo>
-    {
-        public bool Equals(BuildingInfo x, BuildingInfo y)
-        {
-
-            //Check whether the compared objects reference the same data.
-            if (Object.ReferenceEquals(x, y)) return true;
-
-            //Check whether any of the compared objects is null.
-            if (Object.ReferenceEquals(x, null) || Object.ReferenceEquals(y, null))
-                return false;
-
-            //Check whether the buildingInfo group properties are equal
-            return x.Group == y.Group;
-        }
-        public int GetHashCode(BuildingInfo obj)
-        {
-            return base.GetHashCode();
         }
     }
 }

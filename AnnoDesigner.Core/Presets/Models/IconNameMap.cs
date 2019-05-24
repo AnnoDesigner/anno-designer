@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Runtime.Serialization;
+using AnnoDesigner.Core.Models;
 
-namespace AnnoDesigner.Presets
+namespace AnnoDesigner.Core.Presets.Models
 {
     [DataContract]
     [DebuggerDisplay("{" + nameof(IconFilename) + "}")]

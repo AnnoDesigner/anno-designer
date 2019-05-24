@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+using AnnoDesigner.Core.Models;
 
-namespace AnnoDesigner.model
+namespace AnnoDesigner.Core.Layout.Models
 {
     /// <summary>
     /// Container with file version and all objects
@@ -14,7 +15,7 @@ namespace AnnoDesigner.model
 
         public SavedLayout(List<AnnoObject> objects)
         {
-            FileVersion = Constants.FileVersion;
+            FileVersion = CoreConstants.LayoutFileVersion;
             Objects = objects;
         }
     }

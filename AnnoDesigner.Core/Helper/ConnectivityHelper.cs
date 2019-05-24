@@ -6,7 +6,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnnoDesigner
+namespace AnnoDesigner.Core.Helper
 {
     public static class ConnectivityHelper
     {

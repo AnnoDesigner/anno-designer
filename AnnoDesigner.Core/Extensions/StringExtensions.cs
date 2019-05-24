@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnnoDesigner
+namespace AnnoDesigner.Core.Extensions
 {
     public static class StringExtensions
     {
@@ -20,7 +20,7 @@ namespace AnnoDesigner
 
         public static bool Contains(this string s, IEnumerable<string> tokens)
         {
-            foreach (string token in tokens)
+            foreach (var token in tokens)
             {
                 if (s.Contains(token, StringComparison.OrdinalIgnoreCase))
                 {
@@ -33,7 +33,7 @@ namespace AnnoDesigner
 
         public static bool IsPartOf(this string s, IEnumerable<string> tokens)
         {
-            foreach (string token in tokens)
+            foreach (var token in tokens)
             {
                 if (token.Contains(s, StringComparison.OrdinalIgnoreCase))
                 {

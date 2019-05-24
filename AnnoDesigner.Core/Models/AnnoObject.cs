@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Windows;
 
-namespace AnnoDesigner
+namespace AnnoDesigner.Core.Models
 {
     /// <summary>
     /// Object that contains all information needed to fully describe a building on the grid
@@ -79,7 +79,7 @@ namespace AnnoDesigner
         /// ObjName string
         /// </summary>
         [DataMember(Order = 5)]
-        public string Template;
+        public string Template { get; set; }
 
         /// <summary>
         /// Color used to fill this object

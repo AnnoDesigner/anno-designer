@@ -12,8 +12,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using AnnoDesigner.model;
-using AnnoDesigner.Presets;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Layout;
+using AnnoDesigner.Core.Layout.Exceptions;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Presets.Loader;
+using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.PresetsLoader;
 using Microsoft.Win32;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
@@ -428,7 +432,7 @@ namespace AnnoDesigner
                 {
                     if (presetsToUse == null)
                     {
-                        BuildingPresets = DataIO.LoadFromFile<BuildingPresets>(Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile));
+                        BuildingPresets = SerializationHelper.LoadFromFile<BuildingPresets>(Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile));
                     }
                     else
                     {
@@ -452,7 +456,7 @@ namespace AnnoDesigner
                     try
                     {
                         IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
-                        iconNameMapping = loader.Load();
+                        iconNameMapping = loader.Load(Path.Combine(App.ApplicationPath, Constants.IconNameFile));
                     }
                     catch (Exception ex)
                     {
@@ -466,7 +470,7 @@ namespace AnnoDesigner
 
                     // load icons
                     var iconLoader = new IconLoader();
-                    Icons = iconLoader.Load(iconNameMapping);
+                    Icons = iconLoader.Load(Path.Combine(App.ApplicationPath, Constants.IconFolder), iconNameMapping);
 
                     sw.Stop();
                     Debug.WriteLine($"loading icons took: {sw.ElapsedMilliseconds}ms");
@@ -1608,7 +1612,7 @@ namespace AnnoDesigner
             try
             {
                 Normalize(1);
-                DataIO.SaveLayout(_placedObjects, LoadedFile);
+                LayoutLoader.SaveLayout(_placedObjects, LoadedFile);
             }
             catch (Exception e)
             {
@@ -1667,11 +1671,11 @@ namespace AnnoDesigner
         /// <summary>
         /// Loads a new layout from file.
         /// </summary>
-        public void OpenFile(string filename)
+        public void OpenFile(string filename, bool forceLoad = false)
         {
             try
             {
-                var layout = DataIO.LoadLayout(filename);
+                var layout = LayoutLoader.LoadLayout(filename, forceLoad);
                 if (layout != null)
                 {
                     _selectedObjects.Clear();
@@ -1680,10 +1684,22 @@ namespace AnnoDesigner
                     Normalize(1);
                 }
             }
+            catch (LayoutFileVersionMismatchException layoutEx)
+            {
+                Trace.WriteLine(layoutEx);
+
+                if (MessageBox.Show(
+                        "Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
+                        "File version mismatch", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    OpenFile(filename, true);
+                }
+            }
             catch (Exception e)
             {
                 IOErrorMessageBox(e);
             }
+
         }
 
         ///// <summary>

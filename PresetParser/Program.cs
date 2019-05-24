@@ -1,5 +1,7 @@
-﻿using AnnoDesigner;
-using AnnoDesigner.Presets;
+﻿using AnnoDesigner.Core.Extensions;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Presets.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -339,12 +341,12 @@ namespace PresetParser
             if (!testVersion)
             {
                 Console.WriteLine("Writing buildings to presets-{0}-{1}.json", annoVersion, BUILDING_PRESETS_VERSION);
-                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
+                SerializationHelper.SaveToFile(presets, "presets-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
             }
             else
             {
                 Console.WriteLine("THIS IS A TEST DUMMY FILE WRITEN!!!!");
-                DataIO.SaveToFile(presets, "DUMMY.json");
+                SerializationHelper.SaveToFile(presets, "DUMMY.json");
             }
             // wait for keypress before exiting
             Console.WriteLine("This list contains {0} Buildings", annoBuildingsListCount);
@@ -483,7 +485,7 @@ namespace PresetParser
                 buildingToAdd.Localization["fra"] = curExtraPreset.LocaFra;
                 buildingToAdd.Localization["pol"] = curExtraPreset.LocaPol;
                 buildingToAdd.Localization["rus"] = curExtraPreset.LocaRus;
-                
+
 
                 annoBuildingsListCount++;
 
@@ -1009,7 +1011,7 @@ namespace PresetParser
                 case "1010463": { templateName = "CityInstitutionBuilding"; break; }
                 case "1010464": { templateName = "CityInstitutionBuilding"; break; }
                 case "1010275": { templateName = "Farmfield"; groupName = "Farm Fields"; break; }
-                case "1010263": { templateName = "FarmBuilding";  break; }
+                case "1010263": { templateName = "FarmBuilding"; break; }
                 case "1010271": { templateName = "Farmfield"; groupName = "Farm Fields"; break; }
                 default: groupName = templateName.FirstCharToUpper(); break;
             }
@@ -1179,7 +1181,7 @@ namespace PresetParser
             /// find localization
             string buildingGuid = values["Standard"]["GUID"].InnerText;
             if (buildingGuid == "102133") { buildingGuid = "102085"; } /*rename the Big Tree to Mature Tree (as in game) */
-                        string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
+            string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
             string languageFilePath = "data/config/gui/";
             string languageFileStart = "texts_";
             string langNodeStartPath = "/TextExport/Texts/Text";
@@ -1643,7 +1645,7 @@ namespace PresetParser
             if (!testVersion)
             {
                 var fileName = "icons-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json";
-                DataIO.SaveToFile(iconNameMappings, fileName);
+                SerializationHelper.SaveToFile(iconNameMappings, fileName);
                 Console.WriteLine($"saved icon name mapping file: {fileName}");
             }
             else

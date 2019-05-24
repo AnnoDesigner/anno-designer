@@ -1,4 +1,5 @@
-﻿using AnnoDesigner.model;
+﻿using AnnoDesigner.Core.Models;
+using AnnoDesigner.model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

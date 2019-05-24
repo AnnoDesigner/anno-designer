@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnnoDesigner.Presets
+namespace AnnoDesigner.Core.Presets.Models
 {
     [DataContract]
     public class IconMappingPresets

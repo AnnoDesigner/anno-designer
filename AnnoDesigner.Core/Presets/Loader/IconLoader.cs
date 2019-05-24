@@ -1,5 +1,6 @@
-﻿using AnnoDesigner.model;
-using AnnoDesigner.Presets;
+﻿using AnnoDesigner.Core;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Presets.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,13 +8,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 
 namespace AnnoDesigner.PresetsLoader
 {
     public class IconLoader
     {
-        public Dictionary<string, IconImage> Load(IconMappingPresets iconNameMapping)
+        public Dictionary<string, IconImage> Load(string pathToIconFolder, IconMappingPresets iconNameMapping)
         {
             Dictionary<string, IconImage> result = null;
 
@@ -21,9 +21,7 @@ namespace AnnoDesigner.PresetsLoader
             {
                 result = new Dictionary<string, IconImage>();
 
-                var pathToIconFolder = Path.Combine(App.ApplicationPath, Constants.IconFolder);
-
-                foreach (var path in Directory.EnumerateFiles(pathToIconFolder, Constants.IconFolderFilter))
+                foreach (var path in Directory.EnumerateFiles(pathToIconFolder, CoreConstants.IconFolderFilter))
                 {
                     var filenameWithoutExt = Path.GetFileNameWithoutExtension(path);
                     if (string.IsNullOrWhiteSpace(filenameWithoutExt))

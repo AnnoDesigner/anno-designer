@@ -1,4 +1,5 @@
-﻿using AnnoDesigner.model;
+﻿using AnnoDesigner.Core.Helper;
+using AnnoDesigner.model;
 using AnnoDesigner.Properties;
 using Octokit;
 using System;

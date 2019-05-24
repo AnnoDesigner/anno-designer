@@ -5,8 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.model;
-using AnnoDesigner.Presets;
 
 namespace AnnoDesigner.viewmodel
 {
