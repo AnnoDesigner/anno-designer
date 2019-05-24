@@ -1,4 +1,5 @@
-﻿using AnnoDesigner.Core.Helper;
+﻿using AnnoDesigner.Core;
+using AnnoDesigner.Core.Helper;
 using AnnoDesigner.model;
 using AnnoDesigner.Properties;
 using Octokit;
@@ -94,7 +95,7 @@ namespace AnnoDesigner
 
         public string PathToUpdatedPresetsFile
         {
-            get { return _pathToUpdatedPresetsFile ?? (_pathToUpdatedPresetsFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + Constants.BuildingPresetsFile)); }
+            get { return _pathToUpdatedPresetsFile ?? (_pathToUpdatedPresetsFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + CoreConstants.BuildingPresetsFile)); }
         }
 
         public string PathToUpdatedPresetsAndIconsFile
@@ -109,7 +110,7 @@ namespace AnnoDesigner
 
         public string PathToUpdatedPredefinedColorsFile
         {
-            get { return _pathToUpdatedPredefinedColorsFile ?? (_pathToUpdatedPredefinedColorsFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + Constants.ColorPresetsFile)); }
+            get { return _pathToUpdatedPredefinedColorsFile ?? (_pathToUpdatedPredefinedColorsFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + CoreConstants.ColorPresetsFile)); }
         }
 
         private IReadOnlyList<Release> AllReleases { get; set; }
@@ -191,10 +192,10 @@ namespace AnnoDesigner
                 }
 
                 //check presets.json
-                var latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(Constants.BuildingPresetsFile, StringComparison.OrdinalIgnoreCase));
+                var latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(CoreConstants.BuildingPresetsFile, StringComparison.OrdinalIgnoreCase));
                 if (latestPresetAsset == null)
                 {
-                    Trace.WriteLine($"No asset found for latest preset update. ({Constants.BuildingPresetsFile})");
+                    Trace.WriteLine($"No asset found for latest preset update. ({CoreConstants.BuildingPresetsFile})");
                 }
                 else
                 {
@@ -232,10 +233,10 @@ namespace AnnoDesigner
                 //check colors.json
                 if (latestPresetAsset == null)
                 {
-                    latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(Constants.ColorPresetsFile, StringComparison.OrdinalIgnoreCase));
+                    latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(CoreConstants.ColorPresetsFile, StringComparison.OrdinalIgnoreCase));
                     if (latestPresetAsset == null)
                     {
-                        Trace.WriteLine($"No asset found for latest preset update. ({Constants.ColorPresetsFile})");
+                        Trace.WriteLine($"No asset found for latest preset update. ({CoreConstants.ColorPresetsFile})");
                     }
                     else
                     {
@@ -346,7 +347,7 @@ namespace AnnoDesigner
                     {
                         if (!string.IsNullOrWhiteSpace(PathToUpdatedPresetsFile) && File.Exists(PathToUpdatedPresetsFile))
                         {
-                            var originalPathToPresetsFile = Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile);
+                            var originalPathToPresetsFile = Path.Combine(App.ApplicationPath, CoreConstants.BuildingPresetsFile);
 
                             FileHelper.ResetFileAttributes(originalPathToPresetsFile);
                             File.Delete(originalPathToPresetsFile);
@@ -394,7 +395,7 @@ namespace AnnoDesigner
                         }
                         else if (!string.IsNullOrWhiteSpace(PathToUpdatedPredefinedColorsFile) && File.Exists(PathToUpdatedPredefinedColorsFile))
                         {
-                            var originalPathToPredefinedColorsFile = Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile);
+                            var originalPathToPredefinedColorsFile = Path.Combine(App.ApplicationPath, CoreConstants.ColorPresetsFile);
 
                             FileHelper.ResetFileAttributes(originalPathToPredefinedColorsFile);
                             File.Delete(originalPathToPredefinedColorsFile);

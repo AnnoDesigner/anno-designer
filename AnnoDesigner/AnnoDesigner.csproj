@@ -55,21 +55,16 @@
     <Compile Include="BuildingPresetsExtensions.cs" />
     <Compile Include="ColorHueSaturationBrightnessComparer.cs" />
     <Compile Include="Commons.cs" />
-    <Compile Include="model\BuildingInfluenceType.cs" />
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
+    <Compile Include="model\BuildingInfluenceType.cs" />
     <Compile Include="TreeLocalization.cs" />
-    <Compile Include="converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="MutexHelper.cs" />
     <Compile Include="model\StatisticsBuilding.cs" />
     <Compile Include="model\Notify.cs" />
     <Compile Include="model\RelayCommand.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Presets\ColorInfo.cs" />
-    <Compile Include="Presets\ColorPresets.cs" />
-    <Compile Include="Presets\ColorScheme.cs" />
-    <Compile Include="Presets\ColorTarget.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -134,7 +129,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="colors.json" />
+    <None Include="colors.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="icons.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

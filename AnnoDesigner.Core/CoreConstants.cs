@@ -15,6 +15,16 @@ namespace AnnoDesigner.Core
         public const int LayoutFileVersion = 3;
 
         /// <summary>
+        /// Json encoded file containing the color presets.
+        /// </summary>
+        public const string ColorPresetsFile = "colors.json";
+
+        /// <summary>
+        /// Json encoded file containing the building presets.
+        /// </summary>
+        public const string BuildingPresetsFile = "presets.json";
+
+        /// <summary>
         /// Filter used to retrieve the icons within the IconFolder.
         /// </summary>
         public const string IconFolderFilter = "*.png";

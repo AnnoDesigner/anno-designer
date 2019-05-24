@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnnoDesigner.PresetsLoader
+namespace AnnoDesigner.Core.Presets.Loader
 {
     public class IconLoader
     {

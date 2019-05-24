@@ -15,16 +15,6 @@ namespace AnnoDesigner
         public const double Version = 8.2;
 
         /// <summary>
-        /// Json encoded file containing the color presets.
-        /// </summary>
-        public const string ColorPresetsFile = "colors.json";
-
-        /// <summary>
-        /// Json encoded file containing the building presets.
-        /// </summary>
-        public const string BuildingPresetsFile = "presets.json";
-
-        /// <summary>
         /// Prefix for temporary updated presets file.
         /// </summary>
         public const string PrefixTempBuildingPresetsFile = "temp_";

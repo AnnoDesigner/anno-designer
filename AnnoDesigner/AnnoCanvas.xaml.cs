@@ -11,14 +11,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
-using AnnoDesigner.PresetsLoader;
 using Microsoft.Win32;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
@@ -432,7 +430,8 @@ namespace AnnoDesigner
                 {
                     if (presetsToUse == null)
                     {
-                        BuildingPresets = SerializationHelper.LoadFromFile<BuildingPresets>(Path.Combine(App.ApplicationPath, Constants.BuildingPresetsFile));
+                        var loader = new BuildingPresetsLoader();
+                        BuildingPresets = loader.Load(Path.Combine(App.ApplicationPath, CoreConstants.BuildingPresetsFile));
                     }
                     else
                     {
@@ -1602,6 +1601,8 @@ namespace AnnoDesigner
             _selectedObjects.Clear();
             LoadedFile = "";
             InvalidateVisual();
+
+            StatisticsUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -1682,6 +1683,8 @@ namespace AnnoDesigner
                     _placedObjects = layout;
                     LoadedFile = filename;
                     Normalize(1);
+
+                    StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                 }
             }
             catch (LayoutFileVersionMismatchException layoutEx)
