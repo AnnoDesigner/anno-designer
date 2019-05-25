@@ -41,9 +41,6 @@ namespace AnnoDesigner
         {
         }
 
-        //Needed for Databinding. Implicit converter is not called
-        public Color MediaColor { get { return this; } }
-
         public static implicit operator SerializableColor(Color color)
         {
             return new SerializableColor(color);
