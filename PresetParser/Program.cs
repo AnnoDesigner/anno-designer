@@ -28,7 +28,7 @@ namespace PresetParser
         public const string ANNO_VERSION_2205 = "2205";
         public const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "3.2.4";
+        private const string BUILDING_PRESETS_VERSION = "3.2.5";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -1008,9 +1008,17 @@ namespace PresetParser
                 case "1010462": { templateName = "CityInstitutionBuilding"; break; }
                 case "1010463": { templateName = "CityInstitutionBuilding"; break; }
                 case "1010464": { templateName = "CityInstitutionBuilding"; break; }
+                case "1010358": { templateName = "PublicServiceBuilding"; break; }
+                case "1010359": { templateName = "PublicServiceBuilding"; break; }
+                case "1010372": { templateName = "Market"; break; }
                 case "1010275": { templateName = "Farmfield"; groupName = "Farm Fields"; break; }
                 case "1010263": { templateName = "FarmBuilding";  break; }
                 case "1010271": { templateName = "Farmfield"; groupName = "Farm Fields"; break; }
+                case "1010266": { templateName = "FreeAreaBuilding"; break; }
+                case "100451": { templateName = "FactoryBuilding7"; break; }
+                case "1010288": { templateName = "FactoryBuilding7"; break; }
+                case "1010320": { templateName = "FactoryBuilding7"; break; }
+                case "101331": { templateName = "HeavyFactoryBuilding"; break; }
                 default: groupName = templateName.FirstCharToUpper(); break;
             }
             if (groupName == "Farm Fields")
@@ -1023,7 +1031,7 @@ namespace PresetParser
                 case "Culture_01 (Zoo)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Culture_02 (Museum)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Residence_tier01": { factionName = "(1) Farmers"; identifierName = "Residence_Old_World"; groupName = "Residence"; break; }
-                case "Residence_colony01_tier01": { factionName = "(7) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; break; }
+                case "Residence_colony01_tier01": { factionName = "(7) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; templateName= "ResidenceBuilding7" ; break; }
                 case "Coastal_03 (Quartz Sand Coast Building)": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
             }
 
@@ -1148,6 +1156,7 @@ namespace PresetParser
             }
             switch (b.Identifier)
             {
+                case "Agriculture_colony01_06 (Timber Yard)": b.InfluenceRadius = 9;break;
                 case "Heavy_colony01_01 (Oil Heavy Industry)": b.InfluenceRadius = 12; break;
                 case "Town hall": b.InfluenceRadius = 20; break;
             }
@@ -1179,7 +1188,7 @@ namespace PresetParser
             /// find localization
             string buildingGuid = values["Standard"]["GUID"].InnerText;
             if (buildingGuid == "102133") { buildingGuid = "102085"; } /*rename the Big Tree to Mature Tree (as in game) */
-                        string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
+            string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
             string languageFilePath = "data/config/gui/";
             string languageFileStart = "texts_";
             string langNodeStartPath = "/TextExport/Texts/Text";

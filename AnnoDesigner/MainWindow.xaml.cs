@@ -521,7 +521,10 @@ namespace AnnoDesigner
                             || (obj.Size.Height == buildingInfo.BuildBlocker["x"] && obj.Size.Width == buildingInfo.BuildBlocker["z"]))
                         {
                             //if sizes match and icon is a existing building in the presets, call it that object
-                            obj.Identifier = buildingInfo.Identifier;
+                            if (obj.Identifier != "Residence_New_World")
+                            {
+                                obj.Identifier = buildingInfo.Identifier;
+                            }
                         }
                         else
                         {
