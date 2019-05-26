@@ -10,7 +10,7 @@ namespace AnnoDesigner.Core.Presets.Models
     /// </summary>
     [DataContract]
     [DebuggerDisplay("{" + nameof(Header) + "} - {" + nameof(Identifier) + "}")]
-    public class BuildingInfo
+    public class BuildingInfo : IBuildingInfo
     {
         #region properties used for grouping
 

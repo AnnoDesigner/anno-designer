@@ -11,7 +11,7 @@ namespace AnnoDesigner
 {
     public static class BuildingInfoExtensions
     {
-        public static AnnoObject ToAnnoObject(this BuildingInfo buildingInfo)
+        public static AnnoObject ToAnnoObject(this IBuildingInfo buildingInfo)
         {
             var labelLocalization = buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
             if (string.IsNullOrEmpty(labelLocalization)) { labelLocalization = buildingInfo.Localization["eng"]; }
@@ -29,7 +29,7 @@ namespace AnnoDesigner
             };
         }
 
-        public static string GetOrderParameter(this BuildingInfo buildingInfo)
+        public static string GetOrderParameter(this IBuildingInfo buildingInfo)
         {
             var labelLocalization = buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
             if (string.IsNullOrEmpty(labelLocalization)) { labelLocalization = buildingInfo.Localization["eng"]; }

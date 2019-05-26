@@ -19,9 +19,9 @@ namespace PresetParser
         /// </summary>
         /// Public Buildings
         //private static readonly List<string> ChangeBuildingsToAW_Public_1800 = new List<string> { "" };
-        private static readonly List<string> ChangeBuildingsToNW1_Public_1800 = new List<string> { "Logistic_01 (Marketplace)", "Service_01 (Pub)", "Institution_02 (Fire Department)",};
-        private static readonly List<string> ChangeBuildingsToNW2_Public_1800 = new List<string> { "Institution_01 (Police)" , "Service_04 (Church)", "Service_02 (School)" };
-        private static readonly List<string> ChangeBuildingsToNW3_Public_1800 = new List<string> { "Institution_03 (Hospital)" , "Service_05 (Cabaret)", "Service_07 (University)",};
+        private static readonly List<string> ChangeBuildingsToNW1_Public_1800 = new List<string> { "Logistic_01 (Marketplace)", "Service_01 (Pub)", "Institution_02 (Fire Department)", };
+        private static readonly List<string> ChangeBuildingsToNW2_Public_1800 = new List<string> { "Institution_01 (Police)", "Service_04 (Church)", "Service_02 (School)" };
+        private static readonly List<string> ChangeBuildingsToNW3_Public_1800 = new List<string> { "Institution_03 (Hospital)", "Service_05 (Cabaret)", "Service_07 (University)", };
         private static readonly List<string> ChangeBuildingsToNW4_Public_1800 = new List<string> { "Service_03 (Bank)", "Electricity_02 (Oil Power Plant)" };
         private static readonly List<string> ChangeBuildingsToNW5_Public_1800 = new List<string> { "Service_09 (Club House)" };
         private static readonly List<string> ChangeBuildingsToOW1_Public_1800 = new List<string> { "Institution_colony01_02 (Fire Department)", "Institution_colony01_01 (Police)", "Service_colony01_01 (Marketplace)", "Service_colony01_02 (Chapel)" };
@@ -48,13 +48,19 @@ namespace PresetParser
         private static readonly List<string> ChangeBuildingsToAW_SpecialBuilding_1800 = new List<string> { "Guild_house", "Town hall" };
         //Ornamentals 
         private static readonly List<string> ChangeBuildingsToAW_Ornamentals_1800 = new List<string> { "Culture_preorder_statue", "Uplay_ornament_2x1_lion_statue", "Uplay_ornament_2x2_pillar_chess_park", "Uplay_ornament_3x2_large_fountain" };
+
         /// </summary>
         /// <param name="identifierName"></param> The given Buildingname, this will not changed
         /// <param name="factionName"></param> If Buildingmane is in one of the lists, factionName will be changed
         /// <param name="groupName"></param> If Buildingmane is in one of the lists, groupName will be changed
         /// <returns></returns>
-        public static string[] get(string identifierName, string factionName, string groupName)
+        public static string[] GetNewFactionAndGroup1800(string identifierName, string factionName, string groupName)
         {
+            if (string.IsNullOrWhiteSpace(identifierName))
+            {
+                throw new ArgumentNullException(nameof(identifierName), "No identifier was given.");
+            }
+
             //public buildings
             //if (identifierName.IsPartOf(ChangeBuildingsToAW_Public_1800)) { factionName = "All Worlds"; groupName = "Public Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToNW1_Public_1800)) { factionName = "(1) Farmers"; groupName = "Public Buildings"; }

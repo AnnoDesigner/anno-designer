@@ -8,9 +8,9 @@ namespace AnnoDesigner.Core.Presets.Comparer
     /// <summary>
     /// Comparer used to check if two BuildingInfo groups match
     /// </summary>
-    public class BuildingInfoComparer : IEqualityComparer<BuildingInfo>
+    public class BuildingInfoComparer : IEqualityComparer<IBuildingInfo>
     {
-        public bool Equals(BuildingInfo x, BuildingInfo y)
+        public bool Equals(IBuildingInfo x, IBuildingInfo y)
         {
             if (x == null && y == null)
             {
@@ -29,17 +29,24 @@ namespace AnnoDesigner.Core.Presets.Comparer
             }
 
             //Check whether the buildingInfo group properties are equal
-            return x.Group == y.Group;
+            return string.Equals(x.Group, y.Group, StringComparison.OrdinalIgnoreCase);
+            //&& string.Equals(x.Identifier, y.Identifier, StringComparison.OrdinalIgnoreCase);
         }
 
-        public int GetHashCode(BuildingInfo obj)
+        public int GetHashCode(IBuildingInfo obj)
         {
             if (obj == null)
             {
                 return -1;
             }
 
-            return base.GetHashCode();
+            unchecked
+            {
+                var hashCode = obj.Group != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Group) : 0;
+                //hashCode = (hashCode * 397) ^ (obj.Identifier != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Identifier) : 0);
+
+                return hashCode;
+            }
         }
     }
 }
