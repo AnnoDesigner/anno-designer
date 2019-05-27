@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using AnnoDesigner;
-using AnnoDesigner.Presets;
-using AnnoDesigner.PresetsLoader;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Presets.Loader;
+using AnnoDesigner.Core.Presets.Models;
 using ColorPresetsDesigner.Models;
 
 namespace ColorPresetsDesigner.ViewModels
@@ -134,7 +134,7 @@ namespace ColorPresetsDesigner.ViewModels
             BuildingPresets buildingPresets = null;
             try
             {
-                buildingPresets = DataIO.LoadFromFile<BuildingPresets>(PresetsVM.SelectedFile);
+                buildingPresets = SerializationHelper.LoadFromFile<BuildingPresets>(PresetsVM.SelectedFile);
             }
             catch (Exception ex)
             {
@@ -306,7 +306,7 @@ namespace ColorPresetsDesigner.ViewModels
 
                 var backupFilePath = vmColors.SelectedFile + ".bak";
                 File.Copy(vmColors.SelectedFile, backupFilePath, true);
-                DataIO.SaveToFile<ColorPresets>(colorPresets, vmColors.SelectedFile);
+                SerializationHelper.SaveToFile<ColorPresets>(colorPresets, vmColors.SelectedFile);
 
                 MessageBox.Show("New colors.json was saved.", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
 

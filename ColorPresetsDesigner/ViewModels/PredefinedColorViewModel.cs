@@ -1,4 +1,4 @@
-﻿using AnnoDesigner.Presets;
+﻿using AnnoDesigner.Core.Presets.Models;
 using ColorPresetsDesigner.Models;
 using System;
 using System.Collections.Generic;

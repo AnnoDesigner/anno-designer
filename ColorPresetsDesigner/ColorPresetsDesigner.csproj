@@ -36,8 +36,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AnnoDesigner">
-      <HintPath>..\AnnoDesigner\bin\Debug\AnnoDesigner.exe</HintPath>
+    <Reference Include="AnnoDesigner.Core">
+      <HintPath>..\AnnoDesigner\bin\Debug\AnnoDesigner.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

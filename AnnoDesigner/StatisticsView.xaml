@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:AnnoDesigner"
              xmlns:viewmodel="clr-namespace:AnnoDesigner.viewmodel"
-             xmlns:converter="clr-namespace:AnnoDesigner.converter"
+             xmlns:converter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
              mc:Ignorable="d"
              d:DesignHeight="350"
              d:DesignWidth="200"

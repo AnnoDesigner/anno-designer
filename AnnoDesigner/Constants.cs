@@ -15,22 +15,6 @@ namespace AnnoDesigner
         public const double Version = 8.2;
 
         /// <summary>
-        /// Version number of the saved file format.
-        /// Will be increased every time the file format is changed.
-        /// </summary>
-        public const int FileVersion = 3;
-
-        /// <summary>
-        /// Json encoded file containing the color presets.
-        /// </summary>
-        public const string ColorPresetsFile = "colors.json";
-
-        /// <summary>
-        /// Json encoded file containing the building presets.
-        /// </summary>
-        public const string BuildingPresetsFile = "presets.json";
-
-        /// <summary>
         /// Prefix for temporary updated presets file.
         /// </summary>
         public const string PrefixTempBuildingPresetsFile = "temp_";
@@ -64,11 +48,6 @@ namespace AnnoDesigner
         /// The folder containing all icon files.
         /// </summary>
         public const string IconFolder = "icons";
-
-        /// <summary>
-        /// Filter used to retrieve the icons within the IconFolder.
-        /// </summary>
-        public const string IconFolderFilter = "*.png";
 
         /// <summary>
         /// File extension used for saved layouts.
