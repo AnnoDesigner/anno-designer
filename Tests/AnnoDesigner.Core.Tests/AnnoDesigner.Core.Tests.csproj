@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="BoolToVisibilityConverterTests.cs" />
     <Compile Include="BuildingInfoComparerTests.cs" />
+    <Compile Include="IconMappingPresetsLoaderTests.cs" />
     <Compile Include="LayoutLoaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
