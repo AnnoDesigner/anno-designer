@@ -85,6 +85,12 @@ namespace AnnoDesigner.Core.Presets.Helper
             {
                 result = colorForTemplateContainingIdentifier.Color;
             }
+            //specific color for template but without identifier defined?
+            else if (colorsForTemplate.FirstOrDefault(x => x.TargetIdentifiers.Count == 0) != null)
+            {
+                result = colorsForTemplate.FirstOrDefault(x => x.TargetIdentifiers.Count == 0).Color;
+            }
+            //use first found defined color
             else
             {
                 result = colorsForTemplate.First().Color;
