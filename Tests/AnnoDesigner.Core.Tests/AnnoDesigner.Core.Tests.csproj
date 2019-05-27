@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="BoolToVisibilityConverterTests.cs" />
     <Compile Include="BuildingInfoComparerTests.cs" />
+    <Compile Include="LayoutLoaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +73,14 @@
       <Project>{c73fbff0-1a11-40fc-8f1f-29637699419a}</Project>
       <Name>AnnoDesigner.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Testdata\Layout\layoutWithNoVersionAndObjects.ad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Testdata\Layout\v3_layoutWithVersionAndObjects.ad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
