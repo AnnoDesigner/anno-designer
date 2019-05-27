@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtraPresetsTests.cs" />
+    <Compile Include="IconFileNameHelperTests.cs" />
     <Compile Include="NewFactionAndGroup1800Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

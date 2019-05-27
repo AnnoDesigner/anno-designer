@@ -37,6 +37,7 @@ namespace PresetParser
         public static bool testVersion = false;
         // The internal Building list for the Preset writing 
         public static List<IBuildingInfo> buildings = new List<IBuildingInfo>();
+        private static readonly IconFileNameHelper _iconFileNameHelper;
 
         #region Initalisizing Exclude IdentifierNames, FactionNames and TemplateNames for presets.json file 
 
@@ -98,22 +99,9 @@ namespace PresetParser
 
         #endregion
 
-        #region Set Icon File Name seperations
-        private static string GetIconFilename(XmlNode iconNode, string annoVersion)
-        {
-            string annoIdexNumber = "";
-            if (annoVersion == Constants.ANNO_VERSION_1404)
-            {
-                annoIdexNumber = "A4_";
-            }
-            /* For Anno 2070, we use the normal icon names, without the AnnoIndexNUmber ('A5_'),
-                because anno 2070 has already the right names in previous Anno Designer versions. */
-            return string.Format("{0}icon_{1}_{2}.png", annoIdexNumber, iconNode["IconFileID"].InnerText, iconNode["IconIndex"] != null ? iconNode["IconIndex"].InnerText : "0"); //TODO: check this icon format is consistent between Anno versions
-        }
-        #endregion
-
         static Program()
         {
+            _iconFileNameHelper = new IconFileNameHelper();
             VersionSpecificPaths = new Dictionary<string, Dictionary<string, PathRef[]>>();
         }
         #endregion
@@ -624,7 +612,7 @@ namespace PresetParser
             XmlNode icon = iconNodes.FirstOrDefault(_ => _["GUID"].InnerText == buildingGuid);
             if (icon != null)
             {
-                b.IconFileName = GetIconFilename(icon["Icons"].FirstChild, annoVersion);
+                b.IconFileName = _iconFileNameHelper.GetIconFilename(icon["Icons"].FirstChild, annoVersion);
             }
             #endregion
 
@@ -1029,7 +1017,7 @@ namespace PresetParser
                 case "Culture_01 (Zoo)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Culture_02 (Museum)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Residence_tier01": { factionName = "(1) Farmers"; identifierName = "Residence_Old_World"; groupName = "Residence"; break; }
-                case "Residence_colony01_tier01": { factionName = "(7) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; templateName= "ResidenceBuilding7"; break; }
+                case "Residence_colony01_tier01": { factionName = "(7) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; templateName = "ResidenceBuilding7"; break; }
                 case "Coastal_03 (Quartz Sand Coast Building)": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
             }
 
@@ -1342,16 +1330,16 @@ namespace PresetParser
                         bool getFieldGuidBool = false;
                         foreach (var getFieldGuid in farmFieldList1800)
                         {
-                            if (getFieldGuid.fieldGUID == fieldGuidValue)
+                            if (getFieldGuid.FieldGuid == fieldGuidValue)
                             {
                                 getFieldGuidBool = true;
-                                fieldAmountValue = getFieldGuid.fieldAmount;
+                                fieldAmountValue = getFieldGuid.FieldAmount;
                                 break;
                             }
                         }
                         if (!getFieldGuidBool)
                         {
-                            farmFieldList1800.Add(new FarmField() { fieldGUID = fieldGuidValue, fieldAmount = fieldAmountValue });
+                            farmFieldList1800.Add(new FarmField() { FieldGuid = fieldGuidValue, FieldAmount = fieldAmountValue });
                         }
                         translation = translation + " - (" + fieldAmountValue + ")";
                     }
@@ -1509,15 +1497,7 @@ namespace PresetParser
             }
             return zx;
         }
-        #endregion
 
-        #region GuidRef Class
-        private class GuidRef
-        {
-            public string Language;
-            public string Guid;
-            public string GuidReference;
-        }
         #endregion
 
         #region Getting the Localizations from files (Anno 1404 / Anno 2070)
@@ -1643,7 +1623,7 @@ namespace PresetParser
             foreach (XmlNode iconNode in iconNodes)
             {
                 string guid = iconNode["GUID"].InnerText;
-                string iconFilename = GetIconFilename(iconNode["Icons"].FirstChild, annoVersion);
+                string iconFilename = _iconFileNameHelper.GetIconFilename(iconNode["Icons"].FirstChild, annoVersion);
                 if (!localizations.ContainsKey(guid) || iconNameMappings.IconNameMappings.Exists(_ => _.IconFilename == iconFilename))
                 {
                     continue;
@@ -1668,46 +1648,7 @@ namespace PresetParser
             }
 
         }
-        #endregion
 
-        #region FarmField Ilist commands for Anno 1800
-        public class FarmField
-        {
-            public string fieldGUID { get; set; }
-            public string fieldAmount { get; set; }
-        }
-        #endregion
-
-        #region PathRef Class
-
-        private class PathRef
-        {
-            public string Path { get; }
-            public string XPath { get; }
-            public string YPath { get; } //A secondary path used match xml within a secondary file
-            public string InnerNameTag { get; }
-
-            public PathRef(string path, string xPath, string yPath, string innerNameTag)
-            {
-                Path = path;
-                XPath = xPath;
-                YPath = yPath;
-                InnerNameTag = innerNameTag;
-            }
-
-            public PathRef(string path, string xPath)
-            {
-                Path = path;
-                XPath = xPath;
-                // YPath = yPath;
-                // InnerNameTag = innerNameTag;
-            }
-
-            public PathRef(string path)
-            {
-                Path = path;
-            }
-        }
         #endregion
     }
 }
