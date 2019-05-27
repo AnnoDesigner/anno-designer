@@ -30,7 +30,7 @@ namespace PresetParser
         public const string ANNO_VERSION_2205 = "2205";
         public const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "3.2.4";
+        private const string BUILDING_PRESETS_VERSION = "3.2.5";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -1010,9 +1010,17 @@ namespace PresetParser
                 case "1010462": { templateName = "CityInstitutionBuilding"; break; }
                 case "1010463": { templateName = "CityInstitutionBuilding"; break; }
                 case "1010464": { templateName = "CityInstitutionBuilding"; break; }
+                case "1010358": { templateName = "PublicServiceBuilding"; break; }
+                case "1010359": { templateName = "PublicServiceBuilding"; break; }
+                case "1010372": { templateName = "Market"; break; }
                 case "1010275": { templateName = "Farmfield"; groupName = "Farm Fields"; break; }
                 case "1010263": { templateName = "FarmBuilding"; break; }
                 case "1010271": { templateName = "Farmfield"; groupName = "Farm Fields"; break; }
+                case "1010266": { templateName = "FreeAreaBuilding"; break; }
+                case "100451": { templateName = "FactoryBuilding7"; break; }
+                case "1010288": { templateName = "FactoryBuilding7"; break; }
+                case "1010320": { templateName = "FactoryBuilding7"; break; }
+                case "101331": { templateName = "HeavyFactoryBuilding"; break; }
                 default: groupName = templateName.FirstCharToUpper(); break;
             }
             if (groupName == "Farm Fields")
@@ -1025,7 +1033,7 @@ namespace PresetParser
                 case "Culture_01 (Zoo)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Culture_02 (Museum)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Residence_tier01": { factionName = "(1) Farmers"; identifierName = "Residence_Old_World"; groupName = "Residence"; break; }
-                case "Residence_colony01_tier01": { factionName = "(7) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; break; }
+                case "Residence_colony01_tier01": { factionName = "(7) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; templateName= "ResidenceBuilding7"; break; }
                 case "Coastal_03 (Quartz Sand Coast Building)": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
             }
 
@@ -1150,6 +1158,7 @@ namespace PresetParser
             }
             switch (b.Identifier)
             {
+                case "Agriculture_colony01_06 (Timber Yard)": b.InfluenceRadius = 9; break;
                 case "Heavy_colony01_01 (Oil Heavy Industry)": b.InfluenceRadius = 12; break;
                 case "Town hall": b.InfluenceRadius = 20; break;
             }
@@ -1222,8 +1231,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge"; break; }
                             case 1: { translation = "Gehweg Hecke"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy"; break; }
-                            case 3: { translation = "Боковая изгородь"; break; }
+                            case 2: { translation = "Haies de trottoirs"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy"; break; }
+                            case 4: { translation = "Боковая изгородь"; break; }
                         }
                     }
                     if (buildingGuid == "102166")
@@ -1232,8 +1242,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge Corner"; break; }
                             case 1: { translation = "Gehweg Heckenecke Ecke"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy narożnik"; break; }
-                            case 3: { translation = "Боковая изгородь (угол)"; break; }
+                            case 2: { translation = "Coin de haies de trottoirs"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy narożnik"; break; }
+                            case 4: { translation = "Боковая изгородь (угол)"; break; }
                         }
                     }
                     if (buildingGuid == "102167")
@@ -1242,8 +1253,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge End"; break; }
                             case 1: { translation = "Gehweg Heckenende"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy Koniec"; break; }
-                            case 3: { translation = "Боковая изгородь (край)"; break; }
+                            case 2: { translation = "Extrémité de haie de trottoir"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy Koniec"; break; }
+                            case 4: { translation = "Боковая изгородь (край)"; break; }
                         }
                     }
                     if (buildingGuid == "102169")
@@ -1252,8 +1264,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge Junction"; break; }
                             case 1: { translation = "Gehweg Hecken Verbindungsstelle"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy Złącze"; break; }
-                            case 3: { translation = "Боковая изгородь (Перекресток)"; break; }
+                            case 2: { translation = "Jonction de haie de trottoir"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy Złącze"; break; }
+                            case 4: { translation = "Боковая изгородь (Перекресток)"; break; }
                         }
                     }
                     if (buildingGuid == "102171")
@@ -1262,8 +1275,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge Crossing"; break; }
                             case 1: { translation = "Gehweg Hecken Kreuzung"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy Skrzyżowanie"; break; }
-                            case 3: { translation = "Боковая изгородь (образного)"; break; }
+                            case 2: { translation = "Traversée de haie de trottoir"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy Skrzyżowanie"; break; }
+                            case 4: { translation = "Боковая изгородь (образного)"; break; }
                         }
                     }
                     if (buildingGuid == "102161")
@@ -1272,8 +1286,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Railings"; break; }
                             case 1: { translation = "Zaune"; break; }
-                            case 2: { translation = "Poręcze"; break; }
-                            case 3: { translation = "Ограда"; break; }
+                            case 2: { translation = "Garde-corps"; break; }
+                            case 3: { translation = "Poręcze"; break; }
+                            case 4: { translation = "Ограда"; break; }
                         }
                     }
                     if (buildingGuid == "102170")
@@ -1282,8 +1297,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Railings Junction"; break; }
                             case 1: { translation = "Zaune Verbindungsstelle"; break; }
-                            case 2: { translation = "Poręcze Złącze"; break; }
-                            case 3: { translation = "Ограда (Перекресток)"; break; }
+                            case 2: { translation = "Garde-corps Jonction"; break; }
+                            case 3: { translation = "Poręcze Złącze"; break; }
+                            case 4: { translation = "Ограда (Перекресток)"; break; }
                         }
                     }
                     if (buildingGuid == "102134")
@@ -1292,8 +1308,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Hedge"; break; }
                             case 1: { translation = "Hecke"; break; }
-                            case 2: { translation = "żywopłot"; break; }
-                            case 3: { translation = "изгородь"; break; }
+                            case 2: { translation = "Haie (droite)"; break; }
+                            case 3: { translation = "żywopłot"; break; }
+                            case 4: { translation = "изгородь"; break; }
                         }
                     }
                     if (buildingGuid == "102139")
@@ -1302,8 +1319,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Path"; break; }
                             case 1: { translation = "Pfad"; break; }
-                            case 2: { translation = "ścieżka"; break; }
-                            case 3: { translation = "Тропинка"; break; }
+                            case 2: { translation = "Allée (droite)"; break; }
+                            case 3: { translation = "ścieżka"; break; }
+                            case 4: { translation = "Тропинка"; break; }
                         }
                     }
                 }
