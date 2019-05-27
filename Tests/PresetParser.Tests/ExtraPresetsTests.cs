@@ -21,5 +21,19 @@ namespace PresetParser.Tests
             // Assert
             Assert.Empty(result);
         }
+
+        [Theory]
+        [InlineData(Constants.ANNO_VERSION_1404, 4)]
+        [InlineData(Constants.ANNO_VERSION_2070, 4)]
+        [InlineData(Constants.ANNO_VERSION_1800, 23)]
+        [InlineData(Constants.ANNO_VERSION_2205, 0)]
+        public void GetExtraPresets_AnnoVersionIsKnown_ShouldReturnCorrectExtraPresetsCount(string annoVersion, int expectedCount)
+        {
+            // Arrange/Act
+            var result = ExtraPresets.GetExtraPresets(annoVersion).ToList();
+
+            // Assert
+            Assert.Equal(expectedCount, result.Count);
+        }
     }
 }
