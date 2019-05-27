@@ -4,7 +4,11 @@ using System.Runtime.Serialization.Json;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using AnnoDesigner.model;
+using AnnoDesigner.Core;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Layout.Exceptions;
+using AnnoDesigner.Core.Layout.Models;
+using AnnoDesigner.Core.Models;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner
@@ -14,53 +18,6 @@ namespace AnnoDesigner
     /// </summary>
     public static class DataIO
     {
-        #region Serialization and Deserialization
-
-        /// <summary>
-        /// Serializes the given object to JSON and writes it to the given file.
-        /// </summary>
-        /// <typeparam name="T">type of the object being serialized</typeparam>
-        /// <param name="obj">object to serialize</param>
-        /// <param name="filename">output JSON filename</param>
-        public static void SaveToFile<T>(T obj, string filename)
-        {
-            using (var stream = File.Open(filename, FileMode.Create))
-            {
-                var serializer = new DataContractJsonSerializer(typeof(T));
-                serializer.WriteObject(stream, obj);
-            }
-        }
-
-        /// <summary>
-        /// Deserializes the given JSON file to an object of type T.
-        /// </summary>
-        /// <typeparam name="T">type of object being deserialized</typeparam>
-        /// <param name="filename">input JSON filename</param>
-        /// <returns>deserialized object</returns>
-        public static T LoadFromFile<T>(string filename)
-        {
-            T obj;
-            LoadFromFile(out obj, filename);
-            return obj;
-        }
-
-        /// <summary>
-        /// Deserializes the given JSON file to an object.
-        /// </summary>
-        /// <typeparam name="T">type of the object being deserialized</typeparam>
-        /// <param name="obj">output object</param>
-        /// <param name="filename">input JSON filename</param>
-        public static void LoadFromFile<T>(out T obj, string filename)
-        {
-            using (var stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                var serializer = new DataContractJsonSerializer(typeof(T));
-                obj = (T)serializer.ReadObject(stream);
-            }
-        }
-
-        #endregion
-
         #region Render to file
 
         /// <summary>
@@ -84,45 +41,6 @@ namespace AnnoDesigner
             }
         }
 
-        #endregion
-
-        #region Layout saving and loading
-
-        /// <summary>
-        /// Saves the given objects to the given file and includes the current file version number.
-        /// </summary>
-        /// <param name="objects">objects to save</param>
-        /// <param name="filename">filename to save to</param>
-        public static void SaveLayout(List<AnnoObject> objects, string filename)
-        {
-            SaveToFile(new SavedLayout(objects), filename);
-        }
-
-        /// <summary>
-        /// Loads all objects from the given file, taking care of file version mismatches.
-        /// </summary>
-        /// <param name="filename">file to load</param>
-        /// <returns>list of loaded objects</returns>
-        public static List<AnnoObject> LoadLayout(string filename)
-        {
-            // try to load file version
-            var layoutVersion = LoadFromFile<LayoutVersionContainer>(filename);
-            // show message if file versions don't match or if loading of the file version failed
-            if (layoutVersion.FileVersion != Constants.FileVersion)
-            {
-                if (MessageBox.Show(
-                        "Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
-                        "File version mismatch", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
-                {
-                    return null;
-                }
-            }
-            // try to load layout
-            var layout = LoadFromFile<SavedLayout>(filename);
-            // use fallback for old layouts
-            return layout.Objects ?? LoadFromFile<List<AnnoObject>>(filename);
-        }
-
-        #endregion
+        #endregion       
     }
 }

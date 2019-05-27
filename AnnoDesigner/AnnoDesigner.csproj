@@ -51,49 +51,31 @@
     <Compile Include="About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BuildingInfoExtensions.cs" />
+    <Compile Include="BuildingPresetsExtensions.cs" />
     <Compile Include="ColorHueSaturationBrightnessComparer.cs" />
     <Compile Include="Commons.cs" />
-    <Compile Include="PresetsHelper\ColorPresetsHelper.cs" />
-    <Compile Include="PresetsLoader\BuildingPresetsLoader.cs" />
-    <Compile Include="PresetsLoader\ColorPresetsLoader.cs" />
-    <Compile Include="ConnectivityHelper.cs" />
-    <Compile Include="FileHelper.cs" />
-    <Compile Include="model\LayoutVersionContainer.cs" />
-    <Compile Include="PresetsLoader\IconLoader.cs" />
-    <Compile Include="PresetsLoader\IconMappingPresetsLoader.cs" />
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
-    <Compile Include="Presets\IconMappingPresets.cs" />
-    <Compile Include="model\SavedLayout.cs" />
+    <Compile Include="model\BuildingInfluenceType.cs" />
     <Compile Include="TreeLocalization.cs" />
-    <Compile Include="converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="MutexHelper.cs" />
     <Compile Include="model\StatisticsBuilding.cs" />
     <Compile Include="model\Notify.cs" />
     <Compile Include="model\RelayCommand.cs" />
-    <Compile Include="Presets\BuildingInfo.cs" />
-    <Compile Include="Presets\BuildingPresets.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Presets\PredefinedColor.cs" />
-    <Compile Include="Presets\ColorPresets.cs" />
-    <Compile Include="Presets\ColorScheme.cs" />
-    <Compile Include="Presets\IconNameMap.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="SerializableColor.cs" />
     <Compile Include="DataIO.cs" />
-    <Compile Include="SerializableDictionary.cs" />
     <Compile Include="StatisticsView.xaml.cs">
       <DependentUpon>StatisticsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StringExtensions.cs" />
     <Compile Include="TreeViewExtensions.cs" />
     <Compile Include="TreeViewSearch.cs" />
-    <Compile Include="model\IconImage.cs" />
     <Compile Include="UpdateHelper.cs" />
     <Compile Include="UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
@@ -118,7 +100,6 @@
     <Compile Include="AnnoCanvas.xaml.cs">
       <DependentUpon>AnnoCanvas.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AnnoObject.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -1118,6 +1099,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Flags\France.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AnnoDesigner.Core\AnnoDesigner.Core.csproj">
+      <Project>{c73fbff0-1a11-40fc-8f1f-29637699419a}</Project>
+      <Name>AnnoDesigner.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
