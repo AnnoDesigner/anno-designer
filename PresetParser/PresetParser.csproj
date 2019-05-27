@@ -64,10 +64,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AnnoDesigner\AnnoDesigner.csproj">
-      <Project>{3AF4C58B-FEF0-485F-8DBF-CC61F9AF6FAD}</Project>
-      <Name>AnnoDesigner</Name>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+    <ProjectReference Include="..\AnnoDesigner.Core\AnnoDesigner.Core.csproj">
+      <Project>{c73fbff0-1a11-40fc-8f1f-29637699419a}</Project>
+      <Name>AnnoDesigner.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

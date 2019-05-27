@@ -1,5 +1,7 @@
-﻿using AnnoDesigner;
-using AnnoDesigner.Presets;
+﻿using AnnoDesigner.Core.Extensions;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Presets.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,7 +30,7 @@ namespace PresetParser
         public const string ANNO_VERSION_2205 = "2205";
         public const string ANNO_VERSION_1800 = "1800";
 
-        private const string BUILDING_PRESETS_VERSION = "3.2.4";
+        private const string BUILDING_PRESETS_VERSION = "3.2.5";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -38,7 +40,7 @@ namespace PresetParser
         public static int annoBuildingsListCount = 0, printTestText = 0;
         public static bool testVersion = false;
         // The internal Building list for the Preset writing 
-        public static List<BuildingInfo> buildings = new List<BuildingInfo>();
+        public static List<IBuildingInfo> buildings = new List<IBuildingInfo>();
 
         #region Initalisizing Exclude IdentifierNames, FactionNames and TemplateNames for presets.json file 
 
@@ -333,18 +335,18 @@ namespace PresetParser
             #endregion
 
             #region Write preset.json and icon.json files
-            BuildingPresets presets = new BuildingPresets() { Version = BUILDING_PRESETS_VERSION, Buildings = buildings };
+            BuildingPresets presets = new BuildingPresets() { Version = BUILDING_PRESETS_VERSION, Buildings = buildings.Cast<BuildingInfo>().ToList() };
 
             Console.WriteLine();
             if (!testVersion)
             {
                 Console.WriteLine("Writing buildings to presets-{0}-{1}.json", annoVersion, BUILDING_PRESETS_VERSION);
-                DataIO.SaveToFile(presets, "presets-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
+                SerializationHelper.SaveToFile(presets, "presets-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json");
             }
             else
             {
                 Console.WriteLine("THIS IS A TEST DUMMY FILE WRITEN!!!!");
-                DataIO.SaveToFile(presets, "DUMMY.json");
+                SerializationHelper.SaveToFile(presets, "DUMMY.json");
             }
             // wait for keypress before exiting
             Console.WriteLine("This list contains {0} Buildings", annoBuildingsListCount);
@@ -456,11 +458,11 @@ namespace PresetParser
         /// </summary>
         /// <param name="annoVersion">The version of Anno.</param>
         /// <param name="buildings">The already existing buildings.</param>
-        private static void AddExtraPreset(string annoVersion, List<BuildingInfo> buildings)
+        private static void AddExtraPreset(string annoVersion, List<IBuildingInfo> buildings)
         {
             foreach (var curExtraPreset in ExtraPresets.GetExtraPresets(annoVersion))
             {
-                BuildingInfo buildingToAdd = new BuildingInfo
+                IBuildingInfo buildingToAdd = new BuildingInfo
                 {
                     Header = curExtraPreset.Header,
                     Faction = curExtraPreset.Faction,
@@ -483,7 +485,7 @@ namespace PresetParser
                 buildingToAdd.Localization["fra"] = curExtraPreset.LocaFra;
                 buildingToAdd.Localization["pol"] = curExtraPreset.LocaPol;
                 buildingToAdd.Localization["rus"] = curExtraPreset.LocaRus;
-                
+
 
                 annoBuildingsListCount++;
 
@@ -495,7 +497,7 @@ namespace PresetParser
 
         /// Parsing Part for 1404 and 2070
         #region Parsing Buildngs for Anno 1404/2070
-        private static void ParseAssetsFile(string filename, string xPathToBuildingsNode, string YPath, List<BuildingInfo> buildings,
+        private static void ParseAssetsFile(string filename, string xPathToBuildingsNode, string YPath, List<IBuildingInfo> buildings,
             IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string innerNameTag, string annoVersion)
         {
             XmlDocument assetsDocument = new XmlDocument();
@@ -508,7 +510,7 @@ namespace PresetParser
             }
         }
 
-        private static void ParseBuilding(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string annoVersion)
+        private static void ParseBuilding(List<IBuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string annoVersion)
         {
             #region Get valid Building Information 
             XmlElement values = buildingNode["Values"]; string nameValue = "", templateValue = "";
@@ -595,7 +597,7 @@ namespace PresetParser
             if (annoVersion == ANNO_VERSION_1404) { headerName = "(A4) Anno " + ANNO_VERSION_1404; }
             if (annoVersion == ANNO_VERSION_2070) { headerName = "(A5) Anno " + ANNO_VERSION_2070; }
             #endregion
-            BuildingInfo b = new BuildingInfo
+            IBuildingInfo b = new BuildingInfo
             {
                 Header = headerName,
                 Faction = factionName,
@@ -681,7 +683,7 @@ namespace PresetParser
 
         /// Parsing Part for 2205
         #region Parsing Buildngs for Anno 2205
-        private static void ParseAssetsFile2205(string filename, string xPathToBuildingsNode, string YPath, List<BuildingInfo> buildings, string innerNameTag, string annoVersion)
+        private static void ParseAssetsFile2205(string filename, string xPathToBuildingsNode, string YPath, List<IBuildingInfo> buildings, string innerNameTag, string annoVersion)
         {
             XmlDocument assetsDocument = new XmlDocument();
             assetsDocument.Load(filename);
@@ -694,7 +696,7 @@ namespace PresetParser
         }
 
         /// ORGLINE: private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations)
-        private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, string annoVersion)
+        private static void ParseBuilding2205(List<IBuildingInfo> buildings, XmlNode buildingNode, string annoVersion)
         {
             string[] LanguagesFiles = { "" };
             string nameValue = "", templateValue = "";
@@ -770,7 +772,7 @@ namespace PresetParser
             if (identifierName == "orbit connection 01") { groupName = "Special"; }
             #endregion
             string headerName = "(A6) Anno " + ANNO_VERSION_2205;
-            BuildingInfo b = new BuildingInfo
+            IBuildingInfo b = new BuildingInfo
             {
                 Header = headerName,
                 Faction = factionName,
@@ -927,7 +929,7 @@ namespace PresetParser
 
         /// Parsing Part for 1800
         #region Parsing Buildings for Anno 1800
-        private static void ParseAssetsFile1800(string filename, string xPathToBuildingsNode, List<BuildingInfo> buildings)
+        private static void ParseAssetsFile1800(string filename, string xPathToBuildingsNode, List<IBuildingInfo> buildings)
         {
             XmlDocument assetsDocument = new XmlDocument();
             assetsDocument.Load(filename);
@@ -939,7 +941,7 @@ namespace PresetParser
             }
         }
 
-        private static void ParseBuilding1800(List<BuildingInfo> buildings, XmlNode buildingNode, string annoVersion)
+        private static void ParseBuilding1800(List<IBuildingInfo> buildings, XmlNode buildingNode, string annoVersion)
         {
             string[] LanguagesFiles = { "" };
             string templateName = "", factionName = "", identifierName = "", groupName = "";
@@ -1008,9 +1010,17 @@ namespace PresetParser
                 case "1010462": { templateName = "CityInstitutionBuilding"; break; }
                 case "1010463": { templateName = "CityInstitutionBuilding"; break; }
                 case "1010464": { templateName = "CityInstitutionBuilding"; break; }
+                case "1010358": { templateName = "PublicServiceBuilding"; break; }
+                case "1010359": { templateName = "PublicServiceBuilding"; break; }
+                case "1010372": { templateName = "Market"; break; }
                 case "1010275": { templateName = "Farmfield"; groupName = "Farm Fields"; break; }
-                case "1010263": { templateName = "FarmBuilding";  break; }
+                case "1010263": { templateName = "FarmBuilding"; break; }
                 case "1010271": { templateName = "Farmfield"; groupName = "Farm Fields"; break; }
+                case "1010266": { templateName = "FreeAreaBuilding"; break; }
+                case "100451": { templateName = "FactoryBuilding7"; break; }
+                case "1010288": { templateName = "FactoryBuilding7"; break; }
+                case "1010320": { templateName = "FactoryBuilding7"; break; }
+                case "101331": { templateName = "HeavyFactoryBuilding"; break; }
                 default: groupName = templateName.FirstCharToUpper(); break;
             }
             if (groupName == "Farm Fields")
@@ -1023,13 +1033,13 @@ namespace PresetParser
                 case "Culture_01 (Zoo)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Culture_02 (Museum)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Residence_tier01": { factionName = "(1) Farmers"; identifierName = "Residence_Old_World"; groupName = "Residence"; break; }
-                case "Residence_colony01_tier01": { factionName = "(7) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; break; }
+                case "Residence_colony01_tier01": { factionName = "(7) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; templateName= "ResidenceBuilding7"; break; }
                 case "Coastal_03 (Quartz Sand Coast Building)": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
             }
 
             // Place the rest of the buildings in the right Faction > Group menu
             #region Order the Buildings to the right tiers and factions as in the game
-            string[] newFactionGroupName = NewFactionAndGroup1800.get(identifierName, factionName, groupName);
+            string[] newFactionGroupName = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName);
             factionName = newFactionGroupName[0];
             groupName = newFactionGroupName[1];
             #endregion
@@ -1040,7 +1050,7 @@ namespace PresetParser
             #endregion
 
             #region Starting buildup the preset data
-            BuildingInfo b = new BuildingInfo
+            IBuildingInfo b = new BuildingInfo
             {
                 Header = headerName,
                 Faction = factionName,
@@ -1148,6 +1158,7 @@ namespace PresetParser
             }
             switch (b.Identifier)
             {
+                case "Agriculture_colony01_06 (Timber Yard)": b.InfluenceRadius = 9; break;
                 case "Heavy_colony01_01 (Oil Heavy Industry)": b.InfluenceRadius = 12; break;
                 case "Town hall": b.InfluenceRadius = 20; break;
             }
@@ -1179,7 +1190,7 @@ namespace PresetParser
             /// find localization
             string buildingGuid = values["Standard"]["GUID"].InnerText;
             if (buildingGuid == "102133") { buildingGuid = "102085"; } /*rename the Big Tree to Mature Tree (as in game) */
-                        string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
+            string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
             string languageFilePath = "data/config/gui/";
             string languageFileStart = "texts_";
             string langNodeStartPath = "/TextExport/Texts/Text";
@@ -1220,8 +1231,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge"; break; }
                             case 1: { translation = "Gehweg Hecke"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy"; break; }
-                            case 3: { translation = "Боковая изгородь"; break; }
+                            case 2: { translation = "Haies de trottoirs"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy"; break; }
+                            case 4: { translation = "Боковая изгородь"; break; }
                         }
                     }
                     if (buildingGuid == "102166")
@@ -1230,8 +1242,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge Corner"; break; }
                             case 1: { translation = "Gehweg Heckenecke Ecke"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy narożnik"; break; }
-                            case 3: { translation = "Боковая изгородь (угол)"; break; }
+                            case 2: { translation = "Coin de haies de trottoirs"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy narożnik"; break; }
+                            case 4: { translation = "Боковая изгородь (угол)"; break; }
                         }
                     }
                     if (buildingGuid == "102167")
@@ -1240,8 +1253,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge End"; break; }
                             case 1: { translation = "Gehweg Heckenende"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy Koniec"; break; }
-                            case 3: { translation = "Боковая изгородь (край)"; break; }
+                            case 2: { translation = "Extrémité de haie de trottoir"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy Koniec"; break; }
+                            case 4: { translation = "Боковая изгородь (край)"; break; }
                         }
                     }
                     if (buildingGuid == "102169")
@@ -1250,8 +1264,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge Junction"; break; }
                             case 1: { translation = "Gehweg Hecken Verbindungsstelle"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy Złącze"; break; }
-                            case 3: { translation = "Боковая изгородь (Перекресток)"; break; }
+                            case 2: { translation = "Jonction de haie de trottoir"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy Złącze"; break; }
+                            case 4: { translation = "Боковая изгородь (Перекресток)"; break; }
                         }
                     }
                     if (buildingGuid == "102171")
@@ -1260,8 +1275,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge Crossing"; break; }
                             case 1: { translation = "Gehweg Hecken Kreuzung"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy Skrzyżowanie"; break; }
-                            case 3: { translation = "Боковая изгородь (образного)"; break; }
+                            case 2: { translation = "Traversée de haie de trottoir"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy Skrzyżowanie"; break; }
+                            case 4: { translation = "Боковая изгородь (образного)"; break; }
                         }
                     }
                     if (buildingGuid == "102161")
@@ -1270,8 +1286,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Railings"; break; }
                             case 1: { translation = "Zaune"; break; }
-                            case 2: { translation = "Poręcze"; break; }
-                            case 3: { translation = "Ограда"; break; }
+                            case 2: { translation = "Garde-corps"; break; }
+                            case 3: { translation = "Poręcze"; break; }
+                            case 4: { translation = "Ограда"; break; }
                         }
                     }
                     if (buildingGuid == "102170")
@@ -1280,8 +1297,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Railings Junction"; break; }
                             case 1: { translation = "Zaune Verbindungsstelle"; break; }
-                            case 2: { translation = "Poręcze Złącze"; break; }
-                            case 3: { translation = "Ограда (Перекресток)"; break; }
+                            case 2: { translation = "Garde-corps Jonction"; break; }
+                            case 3: { translation = "Poręcze Złącze"; break; }
+                            case 4: { translation = "Ограда (Перекресток)"; break; }
                         }
                     }
                     if (buildingGuid == "102134")
@@ -1290,8 +1308,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Hedge"; break; }
                             case 1: { translation = "Hecke"; break; }
-                            case 2: { translation = "żywopłot"; break; }
-                            case 3: { translation = "изгородь"; break; }
+                            case 2: { translation = "Haie (droite)"; break; }
+                            case 3: { translation = "żywopłot"; break; }
+                            case 4: { translation = "изгородь"; break; }
                         }
                     }
                     if (buildingGuid == "102139")
@@ -1300,8 +1319,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Path"; break; }
                             case 1: { translation = "Pfad"; break; }
-                            case 2: { translation = "ścieżka"; break; }
-                            case 3: { translation = "Тропинка"; break; }
+                            case 2: { translation = "Allée (droite)"; break; }
+                            case 3: { translation = "ścieżka"; break; }
+                            case 4: { translation = "Тропинка"; break; }
                         }
                     }
                 }
@@ -1355,7 +1375,7 @@ namespace PresetParser
 
         /// Other Classes and or Internal Commands used in this program
         #region Retrieving BuildingBlockers from Buidings Nodes
-        private static bool RetrieveBuildingBlocker(BuildingInfo building, string variationFilename, string annoVersion)
+        private static bool RetrieveBuildingBlocker(IBuildingInfo building, string variationFilename, string annoVersion)
         {
             if (annoVersion == ANNO_VERSION_1800)
             {
@@ -1643,7 +1663,7 @@ namespace PresetParser
             if (!testVersion)
             {
                 var fileName = "icons-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json";
-                DataIO.SaveToFile(iconNameMappings, fileName);
+                SerializationHelper.SaveToFile(iconNameMappings, fileName);
                 Console.WriteLine($"saved icon name mapping file: {fileName}");
             }
             else

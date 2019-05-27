@@ -1,4 +1,6 @@
-﻿using AnnoDesigner.model;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Presets.Helper;
+using AnnoDesigner.model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -407,12 +409,26 @@ namespace AnnoDesigner.viewmodel
 
         private void ApplyPredefinedColorToSelection(object param)
         {
+            if (AnnoCanvasToUse == null)
+            {
+                return;
+            }
 
+            foreach (var curSelectedObject in AnnoCanvasToUse.SelectedObjects)
+            {
+                var foundPredefinedColor = ColorPresetsHelper.Instance.GetPredefinedColor(curSelectedObject);
+                if (foundPredefinedColor != null && foundPredefinedColor.HasValue)
+                {
+                    curSelectedObject.Color = foundPredefinedColor.Value;
+                }
+            }
+
+            AnnoCanvasToUse.InvalidateVisual();
         }
 
         private bool CanApplyPredefinedColorToSelection(object param)
         {
-            return false;
+            return AnnoCanvasToUse?.SelectedObjects.Count > 0;
         }
 
         public ICommand UseColorInLayoutCommand { get; private set; }

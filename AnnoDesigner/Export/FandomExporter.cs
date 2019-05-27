@@ -5,7 +5,9 @@ using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
-using AnnoDesigner.Presets;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.viewmodel;
 
 namespace AnnoDesigner.Export
@@ -55,7 +57,7 @@ namespace AnnoDesigner.Export
 
         private FandomNameMappingPresets FandomeNamePresets
         {
-            get { return _fandomNameMappingPresets ?? (_fandomNameMappingPresets = DataIO.LoadFromFile<FandomNameMappingPresets>(Path.Combine(App.ApplicationPath, Constants.FandomNameMappingFile))); }
+            get { return _fandomNameMappingPresets ?? (_fandomNameMappingPresets = SerializationHelper.LoadFromFile<FandomNameMappingPresets>(Path.Combine(App.ApplicationPath, Constants.FandomNameMappingFile))); }
         }
 
         public void StartExport(StatisticsViewModel statisticsViewModel, List<AnnoObject> placedObjects, BuildingPresets buildingPresets, bool exportUnsupportedTags)

@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Windows.Controls.Primitives;
 using System.Windows;
+using AnnoDesigner.Core.Extensions;
 
 namespace AnnoDesigner
 {

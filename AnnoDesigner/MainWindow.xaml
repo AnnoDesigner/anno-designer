@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:my="clr-namespace:AnnoDesigner"
+        xmlns:coreModels="clr-namespace:AnnoDesigner.Core.Models;assembly=AnnoDesigner.Core"
         xmlns:l="clr-namespace:AnnoDesigner.Localization"
-        xmlns:converter="clr-namespace:AnnoDesigner.converter"
-        xmlns:i="clr-namespace:AnnoDesigner.Presets"
+        xmlns:converter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
         xmlns:model="clr-namespace:AnnoDesigner.model"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         Title="Anno Designer"
@@ -22,7 +22,7 @@
                                              TrueValue="Visible"
                                              FalseValue="Hidden" />
         <xctk:ColorToSolidColorBrushConverter x:Key="converterColorToSolidColorBrush" />
-        <DataTemplate DataType="{x:Type model:IconImage}">
+        <DataTemplate DataType="{x:Type coreModels:IconImage}">
             <StackPanel Orientation="Horizontal">
                 <Viewbox Margin="5">
                     <Image Width="23"
@@ -34,7 +34,7 @@
                            Text="{Binding Path=DisplayName}" />
             </StackPanel>
         </DataTemplate>
-        <HierarchicalDataTemplate DataType="{x:Type my:AnnoObject}">
+        <HierarchicalDataTemplate DataType="{x:Type coreModels:AnnoObject}">
             <TextBlock Text="{Binding Label}" />
         </HierarchicalDataTemplate>
         <l:MainWindow x:Key="localization"></l:MainWindow>
@@ -352,7 +352,7 @@
                         </DockPanel>
                         <DockPanel LastChildFill="False"
                                    Height="26">
-                            <Button Width="32"
+                            <!--<Button Width="32"
                                     DockPanel.Dock="Right"
                                     Command="{Binding BuildingSettingsViewModel.ApplyColorToSelectionCommand}"
                                     ToolTip="{Binding BuildingSettingsViewModel.TextApplyColorToSelectionToolTip}">
@@ -396,58 +396,58 @@
                                         </Path>
                                     </Grid>
                                 </Button.Content>
-                            </Button>
+                            </Button>-->
                             <!-- used when predefined colors are available -->
-                            <!--<xctk:SplitButton Width="48"
-                                          DockPanel.Dock="Right"
-                                          Command="{Binding BuildingSettingsViewModel.ApplyColorToSelectionCommand}"
-                                          ToolTip="{Binding BuildingSettingsViewModel.TextApplyColorToSelectionToolTip}">
-                            <xctk:SplitButton.Resources>
-                                <Style x:Key="stylePath"
-                                       TargetType="{x:Type Path}">
-                                    <Style.Triggers>
-                                        <Trigger Property="IsEnabled"
-                                                 Value="True">
-                                            <Setter Property="Fill"
-                                                    Value="#FF000000" />
-                                        </Trigger>
-                                        <Trigger Property="IsEnabled"
-                                                 Value="False">
-                                            <Setter Property="Fill"
-                                                    Value="Gray" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </xctk:SplitButton.Resources>
-                            <xctk:SplitButton.Content>
-                                <Grid Width="24"
-                                      Height="24"
-                                      Visibility="Visible">
-                                    <Path Data="M10.237976,16.558633L15.362,21.68467C15.362,21.68467 15.362,32.671771 0,30.001748 3.9839783,29.020736 3.5959778,25.791718 5.9639893,20.122661 7.1269836,17.340638 10.237976,16.558633 10.237976,16.558633z M30.389984,0.00048406667C30.752991,0.0094867014 31.134979,0.14547426 31.494995,0.50648519 32.77597,1.7864956 31.215973,3.3455154 31.215973,3.3455152 31.215973,3.3455154 23.415985,11.147588 21.855988,12.708591 20.296997,14.270602 18.406982,18.619656 18.406982,18.619656L13.28299,13.495602C13.28299,13.495602 17.733978,11.707591 19.29599,10.147579 20.855988,8.5855531 28.655975,0.78248873 28.655975,0.78248861 28.655975,0.78248873 29.461975,-0.022526528 30.389984,0.00048406667z"
-                                          Stretch="Uniform"
-                                          Width="16"
-                                          Height="16"
-                                          Margin="0,0,0,0"
-                                          RenderTransformOrigin="0.5,0.5"
-                                          Style="{StaticResource stylePath}">
-                                        <Path.RenderTransform>
-                                            <TransformGroup>
-                                                <TransformGroup.Children>
-                                                    <RotateTransform Angle="0" />
-                                                    <ScaleTransform ScaleX="1"
-                                                                    ScaleY="1" />
-                                                </TransformGroup.Children>
-                                            </TransformGroup>
-                                        </Path.RenderTransform>
-                                    </Path>
-                                </Grid>
-                            </xctk:SplitButton.Content>
-                            <xctk:SplitButton.DropDownContent>
-                                <Button Command="{Binding BuildingSettingsViewModel.ApplyPredefinedColorToSelectionCommand}"
-                                        Content="{Binding BuildingSettingsViewModel.TextApplyPredefinedColorToSelection}"
-                                        ToolTip="{Binding BuildingSettingsViewModel.TextApplyPredefinedColorToSelectionToolTip}" />
-                            </xctk:SplitButton.DropDownContent>
-                        </xctk:SplitButton>-->
+                            <xctk:SplitButton Width="48"
+                                              DockPanel.Dock="Right"
+                                              Command="{Binding BuildingSettingsViewModel.ApplyColorToSelectionCommand}"
+                                              ToolTip="{Binding BuildingSettingsViewModel.TextApplyColorToSelectionToolTip}">
+                                <xctk:SplitButton.Resources>
+                                    <Style x:Key="stylePath"
+                                           TargetType="{x:Type Path}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="True">
+                                                <Setter Property="Fill"
+                                                        Value="#FF000000" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled"
+                                                     Value="False">
+                                                <Setter Property="Fill"
+                                                        Value="Gray" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </xctk:SplitButton.Resources>
+                                <xctk:SplitButton.Content>
+                                    <Grid Width="24"
+                                          Height="24"
+                                          Visibility="Visible">
+                                        <Path Data="M10.237976,16.558633L15.362,21.68467C15.362,21.68467 15.362,32.671771 0,30.001748 3.9839783,29.020736 3.5959778,25.791718 5.9639893,20.122661 7.1269836,17.340638 10.237976,16.558633 10.237976,16.558633z M30.389984,0.00048406667C30.752991,0.0094867014 31.134979,0.14547426 31.494995,0.50648519 32.77597,1.7864956 31.215973,3.3455154 31.215973,3.3455152 31.215973,3.3455154 23.415985,11.147588 21.855988,12.708591 20.296997,14.270602 18.406982,18.619656 18.406982,18.619656L13.28299,13.495602C13.28299,13.495602 17.733978,11.707591 19.29599,10.147579 20.855988,8.5855531 28.655975,0.78248873 28.655975,0.78248861 28.655975,0.78248873 29.461975,-0.022526528 30.389984,0.00048406667z"
+                                              Stretch="Uniform"
+                                              Width="16"
+                                              Height="16"
+                                              Margin="0,0,0,0"
+                                              RenderTransformOrigin="0.5,0.5"
+                                              Style="{StaticResource stylePath}">
+                                            <Path.RenderTransform>
+                                                <TransformGroup>
+                                                    <TransformGroup.Children>
+                                                        <RotateTransform Angle="0" />
+                                                        <ScaleTransform ScaleX="1"
+                                                                        ScaleY="1" />
+                                                    </TransformGroup.Children>
+                                                </TransformGroup>
+                                            </Path.RenderTransform>
+                                        </Path>
+                                    </Grid>
+                                </xctk:SplitButton.Content>
+                                <xctk:SplitButton.DropDownContent>
+                                    <Button Command="{Binding BuildingSettingsViewModel.ApplyPredefinedColorToSelectionCommand}"
+                                            Content="{Binding BuildingSettingsViewModel.TextApplyPredefinedColorToSelection}"
+                                            ToolTip="{Binding BuildingSettingsViewModel.TextApplyPredefinedColorToSelectionToolTip}" />
+                                </xctk:SplitButton.DropDownContent>
+                            </xctk:SplitButton>
                         </DockPanel>
                         <DockPanel>
                             <DockPanel.Resources>
@@ -576,13 +576,13 @@
                                    Height="25"
                                    Visibility="Visible">
                             <CheckBox Content="{Binding BuildingSettingsViewModel.TextPavedStreet}"
-                                      Name="CheckBoxPavedStreet" 
+                                      Name="CheckBoxPavedStreet"
                                       ToolTip="{Binding BuildingSettingsViewModel.TextPavedStreetToolTip}"
                                       Click="CheckBoxPavedStreetClick"
                                       DockPanel.Dock="Right"
                                       Margin="0,3,0,5"
                                       IsThreeState="False"
-                                      IsChecked="{Binding BuildingSettingsViewModel.IsPavedStreet}"/>
+                                      IsChecked="{Binding BuildingSettingsViewModel.IsPavedStreet}" />
                         </DockPanel>
                         <DockPanel LastChildFill="False">
                             <Label Content="{Binding BuildingSettingsViewModel.TextOptions}" />

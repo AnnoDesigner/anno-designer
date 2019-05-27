@@ -1,5 +1,4 @@
-﻿using AnnoDesigner.Presets;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Linq;
@@ -20,6 +19,11 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using AnnoDesigner.model;
 using AnnoDesigner.Export;
+using AnnoDesigner.Core.Extensions;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core;
+using AnnoDesigner.Core.Presets.Models;
+using AnnoDesigner.Core.Presets.Helper;
 
 namespace AnnoDesigner
 {
@@ -206,7 +210,7 @@ namespace AnnoDesigner
 
             // check for updates on startup            
             _mainWindowLocalization.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
-            _mainWindowLocalization.FileVersionValue = Constants.FileVersion.ToString("0.#", CultureInfo.InvariantCulture);
+            _mainWindowLocalization.FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
 
             CheckForUpdates(false);
 
@@ -216,13 +220,12 @@ namespace AnnoDesigner
             colorPicker.ShowStandardColors = false;
             //try
             //{
-            //    ColorPresets colorPresets = DataIO.LoadFromFile<ColorPresets>(Path.Combine(App.ApplicationPath, Constants.ColorPresetsFile));
-            //    foreach (ColorScheme colorScheme in colorPresets.ColorSchemes)
+            //    ColorPresetsLoader loader = new ColorPresetsLoader();
+            //    var defaultScheme = loader.LoadDefaultScheme();
+            //    foreach (var curPredefinedColor in defaultScheme.Colors.GroupBy(x => x.Color).Select(x => x.Key))
             //    {
-            //        foreach (ColorInfo colorInfo in colorScheme.ColorInfos)
-            //        {
-            //            colorPicker.StandardColors.Add(new ColorItem(colorInfo.Color, string.Format("{0} ({1})", colorInfo.ColorTarget, colorScheme.Name)));
-            //        }
+            //        //colorPicker.StandardColors.Add(new Xceed.Wpf.Toolkit.ColorItem(curPredefinedColor.Color, $"{curPredefinedColor.TargetTemplate}"));
+            //        colorPicker.StandardColors.Add(new Xceed.Wpf.Toolkit.ColorItem(curPredefinedColor, curPredefinedColor.ToHex()));
             //    }
             //}
             //catch (Exception ex)
@@ -296,7 +299,8 @@ namespace AnnoDesigner
                         Commons.RestartApplication(true, Constants.Argument_Ask_For_Admin, App.ExecutablePath);
                     }
 
-                    var newLocation = await _commons.UpdateHelper.DownloadLatestPresetFileAsync().ConfigureAwait(false);
+                    //Context is required here, do not use ConfigureAwait(false)
+                    var newLocation = await _commons.UpdateHelper.DownloadLatestPresetFileAsync();
 
                     busyIndicator.IsBusy = false;
 
@@ -378,7 +382,7 @@ namespace AnnoDesigner
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingWidth = (int)obj.Size.Width;
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingHeight = (int)obj.Size.Height;
             // color
-            _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor = obj.Color;
+            _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor = ColorPresetsHelper.Instance.GetPredefinedColor(obj) ?? obj.Color;
             // label
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingName = obj.Label;
             // Identifier
@@ -408,7 +412,7 @@ namespace AnnoDesigner
             // radius
             _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius = obj.Radius;
             //InfluenceRadius
-            if (_mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet == false)
+            if (!_mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet)
             {
                 _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = obj.InfluenceRange;
             }
@@ -520,7 +524,10 @@ namespace AnnoDesigner
                             || (obj.Size.Height == buildingInfo.BuildBlocker["x"] && obj.Size.Width == buildingInfo.BuildBlocker["z"]))
                         {
                             //if sizes match and icon is a existing building in the presets, call it that object
-                            obj.Identifier = buildingInfo.Identifier;
+                            if (obj.Identifier != "Residence_New_World")
+                            {
+                                obj.Identifier = buildingInfo.Identifier;
+                            }
                         }
                         else
                         {
@@ -591,6 +598,7 @@ namespace AnnoDesigner
                 MessageBox.Show("Something went wrong while applying the preset.");
             }
         }
+
         /// <summary>
         /// Called when localisation is changed, to repopulate the tree view
         /// </summary>
@@ -878,13 +886,13 @@ namespace AnnoDesigner
                 //Check of Mouse has an object or not -> if mouse has Object then Renew Object, withouth placnig. (do ApplyCurrentObject();)
             }
         }
-        
+
         public bool GetDistanceRange(bool value)
         {
             Settings.Default.IsPavedStreet = value;
             var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier);
             SetPavedStreetCheckboxColor();
-            if (buildingInfo  != null)
+            if (buildingInfo != null)
             {
                 if (buildingInfo.InfluenceRange > 0)
                 {
@@ -1091,7 +1099,7 @@ namespace AnnoDesigner
             }
 
             // copy all objects
-            var allObjects = annoCanvas.PlacedObjects.Select(_ => new AnnoObject(_)).ToList();
+            var allObjects = annoCanvas.PlacedObjects.Select(_ => new AnnoObject(_)).Cast<AnnoObject>().ToList();
             // copy selected objects
             // note: should be references to the correct copied objects from allObjects
             var selectedObjects = annoCanvas.SelectedObjects.Select(_ => new AnnoObject(_)).ToList();
