@@ -25,10 +25,6 @@ namespace PresetParser
         public static bool isExcludedGUID = false; /*only for anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-        public const string ANNO_VERSION_1404 = "1404";
-        public const string ANNO_VERSION_2070 = "2070";
-        public const string ANNO_VERSION_2205 = "2205";
-        public const string ANNO_VERSION_1800 = "1800";
 
         private const string BUILDING_PRESETS_VERSION = "3.2.4";
         // Initalisizing Language Directory's and Filenames
@@ -106,7 +102,7 @@ namespace PresetParser
         private static string GetIconFilename(XmlNode iconNode, string annoVersion)
         {
             string annoIdexNumber = "";
-            if (annoVersion == ANNO_VERSION_1404)
+            if (annoVersion == Constants.ANNO_VERSION_1404)
             {
                 annoIdexNumber = "A4_";
             }
@@ -129,13 +125,13 @@ namespace PresetParser
             bool validVersion = false;
             while (!validVersion)
             {
-                Console.Write("Please enter an Anno version (1 of: {0} {1} {2} {3}):", ANNO_VERSION_1404, ANNO_VERSION_2070, ANNO_VERSION_2205, ANNO_VERSION_1800);
+                Console.Write("Please enter an Anno version (1 of: {0} {1} {2} {3}):", Constants.ANNO_VERSION_1404, Constants.ANNO_VERSION_2070, Constants.ANNO_VERSION_2205, Constants.ANNO_VERSION_1800);
                 annoVersion = Console.ReadLine();
                 if (annoVersion == "quit")
                 {
                     Environment.Exit(0);
                 }
-                if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070 || annoVersion == ANNO_VERSION_2205 || annoVersion == ANNO_VERSION_1800 || annoVersion == "-ALL")
+                if (annoVersion == Constants.ANNO_VERSION_1404 || annoVersion == Constants.ANNO_VERSION_2070 || annoVersion == Constants.ANNO_VERSION_2205 || annoVersion == Constants.ANNO_VERSION_1800 || annoVersion == "-ALL")
                 {
                     validVersion = true;
                 }
@@ -143,7 +139,7 @@ namespace PresetParser
                 {
                     Console.Write("Please enter an Anno version:");
                     annoVersion = Console.ReadLine();
-                    if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070 || annoVersion == ANNO_VERSION_2205 || annoVersion == ANNO_VERSION_1800)
+                    if (annoVersion == Constants.ANNO_VERSION_1404 || annoVersion == Constants.ANNO_VERSION_2070 || annoVersion == Constants.ANNO_VERSION_2205 || annoVersion == Constants.ANNO_VERSION_1800)
                     {
                         validVersion = true;
                         testVersion = true;
@@ -162,10 +158,10 @@ namespace PresetParser
             }
             else
             {
-                BASE_PATH_1404 = GetBASE_PATH(ANNO_VERSION_1404);
-                BASE_PATH_2070 = GetBASE_PATH(ANNO_VERSION_2070);
-                BASE_PATH_2205 = GetBASE_PATH(ANNO_VERSION_2205);
-                BASE_PATH_1800 = GetBASE_PATH(ANNO_VERSION_1800);
+                BASE_PATH_1404 = GetBASE_PATH(Constants.ANNO_VERSION_1404);
+                BASE_PATH_2070 = GetBASE_PATH(Constants.ANNO_VERSION_2070);
+                BASE_PATH_2205 = GetBASE_PATH(Constants.ANNO_VERSION_2205);
+                BASE_PATH_1800 = GetBASE_PATH(Constants.ANNO_VERSION_1800);
             }
             if (!testVersion)
             {
@@ -189,20 +185,20 @@ namespace PresetParser
             /// </summary>
             //These should stay constant for different anno versions (hopefully!)
             #region Anno 1404 xPaths
-            if (annoVersion == ANNO_VERSION_1404 || annoVersion == "-ALL")
+            if (annoVersion == Constants.ANNO_VERSION_1404 || annoVersion == "-ALL")
             {
-                VersionSpecificPaths.Add(ANNO_VERSION_1404, new Dictionary<string, PathRef[]>());
-                VersionSpecificPaths[ANNO_VERSION_1404].Add("icons", new PathRef[]
+                VersionSpecificPaths.Add(Constants.ANNO_VERSION_1404, new Dictionary<string, PathRef[]>());
+                VersionSpecificPaths[Constants.ANNO_VERSION_1404].Add("icons", new PathRef[]
                 {
                 //new PathRef("data/config/game/icons.xml", "/Icons/i" ),
                 new PathRef("addondata/config/game/icons.xml", "/Icons/i", "", "")
                 });
-                VersionSpecificPaths[ANNO_VERSION_1404].Add("localisation", new PathRef[]
+                VersionSpecificPaths[Constants.ANNO_VERSION_1404].Add("localisation", new PathRef[]
                 {
                 new PathRef("data/loca"),
                 new PathRef("addondata/loca")
                 });
-                VersionSpecificPaths[ANNO_VERSION_1404].Add("assets", new PathRef[]
+                VersionSpecificPaths[Constants.ANNO_VERSION_1404].Add("assets", new PathRef[]
                 {
                 new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Assets/Asset", "PlayerBuildings"),
                 new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "PlayerBuildings"),
@@ -215,18 +211,18 @@ namespace PresetParser
             #endregion
 
             #region Anno 2070 xPaths
-            if (annoVersion == ANNO_VERSION_2070 || annoVersion == "-ALL")
+            if (annoVersion == Constants.ANNO_VERSION_2070 || annoVersion == "-ALL")
             {
-                VersionSpecificPaths.Add(ANNO_VERSION_2070, new Dictionary<string, PathRef[]>());
-                VersionSpecificPaths[ANNO_VERSION_2070].Add("icons", new PathRef[]
+                VersionSpecificPaths.Add(Constants.ANNO_VERSION_2070, new Dictionary<string, PathRef[]>());
+                VersionSpecificPaths[Constants.ANNO_VERSION_2070].Add("icons", new PathRef[]
                 {
                 new PathRef("data/config/game/icons.xml", "/Icons/i", "", "")
                 });
-                VersionSpecificPaths[ANNO_VERSION_2070].Add("localisation", new PathRef[]
+                VersionSpecificPaths[Constants.ANNO_VERSION_2070].Add("localisation", new PathRef[]
                 {
                 new PathRef("data/loca")
                 });
-                VersionSpecificPaths[ANNO_VERSION_2070].Add("assets", new PathRef[]
+                VersionSpecificPaths[Constants.ANNO_VERSION_2070].Add("assets", new PathRef[]
                 {
                 new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
                 new PathRef("data/config/game/assets.xml", "/AssetList/Groups/Group/Groups/Group", "Groups/Group/Groups/Group/Groups/Group/Assets/Asset", "Buildings"),
@@ -240,13 +236,13 @@ namespace PresetParser
             #endregion
 
             #region Anno 2205 xPaths
-            if (annoVersion == ANNO_VERSION_2205 || annoVersion == "-ALL")
+            if (annoVersion == Constants.ANNO_VERSION_2205 || annoVersion == "-ALL")
             {
-                VersionSpecificPaths.Add(ANNO_VERSION_2205, new Dictionary<string, PathRef[]>());
+                VersionSpecificPaths.Add(Constants.ANNO_VERSION_2205, new Dictionary<string, PathRef[]>());
                 /// Trying to read data from the objects.exm 
                 Console.WriteLine();
                 Console.WriteLine("Trying to read Buildings Data from the objects.xml of anno 2205");
-                VersionSpecificPaths[ANNO_VERSION_2205].Add("assets", new PathRef[]
+                VersionSpecificPaths[Constants.ANNO_VERSION_2205].Add("assets", new PathRef[]
                 {
                     #region Data Structure Normal Anno 2205
                     new PathRef("data/config/game/asset/objects/buildings.xml", "/Group/Groups/Group", "Groups/Group/Assets/Asset", "Earth"),
@@ -282,15 +278,15 @@ namespace PresetParser
             #endregion
 
             #region Anno 1800 xPaths
-            if (annoVersion == ANNO_VERSION_1800 || annoVersion == "-ALL")
+            if (annoVersion == Constants.ANNO_VERSION_1800 || annoVersion == "-ALL")
             {
-                VersionSpecificPaths.Add(ANNO_VERSION_1800, new Dictionary<string, PathRef[]>());
+                VersionSpecificPaths.Add(Constants.ANNO_VERSION_1800, new Dictionary<string, PathRef[]>());
                 /// Trying to read data from the objects.exm 
                 Console.WriteLine();
                 Console.WriteLine("Trying to read Buildings Data from the objects.xml of anno 1800");
                 /// I have removed the lat pathname 'Values' as it does the same i wanted, 
                 /// only the 'Values' will skip the <template> tag that i still need
-                VersionSpecificPaths[ANNO_VERSION_1800].Add("assets", new PathRef[]
+                VersionSpecificPaths[Constants.ANNO_VERSION_1800].Add("assets", new PathRef[]
                 {
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
@@ -313,24 +309,24 @@ namespace PresetParser
                 //Execute for all Anno Presets in one
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
-                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1404, ANNO_VERSION_1404);
+                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1404, Constants.ANNO_VERSION_1404);
                 BASE_PATH = BASE_PATH_1404;
-                DoAnnoPreset(ANNO_VERSION_1404);
+                DoAnnoPreset(Constants.ANNO_VERSION_1404);
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
-                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2070, ANNO_VERSION_2070);
+                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2070, Constants.ANNO_VERSION_2070);
                 BASE_PATH = BASE_PATH_2070;
-                DoAnnoPreset(ANNO_VERSION_2070);
+                DoAnnoPreset(Constants.ANNO_VERSION_2070);
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
-                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2205, ANNO_VERSION_2205);
+                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2205, Constants.ANNO_VERSION_2205);
                 BASE_PATH = BASE_PATH_2205;
-                DoAnnoPreset(ANNO_VERSION_2205);
+                DoAnnoPreset(Constants.ANNO_VERSION_2205);
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
-                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1800, ANNO_VERSION_1800);
+                Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1800, Constants.ANNO_VERSION_1800);
                 BASE_PATH = BASE_PATH_1800;
-                DoAnnoPreset(ANNO_VERSION_1800);
+                DoAnnoPreset(Constants.ANNO_VERSION_1800);
             }
             #endregion
 
@@ -398,7 +394,7 @@ namespace PresetParser
             Console.WriteLine("Parsing assets.xml:");
             var assetPathRefs = VersionSpecificPaths[annoVersion]["assets"];
 
-            if (annoVersion == ANNO_VERSION_1404 || annoVersion == ANNO_VERSION_2070)
+            if (annoVersion == Constants.ANNO_VERSION_1404 || annoVersion == Constants.ANNO_VERSION_2070)
             {
                 // prepare localizations
                 // This call will set the extra Anno Version Number on the icon translation for Anno 1404 ('A4_')
@@ -429,7 +425,7 @@ namespace PresetParser
                 // Add extra buildings to the anno version preset file
                 AddExtraPreset(annoVersion, buildings);
             }
-            else if (annoVersion == ANNO_VERSION_2205)
+            else if (annoVersion == Constants.ANNO_VERSION_2205)
             {
                 foreach (PathRef p in assetPathRefs)
                 {
@@ -438,7 +434,7 @@ namespace PresetParser
                 // Add extra buildings to the anno version preset file
                 AddExtraPreset(annoVersion, buildings);
             }
-            else if (annoVersion == ANNO_VERSION_1800)
+            else if (annoVersion == Constants.ANNO_VERSION_1800)
             {
                 foreach (PathRef p in assetPathRefs)
                 {
@@ -521,14 +517,14 @@ namespace PresetParser
             }
 
             #region Skip Unused buildings in Anno Designer List
-            if (annoVersion == ANNO_VERSION_1404)
+            if (annoVersion == Constants.ANNO_VERSION_1404)
             {
                 nameValue = values["Standard"]["Name"].InnerText;
                 isExcludedName = nameValue.Contains(ExcludeNameList1404);
                 templateValue = buildingNode["Template"].InnerText;
                 isExcludedTemplate = templateValue.Contains(ExcludeTemplateList1404);
             }
-            if (annoVersion == ANNO_VERSION_2070)
+            if (annoVersion == Constants.ANNO_VERSION_2070)
             {
                 nameValue = values["Standard"]["Name"].InnerText;
                 isExcludedName = nameValue.Contains(ExcludeNameList2070);
@@ -569,14 +565,14 @@ namespace PresetParser
             groupName = groupName.FirstCharToUpper();
             factionName = factionName.FirstCharToUpper();
             #region Regrouping several faction or group names for Anno 1404
-            if (annoVersion == ANNO_VERSION_1404)
+            if (annoVersion == Constants.ANNO_VERSION_1404)
             {
                 if (factionName == "Farm") { factionName = "Production"; }
                 if (identifierName == "Hospice") { factionName = "Public"; groupName = "Special"; }
             }
             #endregion
             #region Regrouping several faction or group names for Anno 2070
-            if (annoVersion == ANNO_VERSION_2070)
+            if (annoVersion == Constants.ANNO_VERSION_2070)
             {
                 if (factionName == "Ecos") { factionName = "(1) Ecos"; }
                 if (factionName == "Tycoons") { factionName = "(2) Tycoons"; }
@@ -594,8 +590,8 @@ namespace PresetParser
             #endregion
             #region Set Header Name for Anno 1404 and Anno 2070
             string headerName = "Anno" + annoVersion;/*in case if statments are passed by*/
-            if (annoVersion == ANNO_VERSION_1404) { headerName = "(A4) Anno " + ANNO_VERSION_1404; }
-            if (annoVersion == ANNO_VERSION_2070) { headerName = "(A5) Anno " + ANNO_VERSION_2070; }
+            if (annoVersion == Constants.ANNO_VERSION_1404) { headerName = "(A4) Anno " + Constants.ANNO_VERSION_1404; }
+            if (annoVersion == Constants.ANNO_VERSION_2070) { headerName = "(A5) Anno " + Constants.ANNO_VERSION_2070; }
             #endregion
             IBuildingInfo b = new BuildingInfo
             {
@@ -691,7 +687,7 @@ namespace PresetParser
                 .Cast<XmlNode>().Single(_ => _["Name"].InnerText == innerNameTag); //This differs between anno versions
             foreach (XmlNode buildingNode in buildingNodes.SelectNodes(YPath).Cast<XmlNode>())
             {
-                ParseBuilding2205(buildings, buildingNode, ANNO_VERSION_2205);
+                ParseBuilding2205(buildings, buildingNode, Constants.ANNO_VERSION_2205);
             }
         }
 
@@ -771,7 +767,7 @@ namespace PresetParser
             }
             if (identifierName == "orbit connection 01") { groupName = "Special"; }
             #endregion
-            string headerName = "(A6) Anno " + ANNO_VERSION_2205;
+            string headerName = "(A6) Anno " + Constants.ANNO_VERSION_2205;
             IBuildingInfo b = new BuildingInfo
             {
                 Header = headerName,
@@ -827,7 +823,7 @@ namespace PresetParser
             {
                 /// Split the Value <IconFilenames>innertext</IconFilenames> to get only the Name.png
                 string replaceName = "";
-                if (annoVersion == ANNO_VERSION_2205)
+                if (annoVersion == Constants.ANNO_VERSION_2205)
                 {
                     replaceName = "A6_";
                 }
@@ -904,7 +900,7 @@ namespace PresetParser
                     translation = values["Standard"]["Name"].InnerText;
                 }
                 b.Localization.Dict.Add(Languages[languageCount], translation);
-                if (testVersion == true && annoVersion == ANNO_VERSION_2205)
+                if (testVersion == true && annoVersion == Constants.ANNO_VERSION_2205)
                 {
                     if (languageCount == 0)
                     {
@@ -937,7 +933,7 @@ namespace PresetParser
 
             foreach (XmlNode buildingNode in buildingNodes)
             {
-                ParseBuilding1800(buildings, buildingNode, ANNO_VERSION_1800);
+                ParseBuilding1800(buildings, buildingNode, Constants.ANNO_VERSION_1800);
             }
         }
 
@@ -945,7 +941,7 @@ namespace PresetParser
         {
             string[] LanguagesFiles = { "" };
             string templateName = "", factionName = "", identifierName = "", groupName = "";
-            string headerName = "(A7) Anno " + ANNO_VERSION_1800;
+            string headerName = "(A7) Anno " + Constants.ANNO_VERSION_1800;
             #region Get valid Building Information 
             XmlElement values = buildingNode["Values"]; //Set the value List as normaly
             if (buildingNode.HasChildNodes)
@@ -1359,7 +1355,7 @@ namespace PresetParser
         #region Retrieving BuildingBlockers from Buidings Nodes
         private static bool RetrieveBuildingBlocker(IBuildingInfo building, string variationFilename, string annoVersion)
         {
-            if (annoVersion == ANNO_VERSION_1800)
+            if (annoVersion == Constants.ANNO_VERSION_1800)
             {
                 XmlDocument ifoDocument = new XmlDocument();
                 ifoDocument.Load(Path.Combine(BASE_PATH + "/", string.Format("{0}.ifo", Path.GetDirectoryName(variationFilename) + "\\" + Path.GetFileNameWithoutExtension(variationFilename))));
@@ -1550,7 +1546,7 @@ namespace PresetParser
                             // add localization string
                             /// Translation of GUID 10239 (Anno 2070) is needed, else it will be named 
                             /// as Metal Converter, witch it is not.
-                            if (annoVersion == ANNO_VERSION_2070 && guid == "10239" && DoExtraAnumber == 0)
+                            if (annoVersion == Constants.ANNO_VERSION_2070 && guid == "10239" && DoExtraAnumber == 0)
                             {
                                 if (language == "eng") { translation = "Black Smoker"; }
                                 if (language == "ger") { translation = "Black Smoker"; }
@@ -1559,11 +1555,11 @@ namespace PresetParser
                                 if (language == "rus") { translation = "Черный курильщик"; }
                             }
                             /// Icon.json extra A number for the Icon Selection tree
-                            if (annoVersion == ANNO_VERSION_1404 && DoExtraAnumber == 1)
+                            if (annoVersion == Constants.ANNO_VERSION_1404 && DoExtraAnumber == 1)
                             {
                                 translation = "A4_" + translation;
                             }
-                            if (annoVersion == ANNO_VERSION_2070 && DoExtraAnumber == 1)
+                            if (annoVersion == Constants.ANNO_VERSION_2070 && DoExtraAnumber == 1)
                             {
                                 translation = "A5_" + translation;
                             }
