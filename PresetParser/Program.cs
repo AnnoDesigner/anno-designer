@@ -1231,8 +1231,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge"; break; }
                             case 1: { translation = "Gehweg Hecke"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy"; break; }
-                            case 3: { translation = "Боковая изгородь"; break; }
+                            case 2: { translation = "Haies de trottoirs"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy"; break; }
+                            case 4: { translation = "Боковая изгородь"; break; }
                         }
                     }
                     if (buildingGuid == "102166")
@@ -1241,8 +1242,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge Corner"; break; }
                             case 1: { translation = "Gehweg Heckenecke Ecke"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy narożnik"; break; }
-                            case 3: { translation = "Боковая изгородь (угол)"; break; }
+                            case 2: { translation = "Coin de haies de trottoirs"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy narożnik"; break; }
+                            case 4: { translation = "Боковая изгородь (угол)"; break; }
                         }
                     }
                     if (buildingGuid == "102167")
@@ -1251,8 +1253,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge End"; break; }
                             case 1: { translation = "Gehweg Heckenende"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy Koniec"; break; }
-                            case 3: { translation = "Боковая изгородь (край)"; break; }
+                            case 2: { translation = "Extrémité de haie de trottoir"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy Koniec"; break; }
+                            case 4: { translation = "Боковая изгородь (край)"; break; }
                         }
                     }
                     if (buildingGuid == "102169")
@@ -1261,8 +1264,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge Junction"; break; }
                             case 1: { translation = "Gehweg Hecken Verbindungsstelle"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy Złącze"; break; }
-                            case 3: { translation = "Боковая изгородь (Перекресток)"; break; }
+                            case 2: { translation = "Jonction de haie de trottoir"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy Złącze"; break; }
+                            case 4: { translation = "Боковая изгородь (Перекресток)"; break; }
                         }
                     }
                     if (buildingGuid == "102171")
@@ -1271,8 +1275,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Sidewalk Hedge Crossing"; break; }
                             case 1: { translation = "Gehweg Hecken Kreuzung"; break; }
-                            case 2: { translation = "Żywopłot Chodnikowy Skrzyżowanie"; break; }
-                            case 3: { translation = "Боковая изгородь (образного)"; break; }
+                            case 2: { translation = "Traversée de haie de trottoir"; break; }
+                            case 3: { translation = "Żywopłot Chodnikowy Skrzyżowanie"; break; }
+                            case 4: { translation = "Боковая изгородь (образного)"; break; }
                         }
                     }
                     if (buildingGuid == "102161")
@@ -1281,8 +1286,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Railings"; break; }
                             case 1: { translation = "Zaune"; break; }
-                            case 2: { translation = "Poręcze"; break; }
-                            case 3: { translation = "Ограда"; break; }
+                            case 2: { translation = "Garde-corps"; break; }
+                            case 3: { translation = "Poręcze"; break; }
+                            case 4: { translation = "Ограда"; break; }
                         }
                     }
                     if (buildingGuid == "102170")
@@ -1291,8 +1297,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Railings Junction"; break; }
                             case 1: { translation = "Zaune Verbindungsstelle"; break; }
-                            case 2: { translation = "Poręcze Złącze"; break; }
-                            case 3: { translation = "Ограда (Перекресток)"; break; }
+                            case 2: { translation = "Garde-corps Jonction"; break; }
+                            case 3: { translation = "Poręcze Złącze"; break; }
+                            case 4: { translation = "Ограда (Перекресток)"; break; }
                         }
                     }
                     if (buildingGuid == "102134")
@@ -1301,8 +1308,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Hedge"; break; }
                             case 1: { translation = "Hecke"; break; }
-                            case 2: { translation = "żywopłot"; break; }
-                            case 3: { translation = "изгородь"; break; }
+                            case 2: { translation = "Haie (droite)"; break; }
+                            case 3: { translation = "żywopłot"; break; }
+                            case 4: { translation = "изгородь"; break; }
                         }
                     }
                     if (buildingGuid == "102139")
@@ -1311,8 +1319,9 @@ namespace PresetParser
                         {
                             case 0: { translation = "Path"; break; }
                             case 1: { translation = "Pfad"; break; }
-                            case 2: { translation = "ścieżka"; break; }
-                            case 3: { translation = "Тропинка"; break; }
+                            case 2: { translation = "Allée (droite)"; break; }
+                            case 3: { translation = "ścieżka"; break; }
+                            case 4: { translation = "Тропинка"; break; }
                         }
                     }
                 }
