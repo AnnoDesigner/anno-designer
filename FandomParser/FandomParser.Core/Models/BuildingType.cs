@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FandomParser.Core
+namespace FandomParser.Core.Models
 {
     public enum BuildingType
     {

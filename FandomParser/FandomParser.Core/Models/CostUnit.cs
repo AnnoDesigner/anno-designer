@@ -5,13 +5,13 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FandomParser
+namespace FandomParser.Core.Models
 {
     [DataContract]
-    public class WikiCostUnit
+    public class CostUnit
     {
         [DataMember(Order = 0)]
-        public WikiCostUnitType Type { get; set; }
+        public CostUnitType Type { get; set; }
 
         [DataMember(Order = 1)]
         public string Name { get; set; }

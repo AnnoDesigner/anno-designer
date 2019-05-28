@@ -1,28 +1,26 @@
-﻿using System;
+﻿using FandomParser.WikiText;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace FandomParser
+namespace FandomParser.WikiText
 {
-
-    [DebuggerDisplay("{" + nameof(Version) + "}")]
     [DataContract]
-    public class WikiBuildingInfoList
+    public class WikiTextTableContainer
     {
-        public WikiBuildingInfoList()
+        public WikiTextTableContainer()
         {
-            Infos = new List<WikiBuildingInfo>();
+            Entries = new List<WikiTextTableEntry>();
         }
 
         [DataMember(Order = 0)]
         public Version Version { get; set; }
 
         [DataMember(Order = 1)]
-        public List<WikiBuildingInfo> Infos { get; set; }
+        public List<WikiTextTableEntry> Entries { get; set; }
     }
 }

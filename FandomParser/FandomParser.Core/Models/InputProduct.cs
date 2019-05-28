@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace FandomParser.Core
+namespace FandomParser.Core.Models
 {
-    [DebuggerDisplay("{" + nameof(Type) + "}")]
+    [DebuggerDisplay("{" + nameof(Icon) + "}")]
     [DataContract]
-    public class SupplyEntry
+    public class InputProduct
     {
         [DataMember(Order = 0)]
         public double Amount { get; set; }
@@ -17,7 +19,7 @@ namespace FandomParser.Core
         public double AmountElectricity { get; set; }
 
         [DataMember(Order = 2)]
-        public string Type { get; set; }
+        public string Icon { get; set; }
 
         public int Order { get; set; }
     }

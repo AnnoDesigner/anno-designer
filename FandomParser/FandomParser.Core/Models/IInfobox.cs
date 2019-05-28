@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace FandomParser.Core
+namespace FandomParser.Core.Models
 {
     public interface IInfobox
     {

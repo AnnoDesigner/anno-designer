@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,20 +48,12 @@
   <ItemGroup>
     <Compile Include="WikiBuildingDetailProvider.cs" />
     <Compile Include="WikiBuildingInfoProvider.cs" />
-    <Compile Include="WorldRegion.cs" />
-    <Compile Include="ConstructionInfo.cs" />
-    <Compile Include="MaintenanceInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SerializationHelper.cs" />
-    <Compile Include="WikiText\TableEntry.cs" />
-    <Compile Include="WikiText\TableEntryList.cs" />
-    <Compile Include="WikiBuildingInfo.cs" />
-    <Compile Include="WikiBuildingInfoList.cs" />
-    <Compile Include="WikiCostUnit.cs" />
-    <Compile Include="WikiCostUnitType.cs" />
+    <Compile Include="WikiText\WikiTextTableEntry.cs" />
+    <Compile Include="WikiText\WikiTextTableContainer.cs" />
     <Compile Include="WikiText\WikiTextProvider.cs" />
-    <Compile Include="WikiText\TableProvider.cs" />
+    <Compile Include="WikiText\WikiTextTableParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -68,9 +61,6 @@
   <ItemGroup>
     <PackageReference Include="CXuesong.MW.WikiClientLibrary">
       <Version>0.6.5</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

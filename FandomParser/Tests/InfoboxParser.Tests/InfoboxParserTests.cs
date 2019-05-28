@@ -8,6 +8,7 @@ using Moq;
 using Xunit;
 using System.IO;
 using System.Reflection;
+using FandomParser.Core.Models;
 
 namespace InfoboxParser.Tests
 {

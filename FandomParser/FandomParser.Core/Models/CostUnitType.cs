@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FandomParser
+namespace FandomParser.Core.Models
 {
-    public enum WikiCostUnitType
+    public enum CostUnitType
     {
         Unknown,
         InfoIcon,

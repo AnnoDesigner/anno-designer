@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using FandomParser.Core;
+using FandomParser.Core.Models;
 using FandomParser.WikiText;
 
 namespace FandomParser
@@ -38,7 +39,7 @@ namespace FandomParser
             get { return _pathToExtractedInfoboxesFolder ?? (_pathToExtractedInfoboxesFolder = Path.Combine(PathToDetailsFolder, DIRECTORY_BUILDING_INFOBOX)); }
         }
 
-        public WikiBuildingInfoList FetchBuildingDetails(WikiBuildingInfoList wikiBuildingInfoList)
+        public WikiBuildingInfoPreset FetchBuildingDetails(WikiBuildingInfoPreset wikiBuildingInfoList)
         {
             //download complete wikitext for each building
             saveCompleteInfos(wikiBuildingInfoList);
@@ -50,7 +51,7 @@ namespace FandomParser
             return getUpdatedWikiBuildingInfoList(wikiBuildingInfoList);
         }
 
-        private void saveCompleteInfos(WikiBuildingInfoList wikiBuildingInfoList)
+        private void saveCompleteInfos(WikiBuildingInfoPreset wikiBuildingInfoList)
         {
             Console.WriteLine("start fetching building details");
 
@@ -172,7 +173,7 @@ namespace FandomParser
             Console.WriteLine($"finished extracting infoboxes (took {sw.ElapsedMilliseconds} ms)");
         }
 
-        private WikiBuildingInfoList getUpdatedWikiBuildingInfoList(WikiBuildingInfoList wikiBuildingInfoList)
+        private WikiBuildingInfoPreset getUpdatedWikiBuildingInfoList(WikiBuildingInfoPreset wikiBuildingInfoList)
         {
             Console.WriteLine("start parsing infoboxes");
 

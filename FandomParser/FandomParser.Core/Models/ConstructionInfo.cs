@@ -6,8 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-
-namespace FandomParser
+namespace FandomParser.Core.Models
 {
 
     [DataContract]
@@ -17,6 +16,6 @@ namespace FandomParser
         public double Value { get; set; }
 
         [DataMember(Order = 1)]
-        public WikiCostUnit Unit { get; set; }
+        public CostUnit Unit { get; set; }
     }
 }

@@ -1,25 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace FandomParser.Core
+namespace FandomParser.Core.Models
 {
-    [DebuggerDisplay("{" + nameof(Icon) + "}")]
+    [DebuggerDisplay("{" + nameof(Type) + "}")]
     [DataContract]
-    public class InputProduct
+    public class UnlockCondition
     {
         [DataMember(Order = 0)]
         public double Amount { get; set; }
 
         [DataMember(Order = 1)]
-        public double AmountElectricity { get; set; }
-
-        [DataMember(Order = 2)]
-        public string Icon { get; set; }
+        public string Type { get; set; }
 
         public int Order { get; set; }
     }

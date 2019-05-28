@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FandomParser
+namespace FandomParser.Core.Models
 {
     [DataContract]
     public class MaintenanceInfo
@@ -14,6 +14,6 @@ namespace FandomParser
         public double Value { get; set; }
 
         [DataMember(Order = 1)]
-        public WikiCostUnit Unit { get; set; }
+        public CostUnit Unit { get; set; }
     }
 }

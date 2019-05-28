@@ -5,12 +5,13 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using FandomParser.Core.Models;
 
 namespace FandomParser.WikiText
 {
 
     [DataContract]
-    public class TableEntry
+    public class WikiTextTableEntry
     {
         [DataMember(Order = 0)]
         public string Name { get; set; }

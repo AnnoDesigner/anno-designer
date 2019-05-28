@@ -1,18 +1,19 @@
-﻿using FandomParser.WikiText;
+﻿using FandomParser.Core.Models;
+using FandomParser.WikiText;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace FandomParser
 {
     public class WikiBuildingInfoProvider
     {
-        public WikiBuildingInfoList GetWikiBuildingInfos(TableEntryList list)
+        public WikiBuildingInfoPreset GetWikiBuildingInfos(WikiTextTableContainer list)
         {
-            var wikibuildingList = new WikiBuildingInfoList();
+            var wikibuildingList = new WikiBuildingInfoPreset();
             wikibuildingList.Version = new Version(0, 2, 0, 0);
             foreach (var curentry in list.Entries)
             {
@@ -22,59 +23,59 @@ namespace FandomParser
             return wikibuildingList;
         }
 
-        private static WikiBuildingInfo parseWikiBuildingInfo(TableEntry entry)
+        private static WikiBuildingInfo parseWikiBuildingInfo(WikiTextTableEntry table)
         {
             var result = new WikiBuildingInfo();
 
             try
             {
-                result.Region = entry.Region;
-                result.Tier = entry.Tier;
-                result.Name = entry.Name.Replace("[[", string.Empty).Replace("]]", string.Empty);
-                result.Icon = entry.Icon.Replace("[[File:", string.Empty).Replace("|40px]]", string.Empty);
+                result.Region = table.Region;
+                result.Tier = table.Tier;
+                result.Name = table.Name.Replace("[[", string.Empty).Replace("]]", string.Empty);
+                result.Icon = table.Icon.Replace("[[File:", string.Empty).Replace("|40px]]", string.Empty);
 
-                if (entry.Size.Contains(Environment.NewLine))
+                if (table.Size.Contains(Environment.NewLine))
                 {
-                    var splitted = entry.Size.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                    var splitted = table.Size.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                     result.Radius = splitted[1].Replace("(", string.Empty).Replace(")", string.Empty);
                     var splittedSize = splitted[0].Split('x');
-                    result.BuildingSize = new Size(double.Parse(splittedSize[0]), (double.Parse(splittedSize[1])));
+                    result.BuildingSize = new Size(int.Parse(splittedSize[0]), int.Parse(splittedSize[1]));
                 }
-                else if (entry.Size.Contains("<br />"))
+                else if (table.Size.Contains("<br />"))
                 {
-                    var splitted = entry.Size.Split(new[] { "<br />" }, StringSplitOptions.RemoveEmptyEntries);
+                    var splitted = table.Size.Split(new[] { "<br />" }, StringSplitOptions.RemoveEmptyEntries);
                     result.Radius = splitted[1].Replace("(", string.Empty).Replace(")", string.Empty);
                     var splittedSize = splitted[0].Split('x');
-                    if (!double.TryParse(splittedSize[0], out double x))
+                    if (!int.TryParse(splittedSize[0], out int x))
                     {
 
                     }
 
-                    if (!double.TryParse(splittedSize[1], out double y))
+                    if (!int.TryParse(splittedSize[1], out int y))
                     {
 
                     }
-                    result.BuildingSize = new Size(double.Parse(splittedSize[0]), (double.Parse(splittedSize[1])));
+                    result.BuildingSize = new Size(int.Parse(splittedSize[0]), int.Parse(splittedSize[1]));
                 }
-                else if (!string.IsNullOrWhiteSpace(entry.Size))
+                else if (!string.IsNullOrWhiteSpace(table.Size))
                 {
-                    var splittedSize = entry.Size.Split('x');
-                    if (!double.TryParse(splittedSize[0], out double x))
+                    var splittedSize = table.Size.Split('x');
+                    if (!int.TryParse(splittedSize[0], out int x))
                     {
 
                     }
 
-                    if (!double.TryParse(splittedSize[1], out double y))
+                    if (!int.TryParse(splittedSize[1], out int y))
                     {
 
                     }
 
-                    result.BuildingSize = new Size(double.Parse(splittedSize[0]), (double.Parse(splittedSize[1])));
+                    result.BuildingSize = new Size(int.Parse(splittedSize[0]), int.Parse(splittedSize[1]));
                 }
 
-                if (entry.ConstructionCost.Contains("<br />"))
+                if (table.ConstructionCost.Contains("<br />"))
                 {
-                    var splittedInfos = entry.ConstructionCost.Split(new[] { "<br />" }, StringSplitOptions.RemoveEmptyEntries);
+                    var splittedInfos = table.ConstructionCost.Split(new[] { "<br />" }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var curSplittedInfo in splittedInfos)
                     {
                         var info = parseConstructionInfo(curSplittedInfo);
@@ -84,18 +85,18 @@ namespace FandomParser
                         }
                     }
                 }
-                else if (!string.IsNullOrWhiteSpace(entry.ConstructionCost))
+                else if (!string.IsNullOrWhiteSpace(table.ConstructionCost))
                 {
-                    var info = parseConstructionInfo(entry.ConstructionCost);
+                    var info = parseConstructionInfo(table.ConstructionCost);
                     if (info != null)
                     {
                         result.ConstructionInfos.Add(info);
                     }
                 }
 
-                if (entry.MaintenanceCost.Contains("<br />"))
+                if (table.MaintenanceCost.Contains("<br />"))
                 {
-                    var splittedInfos = entry.MaintenanceCost.Split(new[] { "<br />" }, StringSplitOptions.RemoveEmptyEntries);
+                    var splittedInfos = table.MaintenanceCost.Split(new[] { "<br />" }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var curSplittedInfo in splittedInfos)
                     {
                         var info = parseMaintenanceInfo(curSplittedInfo);
@@ -105,9 +106,9 @@ namespace FandomParser
                         }
                     }
                 }
-                else if (!string.IsNullOrWhiteSpace(entry.MaintenanceCost))
+                else if (!string.IsNullOrWhiteSpace(table.MaintenanceCost))
                 {
-                    var info = parseMaintenanceInfo(entry.MaintenanceCost);
+                    var info = parseMaintenanceInfo(table.MaintenanceCost);
                     if (info != null)
                     {
                         result.MaintenanceInfos.Add(info);
@@ -149,15 +150,15 @@ namespace FandomParser
 
             var splittedInfo = constructionCost.Split(new[] { "{{" }, StringSplitOptions.RemoveEmptyEntries);
 
-            var unit = new WikiCostUnit();
+            var unit = new CostUnit();
 
             if (splittedInfo[1].Contains("Infoicon"))
             {
-                unit.Type = WikiCostUnitType.InfoIcon;
+                unit.Type = CostUnitType.InfoIcon;
             }
             else
             {
-                unit.Type = WikiCostUnitType.Unknown;
+                unit.Type = CostUnitType.Unknown;
             }
 
             unit.Name = splittedInfo[1].Replace("}}", string.Empty).Replace("Infoicon", string.Empty).Trim();
@@ -188,9 +189,9 @@ namespace FandomParser
             var splitted = temp.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
             var tempName = splitted[0];
 
-            var unit = new WikiCostUnit
+            var unit = new CostUnit
             {
-                Type = WikiCostUnitType.File,
+                Type = CostUnitType.File,
                 Name = tempName.Trim()
             };
 
@@ -231,15 +232,15 @@ namespace FandomParser
 
             var splittedInfo = maintenanceCost.Split(new[] { "{{" }, StringSplitOptions.RemoveEmptyEntries);
 
-            var unit = new WikiCostUnit();
+            var unit = new CostUnit();
 
             if (splittedInfo[1].Contains("Infoicon"))
             {
-                unit.Type = WikiCostUnitType.InfoIcon;
+                unit.Type = CostUnitType.InfoIcon;
             }
             else
             {
-                unit.Type = WikiCostUnitType.Unknown;
+                unit.Type = CostUnitType.Unknown;
             }
 
             unit.Name = splittedInfo[1].Replace("}}", string.Empty).Replace("Infoicon", string.Empty).Trim();
@@ -270,9 +271,9 @@ namespace FandomParser
             var splitted = temp.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
             var tempName = splitted[0];
 
-            var unit = new WikiCostUnit
+            var unit = new CostUnit
             {
-                Type = WikiCostUnitType.File,
+                Type = CostUnitType.File,
                 Name = tempName.Trim()
             };
 

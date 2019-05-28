@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FandomParser.Core.Models;
 
 namespace FandomParser.WikiText
 {
-    public class TableProvider
+    public class WikiTextTableParser
     {
         private static Dictionary<WorldRegion, Dictionary<string, string>> RegionTables { get; set; }
 
-        public TableEntryList GetTables(string wikiText)
+        public WikiTextTableContainer GetTables(string wikiText)
         {
             var cleanedTables = getTablesFromWikiText(wikiText);
             return parseTables(cleanedTables);
@@ -172,11 +173,11 @@ namespace FandomParser.WikiText
             return cleanedTables;
         }
 
-        private static TableEntryList parseTables(List<string> cleanedTables)
+        private static WikiTextTableContainer parseTables(List<string> cleanedTables)
         {
-            var result = new TableEntryList();
+            var result = new WikiTextTableContainer();
 
-            var allTableEntries = new List<TableEntry>();
+            var allTableEntries = new List<WikiTextTableEntry>();
 
             foreach (var curTable in cleanedTables)
             {
@@ -187,26 +188,22 @@ namespace FandomParser.WikiText
 
             allTableEntries = allTableEntries.Distinct().ToList();
 
-            result = new TableEntryList
-            {
-                Version = new Version(0, 0, 0, 1),
-
-                Entries = allTableEntries
-            };
+            result.Version = new Version(1, 0, 0, 0);
+            result.Entries = allTableEntries;
 
             return result;
         }
 
-        private static List<TableEntry> parseTableEntry(string curTable)
+        private static List<WikiTextTableEntry> parseTableEntry(string curTable)
         {
-            var allEntries = new List<TableEntry>();
+            var allEntries = new List<WikiTextTableEntry>();
 
             var regionInfo = getRegionAndTierInfo(curTable);
 
-            TableEntry curEntry = null;
+            WikiTextTableEntry curEntry = null;
             var entryCounter = 0;
             //read string line by line
-            //TODO use StringReader
+            //TODO use StringReader?
             foreach (var curLine in curTable.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 //line contains description
@@ -232,7 +229,7 @@ namespace FandomParser.WikiText
                     }
 
                     entryCounter = 0;
-                    curEntry = new TableEntry
+                    curEntry = new WikiTextTableEntry
                     {
                         Region = regionInfo.Item1,
                         Tier = regionInfo.Item2

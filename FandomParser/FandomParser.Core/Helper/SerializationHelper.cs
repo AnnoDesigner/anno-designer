@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FandomParser
+namespace FandomParser.Core.Helper
 {
     public static class SerializationHelper
     {
