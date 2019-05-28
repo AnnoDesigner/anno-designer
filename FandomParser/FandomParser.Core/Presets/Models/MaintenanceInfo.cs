@@ -5,15 +5,15 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FandomParser.Core.Models
+namespace FandomParser.Core.Presets.Models
 {
     [DataContract]
-    public class CostUnit
+    public class MaintenanceInfo
     {
         [DataMember(Order = 0)]
-        public CostUnitType Type { get; set; }
+        public double Value { get; set; }
 
         [DataMember(Order = 1)]
-        public string Name { get; set; }
+        public CostUnit Unit { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using FandomParser.Core.Models;
+using FandomParser.Core.Presets.Models;
 
 namespace FandomParser.WikiText
 {

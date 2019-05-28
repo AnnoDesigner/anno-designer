@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FandomParser.Core.Presets.Models;
 
 namespace FandomParser.Core.Models
 {

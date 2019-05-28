@@ -6,11 +6,11 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FandomParser.Core.Models
+namespace FandomParser.Core.Presets.Models
 {
     [DebuggerDisplay("{" + nameof(Icon) + "}")]
     [DataContract]
-    public class InputProduct
+    public class EndProduct
     {
         [DataMember(Order = 0)]
         public double Amount { get; set; }
@@ -20,7 +20,5 @@ namespace FandomParser.Core.Models
 
         [DataMember(Order = 2)]
         public string Icon { get; set; }
-
-        public int Order { get; set; }
     }
 }

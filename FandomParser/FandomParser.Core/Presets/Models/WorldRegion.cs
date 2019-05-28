@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FandomParser.Core.Models
+namespace FandomParser.Core.Presets.Models
 {
-    public enum CostUnitType
+    public enum WorldRegion
     {
         Unknown,
-        InfoIcon,
-        File
+        OldWorld,
+        NewWorld
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FandomParser.Core.Models;
+using FandomParser.Core.Presets.Models;
 
 namespace FandomParser.WikiText
 {
@@ -14,7 +14,10 @@ namespace FandomParser.WikiText
         public WikiTextTableContainer GetTables(string wikiText)
         {
             var cleanedTables = getTablesFromWikiText(wikiText);
-            return parseTables(cleanedTables);
+            var result = parseTables(cleanedTables);
+            result.Version = new Version(1, 0, 0, 0);
+
+            return result;
         }
 
         private static List<string> getTablesFromWikiText(string wikiTextToParse)
@@ -188,7 +191,6 @@ namespace FandomParser.WikiText
 
             allTableEntries = allTableEntries.Distinct().ToList();
 
-            result.Version = new Version(1, 0, 0, 0);
             result.Entries = allTableEntries;
 
             return result;

@@ -4,13 +4,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace FandomParser.Core.Models
+namespace FandomParser.Core.Presets.Models
 {
     [DebuggerDisplay("{" + nameof(Version) + "}")]
     [DataContract]
-    public class WikiBuildingInfoPreset
+    public class WikiBuildingInfoPresets
     {
-        public WikiBuildingInfoPreset()
+        public WikiBuildingInfoPresets()
         {
             Infos = new List<WikiBuildingInfo>();
         }

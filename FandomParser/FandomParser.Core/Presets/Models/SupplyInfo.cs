@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace FandomParser.Core.Models
+namespace FandomParser.Core.Presets.Models
 {
     [DataContract]
     public class SupplyInfo

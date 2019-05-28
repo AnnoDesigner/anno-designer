@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace FandomParser.Core.Models
+namespace FandomParser.Core.Presets.Models
 {
     [DebuggerDisplay("{" + nameof(Name) + "}")]
     [DataContract]

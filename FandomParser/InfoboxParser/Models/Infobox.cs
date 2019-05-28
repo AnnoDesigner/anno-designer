@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FandomParser.Core.Models;
+using FandomParser.Core.Presets.Models;
 
 namespace InfoboxParser.Models
 {

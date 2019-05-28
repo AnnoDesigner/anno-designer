@@ -4,18 +4,16 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 
-namespace FandomParser.Core.Models
+namespace FandomParser.Core.Presets.Models
 {
-
     [DataContract]
-    public class ConstructionInfo
+    public class CostUnit
     {
         [DataMember(Order = 0)]
-        public double Value { get; set; }
+        public CostUnitType Type { get; set; }
 
         [DataMember(Order = 1)]
-        public CostUnit Unit { get; set; }
+        public string Name { get; set; }
     }
 }

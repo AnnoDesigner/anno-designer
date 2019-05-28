@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using FandomParser.Core;
 using FandomParser.Core.Models;
+using FandomParser.Core.Presets.Models;
 using InfoboxParser.Models;
 
 namespace InfoboxParser

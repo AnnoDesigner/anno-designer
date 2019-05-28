@@ -1,4 +1,4 @@
-﻿using FandomParser.Core.Models;
+﻿using FandomParser.Core.Presets.Models;
 using FandomParser.WikiText;
 using System;
 using System.Collections.Generic;
@@ -11,10 +11,9 @@ namespace FandomParser
 {
     public class WikiBuildingInfoProvider
     {
-        public WikiBuildingInfoPreset GetWikiBuildingInfos(WikiTextTableContainer list)
+        public WikiBuildingInfoPresets GetWikiBuildingInfos(WikiTextTableContainer list)
         {
-            var wikibuildingList = new WikiBuildingInfoPreset();
-            wikibuildingList.Version = new Version(0, 2, 0, 0);
+            var wikibuildingList = new WikiBuildingInfoPresets();            
             foreach (var curentry in list.Entries)
             {
                 wikibuildingList.Infos.Add(parseWikiBuildingInfo(curentry));

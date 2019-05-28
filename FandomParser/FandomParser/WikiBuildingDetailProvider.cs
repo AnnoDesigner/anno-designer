@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using FandomParser.Core;
-using FandomParser.Core.Models;
+using FandomParser.Core.Presets.Models;
 using FandomParser.WikiText;
 
 namespace FandomParser
@@ -39,7 +39,7 @@ namespace FandomParser
             get { return _pathToExtractedInfoboxesFolder ?? (_pathToExtractedInfoboxesFolder = Path.Combine(PathToDetailsFolder, DIRECTORY_BUILDING_INFOBOX)); }
         }
 
-        public WikiBuildingInfoPreset FetchBuildingDetails(WikiBuildingInfoPreset wikiBuildingInfoList)
+        public WikiBuildingInfoPresets FetchBuildingDetails(WikiBuildingInfoPresets wikiBuildingInfoList)
         {
             //download complete wikitext for each building
             saveCompleteInfos(wikiBuildingInfoList);
@@ -51,7 +51,7 @@ namespace FandomParser
             return getUpdatedWikiBuildingInfoList(wikiBuildingInfoList);
         }
 
-        private void saveCompleteInfos(WikiBuildingInfoPreset wikiBuildingInfoList)
+        private void saveCompleteInfos(WikiBuildingInfoPresets wikiBuildingInfoList)
         {
             Console.WriteLine("start fetching building details");
 
@@ -77,10 +77,10 @@ namespace FandomParser
                 {
                     var pageName = curBuilding.Name.Replace(" ", "_");
 
-                    //only download when not present
+                    //only download when not present and not forced to download
                     var fileName = getCleanedFilename(pageName);
                     var destinationFilePath = Path.Combine(PathToDetailsFolder, $"{fileName}{FILE_ENDING_WIKITEXT}");
-                    if (File.Exists(destinationFilePath) || existingMissingInfos.Contains(curBuilding.Name))
+                    if (File.Exists(destinationFilePath) || existingMissingInfos.Contains(curBuilding.Name) && !Program.ForceDownload)
                     {
                         return;
                     }
@@ -173,7 +173,7 @@ namespace FandomParser
             Console.WriteLine($"finished extracting infoboxes (took {sw.ElapsedMilliseconds} ms)");
         }
 
-        private WikiBuildingInfoPreset getUpdatedWikiBuildingInfoList(WikiBuildingInfoPreset wikiBuildingInfoList)
+        private WikiBuildingInfoPresets getUpdatedWikiBuildingInfoList(WikiBuildingInfoPresets wikiBuildingInfoList)
         {
             Console.WriteLine("start parsing infoboxes");
 

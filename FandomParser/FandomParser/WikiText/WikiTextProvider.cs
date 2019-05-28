@@ -36,7 +36,7 @@ namespace FandomParser.WikiText
                     return wikiText;
                 }
 
-                //var pageId = page.Id;//186
+                //var pageId = page.Id;//186 = overview (Buildings)
 
                 wikiText = page.Content;//complete article/page in wikitext
 
