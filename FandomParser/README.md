@@ -25,14 +25,14 @@ After compiling the code start the `FandomParser.exe` console application.
 
 ### Possible switches
 
-- `--version=`  
-  Use this switch to set the version of the preset file.
+- `--version=`<br/>
+  Use this switch to set the version of the preset file.<br/>
   Example: `--version=1.0.1.1`
 - `--out=`
-  Use this switch to specify a directory for the preset file.
-  Example: `--out=C:\out`
+  Use this switch to specify a directory for the preset file.<br/>
+  Example: `--out=C:\out`<br/>
   **Default:** "[location of `FandomParser.exe`]\\..\\..\\..\\..\\Presets"
-- `--noWait`
+- `--noWait`<br/>
   Use this switch to end the application without waiting for it to press any key.
-- `--prettyPrint`
+- `--prettyPrint`<br/>
   Use this switch to save the preset file with indention.
