@@ -1,0 +1,84 @@
+﻿<Window x:Class="FandomTemplateExporter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FandomTemplateExporter"
+        xmlns:views="clr-namespace:FandomTemplateExporter.Views"
+        xmlns:viewModels="clr-namespace:FandomTemplateExporter.ViewModels"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:converter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel, IsDesignTimeCreatable=True}"
+        d:DesignHeight="480"
+        d:DesignWidth="640"
+        WindowStartupLocation="CenterScreen"
+        MinHeight="720"
+        MinWidth="1280"
+        Title="{Binding Title}">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding ClosingWindowCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Window.DataContext>
+        <viewModels:MainWindowViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <converter:BoolToVisibilityConverter x:Key="converterBoolToVisibility"
+                                             TrueValue="Visible"
+                                             FalseValue="Hidden" />
+    </Window.Resources>
+    <DockPanel LastChildFill="True">
+        <Border BorderBrush="Gray"
+                DockPanel.Dock="Top"
+                BorderThickness="1"
+                Padding="3"
+                Margin="1,1,1,10">
+            <views:SelectFileView DataContext="{Binding PresetsVM}" />
+        </Border>
+
+        <Border BorderBrush="Gray"
+                DockPanel.Dock="Top"
+                BorderThickness="1"
+                Padding="3"
+                Margin="1,1,1,10">
+            <views:SelectFileView DataContext="{Binding WikiBuildingsInfoVM}" />
+        </Border>
+
+        <Border BorderBrush="Gray"
+                DockPanel.Dock="Top"
+                BorderThickness="1"
+                Padding="3"
+                Margin="1,1,1,10">
+            <views:SelectFileView DataContext="{Binding LayoutVM}" />
+        </Border>
+
+        <Button Content="Generate Template"
+                Command="{Binding GenerateTemplateCommand}"
+                DockPanel.Dock="Top"
+                HorizontalAlignment="Center"
+                MinWidth="200"
+                Height="24"
+                Margin="0,10,0,10" />
+
+        <StatusBar DockPanel.Dock="Bottom"
+                   Height="23">
+            <StatusBarItem Content="{Binding StatusMessage}" />
+        </StatusBar>
+
+        <Border BorderBrush="Gray"
+                DockPanel.Dock="Top"
+                BorderThickness="1"
+                Padding="3"
+                Margin="1,1,1,10">
+            <!-- TextWrapping="Wrap" -->
+            <TextBox Text="{Binding Template}"
+                     AcceptsReturn="True"
+                     VerticalScrollBarVisibility="Auto" />
+        </Border>
+
+    </DockPanel>
+</Window>

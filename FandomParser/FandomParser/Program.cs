@@ -20,8 +20,6 @@ namespace FandomParser
         private const string ARG_VERSION = "--version=";
         private const string ARG_PRETTY_PRINT = "--prettyPrint";
 
-        private const string PRESET_FILENAME = "wikiBuildingInfo.json";
-
         public static bool NoWait { get; set; }
 
         public static bool ForceDownload { get; set; } = true;
@@ -77,7 +75,7 @@ namespace FandomParser
                 wikiBuildingInfoPreset = wikiDetailProvider.FetchBuildingDetails(wikiBuildingInfoPreset);
                 wikiBuildingInfoPreset.Version = PresetVersion;
 
-                SerializationHelper.SaveToFile(wikiBuildingInfoPreset, Path.Combine(OutputDirectory, PRESET_FILENAME), prettyPrint: UsePrettyPrint);
+                SerializationHelper.SaveToFile(wikiBuildingInfoPreset, Path.Combine(OutputDirectory, CoreConstants.WikiBuildingInfoPresetsFile), prettyPrint: UsePrettyPrint);
 
                 //for testing
                 //load parsed file to test
