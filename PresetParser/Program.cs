@@ -404,7 +404,8 @@ namespace PresetParser
                 }
                 // write icon name mapping
                 Console.WriteLine("Writing icon name mapping to icons.json");
-                WriteIconNameMapping(iconNodes, localizations, annoVersion, BUILDING_PRESETS_VERSION);
+                var iconNameMapper = new IconNameMapper();
+                iconNameMapper.WriteIconNameMapping(_iconFileNameHelper, testVersion, iconNodes, localizations, annoVersion, BUILDING_PRESETS_VERSION);
                 //This must be done, to clear the 'A4_' or 'A5_' and get normal translation for presets.json
                 localizations.Clear();
                 localizations = GetLocalizations(annoVersion, 0);
@@ -1407,6 +1408,7 @@ namespace PresetParser
         // Other Classes and or Internal Commands used in this program
 
         #region Getting the Localizations from files (Anno 1404 / Anno 2070)
+
         private static Dictionary<string, SerializableDictionary<string>> GetLocalizations(string annoVersion, int DoExtraAnumber)
         {
             string[] files = { "icons.txt", "guids.txt", "addon/texts.txt" };
@@ -1515,44 +1517,6 @@ namespace PresetParser
                 }
             }
             return localizations;
-        }
-        #endregion
-
-        #region Writting the icons.json File (Anno 1404 / Anno 2070)
-        private static void WriteIconNameMapping(IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string annoVersion, string BUILDING_PRESETS_VERSION)
-        {
-            IconMappingPresets iconNameMappings = new IconMappingPresets()
-            {
-                Version = BUILDING_PRESETS_VERSION
-            };
-
-            foreach (XmlNode iconNode in iconNodes)
-            {
-                string guid = iconNode["GUID"].InnerText;
-                string iconFilename = _iconFileNameHelper.GetIconFilename(iconNode["Icons"].FirstChild, annoVersion);
-                if (!localizations.ContainsKey(guid) || iconNameMappings.IconNameMappings.Exists(_ => _.IconFilename == iconFilename))
-                {
-                    continue;
-                }
-
-                iconNameMappings.IconNameMappings.Add(new IconNameMap
-                {
-                    IconFilename = iconFilename,
-                    Localizations = localizations[guid]
-                });
-            }
-
-            if (!testVersion)
-            {
-                var fileName = "icons-Anno" + annoVersion + "-v" + BUILDING_PRESETS_VERSION + ".json";
-                SerializationHelper.SaveToFile(iconNameMappings, fileName);
-                Console.WriteLine($"saved icon name mapping file: {fileName}");
-            }
-            else
-            {
-                Console.WriteLine("THIS IS A TEST: No icons.json file is writen");
-            }
-
         }
 
         #endregion

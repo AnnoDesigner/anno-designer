@@ -64,6 +64,7 @@
     <Compile Include="FarmField.cs" />
     <Compile Include="GuidRef.cs" />
     <Compile Include="IconFileNameHelper.cs" />
+    <Compile Include="IconNameMapper.cs" />
     <Compile Include="IfoFileProvider.cs" />
     <Compile Include="IIfoFileProvider.cs" />
     <Compile Include="NewFactionAndGroup1800.cs" />
