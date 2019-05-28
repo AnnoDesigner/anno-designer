@@ -196,6 +196,7 @@ namespace FandomParser
                         curBuilding.ProductionInfos = infobox.ProductionInfos;
                         curBuilding.SupplyInfos = infobox.SupplyInfos;
                         curBuilding.UnlockInfos = infobox.UnlockInfos;
+                        curBuilding.Url = new Uri($"https://anno1800.fandom.com/wiki/{curBuilding.Name.Replace(" ", "_")}");
                     }
                 }
             }
