@@ -28,7 +28,7 @@ After compiling the code start the `FandomParser.exe` console application.
 - `--version=`<br/>
   Use this switch to set the version of the preset file.<br/>
   Example: `--version=1.0.1.1`
-- `--out=`
+- `--out=`<br/>
   Use this switch to specify a directory for the preset file.<br/>
   Example: `--out=C:\out`<br/>
   **Default:** "[location of `FandomParser.exe`]\\..\\..\\..\\..\\Presets"
