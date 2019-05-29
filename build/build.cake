@@ -18,6 +18,7 @@ var configuration = Argument<string>("configuration", "DEBUG");
 //VS2019 = 7
 
 var msbuildVersion = Argument<int>("msbuildVersion", 7);
+var useBinaryLog = Argument<bool>("useBinaryLog", false);
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
@@ -130,20 +131,26 @@ var buildTask = Task("Build")
             ToolVersion = (Cake.Common.Tools.MSBuild.MSBuildToolVersion)msbuildVersion,
             MaxCpuCount = 0,//use all available
             NoConsoleLogger = true,
-            BinaryLogger = new MSBuildBinaryLogSettings
-            {
-                Enabled = true,
-                FileName = $"{logDirectory}/{curSolutionFileName}.binlog"
-            },
             DetailedSummary = true,
             Verbosity = Verbosity.Minimal,
             NoLogo = true
         };
 
-        //msBuildSettings.FileLoggers.Add(new MSBuildFileLogger
-        //{
-        //    LogFile = $"{logDirectory}/{curSolutionFileName}.log"
-        //});
+        if(useBinaryLog)
+        {
+            msBuildSettings.BinaryLogger = new MSBuildBinaryLogSettings
+            {
+                Enabled = true,
+                FileName = $"{logDirectory}/{curSolutionFileName}.binlog"
+            };
+        }
+        else
+        {
+            msBuildSettings.FileLoggers.Add(new MSBuildFileLogger
+            {
+                LogFile = $"{logDirectory}/{curSolutionFileName}.log"
+            });
+        }
 
         msBuildSettings = msBuildSettings.WithTarget("Clean");
         msBuildSettings = msBuildSettings.WithTarget("Restore");
