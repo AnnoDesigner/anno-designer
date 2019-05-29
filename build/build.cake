@@ -30,7 +30,10 @@ var outDirectory = MakeAbsolute(Directory($"./out/{configuration}")).FullPath;
 
 var solutionFiles = new List<string>
 {
-    "./../AnnoDesigner.sln"
+    "./../AnnoDesigner.sln",
+    "./../ColorPresetsDesigner.sln",
+    "./../FandomParser/FandomParser.sln",
+    "./../FandomTemplateExporter/FandomTemplateExporter.sln"
 };
 
 var versionNumber = System.IO.File.ReadAllText("./../version.txt");
@@ -123,7 +126,7 @@ var buildTask = Task("Build")
         var msBuildSettings = new MSBuildSettings()
         {
             Configuration = configuration,
-            PlatformTarget = PlatformTarget.x86,
+            PlatformTarget = PlatformTarget.MSIL,
             ToolVersion = (Cake.Common.Tools.MSBuild.MSBuildToolVersion)msbuildVersion,
             MaxCpuCount = 0,//use all available
             NoConsoleLogger = true,
@@ -166,7 +169,8 @@ var copyFilesTask = Task("Copy-Files")
 
     Information($"{DateTime.Now:hh:mm:ss.ff} copy application to \"{outDirectory}\"");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/AnnoDesigner.exe", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/AnnoDesigner.exe.config", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/AnnoDesigner.Core.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/colors.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/icons.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/presets.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/Octokit.dll", $"{outDirectory}");
