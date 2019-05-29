@@ -29,7 +29,7 @@ namespace AnnoDesigner.Core.Presets.Loader
             return result;
         }
 
-        public ColorScheme LoadDefaultScheme(string colorPresetsFilePath = null)
+        public ColorScheme LoadDefaultScheme(string colorPresetsFilePath)
         {
             ColorScheme result = null;
 

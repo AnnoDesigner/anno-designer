@@ -105,7 +105,7 @@ namespace AnnoDesigner
 
         public string PathToUpdatedIconMappingFile
         {
-            get { return _pathToUpdatedIconMappingFile ?? (_pathToUpdatedIconMappingFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + Constants.IconNameFile)); }
+            get { return _pathToUpdatedIconMappingFile ?? (_pathToUpdatedIconMappingFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + CoreConstants.IconNameFile)); }
         }
 
         public string PathToUpdatedPredefinedColorsFile
@@ -219,10 +219,10 @@ namespace AnnoDesigner
                 //check icons.json
                 if (latestPresetAsset == null)
                 {
-                    latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(Constants.IconNameFile, StringComparison.OrdinalIgnoreCase));
+                    latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(CoreConstants.IconNameFile, StringComparison.OrdinalIgnoreCase));
                     if (latestPresetAsset == null)
                     {
-                        Trace.WriteLine($"No asset found for latest preset update. ({Constants.IconNameFile})");
+                        Trace.WriteLine($"No asset found for latest preset update. ({CoreConstants.IconNameFile})");
                     }
                     else
                     {
@@ -387,7 +387,7 @@ namespace AnnoDesigner
                         }
                         else if (!string.IsNullOrWhiteSpace(PathToUpdatedIconMappingFile) && File.Exists(PathToUpdatedIconMappingFile))
                         {
-                            var originalPathToIconMappingFile = Path.Combine(App.ApplicationPath, Constants.IconNameFile);
+                            var originalPathToIconMappingFile = Path.Combine(App.ApplicationPath, CoreConstants.IconNameFile);
 
                             FileHelper.ResetFileAttributes(originalPathToIconMappingFile);
                             File.Delete(originalPathToIconMappingFile);

@@ -57,9 +57,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuildingBlockProvider.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="ExtraPreset.cs" />
     <Compile Include="ExtraPresets.cs" />
+    <Compile Include="FarmField.cs" />
+    <Compile Include="GuidRef.cs" />
+    <Compile Include="IconFileNameHelper.cs" />
+    <Compile Include="IconNameMapper.cs" />
+    <Compile Include="IfoFileProvider.cs" />
+    <Compile Include="IIfoFileProvider.cs" />
     <Compile Include="NewFactionAndGroup1800.cs" />
+    <Compile Include="PathRef.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

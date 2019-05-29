@@ -14,6 +14,7 @@ using System.Windows.Media;
 using AnnoDesigner.Core;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Exceptions;
+using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
@@ -28,6 +29,8 @@ namespace AnnoDesigner
     public partial class AnnoCanvas : UserControl
     {
         public event EventHandler StatisticsUpdated;
+
+        private readonly ILayoutLoader _layoutLoader;
 
         #region Properties
         /// <summary>
@@ -455,7 +458,7 @@ namespace AnnoDesigner
                     try
                     {
                         IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
-                        iconNameMapping = loader.Load(Path.Combine(App.ApplicationPath, Constants.IconNameFile));
+                        iconNameMapping = loader.Load(Path.Combine(App.ApplicationPath, CoreConstants.IconNameFile));
                     }
                     catch (Exception ex)
                     {
@@ -494,6 +497,8 @@ namespace AnnoDesigner
             _influencedBrush.Freeze();
 
             StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+
+            _layoutLoader = new LayoutLoader();
         }
 
         #endregion
@@ -1613,7 +1618,7 @@ namespace AnnoDesigner
             try
             {
                 Normalize(1);
-                LayoutLoader.SaveLayout(_placedObjects, LoadedFile);
+                _layoutLoader.SaveLayout(_placedObjects, LoadedFile);
             }
             catch (Exception e)
             {
@@ -1676,7 +1681,7 @@ namespace AnnoDesigner
         {
             try
             {
-                var layout = LayoutLoader.LoadLayout(filename, forceLoad);
+                var layout = _layoutLoader.LoadLayout(filename, forceLoad);
                 if (layout != null)
                 {
                     _selectedObjects.Clear();

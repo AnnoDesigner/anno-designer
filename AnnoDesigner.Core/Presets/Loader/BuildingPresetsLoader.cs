@@ -12,7 +12,7 @@ namespace AnnoDesigner.Core.Presets.Loader
 {
     public class BuildingPresetsLoader
     {
-        public BuildingPresets Load(string pathToBuildingPresetsFile = null)
+        public BuildingPresets Load(string pathToBuildingPresetsFile)
         {
             BuildingPresets result = null;
 
