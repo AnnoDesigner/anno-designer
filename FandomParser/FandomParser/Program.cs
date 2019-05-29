@@ -74,6 +74,7 @@ namespace FandomParser
                 var wikiDetailProvider = new WikiBuildingDetailProvider(Commons.Instance);
                 wikiBuildingInfoPreset = wikiDetailProvider.FetchBuildingDetails(wikiBuildingInfoPreset);
                 wikiBuildingInfoPreset.Version = PresetVersion;
+                wikiBuildingInfoPreset.DateGenerated = DateTime.UtcNow;
 
                 SerializationHelper.SaveToFile(wikiBuildingInfoPreset, Path.Combine(OutputDirectory, CoreConstants.WikiBuildingInfoPresetsFile), prettyPrint: UsePrettyPrint);
 

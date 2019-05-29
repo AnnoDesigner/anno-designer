@@ -51,7 +51,9 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helper\FileHelper.cs" />
     <Compile Include="Layout\Exceptions\LayoutFileVersionMismatchException.cs" />
+    <Compile Include="Layout\Helper\StatisticsCalculationHelper.cs" />
     <Compile Include="Layout\LayoutLoader.cs" />
+    <Compile Include="Layout\Models\StatisticsCalculationResult.cs" />
     <Compile Include="Models\AnnoObject.cs" />
     <Compile Include="Models\IconImage.cs" />
     <Compile Include="Layout\Models\LayoutVersionContainer.cs" />

@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnnoDesigner.Export
+namespace FandomTemplateExporter.Export
 {
     [DataContract]
     [DebuggerDisplay("{" + nameof(FandomName) + "}")]

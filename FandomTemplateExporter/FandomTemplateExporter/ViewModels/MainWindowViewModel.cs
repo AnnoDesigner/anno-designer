@@ -13,8 +13,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core;
 using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Layout;
+using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
+using AnnoDesigner.Export;
+using FandomParser.Core.Models;
+using FandomParser.Core.Presets.Loader;
+using FandomParser.Core.Presets.Models;
 using FandomTemplateExporter.Models;
 using FandomTemplateExporter.ViewModels;
 
@@ -28,8 +34,11 @@ namespace FandomTemplateExporter.ViewModels
         private readonly SelectFileViewModel vmWikiBuildingsInfo;
         private readonly SelectFileViewModel vmLayout;
         private string _presetsVersion;
+        private string _wikiBuildingInfoPresetsVersion;
         private string _statusMessage;
         private string _template;
+        private string _layoutName;
+        private bool _isBusy;
         //private string busyContent;
         private string _title = "Fandom Template Exporter";
 
@@ -81,6 +90,10 @@ namespace FandomTemplateExporter.ViewModels
             //SaveCommand = new RelayCommand(Save, CanSave);
             StatusMessage = string.Empty;
             Template = string.Empty;
+            LayoutName = string.Empty;
+            IsBusy = false;
+            PresetsVersion = string.Empty;
+            WikiBuildingInfoPresetsVersion = string.Empty;
 
             var oldTitle = Title;
             try
@@ -100,6 +113,10 @@ namespace FandomTemplateExporter.ViewModels
             if (e.PropertyName.Equals(nameof(vmPresets.SelectedFile)))
             {
                 Properties.Settings.Default.LastSelectedPresetsFilePath = vmPresets.SelectedFile;
+
+                Template = string.Empty;
+                LayoutName = string.Empty;
+                StatusMessage = string.Empty;
             }
         }
 
@@ -108,6 +125,10 @@ namespace FandomTemplateExporter.ViewModels
             if (e.PropertyName.Equals(nameof(vmWikiBuildingsInfo.SelectedFile)))
             {
                 Properties.Settings.Default.LastSelectedWikiBuildingsInfoFilePath = vmWikiBuildingsInfo.SelectedFile;
+
+                Template = string.Empty;
+                LayoutName = string.Empty;
+                StatusMessage = string.Empty;
             }
         }
 
@@ -116,6 +137,10 @@ namespace FandomTemplateExporter.ViewModels
             if (e.PropertyName.Equals(nameof(vmLayout.SelectedFile)))
             {
                 Properties.Settings.Default.LastSelectedLayoutFilePath = vmLayout.SelectedFile;
+
+                Template = string.Empty;
+                LayoutName = string.Empty;
+                StatusMessage = string.Empty;
             }
         }
 
@@ -131,8 +156,8 @@ namespace FandomTemplateExporter.ViewModels
 
         private void ClosingWindow(object param)
         {
-            var userConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
-            Trace.WriteLine($"saving settings: \"{userConfig}\"");
+            //var userConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
+            //Trace.WriteLine($"saving settings: \"{userConfig}\"");
             Properties.Settings.Default.Save();
         }
 
@@ -140,36 +165,94 @@ namespace FandomTemplateExporter.ViewModels
 
         private void GenerateTemplate(object param)
         {
-            //IsBusy = true;
-
-            StatusMessage = string.Empty;
-
-            BuildingPresets buildingPresets = null;
             try
             {
-                buildingPresets = SerializationHelper.LoadFromFile<BuildingPresets>(PresetsVM.SelectedFile);
+                IsBusy = true;
+                StatusMessage = string.Empty;
+
+                //load building presets
+                BuildingPresets buildingPresets = null;
+                try
+                {
+                    var loader = new BuildingPresetsLoader();
+                    buildingPresets = loader.Load(PresetsVM.SelectedFile);
+                }
+                catch (Exception ex)
+                {
+                    var message = $"Error parsing {nameof(BuildingPresets)}.";
+                    Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                    MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    StatusMessage = $"{message} -> Maybe wrong selected file?";
+                    return;
+                }
+
+                PresetsVersion = buildingPresets.Version;
+
+                //load wiki buildng info
+                WikiBuildingInfoPresets wikiBuildingInfoPreset = null;
+                try
+                {
+                    var loader = new WikiBuildingInfoPresetsLoader();
+                    wikiBuildingInfoPreset = loader.Load(WikiBuildingsInfoVM.SelectedFile);
+                }
+                catch (Exception ex)
+                {
+                    var message = $"Error parsing {nameof(WikiBuildingInfoPresets)}.";
+                    Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                    MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    StatusMessage = $"{message} -> Maybe wrong selected file?";
+                    return;
+                }
+
+                WikiBuildingInfoPresetsVersion = wikiBuildingInfoPreset.Version.ToString();
+
+                //load layout
+                List<AnnoObject> layout = null;
+                try
+                {
+                    layout = LayoutLoader.LoadLayout(LayoutVM.SelectedFile);
+                }
+                catch (Exception ex)
+                {
+                    var message = "Error parsing layout file.";
+                    Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                    MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    StatusMessage = $"{message} -> Maybe wrong selected file?";
+                    return;
+                }
+
+                LayoutName = Path.GetFileName(vmLayout.SelectedFile);
+
+                var layoutNameForTemplate = Path.GetFileNameWithoutExtension(vmLayout.SelectedFile).Replace("_", " ");
+
+                var exporter = new FandomExporter();
+                Template = exporter.StartExport(layoutNameForTemplate, layout, buildingPresets, wikiBuildingInfoPreset, true);
+
+                StatusMessage = "Template successfully generated.";
             }
             catch (Exception ex)
             {
-                var message = $"Error parsing {nameof(BuildingPresets)}.";
+                var message = "Error generating template.";
                 Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                StatusMessage = $"{message} -> Maybe wrong selected file?";
-                return;
+                StatusMessage = $"{message} -> Details in error log in application directory.";
             }
-
-            PresetsVersion = buildingPresets.Version;
-
-            //IsBusy = false;
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         private bool CanGenerateTemplate(object param)
         {
-            return //!IsBusy &&
-                           !string.IsNullOrWhiteSpace(PresetsVM.SelectedFile) &&
-                           !string.IsNullOrWhiteSpace(WikiBuildingsInfoVM.SelectedFile) &&
-                           !string.IsNullOrWhiteSpace(LayoutVM.SelectedFile);
+            return !IsBusy &&
+                !string.IsNullOrWhiteSpace(PresetsVM.SelectedFile) &&
+                !string.IsNullOrWhiteSpace(WikiBuildingsInfoVM.SelectedFile) &&
+                !string.IsNullOrWhiteSpace(LayoutVM.SelectedFile);
         }
 
         //public ICommand SaveCommand { get; private set; }
@@ -235,10 +318,22 @@ namespace FandomTemplateExporter.ViewModels
             set { SetPropertyAndNotify(ref _presetsVersion, value); }
         }
 
+        public string WikiBuildingInfoPresetsVersion
+        {
+            get { return _wikiBuildingInfoPresetsVersion; }
+            set { SetPropertyAndNotify(ref _wikiBuildingInfoPresetsVersion, value); }
+        }
+
         public string Template
         {
             get { return _template; }
             set { SetPropertyAndNotify(ref _template, value); }
+        }
+
+        public string LayoutName
+        {
+            get { return _layoutName; }
+            set { SetPropertyAndNotify(ref _layoutName, value); }
         }
 
         public string StatusMessage
@@ -247,18 +342,18 @@ namespace FandomTemplateExporter.ViewModels
             set { SetPropertyAndNotify(ref _statusMessage, value); }
         }
 
-        //        public bool IsBusy
-        //        {
-        //            get { return isBusy; }
-        //            set
-        //            {
-        //                //if (isBusy != value)
-        //                //{
-        //                SetPropertyAndNotify(ref isBusy, value);
-        //                CommandManager.InvalidateRequerySuggested();
-        //                //}
-        //            }
-        //        }
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set
+            {
+                //if (_isBusy != value)
+                //{
+                SetPropertyAndNotify(ref _isBusy, value);
+                CommandManager.InvalidateRequerySuggested();
+                //}
+            }
+        }
 
     }
 }

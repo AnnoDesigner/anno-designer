@@ -13,11 +13,14 @@ namespace FandomParser
     {
         public WikiBuildingInfoPresets GetWikiBuildingInfos(WikiTextTableContainer list)
         {
-            var wikibuildingList = new WikiBuildingInfoPresets();            
+            var wikibuildingList = new WikiBuildingInfoPresets();
             foreach (var curentry in list.Entries)
             {
                 wikibuildingList.Infos.Add(parseWikiBuildingInfo(curentry));
             }
+
+            //order buildings by name
+            wikibuildingList.Infos = wikibuildingList.Infos.OrderBy(x => x.Name).ToList();
 
             return wikibuildingList;
         }

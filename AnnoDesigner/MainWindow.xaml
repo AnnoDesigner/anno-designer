@@ -126,16 +126,7 @@
                     <MenuItem Header="{Binding Path=RenderSelectionHighlightsOnExportedImage}"
                               IsCheckable="True"
                               IsChecked="False"
-                              Name="MenuItemExportSelection" />
-                    <Separator />
-                    <MenuItem x:Name="menuFandomExport"
-                              Header="Fandom Export (Anno 1800)"
-                              IsCheckable="False"
-                              Click="MenuFandomExport_Click" />
-                    <MenuItem x:Name="menuFandomExportUnsupportedTags"
-                              Header="export unsupported Fandom Tags"
-                              IsCheckable="True"
-                              IsChecked="True" />
+                              Name="MenuItemExportSelection" />                    
                 </MenuItem>
                 <MenuItem Name="LanguageMenu"
                           Header="{Binding Path=Language}"

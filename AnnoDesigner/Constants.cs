@@ -25,11 +25,6 @@ namespace AnnoDesigner
         public const string IconNameFile = "icons.json";
 
         /// <summary>
-        /// Json encoded file containing the fandom name presets.
-        /// </summary>
-        public const string FandomNameMappingFile = "fandomNameMapping.json";
-
-        /// <summary>
         /// The minimal grid size to which the user can zoom out.
         /// </summary>
         public const int GridStepMin = 8;

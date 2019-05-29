@@ -55,9 +55,6 @@
     <Compile Include="BuildingPresetsExtensions.cs" />
     <Compile Include="ColorHueSaturationBrightnessComparer.cs" />
     <Compile Include="Commons.cs" />
-    <Compile Include="Export\FandomExporter.cs" />
-    <Compile Include="Export\FandomNameMapping.cs" />
-    <Compile Include="Export\FandomNameMappingPresets.cs" />
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
     <Compile Include="model\BuildingInfluenceType.cs" />
@@ -144,9 +141,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="app.config" />
-    <None Include="fandomNameMapping.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

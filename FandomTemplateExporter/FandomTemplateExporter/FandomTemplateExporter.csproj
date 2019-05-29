@@ -44,6 +44,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -62,6 +63,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Export\FandomExporter.cs" />
+    <Compile Include="Export\FandomNameMapping.cs" />
+    <Compile Include="Export\FandomNameMappingPresets.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\SelectDirectoryViewModel.cs" />
     <Compile Include="ViewModels\SelectFileViewModel.cs" />
@@ -118,6 +123,9 @@
     </None>
     <None Include="..\..\Presets\wikiBuildingInfo.json">
       <Link>wikiBuildingInfo.json</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fandomNameMapping.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Properties\Settings.settings">
