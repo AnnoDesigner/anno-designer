@@ -1,4 +1,8 @@
 #addin nuget:?package=Cake.FileHelpers&version=3.2.0
+const string xunitRunnerVersion = "2.4.1";
+#tool nuget:?package=xunit.runner.console&version=2.4.1
+#tool nuget:?package=OpenCover&version=4.7.922
+#tool nuget:?package=ReportGenerator&version=4.1.8
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -18,6 +22,7 @@ var configuration = Argument<string>("configuration", "DEBUG");
 //VS2019 = 7
 
 var msbuildVersion = Argument<int>("msbuildVersion", 7);
+var useBinaryLog = Argument<bool>("useBinaryLog", false);
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
@@ -27,10 +32,15 @@ var msbuildVersion = Argument<int>("msbuildVersion", 7);
 var rootAbsoluteDir = MakeAbsolute(Directory("./")).FullPath;
 var logDirectory = MakeAbsolute(Directory($"./logs/{configuration}")).FullPath;
 var outDirectory = MakeAbsolute(Directory($"./out/{configuration}")).FullPath;
+var reportDirectory = MakeAbsolute(Directory($"./reports/{configuration}")).FullPath;
+var openCoverDirectory = MakeAbsolute(Directory($"{reportDirectory}/OpenCover")).FullPath;
+var reportGeneratorDirectory = MakeAbsolute(Directory($"{reportDirectory}/ReportGenerator")).FullPath;
+var reportGeneratorHistoryDirectory = MakeAbsolute(Directory($"{reportDirectory}/History")).FullPath;
 
 var solutionFiles = new List<string>
 {
-    "./../AnnoDesigner.sln"
+    "./../AnnoDesigner.sln",
+    "./../ColorPresetsDesigner.sln"
 };
 
 var versionNumber = System.IO.File.ReadAllText("./../version.txt");
@@ -49,6 +59,7 @@ Setup(ctx =>
     Information("");
     Information($"{nameof(logDirectory)}: {logDirectory}");
     Information($"{nameof(outDirectory)}: {outDirectory}");
+    Information($"{nameof(reportDirectory)}: {reportDirectory}");
     Information("");
     Information($"version: {versionNumber}");
 
@@ -57,6 +68,15 @@ Setup(ctx =>
 
     EnsureDirectoryExists(outDirectory);
     CleanDirectory(outDirectory);
+
+    EnsureDirectoryExists(openCoverDirectory);
+    CleanDirectory(openCoverDirectory);
+
+    EnsureDirectoryExists(reportGeneratorDirectory);
+    //keep history of code coverage
+    //CleanDirectory(reportGeneratorDirectory);
+
+    EnsureDirectoryExists(reportGeneratorHistoryDirectory);
 });
 
 Teardown(ctx =>
@@ -123,24 +143,30 @@ var buildTask = Task("Build")
         var msBuildSettings = new MSBuildSettings()
         {
             Configuration = configuration,
-            PlatformTarget = PlatformTarget.x86,
+            PlatformTarget = PlatformTarget.MSIL,
             ToolVersion = (Cake.Common.Tools.MSBuild.MSBuildToolVersion)msbuildVersion,
             MaxCpuCount = 0,//use all available
             NoConsoleLogger = true,
-            BinaryLogger = new MSBuildBinaryLogSettings
-            {
-                Enabled = true,
-                FileName = $"{logDirectory}/{curSolutionFileName}.binlog"
-            },
             DetailedSummary = true,
             Verbosity = Verbosity.Minimal,
             NoLogo = true
         };
 
-        //msBuildSettings.FileLoggers.Add(new MSBuildFileLogger
-        //{
-        //    LogFile = $"{logDirectory}/{curSolutionFileName}.log"
-        //});
+        if(useBinaryLog)
+        {
+            msBuildSettings.BinaryLogger = new MSBuildBinaryLogSettings
+            {
+                Enabled = true,
+                FileName = $"{logDirectory}/{curSolutionFileName}.binlog"
+            };
+        }
+        else
+        {
+            msBuildSettings.FileLoggers.Add(new MSBuildFileLogger
+            {
+                LogFile = $"{logDirectory}/{curSolutionFileName}.log"
+            });
+        }
 
         msBuildSettings = msBuildSettings.WithTarget("Clean");
         msBuildSettings = msBuildSettings.WithTarget("Restore");
@@ -151,6 +177,74 @@ var buildTask = Task("Build")
         MSBuild(curSolutionFile, msBuildSettings);
         Information("");
     }
+});
+
+var runUnitTestsTask = Task("Run-Unit-Tests")
+.IsDependentOn(buildTask)
+    .Does(() =>
+{
+   var testAssemblies = GetFiles($"./../**/bin/**/{configuration}/*.Tests.dll");
+
+    Information($"found {testAssemblies.Count} test assemblies:");
+    foreach (var curTestAssembly in testAssemblies)
+    {
+        Information(curTestAssembly);
+    }
+
+    Information("");
+
+var xUnit2Settings = new XUnit2Settings
+        {
+            Parallelism = ParallelismOption.All,
+            HtmlReport = true,
+            XmlReport = true,
+            ReportName = $"TestResults_{configuration}",
+            OutputDirectory = $"{logDirectory}",
+            UseX86 = true,
+            ShadowCopy = false,//if true OpenCover says 0% coverage
+            ToolPath = $"./tools/xunit.runner.console.{xunitRunnerVersion}/tools/net472/xunit.console.exe",
+            //ArgumentCustomization = args => args.Append("-quiet")
+            //ArgumentCustomization = args => args.Append("-verbose") //print progress of unit tests
+        };
+        
+        var openCoverSettings = new OpenCoverSettings
+        {
+            Register = "user",
+            MergeOutput = true,
+            MergeByHash = true,
+            NoDefaultFilters = true,
+            ReturnTargetCodeOffset = 0 //to throw an exception, when there are failing tests
+            //ArgumentCustomization = args => args.Append("-coverbytest:*.Tests.dll").Append("-mergebyhash")
+        };
+        
+        openCoverSettings.WithFilter("+[*]*");
+        openCoverSettings.WithFilter("-[*.Tests]*");
+        openCoverSettings.WithFilter("-[*Moq*]*");
+        openCoverSettings.WithFilter("-[*Xunit*]*");
+        openCoverSettings.WithFilter("-[*xunit*]*");
+        openCoverSettings.WithFilter("-[xunit*]*");
+        openCoverSettings.WithFilter("-[*]Xunit*");
+        openCoverSettings.WithFilter("-[*]xunit*");
+        openCoverSettings.WithFilter("-[*]xunit.*");
+        
+        var coverageResultsFilePath = new FilePath($"{openCoverDirectory}/OpenCover_results.xml");
+        
+        OpenCover(tool => 
+        {
+            tool.XUnit2(testAssemblies,xUnit2Settings);
+        },coverageResultsFilePath, openCoverSettings);
+
+Information("");
+Information($"{DateTime.Now:hh:mm:ss.ff} starting ReportGenerator");
+
+var reportGeneratorSettings = new ReportGeneratorSettings()
+        {
+            HistoryDirectory = reportGeneratorHistoryDirectory,
+            Verbosity = ReportGeneratorVerbosity.Info,
+            ReportTypes = new[] { ReportGeneratorReportType.Html }
+        };        
+
+ReportGenerator(coverageResultsFilePath, reportGeneratorDirectory, reportGeneratorSettings);
 });
 
 var copyFilesTask = Task("Copy-Files")
@@ -167,6 +261,8 @@ var copyFilesTask = Task("Copy-Files")
     Information($"{DateTime.Now:hh:mm:ss.ff} copy application to \"{outDirectory}\"");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/AnnoDesigner.exe", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/AnnoDesigner.exe.config", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/AnnoDesigner.Core.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/colors.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/icons.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/presets.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/Octokit.dll", $"{outDirectory}");
@@ -197,6 +293,7 @@ Task("Default")
 .Description("This is the default task which will be ran if no specific target is passed in.")
 //.IsDependentOn(copyFilesTask)
 //.IsDependentOn(buildTask)
+.IsDependentOn(runUnitTestsTask)
 .IsDependentOn(zipTask)
 .Does(() => {});
 
