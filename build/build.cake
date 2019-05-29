@@ -38,7 +38,8 @@ var reportGeneratorHistoryDirectory = MakeAbsolute(Directory($"{reportDirectory}
 
 var solutionFiles = new List<string>
 {
-    "./../AnnoDesigner.sln"
+    "./../AnnoDesigner.sln",
+    "./../ColorPresetsDesigner.sln"
 };
 
 var versionNumber = System.IO.File.ReadAllText("./../version.txt");
@@ -141,7 +142,7 @@ var buildTask = Task("Build")
         var msBuildSettings = new MSBuildSettings()
         {
             Configuration = configuration,
-            PlatformTarget = PlatformTarget.x86,
+            PlatformTarget = PlatformTarget.MSIL,
             ToolVersion = (Cake.Common.Tools.MSBuild.MSBuildToolVersion)msbuildVersion,
             MaxCpuCount = 0,//use all available
             NoConsoleLogger = true,
@@ -175,7 +176,7 @@ var runUnitTestsTask = Task("Run-Unit-Tests")
 .IsDependentOn(buildTask)
     .Does(() =>
 {
-   var testAssemblies = GetFiles($"./../**/bin/x86/{configuration}/*.Tests.dll");
+   var testAssemblies = GetFiles($"./../**/bin/**/{configuration}/*.Tests.dll");
 
     Information($"found {testAssemblies.Count} test assemblies:");
     foreach (var curTestAssembly in testAssemblies)
@@ -194,7 +195,7 @@ var xUnit2Settings = new XUnit2Settings
             OutputDirectory = $"{logDirectory}",
             UseX86 = true,
             ShadowCopy = false,//if true OpenCover says 0% coverage
-            ToolPath = $"./tools/xunit.runner.console.{xunitRunnerVersion}/tools/net472/xunit.console.x86.exe",
+            ToolPath = $"./tools/xunit.runner.console.{xunitRunnerVersion}/tools/net472/xunit.console.exe",
             //ArgumentCustomization = args => args.Append("-quiet")
             //ArgumentCustomization = args => args.Append("-verbose") //print progress of unit tests
         };
@@ -253,6 +254,8 @@ var copyFilesTask = Task("Copy-Files")
     Information($"{DateTime.Now:hh:mm:ss.ff} copy application to \"{outDirectory}\"");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/AnnoDesigner.exe", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/AnnoDesigner.exe.config", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/AnnoDesigner.Core.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/colors.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/icons.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/presets.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/Octokit.dll", $"{outDirectory}");
