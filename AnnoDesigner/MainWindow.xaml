@@ -97,6 +97,10 @@
                               Command="ApplicationCommands.SaveAs"
                               CommandTarget="{Binding ElementName=annoCanvas}" />
                     <Separator />
+                    <MenuItem Header="{Binding CopyLayoutToClipboard}"
+                              Click="MenuCopyLayoutToClipboardClick"
+                              Command="{Binding ElementName=mainWindow,Path=CopyLayoutToClipboardCommand}" />
+                    <Separator />
                     <MenuItem Header="{Binding Path=Exit}"
                               Click="MenuItemCloseClick" />
                 </MenuItem>

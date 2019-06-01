@@ -30,6 +30,7 @@ namespace AnnoDesigner.Localization
                         { "Open" , "Open" },
                         { "Save" , "Save" },
                         { "SaveAs" , "Save As" },
+                        { "CopyLayoutToClipboard" , "Copy layout to clipboard as JSON" },
                         { "Exit" , "Exit" },
                         { "Extras" , "Extras" },
                         { "Normalize" , "Normalize" },
@@ -134,6 +135,7 @@ namespace AnnoDesigner.Localization
                         { "Open" , "Öffnen" },
                         { "Save" , "Speichern" },
                         { "SaveAs" , "Speichern unter" },
+                        { "CopyLayoutToClipboard" , "Layout als JSON in die Zwischenablage kopieren" },
                         { "Exit" , "Beenden" },
                         { "Extras" , "Extras" },
                         { "Normalize" , "Normalisieren" },
@@ -238,6 +240,7 @@ namespace AnnoDesigner.Localization
                         { "Open" , "Ouvrir" },
                         { "Save" , "Sauvegarder" },
                         { "SaveAs" , "Sauvegarder sous" },
+                        { "CopyLayoutToClipboard" , "Copier la mise en page dans le presse-papiers en tant que JSON" },
                         { "Exit" , "Quitter" },
                         { "Extras" , "Extras" },
                         { "Normalize" , "Centrer" },
@@ -343,6 +346,7 @@ namespace AnnoDesigner.Localization
                         { "Save" , "Zapisz" },
                         { "SaveAs" , "Zapisz jako" },
                         { "Exit" , "Zamknij" },
+                        { "CopyLayoutToClipboard" , "Skopiuj układ do schowka jako JSON" },
                         { "Extras" , "Dodatki" },
                         { "Normalize" , "Znormalizuj" },
                         { "ResetZoom" , "Resetuj powiększenie" },
@@ -446,6 +450,7 @@ namespace AnnoDesigner.Localization
                         { "Open" , "Открыть" },
                         { "Save" , "Сохранить" },
                         { "SaveAs" , "Сохранить как" },
+                        { "CopyLayoutToClipboard" , "Скопировать макет в буфер обмена как JSON" },
                         { "Exit" , "Выход" },
                         { "Extras" , "Дополнительно" },
                         { "Normalize" , "Нормализация" },
@@ -852,6 +857,7 @@ namespace AnnoDesigner.Localization
             Open = Localization.Translations[language]["Open"];
             Save = Localization.Translations[language]["Save"];
             SaveAs = Localization.Translations[language]["SaveAs"];
+            CopyLayoutToClipboard = Localization.Translations[language]["CopyLayoutToClipboard"];
             Exit = Localization.Translations[language]["Exit"];
 
             //Extras Menu
@@ -903,7 +909,7 @@ namespace AnnoDesigner.Localization
             BuildingSettingsViewModel.TextDistance = Localization.Translations[language]["Distance"];
             Both = Localization.Translations[language]["Both"];
             BuildingSettingsViewModel.TextPavedStreet = Localization.Translations[language]["PavedStreet"];
-            BuildingSettingsViewModel.TextPavedStreetWarningTitle = Localization.Translations[language]["PavedStreetWarningTitle"];      
+            BuildingSettingsViewModel.TextPavedStreetWarningTitle = Localization.Translations[language]["PavedStreetWarningTitle"];
             BuildingSettingsViewModel.TextPavedStreetToolTip = Localization.Translations[language]["PavedStreetToolTip"];
             BuildingSettingsViewModel.TextOptions = Localization.Translations[language]["Options"];
             BuildingSettingsViewModel.TextEnableLabel = Localization.Translations[language]["EnableLabel"];
@@ -950,6 +956,7 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _file, value);
             }
         }
+
         private string _newCanvas;
         public string NewCanvas
         {
@@ -959,6 +966,7 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _newCanvas, value);
             }
         }
+
         private string _open;
         public string Open
         {
@@ -968,6 +976,7 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _open, value);
             }
         }
+
         private string _save;
         public string Save
         {
@@ -977,6 +986,7 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _save, value);
             }
         }
+
         private string _saveAs;
         public string SaveAs
         {
@@ -986,6 +996,17 @@ namespace AnnoDesigner.Localization
                 UpdateProperty(ref _saveAs, value);
             }
         }
+
+        private string _copyLayoutToClipboard;
+        public string CopyLayoutToClipboard
+        {
+            get { return _copyLayoutToClipboard; }
+            set
+            {
+                UpdateProperty(ref _copyLayoutToClipboard, value);
+            }
+        }
+
         private string _exit;
         public string Exit
         {

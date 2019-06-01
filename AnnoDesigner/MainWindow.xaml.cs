@@ -23,6 +23,9 @@ using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.Presets.Helper;
+using AnnoDesigner.Core.Layout.Models;
+using AnnoDesigner.Core.Layout;
+using System.Text;
 
 namespace AnnoDesigner
 {
@@ -107,6 +110,7 @@ namespace AnnoDesigner
         }
 
         private readonly ICommons _commons;
+        private readonly ILayoutLoader _layoutLoader;
 
         #region Initialization
 
@@ -118,6 +122,7 @@ namespace AnnoDesigner
         public MainWindow(ICommons commonsToUse) : this()
         {
             _commons = commonsToUse;
+            _layoutLoader = new LayoutLoader();
 
             App.DpiScale = VisualTreeHelper.GetDpi(this);
 
@@ -823,6 +828,7 @@ namespace AnnoDesigner
 
             }
         }
+
         private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
         {
             SelectedLanguageChanged();
@@ -1042,6 +1048,27 @@ namespace AnnoDesigner
                 WindowState = WindowState.Normal;
             }
             Settings.Default.Save();
+        }
+
+        private void MenuCopyLayoutToClipboardClick(object sender, RoutedEventArgs e)
+        {
+            using (var ms = new MemoryStream())
+            {
+                annoCanvas.Normalize(1);
+                _layoutLoader.SaveLayout(annoCanvas.PlacedObjects, ms);
+
+                var jsonString = Encoding.UTF8.GetString(ms.ToArray());
+
+                Clipboard.SetText(jsonString, TextDataFormat.UnicodeText);
+
+                string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+
+                MessageBox.Show("Clipboard contains current layout as JSON.",
+                    Localization.Localization.Translations[language]["Successful"],
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information,
+                    MessageBoxResult.OK);
+            }
         }
 
         /// <summary>
