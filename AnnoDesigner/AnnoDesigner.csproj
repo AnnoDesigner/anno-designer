@@ -50,6 +50,9 @@
     <Compile Include="BuildingPresetsExtensions.cs" />
     <Compile Include="ColorHueSaturationBrightnessComparer.cs" />
     <Compile Include="Commons.cs" />
+    <Compile Include="InputWindow.xaml.cs">
+      <DependentUpon>InputWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
     <Compile Include="model\BuildingInfluenceType.cs" />
@@ -85,6 +88,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AnnoCanvas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="InputWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1218,5 +1218,27 @@ namespace AnnoDesigner
             thread.Start();
             thread.Join(TimeSpan.FromSeconds(10));
         }
+
+        private void MenuLoadLayoutFromJsonClick(object sender, RoutedEventArgs e)
+        {
+            var input = InputWindow.Prompt("Please paste the JSON string below.", "Load Layout");
+            if (!string.IsNullOrWhiteSpace(input))
+            {
+                var jsonArray = Encoding.UTF8.GetBytes(input);
+                using (var ms = new MemoryStream(jsonArray))
+                {
+                    var loadedLayout = _layoutLoader.LoadLayout(ms);
+
+                    if (loadedLayout != null)
+                    {
+                        annoCanvas.SelectedObjects.Clear();
+                        annoCanvas.PlacedObjects = loadedLayout;
+                        annoCanvas.Normalize(1);
+
+                        AnnoCanvas_StatisticsUpdated(this, EventArgs.Empty);
+                    }
+                }
+            }
+        }
     }
 }

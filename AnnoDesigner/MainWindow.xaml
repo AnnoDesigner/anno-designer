@@ -98,8 +98,9 @@
                               CommandTarget="{Binding ElementName=annoCanvas}" />
                     <Separator />
                     <MenuItem Header="{Binding CopyLayoutToClipboard}"
-                              Click="MenuCopyLayoutToClipboardClick"
-                              Command="{Binding ElementName=mainWindow,Path=CopyLayoutToClipboardCommand}" />
+                              Click="MenuCopyLayoutToClipboardClick" />
+                    <MenuItem Header="{Binding LoadLayoutFromJson}"
+                              Click="MenuLoadLayoutFromJsonClick" />
                     <Separator />
                     <MenuItem Header="{Binding Path=Exit}"
                               Click="MenuItemCloseClick" />

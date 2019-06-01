@@ -31,6 +31,7 @@ namespace AnnoDesigner.Localization
                         { "Save" , "Save" },
                         { "SaveAs" , "Save As" },
                         { "CopyLayoutToClipboard" , "Copy layout to clipboard as JSON" },
+                        //LoadLayoutFromJson
                         { "Exit" , "Exit" },
                         { "Extras" , "Extras" },
                         { "Normalize" , "Normalize" },
@@ -858,6 +859,7 @@ namespace AnnoDesigner.Localization
             Save = Localization.Translations[language]["Save"];
             SaveAs = Localization.Translations[language]["SaveAs"];
             CopyLayoutToClipboard = Localization.Translations[language]["CopyLayoutToClipboard"];
+            //LoadLayoutFromJson
             Exit = Localization.Translations[language]["Exit"];
 
             //Extras Menu
