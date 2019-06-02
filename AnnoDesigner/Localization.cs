@@ -31,7 +31,7 @@ namespace AnnoDesigner.Localization
                         { "Save" , "Save" },
                         { "SaveAs" , "Save As" },
                         { "CopyLayoutToClipboard" , "Copy layout to clipboard as JSON" },
-                        //LoadLayoutFromJson
+                        { "LoadLayoutFromJson" , "Load layout from JSON" },
                         { "Exit" , "Exit" },
                         { "Extras" , "Extras" },
                         { "Normalize" , "Normalize" },
@@ -126,7 +126,12 @@ namespace AnnoDesigner.Localization
                         { "UpdateErrorPresetMessage" , "There was an error installing the update." },
                         { "ColorsInLayout" , "Colors in Layout" },
                         { "ColorsInLayoutToolTip" , "Double click color to select it" },
-                        { "UpdateNoConnectionMessage" , "Could not establish a connection to the internet." }
+                        { "UpdateNoConnectionMessage" , "Could not establish a connection to the internet." },
+                        { "LoadLayoutHeader" , "Load Layout" },
+                        { "LoadLayoutMessage" , "Please paste the JSON string below." },
+                        { "ClipboardContainsLayoutAsJson" , "Clipboard contains current layout as JSON." },
+                        { "OK" , "OK" },
+                        { "Cancel" , "Cancel" },
                     }
                 },
                 {
@@ -137,6 +142,7 @@ namespace AnnoDesigner.Localization
                         { "Save" , "Speichern" },
                         { "SaveAs" , "Speichern unter" },
                         { "CopyLayoutToClipboard" , "Layout als JSON in die Zwischenablage kopieren" },
+                        { "LoadLayoutFromJson" , "Layout aus JSON laden" },
                         { "Exit" , "Beenden" },
                         { "Extras" , "Extras" },
                         { "Normalize" , "Normalisieren" },
@@ -231,7 +237,12 @@ namespace AnnoDesigner.Localization
                         { "UpdateErrorPresetMessage" , "Es gab einen Fehler bei der Installation des Updates." },
                         { "ColorsInLayout" , "Farben im Layout" },
                         { "ColorsInLayoutToolTip" , "Doppelklicken Sie auf die Farbe, um sie auszuwählen." },
-                        { "UpdateNoConnectionMessage" , "Es konnte keine Verbindung zum Internet hergestellt werden." }
+                        { "UpdateNoConnectionMessage" , "Es konnte keine Verbindung zum Internet hergestellt werden." },
+                        { "LoadLayoutHeader" , "Layout laden" },
+                        { "LoadLayoutMessage" , "Bitte fügen Sie die JSON-Zeichenkette unten ein." },
+                        { "ClipboardContainsLayoutAsJson" , "Die Zwischenablage enthält das aktuelle Layout als JSON." },
+                        { "OK" , "OK" },
+                        { "Cancel" , "Abbrechen" },
                     }
                 },
                 {
@@ -242,6 +253,7 @@ namespace AnnoDesigner.Localization
                         { "Save" , "Sauvegarder" },
                         { "SaveAs" , "Sauvegarder sous" },
                         { "CopyLayoutToClipboard" , "Copier la mise en page dans le presse-papiers en tant que JSON" },
+                        { "LoadLayoutFromJson" , "Charger l'agencement à partir de JSON" },
                         { "Exit" , "Quitter" },
                         { "Extras" , "Extras" },
                         { "Normalize" , "Centrer" },
@@ -336,7 +348,12 @@ namespace AnnoDesigner.Localization
                         { "UpdateErrorPresetMessage" , "Il y a eu une erreur lors de l'installation de la mise à jour." },
                         { "ColorsInLayout" , "Couleurs dans la mise en page" },
                         { "ColorsInLayoutToolTip" , "Double-cliquez sur la couleur pour la sélectionner" },
-                        { "UpdateNoConnectionMessage" , "Impossible d'établir une connexion à Internet." }
+                        { "UpdateNoConnectionMessage" , "Impossible d'établir une connexion à Internet." },
+                        { "LoadLayoutHeader" , "Disposition de la charge" },
+                        { "LoadLayoutMessage" , "Veuillez coller la chaîne JSON ci-dessous." },
+                        { "ClipboardContainsLayoutAsJson" , "Le presse-papiers contient la mise en page actuelle en tant que JSON." },
+                        { "OK" , "OK" },
+                        { "Cancel" , "Annuler" },
                     }
                 },
                 {
@@ -348,6 +365,7 @@ namespace AnnoDesigner.Localization
                         { "SaveAs" , "Zapisz jako" },
                         { "Exit" , "Zamknij" },
                         { "CopyLayoutToClipboard" , "Skopiuj układ do schowka jako JSON" },
+                        { "LoadLayoutFromJson" , "Układ obciążenia od JSON" },
                         { "Extras" , "Dodatki" },
                         { "Normalize" , "Znormalizuj" },
                         { "ResetZoom" , "Resetuj powiększenie" },
@@ -441,7 +459,12 @@ namespace AnnoDesigner.Localization
                         { "UpdateErrorPresetMessage" , "Wystąpił błąd podczas instalacji aktualizacji." },
                         { "ColorsInLayout" , "Kolory w układzie" },
                         { "ColorsInLayoutToolTip" , "Podwójne kliknięcie na kolor, aby go wybrać" },
-                        { "UpdateNoConnectionMessage" , "Nie udało się nawiązać połączenia z Internetem." }
+                        { "UpdateNoConnectionMessage" , "Nie udało się nawiązać połączenia z Internetem." },
+                        { "LoadLayoutHeader" , "Układ obciążenia" },
+                        { "LoadLayoutMessage" , "Proszę wkleić poniższy ciąg JSON." },
+                        { "ClipboardContainsLayoutAsJson" , "Schowek zawiera aktualny układ jako JSON." },
+                        { "OK" , "OK" },
+                        { "Cancel" , "Odwołaj" },
                     }
                 },
                 {
@@ -452,6 +475,7 @@ namespace AnnoDesigner.Localization
                         { "Save" , "Сохранить" },
                         { "SaveAs" , "Сохранить как" },
                         { "CopyLayoutToClipboard" , "Скопировать макет в буфер обмена как JSON" },
+                        { "LoadLayoutFromJson" , "Схема загрузки от JSON" },
                         { "Exit" , "Выход" },
                         { "Extras" , "Дополнительно" },
                         { "Normalize" , "Нормализация" },
@@ -546,7 +570,12 @@ namespace AnnoDesigner.Localization
                         { "UpdateErrorPresetMessage" , "Произошла ошибка при установке обновления." },
                         { "ColorsInLayout" , "Цвета в макетах" },
                         { "ColorsInLayoutToolTip" , "Дважды щелкните по цвету, чтобы выбрать его." },
-                        { "UpdateNoConnectionMessage" , "Не смог установить соединение с интернетом." }
+                        { "UpdateNoConnectionMessage" , "Не смог установить соединение с интернетом." },
+                        { "LoadLayoutHeader" , "Загрузить макет" },
+                        { "LoadLayoutMessage" , "Пожалуйста, вставьте JSON строку ниже." },
+                        { "ClipboardContainsLayoutAsJson" , "Буфер обмена содержит текущую верстку в виде JSON." },
+                        { "OK" , "OK" },
+                        { "Cancel" , "Отмена" },
                     }
                 },
             };
@@ -852,6 +881,9 @@ namespace AnnoDesigner.Localization
             StatisticsViewModel.TextTiles = Localization.Translations[language]["StatTiles"];
             StatisticsViewModel.TextNameNotFound = Localization.Translations[language]["StatNameNotFound"];
 
+            Ok = Localization.Translations[language]["OK"];
+            Cancel = Localization.Translations[language]["Cancel"];
+
             //File Menu
             File = Localization.Translations[language]["File"];
             NewCanvas = Localization.Translations[language]["NewCanvas"];
@@ -859,7 +891,7 @@ namespace AnnoDesigner.Localization
             Save = Localization.Translations[language]["Save"];
             SaveAs = Localization.Translations[language]["SaveAs"];
             CopyLayoutToClipboard = Localization.Translations[language]["CopyLayoutToClipboard"];
-            //LoadLayoutFromJson
+            LoadLayoutFromJson = Localization.Translations[language]["LoadLayoutFromJson"];
             Exit = Localization.Translations[language]["Exit"];
 
             //Extras Menu
@@ -1006,6 +1038,36 @@ namespace AnnoDesigner.Localization
             set
             {
                 UpdateProperty(ref _copyLayoutToClipboard, value);
+            }
+        }
+
+        private string _loadLayoutFromJson;
+        public string LoadLayoutFromJson
+        {
+            get { return _loadLayoutFromJson; }
+            set
+            {
+                UpdateProperty(ref _loadLayoutFromJson, value);
+            }
+        }
+
+        private string _ok;
+        public string Ok
+        {
+            get { return _ok; }
+            set
+            {
+                UpdateProperty(ref _ok, value);
+            }
+        }
+
+        private string _cancel;
+        public string Cancel
+        {
+            get { return _cancel; }
+            set
+            {
+                UpdateProperty(ref _cancel, value);
             }
         }
 

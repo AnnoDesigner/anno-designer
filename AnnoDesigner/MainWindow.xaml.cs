@@ -1063,7 +1063,7 @@ namespace AnnoDesigner
 
                 string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
 
-                MessageBox.Show("Clipboard contains current layout as JSON.",
+                MessageBox.Show(Localization.Localization.Translations[language]["ClipboardContainsLayoutAsJson"],
                     Localization.Localization.Translations[language]["Successful"],
                     MessageBoxButton.OK,
                     MessageBoxImage.Information,
@@ -1221,7 +1221,10 @@ namespace AnnoDesigner
 
         private void MenuLoadLayoutFromJsonClick(object sender, RoutedEventArgs e)
         {
-            var input = InputWindow.Prompt("Please paste the JSON string below.", "Load Layout");
+            string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+
+            var input = InputWindow.Prompt(Localization.Localization.Translations[language]["LoadLayoutMessage"],
+                Localization.Localization.Translations[language]["LoadLayoutHeader"]);
             if (!string.IsNullOrWhiteSpace(input))
             {
                 var jsonArray = Encoding.UTF8.GetBytes(input);

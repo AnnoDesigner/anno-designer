@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:l="clr-namespace:AnnoDesigner.Localization"
         xmlns:local="clr-namespace:AnnoDesigner"
         mc:Ignorable="d"
         Title="InputWindow"
@@ -13,25 +14,37 @@
         MaxWidth="600"
         WindowStyle="SingleBorderWindow"
         ResizeMode="CanMinimize">
+    <Window.Resources>
+        <l:MainWindow x:Key="localization"></l:MainWindow>
+    </Window.Resources>
+    <Window.DataContext>
+        <Binding Source="{StaticResource localization}"></Binding>
+    </Window.DataContext>
     <StackPanel Margin="5,5,5,5">
         <TextBlock x:Name="message"
                    Text="The message"
                    Margin="0,0,0,10" />
         <TextBox x:Name="input"
-                 Padding="3,3,3,3" />
+                 Padding="3,3,3,3"
+                 AcceptsReturn="True"
+                 FontFamily="Arial"
+                 FontSize="14"
+                 MaxHeight="300"
+                 TextWrapping="Wrap"
+                 VerticalScrollBarVisibility="Auto" />
         <Grid Margin="0,10,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Button x:Name="OkButton"
-                    Content="OK"
+                    Content="{Binding Ok}"
                     Grid.Column="0"
                     Margin="0,0,5,0"
                     Padding="8"
                     Click="OkButton_Click" />
             <Button x:Name="CancelButton"
-                    Content="Cancel"
+                    Content="{Binding Cancel}"
                     Grid.Column="1"
                     Margin="5,0,0,0"
                     Padding="8"
