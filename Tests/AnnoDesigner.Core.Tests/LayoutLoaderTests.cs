@@ -24,8 +24,10 @@ namespace AnnoDesigner.Core.Tests
 
         static LayoutLoaderTests()
         {
-            testData_v3_LayoutWithVersionAndObjects = File.ReadAllText(Path.Combine("Testdata", "Layout", "v3_layoutWithVersionAndObjects.ad"), Encoding.UTF8);
-            testData_LayoutWithNoVersionAndObjects = File.ReadAllText(Path.Combine("Testdata", "Layout", "layoutWithNoVersionAndObjects.ad"), Encoding.UTF8);
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+
+            testData_v3_LayoutWithVersionAndObjects = File.ReadAllText(Path.Combine(basePath, "Testdata", "Layout", "v3_layoutWithVersionAndObjects.ad"), Encoding.UTF8);
+            testData_LayoutWithNoVersionAndObjects = File.ReadAllText(Path.Combine(basePath, "Testdata", "Layout", "layoutWithNoVersionAndObjects.ad"), Encoding.UTF8);
         }
 
         [Fact]

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ColorPresetsDesigner"
         xmlns:views="clr-namespace:ColorPresetsDesigner.Views"
         xmlns:viewModels="clr-namespace:ColorPresetsDesigner.ViewModels"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"

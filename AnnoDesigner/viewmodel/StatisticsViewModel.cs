@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.model;
@@ -31,6 +32,7 @@ namespace AnnoDesigner.viewmodel
         //private bool _showSelectedBuildingList;
         private ObservableCollection<StatisticsBuilding> _buildings;
         private ObservableCollection<StatisticsBuilding> _selectedBuildings;
+        private StatisticsCalculationHelper _statisticsCalculationHelper;
 
         public StatisticsViewModel()
         {
@@ -52,6 +54,7 @@ namespace AnnoDesigner.viewmodel
             ShowBuildingList = true;
             Buildings = new ObservableCollection<StatisticsBuilding>();
             SelectedBuildings = new ObservableCollection<StatisticsBuilding>();
+            _statisticsCalculationHelper = new StatisticsCalculationHelper();
         }
 
         #region localization
@@ -200,17 +203,12 @@ namespace AnnoDesigner.viewmodel
 
             AreStatisticsAvailable = true;
 
-            // calculate bouding box
-            var boxX = placedObjects.Max(_ => _.Position.X + _.Size.Width) - placedObjects.Min(_ => _.Position.X);
-            var boxY = placedObjects.Max(_ => _.Position.Y + _.Size.Height) - placedObjects.Min(_ => _.Position.Y);
-            // calculate area of all buildings
-            var minTiles = placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
+            var calculatedStatistics = _statisticsCalculationHelper.CalculateStatistics(placedObjects);
 
-            UsedArea = string.Format("{0}x{1}", boxX, boxY);
-            UsedTiles = boxX * boxY;
-
-            MinTiles = minTiles;
-            Efficiency = string.Format("{0}%", Math.Round(minTiles / boxX / boxY * 100));
+            UsedArea = string.Format("{0}x{1}", calculatedStatistics.UsedAreaX, calculatedStatistics.UsedAreaY);
+            UsedTiles = calculatedStatistics.UsedTiles;
+            MinTiles = calculatedStatistics.MinTiles;
+            Efficiency = string.Format("{0}%", calculatedStatistics.Efficiency);
 
             if (ShowBuildingList)
             {

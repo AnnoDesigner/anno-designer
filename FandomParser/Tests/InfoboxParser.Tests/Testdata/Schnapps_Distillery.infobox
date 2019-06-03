@@ -1,0 +1,25 @@
+﻿{{Infobox Buildings
+|Title = Schnapps Distillery
+|Image=SchnappsDistilleryScreenshot.png
+|Building Icon = Schnapps.png
+|Credits = 100
+|Timber = 2
+|Maintenance = -40
+|Workforce Type = Farmers
+|Workforce Amount = -50
+|Input 1 Amount = 2
+|Input 1 Icon = Potato.png
+|Produces Amount = 2
+|Produces Icon = Schnapps.png
+|Supplies 1 Type = Farmers
+|Supplies 1 Amount = 60
+|Supplies 2 Type = Workers
+|Supplies 2 Amount = 30
+|Building Type = Production
+|Building Size = 3x4
+|Unlock Condition 1 Amount = 100
+|Unlock Condition 1 Type = Farmers
+|Input 1 Amount Electricity = 4
+|Produces Amount Electricity = 4
+|Supplies 1 Amount Electricity = 120
+|Supplies 2 Amount Electricity = 60}}
