@@ -14,6 +14,7 @@ using System.Windows.Media;
 using AnnoDesigner.Core;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout;
+using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
@@ -212,7 +213,8 @@ namespace FandomTemplateExporter.ViewModels
                 List<AnnoObject> layout = null;
                 try
                 {
-                    layout = LayoutLoader.LoadLayout(LayoutVM.SelectedFile);
+                    ILayoutLoader loader = new LayoutLoader();
+                    layout = loader.LoadLayout(LayoutVM.SelectedFile);
                 }
                 catch (Exception ex)
                 {

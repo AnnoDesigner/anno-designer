@@ -25,6 +25,11 @@ namespace AnnoDesigner.Core
         public const string BuildingPresetsFile = "presets.json";
 
         /// <summary>
+        /// Json encoded file containing the localized names for the icons
+        /// </summary>
+        public const string IconNameFile = "icons.json";
+
+        /// <summary>
         /// Filter used to retrieve the icons within the IconFolder.
         /// </summary>
         public const string IconFolderFilter = "*.png";

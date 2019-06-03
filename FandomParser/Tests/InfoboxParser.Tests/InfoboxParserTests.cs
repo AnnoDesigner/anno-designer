@@ -24,9 +24,11 @@ namespace InfoboxParser.Tests
         {
             mockedCommons = Commons.Instance;
 
-            testDataSchnapps_Distillery = File.ReadAllText(Path.Combine("Testdata", "Schnapps_Distillery.infobox"));
-            testDataBakery = File.ReadAllText(Path.Combine("Testdata", "Bakery.infobox"));
-            testDataCannery = File.ReadAllText(Path.Combine("Testdata", "Cannery.infobox"));
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+
+            testDataSchnapps_Distillery = File.ReadAllText(Path.Combine(basePath, "Testdata", "Schnapps_Distillery.infobox"));
+            testDataBakery = File.ReadAllText(Path.Combine(basePath, "Testdata", "Bakery.infobox"));
+            testDataCannery = File.ReadAllText(Path.Combine(basePath, "Testdata", "Cannery.infobox"));
 
             //var commons = new Mock<ICommons>();
             //commons.SetupGet(x => x.InfoboxTemplateStartBothWorlds).Returns("");

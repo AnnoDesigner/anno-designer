@@ -54,6 +54,7 @@
     <Compile Include="Layout\Helper\StatisticsCalculationHelper.cs" />
     <Compile Include="Layout\LayoutLoader.cs" />
     <Compile Include="Layout\Models\StatisticsCalculationResult.cs" />
+    <Compile Include="Layout\Models\ILayoutLoader.cs" />
     <Compile Include="Models\AnnoObject.cs" />
     <Compile Include="Models\IconImage.cs" />
     <Compile Include="Layout\Models\LayoutVersionContainer.cs" />

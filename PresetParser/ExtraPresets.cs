@@ -11,13 +11,13 @@ namespace PresetParser
 
             switch (annoVersion)
             {
-                case Program.ANNO_VERSION_1404:
+                case Constants.ANNO_VERSION_1404:
                     result.AddRange(getExtraPresetsForAnno1404());
                     break;
-                case Program.ANNO_VERSION_2070:
+                case Constants.ANNO_VERSION_2070:
                     result.AddRange(getExtraPresetsForAnno2070());
                     break;
-                case Program.ANNO_VERSION_1800:
+                case Constants.ANNO_VERSION_1800:
                     result.AddRange(getExtraPresetsForAnno1800());
                     break;
             }
