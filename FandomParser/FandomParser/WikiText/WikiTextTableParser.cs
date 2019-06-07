@@ -189,7 +189,13 @@ namespace FandomParser.WikiText
                 allTableEntries.AddRange(parsedTable);
             }
 
-            allTableEntries = allTableEntries.Distinct().ToList();
+            var comparer = new WikiTextTableEntryComparer();
+
+            //285 vs 260 (Ornamentals?)
+            //var distinctAllEntries = allTableEntries.Distinct(comparer).ToList();
+            //var test = allTableEntries.Except(distinctAllEntries).ToList();
+
+            allTableEntries = allTableEntries.Distinct(comparer).ToList();
 
             result.Entries = allTableEntries;
 
@@ -205,9 +211,15 @@ namespace FandomParser.WikiText
             WikiTextTableEntry curEntry = null;
             var entryCounter = 0;
             //read string line by line
-            //TODO use StringReader?
+            //use StringReader?
             foreach (var curLine in curTable.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
+                //line is end of table
+                if (curLine.Equals("=", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
                 //line contains description
                 if (!curLine.StartsWith("|", StringComparison.OrdinalIgnoreCase) && !curLine.StartsWith("(", StringComparison.OrdinalIgnoreCase))
                 {
@@ -287,6 +299,12 @@ namespace FandomParser.WikiText
                     default:
                         break;
                 }
+            }
+
+            //add last entry
+            if (curEntry != null && !allEntries.Contains(curEntry))
+            {
+                allEntries.Add(curEntry);
             }
 
             return allEntries;

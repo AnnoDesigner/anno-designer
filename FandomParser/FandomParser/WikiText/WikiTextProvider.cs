@@ -16,31 +16,43 @@ namespace FandomParser.WikiText
 
         //this is using https://github.com/CXuesong/WikiClientLibrary
 
-        public async Task<string> GetWikiTextAsync(string pageToFetch = "Buildings")
+        public async Task<WikiTextProviderResult> GetWikiTextAsync(string pageToFetch = "Buildings")
         {
-            var wikiText = string.Empty;
+            var result = new WikiTextProviderResult();
 
-            using (var wikiClient = new WikiClient())
+            try
             {
-                wikiClient.ClientUserAgent = "Parser-Test/1.0";
-
-                var mainSite = new WikiSite(wikiClient, new SiteOptions("https://anno1800.fandom.com/api.php"));
-                await mainSite.Initialization;
-
-                var page = new WikiPage(mainSite, pageToFetch);
-                await page.RefreshAsync(PageQueryOptions.FetchContent);
-
-                if (!page.Exists)
+                using (var wikiClient = new WikiClient())
                 {
-                    //Page not found
-                    return wikiText;
+                    wikiClient.ClientUserAgent = "Parser-Test/1.0";
+
+                    var mainSite = new WikiSite(wikiClient, new SiteOptions("https://anno1800.fandom.com/api.php"));
+                    await mainSite.Initialization;
+
+                    Console.WriteLine($"fetching page: {pageToFetch}");
+
+                    var page = new WikiPage(mainSite, pageToFetch);
+                    await page.RefreshAsync(PageQueryOptions.FetchContent | PageQueryOptions.ResolveRedirects);
+
+                    if (!page.Exists)
+                    {
+                        //Page not found
+                        return result;
+                    }
+
+                    //var pageId = page.Id;//186 = overview (Buildings)
+
+                    result.WikiText = page.Content;//complete article/page in wikitext
+                    result.RevisionId = page.LastRevisionId;//Id of last revision
+                    result.EditDate = page.LastTouched;//DateTime last edit
+
+                    return result;
                 }
-
-                //var pageId = page.Id;//186 = overview (Buildings)
-
-                wikiText = page.Content;//complete article/page in wikitext
-
-                return wikiText;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"error fetching wikitext ({pageToFetch})" + Environment.NewLine + ex.ToString());
+                return result;
             }
         }
     }

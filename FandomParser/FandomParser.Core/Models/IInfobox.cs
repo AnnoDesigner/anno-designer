@@ -11,6 +11,8 @@ namespace FandomParser.Core.Models
 
         BuildingType Type { get; set; }
 
+        WorldRegion Region { get; set; }
+
         ProductionInfo ProductionInfos { get; set; }
 
         SupplyInfo SupplyInfos { get; set; }

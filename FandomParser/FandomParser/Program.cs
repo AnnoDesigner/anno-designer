@@ -28,7 +28,7 @@ namespace FandomParser
 
         public static bool UsePrettyPrint { get; set; }
 
-        public static Version PresetVersion { get; set; } = new Version(1, 0, 0, 0);
+        public static Version PresetVersion { get; set; } = new Version(2, 0, 0, 0);
 
         public static async Task Main(string[] args)
         {
@@ -54,10 +54,10 @@ namespace FandomParser
                 if (!File.Exists("wiki_basic_info.json") || ForceDownload)
                 {
                     var provider = new WikiTextProvider();
-                    var wikiText = await provider.GetWikiTextAsync();
+                    var providerResult = await provider.GetWikiTextAsync();
 
                     var tableParser = new WikiTextTableParser();
-                    tableContainer = tableParser.GetTables(wikiText);
+                    tableContainer = tableParser.GetTables(providerResult.WikiText);
 
                     SerializationHelper.SaveToFile(tableContainer, "wiki_basic_info.json", prettyPrint: true);
                 }
