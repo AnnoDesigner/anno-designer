@@ -19,6 +19,11 @@ namespace InfoboxParser.Tests
         private static readonly string testDataSchnapps_Distillery;
         private static readonly string testDataBakery;
         private static readonly string testDataCannery;
+        private static readonly string testDataPoliceStation;
+        private static readonly string testDataBrickFactory;
+        private static readonly string testDataChapel;
+        private static readonly string testDataHospital;
+        private static readonly string testDataMarketplace;
 
         static InfoboxParserTests()
         {
@@ -29,10 +34,29 @@ namespace InfoboxParser.Tests
             testDataSchnapps_Distillery = File.ReadAllText(Path.Combine(basePath, "Testdata", "Schnapps_Distillery.infobox"));
             testDataBakery = File.ReadAllText(Path.Combine(basePath, "Testdata", "Bakery.infobox"));
             testDataCannery = File.ReadAllText(Path.Combine(basePath, "Testdata", "Cannery.infobox"));
+            testDataPoliceStation = File.ReadAllText(Path.Combine(basePath, "Testdata", "Police_Station.infobox"));
+            testDataBrickFactory = File.ReadAllText(Path.Combine(basePath, "Testdata", "Brick_Factory.infobox"));
+            testDataChapel = File.ReadAllText(Path.Combine(basePath, "Testdata", "Chapel.infobox"));
+            testDataHospital = File.ReadAllText(Path.Combine(basePath, "Testdata", "Hospital.infobox"));
+            testDataMarketplace = File.ReadAllText(Path.Combine(basePath, "Testdata", "Marketplace.infobox"));
+        }
 
-            //var commons = new Mock<ICommons>();
-            //commons.SetupGet(x => x.InfoboxTemplateStartBothWorlds).Returns("");
-            //mockedCommons = commons.Object;
+        public static TheoryData<string, BuildingType> BuildingTypeTestData
+        {
+            get
+            {
+                return new TheoryData<string, BuildingType>
+                {
+                    { testDataSchnapps_Distillery, BuildingType.Production },
+                    { testDataBakery, BuildingType.Production },
+                    { testDataCannery, BuildingType.Production },
+                    { testDataPoliceStation, BuildingType.Institution },
+                    { testDataBrickFactory, BuildingType.Production },
+                    { testDataChapel, BuildingType.PublicService },
+                    { testDataHospital, BuildingType.Institution },
+                    { testDataMarketplace, BuildingType.PublicService },
+                };
+            }
         }
 
         [Theory]
@@ -94,6 +118,7 @@ namespace InfoboxParser.Tests
         [InlineData("|Building Type = Harbour", BuildingType.Harbour)]
         [InlineData("|Building Type = Street", BuildingType.Street)]
         [InlineData("|Building Type = something special", BuildingType.Unknown)]
+        [MemberData(nameof(BuildingTypeTestData))]
         public void GetInfobox_InputContainsBuildingType_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
@@ -517,6 +542,94 @@ namespace InfoboxParser.Tests
             Assert.Equal("Workers", result[0].UnlockInfos.UnlockConditions[0].Type);
         }
 
-        #endregion        
+        [Fact]
+        public void GetInfobox_InputIsPoliceStation_ShouldReturnCorrectResult()
+        {
+            // Arrange
+            var parser = new InfoboxParser(mockedCommons);
+
+            // Act
+            var result = parser.GetInfobox(testDataPoliceStation);
+
+            // Assert
+            //Old World
+            Assert.Equal("Police Station", result[0].Name);
+            Assert.Equal(BuildingType.Institution, result[0].Type);
+            Assert.NotNull(result[0].ProductionInfos);
+            Assert.NotNull(result[0].ProductionInfos.EndProduct);
+            Assert.Empty(result[0].ProductionInfos.InputProducts);
+            Assert.NotNull(result[0].SupplyInfos);
+            Assert.Empty(result[0].SupplyInfos.SupplyEntries);
+
+            Assert.Equal(WorldRegion.OldWorld, result[0].Region);
+            Assert.Single(result[0].UnlockInfos.UnlockConditions);
+            Assert.Equal(500, result[0].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal("Workers", result[0].UnlockInfos.UnlockConditions[0].Type);
+
+            //New World
+            Assert.Equal("Police Station", result[1].Name);
+            Assert.Equal(BuildingType.Institution, result[1].Type);
+            Assert.NotNull(result[1].ProductionInfos);
+            Assert.NotNull(result[1].ProductionInfos.EndProduct);
+            Assert.Empty(result[1].ProductionInfos.InputProducts);
+            Assert.NotNull(result[1].SupplyInfos);
+            Assert.Empty(result[1].SupplyInfos.SupplyEntries);
+
+            Assert.Equal(WorldRegion.NewWorld, result[1].Region);
+            Assert.Single(result[1].UnlockInfos.UnlockConditions);
+            Assert.Equal(0, result[1].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal("Jornaleros", result[1].UnlockInfos.UnlockConditions[0].Type);
+        }
+
+        [Fact]
+        public void GetInfobox_InputIsBrickFactory_ShouldReturnCorrectResult()
+        {
+            // Arrange
+            var parser = new InfoboxParser(mockedCommons);
+
+            // Act
+            var result = parser.GetInfobox(testDataBrickFactory);
+
+            // Assert
+            //Old World
+            Assert.Equal("Brick Factory", result[0].Name);
+            Assert.Equal(BuildingType.Production, result[0].Type);
+            Assert.NotNull(result[0].ProductionInfos);
+            Assert.NotNull(result[0].ProductionInfos.EndProduct);
+            Assert.Equal(1, result[0].ProductionInfos.EndProduct.Amount);
+            Assert.Equal(2, result[0].ProductionInfos.EndProduct.AmountElectricity);
+            Assert.Equal("Bricks.png", result[0].ProductionInfos.EndProduct.Icon);
+            Assert.Single(result[0].ProductionInfos.InputProducts);
+            Assert.Equal(1, result[0].ProductionInfos.InputProducts[0].Amount);
+            Assert.Equal(2, result[0].ProductionInfos.InputProducts[0].AmountElectricity);
+            Assert.Equal("Clay.png", result[0].ProductionInfos.InputProducts[0].Icon);
+            Assert.NotNull(result[0].SupplyInfos);
+            Assert.Empty(result[0].SupplyInfos.SupplyEntries);
+            Assert.Equal(WorldRegion.OldWorld, result[0].Region);
+            Assert.Single(result[0].UnlockInfos.UnlockConditions);
+            Assert.Equal(1, result[0].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal("Workers", result[0].UnlockInfos.UnlockConditions[0].Type);
+
+            //New World
+            Assert.Equal("Brick Factory", result[1].Name);
+            Assert.Equal(BuildingType.Production, result[1].Type);
+            Assert.NotNull(result[1].ProductionInfos);
+            Assert.NotNull(result[1].ProductionInfos.EndProduct);
+            Assert.Equal(1, result[1].ProductionInfos.EndProduct.Amount);
+            Assert.Equal(0, result[1].ProductionInfos.EndProduct.AmountElectricity);
+            Assert.Equal("Bricks.png", result[1].ProductionInfos.EndProduct.Icon);
+            Assert.Single(result[1].ProductionInfos.InputProducts);
+            Assert.Equal(1, result[1].ProductionInfos.InputProducts[0].Amount);
+            Assert.Equal(0, result[1].ProductionInfos.InputProducts[0].AmountElectricity);
+            Assert.Equal("Clay.png", result[1].ProductionInfos.InputProducts[0].Icon);
+            Assert.NotNull(result[1].SupplyInfos);
+            Assert.Empty(result[1].SupplyInfos.SupplyEntries);
+            Assert.Equal(WorldRegion.NewWorld, result[1].Region);
+            Assert.Single(result[1].UnlockInfos.UnlockConditions);
+            Assert.Equal(1, result[1].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal("Obreros", result[1].UnlockInfos.UnlockConditions[0].Type);
+        }
+
+        #endregion
     }
 }

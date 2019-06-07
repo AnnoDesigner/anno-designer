@@ -184,6 +184,8 @@ namespace InfoboxParser
                                 continue;
                             }
 
+                            matchedTypeName = matchedTypeName.Replace(" ", string.Empty).Trim();
+
                             if (Enum.TryParse(matchedTypeName, ignoreCase: true, out BuildingType parsedBuildingType))
                             {
                                 result = parsedBuildingType;
