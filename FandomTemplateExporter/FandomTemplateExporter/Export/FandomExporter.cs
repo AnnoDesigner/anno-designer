@@ -471,7 +471,15 @@ namespace AnnoDesigner.Export
         {
             WikiBuildingInfo result = null;
 
-            var buildingName = buildingPresets.Buildings.FirstOrDefault(x => x.Identifier.Equals(buildingIdentifier, StringComparison.OrdinalIgnoreCase))?.Localization["eng"];
+            var foundPresetBuilding = buildingPresets.Buildings.FirstOrDefault(x => x.Identifier.Equals(buildingIdentifier, StringComparison.OrdinalIgnoreCase));
+            var buildingName = foundPresetBuilding?.Localization["eng"];
+            var buildingFaction = foundPresetBuilding?.Faction;
+            var buildingRegion = WorldRegion.OldWorld;
+            if (buildingFaction?.Contains("Obreros") == true || buildingFaction?.Contains("Jornaleros") == true)
+            {
+                buildingRegion = WorldRegion.NewWorld;
+            }
+
             if (string.IsNullOrWhiteSpace(buildingName))
             {
                 //TODO error?
@@ -479,7 +487,7 @@ namespace AnnoDesigner.Export
             }
 
             //try to find by name
-            result = wikiBuildingInfoPresets.Infos.FirstOrDefault(x => x.Name.Equals(buildingName, StringComparison.OrdinalIgnoreCase));
+            result = wikiBuildingInfoPresets.Infos.FirstOrDefault(x => x.Name.Equals(buildingName, StringComparison.OrdinalIgnoreCase) && x.Region == buildingRegion);
             if (result == null)
             {
                 //Is it a farm with field info? (e.g. "Potato Farm - (72)")
@@ -488,7 +496,7 @@ namespace AnnoDesigner.Export
                 {
                     //strip field info and search again
                     var strippedBuildingName = buildingName.Replace(matchFieldCount.Value, string.Empty).Trim();
-                    result = wikiBuildingInfoPresets.Infos.FirstOrDefault(x => x.Name.Equals(strippedBuildingName, StringComparison.OrdinalIgnoreCase));
+                    result = wikiBuildingInfoPresets.Infos.FirstOrDefault(x => x.Name.Equals(strippedBuildingName, StringComparison.OrdinalIgnoreCase) && x.Region == buildingRegion);
                 }
             }
 
