@@ -247,7 +247,7 @@ namespace AnnoDesigner
             {
                 return _loadedFile;
             }
-            private set
+            set
             {
                 if (_loadedFile != value)
                 {

@@ -23,6 +23,10 @@ using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.Presets.Helper;
+using AnnoDesigner.Core.Layout.Models;
+using AnnoDesigner.Core.Layout;
+using System.Text;
+using AnnoDesigner.Core.Layout.Exceptions;
 
 namespace AnnoDesigner
 {
@@ -107,6 +111,7 @@ namespace AnnoDesigner
         }
 
         private readonly ICommons _commons;
+        private readonly ILayoutLoader _layoutLoader;
 
         #region Initialization
 
@@ -118,6 +123,7 @@ namespace AnnoDesigner
         public MainWindow(ICommons commonsToUse) : this()
         {
             _commons = commonsToUse;
+            _layoutLoader = new LayoutLoader();
 
             App.DpiScale = VisualTreeHelper.GetDpi(this);
 
@@ -823,6 +829,7 @@ namespace AnnoDesigner
 
             }
         }
+
         private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
         {
             SelectedLanguageChanged();
@@ -1044,6 +1051,35 @@ namespace AnnoDesigner
             Settings.Default.Save();
         }
 
+        private void MenuCopyLayoutToClipboardClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                using (var ms = new MemoryStream())
+                {
+                    annoCanvas.Normalize(1);
+                    _layoutLoader.SaveLayout(annoCanvas.PlacedObjects, ms);
+
+                    var jsonString = Encoding.UTF8.GetString(ms.ToArray());
+
+                    Clipboard.SetText(jsonString, TextDataFormat.UnicodeText);
+
+                    string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+
+                    MessageBox.Show(Localization.Localization.Translations[language]["ClipboardContainsLayoutAsJson"],
+                        Localization.Localization.Translations[language]["Successful"],
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information,
+                        MessageBoxResult.OK);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.WriteToErrorLog("Error saving layout to JSON", ex.Message, ex.StackTrace);
+                MessageBox.Show(ex.Message, "Something went wrong while saving the layout.");
+            }
+        }
+
         /// <summary>
         /// Renders the current layout to file.
         /// </summary>
@@ -1190,6 +1226,56 @@ namespace AnnoDesigner
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             thread.Join(TimeSpan.FromSeconds(10));
+        }
+
+        private void MenuLoadLayoutFromJsonClick(object sender, RoutedEventArgs e)
+        {
+            string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
+
+            var input = InputWindow.Prompt(Localization.Localization.Translations[language]["LoadLayoutMessage"],
+                Localization.Localization.Translations[language]["LoadLayoutHeader"]);
+
+            LoadLayoutFromJson(input, false);
+        }
+
+        private void LoadLayoutFromJson(string jsonString, bool forceLoad = false)
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(jsonString))
+                {
+                    var jsonArray = Encoding.UTF8.GetBytes(jsonString);
+                    using (var ms = new MemoryStream(jsonArray))
+                    {
+                        var loadedLayout = _layoutLoader.LoadLayout(ms, forceLoad);
+                        if (loadedLayout != null)
+                        {
+                            annoCanvas.SelectedObjects.Clear();
+                            annoCanvas.PlacedObjects = loadedLayout;
+                            annoCanvas.LoadedFile = string.Empty;
+                            annoCanvas.Normalize(1);
+
+                            AnnoCanvas_StatisticsUpdated(this, EventArgs.Empty);
+                        }
+                    }
+                }
+            }
+            catch (LayoutFileVersionMismatchException layoutEx)
+            {
+                Trace.WriteLine(layoutEx);
+
+                if (MessageBox.Show(
+                        "Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
+                        "File version mismatch", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    LoadLayoutFromJson(jsonString, true);
+                }
+            }
+            catch (Exception e)
+            {
+                App.WriteToErrorLog("Error loading layout from JSON", e.Message, e.StackTrace);
+                MessageBox.Show(e.Message, "Something went wrong while loading the layout.");
+            }
         }
     }
 }
