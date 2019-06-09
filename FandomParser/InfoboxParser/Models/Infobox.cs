@@ -10,9 +10,17 @@ namespace InfoboxParser.Models
 {
     public class Infobox : IInfobox
     {
+        public Infobox()
+        {
+            Type = BuildingType.Unknown;
+            Region = WorldRegion.Unknown;
+        }
+
         public string Name { get; set; }
 
         public BuildingType Type { get; set; }
+
+        public WorldRegion Region { get; set; }
 
         public ProductionInfo ProductionInfos { get; set; }
 

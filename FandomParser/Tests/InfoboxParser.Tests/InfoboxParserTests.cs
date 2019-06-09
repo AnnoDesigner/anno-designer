@@ -19,6 +19,11 @@ namespace InfoboxParser.Tests
         private static readonly string testDataSchnapps_Distillery;
         private static readonly string testDataBakery;
         private static readonly string testDataCannery;
+        private static readonly string testDataPoliceStation;
+        private static readonly string testDataBrickFactory;
+        private static readonly string testDataChapel;
+        private static readonly string testDataHospital;
+        private static readonly string testDataMarketplace;
 
         static InfoboxParserTests()
         {
@@ -29,10 +34,29 @@ namespace InfoboxParser.Tests
             testDataSchnapps_Distillery = File.ReadAllText(Path.Combine(basePath, "Testdata", "Schnapps_Distillery.infobox"));
             testDataBakery = File.ReadAllText(Path.Combine(basePath, "Testdata", "Bakery.infobox"));
             testDataCannery = File.ReadAllText(Path.Combine(basePath, "Testdata", "Cannery.infobox"));
+            testDataPoliceStation = File.ReadAllText(Path.Combine(basePath, "Testdata", "Police_Station.infobox"));
+            testDataBrickFactory = File.ReadAllText(Path.Combine(basePath, "Testdata", "Brick_Factory.infobox"));
+            testDataChapel = File.ReadAllText(Path.Combine(basePath, "Testdata", "Chapel.infobox"));
+            testDataHospital = File.ReadAllText(Path.Combine(basePath, "Testdata", "Hospital.infobox"));
+            testDataMarketplace = File.ReadAllText(Path.Combine(basePath, "Testdata", "Marketplace.infobox"));
+        }
 
-            //var commons = new Mock<ICommons>();
-            //commons.SetupGet(x => x.InfoboxTemplateStartBothWorlds).Returns("");
-            //mockedCommons = commons.Object;
+        public static TheoryData<string, BuildingType> BuildingTypeTestData
+        {
+            get
+            {
+                return new TheoryData<string, BuildingType>
+                {
+                    { testDataSchnapps_Distillery, BuildingType.Production },
+                    { testDataBakery, BuildingType.Production },
+                    { testDataCannery, BuildingType.Production },
+                    { testDataPoliceStation, BuildingType.Institution },
+                    { testDataBrickFactory, BuildingType.Production },
+                    { testDataChapel, BuildingType.PublicService },
+                    { testDataHospital, BuildingType.Institution },
+                    { testDataMarketplace, BuildingType.PublicService },
+                };
+            }
         }
 
         [Theory]
@@ -63,7 +87,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox("dummy");
 
             // Assert
-            Assert.Equal(BuildingType.Unknown, result.Type);
+            Assert.Equal(BuildingType.Unknown, result[0].Type);
         }
 
         [Theory]
@@ -79,7 +103,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(input);
 
             // Assert
-            Assert.Equal(BuildingType.Unknown, result.Type);
+            Assert.Equal(BuildingType.Unknown, result[0].Type);
         }
 
         [Theory]
@@ -94,6 +118,7 @@ namespace InfoboxParser.Tests
         [InlineData("|Building Type = Harbour", BuildingType.Harbour)]
         [InlineData("|Building Type = Street", BuildingType.Street)]
         [InlineData("|Building Type = something special", BuildingType.Unknown)]
+        [MemberData(nameof(BuildingTypeTestData))]
         public void GetInfobox_InputContainsBuildingType_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
@@ -103,7 +128,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(input);
 
             // Assert
-            Assert.Equal(expectedType, result.Type);
+            Assert.Equal(expectedType, result[0].Type);
         }
 
         [Theory]
@@ -127,7 +152,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(input);
 
             // Assert
-            Assert.Equal(expectedType, result.Type);
+            Assert.Equal(expectedType, result[0].Type);
         }
 
         [Theory]
@@ -151,7 +176,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(input);
 
             // Assert
-            Assert.Equal(expectedType, result.Type);
+            Assert.Equal(expectedType, result[0].Type);
         }
 
         [Theory]
@@ -168,7 +193,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(input);
 
             // Assert
-            Assert.Equal(expectedType, result.Type);
+            Assert.Equal(expectedType, result[0].Type);
         }
 
         [Theory]
@@ -185,7 +210,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(input);
 
             // Assert
-            Assert.Equal(expectedType, result.Type);
+            Assert.Equal(expectedType, result[0].Type);
         }
 
         [Theory]
@@ -202,7 +227,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(input);
 
             // Assert
-            Assert.Equal(expectedType, result.Type);
+            Assert.Equal(expectedType, result[0].Type);
         }
 
         #endregion
@@ -219,7 +244,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox("dummy");
 
             // Assert
-            Assert.Equal(string.Empty, result.Name);
+            Assert.Equal(string.Empty, result[0].Name);
         }
 
         [Theory]
@@ -240,7 +265,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(input);
 
             // Assert
-            Assert.Equal(expectedType, result.Name);
+            Assert.Equal(expectedType, result[0].Name);
         }
 
         [Theory]
@@ -261,7 +286,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(input);
 
             // Assert
-            Assert.Equal(expectedType, result.Name);
+            Assert.Equal(expectedType, result[0].Name);
         }
 
         [Theory]
@@ -280,7 +305,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(input);
 
             // Assert
-            Assert.Equal(expectedType, result.Name);
+            Assert.Equal(expectedType, result[0].Name);
         }
 
         [Theory]
@@ -294,7 +319,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(input);
 
             // Assert
-            Assert.Equal(expectedType, result.Name);
+            Assert.Equal(expectedType, result[0].Name);
         }
 
         #endregion
@@ -311,7 +336,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox("dummy");
 
             // Assert
-            Assert.Null(result.ProductionInfos);
+            Assert.Null(result[0].ProductionInfos);
         }
 
         [Fact]
@@ -324,7 +349,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox("{{Infobox Buildings Old and New World");
 
             // Assert
-            Assert.Null(result.ProductionInfos);
+            Assert.Null(result[0].ProductionInfos);
         }
 
         [Fact]
@@ -337,7 +362,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(testDataSchnapps_Distillery);
 
             // Assert
-            Assert.Equal(2, result.ProductionInfos.EndProduct.Amount);
+            Assert.Equal(2, result[0].ProductionInfos.EndProduct.Amount);
         }
 
         [Fact]
@@ -350,7 +375,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(testDataBakery);
 
             // Assert
-            Assert.Equal(1, result.ProductionInfos.EndProduct.Amount);
+            Assert.Equal(1, result[0].ProductionInfos.EndProduct.Amount);
         }
 
         [Fact]
@@ -363,7 +388,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(testDataSchnapps_Distillery);
 
             // Assert
-            Assert.Equal(4, result.ProductionInfos.EndProduct.AmountElectricity);
+            Assert.Equal(4, result[0].ProductionInfos.EndProduct.AmountElectricity);
         }
 
         [Fact]
@@ -376,7 +401,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(testDataBakery);
 
             // Assert
-            Assert.Equal(2, result.ProductionInfos.EndProduct.AmountElectricity);
+            Assert.Equal(2, result[0].ProductionInfos.EndProduct.AmountElectricity);
         }
 
         [Fact]
@@ -389,7 +414,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(testDataSchnapps_Distillery);
 
             // Assert
-            Assert.Equal("Schnapps.png", result.ProductionInfos.EndProduct.Icon);
+            Assert.Equal("Schnapps.png", result[0].ProductionInfos.EndProduct.Icon);
         }
 
         [Fact]
@@ -402,7 +427,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(testDataBakery);
 
             // Assert
-            Assert.Equal("Bread.png", result.ProductionInfos.EndProduct.Icon);
+            Assert.Equal("Bread.png", result[0].ProductionInfos.EndProduct.Icon);
         }
 
         [Fact]
@@ -415,7 +440,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(testDataSchnapps_Distillery);
 
             // Assert
-            Assert.Single(result.ProductionInfos.InputProducts);
+            Assert.Single(result[0].ProductionInfos.InputProducts);
         }
 
         [Fact]
@@ -428,7 +453,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(testDataBakery);
 
             // Assert
-            Assert.Single(result.ProductionInfos.InputProducts);
+            Assert.Single(result[0].ProductionInfos.InputProducts);
         }
 
         [Fact]
@@ -441,7 +466,7 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(testDataCannery);
 
             // Assert
-            Assert.Equal(2, result.ProductionInfos.InputProducts.Count);
+            Assert.Equal(2, result[0].ProductionInfos.InputProducts.Count);
         }
 
         #endregion
@@ -458,30 +483,30 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(testDataCannery);
 
             // Assert
-            Assert.Equal("Cannery", result.Name);
-            Assert.Equal(BuildingType.Production, result.Type);
-            Assert.Equal(0.667, result.ProductionInfos.EndProduct.Amount);
-            Assert.Equal(1.333, result.ProductionInfos.EndProduct.AmountElectricity);
-            Assert.Equal("Canned_food.png", result.ProductionInfos.EndProduct.Icon);
-            Assert.Equal(2, result.ProductionInfos.InputProducts.Count);
-            Assert.Equal(0.667, result.ProductionInfos.InputProducts[0].Amount);
-            Assert.Equal(1.333, result.ProductionInfos.InputProducts[0].AmountElectricity);
-            Assert.Equal("Goulash.png", result.ProductionInfos.InputProducts[0].Icon);
-            Assert.Equal(0.667, result.ProductionInfos.InputProducts[1].Amount);
-            Assert.Equal(1.333, result.ProductionInfos.InputProducts[1].AmountElectricity);
-            Assert.Equal("Iron.png", result.ProductionInfos.InputProducts[1].Icon);
+            Assert.Equal("Cannery", result[0].Name);
+            Assert.Equal(BuildingType.Production, result[0].Type);
+            Assert.Equal(0.667, result[0].ProductionInfos.EndProduct.Amount);
+            Assert.Equal(1.333, result[0].ProductionInfos.EndProduct.AmountElectricity);
+            Assert.Equal("Canned_food.png", result[0].ProductionInfos.EndProduct.Icon);
+            Assert.Equal(2, result[0].ProductionInfos.InputProducts.Count);
+            Assert.Equal(0.667, result[0].ProductionInfos.InputProducts[0].Amount);
+            Assert.Equal(1.333, result[0].ProductionInfos.InputProducts[0].AmountElectricity);
+            Assert.Equal("Goulash.png", result[0].ProductionInfos.InputProducts[0].Icon);
+            Assert.Equal(0.667, result[0].ProductionInfos.InputProducts[1].Amount);
+            Assert.Equal(1.333, result[0].ProductionInfos.InputProducts[1].AmountElectricity);
+            Assert.Equal("Iron.png", result[0].ProductionInfos.InputProducts[1].Icon);
 
-            Assert.Equal(2, result.SupplyInfos.SupplyEntries.Count);
-            Assert.Equal(65, result.SupplyInfos.SupplyEntries[0].Amount);
-            Assert.Equal(130, result.SupplyInfos.SupplyEntries[0].AmountElectricity);
-            Assert.Equal("Artisans", result.SupplyInfos.SupplyEntries[0].Type);
-            Assert.Equal(32.5, result.SupplyInfos.SupplyEntries[1].Amount);
-            Assert.Equal(65, result.SupplyInfos.SupplyEntries[1].AmountElectricity);
-            Assert.Equal("Engineers", result.SupplyInfos.SupplyEntries[1].Type);
+            Assert.Equal(2, result[0].SupplyInfos.SupplyEntries.Count);
+            Assert.Equal(65, result[0].SupplyInfos.SupplyEntries[0].Amount);
+            Assert.Equal(130, result[0].SupplyInfos.SupplyEntries[0].AmountElectricity);
+            Assert.Equal("Artisans", result[0].SupplyInfos.SupplyEntries[0].Type);
+            Assert.Equal(32.5, result[0].SupplyInfos.SupplyEntries[1].Amount);
+            Assert.Equal(65, result[0].SupplyInfos.SupplyEntries[1].AmountElectricity);
+            Assert.Equal("Engineers", result[0].SupplyInfos.SupplyEntries[1].Type);
 
-            Assert.Single(result.UnlockInfos.UnlockConditions);
-            Assert.Equal(1, result.UnlockInfos.UnlockConditions[0].Amount);
-            Assert.Equal("Artisans", result.UnlockInfos.UnlockConditions[0].Type);
+            Assert.Single(result[0].UnlockInfos.UnlockConditions);
+            Assert.Equal(1, result[0].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal("Artisans", result[0].UnlockInfos.UnlockConditions[0].Type);
         }
 
         [Fact]
@@ -494,29 +519,117 @@ namespace InfoboxParser.Tests
             var result = parser.GetInfobox(testDataBakery);
 
             // Assert
-            Assert.Equal("Bakery", result.Name);
-            Assert.Equal(BuildingType.Production, result.Type);
-            Assert.Equal(1, result.ProductionInfos.EndProduct.Amount);
-            Assert.Equal(2, result.ProductionInfos.EndProduct.AmountElectricity);
-            Assert.Equal("Bread.png", result.ProductionInfos.EndProduct.Icon);
-            Assert.Single(result.ProductionInfos.InputProducts);
-            Assert.Equal(1, result.ProductionInfos.InputProducts[0].Amount);
-            Assert.Equal(2, result.ProductionInfos.InputProducts[0].AmountElectricity);
-            Assert.Equal("Flour.png", result.ProductionInfos.InputProducts[0].Icon);
+            Assert.Equal("Bakery", result[0].Name);
+            Assert.Equal(BuildingType.Production, result[0].Type);
+            Assert.Equal(1, result[0].ProductionInfos.EndProduct.Amount);
+            Assert.Equal(2, result[0].ProductionInfos.EndProduct.AmountElectricity);
+            Assert.Equal("Bread.png", result[0].ProductionInfos.EndProduct.Icon);
+            Assert.Single(result[0].ProductionInfos.InputProducts);
+            Assert.Equal(1, result[0].ProductionInfos.InputProducts[0].Amount);
+            Assert.Equal(2, result[0].ProductionInfos.InputProducts[0].AmountElectricity);
+            Assert.Equal("Flour.png", result[0].ProductionInfos.InputProducts[0].Icon);
 
-            Assert.Equal(2, result.SupplyInfos.SupplyEntries.Count);
-            Assert.Equal(55, result.SupplyInfos.SupplyEntries[0].Amount);
-            Assert.Equal(110, result.SupplyInfos.SupplyEntries[0].AmountElectricity);
-            Assert.Equal("Workers", result.SupplyInfos.SupplyEntries[0].Type);
-            Assert.Equal(27.5, result.SupplyInfos.SupplyEntries[1].Amount);
-            Assert.Equal(55, result.SupplyInfos.SupplyEntries[1].AmountElectricity);
-            Assert.Equal("Artisans", result.SupplyInfos.SupplyEntries[1].Type);
+            Assert.Equal(2, result[0].SupplyInfos.SupplyEntries.Count);
+            Assert.Equal(55, result[0].SupplyInfos.SupplyEntries[0].Amount);
+            Assert.Equal(110, result[0].SupplyInfos.SupplyEntries[0].AmountElectricity);
+            Assert.Equal("Workers", result[0].SupplyInfos.SupplyEntries[0].Type);
+            Assert.Equal(27.5, result[0].SupplyInfos.SupplyEntries[1].Amount);
+            Assert.Equal(55, result[0].SupplyInfos.SupplyEntries[1].AmountElectricity);
+            Assert.Equal("Artisans", result[0].SupplyInfos.SupplyEntries[1].Type);
 
-            Assert.Single(result.UnlockInfos.UnlockConditions);
-            Assert.Equal(150, result.UnlockInfos.UnlockConditions[0].Amount);
-            Assert.Equal("Workers", result.UnlockInfos.UnlockConditions[0].Type);
+            Assert.Single(result[0].UnlockInfos.UnlockConditions);
+            Assert.Equal(150, result[0].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal("Workers", result[0].UnlockInfos.UnlockConditions[0].Type);
         }
 
-        #endregion        
+        [Fact]
+        public void GetInfobox_InputIsPoliceStation_ShouldReturnCorrectResult()
+        {
+            // Arrange
+            var parser = new InfoboxParser(mockedCommons);
+
+            // Act
+            var result = parser.GetInfobox(testDataPoliceStation);
+
+            // Assert
+            //Old World
+            Assert.Equal("Police Station", result[0].Name);
+            Assert.Equal(BuildingType.Institution, result[0].Type);
+            Assert.NotNull(result[0].ProductionInfos);
+            Assert.NotNull(result[0].ProductionInfos.EndProduct);
+            Assert.Empty(result[0].ProductionInfos.InputProducts);
+            Assert.NotNull(result[0].SupplyInfos);
+            Assert.Empty(result[0].SupplyInfos.SupplyEntries);
+
+            Assert.Equal(WorldRegion.OldWorld, result[0].Region);
+            Assert.Single(result[0].UnlockInfos.UnlockConditions);
+            Assert.Equal(500, result[0].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal("Workers", result[0].UnlockInfos.UnlockConditions[0].Type);
+
+            //New World
+            Assert.Equal("Police Station", result[1].Name);
+            Assert.Equal(BuildingType.Institution, result[1].Type);
+            Assert.NotNull(result[1].ProductionInfos);
+            Assert.NotNull(result[1].ProductionInfos.EndProduct);
+            Assert.Empty(result[1].ProductionInfos.InputProducts);
+            Assert.NotNull(result[1].SupplyInfos);
+            Assert.Empty(result[1].SupplyInfos.SupplyEntries);
+
+            Assert.Equal(WorldRegion.NewWorld, result[1].Region);
+            Assert.Single(result[1].UnlockInfos.UnlockConditions);
+            Assert.Equal(0, result[1].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal("Jornaleros", result[1].UnlockInfos.UnlockConditions[0].Type);
+        }
+
+        [Fact]
+        public void GetInfobox_InputIsBrickFactory_ShouldReturnCorrectResult()
+        {
+            // Arrange
+            var parser = new InfoboxParser(mockedCommons);
+
+            // Act
+            var result = parser.GetInfobox(testDataBrickFactory);
+
+            // Assert
+            //Old World
+            Assert.Equal("Brick Factory", result[0].Name);
+            Assert.Equal(BuildingType.Production, result[0].Type);
+            Assert.NotNull(result[0].ProductionInfos);
+            Assert.NotNull(result[0].ProductionInfos.EndProduct);
+            Assert.Equal(1, result[0].ProductionInfos.EndProduct.Amount);
+            Assert.Equal(2, result[0].ProductionInfos.EndProduct.AmountElectricity);
+            Assert.Equal("Bricks.png", result[0].ProductionInfos.EndProduct.Icon);
+            Assert.Single(result[0].ProductionInfos.InputProducts);
+            Assert.Equal(1, result[0].ProductionInfos.InputProducts[0].Amount);
+            Assert.Equal(2, result[0].ProductionInfos.InputProducts[0].AmountElectricity);
+            Assert.Equal("Clay.png", result[0].ProductionInfos.InputProducts[0].Icon);
+            Assert.NotNull(result[0].SupplyInfos);
+            Assert.Empty(result[0].SupplyInfos.SupplyEntries);
+            Assert.Equal(WorldRegion.OldWorld, result[0].Region);
+            Assert.Single(result[0].UnlockInfos.UnlockConditions);
+            Assert.Equal(1, result[0].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal("Workers", result[0].UnlockInfos.UnlockConditions[0].Type);
+
+            //New World
+            Assert.Equal("Brick Factory", result[1].Name);
+            Assert.Equal(BuildingType.Production, result[1].Type);
+            Assert.NotNull(result[1].ProductionInfos);
+            Assert.NotNull(result[1].ProductionInfos.EndProduct);
+            Assert.Equal(1, result[1].ProductionInfos.EndProduct.Amount);
+            Assert.Equal(0, result[1].ProductionInfos.EndProduct.AmountElectricity);
+            Assert.Equal("Bricks.png", result[1].ProductionInfos.EndProduct.Icon);
+            Assert.Single(result[1].ProductionInfos.InputProducts);
+            Assert.Equal(1, result[1].ProductionInfos.InputProducts[0].Amount);
+            Assert.Equal(0, result[1].ProductionInfos.InputProducts[0].AmountElectricity);
+            Assert.Equal("Clay.png", result[1].ProductionInfos.InputProducts[0].Icon);
+            Assert.NotNull(result[1].SupplyInfos);
+            Assert.Empty(result[1].SupplyInfos.SupplyEntries);
+            Assert.Equal(WorldRegion.NewWorld, result[1].Region);
+            Assert.Single(result[1].UnlockInfos.UnlockConditions);
+            Assert.Equal(1, result[1].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal("Obreros", result[1].UnlockInfos.UnlockConditions[0].Type);
+        }
+
+        #endregion
     }
 }

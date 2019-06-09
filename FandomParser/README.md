@@ -6,8 +6,6 @@ This tool is used to create a preset file which contains all information from th
 
 Currently only the [wiki of Anno 1800](https://anno1800.fandom.com/) is supported. Feel free to extend the functionality :smile:
 
-Wiki pages containg the template [Infobox Buildings Old and New World](https://anno1800.fandom.com/wiki/Template:Infobox_Buildings_Old_and_New_World) will not be parsed.
-
 ## How it works
 
 1. The tool downloads the WikiText of the [buildings overview page](https://anno1800.fandom.com/wiki/Buildings).
@@ -15,7 +13,7 @@ Wiki pages containg the template [Infobox Buildings Old and New World](https://a
 2. Those tables are parsed by the tool to get the basic informations of each building.
    Also a (maybe present) link to the buildings detail page (e.g. [Fire Station](https://anno1800.fandom.com/wiki/Fire_Station)) is parsed.
 3. For each found details page the WikiText will be downloaded.
-   The WikiText contains a template ([Infobox Buildings](https://anno1800.fandom.com/wiki/Template:Infobox_Buildings)) which will be parsed.
+   The WikiText contains a template ([Infobox Buildings](https://anno1800.fandom.com/wiki/Template:Infobox_Buildings) or [Infobox Buildings Old and New World](https://anno1800.fandom.com/wiki/Template:Infobox_Buildings_Old_and_New_World)) which will be parsed.
 4. The parsed detailed information for each building will be added to the basic information from step 2.
 5. In a final step all this information will be written to the presets file.
 
