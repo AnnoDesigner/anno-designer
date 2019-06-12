@@ -21,9 +21,9 @@ namespace PresetParser
 
         private readonly IIfoFileProvider _ifoFileProvider;
 
-        public BuildingBlockProvider(IIfoFileProvider ifoFileProvider)
+        public BuildingBlockProvider(IIfoFileProvider ifoFileProviderToUse)
         {
-            _ifoFileProvider = ifoFileProvider;
+            _ifoFileProvider = ifoFileProviderToUse ?? throw new ArgumentNullException(nameof(ifoFileProviderToUse));
         }
 
         public bool GetBuildingBlocker(string basePath, IBuildingInfo building, string variationFilename, string annoVersion)
@@ -53,7 +53,7 @@ namespace PresetParser
                 var zf = ParseBuildingBlockerNumber(zfNormal);
 
                 //if both values are zero, then skip building
-                if (xf < 1 && zf < 0)
+                if (xf < 1 && zf < 1)
                 {
                     Console.WriteLine("-'X' and 'Z' are both 0 - Building will skipped!");
                     return false;

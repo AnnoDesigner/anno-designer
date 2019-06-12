@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuildingBlockProviderTests.cs" />
     <Compile Include="ExtraPresetsTests.cs" />
     <Compile Include="IconFileNameHelperTests.cs" />
     <Compile Include="NewFactionAndGroup1800Tests.cs" />
@@ -70,10 +71,20 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AnnoDesigner.Core\AnnoDesigner.Core.csproj">
+      <Project>{C73FBFF0-1A11-40FC-8F1F-29637699419A}</Project>
+      <Name>AnnoDesigner.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\PresetParser\PresetParser.csproj">
       <Project>{f6ea37dc-f9e0-445d-b727-f742e6e61d91}</Project>
       <Name>PresetParser</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="Testdata\1404_Bakery.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
