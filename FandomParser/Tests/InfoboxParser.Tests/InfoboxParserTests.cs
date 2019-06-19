@@ -9,6 +9,7 @@ using Xunit;
 using System.IO;
 using System.Reflection;
 using FandomParser.Core.Presets.Models;
+using InfoboxParser.Tests.Attributes;
 
 namespace InfoboxParser.Tests
 {
@@ -474,6 +475,7 @@ namespace InfoboxParser.Tests
         #region specific buildings tests
 
         [Fact]
+        [UseCulture("en-US")]
         public void GetInfobox_InputIsCannery_ShouldReturnCorrectResult()
         {
             // Arrange
@@ -510,6 +512,7 @@ namespace InfoboxParser.Tests
         }
 
         [Fact]
+        [UseCulture("en-US")]
         public void GetInfobox_InputIsBakery_ShouldReturnCorrectResult()
         {
             // Arrange
@@ -543,6 +546,7 @@ namespace InfoboxParser.Tests
         }
 
         [Fact]
+        [UseCulture("en-US")]
         public void GetInfobox_InputIsPoliceStation_ShouldReturnCorrectResult()
         {
             // Arrange
@@ -582,6 +586,7 @@ namespace InfoboxParser.Tests
         }
 
         [Fact]
+        [UseCulture("en-US")]
         public void GetInfobox_InputIsBrickFactory_ShouldReturnCorrectResult()
         {
             // Arrange

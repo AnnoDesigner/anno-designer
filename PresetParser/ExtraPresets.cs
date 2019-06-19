@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using PresetParser.Models;
 
 namespace PresetParser
 {
@@ -12,20 +13,20 @@ namespace PresetParser
             switch (annoVersion)
             {
                 case Constants.ANNO_VERSION_1404:
-                    result.AddRange(getExtraPresetsForAnno1404());
+                    result.AddRange(GetExtraPresetsForAnno1404());
                     break;
                 case Constants.ANNO_VERSION_2070:
-                    result.AddRange(getExtraPresetsForAnno2070());
+                    result.AddRange(GetExtraPresetsForAnno2070());
                     break;
                 case Constants.ANNO_VERSION_1800:
-                    result.AddRange(getExtraPresetsForAnno1800());
+                    result.AddRange(GetExtraPresetsForAnno1800());
                     break;
             }
 
             return result;
         }
 
-        private static IEnumerable<ExtraPreset> getExtraPresetsForAnno1404()
+        private static IEnumerable<ExtraPreset> GetExtraPresetsForAnno1404()
         {
             var result = new List<ExtraPreset>();
 
@@ -37,7 +38,7 @@ namespace PresetParser
             return result;
         }
 
-        private static IEnumerable<ExtraPreset> getExtraPresetsForAnno2070()
+        private static IEnumerable<ExtraPreset> GetExtraPresetsForAnno2070()
         {
             var result = new List<ExtraPreset>();
 
@@ -49,7 +50,7 @@ namespace PresetParser
             return result;
         }
 
-        private static IEnumerable<ExtraPreset> getExtraPresetsForAnno1800()
+        private static IEnumerable<ExtraPreset> GetExtraPresetsForAnno1800()
         {
             var result = new List<ExtraPreset>();
 

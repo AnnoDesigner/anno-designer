@@ -41,8 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\UseCultureAttribute.cs" />
     <Compile Include="InfoboxParserTests.cs" />
+    <Compile Include="ParserBothWorldsTests.cs" />
+    <Compile Include="ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpecialBuildingNameHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Moq">

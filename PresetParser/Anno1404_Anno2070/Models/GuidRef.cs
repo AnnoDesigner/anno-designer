@@ -1,4 +1,4 @@
-﻿namespace PresetParser
+﻿namespace PresetParser.Anno1404_Anno2070.Models
 {
     public class GuidRef
     {
