@@ -1,4 +1,4 @@
-﻿namespace PresetParser
+﻿namespace PresetParser.Models
 {
     public class PathRef
     {

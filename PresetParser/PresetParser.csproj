@@ -56,16 +56,17 @@
   <ItemGroup>
     <Compile Include="BuildingBlockProvider.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="ExtraPreset.cs" />
+    <Compile Include="Models\ExtraPreset.cs" />
     <Compile Include="ExtraPresets.cs" />
-    <Compile Include="FarmField.cs" />
-    <Compile Include="GuidRef.cs" />
+    <Compile Include="Anno1800\Models\FarmField.cs" />
+    <Compile Include="Anno1404_Anno2070\Models\GuidRef.cs" />
     <Compile Include="IconFileNameHelper.cs" />
-    <Compile Include="IconNameMapper.cs" />
+    <Compile Include="Anno1404_Anno2070\IconNameMapper.cs" />
     <Compile Include="IfoFileProvider.cs" />
     <Compile Include="IIfoFileProvider.cs" />
-    <Compile Include="NewFactionAndGroup1800.cs" />
-    <Compile Include="PathRef.cs" />
+    <Compile Include="Anno1404_Anno2070\LocalizationHelper.cs" />
+    <Compile Include="Anno1800\NewFactionAndGroup1800.cs" />
+    <Compile Include="Models\PathRef.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -89,6 +90,11 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.IO.Abstractions">
+      <Version>6.0.7</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

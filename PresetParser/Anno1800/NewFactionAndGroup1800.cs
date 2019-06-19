@@ -5,19 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Extensions;
 
-namespace PresetParser
+namespace PresetParser.Anno1800
 {
+    /// <summary>
+    /// in this file are made the following lists
+    /// ChangeBuildingTo<1>_<2>_1800 
+    /// <1> can be : AW (All Worlds) - NW1 (New World - (1) Farmers) - NW2 (New World - (2) Workers) - NW3 (New World - (3) Artisans)
+    ///              NW4 (New World - (4) Engineers) - NW5 (New World - (5) Investors)  
+    ///              OW1 (Old World - (7) Jornaleros) and OW2 (Old World - (8) Obreros)
+    /// <2> wil be the Group under <1>, like Production, Public, etc
+    /// </summary>
     public static class NewFactionAndGroup1800
     {
-        /// <summary>
-        /// in NewFactionAndGroup1800.cs are made the following lists
-        /// ChangeBuildingTo<1>_<2>_1800 
-        /// <1> can be : AW (All Worlds) - NW1 (New World - (1) Farmers) - NW2 (New World - (2) Workers) - NW3 (New World - (3) Artisans)
-        ///              NW4 (New World - (4) Engineers) - NW5 (New World - (5) Investors)  
-        ///              OW1 (Old World - (7) Jornaleros) and OW2 (Old World - (8) Obreros)
-        /// <2> wil be the Group under <1>, like Production, Public, etc
-        /// </summary>
-
         // Public Buildings
         //private static readonly List<string> ChangeBuildingsToAW_Public_1800 = new List<string> { "" };
         private static readonly List<string> ChangeBuildingsToNW1_Public_1800 = new List<string> { "Logistic_01 (Marketplace)", "Service_01 (Pub)", "Institution_02 (Fire Department)", };
@@ -55,10 +54,11 @@ namespace PresetParser
         private static readonly List<string> ChangeBuildingsToAW_Ornamentals_1800 = new List<string> { "Culture_preorder_statue", "Uplay_ornament_2x1_lion_statue", "Uplay_ornament_2x2_pillar_chess_park", "Uplay_ornament_3x2_large_fountain" };
 
         /// <summary>
+        /// Retuns the faction and group for an identifier.
         /// </summary>
-        /// <param name="identifierName"></param> The given Buildingname, this will not changed
-        /// <param name="factionName"></param> If Buildingmane is in one of the lists, factionName will be changed
-        /// <param name="groupName"></param> If Buildingmane is in one of the lists, groupName will be changed
+        /// <param name="identifierName">The given Buildingname, this will not changed</param>
+        /// <param name="factionName">If Buildingmane is in one of the lists, factionName will be changed</param>
+        /// <param name="groupName">If Buildingmane is in one of the lists, groupName will be changed</param>
         /// <returns></returns>
         public static string[] GetNewFactionAndGroup1800(string identifierName, string factionName, string groupName)
         {
@@ -98,8 +98,8 @@ namespace PresetParser
             if (identifierName.IsPartOf(ChangeBuildingsToAW_SpecialBuilding_1800)) { factionName = "All Worlds"; groupName = "Special Buildings"; }
             //Ornamentals 
             if (identifierName.IsPartOf(ChangeBuildingsToAW_Ornamentals_1800)) { factionName = "All Worlds"; }
-            string[] facionNameGroupName = { factionName, groupName };
-            return facionNameGroupName;
+
+            return new string[] { factionName, groupName };
         }
     }
 }

@@ -8,21 +8,21 @@ using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
 
-namespace PresetParser
+namespace PresetParser.Anno1404_Anno2070
 {
     public class IconNameMapper
     {
         public void WriteIconNameMapping(IconFileNameHelper iconFileNameHelper, bool isTest, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations, string annoVersion, string BUILDING_PRESETS_VERSION)
         {
-            IconMappingPresets iconNameMappings = new IconMappingPresets()
+            var iconNameMappings = new IconMappingPresets()
             {
                 Version = BUILDING_PRESETS_VERSION
             };
 
-            foreach (XmlNode iconNode in iconNodes)
+            foreach (var iconNode in iconNodes)
             {
-                string guid = iconNode["GUID"].InnerText;
-                string iconFilename = iconFileNameHelper.GetIconFilename(iconNode["Icons"].FirstChild, annoVersion);
+                var guid = iconNode["GUID"].InnerText;
+                var iconFilename = iconFileNameHelper.GetIconFilename(iconNode["Icons"].FirstChild, annoVersion);
                 if (!localizations.ContainsKey(guid) || iconNameMappings.IconNameMappings.Exists(_ => _.IconFilename == iconFilename))
                 {
                     continue;

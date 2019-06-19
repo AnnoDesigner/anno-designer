@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Moq;
+using PresetParser.Anno1800;
 
 namespace PresetParser.Tests
 {
