@@ -9,6 +9,9 @@ using FandomParser.Core;
 using FandomParser.Core.Models;
 using FandomParser.Core.Presets.Models;
 using InfoboxParser.Models;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("InfoboxParser.Tests")]
 
 namespace InfoboxParser
 {
@@ -16,9 +19,15 @@ namespace InfoboxParser
     {
         private readonly ICommons _commons;
 
+        private readonly Parser parser;
+        private readonly ParserBothWorlds parserBothWorlds;
+
         public InfoboxParser(ICommons commons)
         {
             _commons = commons;
+
+            parser = new Parser(_commons);
+            parserBothWorlds = new ParserBothWorlds(_commons);
         }
 
         public List<IInfobox> GetInfobox(string wikiText)
@@ -32,14 +41,12 @@ namespace InfoboxParser
 
             if (!wikiText.StartsWith(_commons.InfoboxTemplateStartBothWorlds))
             {
-                var parser = new Parser(_commons);
                 var infoboxes = parser.GetInfobox(wikiText);
 
                 result.AddRange(infoboxes);
             }
             else
             {
-                var parserBothWorlds = new ParserBothWorlds(_commons);
                 var infoboxes = parserBothWorlds.GetInfobox(wikiText);
 
                 result.AddRange(infoboxes);

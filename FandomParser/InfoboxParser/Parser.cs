@@ -35,9 +35,14 @@ namespace InfoboxParser
         //|Unlock Condition 1 Amount = 100
         private static readonly Regex regexUnlockConditionAmount = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        //var culture = CultureInfo.InvariantCulture;
+        private CultureInfo cultureForParsing;
+
         public Parser(ICommons commons)
         {
             _commons = commons;
+            //all numbers in the wiki are entered with "," e.g. "42,21", so we need to use a specific culture
+            cultureForParsing = new CultureInfo("de-DE");
         }
 
         public List<IInfobox> GetInfobox(string wikiText)
@@ -181,7 +186,7 @@ namespace InfoboxParser
                             .Replace("=", string.Empty)
                             .Trim();
 
-                        if (double.TryParse(productionAmountElectricity, out double parsedProductionAmountElectricity))
+                        if (double.TryParse(productionAmountElectricity, NumberStyles.Number, cultureForParsing, out double parsedProductionAmountElectricity))
                         {
                             result.EndProduct.AmountElectricity = parsedProductionAmountElectricity;
                         }
@@ -192,7 +197,7 @@ namespace InfoboxParser
                             .Replace("=", string.Empty)
                             .Trim();
 
-                        if (double.TryParse(productionAmount, out double parsedProductionAmount))
+                        if (double.TryParse(productionAmount, NumberStyles.Number, cultureForParsing, out double parsedProductionAmount))
                         {
                             result.EndProduct.Amount = parsedProductionAmount;
                         }
@@ -217,13 +222,13 @@ namespace InfoboxParser
                             }
 
                             //handle entry with no value e.g. "|Input 2 Amount     = "
-                            var matchedValue = matchAmount.Groups["value"].Value.Replace(",", ".");
+                            var matchedValue = matchAmount.Groups["value"].Value;
                             if (string.IsNullOrWhiteSpace(matchedValue))
                             {
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double inputValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double inputValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -254,13 +259,13 @@ namespace InfoboxParser
                             }
 
                             //handle entry with no value e.g. "|Input 1 Amount Electricity    = "
-                            var matchedValue = matchAmountElectricity.Groups["value"].Value.Replace(",", ".");
+                            var matchedValue = matchAmountElectricity.Groups["value"].Value;
                             if (string.IsNullOrWhiteSpace(matchedValue))
                             {
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double inputValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double inputValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -353,13 +358,13 @@ namespace InfoboxParser
                             }
 
                             //handle entry with no value e.g. "|Supplies 2 Amount     = "
-                            var matchedValue = matchAmount.Groups["value"].Value.Replace(",", ".");
+                            var matchedValue = matchAmount.Groups["value"].Value;
                             if (string.IsNullOrWhiteSpace(matchedValue))
                             {
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double supplyValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double supplyValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -390,13 +395,13 @@ namespace InfoboxParser
                             }
 
                             //handle entry with no value e.g. "|Supplies 1 Amount Electricity    = "
-                            var matchedValue = matchAmountElectricity.Groups["value"].Value.Replace(",", ".");
+                            var matchedValue = matchAmountElectricity.Groups["value"].Value;
                             if (string.IsNullOrWhiteSpace(matchedValue))
                             {
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double supplyValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double supplyValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -489,13 +494,13 @@ namespace InfoboxParser
                             }
 
                             //handle entry with no value e.g. "|Unlock Condition 1 Amount = "
-                            var matchedValue = matchAmount.Groups["value"].Value.Replace(",", ".");
+                            var matchedValue = matchAmount.Groups["value"].Value;
                             if (string.IsNullOrWhiteSpace(matchedValue))
                             {
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double conditionValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double conditionValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
