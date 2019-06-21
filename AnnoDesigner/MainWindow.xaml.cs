@@ -163,6 +163,8 @@ namespace AnnoDesigner
             }
 
             LoadSettings();
+
+            _mainWindowLocalization.PresetTreeViewModel.LoadItems(annoCanvas.BuildingPresets);
         }
 
         private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)

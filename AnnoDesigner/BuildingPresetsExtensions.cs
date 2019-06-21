@@ -14,6 +14,9 @@ namespace AnnoDesigner
     {
         public static void AddToTree(this BuildingPresets buildingPresets, TreeView treeView)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             var excludedTemplates = new[] { "Ark", "Harbour", "OrnamentBuilding" };
             var excludedFactions = new[] { "third party", "Facility Modules" };
             var list = buildingPresets.Buildings
@@ -26,7 +29,9 @@ namespace AnnoDesigner
                             .Where(_ => _.Faction == "Facility Modules")
                             .Where(_ => _.Faction != "Facilities")
                             .ToList();
+
             var facilityList = list.Where(_ => _.Faction == "Facilities").ToList();
+
             //Get a list of nonMatchedModules;
             var nonMatchedModulesList = modulesList.Except(facilityList, new BuildingInfoComparer()).ToList();
             //These appear to all match. The below statement should notify the progammer if we need to add handling for non matching lists
@@ -46,6 +51,7 @@ namespace AnnoDesigner
                         {
                             thirdLevelItem.Items.Add(buildingInfo.ToAnnoObject());
                         }
+
                         //For 2205 only
                         //Add building modules to element list.
                         //Group will be the same for elements in the list.
@@ -62,8 +68,10 @@ namespace AnnoDesigner
                                 thirdLevelItem.Items.Add(fourthLevelItem);
                             }
                         }
+
                         secondLevelItem.Items.Add(thirdLevelItem);
                     }
+
                     foreach (var thirdLevel in secondLevel.Where(_ => _.Group == null).OrderBy(_ => _.GetOrderParameter()))
                     {
                         secondLevelItem.Items.Add(thirdLevel.ToAnnoObject());
@@ -71,8 +79,12 @@ namespace AnnoDesigner
 
                     headerItem.Items.Add(secondLevelItem);
                 }
+
                 treeView.Items.Add(headerItem);
             }
+
+            sw.Stop();
+            Debug.WriteLine($"<< Old >> loading TreeItems took: {sw.ElapsedMilliseconds}ms");
         }
     }
 }

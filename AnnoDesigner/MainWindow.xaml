@@ -131,7 +131,7 @@
                     <MenuItem Header="{Binding Path=RenderSelectionHighlightsOnExportedImage}"
                               IsCheckable="True"
                               IsChecked="False"
-                              Name="MenuItemExportSelection" />                    
+                              Name="MenuItemExportSelection" />
                 </MenuItem>
                 <MenuItem Name="LanguageMenu"
                           Header="{Binding Path=Language}"
@@ -639,6 +639,26 @@
                             BorderThickness="0"
                             />-->
                     </Grid>
+                </GroupBox>
+                <GroupBox Header="TreeTest"
+                          IsEnabled="True"
+                          Width="{Binding ElementName=BuildingsPanel, Path=ActualWidth, Mode=OneWay}"
+                          DockPanel.Dock="Top">
+                    <TreeView x:Name="PresetsTree"
+                              Height="120"
+                              ItemsSource="{Binding PresetTreeViewModel.Items}">
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type model:GameHeaderTreeItem}"
+                                                      ItemsSource="{Binding Children}">
+                                <TextBlock Text="{Binding Header}"
+                                           FontWeight="SemiBold" />
+                            </HierarchicalDataTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type model:GenericTreeItem}"
+                                                      ItemsSource="{Binding Children}">
+                                <TextBlock Text="{Binding Header}" />
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                    </TreeView>
                 </GroupBox>
                 <GroupBox Header="Building presets - not loaded"
                           Name="GroupBoxPresets"

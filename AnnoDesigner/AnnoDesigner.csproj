@@ -53,6 +53,8 @@
     <Compile Include="InputWindow.xaml.cs">
       <DependentUpon>InputWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="model\GameHeaderTreeItem.cs" />
+    <Compile Include="model\GenericTreeItem.cs" />
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
     <Compile Include="model\BuildingInfluenceType.cs" />
@@ -78,6 +80,7 @@
     <Compile Include="UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="viewmodel\PresetsTreeViewModel.cs" />
     <Compile Include="viewmodel\StatisticsViewModel.cs" />
     <Compile Include="viewmodel\BuildingSettingsViewModel.cs" />
     <Compile Include="Welcome.xaml.cs">
