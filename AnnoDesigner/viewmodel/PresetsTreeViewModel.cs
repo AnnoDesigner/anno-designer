@@ -19,6 +19,8 @@ namespace AnnoDesigner.viewmodel
 {
     public class PresetsTreeViewModel : Notify
     {
+        public event EventHandler ApplySelectedItem;
+
         private ObservableCollection<GenericTreeItem> _items;
         private ICollectionView _filteredItems;
         private GenericTreeItem _selectedItem;
@@ -32,7 +34,7 @@ namespace AnnoDesigner.viewmodel
 
             DoubleClickCommand = new RelayCommand(DoubleClick, null);
             //SelectedItemChangedCommand = new RelayCommand(SelectedItemChanged, null);
-            KeyDownCommand = new RelayCommand(KeyDown, null);
+            ReturnKeyPressedCommand = new RelayCommand(ReturnKeyPressed, null);
             BuildingPresetsVersion = string.Empty;
             FilterText = string.Empty;
         }
@@ -85,7 +87,8 @@ namespace AnnoDesigner.viewmodel
                 SelectedItem = selectedItem;
             }
 
-            //call ApplyPreset();            
+            //call ApplyPreset();
+            ApplySelectedItem?.Invoke(this, EventArgs.Empty);
         }
 
         //public ICommand SelectedItemChangedCommand { get; private set; }
@@ -99,9 +102,9 @@ namespace AnnoDesigner.viewmodel
         //    }
         //}
 
-        public ICommand KeyDownCommand { get; private set; }
+        public ICommand ReturnKeyPressedCommand { get; private set; }
 
-        private void KeyDown(object param)
+        private void ReturnKeyPressed(object param)
         {
             var selectedItem = param as GenericTreeItem;
             if (selectedItem?.AnnoObject != null)
@@ -110,6 +113,7 @@ namespace AnnoDesigner.viewmodel
             }
 
             //call ApplyPreset();
+            ApplySelectedItem?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion

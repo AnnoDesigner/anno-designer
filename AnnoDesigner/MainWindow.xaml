@@ -653,13 +653,14 @@
                               ItemsSource="{Binding PresetTreeViewModel.FilteredItems}"
                               VirtualizingStackPanel.IsVirtualizing="True"
                               VirtualizingStackPanel.VirtualizationMode="Recycling">
+                        <TreeView.InputBindings>
+                            <KeyBinding Command="{Binding PresetTreeViewModel.ReturnKeyPressedCommand}"
+                                        Key="Return"
+                                        CommandParameter="{Binding SelectedItem, ElementName=PresetsTree}" />
+                        </TreeView.InputBindings>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDoubleClick">
                                 <i:InvokeCommandAction Command="{Binding PresetTreeViewModel.DoubleClickCommand}"
-                                                       CommandParameter="{Binding SelectedItem, ElementName=PresetsTree}" />
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="KeyDown">
-                                <i:InvokeCommandAction Command="{Binding PresetTreeViewModel.KeyDownCommand}"
                                                        CommandParameter="{Binding SelectedItem, ElementName=PresetsTree}" />
                             </i:EventTrigger>
                             <!--<i:EventTrigger EventName="SelectedItemChanged">

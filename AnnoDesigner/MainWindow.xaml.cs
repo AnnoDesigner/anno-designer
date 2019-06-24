@@ -165,6 +165,8 @@ namespace AnnoDesigner
 
             LoadSettings();
 
+            _mainWindowLocalization.PresetTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
+
             _mainWindowLocalization.PresetTreeViewModel.LoadItems(annoCanvas.BuildingPresets);
 
             //apply saved search before restoring state
@@ -174,6 +176,11 @@ namespace AnnoDesigner
             }
 
             _mainWindowLocalization.PresetTreeViewModel.SetTreeState(Settings.Default.PresetsTreeExpandedState, Settings.Default.PresetsTreeLastVersion);
+        }
+
+        private void PresetTreeViewModel_ApplySelectedItem(object sender, EventArgs e)
+        {
+            ApplyPreset(_mainWindowLocalization.PresetTreeViewModel.SelectedItem.AnnoObject);
         }
 
         private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)
@@ -595,9 +602,14 @@ namespace AnnoDesigner
 
         private void ApplyPreset()
         {
+            var selectedItem = treeViewPresets.SelectedItem as AnnoObject;
+            ApplyPreset(selectedItem);
+        }
+
+        private void ApplyPreset(AnnoObject selectedItem)
+        {
             try
             {
-                var selectedItem = treeViewPresets.SelectedItem as AnnoObject;
                 if (selectedItem != null)
                 {
                     UpdateUIFromObject(new AnnoObject(selectedItem)
