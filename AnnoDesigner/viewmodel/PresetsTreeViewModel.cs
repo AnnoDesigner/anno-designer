@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using AnnoDesigner.Core;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Comparer;
@@ -20,6 +21,10 @@ namespace AnnoDesigner.viewmodel
         public PresetsTreeViewModel()
         {
             Items = new ObservableCollection<GenericTreeItem>();
+
+            DoubleClickCommand = new RelayCommand(DoubleClick, null);
+            //SelectedItemChangedCommand = new RelayCommand(SelectedItemChanged, null);
+            KeyDownCommand = new RelayCommand(KeyDown, null);
         }
 
         public ObservableCollection<GenericTreeItem> Items
@@ -31,8 +36,60 @@ namespace AnnoDesigner.viewmodel
         public GenericTreeItem SelectedItem
         {
             get { return _selectedItem; }
-            set { UpdateProperty(ref _selectedItem, value); }
+            private set { UpdateProperty(ref _selectedItem, value); }
         }
+
+        #region commands
+
+        public ICommand DoubleClickCommand { get; private set; }
+
+        private void DoubleClick(object param)
+        {
+            var selectedItem = param as GenericTreeItem;
+            if (selectedItem?.AnnoObject != null)
+            {
+                SelectedItem = selectedItem;
+            }
+
+            //call ApplyPreset();
+
+            //var selectedItem = treeViewPresets.SelectedItem as AnnoObject;
+            //if (selectedItem != null)
+            //{
+            //    UpdateUIFromObject(new AnnoObject(selectedItem)
+            //    {
+            //        Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
+            //    });
+
+            //    ApplyCurrentObject();
+            //}
+        }
+
+        //public ICommand SelectedItemChangedCommand { get; private set; }
+
+        //private void SelectedItemChanged(object param)
+        //{
+        //    var selectedItem = param as GenericTreeItem;
+        //    if (selectedItem != null)
+        //    {
+        //        SelectedItem = selectedItem;
+        //    }
+        //}
+
+        public ICommand KeyDownCommand { get; private set; }
+
+        private void KeyDown(object param)
+        {
+            var selectedItem = param as GenericTreeItem;
+            if (selectedItem?.AnnoObject != null)
+            {
+                SelectedItem = selectedItem;
+            }
+
+            //call ApplyPreset();
+        }
+
+        #endregion
 
         public void LoadItems(BuildingPresets buildingPresets)
         {
@@ -155,6 +212,10 @@ namespace AnnoDesigner.viewmodel
 
             sw.Stop();
             Debug.WriteLine($"<< New >> loading TreeItems took: {sw.ElapsedMilliseconds}ms");
+
+            //to test things
+            //Items[3].IsVisible = false;
+            //Items[2].Children[1].IsExpanded = true;
         }
 
         private List<GenericTreeItem> GetRoadTiles()

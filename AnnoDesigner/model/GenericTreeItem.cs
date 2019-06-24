@@ -15,11 +15,15 @@ namespace AnnoDesigner.model
         private string _header;
         private AnnoObject _annoObject;
         private ObservableCollection<GenericTreeItem> _children;
+        private bool _isExpanded;
+        private bool _isVisible;
 
         public GenericTreeItem()
         {
             Header = string.Empty;
             Children = new ObservableCollection<GenericTreeItem>();
+            IsExpanded = false;
+            IsVisible = true;
         }
 
         public string Header
@@ -38,6 +42,18 @@ namespace AnnoDesigner.model
         {
             get { return _children; }
             set { UpdateProperty(ref _children, value); }
+        }
+
+        public bool IsExpanded
+        {
+            get { return _isExpanded; }
+            set { UpdateProperty(ref _isExpanded, value); }
+        }
+
+        public bool IsVisible
+        {
+            get { return _isVisible; }
+            set { UpdateProperty(ref _isVisible, value); }
         }
     }
 }

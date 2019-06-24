@@ -5,6 +5,7 @@
         xmlns:my="clr-namespace:AnnoDesigner"
         xmlns:coreModels="clr-namespace:AnnoDesigner.Core.Models;assembly=AnnoDesigner.Core"
         xmlns:l="clr-namespace:AnnoDesigner.Localization"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:converter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
         xmlns:model="clr-namespace:AnnoDesigner.model"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
@@ -21,6 +22,9 @@
         <converter:BoolToVisibilityConverter x:Key="converterBoolToVisibility"
                                              TrueValue="Visible"
                                              FalseValue="Hidden" />
+        <converter:BoolToVisibilityConverter x:Key="converterBoolToVisibilityCollapsed"
+                                             TrueValue="Visible"
+                                             FalseValue="Collapsed" />
         <xctk:ColorToSolidColorBrushConverter x:Key="converterColorToSolidColorBrush" />
         <DataTemplate DataType="{x:Type coreModels:IconImage}">
             <StackPanel Orientation="Horizontal">
@@ -647,6 +651,20 @@
                     <TreeView x:Name="PresetsTree"
                               Height="120"
                               ItemsSource="{Binding PresetTreeViewModel.Items}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <i:InvokeCommandAction Command="{Binding PresetTreeViewModel.DoubleClickCommand}"
+                                                       CommandParameter="{Binding SelectedItem, ElementName=PresetsTree}" />
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="KeyDown">
+                                <i:InvokeCommandAction Command="{Binding PresetTreeViewModel.KeyDownCommand}"
+                                                       CommandParameter="{Binding SelectedItem, ElementName=PresetsTree}" />
+                            </i:EventTrigger>
+                            <!--<i:EventTrigger EventName="SelectedItemChanged">
+                                <i:InvokeCommandAction Command="{Binding PresetTreeViewModel.SelectedItemChangedCommand}"
+                                                       CommandParameter="{Binding SelectedItem, ElementName=PresetsTree}" />
+                            </i:EventTrigger>-->
+                        </i:Interaction.Triggers>
                         <TreeView.Resources>
                             <HierarchicalDataTemplate DataType="{x:Type model:GameHeaderTreeItem}"
                                                       ItemsSource="{Binding Children}">
@@ -658,6 +676,14 @@
                                 <TextBlock Text="{Binding Header}" />
                             </HierarchicalDataTemplate>
                         </TreeView.Resources>
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <Setter Property="IsExpanded"
+                                        Value="{Binding IsExpanded}" />
+                                <Setter Property="Visibility"
+                                        Value="{Binding IsVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
+                            </Style>
+                        </TreeView.ItemContainerStyle>
                     </TreeView>
                 </GroupBox>
                 <GroupBox Header="Building presets - not loaded"
