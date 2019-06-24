@@ -7,7 +7,7 @@
         xmlns:l="clr-namespace:AnnoDesigner.Localization"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:converter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
-        xmlns:model="clr-namespace:AnnoDesigner.model"
+        xmlns:modelPresetsTree="clr-namespace:AnnoDesigner.model.PresetsTree"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         Title="Anno Designer"
         Icon="/AnnoDesigner;component/icon.ico"
@@ -649,7 +649,7 @@
                           Width="{Binding ElementName=BuildingsPanel, Path=ActualWidth, Mode=OneWay}"
                           DockPanel.Dock="Top">
                     <TreeView x:Name="PresetsTree"
-                              Height="120"
+                              Height="200"
                               ItemsSource="{Binding PresetTreeViewModel.Items}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDoubleClick">
@@ -666,12 +666,12 @@
                             </i:EventTrigger>-->
                         </i:Interaction.Triggers>
                         <TreeView.Resources>
-                            <HierarchicalDataTemplate DataType="{x:Type model:GameHeaderTreeItem}"
+                            <HierarchicalDataTemplate DataType="{x:Type modelPresetsTree:GameHeaderTreeItem}"
                                                       ItemsSource="{Binding Children}">
                                 <TextBlock Text="{Binding Header}"
                                            FontWeight="SemiBold" />
                             </HierarchicalDataTemplate>
-                            <HierarchicalDataTemplate DataType="{x:Type model:GenericTreeItem}"
+                            <HierarchicalDataTemplate DataType="{x:Type modelPresetsTree:GenericTreeItem}"
                                                       ItemsSource="{Binding Children}">
                                 <TextBlock Text="{Binding Header}" />
                             </HierarchicalDataTemplate>
@@ -679,9 +679,9 @@
                         <TreeView.ItemContainerStyle>
                             <Style TargetType="{x:Type TreeViewItem}">
                                 <Setter Property="IsExpanded"
-                                        Value="{Binding IsExpanded}" />
+                                        Value="{Binding IsExpanded, Mode=TwoWay}" />
                                 <Setter Property="Visibility"
-                                        Value="{Binding IsVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
+                                        Value="{Binding IsVisible, Mode=TwoWay, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
                             </Style>
                         </TreeView.ItemContainerStyle>
                     </TreeView>

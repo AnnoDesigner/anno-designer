@@ -27,6 +27,7 @@ using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Layout;
 using System.Text;
 using AnnoDesigner.Core.Layout.Exceptions;
+using System.Configuration;
 
 namespace AnnoDesigner
 {
@@ -165,6 +166,8 @@ namespace AnnoDesigner
             LoadSettings();
 
             _mainWindowLocalization.PresetTreeViewModel.LoadItems(annoCanvas.BuildingPresets);
+            //TODO apply saved search before restore
+            _mainWindowLocalization.PresetTreeViewModel.SetTreeState(Settings.Default.PresetsTreeExpandedState, Settings.Default.PresetsTreeLastVersion);
         }
 
         private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)
@@ -1044,6 +1047,10 @@ namespace AnnoDesigner
         #endregion
         private void WindowClosing(object sender, CancelEventArgs e)
         {
+            var treeState = _mainWindowLocalization.PresetTreeViewModel.GetTreeState();
+            Settings.Default.PresetsTreeExpandedState = treeState;
+            Settings.Default.PresetsTreeLastVersion = _mainWindowLocalization.PresetTreeViewModel.BuildingPresetsVersion;
+
             Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
             Settings.Default.TreeViewSearchText = _mainWindowLocalization.TreeViewSearchText;
             if (WindowState == WindowState.Minimized)
@@ -1051,6 +1058,11 @@ namespace AnnoDesigner
                 WindowState = WindowState.Normal;
             }
             Settings.Default.Save();
+
+#if DEBUG
+            var userConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
+            Trace.WriteLine($"saving settings: \"{userConfig}\"");
+#endif
         }
 
         private void MenuCopyLayoutToClipboardClick(object sender, RoutedEventArgs e)

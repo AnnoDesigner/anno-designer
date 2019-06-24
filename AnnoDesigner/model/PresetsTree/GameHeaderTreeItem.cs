@@ -7,14 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using static AnnoDesigner.Core.CoreConstants;
 
-namespace AnnoDesigner.model
+namespace AnnoDesigner.model.PresetsTree
 {
     [DebuggerDisplay("{" + nameof(Header) + ",nq}")]
     public class GameHeaderTreeItem : GenericTreeItem
     {
         private GameVersion _gameVersion;
 
-        public GameHeaderTreeItem()
+        public GameHeaderTreeItem() : base(null)
         {
             GameVersion = GameVersion.Unknown;
         }

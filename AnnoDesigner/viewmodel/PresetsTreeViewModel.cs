@@ -10,6 +10,7 @@ using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Comparer;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.model;
+using AnnoDesigner.model.PresetsTree;
 
 namespace AnnoDesigner.viewmodel
 {
@@ -17,6 +18,7 @@ namespace AnnoDesigner.viewmodel
     {
         private ObservableCollection<GenericTreeItem> _items;
         private GenericTreeItem _selectedItem;
+        private string _buildingPresetsVersion;
 
         public PresetsTreeViewModel()
         {
@@ -25,6 +27,7 @@ namespace AnnoDesigner.viewmodel
             DoubleClickCommand = new RelayCommand(DoubleClick, null);
             //SelectedItemChangedCommand = new RelayCommand(SelectedItemChanged, null);
             KeyDownCommand = new RelayCommand(KeyDown, null);
+            BuildingPresetsVersion = string.Empty;
         }
 
         public ObservableCollection<GenericTreeItem> Items
@@ -37,6 +40,12 @@ namespace AnnoDesigner.viewmodel
         {
             get { return _selectedItem; }
             private set { UpdateProperty(ref _selectedItem, value); }
+        }
+
+        public string BuildingPresetsVersion
+        {
+            get { return _buildingPresetsVersion; }
+            private set { UpdateProperty(ref _buildingPresetsVersion, value); }
         }
 
         #region commands
@@ -144,7 +153,7 @@ namespace AnnoDesigner.viewmodel
                 var groupedFactions = curGame.GroupBy(x => x.Faction).OrderBy(x => x.Key);
                 foreach (var curFaction in groupedFactions)
                 {
-                    var factionItem = new GenericTreeItem
+                    var factionItem = new GenericTreeItem(gameItem)
                     {
                         Header = TreeLocalization.TreeLocalization.GetTreeLocalization(curFaction.Key)
                     };
@@ -152,14 +161,14 @@ namespace AnnoDesigner.viewmodel
                     var groupedGroups = curFaction.Where(x => x.Group != null).GroupBy(x => x.Group).OrderBy(x => x.Key);
                     foreach (var curGroup in groupedGroups)
                     {
-                        var groupItem = new GenericTreeItem
+                        var groupItem = new GenericTreeItem(factionItem)
                         {
                             Header = TreeLocalization.TreeLocalization.GetTreeLocalization(curGroup.Key)
                         };
 
                         foreach (var curBuildingInfo in curGroup.OrderBy(x => x.GetOrderParameter()))
                         {
-                            groupItem.Children.Add(new GenericTreeItem
+                            groupItem.Children.Add(new GenericTreeItem(groupItem)
                             {
                                 Header = curBuildingInfo.ToAnnoObject().Label,
                                 AnnoObject = curBuildingInfo.ToAnnoObject()
@@ -171,14 +180,14 @@ namespace AnnoDesigner.viewmodel
                         //Group will be the same for elements in the list.
                         if (string.Equals(curGame.Key, headerAnno2205, StringComparison.OrdinalIgnoreCase))
                         {
-                            var moduleItem = new GenericTreeItem
+                            var moduleItem = new GenericTreeItem(groupItem)
                             {
                                 Header = TreeLocalization.TreeLocalization.GetTreeLocalization(curGroup.ElementAt(0).Group) + " " + TreeLocalization.TreeLocalization.GetTreeLocalization("Modules")
                             };
 
                             foreach (var fourthLevel in modulesList.Where(x => x.Group == curGroup.ElementAt(0).Group))
                             {
-                                moduleItem.Children.Add(new GenericTreeItem
+                                moduleItem.Children.Add(new GenericTreeItem(moduleItem)
                                 {
                                     Header = fourthLevel.ToAnnoObject().Label,
                                     AnnoObject = fourthLevel.ToAnnoObject()
@@ -197,7 +206,7 @@ namespace AnnoDesigner.viewmodel
                     var groupedFactionBuildings = curFaction.Where(x => x.Group == null).OrderBy(x => x.GetOrderParameter());
                     foreach (var curGroup in groupedFactionBuildings)
                     {
-                        factionItem.Children.Add(new GenericTreeItem
+                        factionItem.Children.Add(new GenericTreeItem(factionItem)
                         {
                             Header = curGroup.ToAnnoObject().Label,
                             AnnoObject = curGroup.ToAnnoObject()
@@ -213,16 +222,18 @@ namespace AnnoDesigner.viewmodel
             sw.Stop();
             Debug.WriteLine($"<< New >> loading TreeItems took: {sw.ElapsedMilliseconds}ms");
 
+            BuildingPresetsVersion = buildingPresets.Version;
+
             //to test things
             //Items[3].IsVisible = false;
-            //Items[2].Children[1].IsExpanded = true;
+            //Items[2].Children[1].Children[0].IsExpanded = true;
         }
 
         private List<GenericTreeItem> GetRoadTiles()
         {
             var result = new List<GenericTreeItem>();
 
-            result.Add(new GenericTreeItem
+            result.Add(new GenericTreeItem(null)
             {
                 Header = TreeLocalization.TreeLocalization.GetTreeLocalization("RoadTile"),
                 AnnoObject = new AnnoObject
@@ -236,7 +247,7 @@ namespace AnnoDesigner.viewmodel
                 }
             });
 
-            result.Add(new GenericTreeItem
+            result.Add(new GenericTreeItem(null)
             {
                 Header = TreeLocalization.TreeLocalization.GetTreeLocalization("BorderlessRoadTile"),
                 AnnoObject = new AnnoObject
@@ -276,5 +287,96 @@ namespace AnnoDesigner.viewmodel
 
             return result;
         }
+
+        /// <summary>
+        /// Returns the current state of all expanded nodes in the tree.
+        /// </summary>
+        /// <returns></returns>
+        public List<bool> GetTreeState()
+        {
+            var result = new List<bool>();
+
+            foreach (var curNode in Items)
+            {
+                GetTreeState(curNode, result);
+            }
+
+            return result;
+        }
+
+        private List<bool> GetTreeState(GenericTreeItem node, List<bool> result)
+        {
+            if (!node.Children.Any())
+            {
+                return result;
+            }
+
+            if (!node.IsExpanded)
+            {
+                result.Add(false);
+
+                return result;
+            }
+
+            result.Add(true);
+
+            foreach (var curChildNode in node.Children)
+            {
+                GetTreeState(curChildNode, result);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Sets the expanded state of all node in the tree.
+        /// </summary>
+        /// <param name="savedTreeState">The saved state of all expanded nodes.</param>
+        /// <param name="lastBuildingPresetsVersion">The last presets version used to save the state.</param>
+        public void SetTreeState(List<bool> savedTreeState, string lastBuildingPresetsVersion)
+        {
+            //presets version does not match
+            if (!string.Equals(BuildingPresetsVersion, lastBuildingPresetsVersion, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            //no saved tree state present
+            if (savedTreeState?.Any() == false)
+            {
+                return;
+            }
+
+            var currentIndex = -1;
+            foreach (var curNode in Items)
+            {
+                currentIndex = SetTreeState(curNode, savedTreeState, currentIndex);
+            }
+        }
+
+        private int SetTreeState(GenericTreeItem node, List<bool> savedTreeState, int currentIndex)
+        {
+            if (!node.Children.Any())
+            {
+                return currentIndex;
+            }
+
+            if (!savedTreeState[currentIndex + 1])
+            {
+                return ++currentIndex;
+            }
+
+            ++currentIndex;
+
+            node.IsExpanded = savedTreeState[currentIndex];
+
+            foreach (var curChildNode in node.Children)
+            {
+                currentIndex = SetTreeState(curChildNode, savedTreeState, currentIndex);
+            }
+
+            return currentIndex;
+        }
+
     }
 }

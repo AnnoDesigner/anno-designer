@@ -7,23 +7,36 @@ using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Models;
 
-namespace AnnoDesigner.model
+namespace AnnoDesigner.model.PresetsTree
 {
     [DebuggerDisplay("{" + nameof(Header) + ",nq}")]
     public class GenericTreeItem : Notify
     {
+        private GenericTreeItem _parent;
         private string _header;
         private AnnoObject _annoObject;
         private ObservableCollection<GenericTreeItem> _children;
         private bool _isExpanded;
         private bool _isVisible;
 
-        public GenericTreeItem()
+        public GenericTreeItem(GenericTreeItem parent)
         {
+            Parent = parent;
             Header = string.Empty;
             Children = new ObservableCollection<GenericTreeItem>();
             IsExpanded = false;
             IsVisible = true;
+        }
+
+        public GenericTreeItem Parent
+        {
+            get { return _parent; }
+            private set { UpdateProperty(ref _parent, value); }
+        }
+
+        public GenericTreeItem Root
+        {
+            get { return _parent == null ? this : _parent.Root; }
         }
 
         public string Header
@@ -47,7 +60,16 @@ namespace AnnoDesigner.model
         public bool IsExpanded
         {
             get { return _isExpanded; }
-            set { UpdateProperty(ref _isExpanded, value); }
+            set
+            {
+                UpdateProperty(ref _isExpanded, value);
+
+                //also expand all parent nodes
+                if (value && Parent != null)
+                {
+                    Parent.IsExpanded = value;
+                }
+            }
         }
 
         public bool IsVisible

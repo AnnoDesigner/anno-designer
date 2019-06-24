@@ -294,5 +294,28 @@ namespace AnnoDesigner.Properties {
                 this["IsPavedStreet"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Generic.List<System.Boolean> PresetsTreeExpandedState {
+            get {
+                return ((global::System.Collections.Generic.List<System.Boolean>)(this["PresetsTreeExpandedState"]));
+            }
+            set {
+                this["PresetsTreeExpandedState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PresetsTreeLastVersion {
+            get {
+                return ((string)(this["PresetsTreeLastVersion"]));
+            }
+            set {
+                this["PresetsTreeLastVersion"] = value;
+            }
+        }
     }
 }

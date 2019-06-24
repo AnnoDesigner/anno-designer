@@ -53,8 +53,8 @@
     <Compile Include="InputWindow.xaml.cs">
       <DependentUpon>InputWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="model\GameHeaderTreeItem.cs" />
-    <Compile Include="model\GenericTreeItem.cs" />
+    <Compile Include="model\PresetsTree\GameHeaderTreeItem.cs" />
+    <Compile Include="model\PresetsTree\GenericTreeItem.cs" />
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
     <Compile Include="model\BuildingInfluenceType.cs" />
@@ -164,6 +164,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />

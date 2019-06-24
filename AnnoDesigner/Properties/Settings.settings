@@ -71,5 +71,11 @@
     <Setting Name="IsPavedStreet" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="PresetsTreeExpandedState" Type="System.Collections.Generic.List&lt;System.Boolean&gt;" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="PresetsTreeLastVersion" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
