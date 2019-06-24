@@ -123,6 +123,8 @@ namespace AnnoDesigner.viewmodel
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
+            Items.Clear();
+
             //manually add roads
             var roadTiles = GetRoadTiles();
             foreach (var curRoad in roadTiles)

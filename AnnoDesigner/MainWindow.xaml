@@ -644,12 +644,12 @@
                             />-->
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="TreeTest"
+                <GroupBox x:Name="GroupBoxPresets"
+                          Header="Building presets - not loaded"
                           IsEnabled="True"
                           Width="{Binding ElementName=BuildingsPanel, Path=ActualWidth, Mode=OneWay}"
                           DockPanel.Dock="Top">
                     <TreeView x:Name="PresetsTree"
-                              Height="200"
                               ItemsSource="{Binding PresetTreeViewModel.FilteredItems}"
                               VirtualizingStackPanel.IsVirtualizing="True"
                               VirtualizingStackPanel.VirtualizationMode="Recycling">
@@ -688,17 +688,6 @@
                             </Style>
                         </TreeView.ItemContainerStyle>
                     </TreeView>
-                </GroupBox>
-                <GroupBox Header="Building presets - not loaded"
-                          Name="GroupBoxPresets"
-                          IsEnabled="True"
-                          Width="{Binding ElementName=BuildingsPanel, Path=ActualWidth, Mode=OneWay}"
-                          DockPanel.Dock="Top">
-                    <TreeView Name="treeViewPresets"
-                              MouseDoubleClick="TreeViewPresetsMouseDoubleClick"
-                              KeyDown="TreeViewPresetsKeyDown"
-                              TabIndex="13"
-                              Loaded="TreeViewPresetsLoaded" />
                 </GroupBox>
             </DockPanel>
             <StatusBar Grid.Row="2"

@@ -74,8 +74,6 @@
     <Compile Include="StatisticsView.xaml.cs">
       <DependentUpon>StatisticsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TreeViewExtensions.cs" />
-    <Compile Include="TreeViewSearch.cs" />
     <Compile Include="UpdateHelper.cs" />
     <Compile Include="UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
