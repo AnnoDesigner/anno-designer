@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using AnnoDesigner.Core;
+using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Comparer;
 using AnnoDesigner.Core.Presets.Models;
@@ -17,23 +20,33 @@ namespace AnnoDesigner.viewmodel
     public class PresetsTreeViewModel : Notify
     {
         private ObservableCollection<GenericTreeItem> _items;
+        private ICollectionView _filteredItems;
         private GenericTreeItem _selectedItem;
         private string _buildingPresetsVersion;
+        private string _filterText;
 
         public PresetsTreeViewModel()
         {
             Items = new ObservableCollection<GenericTreeItem>();
+            FilteredItems = CollectionViewSource.GetDefaultView(Items);
 
             DoubleClickCommand = new RelayCommand(DoubleClick, null);
             //SelectedItemChangedCommand = new RelayCommand(SelectedItemChanged, null);
             KeyDownCommand = new RelayCommand(KeyDown, null);
             BuildingPresetsVersion = string.Empty;
+            FilterText = string.Empty;
         }
 
         public ObservableCollection<GenericTreeItem> Items
         {
             get { return _items; }
             set { UpdateProperty(ref _items, value); }
+        }
+
+        public ICollectionView FilteredItems
+        {
+            get { return _filteredItems; }
+            set { UpdateProperty(ref _filteredItems, value); }
         }
 
         public GenericTreeItem SelectedItem
@@ -48,6 +61,18 @@ namespace AnnoDesigner.viewmodel
             private set { UpdateProperty(ref _buildingPresetsVersion, value); }
         }
 
+        public string FilterText
+        {
+            get { return _filterText; }
+            set
+            {
+                if (UpdateProperty(ref _filterText, value))
+                {
+                    MyFilter();
+                }
+            }
+        }
+
         #region commands
 
         public ICommand DoubleClickCommand { get; private set; }
@@ -60,18 +85,7 @@ namespace AnnoDesigner.viewmodel
                 SelectedItem = selectedItem;
             }
 
-            //call ApplyPreset();
-
-            //var selectedItem = treeViewPresets.SelectedItem as AnnoObject;
-            //if (selectedItem != null)
-            //{
-            //    UpdateUIFromObject(new AnnoObject(selectedItem)
-            //    {
-            //        Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
-            //    });
-
-            //    ApplyCurrentObject();
-            //}
+            //call ApplyPreset();            
         }
 
         //public ICommand SelectedItemChangedCommand { get; private set; }
@@ -227,6 +241,7 @@ namespace AnnoDesigner.viewmodel
             //to test things
             //Items[3].IsVisible = false;
             //Items[2].Children[1].Children[0].IsExpanded = true;
+            //FilterText = "Fire";           
         }
 
         private List<GenericTreeItem> GetRoadTiles()
@@ -342,7 +357,7 @@ namespace AnnoDesigner.viewmodel
             }
 
             //no saved tree state present
-            if (savedTreeState?.Any() == false)
+            if (savedTreeState == null || savedTreeState.Count <= 0)
             {
                 return;
             }
@@ -378,5 +393,99 @@ namespace AnnoDesigner.viewmodel
             return currentIndex;
         }
 
+        private void MyFilter()
+        {
+            foreach (GenericTreeItem curItem in FilteredItems)
+            {
+                //short circuit items without children
+                if (!curItem.Children.Any())
+                {
+                    if (string.IsNullOrWhiteSpace(FilterText))
+                    {
+                        curItem.IsVisible = true;
+                        curItem.IsExpanded = false;
+                    }
+                    else
+                    {
+                        var matches = curItem.Header.Contains(FilterText, StringComparison.OrdinalIgnoreCase);
+                        curItem.IsVisible = matches;
+                        curItem.IsExpanded = false;
+                    }
+
+                    continue;
+                }
+
+                //check child items
+                var anyChildMatches = false;
+                foreach (var curChild in curItem.Children)
+                {
+                    var childMatches = MyFilter(curChild);
+                    if (childMatches)
+                    {
+                        anyChildMatches = true;
+                    }
+                }
+
+                //no child matches -> hide item
+                if (!anyChildMatches)
+                {
+                    curItem.IsVisible = false;
+                    curItem.IsExpanded = false;
+                }
+                else
+                {
+                    curItem.IsVisible = true;
+                    //only expand if there is a search, else it is a "reset" of the tree
+                    curItem.IsExpanded = !string.IsNullOrWhiteSpace(FilterText);
+                }
+            }
+        }
+
+        private bool MyFilter(GenericTreeItem curItem)
+        {
+            //short circuit items without children
+            if (!curItem.Children.Any())
+            {
+                if (string.IsNullOrWhiteSpace(FilterText))
+                {
+                    curItem.IsVisible = true;
+                    curItem.IsExpanded = false;
+                }
+                else
+                {
+                    var matches = curItem.Header.Contains(FilterText, StringComparison.OrdinalIgnoreCase);
+                    curItem.IsVisible = matches;
+                    curItem.IsExpanded = false;
+                }
+
+                return curItem.IsVisible;
+            }
+
+            //check child items
+            var anyChildMatches = false;
+            foreach (var curChild in curItem.Children)
+            {
+                var childMatches = MyFilter(curChild);
+                if (childMatches)
+                {
+                    anyChildMatches = true;
+                }
+            }
+
+            //no child matches -> hide item
+            if (!anyChildMatches)
+            {
+                curItem.IsVisible = false;
+                curItem.IsExpanded = false;
+            }
+            else
+            {
+                curItem.IsVisible = true;
+                //only expand if there is a search, else it is a "reset" of the tree
+                curItem.IsExpanded = !string.IsNullOrWhiteSpace(FilterText);
+            }
+
+            return curItem.IsVisible;
+        }
     }
 }

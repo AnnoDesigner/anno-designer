@@ -166,7 +166,13 @@ namespace AnnoDesigner
             LoadSettings();
 
             _mainWindowLocalization.PresetTreeViewModel.LoadItems(annoCanvas.BuildingPresets);
-            //TODO apply saved search before restore
+
+            //apply saved search before restoring state
+            if (!string.IsNullOrWhiteSpace(Settings.Default.TreeViewSearchText))
+            {
+                _mainWindowLocalization.PresetTreeViewModel.FilterText = Settings.Default.TreeViewSearchText;
+            }
+
             _mainWindowLocalization.PresetTreeViewModel.SetTreeState(Settings.Default.PresetsTreeExpandedState, Settings.Default.PresetsTreeLastVersion);
         }
 
@@ -970,16 +976,22 @@ namespace AnnoDesigner
                 {
                     _mainWindowLocalization.TreeViewSearchText = string.Empty;
                     TextBoxSearchPresets.UpdateLayout();
+
+                    _mainWindowLocalization.PresetTreeViewModel.FilterText = _mainWindowLocalization.TreeViewSearchText;
                 }
 
                 if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
                 {
                     _treeViewSearch.Reset();
                     treeViewPresets.SetTreeViewState(_treeViewState);
+
+                    _mainWindowLocalization.PresetTreeViewModel.FilterText = _mainWindowLocalization.TreeViewSearchText;
                 }
                 else
                 {
                     _treeViewSearch.Search(_mainWindowLocalization.TreeViewSearchText);
+
+                    _mainWindowLocalization.PresetTreeViewModel.FilterText = _mainWindowLocalization.TreeViewSearchText;
                 }
             }
             catch (Exception ex)
@@ -1017,6 +1029,7 @@ namespace AnnoDesigner
             {
                 //Then apply the search **before** reloading state
                 _treeViewSearch.Search(Settings.Default.TreeViewSearchText);
+                _mainWindowLocalization.PresetTreeViewModel.FilterText = Settings.Default.TreeViewSearchText;
                 isSearchState = true;
             }
 

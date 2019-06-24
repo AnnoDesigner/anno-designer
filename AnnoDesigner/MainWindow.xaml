@@ -650,7 +650,9 @@
                           DockPanel.Dock="Top">
                     <TreeView x:Name="PresetsTree"
                               Height="200"
-                              ItemsSource="{Binding PresetTreeViewModel.Items}">
+                              ItemsSource="{Binding PresetTreeViewModel.FilteredItems}"
+                              VirtualizingStackPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDoubleClick">
                                 <i:InvokeCommandAction Command="{Binding PresetTreeViewModel.DoubleClickCommand}"
