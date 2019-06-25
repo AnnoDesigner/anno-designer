@@ -731,53 +731,59 @@ namespace PresetParser
             }
         }
 
-        // ORGLINE: private static void ParseBuilding2205(List<BuildingInfo> buildings, XmlNode buildingNode, IEnumerable<XmlNode> iconNodes, Dictionary<string, SerializableDictionary<string>> localizations)
         private static void ParseBuilding2205(List<IBuildingInfo> buildings, XmlNode buildingNode, string annoVersion)
         {
-            string[] LanguagesFiles = { "" };
-            string nameValue = "", templateValue = "";
-            #region Get valid Building Information 
-            XmlElement values = buildingNode["Values"];
             // skip invalid elements
             if (buildingNode["Template"] == null)
             {
                 return;
             }
 
+            #region Get valid Building Information 
+
+            var values = buildingNode["Values"];
+            var nameValue = values["Standard"]["Name"].InnerText;
+            var templateValue = buildingNode["Template"].InnerText;
+
             #region Skip Unused buildings in Anno Designer List
-            nameValue = values["Standard"]["Name"].InnerText;
+
             isExcludedName = nameValue.Contains(ExcludeNameList2205);
-            templateValue = buildingNode["Template"].InnerText;
             isExcludedTemplate = templateValue.Contains(ExcludeTemplateList2205);
             if (isExcludedName || isExcludedTemplate)
             {
                 return;
             }
+
             #endregion
+
             #region Skip Double Database Buildings
-            nameValue = values["Standard"]["Name"].InnerText;
+
             isExcludedName = nameValue.IsPartOf(annoBuildingLists);
             if (isExcludedName)
             {
                 return;
             }
+
             #endregion
 
             string buildingGuid = values["Standard"]["GUID"].InnerText;
+
             #region TEST SECTION OF GUID CHECK
-            if (!testVersion)
+
+            if (!testVersion && buildingGuid.Contains(ExcludeGUIDList2205))
             {
-                if (buildingGuid.Contains(ExcludeGUIDList2205) == true) { return; }
+                return;
             }
             else
             {
                 if (printTestText == 0)
                 {
                     Console.WriteLine();
-                    Console.WriteLine("Testing GUID Resuld :");
+                    Console.WriteLine("Testing GUID Result :");
                     printTestText = 1;
                 }
-                if (buildingGuid.Contains(ExcludeGUIDList2205) == true)
+
+                if (buildingGuid.Contains(ExcludeGUIDList2205))
                 {
                     Console.WriteLine("GUID : {0} (Checked GUID)", buildingGuid);
                     Console.WriteLine("Name : {0}", nameValue);
@@ -788,15 +794,17 @@ namespace PresetParser
                     Console.WriteLine("Name : {0}", nameValue);
                 }
             }
+
             #endregion
 
             // parse stuff
-            string factionName = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText;
-            string groupName = buildingNode.ParentNode.ParentNode["Name"].InnerText;
-            string identifierName = values["Standard"]["Name"].InnerText;
-            groupName = groupName.FirstCharToUpper();
-            factionName = factionName.FirstCharToUpper();
-            #region Regrouping several faction or group names for Anno 2205
+            var identifierName = values["Standard"]["Name"].InnerText;
+
+            var factionName = buildingNode.ParentNode.ParentNode.ParentNode.ParentNode["Name"].InnerText.FirstCharToUpper();
+            var groupName = buildingNode.ParentNode.ParentNode["Name"].InnerText.FirstCharToUpper();
+
+            #region Regrouping several faction or group names
+
             switch (factionName)
             {
                 case "Earth": factionName = "(1) Earth"; break;
@@ -805,30 +813,39 @@ namespace PresetParser
                 case "Tundra": factionName = "(4) Tundra"; break;
                 case "Orbit": factionName = "(5) Orbit"; break;
             }
+
             if (identifierName == "orbit connection 01") { groupName = "Special"; }
+
             #endregion
-            string headerName = "(A6) Anno " + Constants.ANNO_VERSION_2205;
+
+            var headerName = "(A6) Anno " + Constants.ANNO_VERSION_2205;
+
             IBuildingInfo b = new BuildingInfo
             {
                 Header = headerName,
                 Faction = factionName,
                 Group = groupName,
-                Template = buildingNode["Template"].InnerText,
+                Template = templateValue,
                 Identifier = identifierName
             };
+
             // print progress
             if (!testVersion)
             {
                 Console.WriteLine(b.Identifier);
             }
+
             #endregion
 
             #region Get/Set InfluenceRange information
-            //because this number is not exists yet, we set this to 'null'
+
+            //because this number does not exist yet, we set this to zero
             b.InfluenceRange = 0;
+
             #endregion
 
             #region Get BuildBlockers information
+
             //Get building blocker
             if (values["Object"] != null)
             {
@@ -850,50 +867,46 @@ namespace PresetParser
                 Console.WriteLine("-BuildBlocker not found, skipping: Object Informaion not fount");
                 return;
             }
+
             #endregion
 
             #region Get IconFilenames
+
             // find icon node in values (diverent vs 1404/2070)
             string icon = null;
             if (values["Standard"]?["IconFilename"]?.InnerText != null)
             {
                 icon = values["Standard"]["IconFilename"].InnerText;
             }
+
             if (icon != null)
             {
-                /// Split the Value <IconFilenames>innertext</IconFilenames> to get only the Name.png
-                string replaceName = "";
-                if (annoVersion == Constants.ANNO_VERSION_2205)
-                {
-                    replaceName = "A6_";
-                }
-                string[] sIcons = icon.Split('/');
-                icon = sIcons.LastOrDefault().Replace("icon_", replaceName);
-                b.IconFileName = icon;
+                // Split the Value <IconFilenames>innertext</IconFilenames> to get only the Name.png
+                b.IconFileName = icon.Split('/').LastOrDefault().Replace("icon_", "A6_");
             }
             else
             {
                 b.IconFileName = null;
             }
+
             #endregion
 
-            #region Get localizations
-            /// find localization
+            #region Get localizations            
 
-            string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
+            string languageFileName = ""; // This will be given thru the static LanguagesFiles array
             string languageFilePath = "data/config/gui/";
             string languageFileStart = "texts_";
             string langNodeStartPath = "/TextExport/Texts/Text";
             string langNodeDepth = "Text";
             int languageCount = 0;
-            LanguagesFiles = LanguagesFiles2205;
+            var languages2205 = LanguagesFiles2205;
 
             //Initialise the dictionary
             b.Localization = new SerializableDictionary<string>();
 
             foreach (string Language in Languages)
             {
-                languageFileName = BASE_PATH + languageFilePath + languageFileStart + LanguagesFiles[languageCount] + ".xml";
+                languageFileName = BASE_PATH + languageFilePath + languageFileStart + languages2205[languageCount] + ".xml";
                 XmlDocument langDocument = new XmlDocument();
                 langDocument.Load(languageFileName);
                 string translation = "";
@@ -937,25 +950,33 @@ namespace PresetParser
                     {
                         Console.WriteLine("No Translation found, it will set to Identifier.");
                     }
+
                     translation = values["Standard"]["Name"].InnerText;
                 }
+
                 b.Localization.Dict.Add(Languages[languageCount], translation);
-                if (testVersion == true && annoVersion == Constants.ANNO_VERSION_2205)
+
+                if (testVersion && languageCount == 0)
                 {
-                    if (languageCount == 0)
+                    Console.WriteLine("ENG name: {0}", translation);
+
+                    if (translation.IsPartOf(testGUIDNames2205))
                     {
-                        Console.WriteLine("ENG name: {0}", translation);
-                        if (translation.IsPartOf(testGUIDNames2205))
+                        Console.WriteLine(">>------------------------------------------------------------------------<<");
+                        Console.ReadKey();
+
+                        if (buildingGuid.Contains(ExcludeGUIDList2205))
                         {
-                            Console.WriteLine(">>------------------------------------------------------------------------<<");
-                            Console.ReadKey();
-                            if (buildingGuid.Contains(ExcludeGUIDList2205) == true) { return; }
+                            return;
                         }
                     }
                 }
+
                 languageCount++;
             }
+
             #endregion
+
             // add building to the list
             annoBuildingsListCount++;
             annoBuildingLists.Add(values["Standard"]["Name"].InnerText);
@@ -1028,8 +1049,7 @@ namespace PresetParser
             string guidName = values["Standard"]["GUID"].InnerText;
             //isExcludedGUID = guidName.Contains(ExcludeBuildingsGUID1800);
 
-            identifierName = values["Standard"]["Name"].InnerText;
-            identifierName = identifierName.FirstCharToUpper();
+            identifierName = values["Standard"]["Name"].InnerText.FirstCharToUpper();
             isExcludedName = identifierName.Contains(ExcludeNameList1800);
 
             if (isExcludedName || isExcludedTemplate || isExcludedGUID)
@@ -1107,7 +1127,7 @@ namespace PresetParser
             // Place the rest of the buildings in the right Faction > Group menu
             #region Order the Buildings to the right tiers and factions as in the game
 
-            string[] newFactionGroupName = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName);
+            var newFactionGroupName = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName);
             factionName = newFactionGroupName[0];
             groupName = newFactionGroupName[1];
 
@@ -1161,6 +1181,7 @@ namespace PresetParser
             #endregion
 
             #region Get and set new IconFilenames
+
             // find icon node in values
             string replaceName = "A7_";
             string icon = null;
@@ -1181,6 +1202,7 @@ namespace PresetParser
                 {
                     icon = replaceName + sIcons.LastOrDefault();
                 }
+
                 switch (guidName)
                 {
                     case "102133": { icon = replaceName + "park_props_1x1_21.png"; break; } /*Change the Big Tree icon to Mature Tree icon (as in game) */
@@ -1191,11 +1213,13 @@ namespace PresetParser
                     case "102143": { icon = replaceName + "park_props_1x1_31.png"; break; } //Path Corecting Icon 
                     case "102131": { icon = replaceName + "park_props_1x1_17.png"; break; } //Cypress corecting Icon
                 }
+
                 b.IconFileName = icon;
             }
             else
             {
                 b.IconFileName = null;
+
                 //Buildings that came in with the BaseAssetGUID template has no icons, this will fix that;
                 switch (identifierName)
                 {
@@ -1216,31 +1240,39 @@ namespace PresetParser
                     case "Agriculture_colony01_09_field (Cattle Pasture)": { b.IconFileName = replaceName + "general_module_01.png"; break; }
                 }
             }
+
             #endregion
 
             #region Get Infuence Radius of Buildings
+
             // read influence radius if existing 
             b.InfluenceRadius = Convert.ToInt32(values?["FreeAreaProductivity"]?["InfluenceRadius"]?.InnerText);
+
             //on Module Radius Range (Farm/Oil Refineries) 
             if (string.IsNullOrEmpty(Convert.ToString(b.InfluenceRadius)) || b.InfluenceRadius == 0)
             {
                 b.InfluenceRadius = Convert.ToInt32(values?["ModuleOwner"]?["ModuleBuildRadius"]?.InnerText);
             }
+
             //on Item Slots (Like trade unions, town halls etc)
             if (string.IsNullOrEmpty(Convert.ToString(b.InfluenceRadius)) || b.InfluenceRadius == 0)
             {
                 b.InfluenceRadius = Convert.ToInt32(values?["ItemContainer"]?["SocketScopeRadius"]?.InnerText);
             }
+
             switch (b.Identifier)
             {
                 case "Agriculture_colony01_06 (Timber Yard)": b.InfluenceRadius = 9; break;
                 case "Heavy_colony01_01 (Oil Heavy Industry)": b.InfluenceRadius = 12; break;
                 case "Town hall": b.InfluenceRadius = 20; break;
             }
+
             #endregion
 
             #region Get/Set InfluenceRange information
+
             b.InfluenceRange = 0;
+
             if (b.Template == "CityInstitutionBuilding")
             {
                 b.InfluenceRange = 26; //Police - Fire stations and Hospiitals
@@ -1258,14 +1290,19 @@ namespace PresetParser
                     case "Electricity_02 (Oil Power Plant)": b.InfluenceRange = 35; break;
                 }
             }
+
             #endregion
 
-            // Building the Localizations for building b
             #region Get localizations
-            /// find localization
+
             string buildingGuid = values["Standard"]["GUID"].InnerText;
-            if (buildingGuid == "102133") { buildingGuid = "102085"; } /*rename the Big Tree to Mature Tree (as in game) */
-            string languageFileName = ""; /// This will be given thru the static LanguagesFiles array
+            //rename the Big Tree to Mature Tree (as in game)
+            if (buildingGuid == "102133")
+            {
+                buildingGuid = "102085";
+            }
+
+            string languageFileName = ""; // This will be given thru the static LanguagesFiles array
             string languageFilePath = "data/config/gui/";
             string languageFileStart = "texts_";
             string langNodeStartPath = "/TextExport/Texts/Text";
@@ -1282,6 +1319,7 @@ namespace PresetParser
                 XmlDocument langDocument = new XmlDocument();
                 langDocument.Load(languageFileName);
                 string translation = "";
+
                 XmlNode translationNodes = langDocument.SelectNodes(langNodeStartPath)
                     .Cast<XmlNode>().SingleOrDefault(_ => _["GUID"].InnerText == buildingGuid);
                 if (translationNodes != null)
@@ -1291,6 +1329,7 @@ namespace PresetParser
                     {
                         throw new InvalidOperationException("Cannot get translation, text node not found");
                     }
+
                     while (translation.Contains("AssetData"))
                     {
                         //"[AsserData(2001009): <text>",
@@ -1300,6 +1339,7 @@ namespace PresetParser
                             .Cast<XmlNode>().SingleOrDefault(_ => _["GUID"].InnerText == nextGuid[1]);
                         translation = translationNodes?.SelectNodes(langNodeDepth)?.Item(0).InnerText;
                     }
+
                     if (buildingGuid == "102165")
                     {
                         switch (languageCount)
@@ -1311,7 +1351,7 @@ namespace PresetParser
                             case 4: { translation = "Боковая изгородь"; break; }
                         }
                     }
-                    if (buildingGuid == "102166")
+                    else if (buildingGuid == "102166")
                     {
                         switch (languageCount)
                         {
@@ -1322,7 +1362,7 @@ namespace PresetParser
                             case 4: { translation = "Боковая изгородь (угол)"; break; }
                         }
                     }
-                    if (buildingGuid == "102167")
+                    else if (buildingGuid == "102167")
                     {
                         switch (languageCount)
                         {
@@ -1333,7 +1373,7 @@ namespace PresetParser
                             case 4: { translation = "Боковая изгородь (край)"; break; }
                         }
                     }
-                    if (buildingGuid == "102169")
+                    else if (buildingGuid == "102169")
                     {
                         switch (languageCount)
                         {
@@ -1344,7 +1384,7 @@ namespace PresetParser
                             case 4: { translation = "Боковая изгородь (Перекресток)"; break; }
                         }
                     }
-                    if (buildingGuid == "102171")
+                    else if (buildingGuid == "102171")
                     {
                         switch (languageCount)
                         {
@@ -1355,7 +1395,7 @@ namespace PresetParser
                             case 4: { translation = "Боковая изгородь (образного)"; break; }
                         }
                     }
-                    if (buildingGuid == "102161")
+                    else if (buildingGuid == "102161")
                     {
                         switch (languageCount)
                         {
@@ -1366,7 +1406,7 @@ namespace PresetParser
                             case 4: { translation = "Ограда"; break; }
                         }
                     }
-                    if (buildingGuid == "102170")
+                    else if (buildingGuid == "102170")
                     {
                         switch (languageCount)
                         {
@@ -1377,7 +1417,7 @@ namespace PresetParser
                             case 4: { translation = "Ограда (Перекресток)"; break; }
                         }
                     }
-                    if (buildingGuid == "102134")
+                    else if (buildingGuid == "102134")
                     {
                         switch (languageCount)
                         {
@@ -1388,7 +1428,7 @@ namespace PresetParser
                             case 4: { translation = "изгородь"; break; }
                         }
                     }
-                    if (buildingGuid == "102139")
+                    else if (buildingGuid == "102139")
                     {
                         switch (languageCount)
                         {
@@ -1406,16 +1446,31 @@ namespace PresetParser
                     {
                         Console.WriteLine("No Translation found, it will set to Identifier.");
                     }
+
                     translation = values["Standard"]["Name"].InnerText;
                 }
+
                 if (templateName == "FarmBuilding" || templateName == "Farmfield")
                 {
-                    string fieldAmountValue = null, fieldGuidValue = null;
+                    string fieldAmountValue = null;
+                    string fieldGuidValue = null;
+
                     switch (templateName)
                     {
-                        case "FarmBuilding": { fieldGuidValue = values["ModuleOwner"]["ConstructionOptions"]["Item"]["ModuleGUID"].InnerText; fieldAmountValue = values?["ModuleOwner"]?["ModuleLimit"]?.InnerText; break; };
-                        case "Farmfield": { fieldGuidValue = values["Standard"]["GUID"].InnerText; fieldAmountValue = "0"; break; }
+                        case "FarmBuilding":
+                            {
+                                fieldGuidValue = values["ModuleOwner"]["ConstructionOptions"]["Item"]["ModuleGUID"].InnerText;
+                                fieldAmountValue = values?["ModuleOwner"]?["ModuleLimit"]?.InnerText;
+                                break;
+                            };
+                        case "Farmfield":
+                            {
+                                fieldGuidValue = values["Standard"]["GUID"].InnerText;
+                                fieldAmountValue = "0";
+                                break;
+                            }
                     }
+
                     if (fieldAmountValue != null)
                     {
                         bool getFieldGuidBool = false;
@@ -1428,16 +1483,20 @@ namespace PresetParser
                                 break;
                             }
                         }
+
                         if (!getFieldGuidBool)
                         {
                             farmFieldList1800.Add(new FarmField() { FieldGuid = fieldGuidValue, FieldAmount = fieldAmountValue });
                         }
+
                         translation = translation + " - (" + fieldAmountValue + ")";
                     }
                 }
+
                 b.Localization.Dict.Add(Languages[languageCount], translation);
                 languageCount++;
             }
+
             #endregion
 
             #endregion
