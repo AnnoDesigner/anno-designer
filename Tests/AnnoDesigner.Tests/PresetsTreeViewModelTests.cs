@@ -1,23 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AnnoDesigner.Core;
 using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.model.PresetsTree;
 using AnnoDesigner.viewmodel;
 using Xunit;
 using Xunit.Sdk;
-using AnnoDesigner.Core;
-using System.Collections.ObjectModel;
 
 namespace AnnoDesigner.Tests
 {
     public class PresetsTreeViewModelTests
     {
+        static PresetsTreeViewModelTests()
+        {
+            _presetsSubset = LoadPresetsSubset();
+        }
+
         #region test data
+
+        private static readonly BuildingPresets _presetsSubset;
 
         private (List<GenericTreeItem> items, List<bool> expectedState) GetTreeAndState(bool expandLastMainNode = true)
         {
@@ -76,6 +82,36 @@ namespace AnnoDesigner.Tests
             };
 
             return (items, expectedState);
+        }
+
+        /// <summary>
+        /// Load a subset of current presets. Is only called once.
+        /// </summary>
+        /// <returns>A subset of the current presets.</returns>
+        private static BuildingPresets LoadPresetsSubset()
+        {
+            var loader = new BuildingPresetsLoader();
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            var buildingPresets = loader.Load(Path.Combine(basePath, CoreConstants.BuildingPresetsFile));
+
+            var buildings_1404 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A4")).OrderByDescending(x => x.GetOrderParameter()).Take(10).ToList();
+            var buildings_2070 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A5")).OrderByDescending(x => x.GetOrderParameter()).Take(10).ToList();
+            var buildings_2205 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A6")).OrderByDescending(x => x.GetOrderParameter()).Take(10).ToList();
+            var buildings_1800 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A7")).OrderByDescending(x => x.GetOrderParameter()).Take(10).ToList();
+
+            var filteredBuildings = new List<BuildingInfo>();
+            filteredBuildings.AddRange(buildings_1404);
+            filteredBuildings.AddRange(buildings_2070);
+            filteredBuildings.AddRange(buildings_2205);
+            filteredBuildings.AddRange(buildings_1800);
+
+            var presets = new BuildingPresets
+            {
+                Version = buildingPresets.Version,
+                Buildings = filteredBuildings
+            };
+
+            return presets;
         }
 
         #endregion
@@ -303,6 +339,20 @@ namespace AnnoDesigner.Tests
             //first 2 items always the road items
             Assert.Single((viewModel.Items[2] as GameHeaderTreeItem).Children);
             Assert.Equal(buildings[0].Faction, (viewModel.Items[2] as GameHeaderTreeItem).Children[0].Header);
+        }
+
+        [Fact]
+        public void LoadItems_Subset_ShouldLoadBuildings()
+        {
+            // Arrange
+            var viewModel = new PresetsTreeViewModel();
+
+            // Act
+            viewModel.LoadItems(_presetsSubset);
+
+            // Assert
+            //2 road buildings + 4 game versions
+            Assert.Equal(6, viewModel.Items.Count);
         }
 
         #endregion
@@ -732,6 +782,34 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedState, viewModel.GetCondensedTreeState());
+        }
+
+        #endregion
+
+        #region FilterGameVersion tests
+
+        [Theory]
+        [InlineData(CoreConstants.GameVersion.Anno1404, 1)]
+        [InlineData(CoreConstants.GameVersion.Anno2070, 1)]
+        [InlineData(CoreConstants.GameVersion.Anno2205, 1)]
+        [InlineData(CoreConstants.GameVersion.Anno1800, 1)]
+        [InlineData(CoreConstants.GameVersion.Anno1404 | CoreConstants.GameVersion.Anno1800, 2)]
+        [InlineData(CoreConstants.GameVersion.Anno1404 | CoreConstants.GameVersion.Anno1800 | CoreConstants.GameVersion.Anno2205, 3)]
+        [InlineData(CoreConstants.GameVersion.All, 4)]
+        [InlineData(CoreConstants.GameVersion.Unknown, 0)]
+        public void FilterGameVersion_SubsetIsLoadedAndFilterTextIsEmpty_ShouldFilterByGameVersion(CoreConstants.GameVersion gameVersionsToFilter, int expectedMainNodeCount)
+        {
+            // Arrange
+            var viewModel = new PresetsTreeViewModel();
+            viewModel.LoadItems(_presetsSubset);
+            viewModel.FilterText = string.Empty;
+
+            // Act
+            viewModel.FilterGameVersion = gameVersionsToFilter;
+
+            // Assert
+            //+ 2 road buildings
+            Assert.Equal(2 + expectedMainNodeCount, viewModel.Items.Where(x => x.IsVisible).Count());
         }
 
         #endregion
