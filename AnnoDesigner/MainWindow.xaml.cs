@@ -258,7 +258,7 @@ namespace AnnoDesigner
                     _mainWindowLocalization.PresetTreeViewModel.FilterText = Settings.Default.TreeViewSearchText;
                 }
 
-                _mainWindowLocalization.PresetTreeViewModel.SetTreeState(Settings.Default.PresetsTreeExpandedState, Settings.Default.PresetsTreeLastVersion);
+                _mainWindowLocalization.PresetTreeViewModel.SetCondensedTreeState(Settings.Default.PresetsTreeExpandedState, Settings.Default.PresetsTreeLastVersion);
             }
             else
             {
@@ -620,11 +620,11 @@ namespace AnnoDesigner
         {
             if (annoCanvas.BuildingPresets != null)
             {
-                var treeState = _mainWindowLocalization.PresetTreeViewModel.GetTreeState();
+                var treeState = _mainWindowLocalization.PresetTreeViewModel.GetCondensedTreeState();
 
                 _mainWindowLocalization.PresetTreeViewModel.LoadItems(annoCanvas.BuildingPresets);
 
-                _mainWindowLocalization.PresetTreeViewModel.SetTreeState(treeState, annoCanvas.BuildingPresets.Version);
+                _mainWindowLocalization.PresetTreeViewModel.SetCondensedTreeState(treeState, annoCanvas.BuildingPresets.Version);
             }
         }
 
@@ -938,7 +938,7 @@ namespace AnnoDesigner
             {
                 if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
                 {
-                    _treeViewState = _mainWindowLocalization.PresetTreeViewModel.GetTreeState();
+                    _treeViewState = _mainWindowLocalization.PresetTreeViewModel.GetCondensedTreeState();
                 }
             }
         }
@@ -958,7 +958,7 @@ namespace AnnoDesigner
                 if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
                 {
                     _mainWindowLocalization.PresetTreeViewModel.FilterText = null;
-                    _mainWindowLocalization.PresetTreeViewModel.SetTreeState(_treeViewState, annoCanvas.BuildingPresets.Version);
+                    _mainWindowLocalization.PresetTreeViewModel.SetCondensedTreeState(_treeViewState, annoCanvas.BuildingPresets.Version);
                 }
                 else
                 {
@@ -976,7 +976,7 @@ namespace AnnoDesigner
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
-            Settings.Default.PresetsTreeExpandedState = _mainWindowLocalization.PresetTreeViewModel.GetTreeState();
+            Settings.Default.PresetsTreeExpandedState = _mainWindowLocalization.PresetTreeViewModel.GetCondensedTreeState();
             Settings.Default.PresetsTreeLastVersion = _mainWindowLocalization.PresetTreeViewModel.BuildingPresetsVersion;
 
             Settings.Default.TreeViewSearchText = _mainWindowLocalization.TreeViewSearchText;

@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnnoDesigner.Core.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PresetParser.Tests", "Tests\PresetParser.Tests\PresetParser.Tests.csproj", "{D49B557D-320C-425E-8822-051AC5A1A26F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnnoDesigner.Tests", "Tests\AnnoDesigner.Tests\AnnoDesigner.Tests.csproj", "{809FDE16-4864-4CD2-83A5-75315E970BFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{D49B557D-320C-425E-8822-051AC5A1A26F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D49B557D-320C-425E-8822-051AC5A1A26F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D49B557D-320C-425E-8822-051AC5A1A26F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{809FDE16-4864-4CD2-83A5-75315E970BFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{809FDE16-4864-4CD2-83A5-75315E970BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{809FDE16-4864-4CD2-83A5-75315E970BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{809FDE16-4864-4CD2-83A5-75315E970BFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +59,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{82097B68-D1A8-4091-A5AE-D4F65138D933} = {97F1FB7F-39A2-48F8-BA71-9AA5D077F0C9}
 		{D49B557D-320C-425E-8822-051AC5A1A26F} = {97F1FB7F-39A2-48F8-BA71-9AA5D077F0C9}
+		{809FDE16-4864-4CD2-83A5-75315E970BFD} = {97F1FB7F-39A2-48F8-BA71-9AA5D077F0C9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {39A81E7F-D35A-4B00-94CC-1D29CF9A80E6}

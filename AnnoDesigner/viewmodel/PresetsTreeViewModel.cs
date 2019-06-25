@@ -14,20 +14,19 @@ using AnnoDesigner.Core.Presets.Comparer;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.model;
 using AnnoDesigner.model.PresetsTree;
-using static AnnoDesigner.Core.CoreConstants;
 
 namespace AnnoDesigner.viewmodel
 {
     public class PresetsTreeViewModel : Notify
     {
-        public event EventHandler ApplySelectedItem;
+        public event EventHandler<EventArgs> ApplySelectedItem;
 
         private ObservableCollection<GenericTreeItem> _items;
         private ICollectionView _filteredItems;
         private GenericTreeItem _selectedItem;
         private string _buildingPresetsVersion;
         private string _filterText;
-        private GameVersion _filterGameVersion;
+        private CoreConstants.GameVersion _filterGameVersion;
 
         public PresetsTreeViewModel()
         {
@@ -38,7 +37,7 @@ namespace AnnoDesigner.viewmodel
             //SelectedItemChangedCommand = new RelayCommand(SelectedItemChanged, null);
             ReturnKeyPressedCommand = new RelayCommand(ReturnKeyPressed, null);
             BuildingPresetsVersion = string.Empty;
-            FilterGameVersion = GameVersion.All;
+            FilterGameVersion = CoreConstants.GameVersion.All;
             FilterText = string.Empty;
         }
 
@@ -78,7 +77,7 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
-        public GameVersion FilterGameVersion
+        public CoreConstants.GameVersion FilterGameVersion
         {
             get { return _filterGameVersion; }
             set
@@ -100,10 +99,10 @@ namespace AnnoDesigner.viewmodel
             if (selectedItem?.AnnoObject != null)
             {
                 SelectedItem = selectedItem;
-            }
 
-            //call ApplyPreset();
-            ApplySelectedItem?.Invoke(this, EventArgs.Empty);
+                //call ApplyPreset();
+                ApplySelectedItem?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         //public ICommand SelectedItemChangedCommand { get; private set; }
@@ -125,18 +124,27 @@ namespace AnnoDesigner.viewmodel
             if (selectedItem?.AnnoObject != null)
             {
                 SelectedItem = selectedItem;
-            }
 
-            //call ApplyPreset();
-            ApplySelectedItem?.Invoke(this, EventArgs.Empty);
+                //call ApplyPreset();
+                ApplySelectedItem?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         #endregion
 
         public void LoadItems(BuildingPresets buildingPresets)
         {
+            if (buildingPresets == null)
+            {
+                throw new ArgumentNullException(nameof(buildingPresets));
+            }
+
+            BuildingPresetsVersion = buildingPresets.Version;
+
+#if DEBUG
             Stopwatch sw = new Stopwatch();
             sw.Start();
+#endif
 
             Items.Clear();
 
@@ -145,6 +153,11 @@ namespace AnnoDesigner.viewmodel
             foreach (var curRoad in roadTiles)
             {
                 Items.Add(curRoad);
+            }
+
+            if (!buildingPresets.Buildings.Any())
+            {
+                return;
             }
 
             //prepare data
@@ -165,14 +178,14 @@ namespace AnnoDesigner.viewmodel
                 .ToList();
 
             #region some checks
-
+#if DEBUG
             var facilityList = filteredBuildingList.Where(x => string.Equals(x.Faction, "Facilities", StringComparison.OrdinalIgnoreCase)).ToList();
 
             //Get a list of nonMatchedModules;
             var nonMatchedModulesList = modulesList.Except(facilityList, new BuildingInfoComparer()).ToList();
             //These appear to all match. The below statement should notify the progammer if we need to add handling for non matching lists
             System.Diagnostics.Debug.Assert(nonMatchedModulesList.Count == 0, "Module lists do not match, implement handling for this");
-
+#endif
             #endregion
 
             //add data to tree
@@ -185,7 +198,7 @@ namespace AnnoDesigner.viewmodel
                     GameVersion = GetGameVersion(curGame.Key)
                 };
 
-                var groupedFactions = curGame.GroupBy(x => x.Faction).OrderBy(x => x.Key);
+                var groupedFactions = curGame.Where(x => x.Faction != null).GroupBy(x => x.Faction).OrderBy(x => x.Key);
                 foreach (var curFaction in groupedFactions)
                 {
                     var factionItem = new GenericTreeItem(gameItem)
@@ -254,16 +267,10 @@ namespace AnnoDesigner.viewmodel
                 Items.Add(gameItem);
             }
 
+#if DEBUG
             sw.Stop();
-            Debug.WriteLine($"<< New >> loading TreeItems took: {sw.ElapsedMilliseconds}ms");
-
-            BuildingPresetsVersion = buildingPresets.Version;
-
-            //to test things
-            //Items[3].IsVisible = false;
-            //Items[2].Children[1].Children[0].IsExpanded = true;
-            //FilterText = "Fire";
-            //FilterGameVersion = GameVersion.Anno1404 | GameVersion.Anno2205;
+            Debug.WriteLine($"loading items for PresetsTree took: {sw.ElapsedMilliseconds}ms");
+#endif
         }
 
         private List<GenericTreeItem> GetRoadTiles()
@@ -329,19 +336,19 @@ namespace AnnoDesigner.viewmodel
         /// Returns the current state of all expanded nodes in the tree.
         /// </summary>
         /// <returns></returns>
-        public List<bool> GetTreeState()
+        public List<bool> GetCondensedTreeState()
         {
             var result = new List<bool>();
 
             foreach (var curNode in Items)
             {
-                GetTreeState(curNode, result);
+                GetCondensedTreeState(curNode, result);
             }
 
             return result;
         }
 
-        private List<bool> GetTreeState(GenericTreeItem node, List<bool> result)
+        private List<bool> GetCondensedTreeState(GenericTreeItem node, List<bool> result)
         {
             if (!node.Children.Any())
             {
@@ -359,7 +366,7 @@ namespace AnnoDesigner.viewmodel
 
             foreach (var curChildNode in node.Children)
             {
-                GetTreeState(curChildNode, result);
+                GetCondensedTreeState(curChildNode, result);
             }
 
             return result;
@@ -370,10 +377,10 @@ namespace AnnoDesigner.viewmodel
         /// </summary>
         /// <param name="savedTreeState">The saved state of all expanded nodes.</param>
         /// <param name="lastBuildingPresetsVersion">The last presets version used to save the state.</param>
-        public void SetTreeState(List<bool> savedTreeState, string lastBuildingPresetsVersion)
+        public void SetCondensedTreeState(List<bool> savedTreeState, string lastBuildingPresetsVersion)
         {
             //presets version does not match
-            if (!string.Equals(BuildingPresetsVersion, lastBuildingPresetsVersion, StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrWhiteSpace(lastBuildingPresetsVersion) || !string.Equals(BuildingPresetsVersion, lastBuildingPresetsVersion, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
@@ -387,11 +394,11 @@ namespace AnnoDesigner.viewmodel
             var currentIndex = -1;
             foreach (var curNode in Items)
             {
-                currentIndex = SetTreeState(curNode, savedTreeState, currentIndex);
+                currentIndex = SetCondensedTreeState(curNode, savedTreeState, currentIndex);
             }
         }
 
-        private int SetTreeState(GenericTreeItem node, List<bool> savedTreeState, int currentIndex)
+        private int SetCondensedTreeState(GenericTreeItem node, List<bool> savedTreeState, int currentIndex)
         {
             if (!node.Children.Any())
             {
@@ -409,7 +416,7 @@ namespace AnnoDesigner.viewmodel
 
             foreach (var curChildNode in node.Children)
             {
-                currentIndex = SetTreeState(curChildNode, savedTreeState, currentIndex);
+                currentIndex = SetCondensedTreeState(curChildNode, savedTreeState, currentIndex);
             }
 
             return currentIndex;
@@ -518,11 +525,11 @@ namespace AnnoDesigner.viewmodel
             return curItem.IsVisible;
         }
 
-        private void FilterByGameVersion(GameVersion versionsToUse)
+        private void FilterByGameVersion(CoreConstants.GameVersion versionsToUse)
         {
             foreach (var curGameItem in FilteredItems.OfType<GameHeaderTreeItem>())
             {
-                if (versionsToUse == GameVersion.All)
+                if (versionsToUse == CoreConstants.GameVersion.All)
                 {
                     curGameItem.IsVisible = true;
 
