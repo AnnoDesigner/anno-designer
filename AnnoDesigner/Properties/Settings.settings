@@ -38,9 +38,6 @@
     <Setting Name="PromptedForAutoUpdateCheck" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="TreeViewState" Type="System.Collections.Generic.List&lt;System.Boolean&gt;" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="EnableAutomaticUpdateCheck" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

@@ -187,7 +187,7 @@ namespace AnnoDesigner
             ShowGrid.IsChecked = Settings.Default.ShowGrid;
             ShowIcons.IsChecked = Settings.Default.ShowIcons;
             ShowLabels.IsChecked = Settings.Default.ShowLabels;
-            _treeViewState = Settings.Default.TreeViewState ?? null;
+            _treeViewState = Settings.Default.PresetsTreeExpandedState ?? null;
             _mainWindowLocalization.TreeViewSearchText = Settings.Default.TreeViewSearchText ?? "";
             CheckBoxPavedStreet.IsChecked = Settings.Default.IsPavedStreet;
             SetPavedStreetCheckboxColor();

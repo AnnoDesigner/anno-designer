@@ -14,6 +14,7 @@ using AnnoDesigner.Core.Presets.Comparer;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.model;
 using AnnoDesigner.model.PresetsTree;
+using static AnnoDesigner.Core.CoreConstants;
 
 namespace AnnoDesigner.viewmodel
 {
@@ -26,6 +27,7 @@ namespace AnnoDesigner.viewmodel
         private GenericTreeItem _selectedItem;
         private string _buildingPresetsVersion;
         private string _filterText;
+        private GameVersion _filterGameVersion;
 
         public PresetsTreeViewModel()
         {
@@ -36,6 +38,7 @@ namespace AnnoDesigner.viewmodel
             //SelectedItemChangedCommand = new RelayCommand(SelectedItemChanged, null);
             ReturnKeyPressedCommand = new RelayCommand(ReturnKeyPressed, null);
             BuildingPresetsVersion = string.Empty;
+            FilterGameVersion = GameVersion.All;
             FilterText = string.Empty;
         }
 
@@ -70,7 +73,19 @@ namespace AnnoDesigner.viewmodel
             {
                 if (UpdateProperty(ref _filterText, value))
                 {
-                    MyFilter();
+                    Filter();
+                }
+            }
+        }
+
+        public GameVersion FilterGameVersion
+        {
+            get { return _filterGameVersion; }
+            set
+            {
+                if (UpdateProperty(ref _filterGameVersion, value))
+                {
+                    Filter();
                 }
             }
         }
@@ -247,7 +262,8 @@ namespace AnnoDesigner.viewmodel
             //to test things
             //Items[3].IsVisible = false;
             //Items[2].Children[1].Children[0].IsExpanded = true;
-            //FilterText = "Fire";           
+            //FilterText = "Fire";
+            //FilterGameVersion = GameVersion.Anno1404 | GameVersion.Anno2205;
         }
 
         private List<GenericTreeItem> GetRoadTiles()
@@ -292,7 +308,7 @@ namespace AnnoDesigner.viewmodel
 
             switch (gameHeader)
             {
-                case "(A4) Anno 1400":
+                case "(A4) Anno 1404":
                     result = CoreConstants.GameVersion.Anno1404;
                     break;
                 case "(A5) Anno 2070":
@@ -399,10 +415,18 @@ namespace AnnoDesigner.viewmodel
             return currentIndex;
         }
 
-        private void MyFilter()
+        private void Filter()
         {
+            FilterByGameVersion(FilterGameVersion);
+
             foreach (GenericTreeItem curItem in FilteredItems)
             {
+                //short circuit hidden game items
+                if (curItem is GameHeaderTreeItem curGameItem && !curGameItem.IsVisible)
+                {
+                    continue;
+                }
+
                 //short circuit items without children
                 if (!curItem.Children.Any())
                 {
@@ -425,7 +449,7 @@ namespace AnnoDesigner.viewmodel
                 var anyChildMatches = false;
                 foreach (var curChild in curItem.Children)
                 {
-                    var childMatches = MyFilter(curChild);
+                    var childMatches = Filter(curChild);
                     if (childMatches)
                     {
                         anyChildMatches = true;
@@ -447,7 +471,7 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
-        private bool MyFilter(GenericTreeItem curItem)
+        private bool Filter(GenericTreeItem curItem)
         {
             //short circuit items without children
             if (!curItem.Children.Any())
@@ -471,7 +495,7 @@ namespace AnnoDesigner.viewmodel
             var anyChildMatches = false;
             foreach (var curChild in curItem.Children)
             {
-                var childMatches = MyFilter(curChild);
+                var childMatches = Filter(curChild);
                 if (childMatches)
                 {
                     anyChildMatches = true;
@@ -492,6 +516,21 @@ namespace AnnoDesigner.viewmodel
             }
 
             return curItem.IsVisible;
+        }
+
+        private void FilterByGameVersion(GameVersion versionsToUse)
+        {
+            foreach (var curGameItem in FilteredItems.OfType<GameHeaderTreeItem>())
+            {
+                if (versionsToUse == GameVersion.All)
+                {
+                    curGameItem.IsVisible = true;
+
+                    continue;
+                }
+
+                curGameItem.IsVisible = versionsToUse.HasFlag(curGameItem.GameVersion);
+            }
         }
     }
 }
