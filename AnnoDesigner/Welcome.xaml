@@ -7,45 +7,77 @@
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         mc:Ignorable="d"
         xmlns:l="clr-namespace:AnnoDesigner.Localization"
-        Title="Welcome" 
-        Height="705" 
-        Width="525" 
-        MinHeight="300" 
+        Title="Welcome"
+        Height="705"
+        Width="525"
+        MinHeight="300"
         MinWidth="300"
-        Padding="10,10,10,10" 
+        Padding="10,10,10,10"
         ResizeMode="NoResize"
         Icon="icon.ico"
         Top="{Binding Source={x:Static properties:Settings.Default},Path=WelcomeTop, Mode=TwoWay}"
-        Left="{Binding Source={x:Static properties:Settings.Default},Path=WelcomeLeft, Mode=TwoWay}" 
-        WindowStartupLocation="CenterOwner"
-        >
+        Left="{Binding Source={x:Static properties:Settings.Default},Path=WelcomeLeft, Mode=TwoWay}"
+        WindowStartupLocation="CenterScreen">
     <Grid Margin="0,0,2,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <TextBlock Margin="79,10,0,0" FontSize="30" Text="Welcome to the Anno Designer!" VerticalAlignment="Top" HorizontalAlignment="Left" Width="433"/>
-        <Image Name="WelcomeIcon" Source="Stuff/icon64.png" Stretch="Fill" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0" Height="68" Width="64"/>
-        <TextBlock HorizontalAlignment="Left" Margin="79,45,0,0" VerticalAlignment="Top" Width="433" FontSize="22" Height="38"><Run Text="Please select a language:"/></TextBlock>
-        <ListBox Name="LanguageSelection" 
-                 Margin="10,83,191,48" 
-                 HorizontalContentAlignment="Stretch" 
-                 SelectionMode="Single" 
+        <TextBlock Margin="79,10,0,0"
+                   FontSize="30"
+                   Text="Welcome to the Anno Designer!"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Left"
+                   Width="433" />
+        <Image Name="WelcomeIcon"
+               Source="Stuff/icon64.png"
+               Stretch="Fill"
+               VerticalAlignment="Top"
+               HorizontalAlignment="Left"
+               Margin="10,10,0,0"
+               Height="68"
+               Width="64" />
+        <TextBlock HorizontalAlignment="Left"
+                   Margin="79,45,0,0"
+                   VerticalAlignment="Top"
+                   Width="433"
+                   FontSize="22"
+                   Height="38"><Run Text="Please select a language:" /></TextBlock>
+        <ListBox Name="LanguageSelection"
+                 Margin="10,83,191,48"
+                 HorizontalContentAlignment="Stretch"
+                 SelectionMode="Single"
                  ItemsSource="{Binding}"
                  ScrollViewer.CanContentScroll="False"
-                 BorderThickness="0" 
+                 BorderThickness="0"
                  Background="#FFECECEC"
-                 MouseDoubleClick="LanguageSelection_MouseDoubleClick"
-                 >
+                 MouseDoubleClick="LanguageSelection_MouseDoubleClick">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal" Margin="20">
-                        <Image Source="{Binding FlagPath}" Width="100"/>
-                        <Label Content="{Binding Name}" VerticalContentAlignment="Center" FontSize="16" Width="Auto"/>
+                    <StackPanel HorizontalAlignment="Stretch"
+                                Orientation="Horizontal"
+                                Margin="20">
+                        <Image Source="{Binding FlagPath}"
+                               Width="100" />
+                        <Label Content="{Binding Name}"
+                               VerticalContentAlignment="Center"
+                               FontSize="16"
+                               Width="Auto" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Button Height="33" Margin="10,0,373,10" VerticalAlignment="Bottom" Content="Continue" Name="ContinueButton" HorizontalAlignment="Stretch" Click="ContinueButton_Click"  />
-        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Left" Margin="329,88,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.416,0.462" Width="146"/>
+        <Button Height="33"
+                Margin="10,0,373,10"
+                VerticalAlignment="Bottom"
+                Content="Continue"
+                Name="ContinueButton"
+                HorizontalAlignment="Stretch"
+                Click="ContinueButton_Click" />
+        <TextBlock TextWrapping="Wrap"
+                   HorizontalAlignment="Left"
+                   Margin="329,88,0,0"
+                   VerticalAlignment="Top"
+                   RenderTransformOrigin="0.416,0.462"
+                   Width="146" />
     </Grid>
 </Window>
