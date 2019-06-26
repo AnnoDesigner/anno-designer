@@ -135,6 +135,12 @@ namespace AnnoDesigner.Tests
             var locBakery = new SerializableDictionary<string>();
             locBakery.Dict.Add("eng", "Bakery");
 
+            var locRiceFarm = new SerializableDictionary<string>();
+            locRiceFarm.Dict.Add("eng", "Rice Farm");
+
+            var locRiceField = new SerializableDictionary<string>();
+            locRiceField.Dict.Add("eng", "Rice Field");
+
             var buildings = new List<BuildingInfo>
             {
                 //Fire Station
@@ -193,6 +199,25 @@ namespace AnnoDesigner.Tests
                     Identifier = "Food_01 (Bread Maker)",
                     Template = "FactoryBuilding7",
                     Localization = locBakery
+                },
+                //Rice                
+                new BuildingInfo
+                {
+                    Header = "(A6) Anno 2205",
+                    Faction = "Facilities",
+                    Group = "Agriculture",
+                    Identifier = "production agriculture earth facility 01",
+                    Template = "FactoryBuilding",
+                    Localization = locRiceFarm
+                },
+                new BuildingInfo
+                {
+                    Header = "(A6) Anno 2205",
+                    Faction = "Facility Modules",
+                    Group = "Agriculture",
+                    Identifier = "production agriculture earth facility module 01 tier 01",
+                    Template = "BuildingModule",
+                    Localization = locRiceField
                 }
             };
 
@@ -444,6 +469,80 @@ namespace AnnoDesigner.Tests
             // Assert
             //2 road buildings + 4 game versions
             Assert.Equal(6, viewModel.Items.Count);
+        }
+
+        [Fact]
+        public void LoadItems_SubsetForFiltering_ShouldLoadAllItemsAndAddExtraNodeForModulesIn2205()
+        {
+            // Arrange
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
+
+            // Act
+            viewModel.LoadItems(_subsetForFiltering);
+
+            // Assert
+            Assert.True(viewModel.Items[0].IsVisible);//first road tile
+            Assert.True(viewModel.Items[1].IsVisible);//second road tile
+
+            var anno1404Node = viewModel.Items[2];
+            Assert.Equal("(A4) Anno 1404", anno1404Node.Header);
+            Assert.True(anno1404Node.IsVisible);
+            var productionNode = anno1404Node.Children.Single(x => x.Header.StartsWith("Production"));
+            Assert.True(productionNode.IsVisible);
+            var factoryNode = productionNode.Children.Single(x => x.Header.StartsWith("Factory"));
+            Assert.True(factoryNode.IsVisible);
+            var bakeryNode = factoryNode.Children.Single(x => x.Header.StartsWith("Bakery"));
+            Assert.True(bakeryNode.IsVisible);
+            var publicNode = anno1404Node.Children.Single(x => x.Header.StartsWith("Public"));
+            Assert.True(publicNode.IsVisible);
+            var specialNode = publicNode.Children.Single(x => x.Header.StartsWith("Special"));
+            Assert.True(specialNode.IsVisible);
+            var fireStationNode = specialNode.Children.First(x => x.Header.StartsWith("Fire"));
+            Assert.True(fireStationNode.IsVisible);
+
+            var anno2070Node = viewModel.Items[3];
+            Assert.Equal("(A5) Anno 2070", anno2070Node.Header);
+            Assert.True(anno2070Node.IsVisible);
+            var othersNode = anno2070Node.Children.Single(x => x.Header.StartsWith("Others"));
+            Assert.True(othersNode.IsVisible);
+            specialNode = othersNode.Children.Single(x => x.Header.StartsWith("Special"));
+            Assert.True(specialNode.IsVisible);
+            var policeStationNode = specialNode.Children.First(x => x.Header.StartsWith("Police"));
+            Assert.True(policeStationNode.IsVisible);
+
+            var anno2205Node = viewModel.Items[4];
+            Assert.Equal("(A6) Anno 2205", anno2205Node.Header);
+            Assert.True(anno2205Node.IsVisible);
+            var facilityNode = anno2205Node.Children.Single(x => x.Header.StartsWith("Facilities"));
+            Assert.True(facilityNode.IsVisible);
+            var agricutureNode = facilityNode.Children.Single(x => x.Header.StartsWith("Agriculture"));
+            Assert.True(agricutureNode.IsVisible);
+            var riceFarmNode = agricutureNode.Children.Single(x => x.Header.StartsWith("Rice Farm"));
+            Assert.True(riceFarmNode.IsVisible);
+            var moduleNode = agricutureNode.Children.Single(x => x.Header.StartsWith("Agriculture Modules"));
+            Assert.True(moduleNode.IsVisible);
+            var riceFieldNode = moduleNode.Children.Single(x => x.Header.StartsWith("Rice Field"));
+            Assert.True(riceFieldNode.IsVisible);
+            var earthNode = anno2205Node.Children.Single(x => x.Header.StartsWith("(1) Earth"));
+            Assert.True(earthNode.IsVisible);
+            publicNode = earthNode.Children.Single(x => x.Header.StartsWith("Public"));
+            Assert.True(publicNode.IsVisible);
+            policeStationNode = publicNode.Children.First(x => x.Header.StartsWith("Police"));
+            Assert.True(policeStationNode.IsVisible);
+
+            var anno1800Node = viewModel.Items[5];
+            Assert.Equal("(A7) Anno 1800", anno1800Node.Header);
+            Assert.True(anno1800Node.IsVisible);
+            var workersNode = anno1800Node.Children.Single(x => x.Header.StartsWith("(2) Workers"));
+            Assert.True(workersNode.IsVisible);
+            productionNode = workersNode.Children.Single(x => x.Header.StartsWith("Production"));
+            Assert.True(productionNode.IsVisible);
+            bakeryNode = productionNode.Children.Single(x => x.Header.StartsWith("Bakery"));
+            Assert.True(bakeryNode.IsVisible);
+            publicNode = workersNode.Children.Single(x => x.Header.StartsWith("Public"));
+            Assert.True(publicNode.IsVisible);
+            policeStationNode = publicNode.Children.First(x => x.Header.StartsWith("Police"));
+            Assert.True(policeStationNode.IsVisible);
         }
 
         #endregion
@@ -950,12 +1049,123 @@ namespace AnnoDesigner.Tests
             Assert.True(fireStationNode.IsVisible);
 
             //all other nodes should not be visible
-            Assert.Equal("(A5) Anno 2070", viewModel.Items[3].Header);
-            Assert.False(viewModel.Items[3].IsVisible);
-            Assert.Equal("(A6) Anno 2205", viewModel.Items[4].Header);
-            Assert.False(viewModel.Items[4].IsVisible);
-            Assert.Equal("(A7) Anno 1800", viewModel.Items[5].Header);
-            Assert.False(viewModel.Items[5].IsVisible);
+            var anno2070Node = viewModel.Items[3];
+            Assert.Equal("(A5) Anno 2070", anno2070Node.Header);
+            Assert.False(anno2070Node.IsVisible);
+            var anno2205Node = viewModel.Items[4];
+            Assert.Equal("(A6) Anno 2205", anno2205Node.Header);
+            Assert.False(anno2205Node.IsVisible);
+            var anno1800Node = viewModel.Items[5];
+            Assert.Equal("(A7) Anno 1800", anno1800Node.Header);
+            Assert.False(anno1800Node.IsVisible);
+        }
+
+        [Fact]
+        public void FilterText_SearchForPoliceAndFilterGameVersionIsAll_ShouldOnlyShowPoliceStationAndExpandParents()
+        {
+            // Arrange
+            var filterText = "Police";
+
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
+            viewModel.LoadItems(_subsetForFiltering);
+            viewModel.FilterText = string.Empty;
+            viewModel.FilterGameVersion = CoreConstants.GameVersion.All;
+
+            // Act
+            viewModel.FilterText = filterText;
+
+            // Assert
+            Assert.False(viewModel.Items[0].IsVisible);//first road tile
+            Assert.False(viewModel.Items[1].IsVisible);//second road tile
+
+            var anno1404Node = viewModel.Items[2];
+            Assert.Equal("(A4) Anno 1404", anno1404Node.Header);
+            Assert.False(anno1404Node.IsVisible);
+
+            var anno2070Node = viewModel.Items[3];
+            Assert.Equal("(A5) Anno 2070", anno2070Node.Header);
+            Assert.True(anno2070Node.IsVisible);
+            Assert.True(anno2070Node.IsExpanded);
+            var othersNode = anno2070Node.Children.Single(x => x.Header.StartsWith("Others"));
+            Assert.True(othersNode.IsVisible);
+            Assert.True(othersNode.IsExpanded);
+            var specialNode = othersNode.Children.Single(x => x.Header.StartsWith("Special"));
+            Assert.True(specialNode.IsVisible);
+            Assert.True(specialNode.IsExpanded);
+            var policeStationNode = specialNode.Children.First(x => x.Header.StartsWith("Police"));
+            Assert.True(policeStationNode.IsVisible);
+
+            var anno2205Node = viewModel.Items[4];
+            Assert.Equal("(A6) Anno 2205", anno2205Node.Header);
+            Assert.True(anno2205Node.IsVisible);
+            Assert.True(anno2205Node.IsExpanded);
+            Assert.False(anno2205Node.Children.Single(x => x.Header.StartsWith("Facilities")).IsVisible);
+            var earthNode = anno2205Node.Children.Single(x => x.Header.StartsWith("(1) Earth"));
+            Assert.True(earthNode.IsVisible);
+            Assert.True(earthNode.IsExpanded);
+            var publicNode = earthNode.Children.Single(x => x.Header.StartsWith("Public"));
+            Assert.True(publicNode.IsVisible);
+            Assert.True(publicNode.IsExpanded);
+            policeStationNode = publicNode.Children.First(x => x.Header.StartsWith("Police"));
+            Assert.True(policeStationNode.IsVisible);
+
+            var anno1800Node = viewModel.Items[5];
+            Assert.Equal("(A7) Anno 1800", anno1800Node.Header);
+            Assert.True(anno1800Node.IsVisible);
+            Assert.True(anno1800Node.IsExpanded);
+            var workersNode = anno1800Node.Children.Single(x => x.Header.StartsWith("(2) Workers"));
+            Assert.True(workersNode.IsVisible);
+            Assert.True(workersNode.IsExpanded);
+            Assert.False(workersNode.Children.Single(x => x.Header.StartsWith("Production")).IsVisible);
+            publicNode = workersNode.Children.Single(x => x.Header.StartsWith("Public"));
+            Assert.True(publicNode.IsVisible);
+            Assert.True(publicNode.IsExpanded);
+            policeStationNode = publicNode.Children.First(x => x.Header.StartsWith("Police"));
+            Assert.True(policeStationNode.IsVisible);
+        }
+
+        [Fact]
+        public void FilterText_SearchForPoliceAndFilterGameVersionIs2070_ShouldOnlyShowPoliceStationAndExpandParentsForAnno2070()
+        {
+            // Arrange
+            var filterText = "Police";
+
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
+            viewModel.LoadItems(_subsetForFiltering);
+            viewModel.FilterText = string.Empty;
+            viewModel.FilterGameVersion = CoreConstants.GameVersion.Anno2070;
+
+            // Act
+            viewModel.FilterText = filterText;
+
+            // Assert
+            Assert.False(viewModel.Items[0].IsVisible);//first road tile
+            Assert.False(viewModel.Items[1].IsVisible);//second road tile
+
+            var anno1404Node = viewModel.Items[2];
+            Assert.Equal("(A4) Anno 1404", anno1404Node.Header);
+            Assert.False(anno1404Node.IsVisible);
+
+            var anno2070Node = viewModel.Items[3];
+            Assert.Equal("(A5) Anno 2070", anno2070Node.Header);
+            Assert.True(anno2070Node.IsVisible);
+            Assert.True(anno2070Node.IsExpanded);
+            var othersNode = anno2070Node.Children.Single(x => x.Header.StartsWith("Others"));
+            Assert.True(othersNode.IsVisible);
+            Assert.True(othersNode.IsExpanded);
+            var specialNode = othersNode.Children.Single(x => x.Header.StartsWith("Special"));
+            Assert.True(specialNode.IsVisible);
+            Assert.True(specialNode.IsExpanded);
+            var policeStationNode = specialNode.Children.First(x => x.Header.StartsWith("Police"));
+            Assert.True(policeStationNode.IsVisible);
+
+            //all other nodes should not be visible
+            var anno2205Node = viewModel.Items[4];
+            Assert.Equal("(A6) Anno 2205", anno2205Node.Header);
+            Assert.False(anno2205Node.IsVisible);
+            var anno1800Node = viewModel.Items[5];
+            Assert.Equal("(A7) Anno 1800", anno1800Node.Header);
+            Assert.False(anno1800Node.IsVisible);
         }
 
         #endregion
