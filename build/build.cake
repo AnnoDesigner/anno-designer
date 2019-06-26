@@ -131,6 +131,10 @@ var updateAssemblyInfoTask = Task("Update-Assembly-Info")
     ReplaceRegexInFiles("./../PresetParser/Properties/AssemblyInfo.cs",
                         "(?<=AssemblyFileVersion\\(\")(.+?)(?=\"\\))",
                         $"{versionNumber}.0.0");
+    
+    ReplaceRegexInFiles("./../AnnoDesigner/Constants.cs",
+                        "(?<=double Version = )(\\d.\\d)",
+                        $"{versionNumber}");
 });
 
 var buildTask = Task("Build")
