@@ -261,6 +261,101 @@ namespace PresetParser.Tests
             Assert.Equal(expectedPrefix + expectedResult[expectedGuid2][languages[0]], result[expectedGuid2][languages[0]]);
         }
 
+        [Fact]
+        public void GetLocalization_IsAnno1404AndNoPrefixAndIsReferenceWhichIsFound_ShouldReturnCorrectResult()
+        {
+            // Arrange
+            var basePath = "dummy";
+            var languages = new string[] { "eng" };
+            var guid1 = "54321";
+            var localization1 = "building with spaces";
+            var guid2 = "12345";
+            var localization2 = $"[GUIDNAME {guid1}]";
+
+            var mockedFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { $@"{basePath}\data\loca\{languages[0]}\txt\guids.txt", new MockFileData($"{guid1}={localization1}{Environment.NewLine}{guid2}={localization2}") },
+            });
+
+            var expectedResult = new Dictionary<string, SerializableDictionary<string>>();
+            expectedResult.Add(guid1, new SerializableDictionary<string>());
+            expectedResult[guid1][languages[0]] = localization1;
+            expectedResult.Add(guid2, new SerializableDictionary<string>());
+            expectedResult[guid2][languages[0]] = localization1;
+
+            var helper = new LocalizationHelper(mockedFileSystem);
+
+            // Act
+            var result = helper.GetLocalization(Constants.ANNO_VERSION_1404, addPrefix: false, testData_versionSpecificPaths_Anno1404, languages, basePath);
+
+            // Assert
+            Assert.NotEmpty(result);
+            Assert.Equal(expectedResult[guid1][languages[0]], result[guid1][languages[0]]);
+            Assert.Equal(expectedResult[guid2][languages[0]], result[guid2][languages[0]]);
+        }
+
+        [Fact]
+        public void GetLocalization_IsAnno1404AndNoPrefixAndIsReferenceWhichIsNotFound_ShouldReturnCorrectResult()
+        {
+            // Arrange
+            var basePath = "dummy";
+            var languages = new string[] { "eng" };
+            var guid1 = "54321";
+            var localization1 = "building with spaces";
+            var guid2 = "12345";
+            var localization2 = $"[GUIDNAME 98765]";
+
+            var mockedFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { $@"{basePath}\data\loca\{languages[0]}\txt\guids.txt", new MockFileData($"{guid1}={localization1}{Environment.NewLine}{guid2}={localization2}") },
+            });
+
+            var expectedResult = new Dictionary<string, SerializableDictionary<string>>();
+            expectedResult.Add(guid1, new SerializableDictionary<string>());
+            expectedResult[guid1][languages[0]] = localization1;
+
+            var helper = new LocalizationHelper(mockedFileSystem);
+
+            // Act
+            var result = helper.GetLocalization(Constants.ANNO_VERSION_1404, addPrefix: false, testData_versionSpecificPaths_Anno1404, languages, basePath);
+
+            // Assert
+            Assert.NotEmpty(result);
+            Assert.Equal(expectedResult[guid1][languages[0]], result[guid1][languages[0]]);
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public void GetLocalization_IsAnno1404AndPrefixAndIsReferenceWhichIsFound_ShouldReturnCorrectResult()
+        {
+            // Arrange
+            var basePath = "dummy";
+            var languages = new string[] { "eng" };
+            var guid1 = "54321";
+            var localization1 = "building with spaces";
+            var guid2 = "12345";
+            var localization2 = $"[GUIDNAME {guid1}]";
+            var expectedPrefix = "A4_";
+
+            var mockedFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { $@"{basePath}\data\loca\{languages[0]}\txt\guids.txt", new MockFileData($"{guid1}={localization1}{Environment.NewLine}{guid2}={localization2}") },
+            });
+
+            var expectedResult = new Dictionary<string, SerializableDictionary<string>>();
+            expectedResult.Add(guid1, new SerializableDictionary<string>());
+            expectedResult[guid1][languages[0]] = localization1;
+
+            var helper = new LocalizationHelper(mockedFileSystem);
+
+            // Act
+            var result = helper.GetLocalization(Constants.ANNO_VERSION_1404, addPrefix: true, testData_versionSpecificPaths_Anno1404, languages, basePath);
+
+            // Assert
+            Assert.NotEmpty(result);
+            Assert.Equal(expectedPrefix + expectedResult[guid1][languages[0]], result[guid1][languages[0]]);
+        }
+
         #endregion
 
         #region Anno 2070 tests
@@ -402,6 +497,101 @@ namespace PresetParser.Tests
             // Assert
             Assert.NotEmpty(result);
             Assert.Equal(expectedPrefix + expectedResult[expectedGuid][languages[0]], result[expectedGuid][languages[0]]);
+        }
+
+        [Fact]
+        public void GetLocalization_IsAnno2070AndNoPrefixAndIsReferenceWhichIsFound_ShouldReturnCorrectResult()
+        {
+            // Arrange
+            var basePath = "dummy";
+            var languages = new string[] { "eng" };
+            var guid1 = "54321";
+            var localization1 = "building with spaces";
+            var guid2 = "12345";
+            var localization2 = $"[GUIDNAME {guid1}]";
+
+            var mockedFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { $@"{basePath}\data\loca\{languages[0]}\txt\guids.txt", new MockFileData($"{guid1}={localization1}{Environment.NewLine}{guid2}={localization2}") },
+            });
+
+            var expectedResult = new Dictionary<string, SerializableDictionary<string>>();
+            expectedResult.Add(guid1, new SerializableDictionary<string>());
+            expectedResult[guid1][languages[0]] = localization1;
+            expectedResult.Add(guid2, new SerializableDictionary<string>());
+            expectedResult[guid2][languages[0]] = localization1;
+
+            var helper = new LocalizationHelper(mockedFileSystem);
+
+            // Act
+            var result = helper.GetLocalization(Constants.ANNO_VERSION_2070, addPrefix: false, testData_versionSpecificPaths_Anno2070, languages, basePath);
+
+            // Assert
+            Assert.NotEmpty(result);
+            Assert.Equal(expectedResult[guid1][languages[0]], result[guid1][languages[0]]);
+            Assert.Equal(expectedResult[guid2][languages[0]], result[guid2][languages[0]]);
+        }
+
+        [Fact]
+        public void GetLocalization_IsAnno2070AndNoPrefixAndIsReferenceWhichIsNotFound_ShouldReturnCorrectResult()
+        {
+            // Arrange
+            var basePath = "dummy";
+            var languages = new string[] { "eng" };
+            var guid1 = "54321";
+            var localization1 = "building with spaces";
+            var guid2 = "12345";
+            var localization2 = $"[GUIDNAME 98765]";
+
+            var mockedFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { $@"{basePath}\data\loca\{languages[0]}\txt\guids.txt", new MockFileData($"{guid1}={localization1}{Environment.NewLine}{guid2}={localization2}") },
+            });
+
+            var expectedResult = new Dictionary<string, SerializableDictionary<string>>();
+            expectedResult.Add(guid1, new SerializableDictionary<string>());
+            expectedResult[guid1][languages[0]] = localization1;
+
+            var helper = new LocalizationHelper(mockedFileSystem);
+
+            // Act
+            var result = helper.GetLocalization(Constants.ANNO_VERSION_2070, addPrefix: false, testData_versionSpecificPaths_Anno2070, languages, basePath);
+
+            // Assert
+            Assert.NotEmpty(result);
+            Assert.Equal(expectedResult[guid1][languages[0]], result[guid1][languages[0]]);
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public void GetLocalization_IsAnno2070AndPrefixAndIsReferenceWhichIsFound_ShouldReturnCorrectResult()
+        {
+            // Arrange
+            var basePath = "dummy";
+            var languages = new string[] { "eng" };
+            var guid1 = "54321";
+            var localization1 = "building with spaces";
+            var guid2 = "12345";
+            var localization2 = $"[GUIDNAME {guid1}]";
+            var expectedPrefix = "A5_";
+
+            var mockedFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { $@"{basePath}\data\loca\{languages[0]}\txt\guids.txt", new MockFileData($"{guid1}={localization1}{Environment.NewLine}{guid2}={localization2}") },
+            });
+
+            var expectedResult = new Dictionary<string, SerializableDictionary<string>>();
+            expectedResult.Add(guid1, new SerializableDictionary<string>());
+            expectedResult[guid1][languages[0]] = localization1;
+
+            var helper = new LocalizationHelper(mockedFileSystem);
+
+            // Act
+            var result = helper.GetLocalization(Constants.ANNO_VERSION_2070, addPrefix: true, testData_versionSpecificPaths_Anno2070, languages, basePath);
+
+            // Assert
+            Assert.NotEmpty(result);
+            Assert.Equal(expectedPrefix + expectedResult[guid1][languages[0]], result[guid1][languages[0]]);
         }
 
         #endregion
