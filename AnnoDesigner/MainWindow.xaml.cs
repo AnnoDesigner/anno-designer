@@ -269,13 +269,16 @@ namespace AnnoDesigner
                     _mainWindowLocalization.PresetTreeViewModel.FilterText = Settings.Default.TreeViewSearchText;
                 }
 
-                Dictionary<int, bool> savedTreeState = null;
-                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(Settings.Default.PresetsTreeExpandedState)))
+                if (!string.IsNullOrWhiteSpace(Settings.Default.PresetsTreeExpandedState))
                 {
-                    savedTreeState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
-                }
+                    Dictionary<int, bool> savedTreeState = null;
+                    using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(Settings.Default.PresetsTreeExpandedState)))
+                    {
+                        savedTreeState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
+                    }
 
-                _mainWindowLocalization.PresetTreeViewModel.SetCondensedTreeState(savedTreeState, Settings.Default.PresetsTreeLastVersion);
+                    _mainWindowLocalization.PresetTreeViewModel.SetCondensedTreeState(savedTreeState, Settings.Default.PresetsTreeLastVersion);
+                }
             }
             else
             {
