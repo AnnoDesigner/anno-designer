@@ -140,8 +140,7 @@
                 <MenuItem Name="LanguageMenu"
                           Header="{Binding Path=Language}"
                           TabIndex="23"
-                          Click="MenuItemLanguageClick"
-                          SubmenuClosed="LanguageMenuSubmenuClosed">
+                          Click="MenuItemLanguageClick">
                     <MenuItem Header="English"
                               IsCheckable="True"
                               IsChecked="True"

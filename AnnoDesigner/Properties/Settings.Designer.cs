@@ -286,9 +286,10 @@ namespace AnnoDesigner.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Generic.List<System.Boolean> PresetsTreeExpandedState {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PresetsTreeExpandedState {
             get {
-                return ((global::System.Collections.Generic.List<System.Boolean>)(this["PresetsTreeExpandedState"]));
+                return ((string)(this["PresetsTreeExpandedState"]));
             }
             set {
                 this["PresetsTreeExpandedState"] = value;

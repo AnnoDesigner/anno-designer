@@ -35,7 +35,7 @@ namespace AnnoDesigner.Tests
 
         #region test data        
 
-        private (List<GenericTreeItem> items, List<bool> expectedState) GetTreeAndState(bool expandLastMainNode = true)
+        private (List<GenericTreeItem> items, Dictionary<int, bool> expectedState) GetTreeAndState(bool expandLastMainNode = true)
         {
             //tree state:
             //-item 1       //is expanded, but has no children -> test unexpected behaviour [do not add to list]
@@ -48,45 +48,45 @@ namespace AnnoDesigner.Tests
             // -item 52     //is expanded and has children -> test condensed behaviour [add true to list]
             //  -item 521   //is not expanded and has no children -> test normal behaviour [do not add to list]
 
-            var expectedState = new List<bool>();
+            var expectedState = new Dictionary<int, bool>();
             if (expandLastMainNode)
             {
-                expectedState = new List<bool>
+                expectedState = new Dictionary<int, bool>
                 {
-                    true,
-                    true,
-                    false,
-                    true
+                    { 4, true},
+                    { 5, true},
+                    { 51, false},
+                    { 52, true},
                 };
             }
             else
             {
-                expectedState = new List<bool>
+                expectedState = new Dictionary<int, bool>
                 {
-                    true,
-                    false
+                    { 4, true},
+                    { 5, false},
                 };
             }
 
-            var item4 = new GenericTreeItem(null) { Header = "item 4", IsExpanded = true };
-            var item41 = new GenericTreeItem(item4) { Header = "item 41", IsExpanded = true };
+            var item4 = new GenericTreeItem(null) { Id = 4, Header = "item 4", IsExpanded = true };
+            var item41 = new GenericTreeItem(item4) { Id = 41, Header = "item 41", IsExpanded = true };
             item4.Children.Add(item41);
 
-            var item5 = new GenericTreeItem(null) { Header = "item 5", IsExpanded = expandLastMainNode };
-            var item51 = new GenericTreeItem(item5) { Header = "item 51", IsExpanded = false };
-            var item511 = new GenericTreeItem(item51) { Header = "item 511", IsExpanded = false };
+            var item5 = new GenericTreeItem(null) { Id = 5, Header = "item 5", IsExpanded = expandLastMainNode };
+            var item51 = new GenericTreeItem(item5) { Id = 51, Header = "item 51", IsExpanded = false };
+            var item511 = new GenericTreeItem(item51) { Id = 511, Header = "item 511", IsExpanded = false };
             item51.Children.Add(item511);
-            var item52 = new GenericTreeItem(item5) { Header = "item 52", IsExpanded = true };
-            var item521 = new GenericTreeItem(item52) { Header = "item 521", IsExpanded = false };
+            var item52 = new GenericTreeItem(item5) { Id = 52, Header = "item 52", IsExpanded = expandLastMainNode };
+            var item521 = new GenericTreeItem(item52) { Id = 521, Header = "item 521", IsExpanded = false };
             item52.Children.Add(item521);
             item5.Children.Add(item51);
             item5.Children.Add(item52);
 
             var items = new List<GenericTreeItem>
             {
-                new GenericTreeItem(null) { Header = "item 1", IsExpanded = true },
-                new GenericTreeItem(null) { Header = "item 2", IsExpanded = false },
-                new GenericTreeItem(null) { Header = "item 3", Children = new ObservableCollection<GenericTreeItem>() },
+                new GenericTreeItem(null) { Id = 1, Header = "item 1", IsExpanded = true },
+                new GenericTreeItem(null) { Id = 2, Header = "item 2", IsExpanded = false },
+                new GenericTreeItem(null) { Id = 3, Header = "item 3", Children = new ObservableCollection<GenericTreeItem>() },
                 item4,
                 item5
             };
@@ -876,7 +876,7 @@ namespace AnnoDesigner.Tests
             viewModel.Items = new ObservableCollection<GenericTreeItem>(items);
 
             // Act
-            viewModel.SetCondensedTreeState(new List<bool>(), lastBuildingPresetsVersionToSet);
+            viewModel.SetCondensedTreeState(new Dictionary<int, bool>(), lastBuildingPresetsVersionToSet);
 
             // Assert
             Assert.Equal(expectedState, viewModel.GetCondensedTreeState());
@@ -899,7 +899,7 @@ namespace AnnoDesigner.Tests
             viewModel.Items = new ObservableCollection<GenericTreeItem>(items);
 
             // Act
-            viewModel.SetCondensedTreeState(new List<bool>(), "2.0");
+            viewModel.SetCondensedTreeState(new Dictionary<int, bool>(), "2.0");
 
             // Assert
             Assert.Equal(expectedState, viewModel.GetCondensedTreeState());
@@ -945,13 +945,13 @@ namespace AnnoDesigner.Tests
             viewModel.Items = new ObservableCollection<GenericTreeItem>(items);
 
             // Act
-            viewModel.SetCondensedTreeState(new List<bool>(), buildingPresetsVersion);
+            viewModel.SetCondensedTreeState(new Dictionary<int, bool>(), buildingPresetsVersion);
 
             // Assert
             Assert.Equal(expectedState, viewModel.GetCondensedTreeState());
         }
 
-        [Fact(Skip = "test does not work, but (real) logic does")]
+        [Fact]
         public void SetCondensedTreeState_SavedTreeStateIsCompatible_ShouldSetTreeState()
         {
             // Arrange
@@ -965,13 +965,24 @@ namespace AnnoDesigner.Tests
             viewModel.LoadItems(buildingPresets);
 
             var (items, expectedState) = GetTreeAndState(expandLastMainNode: false);
-            viewModel.Items = new ObservableCollection<GenericTreeItem>(items);
+            viewModel.Items.Clear();
+            foreach (var curItem in items)
+            {
+                viewModel.Items.Add(curItem);
+            }
+
+            var savedTreeState = new Dictionary<int, bool>
+            {
+                { 4, true },
+                { 5, false }
+            };
 
             // Act
-            viewModel.SetCondensedTreeState(expectedState, buildingPresetsVersion);
+            viewModel.SetCondensedTreeState(savedTreeState, buildingPresetsVersion);
 
             // Assert
-            Assert.Equal(expectedState, viewModel.GetCondensedTreeState());
+            var currentState = viewModel.GetCondensedTreeState();
+            Assert.Equal(savedTreeState, currentState);
         }
 
         #endregion

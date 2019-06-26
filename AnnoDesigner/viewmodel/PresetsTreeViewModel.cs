@@ -163,6 +163,9 @@ namespace AnnoDesigner.viewmodel
                 return;
             }
 
+            //Each item needs an id for save/restore of tree state. We don't know how many roads were added.
+            var itemId = Items.Count;
+
             //prepare data
             var headerAnno2205 = "(A6) Anno 2205";
 
@@ -198,7 +201,8 @@ namespace AnnoDesigner.viewmodel
                 var gameItem = new GameHeaderTreeItem
                 {
                     Header = curGame.Key,
-                    GameVersion = GetGameVersion(curGame.Key)
+                    GameVersion = GetGameVersion(curGame.Key),
+                    Id = ++itemId
                 };
 
                 var groupedFactions = curGame.Where(x => x.Faction != null).GroupBy(x => x.Faction).OrderBy(x => x.Key);
@@ -206,7 +210,8 @@ namespace AnnoDesigner.viewmodel
                 {
                     var factionItem = new GenericTreeItem(gameItem)
                     {
-                        Header = _localizationHelper.GetLocalization(curFaction.Key)
+                        Header = _localizationHelper.GetLocalization(curFaction.Key),
+                        Id = ++itemId
                     };
 
                     var groupedGroups = curFaction.Where(x => x.Group != null).GroupBy(x => x.Group).OrderBy(x => x.Key);
@@ -214,7 +219,8 @@ namespace AnnoDesigner.viewmodel
                     {
                         var groupItem = new GenericTreeItem(factionItem)
                         {
-                            Header = _localizationHelper.GetLocalization(curGroup.Key)
+                            Header = _localizationHelper.GetLocalization(curGroup.Key),
+                            Id = ++itemId
                         };
 
                         foreach (var curBuildingInfo in curGroup.OrderBy(x => x.GetOrderParameter()))
@@ -222,7 +228,8 @@ namespace AnnoDesigner.viewmodel
                             groupItem.Children.Add(new GenericTreeItem(groupItem)
                             {
                                 Header = curBuildingInfo.ToAnnoObject().Label,
-                                AnnoObject = curBuildingInfo.ToAnnoObject()
+                                AnnoObject = curBuildingInfo.ToAnnoObject(),
+                                Id = ++itemId
                             });
                         }
 
@@ -233,7 +240,8 @@ namespace AnnoDesigner.viewmodel
                         {
                             var moduleItem = new GenericTreeItem(groupItem)
                             {
-                                Header = _localizationHelper.GetLocalization(curGroup.ElementAt(0).Group) + " " + _localizationHelper.GetLocalization("Modules")
+                                Header = _localizationHelper.GetLocalization(curGroup.ElementAt(0).Group) + " " + _localizationHelper.GetLocalization("Modules"),
+                                Id = ++itemId
                             };
 
                             foreach (var fourthLevel in modulesList.Where(x => x.Group == curGroup.ElementAt(0).Group))
@@ -241,7 +249,8 @@ namespace AnnoDesigner.viewmodel
                                 moduleItem.Children.Add(new GenericTreeItem(moduleItem)
                                 {
                                     Header = fourthLevel.ToAnnoObject().Label,
-                                    AnnoObject = fourthLevel.ToAnnoObject()
+                                    AnnoObject = fourthLevel.ToAnnoObject(),
+                                    Id = ++itemId
                                 });
                             }
 
@@ -260,7 +269,8 @@ namespace AnnoDesigner.viewmodel
                         factionItem.Children.Add(new GenericTreeItem(factionItem)
                         {
                             Header = curGroup.ToAnnoObject().Label,
-                            AnnoObject = curGroup.ToAnnoObject()
+                            AnnoObject = curGroup.ToAnnoObject(),
+                            Id = ++itemId
                         });
                     }
 
@@ -280,6 +290,9 @@ namespace AnnoDesigner.viewmodel
         {
             var result = new List<GenericTreeItem>();
 
+            //Each item needs an id for save/restore of tree state.
+            var itemId = -1;
+
             result.Add(new GenericTreeItem(null)
             {
                 Header = _localizationHelper.GetLocalization("RoadTile"),
@@ -291,7 +304,8 @@ namespace AnnoDesigner.viewmodel
                     Road = true,
                     Identifier = "Road",
                     Template = "Road"
-                }
+                },
+                Id = ++itemId
             });
 
             result.Add(new GenericTreeItem(null)
@@ -306,7 +320,8 @@ namespace AnnoDesigner.viewmodel
                     Road = true,
                     Identifier = "Road",
                     Template = "Road"
-                }
+                },
+                Id = ++itemId
             });
 
             return result;
@@ -339,9 +354,9 @@ namespace AnnoDesigner.viewmodel
         /// Returns the current state of all expanded nodes in the tree.
         /// </summary>
         /// <returns></returns>
-        public List<bool> GetCondensedTreeState()
+        public Dictionary<int, bool> GetCondensedTreeState()
         {
-            var result = new List<bool>();
+            var result = new Dictionary<int, bool>();
 
             foreach (var curNode in Items)
             {
@@ -351,7 +366,7 @@ namespace AnnoDesigner.viewmodel
             return result;
         }
 
-        private List<bool> GetCondensedTreeState(GenericTreeItem node, List<bool> result)
+        private Dictionary<int, bool> GetCondensedTreeState(GenericTreeItem node, Dictionary<int, bool> result)
         {
             if (!node.Children.Any())
             {
@@ -360,12 +375,12 @@ namespace AnnoDesigner.viewmodel
 
             if (!node.IsExpanded)
             {
-                result.Add(false);
+                result.Add(node.Id, false);
 
                 return result;
             }
 
-            result.Add(true);
+            result.Add(node.Id, true);
 
             foreach (var curChildNode in node.Children)
             {
@@ -380,7 +395,7 @@ namespace AnnoDesigner.viewmodel
         /// </summary>
         /// <param name="savedTreeState">The saved state of all expanded nodes.</param>
         /// <param name="lastBuildingPresetsVersion">The last presets version used to save the state.</param>
-        public void SetCondensedTreeState(List<bool> savedTreeState, string lastBuildingPresetsVersion)
+        public void SetCondensedTreeState(Dictionary<int, bool> savedTreeState, string lastBuildingPresetsVersion)
         {
             //presets version does not match
             if (string.IsNullOrWhiteSpace(lastBuildingPresetsVersion) || !string.Equals(BuildingPresetsVersion, lastBuildingPresetsVersion, StringComparison.OrdinalIgnoreCase))
@@ -394,35 +409,31 @@ namespace AnnoDesigner.viewmodel
                 return;
             }
 
-            var currentIndex = -1;
+
             foreach (var curNode in Items)
             {
-                currentIndex = SetCondensedTreeState(curNode, savedTreeState, currentIndex);
+                SetCondensedTreeState(curNode, savedTreeState);
             }
         }
 
-        private int SetCondensedTreeState(GenericTreeItem node, List<bool> savedTreeState, int currentIndex)
+        private void SetCondensedTreeState(GenericTreeItem node, Dictionary<int, bool> savedTreeState)
         {
             if (!node.Children.Any())
             {
-                return currentIndex;
+                return;
             }
 
-            if (!savedTreeState[currentIndex + 1])
+            if (!savedTreeState.ContainsKey(node.Id))
             {
-                return ++currentIndex;
+                return;
             }
 
-            ++currentIndex;
-
-            node.IsExpanded = savedTreeState[currentIndex];
+            node.IsExpanded = savedTreeState[node.Id];
 
             foreach (var curChildNode in node.Children)
             {
-                currentIndex = SetCondensedTreeState(curChildNode, savedTreeState, currentIndex);
+                SetCondensedTreeState(curChildNode, savedTreeState);
             }
-
-            return currentIndex;
         }
 
         private void Filter()

@@ -28,6 +28,7 @@ using AnnoDesigner.Core.Layout;
 using System.Text;
 using AnnoDesigner.Core.Layout.Exceptions;
 using System.Configuration;
+using AnnoDesigner.Core.Helper;
 
 namespace AnnoDesigner
 {
@@ -39,7 +40,7 @@ namespace AnnoDesigner
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
         private static MainWindow _instance;
-        private List<bool> _treeViewState;
+        private Dictionary<int, bool> _treeViewState;
 
         private static string _selectedLanguage;
         //for identifier checking process
@@ -187,7 +188,17 @@ namespace AnnoDesigner
             ShowGrid.IsChecked = Settings.Default.ShowGrid;
             ShowIcons.IsChecked = Settings.Default.ShowIcons;
             ShowLabels.IsChecked = Settings.Default.ShowLabels;
-            _treeViewState = Settings.Default.PresetsTreeExpandedState ?? null;
+            if (!string.IsNullOrWhiteSpace(Settings.Default.PresetsTreeExpandedState))
+            {
+                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(Settings.Default.PresetsTreeExpandedState)))
+                {
+                    _treeViewState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
+                }
+            }
+            else
+            {
+                _treeViewState = null;
+            }
             _mainWindowLocalization.TreeViewSearchText = Settings.Default.TreeViewSearchText ?? "";
             CheckBoxPavedStreet.IsChecked = Settings.Default.IsPavedStreet;
             SetPavedStreetCheckboxColor();
@@ -258,7 +269,13 @@ namespace AnnoDesigner
                     _mainWindowLocalization.PresetTreeViewModel.FilterText = Settings.Default.TreeViewSearchText;
                 }
 
-                _mainWindowLocalization.PresetTreeViewModel.SetCondensedTreeState(Settings.Default.PresetsTreeExpandedState, Settings.Default.PresetsTreeLastVersion);
+                Dictionary<int, bool> savedTreeState = null;
+                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(Settings.Default.PresetsTreeExpandedState)))
+                {
+                    savedTreeState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
+                }
+
+                _mainWindowLocalization.PresetTreeViewModel.SetCondensedTreeState(savedTreeState, Settings.Default.PresetsTreeLastVersion);
             }
             else
             {
@@ -816,11 +833,6 @@ namespace AnnoDesigner
             }
         }
 
-        private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
-        {
-            SelectedLanguageChanged();
-        }
-
         #endregion
 
         private void ComboxBoxInfluenceType_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -976,7 +988,14 @@ namespace AnnoDesigner
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
-            Settings.Default.PresetsTreeExpandedState = _mainWindowLocalization.PresetTreeViewModel.GetCondensedTreeState();
+            string savedTreeState = null;
+            using (var ms = new MemoryStream())
+            {
+                SerializationHelper.SaveToStream(_mainWindowLocalization.PresetTreeViewModel.GetCondensedTreeState(), ms);
+
+                savedTreeState = Encoding.UTF8.GetString(ms.ToArray());
+            }
+            Settings.Default.PresetsTreeExpandedState = savedTreeState;
             Settings.Default.PresetsTreeLastVersion = _mainWindowLocalization.PresetTreeViewModel.BuildingPresetsVersion;
 
             Settings.Default.TreeViewSearchText = _mainWindowLocalization.TreeViewSearchText;

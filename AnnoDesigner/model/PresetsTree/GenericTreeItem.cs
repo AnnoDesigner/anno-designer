@@ -18,6 +18,7 @@ namespace AnnoDesigner.model.PresetsTree
         private ObservableCollection<GenericTreeItem> _children;
         private bool _isExpanded;
         private bool _isVisible;
+        private int _id;
 
         public GenericTreeItem(GenericTreeItem parent)
         {
@@ -36,7 +37,7 @@ namespace AnnoDesigner.model.PresetsTree
 
         public GenericTreeItem Root
         {
-            get { return _parent == null ? this : _parent.Root; }
+            get { return Parent == null ? this : Parent.Root; }
         }
 
         public string Header
@@ -76,6 +77,15 @@ namespace AnnoDesigner.model.PresetsTree
         {
             get { return _isVisible; }
             set { UpdateProperty(ref _isVisible, value); }
+        }
+
+        /// <summary>
+        /// Id of this node is mainly used to save/restore a tree state.
+        /// </summary>        
+        public int Id
+        {
+            get { return _id; }
+            set { UpdateProperty(ref _id, value); }
         }
     }
 }

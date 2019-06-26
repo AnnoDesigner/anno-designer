@@ -407,7 +407,7 @@ namespace AnnoDesigner.Localization
                 language = Localization.GetLanguageCodeFromName(AnnoDesigner.MainWindow.SelectedLanguage);
             }
 
-            if (!Localization.LanguageCodeMap.ContainsKey(language))
+            if (!Localization.LanguageCodeMap.ContainsValue(language))
             {
                 language = "eng";
             }
