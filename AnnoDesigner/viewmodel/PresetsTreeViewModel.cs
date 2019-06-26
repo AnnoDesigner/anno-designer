@@ -21,6 +21,7 @@ namespace AnnoDesigner.viewmodel
     {
         public event EventHandler<EventArgs> ApplySelectedItem;
 
+        private readonly ILocalizationHelper _localizationHelper;
         private ObservableCollection<GenericTreeItem> _items;
         private ICollectionView _filteredItems;
         private GenericTreeItem _selectedItem;
@@ -28,8 +29,10 @@ namespace AnnoDesigner.viewmodel
         private string _filterText;
         private CoreConstants.GameVersion _filterGameVersion;
 
-        public PresetsTreeViewModel()
+        public PresetsTreeViewModel(ILocalizationHelper localizationHelperToUse)
         {
+            _localizationHelper = localizationHelperToUse;
+
             Items = new ObservableCollection<GenericTreeItem>();
             FilteredItems = CollectionViewSource.GetDefaultView(Items);
 
@@ -203,7 +206,7 @@ namespace AnnoDesigner.viewmodel
                 {
                     var factionItem = new GenericTreeItem(gameItem)
                     {
-                        Header = TreeLocalization.TreeLocalization.GetTreeLocalization(curFaction.Key)
+                        Header = _localizationHelper.GetLocalization(curFaction.Key)
                     };
 
                     var groupedGroups = curFaction.Where(x => x.Group != null).GroupBy(x => x.Group).OrderBy(x => x.Key);
@@ -211,7 +214,7 @@ namespace AnnoDesigner.viewmodel
                     {
                         var groupItem = new GenericTreeItem(factionItem)
                         {
-                            Header = TreeLocalization.TreeLocalization.GetTreeLocalization(curGroup.Key)
+                            Header = _localizationHelper.GetLocalization(curGroup.Key)
                         };
 
                         foreach (var curBuildingInfo in curGroup.OrderBy(x => x.GetOrderParameter()))
@@ -230,7 +233,7 @@ namespace AnnoDesigner.viewmodel
                         {
                             var moduleItem = new GenericTreeItem(groupItem)
                             {
-                                Header = TreeLocalization.TreeLocalization.GetTreeLocalization(curGroup.ElementAt(0).Group) + " " + TreeLocalization.TreeLocalization.GetTreeLocalization("Modules")
+                                Header = _localizationHelper.GetLocalization(curGroup.ElementAt(0).Group) + " " + _localizationHelper.GetLocalization("Modules")
                             };
 
                             foreach (var fourthLevel in modulesList.Where(x => x.Group == curGroup.ElementAt(0).Group))
@@ -279,10 +282,10 @@ namespace AnnoDesigner.viewmodel
 
             result.Add(new GenericTreeItem(null)
             {
-                Header = TreeLocalization.TreeLocalization.GetTreeLocalization("RoadTile"),
+                Header = _localizationHelper.GetLocalization("RoadTile"),
                 AnnoObject = new AnnoObject
                 {
-                    Label = TreeLocalization.TreeLocalization.GetTreeLocalization("RoadTile"),
+                    Label = _localizationHelper.GetLocalization("RoadTile"),
                     Size = new Size(1, 1),
                     Radius = 0,
                     Road = true,
@@ -293,10 +296,10 @@ namespace AnnoDesigner.viewmodel
 
             result.Add(new GenericTreeItem(null)
             {
-                Header = TreeLocalization.TreeLocalization.GetTreeLocalization("BorderlessRoadTile"),
+                Header = _localizationHelper.GetLocalization("BorderlessRoadTile"),
                 AnnoObject = new AnnoObject
                 {
-                    Label = TreeLocalization.TreeLocalization.GetTreeLocalization("BorderlessRoadTile"),
+                    Label = _localizationHelper.GetLocalization("BorderlessRoadTile"),
                     Size = new Size(1, 1),
                     Radius = 0,
                     Borderless = true,

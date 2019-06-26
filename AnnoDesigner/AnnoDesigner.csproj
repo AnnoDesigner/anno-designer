@@ -47,19 +47,19 @@
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="BuildingInfoExtensions.cs" />
-    <Compile Include="BuildingPresetsExtensions.cs" />
     <Compile Include="ColorHueSaturationBrightnessComparer.cs" />
     <Compile Include="Commons.cs" />
     <Compile Include="InputWindow.xaml.cs">
       <DependentUpon>InputWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Localization\Localization.cs" />
+    <Compile Include="model\ILocalizationHelper.cs" />
     <Compile Include="model\PresetsTree\GameHeaderTreeItem.cs" />
     <Compile Include="model\PresetsTree\GenericTreeItem.cs" />
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
     <Compile Include="model\BuildingInfluenceType.cs" />
-    <Compile Include="TreeLocalization.cs" />
-    <Compile Include="Localization.cs" />
+    <Compile Include="Localization\TreeLocalization.cs" />
     <Compile Include="MutexHelper.cs" />
     <Compile Include="model\StatisticsBuilding.cs" />
     <Compile Include="model\Notify.cs" />

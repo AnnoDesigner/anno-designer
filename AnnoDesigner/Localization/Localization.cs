@@ -864,7 +864,7 @@ namespace AnnoDesigner.Localization
         {
             _statisticsViewModel = new StatisticsViewModel();
             _buildingSettingsViewModel = new BuildingSettingsViewModel();
-            _presetTreeViewModel = new PresetsTreeViewModel();
+            _presetTreeViewModel = new PresetsTreeViewModel(new TreeLocalization());
 
             UpdateLanguage();
         }

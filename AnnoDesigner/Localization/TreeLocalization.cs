@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using AnnoDesigner.model;
 
-namespace AnnoDesigner.TreeLocalization
+namespace AnnoDesigner.Localization
 {
-    public static class TreeLocalization
+    public class TreeLocalization : ILocalizationHelper
     {
         public static Dictionary<string, Dictionary<string, string>> Translations;
 
@@ -394,33 +395,47 @@ namespace AnnoDesigner.TreeLocalization
             };
         }
 
-        public static string GetTreeLocalization(string localizationHeader)
+        public string GetLocalization(string valueToTranslate)
         {
-            var language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+            return GetLocalization(valueToTranslate, null);
+        }
+
+        public string GetLocalization(string valueToTranslate, string language = null)
+        {
+            if (string.IsNullOrWhiteSpace(language))
+            {
+                language = Localization.GetLanguageCodeFromName(AnnoDesigner.MainWindow.SelectedLanguage);
+            }
+
+            if (!Localization.LanguageCodeMap.ContainsKey(language))
+            {
+                language = "eng";
+            }
+
             try
             {
-                if (TreeLocalization.Translations[language].TryGetValue(localizationHeader.Replace(" ", String.Empty), out string foundLocalization))
+                if (Translations[language].TryGetValue(valueToTranslate.Replace(" ", string.Empty), out string foundLocalization))
                 {
                     return foundLocalization;
                 }
                 else
                 {
-                    Debug.WriteLine($"try to set localization to english for: : \"{localizationHeader}\"");
-                    if (TreeLocalization.Translations["eng"].TryGetValue(localizationHeader.Replace(" ", String.Empty), out string engLocalization))
+                    Debug.WriteLine($"try to set localization to english for: : \"{valueToTranslate}\"");
+                    if (Translations["eng"].TryGetValue(valueToTranslate.Replace(" ", string.Empty), out string engLocalization))
                     {
                         return engLocalization;
                     }
                     else
                     {
-                        Debug.WriteLine($"found no localization (\"eng\") and ({language}) for : \"{localizationHeader}\"");
-                        return localizationHeader;
+                        Debug.WriteLine($"found no localization (\"eng\") and ({language}) for : \"{valueToTranslate}\"");
+                        return valueToTranslate;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"error getting localization ({language}) for: \"{localizationHeader}\"{Environment.NewLine}{ex}");
-                return localizationHeader;
+                Debug.WriteLine($"error getting localization ({language}) for: \"{valueToTranslate}\"{Environment.NewLine}{ex}");
+                return valueToTranslate;
             }
         }
     }

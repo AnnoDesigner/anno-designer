@@ -7,8 +7,10 @@ using AnnoDesigner.Core;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
+using AnnoDesigner.model;
 using AnnoDesigner.model.PresetsTree;
 using AnnoDesigner.viewmodel;
+using Moq;
 using Xunit;
 using Xunit.Sdk;
 
@@ -16,14 +18,22 @@ namespace AnnoDesigner.Tests
 {
     public class PresetsTreeViewModelTests
     {
+        private static readonly BuildingPresets _subsetFromPresetsFile;
+        private static readonly BuildingPresets _subsetForFiltering;
+        private static ILocalizationHelper _mockedTreeLocalization;
+
         static PresetsTreeViewModelTests()
         {
-            _presetsSubset = LoadPresetsSubset();
+            _subsetFromPresetsFile = InitSubsetFromPresetsFile();
+            _subsetForFiltering = InitSubsetForFiltering();
+
+            var mockedLocalizationHelper = new Mock<ILocalizationHelper>();
+            mockedLocalizationHelper.Setup(x => x.GetLocalization(It.IsAny<string>())).Returns<string>(x => x);
+            mockedLocalizationHelper.Setup(x => x.GetLocalization(It.IsAny<string>(), It.IsAny<string>())).Returns((string value, string langauge) => value);
+            _mockedTreeLocalization = mockedLocalizationHelper.Object;
         }
 
-        #region test data
-
-        private static readonly BuildingPresets _presetsSubset;
+        #region test data        
 
         private (List<GenericTreeItem> items, List<bool> expectedState) GetTreeAndState(bool expandLastMainNode = true)
         {
@@ -88,7 +98,7 @@ namespace AnnoDesigner.Tests
         /// Load a subset of current presets. Is only called once.
         /// </summary>
         /// <returns>A subset of the current presets.</returns>
-        private static BuildingPresets LoadPresetsSubset()
+        private static BuildingPresets InitSubsetFromPresetsFile()
         {
             var loader = new BuildingPresetsLoader();
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
@@ -114,6 +124,87 @@ namespace AnnoDesigner.Tests
             return presets;
         }
 
+        private static BuildingPresets InitSubsetForFiltering()
+        {
+            var locFireStation = new SerializableDictionary<string>();
+            locFireStation.Dict.Add("eng", "Fire Station");
+
+            var locPoliceStation = new SerializableDictionary<string>();
+            locPoliceStation.Dict.Add("eng", "Police Station");
+
+            var locBakery = new SerializableDictionary<string>();
+            locBakery.Dict.Add("eng", "Bakery");
+
+            var buildings = new List<BuildingInfo>
+            {
+                //Fire Station
+                new BuildingInfo
+                {
+                    Header = "(A4) Anno 1404",
+                    Faction = "Public",
+                    Group = "Special",
+                    Identifier = "FireStation",
+                    Template = "SimpleBuilding",
+                    Localization = locFireStation
+                },
+                //Police Station
+                new BuildingInfo
+                {
+                    Header = "(A5) Anno 2070",
+                    Faction = "Others",
+                    Group = "Special",
+                    Identifier = "police_station",
+                    Template = "SupportBuilding",
+                    Localization = locPoliceStation
+                },
+                new BuildingInfo
+                {
+                    Header = "(A6) Anno 2205",
+                    Faction = "(1) Earth",
+                    Group = "Public Buildings",
+                    Identifier = "metro police",
+                    Template = "CityInstitutionBuilding",
+                    Localization = locPoliceStation
+                },
+                new BuildingInfo
+                {
+                    Header = "(A7) Anno 1800",
+                    Faction = "(2) Workers",
+                    Group = "Public Buildings",
+                    Identifier = "Institution_01 (Police)",
+                    Template = "CityInstitutionBuilding",
+                    Localization = locPoliceStation
+                },
+                //Bakery
+                new BuildingInfo
+                {
+                    Header = "(A4) Anno 1404",
+                    Faction = "Production",
+                    Group = "Factory",
+                    Identifier = "Bakery",
+                    Template = "FactoryBuilding",
+                    Localization = locBakery
+                },
+                new BuildingInfo
+                {
+                    Header = "(A7) Anno 1800",
+                    Faction = "(2) Workers",
+                    Group = "Production Buildings",
+                    Identifier = "Food_01 (Bread Maker)",
+                    Template = "FactoryBuilding7",
+                    Localization = locBakery
+                }
+            };
+
+            var presets = new BuildingPresets
+            {
+                Version = "0.1",
+                Buildings = buildings
+            };
+
+            return presets;
+        }
+
         #endregion
 
         #region ctor tests
@@ -122,7 +213,7 @@ namespace AnnoDesigner.Tests
         public void Ctor_ShouldSetDefaultValues()
         {
             // Arrange/Act
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             // Assert
             Assert.NotNull(viewModel.Items);
@@ -142,7 +233,7 @@ namespace AnnoDesigner.Tests
         public void LoadItems_BuildingPresetsIsNull_ShouldThrow()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             // Act/Assert
             Assert.Throws<ArgumentNullException>(() => viewModel.LoadItems(null));
@@ -152,7 +243,7 @@ namespace AnnoDesigner.Tests
         public void LoadItems_BuildingPresetsContainsNoBuildings_ShouldLoadTwoRoadItems()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var buildingPresets = new BuildingPresets();
             buildingPresets.Buildings = new List<BuildingInfo>();
@@ -170,7 +261,7 @@ namespace AnnoDesigner.Tests
         public void LoadItems_ViewModelHasItems_ShouldClearItemsBeforeLoad()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var itemsToAdd = Enumerable.Repeat(new GenericTreeItem(null), 10);
             foreach (var curItem in itemsToAdd)
@@ -197,7 +288,7 @@ namespace AnnoDesigner.Tests
         public void LoadItems_BuildingPresetsPassed_ShouldSetVersionOfBuildingPresets(string versionToSet)
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var buildingPresets = new BuildingPresets();
             buildingPresets.Buildings = new List<BuildingInfo>();
@@ -214,7 +305,7 @@ namespace AnnoDesigner.Tests
         public void LoadItems_VersionOfBuildingPresetsIsSet_ShouldRaisePropertyChangedEvent()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var buildingPresets = new BuildingPresets();
             buildingPresets.Buildings = new List<BuildingInfo>();
@@ -235,7 +326,7 @@ namespace AnnoDesigner.Tests
         public void LoadItems_BuildingsHaveHeader_ShouldSetCorrectGameVersion(string headerToSet, CoreConstants.GameVersion expectedGameVersion)
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var buildings = new List<BuildingInfo>
             {
@@ -263,7 +354,7 @@ namespace AnnoDesigner.Tests
         public void LoadItems_BuildingsHaveSpecialTemplate_ShouldNotLoadBuildings(string templateToSet)
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var buildings = new List<BuildingInfo>
             {
@@ -291,7 +382,7 @@ namespace AnnoDesigner.Tests
         public void LoadItems_BuildingsHaveSpecialFaction_ShouldNotLoadBuildings(string factionToSet)
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var buildings = new List<BuildingInfo>
             {
@@ -317,7 +408,7 @@ namespace AnnoDesigner.Tests
         public void LoadItems_BuildingsHaveFaction_ShouldLoadBuildings()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var buildings = new List<BuildingInfo>
             {
@@ -345,10 +436,10 @@ namespace AnnoDesigner.Tests
         public void LoadItems_Subset_ShouldLoadBuildings()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             // Act
-            viewModel.LoadItems(_presetsSubset);
+            viewModel.LoadItems(_subsetFromPresetsFile);
 
             // Assert
             //2 road buildings + 4 game versions
@@ -363,7 +454,7 @@ namespace AnnoDesigner.Tests
         public void DoubleClick_CommandParameterIsNull_ShouldNotSetSelectedItem()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             // Act
             viewModel.DoubleClickCommand.Execute(null);
@@ -376,7 +467,7 @@ namespace AnnoDesigner.Tests
         public void DoubleClick_CommandParameterIsNull_ShouldNotRaiseApplySelectedItemEvent()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             // Act
             var ex = Record.Exception(() => Assert.Raises<EventArgs>(
@@ -394,7 +485,7 @@ namespace AnnoDesigner.Tests
         public void DoubleClick_CommandParameterHasNoAnnoObject_ShouldNotSetSelectedItem()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var commandParameter = new GenericTreeItem(null);
 
@@ -409,7 +500,7 @@ namespace AnnoDesigner.Tests
         public void DoubleClick_CommandParameterHasNoAnnoObject_ShouldNotRaiseApplySelectedItemEvent()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var commandParameter = new GenericTreeItem(null);
 
@@ -429,7 +520,7 @@ namespace AnnoDesigner.Tests
         public void DoubleClick_CommandParameterIsUnknownObject_ShouldNotSetSelectedItem()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var commandParameter = new Object();
 
@@ -444,7 +535,7 @@ namespace AnnoDesigner.Tests
         public void DoubleClick_CommandParameterIsUnknownObject_ShouldNotRaiseApplySelectedItemEvent()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var commandParameter = new Object();
 
@@ -464,7 +555,7 @@ namespace AnnoDesigner.Tests
         public void DoubleClick_CommandParameterHasAnnoObject_ShouldSetSelectedItem()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
             var annoObjectToSet = new AnnoObject();
 
             var commandParameter = new GenericTreeItem(null);
@@ -481,7 +572,7 @@ namespace AnnoDesigner.Tests
         public void DoubleClick_CommandParameterHasAnnoObject_ShouldRaiseApplySelectedItemEvent()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var annoObjectToSet = new AnnoObject();
 
@@ -503,7 +594,7 @@ namespace AnnoDesigner.Tests
         public void ReturnKeyPressed_CommandParameterIsNull_ShouldNotSetSelectedItem()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             // Act
             viewModel.ReturnKeyPressedCommand.Execute(null);
@@ -516,7 +607,7 @@ namespace AnnoDesigner.Tests
         public void ReturnKeyPressed_CommandParameterIsNull_ShouldNotRaiseApplySelectedItemEvent()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             // Act
             var ex = Record.Exception(() => Assert.Raises<EventArgs>(
@@ -534,7 +625,7 @@ namespace AnnoDesigner.Tests
         public void ReturnKeyPressed_CommandParameterHasNoAnnoObject_ShouldNotSetSelectedItem()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var commandParameter = new GenericTreeItem(null);
 
@@ -549,7 +640,7 @@ namespace AnnoDesigner.Tests
         public void ReturnKeyPressed_CommandParameterHasNoAnnoObject_ShouldNotRaiseApplySelectedItemEvent()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var commandParameter = new GenericTreeItem(null);
 
@@ -569,7 +660,7 @@ namespace AnnoDesigner.Tests
         public void ReturnKeyPressed_CommandParameterIsUnknownObject_ShouldNotSetSelectedItem()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var commandParameter = new Object();
 
@@ -584,7 +675,7 @@ namespace AnnoDesigner.Tests
         public void ReturnKeyPressed_CommandParameterIsUnknownObject_ShouldNotRaiseApplySelectedItemEvent()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var commandParameter = new Object();
 
@@ -604,7 +695,7 @@ namespace AnnoDesigner.Tests
         public void ReturnKeyPressed_CommandParameterHasAnnoObject_ShouldSetSelectedItem()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
             var annoObjectToSet = new AnnoObject();
 
             var commandParameter = new GenericTreeItem(null);
@@ -621,7 +712,7 @@ namespace AnnoDesigner.Tests
         public void ReturnKeyPressed_CommandParameterHasAnnoObject_ShouldRaiseApplySelectedItemEvent()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var annoObjectToSet = new AnnoObject();
 
@@ -643,7 +734,7 @@ namespace AnnoDesigner.Tests
         public void GetCondensedTreeState_ItemsAreEmpty_ShouldReturnEmptyList()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             // Act
             var result = viewModel.GetCondensedTreeState();
@@ -656,7 +747,7 @@ namespace AnnoDesigner.Tests
         public void GetCondensedTreeState_ItemsExpanded_ShouldReturnCorrectList()
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var (items, expectedState) = GetTreeAndState();
 
@@ -680,7 +771,7 @@ namespace AnnoDesigner.Tests
         public void SetCondensedTreeState_LastPresetsVersionIsNullOrWhiteSpace_ShouldNotSetAnyStateAndNotThrow(string lastBuildingPresetsVersionToSet)
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
 
             var (items, expectedState) = GetTreeAndState();
             viewModel.Items = new ObservableCollection<GenericTreeItem>(items);
@@ -702,7 +793,7 @@ namespace AnnoDesigner.Tests
             buildingPresets.Buildings = new List<BuildingInfo>();
             buildingPresets.Version = buildingPresetsVersion;
 
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
             viewModel.LoadItems(buildingPresets);
 
             var (items, expectedState) = GetTreeAndState();
@@ -725,7 +816,7 @@ namespace AnnoDesigner.Tests
             buildingPresets.Buildings = new List<BuildingInfo>();
             buildingPresets.Version = buildingPresetsVersion;
 
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
             viewModel.LoadItems(buildingPresets);
 
             var (items, expectedState) = GetTreeAndState();
@@ -748,7 +839,7 @@ namespace AnnoDesigner.Tests
             buildingPresets.Buildings = new List<BuildingInfo>();
             buildingPresets.Version = buildingPresetsVersion;
 
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
             viewModel.LoadItems(buildingPresets);
 
             var (items, expectedState) = GetTreeAndState();
@@ -771,7 +862,7 @@ namespace AnnoDesigner.Tests
             buildingPresets.Buildings = new List<BuildingInfo>();
             buildingPresets.Version = buildingPresetsVersion;
 
-            var viewModel = new PresetsTreeViewModel();
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
             viewModel.LoadItems(buildingPresets);
 
             var (items, expectedState) = GetTreeAndState(expandLastMainNode: false);
@@ -800,9 +891,19 @@ namespace AnnoDesigner.Tests
         public void FilterGameVersion_SubsetIsLoadedAndFilterTextIsEmpty_ShouldFilterByGameVersion(CoreConstants.GameVersion gameVersionsToFilter, int expectedMainNodeCount)
         {
             // Arrange
-            var viewModel = new PresetsTreeViewModel();
-            viewModel.LoadItems(_presetsSubset);
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
+            viewModel.LoadItems(_subsetFromPresetsFile);
             viewModel.FilterText = string.Empty;
+
+            //make sure to really trigger the filter method
+            if (viewModel.FilterGameVersion != CoreConstants.GameVersion.Unknown)
+            {
+                viewModel.FilterGameVersion = CoreConstants.GameVersion.Unknown;
+            }
+            else
+            {
+                viewModel.FilterGameVersion = CoreConstants.GameVersion.All;
+            }
 
             // Act
             viewModel.FilterGameVersion = gameVersionsToFilter;
@@ -810,6 +911,51 @@ namespace AnnoDesigner.Tests
             // Assert
             //+ 2 road buildings
             Assert.Equal(2 + expectedMainNodeCount, viewModel.Items.Where(x => x.IsVisible).Count());
+        }
+
+        #endregion
+
+        #region FilterText tests
+
+        [Fact]
+        public void FilterText_SearchForFireAndFilterGameVersionIsAll_ShouldOnlyShowFireStationAndExpandParents()
+        {
+            // Arrange
+            var filterText = "Fire";
+
+            var viewModel = new PresetsTreeViewModel(_mockedTreeLocalization);
+            viewModel.LoadItems(_subsetForFiltering);
+            viewModel.FilterText = string.Empty;
+            viewModel.FilterGameVersion = CoreConstants.GameVersion.All;
+
+            // Act
+            viewModel.FilterText = filterText;
+
+            // Assert
+            Assert.False(viewModel.Items[0].IsVisible);//first road tile
+            Assert.False(viewModel.Items[1].IsVisible);//second road tile
+
+            var anno1404Node = viewModel.Items[2];
+            Assert.Equal("(A4) Anno 1404", anno1404Node.Header);
+            Assert.True(anno1404Node.IsVisible);
+            Assert.True(anno1404Node.IsExpanded);
+            Assert.False(anno1404Node.Children.Single(x => x.Header.StartsWith("Production")).IsVisible);
+            var publicNode = anno1404Node.Children.Single(x => x.Header.StartsWith("Public"));
+            Assert.True(publicNode.IsVisible);
+            Assert.True(publicNode.IsExpanded);
+            var specialNode = publicNode.Children.Single(x => x.Header.StartsWith("Special"));
+            Assert.True(specialNode.IsVisible);
+            Assert.True(specialNode.IsExpanded);
+            var fireStationNode = specialNode.Children.First(x => x.Header.StartsWith("Fire"));
+            Assert.True(fireStationNode.IsVisible);
+
+            //all other nodes should not be visible
+            Assert.Equal("(A5) Anno 2070", viewModel.Items[3].Header);
+            Assert.False(viewModel.Items[3].IsVisible);
+            Assert.Equal("(A6) Anno 2205", viewModel.Items[4].Header);
+            Assert.False(viewModel.Items[4].IsVisible);
+            Assert.Equal("(A7) Anno 1800", viewModel.Items[5].Header);
+            Assert.False(viewModel.Items[5].IsVisible);
         }
 
         #endregion
