@@ -131,13 +131,12 @@
                     <MenuItem Header="{Binding Path=RenderSelectionHighlightsOnExportedImage}"
                               IsCheckable="True"
                               IsChecked="False"
-                              Name="MenuItemExportSelection" />                    
+                              Name="MenuItemExportSelection" />
                 </MenuItem>
                 <MenuItem Name="LanguageMenu"
                           Header="{Binding Path=Language}"
                           TabIndex="23"
-                          Click="MenuItemLanguageClick"
-                          SubmenuClosed="LanguageMenuSubmenuClosed">
+                          Click="MenuItemLanguageClick">
                     <MenuItem Header="English"
                               IsCheckable="True"
                               IsChecked="True"
