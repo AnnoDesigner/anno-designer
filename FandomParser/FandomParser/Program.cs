@@ -28,7 +28,7 @@ namespace FandomParser
 
         public static bool UsePrettyPrint { get; set; }
 
-        public static Version PresetVersion { get; set; } = new Version(2, 0, 0, 0);
+        public static Version PresetVersion { get; set; } = new Version(2, 1, 0, 0);
 
         public static async Task Main(string[] args)
         {

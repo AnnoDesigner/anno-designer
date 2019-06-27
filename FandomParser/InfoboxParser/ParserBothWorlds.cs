@@ -16,6 +16,8 @@ namespace InfoboxParser
     {
         private readonly ICommons _commons;
 
+        //TODO support edge cases in regex like "|Input 1 Amount Electricity (OW) = 1.79769313486232E+308"
+
         //|Building Type (OW)     = Institution
         //|Building Type (NW)     = Institution
         private static readonly Regex regexBuildingType = new Regex(@"(?<begin>\|Building Type)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -212,9 +214,6 @@ namespace InfoboxParser
                 return result;
             }
 
-            result = new ProductionInfo();
-            result.EndProduct = new EndProduct();
-
             using (var reader = new StringReader(infobox))
             {
                 string curLine;
@@ -245,6 +244,16 @@ namespace InfoboxParser
                                 throw new Exception("could not find value for input");
                             }
 
+                            if (result == null)
+                            {
+                                result = new ProductionInfo();
+                            }
+
+                            if (result.EndProduct == null)
+                            {
+                                result.EndProduct = new EndProduct();
+                            }
+
                             result.EndProduct.Amount = parsedProductionAmount;
 
                             continue;
@@ -271,6 +280,16 @@ namespace InfoboxParser
                                 throw new Exception("could not find value for input");
                             }
 
+                            if (result == null)
+                            {
+                                result = new ProductionInfo();
+                            }
+
+                            if (result.EndProduct == null)
+                            {
+                                result.EndProduct = new EndProduct();
+                            }
+
                             result.EndProduct.AmountElectricity = parsedProductionAmountElectricity;
 
                             continue;
@@ -290,6 +309,16 @@ namespace InfoboxParser
                             if (string.IsNullOrWhiteSpace(matchedFileName))
                             {
                                 continue;
+                            }
+
+                            if (result == null)
+                            {
+                                result = new ProductionInfo();
+                            }
+
+                            if (result.EndProduct == null)
+                            {
+                                result.EndProduct = new EndProduct();
                             }
 
                             result.EndProduct.Icon = matchedFileName;
@@ -324,6 +353,11 @@ namespace InfoboxParser
                             if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double inputValue))
                             {
                                 throw new Exception("could not find value for input");
+                            }
+
+                            if (result == null)
+                            {
+                                result = new ProductionInfo();
                             }
 
                             var foundInputProduct = result.InputProducts.FirstOrDefault(x => x.Order == counter);
@@ -369,6 +403,11 @@ namespace InfoboxParser
                                 throw new Exception("could not find value for input");
                             }
 
+                            if (result == null)
+                            {
+                                result = new ProductionInfo();
+                            }
+
                             var foundInputProduct = result.InputProducts.FirstOrDefault(x => x.Order == counter);
                             if (foundInputProduct == null)
                             {
@@ -407,6 +446,11 @@ namespace InfoboxParser
                                 continue;
                             }
 
+                            if (result == null)
+                            {
+                                result = new ProductionInfo();
+                            }
+
                             var foundInputProduct = result.InputProducts.FirstOrDefault(x => x.Order == counter);
                             if (foundInputProduct == null)
                             {
@@ -426,8 +470,11 @@ namespace InfoboxParser
                 }
             }
 
-            //order by number from infobox
-            result.InputProducts = result.InputProducts.OrderBy(x => x.Order).ToList();
+            if (result != null)
+            {
+                //order by number from infobox
+                result.InputProducts = result.InputProducts.OrderBy(x => x.Order).ToList();
+            }
 
             return result;
         }
@@ -441,8 +488,6 @@ namespace InfoboxParser
             {
                 return result;
             }
-
-            result = new SupplyInfo();
 
             using (var reader = new StringReader(infobox))
             {
@@ -478,6 +523,11 @@ namespace InfoboxParser
                             if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double supplyValue))
                             {
                                 throw new Exception("could not find value for input");
+                            }
+
+                            if (result == null)
+                            {
+                                result = new SupplyInfo();
                             }
 
                             var foundSupplyEntry = result.SupplyEntries.FirstOrDefault(x => x.Order == counter);
@@ -523,6 +573,11 @@ namespace InfoboxParser
                                 throw new Exception("could not find value for input");
                             }
 
+                            if (result == null)
+                            {
+                                result = new SupplyInfo();
+                            }
+
                             var foundSupplyEntry = result.SupplyEntries.FirstOrDefault(x => x.Order == counter);
                             if (foundSupplyEntry == null)
                             {
@@ -555,10 +610,15 @@ namespace InfoboxParser
                             }
 
                             //handle entry with no value e.g. "|Supplies 1 Type = "
-                            var matchedTypeName = matchType.Groups["typeName"].Value;
+                            var matchedTypeName = matchType.Groups["typeName"].Value.Trim();
                             if (string.IsNullOrWhiteSpace(matchedTypeName))
                             {
                                 continue;
+                            }
+
+                            if (result == null)
+                            {
+                                result = new SupplyInfo();
                             }
 
                             var foundSupplyEntry = result.SupplyEntries.FirstOrDefault(x => x.Order == counter);
@@ -580,8 +640,11 @@ namespace InfoboxParser
                 }
             }
 
-            //order by number from infobox
-            result.SupplyEntries = result.SupplyEntries.OrderBy(x => x.Order).ToList();
+            if (result != null)
+            {
+                //order by number from infobox
+                result.SupplyEntries = result.SupplyEntries.OrderBy(x => x.Order).ToList();
+            }
 
             return result;
         }
@@ -595,8 +658,6 @@ namespace InfoboxParser
             {
                 return result;
             }
-
-            result = new UnlockInfo();
 
             using (var reader = new StringReader(infobox))
             {
@@ -634,6 +695,11 @@ namespace InfoboxParser
                                 throw new Exception("could not find value for input");
                             }
 
+                            if (result == null)
+                            {
+                                result = new UnlockInfo();
+                            }
+
                             var foundUnlockCondition = result.UnlockConditions.FirstOrDefault(x => x.Order == counter);
                             if (foundUnlockCondition == null)
                             {
@@ -666,10 +732,15 @@ namespace InfoboxParser
                             }
 
                             //handle entry with no value e.g. "|Unlock Condition 1 Type = "
-                            var matchedTypeName = matchType.Groups["typeName"].Value;
+                            var matchedTypeName = matchType.Groups["typeName"].Value.Trim();
                             if (string.IsNullOrWhiteSpace(matchedTypeName))
                             {
                                 continue;
+                            }
+
+                            if (result == null)
+                            {
+                                result = new UnlockInfo();
                             }
 
                             var foundUnlockCondition = result.UnlockConditions.FirstOrDefault(x => x.Order == counter);
@@ -691,8 +762,11 @@ namespace InfoboxParser
                 }
             }
 
-            //order by number from infobox
-            result.UnlockConditions = result.UnlockConditions.OrderBy(x => x.Order).ToList();
+            if (result != null)
+            {
+                //order by number from infobox
+                result.UnlockConditions = result.UnlockConditions.OrderBy(x => x.Order).ToList();
+            }
 
             return result;
         }

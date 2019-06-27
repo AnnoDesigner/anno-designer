@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -129,13 +130,47 @@ namespace AnnoDesigner
                     }
                 }
 
-                if (AnnoDesigner.Properties.Settings.Default.SettingsUpgradeNeeded)
+                try
                 {
-                    AnnoDesigner.Properties.Settings.Default.Upgrade();
-                    AnnoDesigner.Properties.Settings.Default.SettingsUpgradeNeeded = false;
-                    AnnoDesigner.Properties.Settings.Default.Save();
+                    //check if file is not corrupt
+                    AnnoDesigner.Properties.Settings.Default.Reload();
+
+                    if (AnnoDesigner.Properties.Settings.Default.SettingsUpgradeNeeded)
+                    {
+                        AnnoDesigner.Properties.Settings.Default.Upgrade();
+                        AnnoDesigner.Properties.Settings.Default.SettingsUpgradeNeeded = false;
+                        AnnoDesigner.Properties.Settings.Default.Save();
+                    }
                 }
-                
+                catch (ConfigurationErrorsException ex)
+                {
+                    MessageBox.Show("The settings file has become corrupted. We must reset your settings.",
+                          "Error",
+                          MessageBoxButton.OK,
+                          MessageBoxImage.Error);
+
+                    var fileName = "";
+                    if (!string.IsNullOrEmpty(ex.Filename))
+                    {
+                        fileName = ex.Filename;
+                    }
+                    else
+                    {
+                        var innerException = ex.InnerException as ConfigurationErrorsException;
+                        if (innerException != null && !string.IsNullOrEmpty(innerException.Filename))
+                        {
+                            fileName = innerException.Filename;
+                        }
+                    }
+
+                    if (File.Exists(fileName))
+                    {
+                        File.Delete(fileName);
+                    }
+
+                    AnnoDesigner.Properties.Settings.Default.Reload();
+                }
+
                 //var updateWindow = new UpdateWindow();                
                 await _commons.UpdateHelper.ReplaceUpdatedPresetFileAsync();
 
