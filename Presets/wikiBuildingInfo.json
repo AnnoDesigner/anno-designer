@@ -1,6 +1,6 @@
 ﻿{
-  "Version": "2.0.0.0",
-  "DateGenerated": "2019-06-07T07:50:03.5865990Z",
+  "Version": "2.1.0.0",
+  "DateGenerated": "2019-06-27T11:26:22.5083289Z",
   "Infos": [
     {
       "Name": "1602 Memorial",
@@ -1061,9 +1061,7 @@
           }
         ]
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -1130,9 +1128,7 @@
           }
         ]
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -1502,17 +1498,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -1572,17 +1559,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -1751,9 +1729,7 @@
         },
         "InputProducts": []
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -1814,9 +1790,7 @@
         },
         "InputProducts": []
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -2441,9 +2415,7 @@
         },
         "InputProducts": []
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -2504,9 +2476,7 @@
         },
         "InputProducts": []
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -3717,17 +3687,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -3780,17 +3741,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -3823,9 +3775,7 @@
       "MaintenanceInfos": [],
       "ProductionInfos": null,
       "SupplyInfos": null,
-      "UnlockInfos": {
-        "UnlockConditions": []
-      }
+      "UnlockInfos": null
     },
     {
       "Name": "Dirt Road",
@@ -4100,9 +4050,7 @@
       "MaintenanceInfos": [],
       "ProductionInfos": null,
       "SupplyInfos": null,
-      "UnlockInfos": {
-        "UnlockConditions": []
-      }
+      "UnlockInfos": null
     },
     {
       "Name": "Felt Producer",
@@ -4559,17 +4507,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -4615,17 +4554,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -4712,8 +4642,8 @@
       "BuildingSize": "5, 6",
       "Radius": "5x16",
       "Url": "https://anno1800.fandom.com/wiki/Fishery",
-      "RevisionId": 8513,
-      "RevisionDate": "2019-05-19T10:59:20.0000000Z",
+      "RevisionId": 9325,
+      "RevisionDate": "2019-06-16T10:03:53.0000000Z",
       "ConstructionInfos": [
         {
           "Value": 100.0,
@@ -6187,17 +6117,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -6257,17 +6178,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -6702,17 +6614,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -6765,17 +6668,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -7045,9 +6939,7 @@
       "MaintenanceInfos": [],
       "ProductionInfos": null,
       "SupplyInfos": null,
-      "UnlockInfos": {
-        "UnlockConditions": []
-      }
+      "UnlockInfos": null
     },
     {
       "Name": "Light Bulb Factory",
@@ -7288,12 +7180,8 @@
         },
         "InputProducts": []
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
-      "UnlockInfos": {
-        "UnlockConditions": []
-      }
+      "SupplyInfos": null,
+      "UnlockInfos": null
     },
     {
       "Name": "Lumberjack's Hut",
@@ -7339,12 +7227,8 @@
         },
         "InputProducts": []
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
-      "UnlockInfos": {
-        "UnlockConditions": []
-      }
+      "SupplyInfos": null,
+      "UnlockInfos": null
     },
     {
       "Name": "Malthouse",
@@ -7432,7 +7316,7 @@
       "Icon": "Marketplace.png",
       "Region": "OldWorld",
       "Tier": "Farmers",
-      "Type": "Unknown",
+      "Type": "PublicService",
       "BuildingSize": "5, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Marketplace",
@@ -7463,27 +7347,16 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
-      "UnlockInfos": {
-        "UnlockConditions": []
-      }
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
     },
     {
       "Name": "Marketplace",
       "Icon": "Marketplace.png",
       "Region": "NewWorld",
       "Tier": "Jornaleros",
-      "Type": "Unknown",
+      "Type": "PublicService",
       "BuildingSize": "5, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Marketplace",
@@ -7514,20 +7387,9 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
-      "UnlockInfos": {
-        "UnlockConditions": []
-      }
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
     },
     {
       "Name": "Marquetry Workshop",
@@ -7614,9 +7476,7 @@
           }
         ]
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -7690,9 +7550,7 @@
           }
         ]
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -8105,17 +7963,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -8182,17 +8031,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -8259,17 +8099,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -8336,17 +8167,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -8594,9 +8416,7 @@
         },
         "InputProducts": []
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -8692,9 +8512,7 @@
         },
         "InputProducts": []
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -8768,17 +8586,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -8831,17 +8640,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -8901,9 +8701,7 @@
         },
         "InputProducts": []
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -8963,9 +8761,7 @@
         },
         "InputProducts": []
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -9504,17 +9300,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -9567,17 +9354,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -9759,17 +9537,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -9815,17 +9584,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -10130,17 +9890,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -10193,17 +9944,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -10554,17 +10296,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -10624,17 +10357,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -10836,17 +10560,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -10899,17 +10614,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -10983,9 +10689,7 @@
           }
         ]
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -11052,9 +10756,7 @@
           }
         ]
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -11257,12 +10959,8 @@
           }
         ]
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
-      "UnlockInfos": {
-        "UnlockConditions": []
-      }
+      "SupplyInfos": null,
+      "UnlockInfos": null
     },
     {
       "Name": "Sawmill",
@@ -11314,12 +11012,8 @@
           }
         ]
       },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
-      "UnlockInfos": {
-        "UnlockConditions": []
-      }
+      "SupplyInfos": null,
+      "UnlockInfos": null
     },
     {
       "Name": "Schnapps Distillery",
@@ -11849,17 +11543,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -11912,17 +11597,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -12043,20 +11719,9 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
-      "UnlockInfos": {
-        "UnlockConditions": []
-      }
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
     },
     {
       "Name": "Small Warehouse",
@@ -12094,20 +11759,9 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
-      "UnlockInfos": {
-        "UnlockConditions": []
-      }
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
     },
     {
       "Name": "Soap Factory",
@@ -13124,17 +12778,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -13194,17 +12839,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -13264,17 +12900,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -13334,17 +12961,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -13942,7 +13560,7 @@
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/World%27s_Fair",
       "RevisionId": 9133,
-      "RevisionDate": "2019-06-02T20:44:38.0000000Z",
+      "RevisionDate": "2019-06-08T10:20:22.0000000Z",
       "ConstructionInfos": [],
       "MaintenanceInfos": [
         {
@@ -14110,17 +13728,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
@@ -14187,17 +13796,8 @@
           }
         }
       ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 0.0,
-          "AmountElectricity": 0.0,
-          "Icon": null
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": {
-        "SupplyEntries": []
-      },
+      "ProductionInfos": null,
+      "SupplyInfos": null,
       "UnlockInfos": {
         "UnlockConditions": [
           {
