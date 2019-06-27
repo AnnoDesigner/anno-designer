@@ -830,11 +830,6 @@ namespace AnnoDesigner
             }
         }
 
-        private void LanguageMenuSubmenuClosed(object sender, RoutedEventArgs e)
-        {
-            SelectedLanguageChanged();
-        }
-
         #endregion
 
         private void ComboxBoxInfluenceType_SelectionChanged(object sender, SelectionChangedEventArgs e)
