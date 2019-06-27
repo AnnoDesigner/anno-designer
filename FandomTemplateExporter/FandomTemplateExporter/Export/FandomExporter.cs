@@ -59,7 +59,7 @@ namespace AnnoDesigner.Export
         private FandomNameMappingPresets _fandomNameMappingPresets;
         private StatisticsCalculationHelper _statisticsCalculationHelper;
 
-        //Potato Field - (72)
+        //example: Potato Field - (72)
         private static readonly Regex regexFieldCount = new Regex(@"(?<begin> - \()\s*(?<value>\d*(?:[\.\,]\d*)?)\s*(?<end>\))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public FandomExporter()
@@ -185,41 +185,107 @@ namespace AnnoDesigner.Export
         {
             var buildingCounter = 0;
 
-            var groupedBuildings = placedObjects.Where(x => !x.Road && !string.IsNullOrWhiteSpace(x.Identifier) && !x.Identifier.Equals("Unknown Object", StringComparison.OrdinalIgnoreCase)).GroupBy(x => x.Identifier);
-            foreach (var curGroup in groupedBuildings)
-            {
-                var buildingIdentifier = curGroup.Key;
-                var buildingCount = curGroup.Count();
+            var supportedBuildings = placedObjects.Where(x => !x.Road && !string.IsNullOrWhiteSpace(x.Identifier) && !x.Identifier.Equals("Unknown Object", StringComparison.OrdinalIgnoreCase)).ToList();
 
-                var foundWikiBuildingInfo = getWikiBuildingInfo(buildingIdentifier, buildingPresets, wikiBuildingInfoPresets);
-                if (foundWikiBuildingInfo?.ProductionInfos == null)
+            //1. get all buildings that need input
+            //2. gat all buildings that have an endproduct
+            //3. foreach building with input -> remove it from list of buildings with an endproduct
+            //4. foreach building with an endproduct -> add it to the template
+
+            //1. get all buildings that need input
+            var buildingsWithInputProduct = new Dictionary<AnnoObject, List<InputProduct>>();
+            foreach (var curBuilding in supportedBuildings)
+            {
+                var foundWikiBuildingInfo = getWikiBuildingInfo(curBuilding.Identifier, buildingPresets, wikiBuildingInfoPresets);
+                if (foundWikiBuildingInfo == null ||
+                    foundWikiBuildingInfo.ProductionInfos == null ||
+                    foundWikiBuildingInfo.ProductionInfos.InputProducts.Count == 0)
                 {
                     //no Production building or no info found -> skip
                     continue;
                 }
 
-                //add info about end product
-                if (foundWikiBuildingInfo.ProductionInfos.EndProduct != null)
+                foreach (var curInput in foundWikiBuildingInfo.ProductionInfos.InputProducts)
                 {
-                    ++buildingCounter;
-
-                    var productionAmount = foundWikiBuildingInfo.ProductionInfos.EndProduct.Amount * buildingCount;
-                    var endProductIcon = Path.GetFileNameWithoutExtension(foundWikiBuildingInfo.ProductionInfos.EndProduct.Icon);
-
-                    exportString.Append(TEMPLATE_LINE_START)
-                        .Append(HEADER_PRODUCTION)
-                        .Append(buildingCounter)
-                        .Append(HEADER_PRODUCTION_TYPE)
-                        .Append(TEMPLATE_ENTRY_DELIMITER)
-                        .AppendLine(endProductIcon);
-
-                    exportString.Append(TEMPLATE_LINE_START)
-                        .Append(HEADER_PRODUCTION)
-                        .Append(buildingCounter)
-                        .Append(HEADER_PRODUCTION_PER_MINUTE)
-                        .Append(TEMPLATE_ENTRY_DELIMITER)
-                        .AppendLine(productionAmount.ToString("0.##"));
+                    if (!buildingsWithInputProduct.ContainsKey(curBuilding))
+                    {
+                        buildingsWithInputProduct.Add(curBuilding, new List<InputProduct> { curInput });
+                    }
+                    else
+                    {
+                        buildingsWithInputProduct[curBuilding].Add(curInput);
+                    }
                 }
+            }
+
+            //2. gat all buildings that have an endproduct
+            var buildingsWithEndProduct = new Dictionary<AnnoObject, EndProduct>();
+            foreach (var curBuilding in supportedBuildings)
+            {
+                var foundWikiBuildingInfo = getWikiBuildingInfo(curBuilding.Identifier, buildingPresets, wikiBuildingInfoPresets);
+                if (foundWikiBuildingInfo == null ||
+                    foundWikiBuildingInfo.ProductionInfos == null ||
+                    foundWikiBuildingInfo.ProductionInfos.EndProduct == null)
+                {
+                    //no Production building or no info found -> skip
+                    continue;
+                }
+
+                buildingsWithEndProduct.Add(curBuilding, foundWikiBuildingInfo.ProductionInfos.EndProduct);
+            }
+
+            //3. foreach building with input -> remove it from list of buildings with an endproduct
+            foreach (var curBuildingWithInputProduct in buildingsWithInputProduct)
+            {
+                foreach (var curInputProduct in curBuildingWithInputProduct.Value)
+                {
+                    var foundBuildingWithSameEndProduct = buildingsWithEndProduct.FirstOrDefault(x => string.Equals(x.Value.Icon, curInputProduct.Icon, StringComparison.OrdinalIgnoreCase)).Key;
+                    if (foundBuildingWithSameEndProduct != null)
+                    {
+                        buildingsWithEndProduct.Remove(foundBuildingWithSameEndProduct);
+                    }
+                }
+            }
+
+            //4. foreach building with an endproduct -> add it to the template
+            var groupedBuildingsWithEndProduct = buildingsWithEndProduct.GroupBy(x => x.Key.Identifier).ToList();
+            foreach (var curGroup in groupedBuildingsWithEndProduct)
+            {
+                var buildingIdentifier = curGroup.Key;
+                var buildingCount = curGroup.Count();
+
+                var foundWikiBuildingInfo = getWikiBuildingInfo(buildingIdentifier, buildingPresets, wikiBuildingInfoPresets);
+                if (foundWikiBuildingInfo == null)
+                {
+                    //no Production building or no info found -> skip
+                    continue;
+                }
+
+                if (buildingCount == 1 && foundWikiBuildingInfo.ProductionInfos.EndProduct.Amount <= 1)
+                {
+                    continue;
+                }
+
+                //add info about end product
+                ++buildingCounter;
+
+                var productionAmount = foundWikiBuildingInfo.ProductionInfos.EndProduct.Amount * buildingCount;
+                var endProductIcon = Path.GetFileNameWithoutExtension(foundWikiBuildingInfo.ProductionInfos.EndProduct.Icon);
+
+                exportString.Append(TEMPLATE_LINE_START)
+                    .Append(HEADER_PRODUCTION)
+                    .Append(buildingCounter)
+                    .Append(HEADER_PRODUCTION_TYPE)
+                    .Append(TEMPLATE_ENTRY_DELIMITER)
+                    .AppendLine(endProductIcon);
+
+                exportString.Append(TEMPLATE_LINE_START)
+                    .Append(HEADER_PRODUCTION)
+                    .Append(buildingCounter)
+                    .Append(HEADER_PRODUCTION_PER_MINUTE)
+                    .Append(TEMPLATE_ENTRY_DELIMITER)
+                    .AppendLine(productionAmount.ToString("0.##"));
+
             }
 
             return exportString;
@@ -505,7 +571,6 @@ namespace AnnoDesigner.Export
 
         private StringBuilder addUnsupportedEntries(StringBuilder exportString)
         {
-
             return exportString;
         }
     }

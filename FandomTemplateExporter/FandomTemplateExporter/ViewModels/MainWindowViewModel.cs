@@ -87,7 +87,7 @@ namespace FandomTemplateExporter.ViewModels
             //BusyContent = DEFAULT_BUSY_CONTENT;
 
             ClosingWindowCommand = new RelayCommand(ClosingWindow, null);
-            GenerateTemplateCommand = new RelayCommand(GenerateTemplate, CanGenerateTemplate);
+            GenerateTemplateCommand = new AsyncDelegateCommand(GenerateTemplate, CanGenerateTemplate);
             //SaveCommand = new RelayCommand(Save, CanSave);
             StatusMessage = string.Empty;
             Template = string.Empty;
@@ -162,76 +162,106 @@ namespace FandomTemplateExporter.ViewModels
             Properties.Settings.Default.Save();
         }
 
-        public ICommand GenerateTemplateCommand { get; private set; }
+        public IAsyncCommand GenerateTemplateCommand { get; private set; }
 
-        private void GenerateTemplate(object param)
+        private async Task GenerateTemplate(object param)
         {
             try
             {
                 IsBusy = true;
                 StatusMessage = string.Empty;
 
-                //load building presets
-                BuildingPresets buildingPresets = null;
-                try
+                var buildingPresetsTask = Task.Run(() =>
                 {
-                    var loader = new BuildingPresetsLoader();
-                    buildingPresets = loader.Load(PresetsVM.SelectedFile);
-                }
-                catch (Exception ex)
-                {
-                    var message = $"Error parsing {nameof(BuildingPresets)}.";
-                    Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
-                    MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //load building presets
+                    BuildingPresets localBuildingPresets = null;
+                    try
+                    {
+                        var loader = new BuildingPresetsLoader();
+                        localBuildingPresets = loader.Load(PresetsVM.SelectedFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        var message = $"Error parsing {nameof(BuildingPresets)}.";
+                        Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                        MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    StatusMessage = $"{message} -> Maybe wrong selected file?";
+                        StatusMessage = $"{message} -> Maybe wrong selected file?";
+                        return null;
+                    }
+
+                    PresetsVersion = localBuildingPresets.Version;
+
+                    return localBuildingPresets;
+                });
+
+                var wikiBuildingInfoPresetsTask = Task.Run(() =>
+                {
+                    //load wiki buildng info
+                    WikiBuildingInfoPresets localWikiBuildingInfoPresets = null;
+                    try
+                    {
+                        var loader = new WikiBuildingInfoPresetsLoader();
+                        localWikiBuildingInfoPresets = loader.Load(WikiBuildingsInfoVM.SelectedFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        var message = $"Error parsing {nameof(WikiBuildingInfoPresets)}.";
+                        Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                        MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                        StatusMessage = $"{message} -> Maybe wrong selected file?";
+                        return null;
+                    }
+
+                    WikiBuildingInfoPresetsVersion = localWikiBuildingInfoPresets.Version.ToString();
+
+                    return localWikiBuildingInfoPresets;
+
+                });
+
+                var layoutTask = Task.Run(() =>
+                {
+                    //load layout
+                    List<AnnoObject> localLayout = null;
+                    try
+                    {
+                        ILayoutLoader loader = new LayoutLoader();
+                        localLayout = loader.LoadLayout(LayoutVM.SelectedFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        var message = "Error parsing layout file.";
+                        Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                        MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                        StatusMessage = $"{message} -> Maybe wrong selected file?";
+                        return null;
+                    }
+
+                    LayoutName = Path.GetFileName(vmLayout.SelectedFile);
+
+                    return localLayout;
+                });
+
+                await Task.WhenAll(buildingPresetsTask, wikiBuildingInfoPresetsTask, layoutTask);
+
+                var buildingPresets = buildingPresetsTask.Result;
+                var wikiBuildingInfoPresets = wikiBuildingInfoPresetsTask.Result;
+                var layout = layoutTask.Result;
+
+                if (buildingPresets == null || wikiBuildingInfoPresets == null || layout == null)
+                {
                     return;
                 }
-
-                PresetsVersion = buildingPresets.Version;
-
-                //load wiki buildng info
-                WikiBuildingInfoPresets wikiBuildingInfoPreset = null;
-                try
-                {
-                    var loader = new WikiBuildingInfoPresetsLoader();
-                    wikiBuildingInfoPreset = loader.Load(WikiBuildingsInfoVM.SelectedFile);
-                }
-                catch (Exception ex)
-                {
-                    var message = $"Error parsing {nameof(WikiBuildingInfoPresets)}.";
-                    Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
-                    MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    StatusMessage = $"{message} -> Maybe wrong selected file?";
-                    return;
-                }
-
-                WikiBuildingInfoPresetsVersion = wikiBuildingInfoPreset.Version.ToString();
-
-                //load layout
-                List<AnnoObject> layout = null;
-                try
-                {
-                    ILayoutLoader loader = new LayoutLoader();
-                    layout = loader.LoadLayout(LayoutVM.SelectedFile);
-                }
-                catch (Exception ex)
-                {
-                    var message = "Error parsing layout file.";
-                    Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
-                    MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    StatusMessage = $"{message} -> Maybe wrong selected file?";
-                    return;
-                }
-
-                LayoutName = Path.GetFileName(vmLayout.SelectedFile);
 
                 var layoutNameForTemplate = Path.GetFileNameWithoutExtension(vmLayout.SelectedFile).Replace("_", " ");
 
-                var exporter = new FandomExporter();
-                Template = exporter.StartExport(layoutNameForTemplate, layout, buildingPresets, wikiBuildingInfoPreset, true);
+                await Task.Run(() =>
+                {
+                    var exporter = new FandomExporter();
+                    Template = exporter.StartExport(layoutNameForTemplate, layout, buildingPresets, wikiBuildingInfoPresets, true);
+                });
 
                 StatusMessage = "Template successfully generated.";
             }

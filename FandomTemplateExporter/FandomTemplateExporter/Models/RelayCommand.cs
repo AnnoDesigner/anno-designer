@@ -112,4 +112,67 @@ namespace FandomTemplateExporter.Models
         public RelayCommand(Action<object> execute, Func<object, bool> canExecute) : base(execute, canExecute)
         { }
     }
+
+    /// <summary>
+    /// An async version of <see cref="ICommand"/>.
+    /// </summary>
+    public interface IAsyncCommand : ICommand
+    {
+        /// <summary>
+        /// Executes the asynchronous command.
+        /// </summary>
+        /// <param name="parameter">The parameter for the command.</param>
+        Task ExecuteAsync(object parameter);
+    }
+
+    public class AsyncDelegateCommand : AsyncDelegateCommand<object>
+    {
+        public AsyncDelegateCommand(Func<object, Task> asyncExecute, Predicate<object> canExecute = null)
+            : base(asyncExecute, canExecute)
+        {
+        }
+    }
+
+    public class AsyncDelegateCommand<TArgType> : IAsyncCommand
+    {
+        protected readonly Predicate<TArgType> canExecute;
+        protected Func<TArgType, Task> asyncExecute;
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public AsyncDelegateCommand(Func<TArgType, Task> asyncExecute, Predicate<TArgType> canExecute = null)
+        {
+            this.asyncExecute = asyncExecute;
+            this.canExecute = canExecute;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            if (canExecute == null)
+            {
+                return true;
+            }
+
+            return canExecute((TArgType)parameter);
+        }
+
+        public async void Execute(object parameter)
+        {
+            await AsyncRunner(parameter);
+        }
+
+        public async Task ExecuteAsync(object parameter)
+        {
+            await AsyncRunner(parameter);
+        }
+
+        protected virtual async Task AsyncRunner(object parameter)
+        {
+            await asyncExecute((TArgType)parameter);
+        }
+    }
 }
