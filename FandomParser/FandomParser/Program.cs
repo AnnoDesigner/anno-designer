@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using AnnoDesigner.Core;
 using FandomParser.Core;
 using FandomParser.Core.Helper;
 using FandomParser.WikiText;
@@ -76,7 +77,7 @@ namespace FandomParser
                 wikiBuildingInfoPreset.Version = PresetVersion;
                 wikiBuildingInfoPreset.DateGenerated = DateTime.UtcNow;
 
-                SerializationHelper.SaveToFile(wikiBuildingInfoPreset, Path.Combine(OutputDirectory, CoreConstants.WikiBuildingInfoPresetsFile), prettyPrint: UsePrettyPrint);
+                SerializationHelper.SaveToFile(wikiBuildingInfoPreset, Path.Combine(OutputDirectory, CoreConstants.PresetsFiles.WikiBuildingInfoPresetsFile), prettyPrint: UsePrettyPrint);
 
                 //for testing
                 //load parsed file to test

@@ -15,11 +15,6 @@ namespace AnnoDesigner
         public const double Version = 8.2;
 
         /// <summary>
-        /// Prefix for temporary updated presets file.
-        /// </summary>
-        public const string PrefixTempBuildingPresetsFile = "temp_";
-
-        /// <summary>
         /// The minimal grid size to which the user can zoom out.
         /// </summary>
         public const int GridStepMin = 8;

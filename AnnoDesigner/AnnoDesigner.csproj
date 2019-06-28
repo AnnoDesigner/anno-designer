@@ -53,9 +53,11 @@
     <Compile Include="InputWindow.xaml.cs">
       <DependentUpon>InputWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="model\AvailableRelease.cs" />
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
     <Compile Include="model\BuildingInfluenceType.cs" />
+    <Compile Include="model\ReleaseType.cs" />
     <Compile Include="TreeLocalization.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="MutexHelper.cs" />

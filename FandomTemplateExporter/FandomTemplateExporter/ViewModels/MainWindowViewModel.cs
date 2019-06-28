@@ -55,7 +55,7 @@ namespace FandomTemplateExporter.ViewModels
             }
             else
             {
-                var presetsFileInApplicationDirectory = Path.Combine(applicationDirectory, CoreConstants.BuildingPresetsFile);
+                var presetsFileInApplicationDirectory = Path.Combine(applicationDirectory, CoreConstants.PresetsFiles.BuildingPresetsFile);
                 if (File.Exists(presetsFileInApplicationDirectory))
                 {
                     vmPresets.SelectedFile = presetsFileInApplicationDirectory;
@@ -70,7 +70,7 @@ namespace FandomTemplateExporter.ViewModels
             }
             else
             {
-                var wikiBuildingsInfoFileInApplicationDirectory = Path.Combine(applicationDirectory, FandomParser.Core.CoreConstants.WikiBuildingInfoPresetsFile);
+                var wikiBuildingsInfoFileInApplicationDirectory = Path.Combine(applicationDirectory, CoreConstants.PresetsFiles.WikiBuildingInfoPresetsFile);
                 if (File.Exists(wikiBuildingsInfoFileInApplicationDirectory))
                 {
                     vmWikiBuildingsInfo.SelectedFile = wikiBuildingsInfoFileInApplicationDirectory;
