@@ -24,9 +24,6 @@
             <i:InvokeCommandAction Command="{Binding ClosingWindowCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Window.DataContext>
-        <viewModels:MainWindowViewModel />
-    </Window.DataContext>
     <Window.Resources>
         <converter:BoolToVisibilityConverter x:Key="converterBoolToVisibility"
                                              FalseValue="Hidden"
@@ -93,9 +90,58 @@
                            Text="{Binding LayoutName, FallbackValue='layout name', StringFormat='Template for layout &quot;{0}&quot;'}"
                            Background="WhiteSmoke" />
 
+                <Button DockPanel.Dock="Bottom"
+                        ToolTip="Copy Template to Clipboard"
+                        MinWidth="200"
+                        Height="24"
+                        Margin="0,5,0,5"
+                        HorizontalAlignment="Center"
+                        Command="{Binding CopyToClipboardCommand}">
+                    <Button.Resources>
+                        <Style x:Key="stylePath"
+                               TargetType="{x:Type Path}">
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled"
+                                         Value="True">
+                                    <Setter Property="Fill"
+                                            Value="Black" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                         Value="False">
+                                    <Setter Property="Fill"
+                                            Value="Gray" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Resources>
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="M15.844,11.559021L15.844,15.695984C15.844,15.695984,15.764998,18.413025,12.761999,18.177002L9.253997,18.194031 9.253997,29.643982C9.253997,29.908997,9.4619972,30.117004,9.7219984,30.117004L22.904995,30.117004C23.163998,30.117004,23.371998,29.90802,23.371998,29.643982L23.374996,29.643982 23.374996,12.026978C23.374996,11.768982,23.166996,11.559021,22.906994,11.559021z M10.267996,2.28302L10.267996,7.3029785C10.267996,7.3029785,10.176001,10.598999,6.5360023,10.315002L2.2779993,10.333008 2.2779993,24.223022C2.2779995,24.536987,2.5360028,24.79303,2.8560022,24.79303L7.368003,24.79303 7.368003,17.700012 13.235998,11.47998 13.251997,11.47998 14.971998,9.6740112 19.405996,9.6740112 19.405996,2.8499756C19.405996,2.5369873,19.151999,2.28302,18.835997,2.28302z M9.2209999,0L18.837996,0C20.415999,0,21.695997,1.2789917,21.695997,2.8530273L21.695997,9.677002 22.902996,9.677002 22.905995,9.6749878C24.202999,9.6749878,25.258999,10.728027,25.258999,12.028015L25.258999,29.643982C25.258999,30.945984,24.202999,32,22.905995,32L9.7229978,32C8.4230033,32,7.3690025,30.944031,7.3690025,29.643982L7.3690025,27.078003 2.8570017,27.078003C1.2770001,27.078003,-1.3611906E-07,25.798035,1.4210855E-14,24.221985L1.4210855E-14,9.7319946 7.1129981,2.1940308 7.140998,2.1940308z"
+                                  Stretch="Uniform"
+                                  Width="16"
+                                  Height="16"
+                                  Margin="0,0,0,0"
+                                  RenderTransformOrigin="0.5,0.5"
+                                  Style="{StaticResource stylePath}">
+                                <Path.RenderTransform>
+                                    <TransformGroup>
+                                        <TransformGroup.Children>
+                                            <RotateTransform Angle="0" />
+                                            <ScaleTransform ScaleX="1"
+                                                            ScaleY="1" />
+                                        </TransformGroup.Children>
+                                    </TransformGroup>
+                                </Path.RenderTransform>
+                            </Path>
+                            <TextBlock Text="Copy to Clipboard"
+                                       Margin="5,0,0,0" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+
                 <!--  TextWrapping="Wrap"  -->
                 <TextBox AcceptsReturn="True"
-                         Text="{Binding Template}"
+                         Text="{Binding Template, UpdateSourceTrigger=PropertyChanged}"
                          FontFamily="Arial"
                          FontSize="14"
                          VerticalScrollBarVisibility="Auto" />

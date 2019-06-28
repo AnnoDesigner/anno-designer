@@ -1,39 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using AnnoDesigner.Core;
-using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Export;
-using FandomParser.Core.Models;
 using FandomParser.Core.Presets.Loader;
 using FandomParser.Core.Presets.Models;
 using FandomTemplateExporter.Models;
-using FandomTemplateExporter.ViewModels;
+using NLog;
 
 namespace FandomTemplateExporter.ViewModels
 {
     public class MainWindowViewModel : BaseModel
     {
-        //private const string DEFAULT_BUSY_CONTENT = "Please wait ...";
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly SelectFileViewModel vmPresets;
-        private readonly SelectFileViewModel vmWikiBuildingsInfo;
-        private readonly SelectFileViewModel vmLayout;
+        //private const string DEFAULT_BUSY_CONTENT = "Please wait ...";
         private string _presetsVersion;
         private string _wikiBuildingInfoPresetsVersion;
         private string _statusMessage;
@@ -47,48 +39,48 @@ namespace FandomTemplateExporter.ViewModels
         {
             var applicationDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
-            vmPresets = new SelectFileViewModel("Please select the presets.json file");
-            vmPresets.PropertyChanged += vmPresets_PropertyChanged;
+            PresetsVM = new SelectFileViewModel("Please select the presets.json file");
+            PresetsVM.PropertyChanged += PresetsVM_PropertyChanged;
             if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.LastSelectedPresetsFilePath) && File.Exists(Properties.Settings.Default.LastSelectedPresetsFilePath))
             {
-                vmPresets.SelectedFile = Properties.Settings.Default.LastSelectedPresetsFilePath;
+                PresetsVM.SelectedFile = Properties.Settings.Default.LastSelectedPresetsFilePath;
             }
             else
             {
                 var presetsFileInApplicationDirectory = Path.Combine(applicationDirectory, CoreConstants.BuildingPresetsFile);
                 if (File.Exists(presetsFileInApplicationDirectory))
                 {
-                    vmPresets.SelectedFile = presetsFileInApplicationDirectory;
+                    PresetsVM.SelectedFile = presetsFileInApplicationDirectory;
                 }
             }
 
-            vmWikiBuildingsInfo = new SelectFileViewModel("Please select the wikiBuildingInfo.json file");
-            vmWikiBuildingsInfo.PropertyChanged += vmWikiBuildingsInfo_PropertyChanged;
+            WikiBuildingsInfoVM = new SelectFileViewModel("Please select the wikiBuildingInfo.json file");
+            WikiBuildingsInfoVM.PropertyChanged += WikiBuildingsInfoVM_PropertyChanged;
             if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.LastSelectedWikiBuildingsInfoFilePath) && File.Exists(Properties.Settings.Default.LastSelectedWikiBuildingsInfoFilePath))
             {
-                vmWikiBuildingsInfo.SelectedFile = Properties.Settings.Default.LastSelectedWikiBuildingsInfoFilePath;
+                WikiBuildingsInfoVM.SelectedFile = Properties.Settings.Default.LastSelectedWikiBuildingsInfoFilePath;
             }
             else
             {
                 var wikiBuildingsInfoFileInApplicationDirectory = Path.Combine(applicationDirectory, FandomParser.Core.CoreConstants.WikiBuildingInfoPresetsFile);
                 if (File.Exists(wikiBuildingsInfoFileInApplicationDirectory))
                 {
-                    vmWikiBuildingsInfo.SelectedFile = wikiBuildingsInfoFileInApplicationDirectory;
+                    WikiBuildingsInfoVM.SelectedFile = wikiBuildingsInfoFileInApplicationDirectory;
                 }
             }
 
-            vmLayout = new SelectFileViewModel("Please select the layout file (*.ad)");
-            vmLayout.PropertyChanged += vmLayout_PropertyChanged;
+            LayoutVM = new SelectFileViewModel("Please select the layout file (*.ad)");
+            LayoutVM.PropertyChanged += LayoutVM_PropertyChanged;
             if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.LastSelectedLayoutFilePath) && File.Exists(Properties.Settings.Default.LastSelectedLayoutFilePath))
             {
-                vmLayout.SelectedFile = Properties.Settings.Default.LastSelectedLayoutFilePath;
+                LayoutVM.SelectedFile = Properties.Settings.Default.LastSelectedLayoutFilePath;
             }
 
             //BusyContent = DEFAULT_BUSY_CONTENT;
 
             ClosingWindowCommand = new RelayCommand(ClosingWindow, null);
             GenerateTemplateCommand = new AsyncDelegateCommand(GenerateTemplate, CanGenerateTemplate);
-            //SaveCommand = new RelayCommand(Save, CanSave);
+            CopyToClipboardCommand = new RelayCommand(CopyToClipboard, CanCopyToClipboard);
             StatusMessage = string.Empty;
             Template = string.Empty;
             LayoutName = string.Empty;
@@ -104,16 +96,18 @@ namespace FandomTemplateExporter.ViewModels
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error adjusting the title.{Environment.NewLine}{ex}");
+                logger.Error(ex, "Error adjusting the title.");
                 Title = oldTitle;
             }
         }
 
-        private void vmPresets_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void PresetsVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName.Equals(nameof(vmPresets.SelectedFile)))
+            if (e.PropertyName.Equals(nameof(PresetsVM.SelectedFile)))
             {
-                Properties.Settings.Default.LastSelectedPresetsFilePath = vmPresets.SelectedFile;
+                Properties.Settings.Default.LastSelectedPresetsFilePath = PresetsVM.SelectedFile;
+
+                logger.Info($"selected presets file: \"{PresetsVM.SelectedFile}\"");
 
                 Template = string.Empty;
                 LayoutName = string.Empty;
@@ -121,11 +115,13 @@ namespace FandomTemplateExporter.ViewModels
             }
         }
 
-        private void vmWikiBuildingsInfo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void WikiBuildingsInfoVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName.Equals(nameof(vmWikiBuildingsInfo.SelectedFile)))
+            if (e.PropertyName.Equals(nameof(WikiBuildingsInfoVM.SelectedFile)))
             {
-                Properties.Settings.Default.LastSelectedWikiBuildingsInfoFilePath = vmWikiBuildingsInfo.SelectedFile;
+                Properties.Settings.Default.LastSelectedWikiBuildingsInfoFilePath = WikiBuildingsInfoVM.SelectedFile;
+
+                logger.Info($"selected wiki building info file: \"{WikiBuildingsInfoVM.SelectedFile}\"");
 
                 Template = string.Empty;
                 LayoutName = string.Empty;
@@ -133,11 +129,13 @@ namespace FandomTemplateExporter.ViewModels
             }
         }
 
-        private void vmLayout_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void LayoutVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName.Equals(nameof(vmLayout.SelectedFile)))
+            if (e.PropertyName.Equals(nameof(LayoutVM.SelectedFile)))
             {
-                Properties.Settings.Default.LastSelectedLayoutFilePath = vmLayout.SelectedFile;
+                Properties.Settings.Default.LastSelectedLayoutFilePath = LayoutVM.SelectedFile;
+
+                logger.Info($"selected layout file: \"{LayoutVM.SelectedFile}\"");
 
                 Template = string.Empty;
                 LayoutName = string.Empty;
@@ -145,11 +143,11 @@ namespace FandomTemplateExporter.ViewModels
             }
         }
 
-        public SelectFileViewModel PresetsVM { get { return vmPresets; } }
+        public SelectFileViewModel PresetsVM { get; }
 
-        public SelectFileViewModel WikiBuildingsInfoVM { get { return vmWikiBuildingsInfo; } }
+        public SelectFileViewModel WikiBuildingsInfoVM { get; }
 
-        public SelectFileViewModel LayoutVM { get { return vmLayout; } }
+        public SelectFileViewModel LayoutVM { get; }
 
         #region commands
 
@@ -157,8 +155,8 @@ namespace FandomTemplateExporter.ViewModels
 
         private void ClosingWindow(object param)
         {
-            //var userConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
-            //Trace.WriteLine($"saving settings: \"{userConfig}\"");
+            var userConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
+            logger.Trace($"saving settings: \"{userConfig}\"");
             Properties.Settings.Default.Save();
         }
 
@@ -179,11 +177,15 @@ namespace FandomTemplateExporter.ViewModels
                     {
                         var loader = new BuildingPresetsLoader();
                         localBuildingPresets = loader.Load(PresetsVM.SelectedFile);
+                        if (localBuildingPresets == null || localBuildingPresets.Buildings == null)
+                        {
+                            throw new ArgumentException();
+                        }
                     }
                     catch (Exception ex)
                     {
                         var message = $"Error parsing {nameof(BuildingPresets)}.";
-                        Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                        logger.Error(ex, message);
                         MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                         StatusMessage = $"{message} -> Maybe wrong selected file?";
@@ -207,7 +209,7 @@ namespace FandomTemplateExporter.ViewModels
                     catch (Exception ex)
                     {
                         var message = $"Error parsing {nameof(WikiBuildingInfoPresets)}.";
-                        Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                        logger.Error(ex, message);
                         MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                         StatusMessage = $"{message} -> Maybe wrong selected file?";
@@ -232,14 +234,14 @@ namespace FandomTemplateExporter.ViewModels
                     catch (Exception ex)
                     {
                         var message = "Error parsing layout file.";
-                        Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                        logger.Error(ex, message);
                         MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                         StatusMessage = $"{message} -> Maybe wrong selected file?";
                         return null;
                     }
 
-                    LayoutName = Path.GetFileName(vmLayout.SelectedFile);
+                    LayoutName = Path.GetFileName(LayoutVM.SelectedFile);
 
                     return localLayout;
                 });
@@ -255,7 +257,7 @@ namespace FandomTemplateExporter.ViewModels
                     return;
                 }
 
-                var layoutNameForTemplate = Path.GetFileNameWithoutExtension(vmLayout.SelectedFile).Replace("_", " ");
+                var layoutNameForTemplate = Path.GetFileNameWithoutExtension(LayoutVM.SelectedFile).Replace("_", " ");
 
                 await Task.Run(() =>
                 {
@@ -268,10 +270,10 @@ namespace FandomTemplateExporter.ViewModels
             catch (Exception ex)
             {
                 var message = "Error generating template.";
-                Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                logger.Error(ex, message);
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                StatusMessage = $"{message} -> Details in error log in application directory.";
+                StatusMessage = $"{message} -> Details in log file.";
             }
             finally
             {
@@ -287,54 +289,18 @@ namespace FandomTemplateExporter.ViewModels
                 !string.IsNullOrWhiteSpace(LayoutVM.SelectedFile);
         }
 
-        //public ICommand SaveCommand { get; private set; }
+        public ICommand CopyToClipboardCommand { get; private set; }
 
-        //private void Save(object param)
-        //{
-        //    try
-        //    {
-        //        StatusMessage = string.Empty;
+        private void CopyToClipboard(object param)
+        {
+            logger.Trace($"copy layout to clipboard:{Environment.NewLine}{Template}");
+            Clipboard.SetText(Template, TextDataFormat.UnicodeText);
+        }
 
-        //        var colorPresets = new ColorPresets
-        //        {
-        //            Version = ColorPresetsVersionUpdated
-        //        };
-
-        //        colorPresets.AvailableSchemes.AddRange(AvailableColorSchemes.Select(x => new ColorScheme
-        //        {
-        //            Name = x.Name,
-        //            Colors = x.Colors.Select(color => new PredefinedColor
-        //            {
-        //                TargetTemplate = color.TargetTemplate,
-        //                TargetIdentifiers = color.TargetIdentifiers.ToList(),
-        //                Color = color.SelectedColor.Value
-        //            }).ToList()
-        //        }));
-
-        //        var backupFilePath = vmColors.SelectedFile + ".bak";
-        //        File.Copy(vmColors.SelectedFile, backupFilePath, true);
-        //        SerializationHelper.SaveToFile<ColorPresets>(colorPresets, vmColors.SelectedFile);
-
-        //        MessageBox.Show("New colors.json was saved.", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
-
-        //        StatusMessage = $"Backup created \"{backupFilePath}\".";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var message = "Error saving colors.json.";
-        //        Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
-        //        MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
-        //        StatusMessage = $"{message} -> Could not save to \"{vmColors.SelectedFile}\"";
-        //        return;
-        //    }
-        //}
-
-        //private bool CanSave(object param)
-        //{
-        //    //TODO detect changes
-        //    return true;
-        //}
+        private bool CanCopyToClipboard(object param)
+        {
+            return !IsBusy && !string.IsNullOrWhiteSpace(Template);
+        }
 
         #endregion
 
