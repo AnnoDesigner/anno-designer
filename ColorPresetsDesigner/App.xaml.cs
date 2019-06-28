@@ -1,4 +1,6 @@
 ﻿using ColorPresetsDesigner.ViewModels;
+using NLog;
+using NLog.Targets;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -18,34 +20,48 @@ namespace ColorPresetsDesigner
     /// </summary>
     public partial class App : Application
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public App()
         {
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
-                logUnhandledException((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
+                LogUnhandledException((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
 
             DispatcherUnhandledException += (s, e) =>
-                logUnhandledException(e.Exception, "Application.Current.DispatcherUnhandledException");
+                LogUnhandledException(e.Exception, "Application.Current.DispatcherUnhandledException");
 
             TaskScheduler.UnobservedTaskException += (s, e) =>
-                logUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");
+                LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");
         }
 
-        private void logUnhandledException(Exception ex, string @event)
+        private void LogUnhandledException(Exception ex, string @event)
         {
-            var errorMessage = string.Format("{3:o}{0}An unhandled exception occurred:{0}{1}{0}{2}{0}", Environment.NewLine, @event, ex, DateTime.UtcNow);
+            logger.Error(ex, @event);
 
-            Trace.WriteLine(errorMessage);
+            var message = "An unhandled exception occurred.";
 
-            var logFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "error.txt");
-            File.AppendAllText(logFilePath, errorMessage, Encoding.UTF8);
+            //find loaction of log file
+            var fileTarget = LogManager.Configuration.FindTargetByName("MainLogger") as FileTarget;
+            var logFile = fileTarget?.FileName.Render(new LogEventInfo());
+            if (!string.IsNullOrWhiteSpace(logFile))
+            {
+                logFile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), logFile);
+                if (File.Exists(logFile))
+                {
+                    logFile = logFile.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                    message += $"{Environment.NewLine}{Environment.NewLine}Details in \"{logFile}\".";
+                }
+            }
 
-            MessageBox.Show($"An unhandled exception occurred.{Environment.NewLine}Details in \"{logFilePath}\".", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
             Environment.Exit(-1);
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            throw new Exception("BOOM!");
+
             if (ColorPresetsDesigner.Properties.Settings.Default.SettingsUpgradeNeeded)
             {
                 ColorPresetsDesigner.Properties.Settings.Default.Upgrade();
