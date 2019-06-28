@@ -25,6 +25,13 @@ This preset file contains localized names of the icons from the `icons` folder f
 - Releases will have the tag `PresetsIconsvx.x.x` where x.x.x will be replaced with the current version.
 - Releases will only contain one asset (`icons.json`).
 
+### update of `presets.json` with icons
+
+This release contains an update of the `presets.json` and also some new icons.
+
+- Releases will have the tag `Presetsvx.x.x` where x.x.x will be replaced with the current version.
+- Releases will only contain one asset (`Presets.and.Icons.Update.vx.x.x.zip`).
+
 ### `colors.json`
 
 This preset file contains predefined colors for the buildings from the `presets.json` file for use in the main app.
