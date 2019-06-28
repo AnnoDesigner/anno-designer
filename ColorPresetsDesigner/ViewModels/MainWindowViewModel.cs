@@ -6,8 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -15,16 +13,16 @@ using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
 using ColorPresetsDesigner.Models;
+using NLog;
 
 namespace ColorPresetsDesigner.ViewModels
 {
     public class MainWindowViewModel : BaseModel
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         //private const string DEFAULT_BUSY_CONTENT = "Please wait ...";
         private const string NO_TEMPLATE_NAME = "NO_TEMPLATE";
-
-        private readonly SelectFileViewModel vmPresets;
-        private readonly SelectFileViewModel vmColors;
         private ObservableCollection<ColorSchemeViewModel> _availableColorSchemes;
         private ColorSchemeViewModel _selectedColorScheme;
         private string _colorPresetsVersion;
@@ -42,18 +40,18 @@ namespace ColorPresetsDesigner.ViewModels
 
         public MainWindowViewModel()
         {
-            vmPresets = new SelectFileViewModel("Please select the presets.json file");
-            vmPresets.PropertyChanged += vmPresets_PropertyChanged;
+            PresetsVM = new SelectFileViewModel("Please select the presets.json file");
+            PresetsVM.PropertyChanged += PresetsVM_PropertyChanged;
             if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.LastSelectedPresetsFilePath) && File.Exists(Properties.Settings.Default.LastSelectedPresetsFilePath))
             {
-                vmPresets.SelectedFile = Properties.Settings.Default.LastSelectedPresetsFilePath;
+                PresetsVM.SelectedFile = Properties.Settings.Default.LastSelectedPresetsFilePath;
             }
 
-            vmColors = new SelectFileViewModel("Please select the colors.json file");
-            vmColors.PropertyChanged += vmColors_PropertyChanged;
+            ColorsVM = new SelectFileViewModel("Please select the colors.json file");
+            ColorsVM.PropertyChanged += ColorsVM_PropertyChanged;
             if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.LastSelectedColorsFilePath) && File.Exists(Properties.Settings.Default.LastSelectedColorsFilePath))
             {
-                vmColors.SelectedFile = Properties.Settings.Default.LastSelectedColorsFilePath;
+                ColorsVM.SelectedFile = Properties.Settings.Default.LastSelectedColorsFilePath;
             }
 
             //BusyContent = DEFAULT_BUSY_CONTENT;
@@ -87,30 +85,32 @@ namespace ColorPresetsDesigner.ViewModels
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error adjusting the title.{Environment.NewLine}{ex}");
+                logger.Error(ex, "Error adjusting the title.");
                 Title = oldTitle;
             }
         }
 
-        private void vmPresets_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void PresetsVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName.Equals(nameof(vmPresets.SelectedFile)))
+            if (e.PropertyName.Equals(nameof(PresetsVM.SelectedFile)))
             {
-                Properties.Settings.Default.LastSelectedPresetsFilePath = vmPresets.SelectedFile;
+                Properties.Settings.Default.LastSelectedPresetsFilePath = PresetsVM.SelectedFile;
+                logger.Info($"selected presets file: \"{PresetsVM.SelectedFile}\"");
             }
         }
 
-        private void vmColors_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ColorsVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName.Equals(nameof(vmColors.SelectedFile)))
+            if (e.PropertyName.Equals(nameof(ColorsVM.SelectedFile)))
             {
-                Properties.Settings.Default.LastSelectedColorsFilePath = vmColors.SelectedFile;
+                Properties.Settings.Default.LastSelectedColorsFilePath = ColorsVM.SelectedFile;
+                logger.Info($"selected color presets file: \"{ColorsVM.SelectedFile}\"");
             }
         }
 
-        public SelectFileViewModel PresetsVM { get { return vmPresets; } }
+        public SelectFileViewModel PresetsVM { get; }
 
-        public SelectFileViewModel ColorsVM { get { return vmColors; } }
+        public SelectFileViewModel ColorsVM { get; }
 
         #region commands
 
@@ -119,7 +119,7 @@ namespace ColorPresetsDesigner.ViewModels
         private void ClosingWindow(object param)
         {
             var userConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
-            Trace.WriteLine($"saving settings: \"{userConfig}\"");
+            logger.Trace($"saving settings: \"{userConfig}\"");
             Properties.Settings.Default.Save();
         }
 
@@ -135,11 +135,15 @@ namespace ColorPresetsDesigner.ViewModels
             try
             {
                 buildingPresets = SerializationHelper.LoadFromFile<BuildingPresets>(PresetsVM.SelectedFile);
+                if (buildingPresets == null || buildingPresets.Buildings == null)
+                {
+                    throw new ArgumentException();
+                }
             }
             catch (Exception ex)
             {
                 var message = $"Error parsing {nameof(BuildingPresets)}.";
-                Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                logger.Error(ex, message);
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 StatusMessage = $"{message} -> Maybe wrong selected file?";
@@ -147,6 +151,7 @@ namespace ColorPresetsDesigner.ViewModels
             }
 
             PresetsVersion = buildingPresets.Version;
+            logger.Info($"loaded presets version: {PresetsVersion}");
 
             fillAvailableTemplates(buildingPresets);
             fillAvailableIdentifiers(buildingPresets);
@@ -159,16 +164,22 @@ namespace ColorPresetsDesigner.ViewModels
             {
                 ColorPresetsLoader loader = new ColorPresetsLoader();
                 colorPresets = loader.Load(ColorsVM.SelectedFile);
+                if (colorPresets == null || colorPresets.AvailableSchemes == null)
+                {
+                    throw new ArgumentException();
+                }
             }
             catch (Exception ex)
             {
                 var message = $"Error parsing {nameof(ColorPresets)}.";
-                Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                logger.Error(ex, message);
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 StatusMessage = $"{message} -> Maybe wrong selected file?";
                 return;
             }
+
+            logger.Info($"loaded color presets version: {colorPresets.Version}");
 
             foreach (var curScheme in colorPresets.AvailableSchemes)
             {
@@ -304,21 +315,23 @@ namespace ColorPresetsDesigner.ViewModels
                     }).ToList()
                 }));
 
-                var backupFilePath = vmColors.SelectedFile + ".bak";
-                File.Copy(vmColors.SelectedFile, backupFilePath, true);
-                SerializationHelper.SaveToFile<ColorPresets>(colorPresets, vmColors.SelectedFile);
+                var backupFilePath = ColorsVM.SelectedFile + ".bak";
+                logger.Trace($"create backup of \"{ColorsVM.SelectedFile}\" at \"{backupFilePath}\"");
+                File.Copy(ColorsVM.SelectedFile, backupFilePath, true);
+                StatusMessage = $"Backup created \"{backupFilePath}\".";
+
+                logger.Info($"save color presets file: \"{ColorsVM.SelectedFile}\" ({colorPresets.Version})");
+                SerializationHelper.SaveToFile<ColorPresets>(colorPresets, ColorsVM.SelectedFile);
 
                 MessageBox.Show("New colors.json was saved.", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                StatusMessage = $"Backup created \"{backupFilePath}\".";
             }
             catch (Exception ex)
             {
                 var message = "Error saving colors.json.";
-                Trace.WriteLine($"{message}{Environment.NewLine}{ex}");
+                logger.Error(ex, message);
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                StatusMessage = $"{message} -> Could not save to \"{vmColors.SelectedFile}\"";
+                StatusMessage = $"{message} -> Could not save to \"{ColorsVM.SelectedFile}\"";
                 return;
             }
         }
@@ -351,6 +364,7 @@ namespace ColorPresetsDesigner.ViewModels
                 if (SetPropertyAndNotify(ref _selectedColorScheme, value))
                 {
                     updateAvailablePredefinedColors();
+                    logger.Trace($"selected color scheme: {_selectedColorScheme.Name}");
                 }
             }
         }

@@ -32,6 +32,8 @@ namespace ColorPresetsDesigner
 
             TaskScheduler.UnobservedTaskException += (s, e) =>
                 LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");
+
+            logger.Info($"program version: {Assembly.GetExecutingAssembly().GetName().Version}");
         }
 
         private void LogUnhandledException(Exception ex, string @event)
@@ -60,10 +62,10 @@ namespace ColorPresetsDesigner
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            throw new Exception("BOOM!");
-
             if (ColorPresetsDesigner.Properties.Settings.Default.SettingsUpgradeNeeded)
             {
+                logger.Trace("upgrade settings");
+
                 ColorPresetsDesigner.Properties.Settings.Default.Upgrade();
                 ColorPresetsDesigner.Properties.Settings.Default.SettingsUpgradeNeeded = false;
                 ColorPresetsDesigner.Properties.Settings.Default.Save();
