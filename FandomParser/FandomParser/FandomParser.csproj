@@ -64,6 +64,9 @@
     <PackageReference Include="CXuesong.MW.WikiClientLibrary">
       <Version>0.6.5</Version>
     </PackageReference>
+    <PackageReference Include="NLog">
+      <Version>4.6.5</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FandomParser.Core\FandomParser.Core.csproj">

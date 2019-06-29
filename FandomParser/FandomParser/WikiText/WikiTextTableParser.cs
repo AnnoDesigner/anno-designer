@@ -13,16 +13,16 @@ namespace FandomParser.WikiText
 
         public WikiTextTableContainer GetTables(string wikiText)
         {
-            var cleanedTables = getTablesFromWikiText(wikiText);
-            var result = parseTables(cleanedTables);
+            var cleanedTables = GetTablesFromWikiText(wikiText);
+            var result = ParseTables(cleanedTables);
             result.Version = new Version(1, 0, 0, 0);
 
             return result;
         }
 
-        private static List<string> getTablesFromWikiText(string wikiTextToParse)
+        private static List<string> GetTablesFromWikiText(string wikiTextToParse)
         {
-            RegionTables = splitPageByRegions(wikiTextToParse);
+            RegionTables = SplitPageByRegions(wikiTextToParse);
 
             var cleanedTables = new List<string>();
 
@@ -37,15 +37,15 @@ namespace FandomParser.WikiText
             return cleanedTables;
         }
 
-        private static Dictionary<WorldRegion, Dictionary<string, string>> splitPageByRegions(string wikiTextToParse)
+        private static Dictionary<WorldRegion, Dictionary<string, string>> SplitPageByRegions(string wikiTextToParse)
         {
-            var groupedTables = groupTablesByRegion(wikiTextToParse);
-            var parsedAndGroupedTables = parseRegionAndTableHeaders(groupedTables);
+            var groupedTables = GroupTablesByRegion(wikiTextToParse);
+            var parsedAndGroupedTables = ParseRegionAndTableHeaders(groupedTables);
 
             return parsedAndGroupedTables;
         }
 
-        private static Dictionary<string, List<string>> groupTablesByRegion(string wikiTextToParse)
+        private static Dictionary<string, List<string>> GroupTablesByRegion(string wikiTextToParse)
         {
             var result = new Dictionary<string, List<string>>();
             var lastKey = string.Empty;
@@ -73,14 +73,14 @@ namespace FandomParser.WikiText
             return result;
         }
 
-        private static Dictionary<WorldRegion, Dictionary<string, string>> parseRegionAndTableHeaders(Dictionary<string, List<string>> groupedTables)
+        private static Dictionary<WorldRegion, Dictionary<string, string>> ParseRegionAndTableHeaders(Dictionary<string, List<string>> groupedTables)
         {
             var result = new Dictionary<WorldRegion, Dictionary<string, string>>();
 
             foreach (var curPair in groupedTables)
             {
-                var regionHeader = parseWorldRegion(curPair.Key);
-                var parsedTableHeaders = parseTableHeaders(curPair.Value);
+                var regionHeader = ParseWorldRegion(curPair.Key);
+                var parsedTableHeaders = ParseTableHeaders(curPair.Value);
 
                 result.Add(regionHeader, parsedTableHeaders);
             }
@@ -88,7 +88,7 @@ namespace FandomParser.WikiText
             return result;
         }
 
-        private static WorldRegion parseWorldRegion(string worldRegionHeader)
+        private static WorldRegion ParseWorldRegion(string worldRegionHeader)
         {
             WorldRegion result = WorldRegion.Unknown;
 
@@ -105,7 +105,7 @@ namespace FandomParser.WikiText
             return result;
         }
 
-        private static Dictionary<string, string> parseTableHeaders(List<string> tables)
+        private static Dictionary<string, string> ParseTableHeaders(List<string> tables)
         {
             var result = new Dictionary<string, string>();
 
@@ -115,11 +115,11 @@ namespace FandomParser.WikiText
                 var parsedTableHeader = splitted[0].Trim().Replace(" buildings", string.Empty);
 
                 //align linebreaks for each table
-                var x = alignLineBreaksInTables(new List<string> { splitted[1] });
+                var x = AlignLineBreaksInTables(new List<string> { splitted[1] });
 
                 //table headers: Icon|Name|Description|Construction cost|Maintenance cost|Size
                 //remove start of each table
-                x = removeTableHeaders(x);
+                x = RemoveTableHeaders(x);
 
                 result.Add(parsedTableHeader, x.First());
             }
@@ -127,7 +127,7 @@ namespace FandomParser.WikiText
             return result;
         }
 
-        private static List<string> splitPageByTables(string wikiTextToParse)
+        private static List<string> SplitPageByTables(string wikiTextToParse)
         {
             var tables = new List<string>();
 
@@ -148,7 +148,7 @@ namespace FandomParser.WikiText
             return tables;
         }
 
-        private static List<string> alignLineBreaksInTables(List<string> tableList)
+        private static List<string> AlignLineBreaksInTables(List<string> tableList)
         {
             var tablesWithLineBreaks = new List<string>();
 
@@ -163,7 +163,7 @@ namespace FandomParser.WikiText
             return tablesWithLineBreaks;
         }
 
-        private static List<string> removeTableHeaders(List<string> tablesWithLineBreaks)
+        private static List<string> RemoveTableHeaders(List<string> tablesWithLineBreaks)
         {
             var cleanedTables = new List<string>();
 
@@ -176,7 +176,7 @@ namespace FandomParser.WikiText
             return cleanedTables;
         }
 
-        private static WikiTextTableContainer parseTables(List<string> cleanedTables)
+        private static WikiTextTableContainer ParseTables(List<string> cleanedTables)
         {
             var result = new WikiTextTableContainer();
 
@@ -184,7 +184,7 @@ namespace FandomParser.WikiText
 
             foreach (var curTable in cleanedTables)
             {
-                var parsedTable = parseTableEntry(curTable);
+                var parsedTable = ParseTableEntry(curTable);
 
                 allTableEntries.AddRange(parsedTable);
             }
@@ -202,11 +202,11 @@ namespace FandomParser.WikiText
             return result;
         }
 
-        private static List<WikiTextTableEntry> parseTableEntry(string curTable)
+        private static List<WikiTextTableEntry> ParseTableEntry(string curTable)
         {
             var allEntries = new List<WikiTextTableEntry>();
 
-            var regionInfo = getRegionAndTierInfo(curTable);
+            var regionInfo = GetRegionAndTierInfo(curTable);
 
             WikiTextTableEntry curEntry = null;
             var entryCounter = 0;
@@ -310,7 +310,7 @@ namespace FandomParser.WikiText
             return allEntries;
         }
 
-        private static Tuple<WorldRegion, string> getRegionAndTierInfo(string wikiTextTable)
+        private static Tuple<WorldRegion, string> GetRegionAndTierInfo(string wikiTextTable)
         {
             var result = Tuple.Create(WorldRegion.Unknown, string.Empty);
 

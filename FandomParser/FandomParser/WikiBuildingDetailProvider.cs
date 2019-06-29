@@ -10,11 +10,14 @@ using System.Threading.Tasks;
 using FandomParser.Core;
 using FandomParser.Core.Presets.Models;
 using FandomParser.WikiText;
+using NLog;
 
 namespace FandomParser
 {
     public class WikiBuildingDetailProvider
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private const string DIRECTORY_BUILDING_DETAILS = "building_infos_detailed";
         private const string DIRECTORY_BUILDING_INFOBOX = "building_infoboxes_extracted";
         private const string FILENAME_MISSING_INFOS = "_missing_info.txt";
@@ -46,16 +49,16 @@ namespace FandomParser
         public WikiBuildingInfoPresets FetchBuildingDetails(WikiBuildingInfoPresets wikiBuildingInfoList)
         {
             //download complete wikitext for each building
-            saveCompleteInfos(wikiBuildingInfoList);
+            SaveCompleteInfos(wikiBuildingInfoList);
 
             //extract infobox for each found wikitext
-            extractAllInfoboxes();
+            ExtractAllInfoboxes();
 
             //parse infoboxes
-            return getUpdatedWikiBuildingInfoList(wikiBuildingInfoList);
+            return GetUpdatedWikiBuildingInfoList(wikiBuildingInfoList);
         }
 
-        private void saveCompleteInfos(WikiBuildingInfoPresets wikiBuildingInfoList)
+        private void SaveCompleteInfos(WikiBuildingInfoPresets wikiBuildingInfoList)
         {
             Console.WriteLine("start fetching building details");
 
@@ -82,7 +85,7 @@ namespace FandomParser
                     var pageName = curBuilding.Name.Replace(" ", "_");
 
                     //only download when not present and not forced to download
-                    var fileName = getCleanedFilename(pageName);
+                    var fileName = GetCleanedFilename(pageName);
                     var destinationFilePath = Path.Combine(PathToDetailsFolder, $"{fileName}{FILE_ENDING_WIKITEXT}");
                     if (!Program.ForceDownload && (File.Exists(destinationFilePath) || existingMissingInfos.Contains(curBuilding.Name)))
                     {
@@ -94,7 +97,7 @@ namespace FandomParser
 
                     if (!string.IsNullOrWhiteSpace(providerResult.WikiText))
                     {
-                        providerResult.WikiText = getLineBreakAlignedWikiText(providerResult.WikiText);
+                        providerResult.WikiText = GetLineBreakAlignedWikiText(providerResult.WikiText);
                         //align infobox name
                         providerResult.WikiText = providerResult.WikiText.Replace("{{Infobox_Buildings", "{{Infobox Buildings");
                         File.WriteAllText(destinationFilePath, providerResult.WikiText, Encoding.UTF8);
@@ -117,10 +120,12 @@ namespace FandomParser
             }
 
             sw.Stop();
-            Console.WriteLine($"finished fetching building details (took {sw.ElapsedMilliseconds} ms)");
+            var message = $"finished fetching building details (took {sw.ElapsedMilliseconds} ms)";
+            logger.Trace(message);
+            Console.WriteLine(message);
         }
 
-        private void extractAllInfoboxes()
+        private void ExtractAllInfoboxes()
         {
             Console.WriteLine("start extracting infoboxes");
 
@@ -174,6 +179,7 @@ namespace FandomParser
                 }
                 catch (Exception ex)
                 {
+                    logger.Error(ex, $"error extracting infobox: \"{curFile}\"");
                     Console.WriteLine(ex);
                 }
             }
@@ -182,7 +188,7 @@ namespace FandomParser
             Console.WriteLine($"finished extracting infoboxes (took {sw.ElapsedMilliseconds} ms)");
         }
 
-        private WikiBuildingInfoPresets getUpdatedWikiBuildingInfoList(WikiBuildingInfoPresets wikiBuildingInfoList)
+        private WikiBuildingInfoPresets GetUpdatedWikiBuildingInfoList(WikiBuildingInfoPresets wikiBuildingInfoList)
         {
             Console.WriteLine("start parsing infoboxes");
 
@@ -235,7 +241,7 @@ namespace FandomParser
 
                         foundWikiBuildingInfo.Url = new Uri("https://anno1800.fandom.com/wiki/" + buildingNameForUrl);
 
-                        var revisionInfo = getRevisionInfo(foundWikiBuildingInfo);
+                        var revisionInfo = GetRevisionInfo(foundWikiBuildingInfo);
                         if (revisionInfo != null)
                         {
                             foundWikiBuildingInfo.RevisionId = revisionInfo.Item1;
@@ -261,7 +267,7 @@ namespace FandomParser
                             foundWikiBuildingInfo.UnlockInfos = curInfobox.UnlockInfos;
                             foundWikiBuildingInfo.Url = new Uri("https://anno1800.fandom.com/wiki/" + buildingNameForUrl);
 
-                            var revisionInfo = getRevisionInfo(foundWikiBuildingInfo);
+                            var revisionInfo = GetRevisionInfo(foundWikiBuildingInfo);
                             if (revisionInfo != null)
                             {
                                 foundWikiBuildingInfo.RevisionId = revisionInfo.Item1;
@@ -277,6 +283,7 @@ namespace FandomParser
             }
             catch (Exception ex)
             {
+                logger.Error(ex, $"error parsing infoboxes");
                 Console.WriteLine(ex);
             }
 
@@ -286,14 +293,14 @@ namespace FandomParser
             return wikiBuildingInfoList;
         }
 
-        private static string getCleanedFilename(string fileNameToClean)
+        private static string GetCleanedFilename(string fileNameToClean)
         {
             return fileNameToClean.Replace("#", "_")
                 .Replace("|", "_")
                 .Replace(":", "_");
         }
 
-        private static string getLineBreakAlignedWikiText(string wikiText)
+        private static string GetLineBreakAlignedWikiText(string wikiText)
         {
             //based on benchmarks, a Regex.Replace is slower and allocates more memory -> NOT better: return Regex.Replace(wikiText, @"\r\n|\n\r|\n|\r", Environment.NewLine);
             return wikiText.Replace("\r\n", "\n")
@@ -301,11 +308,11 @@ namespace FandomParser
                 .Replace("\n", Environment.NewLine);
         }
 
-        private Tuple<int, DateTime> getRevisionInfo(WikiBuildingInfo buildingInfo)
+        private Tuple<int, DateTime> GetRevisionInfo(WikiBuildingInfo buildingInfo)
         {
             var buildingName = buildingInfo.Name.Replace(" ", "_");
 
-            var fileName = getCleanedFilename(buildingName);
+            var fileName = GetCleanedFilename(buildingName);
             var wikiTextForBuildingFilePath = Path.Combine(PathToDetailsFolder, $"{fileName}{FILE_ENDING_WIKITEXT}");
             if (!File.Exists(wikiTextForBuildingFilePath))
             {

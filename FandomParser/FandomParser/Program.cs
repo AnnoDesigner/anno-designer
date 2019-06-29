@@ -9,11 +9,14 @@ using System.Threading.Tasks;
 using FandomParser.Core;
 using FandomParser.Core.Helper;
 using FandomParser.WikiText;
+using NLog;
 
 namespace FandomParser
 {
     public static class Program
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private const string ARG_NO_WAIT = "--noWait";
         private const string ARG_FORCE_DOWNLOAD = "--forceDownload";
         private const string ARG_OUTPUT_DIRECTORY = "--out=";
@@ -30,13 +33,18 @@ namespace FandomParser
 
         public static Version PresetVersion { get; set; } = new Version(2, 1, 0, 0);
 
+        static Program()
+        {
+            logger.Info($"program version: {Assembly.GetExecutingAssembly().GetName().Version}");
+        }
+
         public static async Task Main(string[] args)
         {
             try
             {
                 OutputDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "..", "..", "..", "..", "Presets");
 
-                parseArguments(args);
+                ParseArguments(args);
 
                 //Console.WriteLine($"{nameof(ForceDownload)}: {ForceDownload}");
 
@@ -44,6 +52,9 @@ namespace FandomParser
                 {
                     Directory.CreateDirectory(OutputDirectory);
                 }
+
+                logger.Info($"Directory for output: \"{Path.GetFullPath(OutputDirectory)}\"");
+                logger.Info($"Version of preset file: {PresetVersion}");
 
                 Console.WriteLine($"Directory for output: \"{Path.GetFullPath(OutputDirectory)}\"");
                 Console.WriteLine($"Version of preset file: {PresetVersion}");
@@ -53,16 +64,20 @@ namespace FandomParser
 
                 if (!File.Exists("wiki_basic_info.json") || ForceDownload)
                 {
+                    logger.Trace("start download of basic wiki building info");
+
                     var provider = new WikiTextProvider();
                     var providerResult = await provider.GetWikiTextAsync();
 
                     var tableParser = new WikiTextTableParser();
                     tableContainer = tableParser.GetTables(providerResult.WikiText);
 
+                    logger.Trace("save basic wiki building info");
                     SerializationHelper.SaveToFile(tableContainer, "wiki_basic_info.json", prettyPrint: true);
                 }
                 else
                 {
+                    logger.Trace("load basic wiki building info");
                     tableContainer = SerializationHelper.LoadFromFile<WikiTextTableContainer>("wiki_basic_info.json");
                 }
 
@@ -76,7 +91,9 @@ namespace FandomParser
                 wikiBuildingInfoPreset.Version = PresetVersion;
                 wikiBuildingInfoPreset.DateGenerated = DateTime.UtcNow;
 
-                SerializationHelper.SaveToFile(wikiBuildingInfoPreset, Path.Combine(OutputDirectory, CoreConstants.WikiBuildingInfoPresetsFile), prettyPrint: UsePrettyPrint);
+                var outputPath = Path.Combine(OutputDirectory, CoreConstants.WikiBuildingInfoPresetsFile);
+                logger.Trace($"save wiki building info: {outputPath}");
+                SerializationHelper.SaveToFile(wikiBuildingInfoPreset, outputPath, prettyPrint: UsePrettyPrint);
 
                 //for testing
                 //load parsed file to test
@@ -89,6 +106,8 @@ namespace FandomParser
             }
             catch (Exception ex)
             {
+                logger.Error(ex, "error occured");
+
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex);
             }
@@ -103,26 +122,34 @@ namespace FandomParser
             }
         }
 
-        private static void parseArguments(string[] args)
+        private static void ParseArguments(string[] args)
         {
             if (args?.Any(x => x.Trim().Equals(ARG_FORCE_DOWNLOAD, StringComparison.OrdinalIgnoreCase)) == true)
             {
+                logger.Trace($"used parameter: {ARG_FORCE_DOWNLOAD}");
+
                 ForceDownload = true;
             }
 
             if (args?.Any(x => x.Trim().Equals(ARG_NO_WAIT, StringComparison.OrdinalIgnoreCase)) == true)
             {
+                logger.Trace($"used parameter: {ARG_NO_WAIT}");
+
                 NoWait = true;
             }
 
             if (args?.Any(x => x.Trim().Equals(ARG_PRETTY_PRINT, StringComparison.OrdinalIgnoreCase)) == true)
             {
+                logger.Trace($"used parameter: {ARG_PRETTY_PRINT}");
+
                 UsePrettyPrint = true;
             }
 
             if (args?.Any(x => x.Trim().StartsWith(ARG_OUTPUT_DIRECTORY, StringComparison.OrdinalIgnoreCase)) == true)
             {
                 var curArg = args.SingleOrDefault(x => x.Trim().StartsWith(ARG_OUTPUT_DIRECTORY, StringComparison.OrdinalIgnoreCase));
+
+                logger.Trace($"used parameter: {curArg}");
 
                 if (!string.IsNullOrWhiteSpace(curArg))
                 {
@@ -155,6 +182,8 @@ namespace FandomParser
             if (args?.Any(x => x.Trim().StartsWith(ARG_VERSION, StringComparison.OrdinalIgnoreCase)) == true)
             {
                 var curArg = args.SingleOrDefault(x => x.Trim().StartsWith(ARG_VERSION, StringComparison.OrdinalIgnoreCase));
+
+                logger.Trace($"used parameter: {curArg}");
 
                 if (!string.IsNullOrWhiteSpace(curArg))
                 {

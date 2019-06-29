@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 using WikiClientLibrary.Client;
 using WikiClientLibrary.Pages;
 using WikiClientLibrary.Sites;
@@ -11,6 +12,8 @@ namespace FandomParser.WikiText
 {
     public class WikiTextProvider
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         //alternative provider? https://github.com/fablecode/wikia-core
         //API useable? https://anno1800.fandom.com/api/v1/
 
@@ -51,6 +54,7 @@ namespace FandomParser.WikiText
             }
             catch (Exception ex)
             {
+                logger.Error(ex, $"error fetching wikitext: {pageToFetch}");
                 Console.WriteLine($"error fetching wikitext ({pageToFetch})" + Environment.NewLine + ex.ToString());
                 return result;
             }
