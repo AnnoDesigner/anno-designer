@@ -434,7 +434,7 @@ namespace AnnoDesigner
                     if (presetsToUse == null)
                     {
                         var loader = new BuildingPresetsLoader();
-                        BuildingPresets = loader.Load(Path.Combine(App.ApplicationPath, CoreConstants.BuildingPresetsFile));
+                        BuildingPresets = loader.Load(Path.Combine(App.ApplicationPath, CoreConstants.PresetsFiles.BuildingPresetsFile));
                     }
                     else
                     {
@@ -458,7 +458,7 @@ namespace AnnoDesigner
                     try
                     {
                         IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
-                        iconNameMapping = loader.Load(Path.Combine(App.ApplicationPath, CoreConstants.IconNameFile));
+                        iconNameMapping = loader.Load(Path.Combine(App.ApplicationPath, CoreConstants.PresetsFiles.IconNameFile));
                     }
                     catch (Exception ex)
                     {

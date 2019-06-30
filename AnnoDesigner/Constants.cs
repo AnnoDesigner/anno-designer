@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Media.Imaging;
 
 namespace AnnoDesigner
@@ -13,11 +13,6 @@ namespace AnnoDesigner
         /// Will be increased with each release.
         /// </summary>
         public const double Version = 8.2;
-
-        /// <summary>
-        /// Prefix for temporary updated presets file.
-        /// </summary>
-        public const string PrefixTempBuildingPresetsFile = "temp_";
 
         /// <summary>
         /// The minimal grid size to which the user can zoom out.

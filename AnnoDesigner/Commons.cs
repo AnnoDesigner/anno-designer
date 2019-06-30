@@ -30,7 +30,7 @@ namespace AnnoDesigner
 
         static Commons()
         {
-            _updateHelper = new UpdateHelper();
+            _updateHelper = new UpdateHelper(App.ApplicationPath);
         }
 
         public IUpdateHelper UpdateHelper

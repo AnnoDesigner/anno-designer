@@ -21,30 +21,28 @@ namespace AnnoDesigner
 {
     public class UpdateHelper : IUpdateHelper
     {
-        public enum AssetType
-        {
-            None,
-            Presets,
-            PresetsAndIcons,
-            IconMapping,
-            PredefinedColors
-        }
-
         private const string GITHUB_USERNAME = "AgmasGold";
         private const string GITHUB_PROJECTNAME = "anno-designer";
-        private const string RELEASE_PRESET_TAG = "Presetsv";
-        private const string ASSET_NAME_PRESETS_AND_ICONS = "Presets.and.Icons.Update";
+
+        private const string TAG_PRESETS = "Presetsv";
+        private const string TAG_PRESETS_ICONS = "PresetsIconsv";
+        private const string TAG_PRESETS_COLORS = "PresetsColorsv";
+        private const string TAG_PRESETS_WIKIBUILDINGINFO = "PresetsWikiBuildingInfov";
 
         private GitHubClient _apiClient;
         private HttpClient _httpClient;
-        private string _pathToUpdatedPresetsFile;
-        private string _pathToUpdatedPresetsAndIconsFile;
-        private string _pathToUpdatedIconMappingFile;
-        private string _pathToUpdatedPredefinedColorsFile;
+        private readonly string _basePath;
 
-        public UpdateHelper()
+        /// <summary>
+        /// Initializes a new instance of <see cref="AnnoDesigner.UpdateHelper"./>
+        /// </summary>
+        /// <param name="basePathToUse">The path the directory of the application.</param>
+        /// <remarks>
+        /// example to get the basePath: <c>string basePath = AppDomain.CurrentDomain.BaseDirectory;</c>
+        /// </remarks>
+        public UpdateHelper(string basePathToUse)
         {
-            LatestPresetReleaseType = AssetType.None;
+            _basePath = basePathToUse;
         }
 
         private GitHubClient ApiClient
@@ -93,273 +91,134 @@ namespace AnnoDesigner
             }
         }
 
-        public string PathToUpdatedPresetsFile
-        {
-            get { return _pathToUpdatedPresetsFile ?? (_pathToUpdatedPresetsFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + CoreConstants.BuildingPresetsFile)); }
-        }
-
-        public string PathToUpdatedPresetsAndIconsFile
-        {
-            get { return _pathToUpdatedPresetsAndIconsFile ?? (_pathToUpdatedPresetsAndIconsFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + "PresetsAndIcons.zip")); }
-        }
-
-        public string PathToUpdatedIconMappingFile
-        {
-            get { return _pathToUpdatedIconMappingFile ?? (_pathToUpdatedIconMappingFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + CoreConstants.IconNameFile)); }
-        }
-
-        public string PathToUpdatedPredefinedColorsFile
-        {
-            get { return _pathToUpdatedPredefinedColorsFile ?? (_pathToUpdatedPredefinedColorsFile = Path.Combine(App.ApplicationPath, Constants.PrefixTempBuildingPresetsFile + CoreConstants.ColorPresetsFile)); }
-        }
-
         private IReadOnlyList<Release> AllReleases { get; set; }
 
-        private Release LatestPresetRelease { get; set; }
 
-        private AssetType LatestPresetReleaseType { get; set; }
+        #region IUpdateHelper members        
 
-        public async Task<bool> IsNewPresetFileAvailableAsync(Version currentPresetVersion)
+        public async Task<List<AvailableRelease>> GetAvailableReleasesAsync()
         {
-            try
+            var result = new List<AvailableRelease>();
+
+            if (AllReleases == null)
             {
-                var result = false;
-
-                if (!await ConnectivityHelper.IsConnected())
-                {
-                    Trace.WriteLine("Could not establish a connection to the internet.");
-
-                    string language = Localization.Localization.GetLanguageCodeFromName(Settings.Default.SelectedLanguage);
-                    MessageBox.Show(Localization.Localization.Translations[language]["UpdateNoConnectionMessage"],
-                        Localization.Localization.Translations[language]["Error"],
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-
-                    return result;
-                }
-
-                var releases = await ApiClient.Repository.Release.GetAll(GITHUB_USERNAME, GITHUB_PROJECTNAME).ConfigureAwait(false);
-                if (releases == null || releases.Count < 1)
-                {
-                    AllReleases = null;
-                    return result;
-                }
-
-                AllReleases = releases;
-
-                var latestPresetRelease = releases.FirstOrDefault(x => !x.Draft && !x.Prerelease && x.TagName.StartsWith(RELEASE_PRESET_TAG, StringComparison.OrdinalIgnoreCase));
-                //for testing - latest preset and icons release
-                //var latestPresetRelease = releases.FirstOrDefault(x => !x.Draft && !x.Prerelease && x.TagName.StartsWith("Presetsv3.0.0", StringComparison.OrdinalIgnoreCase));
-                if (latestPresetRelease == null)
-                {
-                    LatestPresetRelease = null;
-                    return result;
-                }
-
-                LatestPresetRelease = latestPresetRelease;
-
-                var latestPresetVersionString = latestPresetRelease.TagName.Replace(RELEASE_PRESET_TAG, string.Empty).Trim();
-                if (string.IsNullOrWhiteSpace(latestPresetVersionString))
-                {
-                    Trace.WriteLine($"Could not get version of latest preset release. {nameof(latestPresetRelease.TagName)}: {latestPresetRelease.TagName}");
-                    return result;
-                }
-
-                var latestPresetVersion = new Version(latestPresetVersionString);
-                if (latestPresetVersion > currentPresetVersion)
-                {
-                    result = true;
-                }
-
-                return result;
+                AllReleases = await GetAllAvailableReleases().ConfigureAwait(false);
             }
-            catch (Exception ex)
+
+            foreach (ReleaseType curReleaseType in Enum.GetValues(typeof(ReleaseType)))
             {
-                Trace.WriteLine($"Error getting info about preset updates.{Environment.NewLine}{ex}");
-                return false;
+                var foundRelease = CheckForAvailableRelease(curReleaseType);
+                if (foundRelease != null)
+                {
+                    result.Add(foundRelease);
+                }
             }
+
+            return result;
         }
 
-        public async Task<string> DownloadLatestPresetFileAsync()
+        public async Task<AvailableRelease> GetAvailableReleasesAsync(ReleaseType releaseType)
+        {
+            if (AllReleases == null)
+            {
+                AllReleases = await GetAllAvailableReleases().ConfigureAwait(false);
+            }
+
+            var foundRelease = CheckForAvailableRelease(releaseType);
+            if (foundRelease == null)
+            {
+                return null;
+            }
+
+            return foundRelease;
+        }
+
+        public async Task<string> DownloadReleaseAsync(AvailableRelease releaseToDownload)
         {
             try
             {
-                var result = string.Empty;
-
-                if (LatestPresetRelease == null)
+                if (AllReleases == null)
                 {
-                    return result;
+                    return null;
                 }
 
-                //check presets.json
-                var latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(CoreConstants.BuildingPresetsFile, StringComparison.OrdinalIgnoreCase));
-                if (latestPresetAsset == null)
+                var release = AllReleases.FirstOrDefault(x => x.Id == releaseToDownload.Id);
+                if (release == null)
                 {
-                    Trace.WriteLine($"No asset found for latest preset update. ({CoreConstants.BuildingPresetsFile})");
-                }
-                else
-                {
-                    LatestPresetReleaseType = AssetType.Presets;
+                    Trace.WriteLine($"No release found for {nameof(releaseToDownload.Id)}: {nameof(releaseToDownload.Id)}.");
+                    return null;
                 }
 
-                //check presets with icons
-                if (latestPresetAsset == null)
+                var assetName = GetAssetNameForReleaseType(releaseToDownload.Type);
+                if (string.IsNullOrWhiteSpace(assetName))
                 {
-                    latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.StartsWith(ASSET_NAME_PRESETS_AND_ICONS, StringComparison.OrdinalIgnoreCase));
-                    if (latestPresetAsset == null)
-                    {
-                        Trace.WriteLine($"No asset found for latest preset update. ({ASSET_NAME_PRESETS_AND_ICONS})");
-                    }
-                    else
-                    {
-                        LatestPresetReleaseType = AssetType.PresetsAndIcons;
-                    }
+                    Trace.WriteLine($"No asset name found for type: {releaseToDownload.Type}.");
+                    return null;
                 }
 
-                //check icons.json
-                if (latestPresetAsset == null)
+                var foundAsset = release.Assets.FirstOrDefault(x => x.Name.StartsWith(assetName, StringComparison.OrdinalIgnoreCase));
+                if (foundAsset == null)
                 {
-                    latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(CoreConstants.IconNameFile, StringComparison.OrdinalIgnoreCase));
-                    if (latestPresetAsset == null)
-                    {
-                        Trace.WriteLine($"No asset found for latest preset update. ({CoreConstants.IconNameFile})");
-                    }
-                    else
-                    {
-                        LatestPresetReleaseType = AssetType.IconMapping;
-                    }
+                    Trace.WriteLine($"No asset found with name: {assetName}.");
+                    return null;
                 }
 
-                //check colors.json
-                if (latestPresetAsset == null)
-                {
-                    latestPresetAsset = LatestPresetRelease.Assets.FirstOrDefault(x => x.Name.Equals(CoreConstants.ColorPresetsFile, StringComparison.OrdinalIgnoreCase));
-                    if (latestPresetAsset == null)
-                    {
-                        Trace.WriteLine($"No asset found for latest preset update. ({CoreConstants.ColorPresetsFile})");
-                    }
-                    else
-                    {
-                        LatestPresetReleaseType = AssetType.PredefinedColors;
-                    }
-                }
-
-                //still no supported asset found
-                if (latestPresetAsset == null)
-                {
-                    Trace.WriteLine("No supported asset found for latest preset update.");
-                    return result;
-                }
-
-                //download file to temp directory
-                var tempFileName = Path.GetTempFileName();
-                var pathToDownloadedFile = await DownloadFileAsync(latestPresetAsset.BrowserDownloadUrl, tempFileName).ConfigureAwait(false);
+                //download file to temp directory            
+                var pathToDownloadedFile = await DownloadFileAsync(foundAsset.BrowserDownloadUrl, Path.GetTempFileName()).ConfigureAwait(false);
                 if (string.IsNullOrWhiteSpace(pathToDownloadedFile))
                 {
-                    return result;
+                    Trace.WriteLine($"Could not get path to downloaded file.");
+                    return null;
                 }
-
-                tempFileName = pathToDownloadedFile;
 
                 //move file to app directory
-                var tempFileInfo = new FileInfo(tempFileName);
+                var tempFileInfo = new FileInfo(pathToDownloadedFile);
 
-                if (LatestPresetReleaseType == AssetType.Presets)
+                var pathToUpdatedPresetsFile = GetPathToUpdatedPresetsFile(releaseToDownload.Type);
+                if (string.IsNullOrWhiteSpace(pathToUpdatedPresetsFile))
                 {
-                    if (File.Exists(PathToUpdatedPresetsFile))
-                    {
-                        FileHelper.ResetFileAttributes(PathToUpdatedPresetsFile);
-                        File.Delete(PathToUpdatedPresetsFile);
-                    }
-
-                    tempFileInfo.MoveTo(PathToUpdatedPresetsFile);
-                    result = PathToUpdatedPresetsFile;
-                }
-                else if (LatestPresetReleaseType == AssetType.PresetsAndIcons)
-                {
-                    if (File.Exists(PathToUpdatedPresetsAndIconsFile))
-                    {
-                        FileHelper.ResetFileAttributes(PathToUpdatedPresetsAndIconsFile);
-                        File.Delete(PathToUpdatedPresetsAndIconsFile);
-                    }
-
-                    tempFileInfo.MoveTo(PathToUpdatedPresetsAndIconsFile);
-                    result = PathToUpdatedPresetsAndIconsFile;
-                }
-                else if (LatestPresetReleaseType == AssetType.IconMapping)
-                {
-                    if (File.Exists(PathToUpdatedIconMappingFile))
-                    {
-                        FileHelper.ResetFileAttributes(PathToUpdatedIconMappingFile);
-                        File.Delete(PathToUpdatedIconMappingFile);
-                    }
-
-                    tempFileInfo.MoveTo(PathToUpdatedIconMappingFile);
-                    result = PathToUpdatedIconMappingFile;
-                }
-                else if (LatestPresetReleaseType == AssetType.PredefinedColors)
-                {
-                    if (File.Exists(PathToUpdatedPredefinedColorsFile))
-                    {
-                        FileHelper.ResetFileAttributes(PathToUpdatedPredefinedColorsFile);
-                        File.Delete(PathToUpdatedPredefinedColorsFile);
-                    }
-
-                    tempFileInfo.MoveTo(PathToUpdatedPredefinedColorsFile);
-                    result = PathToUpdatedPredefinedColorsFile;
+                    Trace.WriteLine($"Could not get path to updated presets file for type: {releaseToDownload.Type}.");
+                    return null;
                 }
 
-                return result;
+                if (File.Exists(pathToUpdatedPresetsFile))
+                {
+                    FileHelper.ResetFileAttributes(pathToUpdatedPresetsFile);
+                    File.Delete(pathToUpdatedPresetsFile);
+                }
+
+                tempFileInfo.MoveTo(pathToUpdatedPresetsFile);
+
+                return pathToUpdatedPresetsFile;
             }
             catch (Exception ex)
             {
-                //Trace.WriteLine($"Error downloading latest preset file.{Environment.NewLine}{ex}");
                 App.LogErrorMessage(ex);
-                return string.Empty;
+                return null;
             }
         }
 
-        private async Task<string> DownloadFileAsync(string url, string pathToSavedFile)
-        {
-            try
-            {
-                var stream = await LocalHttpClient.GetStreamAsync(url).ConfigureAwait(false);
-                using (var fileStream = new FileStream(pathToSavedFile, System.IO.FileMode.Create))
-                {
-                    await stream.CopyToAsync(fileStream).ConfigureAwait(false);
-                }
-
-                return pathToSavedFile;
-            }
-            catch (Exception ex)
-            {
-                //Trace.WriteLine($"Error downloading file ({url}).{Environment.NewLine}{ex}");
-                App.WriteToErrorLog($"Error downloading file ({url}).", ex.Message, ex.StackTrace);
-                return string.Empty;
-            }
-        }
-
-        public async Task ReplaceUpdatedPresetFileAsync()
+        public async Task ReplaceUpdatedPresetsFilesAsync()
         {
             try
             {
                 await Task.Run(async () =>
+                {
+                    foreach (ReleaseType curReleaseType in Enum.GetValues(typeof(ReleaseType)))
                     {
-                        if (!string.IsNullOrWhiteSpace(PathToUpdatedPresetsFile) && File.Exists(PathToUpdatedPresetsFile))
+                        var pathToUpdatesPresetsFile = GetPathToUpdatedPresetsFile(curReleaseType);
+                        if (string.IsNullOrWhiteSpace(pathToUpdatesPresetsFile) || !File.Exists(pathToUpdatesPresetsFile))
                         {
-                            var originalPathToPresetsFile = Path.Combine(App.ApplicationPath, CoreConstants.BuildingPresetsFile);
-
-                            FileHelper.ResetFileAttributes(originalPathToPresetsFile);
-                            File.Delete(originalPathToPresetsFile);
-                            File.Move(PathToUpdatedPresetsFile, originalPathToPresetsFile);
+                            continue;
                         }
-                        else if (!string.IsNullOrWhiteSpace(PathToUpdatedPresetsAndIconsFile) && File.Exists(PathToUpdatedPresetsAndIconsFile))
+
+                        if (curReleaseType == ReleaseType.PresetsAndIcons)
                         {
-                            using (var archive = ZipFile.OpenRead(PathToUpdatedPresetsAndIconsFile))
+                            using (var archive = ZipFile.OpenRead(pathToUpdatesPresetsFile))
                             {
                                 foreach (var curEntry in archive.Entries)
                                 {
-                                    var destinationPath = Path.Combine(App.ApplicationPath, curEntry.FullName);
+                                    var destinationPath = Path.Combine(Path.GetDirectoryName(pathToUpdatesPresetsFile), curEntry.FullName);
                                     var destinationDirectory = Path.GetDirectoryName(destinationPath);
 
                                     if (!Directory.Exists(destinationDirectory))
@@ -383,25 +242,22 @@ namespace AnnoDesigner
                             //wait extra time for extraction to finish (sometimes the disk needs extra time)
                             await Task.Delay(TimeSpan.FromMilliseconds(200));
 
-                            File.Delete(PathToUpdatedPresetsAndIconsFile);
-                        }
-                        else if (!string.IsNullOrWhiteSpace(PathToUpdatedIconMappingFile) && File.Exists(PathToUpdatedIconMappingFile))
-                        {
-                            var originalPathToIconMappingFile = Path.Combine(App.ApplicationPath, CoreConstants.IconNameFile);
+                            File.Delete(pathToUpdatesPresetsFile);
 
-                            FileHelper.ResetFileAttributes(originalPathToIconMappingFile);
-                            File.Delete(originalPathToIconMappingFile);
-                            File.Move(PathToUpdatedIconMappingFile, originalPathToIconMappingFile);
+                            continue;
                         }
-                        else if (!string.IsNullOrWhiteSpace(PathToUpdatedPredefinedColorsFile) && File.Exists(PathToUpdatedPredefinedColorsFile))
-                        {
-                            var originalPathToPredefinedColorsFile = Path.Combine(App.ApplicationPath, CoreConstants.ColorPresetsFile);
 
-                            FileHelper.ResetFileAttributes(originalPathToPredefinedColorsFile);
-                            File.Delete(originalPathToPredefinedColorsFile);
-                            File.Move(PathToUpdatedPredefinedColorsFile, originalPathToPredefinedColorsFile);
+                        var originalPresetsFileName = Path.GetFileName(pathToUpdatesPresetsFile).Replace(CoreConstants.PrefixUpdatedPresetsFile, string.Empty);
+                        var pathToOriginalPresetsFile = Path.Combine(Path.GetDirectoryName(pathToUpdatesPresetsFile), originalPresetsFileName);
+                        if (File.Exists(pathToOriginalPresetsFile))
+                        {
+                            FileHelper.ResetFileAttributes(pathToOriginalPresetsFile);
+                            File.Delete(pathToOriginalPresetsFile);
                         }
-                    });
+
+                        File.Move(pathToUpdatesPresetsFile, pathToOriginalPresetsFile);
+                    }
+                });
             }
             catch (Exception ex)
             {
@@ -413,6 +269,182 @@ namespace AnnoDesigner
                             MessageBoxButton.OK,
                             MessageBoxImage.Error,
                             MessageBoxResult.OK);
+            }
+        }
+
+        #endregion
+
+        private async Task<IReadOnlyList<Release>> GetAllAvailableReleases()
+        {
+            try
+            {
+                if (!await ConnectivityHelper.IsConnected())
+                {
+                    Trace.WriteLine("Could not establish a connection to the internet.");
+
+                    string language = Localization.Localization.GetLanguageCodeFromName(Settings.Default.SelectedLanguage);
+                    MessageBox.Show(Localization.Localization.Translations[language]["UpdateNoConnectionMessage"],
+                        Localization.Localization.Translations[language]["Error"],
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+
+                    return null;
+                }
+
+                var releases = await ApiClient.Repository.Release.GetAll(GITHUB_USERNAME, GITHUB_PROJECTNAME).ConfigureAwait(false);
+                if (releases == null || releases.Count < 1)
+                {
+                    return null;
+                }
+
+                return releases;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error getting info about preset updates.{Environment.NewLine}{ex}");
+                return null;
+            }
+        }
+
+        private AvailableRelease CheckForAvailableRelease(ReleaseType releaseType)
+        {
+            AvailableRelease result = null;
+
+            var tagToCheck = GetTagForReleaseType(releaseType);
+            if (string.IsNullOrWhiteSpace(tagToCheck))
+            {
+                return result;
+            }
+
+            var foundGithubRelease = AllReleases.FirstOrDefault(x => !x.Draft && !x.Prerelease && x.TagName.StartsWith(tagToCheck, StringComparison.OrdinalIgnoreCase));
+            //for testing - latest preset and icons release
+            //var latestPresetRelease = releases.FirstOrDefault(x => !x.Draft && !x.Prerelease && x.TagName.StartsWith("Presetsv3.0.0", StringComparison.OrdinalIgnoreCase));
+            if (foundGithubRelease == null)
+            {
+                return result;
+            }
+
+            var versionString = foundGithubRelease.TagName.Replace(tagToCheck, string.Empty).Trim();
+            if (!Version.TryParse(versionString, out var foundVersion))
+            {
+                Trace.WriteLine($"Could not get version of preset release. {nameof(foundGithubRelease.TagName)}: {foundGithubRelease.TagName}");
+                return result;
+            }
+
+            result = new AvailableRelease
+            {
+                Id = foundGithubRelease.Id,
+                Type = releaseType,
+                Version = foundVersion
+            };
+
+            return result;
+        }
+
+        private string GetTagForReleaseType(ReleaseType releaseType)
+        {
+            var result = string.Empty;
+
+            switch (releaseType)
+            {
+                case ReleaseType.Presets:
+                case ReleaseType.PresetsAndIcons:
+                    result = TAG_PRESETS;
+                    break;
+                case ReleaseType.PresetsIcons:
+                    result = TAG_PRESETS_ICONS;
+                    break;
+                case ReleaseType.PresetsColors:
+                    result = TAG_PRESETS_COLORS;
+                    break;
+                case ReleaseType.PresetsWikiBuildingInfo:
+                    result = TAG_PRESETS_WIKIBUILDINGINFO;
+                    break;
+                case ReleaseType.Unknown:
+                default:
+                    break;
+            }
+
+            return result;
+        }
+
+        private string GetAssetNameForReleaseType(ReleaseType releaseType)
+        {
+            var result = string.Empty;
+
+            switch (releaseType)
+            {
+                case ReleaseType.Presets:
+                    result = CoreConstants.PresetsFiles.BuildingPresetsFile;
+                    break;
+                case ReleaseType.PresetsAndIcons:
+                    result = "Presets.and.Icons.Update";
+                    break;
+                case ReleaseType.PresetsIcons:
+                    result = CoreConstants.PresetsFiles.IconNameFile;
+                    break;
+                case ReleaseType.PresetsColors:
+                    result = CoreConstants.PresetsFiles.ColorPresetsFile;
+                    break;
+                case ReleaseType.PresetsWikiBuildingInfo:
+                    result = CoreConstants.PresetsFiles.WikiBuildingInfoPresetsFile;
+                    break;
+                case ReleaseType.Unknown:
+                default:
+                    break;
+            }
+
+            return result;
+        }
+
+        private string GetPathToUpdatedPresetsFile(ReleaseType releaseType)
+        {
+            var result = string.Empty;
+
+            //maybe this will change for each presets type in the future
+
+            switch (releaseType)
+            {
+                case ReleaseType.Presets:
+                    result = Path.Combine(_basePath, CoreConstants.PrefixUpdatedPresetsFile + GetAssetNameForReleaseType(releaseType));
+                    break;
+                case ReleaseType.PresetsAndIcons:
+                    result = Path.Combine(_basePath, CoreConstants.PrefixUpdatedPresetsFile + GetAssetNameForReleaseType(releaseType));
+                    break;
+                case ReleaseType.PresetsIcons:
+                    result = Path.Combine(_basePath, CoreConstants.PrefixUpdatedPresetsFile + GetAssetNameForReleaseType(releaseType));
+                    break;
+                case ReleaseType.PresetsColors:
+                    result = Path.Combine(_basePath, CoreConstants.PrefixUpdatedPresetsFile + GetAssetNameForReleaseType(releaseType));
+                    break;
+                case ReleaseType.PresetsWikiBuildingInfo:
+                    result = Path.Combine(_basePath, CoreConstants.PrefixUpdatedPresetsFile + GetAssetNameForReleaseType(releaseType));
+                    break;
+                case ReleaseType.Unknown:
+                default:
+                    break;
+            }
+
+            return result;
+        }
+
+        private async Task<string> DownloadFileAsync(string url, string pathToSavedFile)
+        {
+            try
+            {
+                var stream = await LocalHttpClient.GetStreamAsync(url).ConfigureAwait(false);
+                using (var fileStream = new FileStream(pathToSavedFile, System.IO.FileMode.Create))
+                {
+                    await stream.CopyToAsync(fileStream).ConfigureAwait(false);
+                }
+
+                return pathToSavedFile;
+            }
+            catch (Exception ex)
+            {
+                //Trace.WriteLine($"Error downloading file ({url}).{Environment.NewLine}{ex}");
+                App.WriteToErrorLog($"Error downloading file ({url}).", ex.Message, ex.StackTrace);
+                return string.Empty;
             }
         }
     }

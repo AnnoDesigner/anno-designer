@@ -102,7 +102,7 @@ namespace AnnoDesigner.Tests
         {
             var loader = new BuildingPresetsLoader();
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            var buildingPresets = loader.Load(Path.Combine(basePath, CoreConstants.BuildingPresetsFile));
+            var buildingPresets = loader.Load(Path.Combine(basePath, CoreConstants.PresetsFiles.BuildingPresetsFile));
 
             var buildings_1404 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A4")).OrderByDescending(x => x.GetOrderParameter()).Take(10).ToList();
             var buildings_2070 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A5")).OrderByDescending(x => x.GetOrderParameter()).Take(10).ToList();

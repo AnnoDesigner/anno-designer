@@ -39,17 +39,17 @@ namespace AnnoDesigner.Core.Presets.Helper
 
         private ColorPresets LoadedColorPresets
         {
-            get { return _loadedColorPresets ?? (_loadedColorPresets = _colorPresetsLoader.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), CoreConstants.ColorPresetsFile))); }
+            get { return _loadedColorPresets ?? (_loadedColorPresets = _colorPresetsLoader.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), CoreConstants.PresetsFiles.ColorPresetsFile))); }
         }
 
         private ColorScheme LoadedDefaultColorScheme
         {
-            get { return _loadedDefaultColorScheme ?? (_loadedDefaultColorScheme = _colorPresetsLoader.LoadDefaultScheme(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), CoreConstants.ColorPresetsFile))); }
+            get { return _loadedDefaultColorScheme ?? (_loadedDefaultColorScheme = _colorPresetsLoader.LoadDefaultScheme(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), CoreConstants.PresetsFiles.ColorPresetsFile))); }
         }
 
         private BuildingPresets LoadedBuildingPresets
         {
-            get { return _loadedBuildingPresets ?? (_loadedBuildingPresets = _buildingPresetsLoader.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), CoreConstants.BuildingPresetsFile))); }
+            get { return _loadedBuildingPresets ?? (_loadedBuildingPresets = _buildingPresetsLoader.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), CoreConstants.PresetsFiles.BuildingPresetsFile))); }
         }
 
         public Color? GetPredefinedColor(AnnoObject annoObject)

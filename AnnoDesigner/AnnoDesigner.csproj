@@ -52,13 +52,15 @@
     <Compile Include="InputWindow.xaml.cs">
       <DependentUpon>InputWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="model\AvailableRelease.cs" />
+    <Compile Include="model\ICommons.cs" />
+    <Compile Include="model\IUpdateHelper.cs" />
+    <Compile Include="model\BuildingInfluenceType.cs" />
+    <Compile Include="model\ReleaseType.cs" />
     <Compile Include="Localization\Localization.cs" />
     <Compile Include="model\ILocalizationHelper.cs" />
     <Compile Include="model\PresetsTree\GameHeaderTreeItem.cs" />
     <Compile Include="model\PresetsTree\GenericTreeItem.cs" />
-    <Compile Include="model\ICommons.cs" />
-    <Compile Include="model\IUpdateHelper.cs" />
-    <Compile Include="model\BuildingInfluenceType.cs" />
     <Compile Include="Localization\TreeLocalization.cs" />
     <Compile Include="MutexHelper.cs" />
     <Compile Include="model\StatisticsBuilding.cs" />
