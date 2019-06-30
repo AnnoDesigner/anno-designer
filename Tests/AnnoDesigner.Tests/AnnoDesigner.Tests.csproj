@@ -4,33 +4,31 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D49B557D-320C-425E-8822-051AC5A1A26F}</ProjectGuid>
+    <ProjectGuid>{809FDE16-4864-4CD2-83A5-75315E970BFD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PresetParser.Tests</RootNamespace>
-    <AssemblyName>PresetParser.Tests</AssemblyName>
+    <RootNamespace>AnnoDesigner.Tests</RootNamespace>
+    <AssemblyName>AnnoDesigner.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -41,21 +39,17 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\WindowsBase.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuildingBlockProviderTests.cs" />
-    <Compile Include="ExtraPresetsTests.cs" />
-    <Compile Include="IconFileNameHelperTests.cs" />
-    <Compile Include="LocalizationHelperTests.cs" />
-    <Compile Include="NewFactionAndGroup1800Tests.cs" />
+    <Compile Include="PresetsTreeViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Moq">
       <Version>4.12.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.IO.Abstractions.TestingHelpers">
-      <Version>6.0.11</Version>
     </PackageReference>
     <PackageReference Include="xunit">
       <Version>2.4.1</Version>
@@ -79,16 +73,10 @@
       <Project>{C73FBFF0-1A11-40FC-8F1F-29637699419A}</Project>
       <Name>AnnoDesigner.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\PresetParser\PresetParser.csproj">
-      <Project>{f6ea37dc-f9e0-445d-b727-f742e6e61d91}</Project>
-      <Name>PresetParser</Name>
+    <ProjectReference Include="..\..\AnnoDesigner\AnnoDesigner.csproj">
+      <Project>{3AF4C58B-FEF0-485F-8DBF-CC61F9AF6FAD}</Project>
+      <Name>AnnoDesigner</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <None Include="Testdata\1404_Bakery.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

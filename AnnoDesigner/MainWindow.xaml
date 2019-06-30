@@ -5,8 +5,9 @@
         xmlns:my="clr-namespace:AnnoDesigner"
         xmlns:coreModels="clr-namespace:AnnoDesigner.Core.Models;assembly=AnnoDesigner.Core"
         xmlns:l="clr-namespace:AnnoDesigner.Localization"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:converter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
-        xmlns:model="clr-namespace:AnnoDesigner.model"
+        xmlns:modelPresetsTree="clr-namespace:AnnoDesigner.model.PresetsTree"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         Title="Anno Designer"
         Icon="/AnnoDesigner;component/icon.ico"
@@ -21,6 +22,9 @@
         <converter:BoolToVisibilityConverter x:Key="converterBoolToVisibility"
                                              TrueValue="Visible"
                                              FalseValue="Hidden" />
+        <converter:BoolToVisibilityConverter x:Key="converterBoolToVisibilityCollapsed"
+                                             TrueValue="Visible"
+                                             FalseValue="Collapsed" />
         <xctk:ColorToSolidColorBrushConverter x:Key="converterColorToSolidColorBrush" />
         <DataTemplate DataType="{x:Type coreModels:IconImage}">
             <StackPanel Orientation="Horizontal">
@@ -639,16 +643,50 @@
                             />-->
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Building presets - not loaded"
-                          Name="GroupBoxPresets"
+                <GroupBox x:Name="GroupBoxPresets"
+                          Header="Building presets - not loaded"
                           IsEnabled="True"
                           Width="{Binding ElementName=BuildingsPanel, Path=ActualWidth, Mode=OneWay}"
                           DockPanel.Dock="Top">
-                    <TreeView Name="treeViewPresets"
-                              MouseDoubleClick="TreeViewPresetsMouseDoubleClick"
-                              KeyDown="TreeViewPresetsKeyDown"
-                              TabIndex="13"
-                              Loaded="TreeViewPresetsLoaded" />
+                    <TreeView x:Name="PresetsTree"
+                              ItemsSource="{Binding PresetTreeViewModel.FilteredItems}"
+                              VirtualizingStackPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling">
+                        <TreeView.InputBindings>
+                            <KeyBinding Command="{Binding PresetTreeViewModel.ReturnKeyPressedCommand}"
+                                        Key="Return"
+                                        CommandParameter="{Binding SelectedItem, ElementName=PresetsTree}" />
+                        </TreeView.InputBindings>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <i:InvokeCommandAction Command="{Binding PresetTreeViewModel.DoubleClickCommand}"
+                                                       CommandParameter="{Binding SelectedItem, ElementName=PresetsTree}" />
+                            </i:EventTrigger>
+                            <!--<i:EventTrigger EventName="SelectedItemChanged">
+                                <i:InvokeCommandAction Command="{Binding PresetTreeViewModel.SelectedItemChangedCommand}"
+                                                       CommandParameter="{Binding SelectedItem, ElementName=PresetsTree}" />
+                            </i:EventTrigger>-->
+                        </i:Interaction.Triggers>
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type modelPresetsTree:GameHeaderTreeItem}"
+                                                      ItemsSource="{Binding Children}">
+                                <TextBlock Text="{Binding Header}"
+                                           FontWeight="SemiBold" />
+                            </HierarchicalDataTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type modelPresetsTree:GenericTreeItem}"
+                                                      ItemsSource="{Binding Children}">
+                                <TextBlock Text="{Binding Header}" />
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <Setter Property="IsExpanded"
+                                        Value="{Binding IsExpanded, Mode=TwoWay}" />
+                                <Setter Property="Visibility"
+                                        Value="{Binding IsVisible, Mode=TwoWay, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+                    </TreeView>
                 </GroupBox>
             </DockPanel>
             <StatusBar Grid.Row="2"
