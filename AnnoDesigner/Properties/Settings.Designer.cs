@@ -166,17 +166,6 @@ namespace AnnoDesigner.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Generic.List<System.Boolean> TreeViewState {
-            get {
-                return ((global::System.Collections.Generic.List<System.Boolean>)(this["TreeViewState"]));
-            }
-            set {
-                this["TreeViewState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool EnableAutomaticUpdateCheck {
             get {
@@ -292,6 +281,30 @@ namespace AnnoDesigner.Properties {
             }
             set {
                 this["IsPavedStreet"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PresetsTreeExpandedState {
+            get {
+                return ((string)(this["PresetsTreeExpandedState"]));
+            }
+            set {
+                this["PresetsTreeExpandedState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PresetsTreeLastVersion {
+            get {
+                return ((string)(this["PresetsTreeLastVersion"]));
+            }
+            set {
+                this["PresetsTreeLastVersion"] = value;
             }
         }
     }

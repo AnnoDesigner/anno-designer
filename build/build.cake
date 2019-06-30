@@ -131,6 +131,10 @@ var updateAssemblyInfoTask = Task("Update-Assembly-Info")
     ReplaceRegexInFiles("./../PresetParser/Properties/AssemblyInfo.cs",
                         "(?<=AssemblyFileVersion\\(\")(.+?)(?=\"\\))",
                         $"{versionNumber}.0.0");
+    
+    ReplaceRegexInFiles("./../AnnoDesigner/Constants.cs",
+                        "(?<=double Version = )(\\d.\\d)",
+                        $"{versionNumber}");
 });
 
 var buildTask = Task("Build")
@@ -261,13 +265,14 @@ var copyFilesTask = Task("Copy-Files")
     CopyDirectory($"./../AnnoDesigner/bin/{configuration}/icons", $"{outputDirectoryIcons}");
 
     Information($"{DateTime.Now:hh:mm:ss.ff} copy application to \"{outDirectory}\"");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/AnnoDesigner.Core.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/AnnoDesigner.exe", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/AnnoDesigner.exe.config", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/AnnoDesigner.Core.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/colors.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/icons.json", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/presets.json", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/Microsoft.Xaml.Behaviors.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/Octokit.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/presets.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/Xceed.Wpf.Toolkit.dll", $"{outDirectory}");
 
     Information("");

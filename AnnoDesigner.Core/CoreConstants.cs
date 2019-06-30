@@ -33,5 +33,17 @@ namespace AnnoDesigner.Core
         /// Filter used to retrieve the icons within the IconFolder.
         /// </summary>
         public const string IconFolderFilter = "*.png";
+
+        [Flags]
+        public enum GameVersion
+        {
+            Unknown = 0,
+            Anno1404 = 1 << 0,
+            Anno2070 = 1 << 1,
+            Anno2205 = 1 << 2,
+            Anno1800 = 1 << 3,
+            //All = Anno1404 | Anno2070 | Anno2205 | Anno1800
+            All = ~Unknown//https://stackoverflow.com/a/8488314
+        }
     }
 }

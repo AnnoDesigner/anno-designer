@@ -864,6 +864,7 @@ namespace AnnoDesigner.Localization
         {
             _statisticsViewModel = new StatisticsViewModel();
             _buildingSettingsViewModel = new BuildingSettingsViewModel();
+            _presetTreeViewModel = new PresetsTreeViewModel(new TreeLocalization());
 
             UpdateLanguage();
         }
@@ -1464,6 +1465,13 @@ namespace AnnoDesigner.Localization
         {
             get { return _buildingSettingsViewModel; }
             set { _buildingSettingsViewModel = value; }
+        }
+
+        private PresetsTreeViewModel _presetTreeViewModel;
+        public PresetsTreeViewModel PresetTreeViewModel
+        {
+            get { return _presetTreeViewModel; }
+            set { _presetTreeViewModel = value; }
         }
     }
 

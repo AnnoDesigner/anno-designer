@@ -27,20 +27,20 @@ using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Layout;
 using System.Text;
 using AnnoDesigner.Core.Layout.Exceptions;
+using System.Configuration;
+using AnnoDesigner.Core.Helper;
 
 namespace AnnoDesigner
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow
-        : Window
+    public partial class MainWindow : Window
     {
         private readonly WebClient _webClient;
         private IconImage _noIconItem;
         private static MainWindow _instance;
-        private TreeViewSearch<AnnoObject> _treeViewSearch;
-        private List<bool> _treeViewState;
+        private Dictionary<int, bool> _treeViewState;
 
         private static string _selectedLanguage;
         //for identifier checking process
@@ -165,6 +165,11 @@ namespace AnnoDesigner
             LoadSettings();
         }
 
+        private void PresetTreeViewModel_ApplySelectedItem(object sender, EventArgs e)
+        {
+            ApplyPreset(_mainWindowLocalization.PresetTreeViewModel.SelectedItem.AnnoObject);
+        }
+
         private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)
         {
             _mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
@@ -183,7 +188,17 @@ namespace AnnoDesigner
             ShowGrid.IsChecked = Settings.Default.ShowGrid;
             ShowIcons.IsChecked = Settings.Default.ShowIcons;
             ShowLabels.IsChecked = Settings.Default.ShowLabels;
-            _treeViewState = Settings.Default.TreeViewState ?? null;
+            if (!string.IsNullOrWhiteSpace(Settings.Default.PresetsTreeExpandedState))
+            {
+                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(Settings.Default.PresetsTreeExpandedState)))
+                {
+                    _treeViewState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
+                }
+            }
+            else
+            {
+                _treeViewState = null;
+            }
             _mainWindowLocalization.TreeViewSearchText = Settings.Default.TreeViewSearchText ?? "";
             CheckBoxPavedStreet.IsChecked = Settings.Default.IsPavedStreet;
             SetPavedStreetCheckboxColor();
@@ -239,16 +254,31 @@ namespace AnnoDesigner
             //}
 
             // load presets
-            treeViewPresets.Items.Clear();
-
-            // manually add a road tile preset
-            AddRoadTiles();
             BuildingPresets presets = annoCanvas.BuildingPresets;
             if (presets != null)
             {
-                presets.AddToTree(treeViewPresets);
                 GroupBoxPresets.Header = string.Format("Building presets - loaded v{0}", presets.Version);
+
                 _mainWindowLocalization.PresetsVersionValue = presets.Version;
+                _mainWindowLocalization.PresetTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
+                _mainWindowLocalization.PresetTreeViewModel.LoadItems(annoCanvas.BuildingPresets);
+
+                //apply saved search before restoring state
+                if (!string.IsNullOrWhiteSpace(Settings.Default.TreeViewSearchText))
+                {
+                    _mainWindowLocalization.PresetTreeViewModel.FilterText = Settings.Default.TreeViewSearchText;
+                }
+
+                if (!string.IsNullOrWhiteSpace(Settings.Default.PresetsTreeExpandedState))
+                {
+                    Dictionary<int, bool> savedTreeState = null;
+                    using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(Settings.Default.PresetsTreeExpandedState)))
+                    {
+                        savedTreeState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
+                    }
+
+                    _mainWindowLocalization.PresetTreeViewModel.SetCondensedTreeState(savedTreeState, Settings.Default.PresetsTreeLastVersion);
+                }
             }
             else
             {
@@ -582,11 +612,10 @@ namespace AnnoDesigner
             }
         }
 
-        private void ApplyPreset()
+        private void ApplyPreset(AnnoObject selectedItem)
         {
             try
             {
-                var selectedItem = treeViewPresets.SelectedItem as AnnoObject;
                 if (selectedItem != null)
                 {
                     UpdateUIFromObject(new AnnoObject(selectedItem)
@@ -609,37 +638,14 @@ namespace AnnoDesigner
         /// </summary>
         private void RepopulateTreeView()
         {
-            treeViewPresets.Items.Clear();
             if (annoCanvas.BuildingPresets != null)
             {
-                // manually add a road tile preset
-                AddRoadTiles();
-                annoCanvas.BuildingPresets.AddToTree(treeViewPresets);
+                var treeState = _mainWindowLocalization.PresetTreeViewModel.GetCondensedTreeState();
+
+                _mainWindowLocalization.PresetTreeViewModel.LoadItems(annoCanvas.BuildingPresets);
+
+                _mainWindowLocalization.PresetTreeViewModel.SetCondensedTreeState(treeState, annoCanvas.BuildingPresets.Version);
             }
-        }
-
-        private void AddRoadTiles()
-        {
-            treeViewPresets.Items.Add(new AnnoObject
-            {
-                Label = TreeLocalization.TreeLocalization.GetTreeLocalization("RoadTile"),
-                Size = new Size(1, 1),
-                Radius = 0,
-                Road = true,
-                Identifier = "Road",
-                Template = "Road"
-            });
-
-            treeViewPresets.Items.Add(new AnnoObject
-            {
-                Label = TreeLocalization.TreeLocalization.GetTreeLocalization("BorderlessRoadTile"),
-                Size = new Size(1, 1),
-                Radius = 0,
-                Borderless = true,
-                Road = true,
-                Identifier = "Road",
-                Template = "Road"
-            });
         }
 
         #endregion
@@ -947,7 +953,7 @@ namespace AnnoDesigner
             {
                 if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
                 {
-                    _treeViewState = treeViewPresets.GetTreeViewState();
+                    _treeViewState = _mainWindowLocalization.PresetTreeViewModel.GetCondensedTreeState();
                 }
             }
         }
@@ -960,16 +966,18 @@ namespace AnnoDesigner
                 {
                     _mainWindowLocalization.TreeViewSearchText = string.Empty;
                     TextBoxSearchPresets.UpdateLayout();
+
+                    _mainWindowLocalization.PresetTreeViewModel.FilterText = _mainWindowLocalization.TreeViewSearchText;
                 }
 
                 if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
                 {
-                    _treeViewSearch.Reset();
-                    treeViewPresets.SetTreeViewState(_treeViewState);
+                    _mainWindowLocalization.PresetTreeViewModel.FilterText = null;
+                    _mainWindowLocalization.PresetTreeViewModel.SetCondensedTreeState(_treeViewState, annoCanvas.BuildingPresets.Version);
                 }
                 else
                 {
-                    _treeViewSearch.Search(_mainWindowLocalization.TreeViewSearchText);
+                    _mainWindowLocalization.PresetTreeViewModel.FilterText = _mainWindowLocalization.TreeViewSearchText;
                 }
             }
             catch (Exception ex)
@@ -979,71 +987,33 @@ namespace AnnoDesigner
             }
         }
 
-        private void TreeViewPresetsMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            ApplyPreset();
-        }
-
-        private void TreeViewPresetsKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Return)
-            {
-                ApplyPreset();
-            }
-        }
-
-        private void TreeViewPresetsLoaded(object sender, RoutedEventArgs e)
-        {
-            //Intialise tree view and ensure that item containers are generated.
-            _treeViewSearch = new TreeViewSearch<AnnoObject>(treeViewPresets, _ => _.Label)
-            {
-                MatchFullWordOnly = false,
-                IsCaseSensitive = false
-            };
-            _treeViewSearch.EnsureItemContainersGenerated();
-
-            var isSearchState = false;
-            if (!string.IsNullOrWhiteSpace(Settings.Default.TreeViewSearchText))
-            {
-                //Then apply the search **before** reloading state
-                _treeViewSearch.Search(Settings.Default.TreeViewSearchText);
-                isSearchState = true;
-            }
-
-            if (_treeViewState != null && _treeViewState.Count > 0)
-            {
-                try
-                {
-                    treeViewPresets.SetTreeViewState(_treeViewState);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Failed to restore previous preset menu settings.");
-                    App.WriteToErrorLog("TreeView SetTreeViewState Error", ex.Message, ex.StackTrace);
-                }
-            }
-
-            if (isSearchState)
-            {
-                //if the application was last closed in the middle of a search, set the previous state
-                //to an empty value, so that we don't just expand the results of the search as the 
-                //previous state
-
-                _treeViewState = new List<bool>();
-
-            }
-        }
-
         #endregion
+
         private void WindowClosing(object sender, CancelEventArgs e)
         {
-            Settings.Default.TreeViewState = treeViewPresets.GetTreeViewState();
+            string savedTreeState = null;
+            using (var ms = new MemoryStream())
+            {
+                SerializationHelper.SaveToStream(_mainWindowLocalization.PresetTreeViewModel.GetCondensedTreeState(), ms);
+
+                savedTreeState = Encoding.UTF8.GetString(ms.ToArray());
+            }
+            Settings.Default.PresetsTreeExpandedState = savedTreeState;
+            Settings.Default.PresetsTreeLastVersion = _mainWindowLocalization.PresetTreeViewModel.BuildingPresetsVersion;
+
             Settings.Default.TreeViewSearchText = _mainWindowLocalization.TreeViewSearchText;
+
             if (WindowState == WindowState.Minimized)
             {
                 WindowState = WindowState.Normal;
             }
+
             Settings.Default.Save();
+
+#if DEBUG
+            var userConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
+            Trace.WriteLine($"saving settings: \"{userConfig}\"");
+#endif
         }
 
         private void MenuCopyLayoutToClipboardClick(object sender, RoutedEventArgs e)
