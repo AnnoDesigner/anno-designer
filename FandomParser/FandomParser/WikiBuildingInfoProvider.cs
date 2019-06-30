@@ -1,5 +1,6 @@
 ﻿using FandomParser.Core.Presets.Models;
 using FandomParser.WikiText;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,12 +12,14 @@ namespace FandomParser
 {
     public class WikiBuildingInfoProvider
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public WikiBuildingInfoPresets GetWikiBuildingInfos(WikiTextTableContainer list)
         {
             var wikibuildingList = new WikiBuildingInfoPresets();
             foreach (var curentry in list.Entries)
             {
-                wikibuildingList.Infos.Add(parseWikiBuildingInfo(curentry));
+                wikibuildingList.Infos.Add(ParseWikiBuildingInfo(curentry));
             }
 
             //order buildings by name
@@ -25,7 +28,7 @@ namespace FandomParser
             return wikibuildingList;
         }
 
-        private static WikiBuildingInfo parseWikiBuildingInfo(WikiTextTableEntry table)
+        private static WikiBuildingInfo ParseWikiBuildingInfo(WikiTextTableEntry table)
         {
             var result = new WikiBuildingInfo();
 
@@ -80,7 +83,7 @@ namespace FandomParser
                     var splittedInfos = table.ConstructionCost.Split(new[] { "<br />" }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var curSplittedInfo in splittedInfos)
                     {
-                        var info = parseConstructionInfo(curSplittedInfo);
+                        var info = ParseConstructionInfo(curSplittedInfo);
                         if (info != null)
                         {
                             result.ConstructionInfos.Add(info);
@@ -89,7 +92,7 @@ namespace FandomParser
                 }
                 else if (!string.IsNullOrWhiteSpace(table.ConstructionCost))
                 {
-                    var info = parseConstructionInfo(table.ConstructionCost);
+                    var info = ParseConstructionInfo(table.ConstructionCost);
                     if (info != null)
                     {
                         result.ConstructionInfos.Add(info);
@@ -101,7 +104,7 @@ namespace FandomParser
                     var splittedInfos = table.MaintenanceCost.Split(new[] { "<br />" }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var curSplittedInfo in splittedInfos)
                     {
-                        var info = parseMaintenanceInfo(curSplittedInfo);
+                        var info = ParseMaintenanceInfo(curSplittedInfo);
                         if (info != null)
                         {
                             result.MaintenanceInfos.Add(info);
@@ -110,7 +113,7 @@ namespace FandomParser
                 }
                 else if (!string.IsNullOrWhiteSpace(table.MaintenanceCost))
                 {
-                    var info = parseMaintenanceInfo(table.MaintenanceCost);
+                    var info = ParseMaintenanceInfo(table.MaintenanceCost);
                     if (info != null)
                     {
                         result.MaintenanceInfos.Add(info);
@@ -119,29 +122,30 @@ namespace FandomParser
             }
             catch (Exception ex)
             {
+                logger.Error(ex, $"error parsing basic info for building: {table.Name}");
                 Console.WriteLine(ex);
             }
 
             return result;
         }
 
-        private static ConstructionInfo parseConstructionInfo(string constructionCost)
+        private static ConstructionInfo ParseConstructionInfo(string constructionCost)
         {
             ConstructionInfo result = null;
 
             if (constructionCost.Contains("[[File:"))
             {
-                result = parseContainingFile(constructionCost);
+                result = ParseContainingFile(constructionCost);
             }
             else
             {
-                result = parseContainingInfoIcon(constructionCost);
+                result = ParseContainingInfoIcon(constructionCost);
             }
 
             return result;
         }
 
-        private static ConstructionInfo parseContainingInfoIcon(string constructionCost)
+        private static ConstructionInfo ParseContainingInfoIcon(string constructionCost)
         {
             ConstructionInfo result = null;
 
@@ -175,7 +179,7 @@ namespace FandomParser
             return result;
         }
 
-        private static ConstructionInfo parseContainingFile(string constructionCost)
+        private static ConstructionInfo ParseContainingFile(string constructionCost)
         {
             ConstructionInfo result = null;
 
@@ -206,23 +210,23 @@ namespace FandomParser
             return result;
         }
 
-        private static MaintenanceInfo parseMaintenanceInfo(string maintenanceCost)
+        private static MaintenanceInfo ParseMaintenanceInfo(string maintenanceCost)
         {
             MaintenanceInfo result = null;
 
             if (maintenanceCost.Contains("[[File:"))
             {
-                result = parseMaintenanceContainingFile(maintenanceCost);
+                result = ParseMaintenanceContainingFile(maintenanceCost);
             }
             else
             {
-                result = parseMaintenanceContainingInfoIcon(maintenanceCost);
+                result = ParseMaintenanceContainingInfoIcon(maintenanceCost);
             }
 
             return result;
         }
 
-        private static MaintenanceInfo parseMaintenanceContainingInfoIcon(string maintenanceCost)
+        private static MaintenanceInfo ParseMaintenanceContainingInfoIcon(string maintenanceCost)
         {
             MaintenanceInfo result = null;
 
@@ -257,7 +261,7 @@ namespace FandomParser
             return result;
         }
 
-        private static MaintenanceInfo parseMaintenanceContainingFile(string maintenanceCost)
+        private static MaintenanceInfo ParseMaintenanceContainingFile(string maintenanceCost)
         {
             MaintenanceInfo result = null;
 
