@@ -13,11 +13,14 @@ using AnnoDesigner.Core.Presets.Models;
 using FandomParser.Core.Presets.Models;
 using FandomTemplateExporter;
 using FandomTemplateExporter.Export;
+using NLog;
 
 namespace AnnoDesigner.Export
 {
     public class FandomExporter
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private const string TEMPLATE_START = "{{";
         private const string TEMPLATE_END = "}}";
         private const string TEMPLATE_LINE_START = "|";
@@ -340,6 +343,7 @@ namespace AnnoDesigner.Export
                 if (foundWikiBuildingInfo == null || foundWikiBuildingInfo.ConstructionInfos.Count == 0)
                 {
                     //no info found -> skip
+                    logger.Trace($"found no wiki info for identifier: {buildingIdentifier}");
                     continue;
                 }
 
@@ -416,6 +420,7 @@ namespace AnnoDesigner.Export
                 if (foundWikiBuildingInfo == null || foundWikiBuildingInfo.MaintenanceInfos.Count == 0)
                 {
                     //no info found -> skip
+                    logger.Trace($"found no wiki info for identifier: {buildingIdentifier}");
                     continue;
                 }
 
@@ -487,6 +492,7 @@ namespace AnnoDesigner.Export
                 if (foundWikiBuildingInfo == null || foundWikiBuildingInfo.MaintenanceInfos.Count == 0)
                 {
                     //no info found -> skip
+                    logger.Trace($"found no wiki info for identifier: {buildingIdentifier}");
                     continue;
                 }
 
@@ -517,6 +523,7 @@ namespace AnnoDesigner.Export
                 if (foundWikiBuildingInfo == null || foundWikiBuildingInfo.MaintenanceInfos.Count == 0)
                 {
                     //no info found -> skip
+                    logger.Trace($"found no wiki info for identifier: {buildingIdentifier}");
                     continue;
                 }
 
@@ -549,6 +556,7 @@ namespace AnnoDesigner.Export
             if (string.IsNullOrWhiteSpace(buildingName))
             {
                 //TODO error?
+                logger.Warn($"found no building name for identifier: {buildingIdentifier}");
                 return result;
             }
 
