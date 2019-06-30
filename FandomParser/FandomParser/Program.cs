@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using AnnoDesigner.Core;
 using FandomParser.Core;
 using FandomParser.Core.Helper;
 using FandomParser.WikiText;
@@ -91,7 +92,7 @@ namespace FandomParser
                 wikiBuildingInfoPreset.Version = PresetVersion;
                 wikiBuildingInfoPreset.DateGenerated = DateTime.UtcNow;
 
-                var outputPath = Path.Combine(OutputDirectory, CoreConstants.WikiBuildingInfoPresetsFile);
+                var outputPath = Path.Combine(OutputDirectory, CoreConstants.PresetsFiles.WikiBuildingInfoPresetsFile);
                 logger.Trace($"save wiki building info: {outputPath}");
                 SerializationHelper.SaveToFile(wikiBuildingInfoPreset, outputPath, prettyPrint: UsePrettyPrint);
 

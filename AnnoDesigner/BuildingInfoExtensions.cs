@@ -14,7 +14,11 @@ namespace AnnoDesigner
         public static AnnoObject ToAnnoObject(this IBuildingInfo buildingInfo)
         {
             var labelLocalization = buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
-            if (string.IsNullOrEmpty(labelLocalization)) { labelLocalization = buildingInfo.Localization["eng"]; }
+            if (string.IsNullOrEmpty(labelLocalization))
+            {
+                labelLocalization = buildingInfo.Localization["eng"];
+            }
+
             return new AnnoObject
             {
                 //Label = (buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]),
@@ -32,7 +36,11 @@ namespace AnnoDesigner
         public static string GetOrderParameter(this IBuildingInfo buildingInfo)
         {
             var labelLocalization = buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
-            if (string.IsNullOrEmpty(labelLocalization)) { labelLocalization = buildingInfo.Localization["eng"]; }
+            if (string.IsNullOrEmpty(labelLocalization))
+            {
+                labelLocalization = buildingInfo.Localization["eng"];
+            }
+
             //return buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
             return labelLocalization;
         }

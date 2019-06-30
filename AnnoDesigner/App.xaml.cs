@@ -172,7 +172,7 @@ namespace AnnoDesigner
                 }
 
                 //var updateWindow = new UpdateWindow();                
-                await _commons.UpdateHelper.ReplaceUpdatedPresetFileAsync();
+                await _commons.UpdateHelper.ReplaceUpdatedPresetsFilesAsync();
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
                 MainWindow = new MainWindow(_commons);

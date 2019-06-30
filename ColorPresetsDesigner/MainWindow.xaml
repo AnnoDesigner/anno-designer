@@ -24,9 +24,6 @@
             <i:InvokeCommandAction Command="{Binding ClosingWindowCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Window.DataContext>
-        <viewModels:MainWindowViewModel />
-    </Window.DataContext>
     <Window.Resources>
         <xctk:ColorToSolidColorBrushConverter x:Key="converterColorToSolidColorBrush" />
         <converter:BoolToVisibilityConverter x:Key="converterBoolToVisibility"
