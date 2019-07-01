@@ -1,12 +1,17 @@
 ﻿<Window x:Class="AnnoDesigner.Welcome"
+        x:Name="welcomeWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AnnoDesigner"
+        xmlns:viewModel="clr-namespace:AnnoDesigner.viewmodel"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         mc:Ignorable="d"
-        xmlns:l="clr-namespace:AnnoDesigner.Localization"
+        d:DataContext="{d:DesignInstance Type=viewModel:WelcomeViewModel, IsDesignTimeCreatable=True}"
+        d:DesignHeight="705"
+        d:DesignWidth="525"
         Title="Welcome"
         Height="705"
         Width="525"
@@ -28,8 +33,7 @@
                    VerticalAlignment="Top"
                    HorizontalAlignment="Left"
                    Width="433" />
-        <Image Name="WelcomeIcon"
-               Source="Stuff/icon64.png"
+        <Image Source="Stuff/icon64.png"
                Stretch="Fill"
                VerticalAlignment="Top"
                HorizontalAlignment="Left"
@@ -42,15 +46,20 @@
                    Width="433"
                    FontSize="22"
                    Height="38"><Run Text="Please select a language:" /></TextBlock>
-        <ListBox Name="LanguageSelection"
-                 Margin="10,83,191,48"
+        <ListBox Margin="10,83,191,48"
                  HorizontalContentAlignment="Stretch"
                  SelectionMode="Single"
-                 ItemsSource="{Binding}"
+                 ItemsSource="{Binding Languages}"
+                 SelectedItem="{Binding SelectedItem}"
                  ScrollViewer.CanContentScroll="False"
                  BorderThickness="0"
-                 Background="#FFECECEC"
-                 MouseDoubleClick="LanguageSelection_MouseDoubleClick">
+                 Background="#FFECECEC">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding ContinueCommand}"
+                                           CommandParameter="{Binding ElementName=welcomeWindow}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel HorizontalAlignment="Stretch"
@@ -70,9 +79,9 @@
                 Margin="10,0,373,10"
                 VerticalAlignment="Bottom"
                 Content="Continue"
-                Name="ContinueButton"
-                HorizontalAlignment="Stretch"
-                Click="ContinueButton_Click" />
+                Command="{Binding ContinueCommand}"
+                CommandParameter="{Binding ElementName=welcomeWindow}"
+                HorizontalAlignment="Stretch" />
         <TextBlock TextWrapping="Wrap"
                    HorizontalAlignment="Left"
                    Margin="329,88,0,0"

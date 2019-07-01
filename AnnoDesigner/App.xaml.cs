@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows;
 using AnnoDesigner.model;
+using AnnoDesigner.viewmodel;
 
 namespace AnnoDesigner
 {
@@ -60,6 +61,10 @@ namespace AnnoDesigner
             catch (Exception)
             {
                 //Don't rethrow.
+            }
+            finally
+            {
+                Environment.Exit(-1);
             }
         }
 
@@ -174,11 +179,26 @@ namespace AnnoDesigner
                 //var updateWindow = new UpdateWindow();                
                 await _commons.UpdateHelper.ReplaceUpdatedPresetsFilesAsync();
 
+                var mainVM = new MainViewModel();
+
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
                 MainWindow = new MainWindow(_commons);
+                MainWindow.DataContext = mainVM;
                 //MainWindow.Loaded += (s, args) => { updateWindow.Close(); };
 
                 //updateWindow.Show();
+
+                //If language is not recognized, bring up the language selection screen
+                if (!Localization.Localization.LanguageCodeMap.ContainsKey(AnnoDesigner.Properties.Settings.Default.SelectedLanguage))
+                {
+                    var w = new Welcome();
+                    w.DataContext = mainVM.WelcomeViewModel;
+                    w.ShowDialog();
+                }
+                else
+                {
+                    AnnoDesigner.MainWindow.SelectedLanguage = AnnoDesigner.Properties.Settings.Default.SelectedLanguage;
+                }
 
                 MainWindow.ShowDialog();
 

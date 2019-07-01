@@ -56,9 +56,12 @@
     <Compile Include="Layout\Models\StatisticsCalculationResult.cs" />
     <Compile Include="Layout\Models\ILayoutLoader.cs" />
     <Compile Include="Models\AnnoObject.cs" />
+    <Compile Include="Models\ICloseable.cs" />
     <Compile Include="Models\IconImage.cs" />
     <Compile Include="Layout\Models\LayoutVersionContainer.cs" />
     <Compile Include="Layout\Models\SavedLayout.cs" />
+    <Compile Include="Models\Notify.cs" />
+    <Compile Include="Models\RelayCommand.cs" />
     <Compile Include="Models\SerializableColor.cs" />
     <Compile Include="Models\SerializableDictionary.cs" />
     <Compile Include="Presets\Comparer\BuildingInfoComparer.cs" />

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace FandomTemplateExporter.Models
+namespace AnnoDesigner.Core.Models
 {
     [Serializable]
     public class RelayCommand<T> : ICommand

@@ -29,13 +29,14 @@ using System.Text;
 using AnnoDesigner.Core.Layout.Exceptions;
 using System.Configuration;
 using AnnoDesigner.Core.Helper;
+using AnnoDesigner.viewmodel;
 
 namespace AnnoDesigner
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, ICloseable
     {
         private IconImage _noIconItem;
         private static MainWindow _instance;
@@ -62,16 +63,16 @@ namespace AnnoDesigner
             set
             {
                 _selectedLanguage = value ?? "English";
-                _instance.SelectedLanguageChanged();
+                _instance?.SelectedLanguageChanged();
             }
         }
 
-        private static Localization.MainWindow _mainWindowLocalization;
+        private static MainViewModel _mainViewModel;
         //About window does not need to be called, as it get's instantiated and used when the about window is created
 
         private void SelectedLanguageChanged()
         {
-            _mainWindowLocalization.UpdateLanguage();
+            _mainViewModel.UpdateLanguage();
             _instance.RepopulateTreeView();
             foreach (MenuItem item in LanguageMenu.Items)
             {
@@ -102,11 +103,11 @@ namespace AnnoDesigner
             //update settings
             Settings.Default.SelectedLanguage = SelectedLanguage;
 
-            _mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
+            _mainViewModel.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
                 annoCanvas.SelectedObjects,
                 annoCanvas.BuildingPresets);
 
-            _mainWindowLocalization.TreeViewSearchText = string.Empty;
+            _mainViewModel.PresetsTreeSearchViewModel.SearchText = string.Empty;
         }
 
         private readonly ICommons _commons;
@@ -123,6 +124,11 @@ namespace AnnoDesigner
         {
             _commons = commonsToUse;
             _layoutLoader = new LayoutLoader();
+        }
+
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            _mainViewModel = DataContext as MainViewModel;
 
             App.DpiScale = VisualTreeHelper.GetDpi(this);
 
@@ -136,20 +142,6 @@ namespace AnnoDesigner
 
             DpiChanged += MainWindow_DpiChanged;
 
-            //Get a reference an instance of Localization.MainWindow, so we can call UpdateLanguage() in the SelectedLanguage setter
-            var dependencyObject = LogicalTreeHelper.FindLogicalNode(this, "Menu");
-            _mainWindowLocalization = (Localization.MainWindow)((Menu)dependencyObject).DataContext;
-
-            //If language is not recognized, bring up the language selection screen
-            if (!Localization.Localization.LanguageCodeMap.ContainsKey(Settings.Default.SelectedLanguage))
-            {
-                var w = new Welcome();
-                w.ShowDialog();
-            }
-            else
-            {
-                SelectedLanguage = Settings.Default.SelectedLanguage;
-            }
             foreach (MenuItem item in LanguageMenu.Items)
             {
                 if (item.Header.ToString() == SelectedLanguage)
@@ -159,50 +151,8 @@ namespace AnnoDesigner
             }
 
             LoadSettings();
-        }
 
-        private void PresetTreeViewModel_ApplySelectedItem(object sender, EventArgs e)
-        {
-            ApplyPreset(_mainWindowLocalization.PresetTreeViewModel.SelectedItem.AnnoObject);
-        }
-
-        private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)
-        {
-            _mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
-                annoCanvas.SelectedObjects,
-                annoCanvas.BuildingPresets);
-        }
-
-        private void LoadSettings()
-        {
-            annoCanvas.RenderGrid = Settings.Default.ShowGrid;
-            annoCanvas.RenderIcon = Settings.Default.ShowIcons;
-            annoCanvas.RenderLabel = Settings.Default.ShowLabels;
-            ToggleStatisticsView(Settings.Default.StatsShowStats);
-            ToggleBuildingList(Settings.Default.StatsShowBuildingCount);
-            AutomaticUpdateCheck.IsChecked = Settings.Default.EnableAutomaticUpdateCheck;
-            ShowGrid.IsChecked = Settings.Default.ShowGrid;
-            ShowIcons.IsChecked = Settings.Default.ShowIcons;
-            ShowLabels.IsChecked = Settings.Default.ShowLabels;
-            if (!string.IsNullOrWhiteSpace(Settings.Default.PresetsTreeExpandedState))
-            {
-                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(Settings.Default.PresetsTreeExpandedState)))
-                {
-                    _treeViewState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
-                }
-            }
-            else
-            {
-                _treeViewState = null;
-            }
-            _mainWindowLocalization.TreeViewSearchText = Settings.Default.TreeViewSearchText ?? "";
-            CheckBoxPavedStreet.IsChecked = Settings.Default.IsPavedStreet;
-            SetPavedStreetCheckboxColor();
-        }
-
-        private void WindowLoaded(object sender, RoutedEventArgs e)
-        {
-            _mainWindowLocalization.BuildingSettingsViewModel.AnnoCanvasToUse = annoCanvas;
+            _mainViewModel.BuildingSettingsViewModel.AnnoCanvasToUse = annoCanvas;
 
             // add icons to the combobox
             comboBoxIcon.Items.Clear();
@@ -227,8 +177,8 @@ namespace AnnoDesigner
 
             comboxBoxInfluenceType.SelectedIndex = 0;
 
-            _mainWindowLocalization.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
-            _mainWindowLocalization.FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
+            _mainViewModel.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
+            _mainViewModel.FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
 
             // check for updates on startup            
             CheckForUpdates(false);//just fire and forget
@@ -258,14 +208,14 @@ namespace AnnoDesigner
             {
                 GroupBoxPresets.Header = string.Format("Building presets - loaded v{0}", presets.Version);
 
-                _mainWindowLocalization.PresetsVersionValue = presets.Version;
-                _mainWindowLocalization.PresetTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
-                _mainWindowLocalization.PresetTreeViewModel.LoadItems(annoCanvas.BuildingPresets);
+                _mainViewModel.PresetsVersionValue = presets.Version;
+                _mainViewModel.PresetsTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
+                _mainViewModel.PresetsTreeViewModel.LoadItems(annoCanvas.BuildingPresets);
 
                 //apply saved search before restoring state
                 if (!string.IsNullOrWhiteSpace(Settings.Default.TreeViewSearchText))
                 {
-                    _mainWindowLocalization.PresetTreeViewModel.FilterText = Settings.Default.TreeViewSearchText;
+                    _mainViewModel.PresetsTreeViewModel.FilterText = Settings.Default.TreeViewSearchText;
                 }
 
                 if (!string.IsNullOrWhiteSpace(Settings.Default.PresetsTreeExpandedState))
@@ -276,7 +226,7 @@ namespace AnnoDesigner
                         savedTreeState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
                     }
 
-                    _mainWindowLocalization.PresetTreeViewModel.SetCondensedTreeState(savedTreeState, Settings.Default.PresetsTreeLastVersion);
+                    _mainViewModel.PresetsTreeViewModel.SetCondensedTreeState(savedTreeState, Settings.Default.PresetsTreeLastVersion);
                 }
             }
             else
@@ -291,7 +241,39 @@ namespace AnnoDesigner
             }
         }
 
+        private void LoadSettings()
+        {
+            annoCanvas.RenderGrid = Settings.Default.ShowGrid;
+            annoCanvas.RenderIcon = Settings.Default.ShowIcons;
+            annoCanvas.RenderLabel = Settings.Default.ShowLabels;
+            ToggleStatisticsView(Settings.Default.StatsShowStats);
+            ToggleBuildingList(Settings.Default.StatsShowBuildingCount);
+            AutomaticUpdateCheck.IsChecked = Settings.Default.EnableAutomaticUpdateCheck;
+            ShowGrid.IsChecked = Settings.Default.ShowGrid;
+            ShowIcons.IsChecked = Settings.Default.ShowIcons;
+            ShowLabels.IsChecked = Settings.Default.ShowLabels;
+            if (!string.IsNullOrWhiteSpace(Settings.Default.PresetsTreeExpandedState))
+            {
+                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(Settings.Default.PresetsTreeExpandedState)))
+                {
+                    _treeViewState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
+                }
+            }
+            else
+            {
+                _treeViewState = null;
+            }
+            _mainViewModel.PresetsTreeSearchViewModel.SearchText = Settings.Default.TreeViewSearchText ?? "";
+            CheckBoxPavedStreet.IsChecked = Settings.Default.IsPavedStreet;
+            SetPavedStreetCheckboxColor();
+        }
+
         #endregion
+
+        private void PresetTreeViewModel_ApplySelectedItem(object sender, EventArgs e)
+        {
+            ApplyPreset(_mainViewModel.PresetsTreeViewModel.SelectedItem.AnnoObject);
+        }
 
         #region Version check
 
@@ -421,6 +403,13 @@ namespace AnnoDesigner
 
         #region AnnoCanvas events
 
+        private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)
+        {
+            _mainViewModel.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
+                annoCanvas.SelectedObjects,
+                annoCanvas.BuildingPresets);
+        }
+
         /// <summary>
         /// Fired on the OnCurrentObjectChanged event
         /// </summary>
@@ -432,16 +421,16 @@ namespace AnnoDesigner
                 return;
             }
             // size
-            _mainWindowLocalization.BuildingSettingsViewModel.BuildingWidth = (int)obj.Size.Width;
-            _mainWindowLocalization.BuildingSettingsViewModel.BuildingHeight = (int)obj.Size.Height;
+            _mainViewModel.BuildingSettingsViewModel.BuildingWidth = (int)obj.Size.Width;
+            _mainViewModel.BuildingSettingsViewModel.BuildingHeight = (int)obj.Size.Height;
             // color
-            _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor = ColorPresetsHelper.Instance.GetPredefinedColor(obj) ?? obj.Color;
+            _mainViewModel.BuildingSettingsViewModel.SelectedColor = ColorPresetsHelper.Instance.GetPredefinedColor(obj) ?? obj.Color;
             // label
-            _mainWindowLocalization.BuildingSettingsViewModel.BuildingName = obj.Label;
+            _mainViewModel.BuildingSettingsViewModel.BuildingName = obj.Label;
             // Identifier
-            _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier = obj.Identifier;
+            _mainViewModel.BuildingSettingsViewModel.BuildingIdentifier = obj.Identifier;
             // Template
-            _mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate = obj.Template;
+            _mainViewModel.BuildingSettingsViewModel.BuildingTemplate = obj.Template;
             // icon
             try
             {
@@ -463,11 +452,11 @@ namespace AnnoDesigner
             }
 
             // radius
-            _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius = obj.Radius;
+            _mainViewModel.BuildingSettingsViewModel.BuildingRadius = obj.Radius;
             //InfluenceRadius
-            if (!_mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet)
+            if (!_mainViewModel.BuildingSettingsViewModel.IsPavedStreet)
             {
-                _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = obj.InfluenceRange;
+                _mainViewModel.BuildingSettingsViewModel.BuildingInfluenceRange = obj.InfluenceRange;
             }
             else
             {
@@ -490,7 +479,7 @@ namespace AnnoDesigner
                 comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Distance;
                 if (obj.PavedStreet)
                 {
-                    _mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet = obj.PavedStreet;
+                    _mainViewModel.BuildingSettingsViewModel.IsPavedStreet = obj.PavedStreet;
                 }
             }
             else
@@ -499,8 +488,8 @@ namespace AnnoDesigner
             }
             // flags            
             //_mainWindowLocalization.BuildingSettingsViewModel.IsEnableLabelChecked = !string.IsNullOrEmpty(obj.Label);
-            _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked = obj.Borderless;
-            _mainWindowLocalization.BuildingSettingsViewModel.IsRoadChecked = obj.Road;
+            _mainViewModel.BuildingSettingsViewModel.IsBorderlessChecked = obj.Borderless;
+            _mainViewModel.BuildingSettingsViewModel.IsRoadChecked = obj.Road;
         }
 
         private void StatusMessageChanged(string message)
@@ -517,7 +506,7 @@ namespace AnnoDesigner
 
         private void ClipboardChanged(List<AnnoObject> l)
         {
-            StatusBarItemClipboardStatus.Content = _mainWindowLocalization.StatusBarItemsOnClipboard + ": " + l.Count;
+            StatusBarItemClipboardStatus.Content = _mainViewModel.StatusBarItemsOnClipboard + ": " + l.Count;
         }
 
         #endregion
@@ -534,17 +523,17 @@ namespace AnnoDesigner
             // parse user inputs and create new object
             var obj = new AnnoObject
             {
-                Size = new Size(_mainWindowLocalization.BuildingSettingsViewModel.BuildingWidth, _mainWindowLocalization.BuildingSettingsViewModel.BuildingHeight),
-                Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
-                Label = _mainWindowLocalization.BuildingSettingsViewModel.IsEnableLabelChecked ? _mainWindowLocalization.BuildingSettingsViewModel.BuildingName : string.Empty,
+                Size = new Size(_mainViewModel.BuildingSettingsViewModel.BuildingWidth, _mainViewModel.BuildingSettingsViewModel.BuildingHeight),
+                Color = _mainViewModel.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
+                Label = _mainViewModel.BuildingSettingsViewModel.IsEnableLabelChecked ? _mainViewModel.BuildingSettingsViewModel.BuildingName : string.Empty,
                 Icon = comboBoxIcon.SelectedItem == _noIconItem ? null : ((IconImage)comboBoxIcon.SelectedItem).Name,
-                Radius = _mainWindowLocalization.BuildingSettingsViewModel.BuildingRadius,
-                InfluenceRange = _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange,
-                PavedStreet = _mainWindowLocalization.BuildingSettingsViewModel.IsPavedStreet,
-                Borderless = _mainWindowLocalization.BuildingSettingsViewModel.IsBorderlessChecked,
-                Road = _mainWindowLocalization.BuildingSettingsViewModel.IsRoadChecked,
-                Identifier = _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier,
-                Template = _mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate
+                Radius = _mainViewModel.BuildingSettingsViewModel.BuildingRadius,
+                InfluenceRange = _mainViewModel.BuildingSettingsViewModel.BuildingInfluenceRange,
+                PavedStreet = _mainViewModel.BuildingSettingsViewModel.IsPavedStreet,
+                Borderless = _mainViewModel.BuildingSettingsViewModel.IsBorderlessChecked,
+                Road = _mainViewModel.BuildingSettingsViewModel.IsRoadChecked,
+                Identifier = _mainViewModel.BuildingSettingsViewModel.BuildingIdentifier,
+                Template = _mainViewModel.BuildingSettingsViewModel.BuildingTemplate
             };
 
             var objIconFileName = "";
@@ -588,7 +577,7 @@ namespace AnnoDesigner
                             obj.Identifier = "Unknown Object";
                         }
                     }
-                    else if (!_mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase)) //check if the icon is removed from a template field
+                    else if (!_mainViewModel.BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase)) //check if the icon is removed from a template field
                     {
                         obj.Identifier = "Unknown Object";
                     }
@@ -617,7 +606,7 @@ namespace AnnoDesigner
                         obj.Identifier = "Unknown Object";
                     }
                 }
-                if (string.IsNullOrEmpty(obj.Icon) && !_mainWindowLocalization.BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase))
+                if (string.IsNullOrEmpty(obj.Icon) && !_mainViewModel.BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase))
                 {
                     obj.Identifier = "Unknown Object";
                 }
@@ -638,7 +627,7 @@ namespace AnnoDesigner
                 {
                     UpdateUIFromObject(new AnnoObject(selectedItem)
                     {
-                        Color = _mainWindowLocalization.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
+                        Color = _mainViewModel.BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
                     });
 
                     ApplyCurrentObject();
@@ -658,11 +647,11 @@ namespace AnnoDesigner
         {
             if (annoCanvas.BuildingPresets != null)
             {
-                var treeState = _mainWindowLocalization.PresetTreeViewModel.GetCondensedTreeState();
+                var treeState = _mainViewModel.PresetsTreeViewModel.GetCondensedTreeState();
 
-                _mainWindowLocalization.PresetTreeViewModel.LoadItems(annoCanvas.BuildingPresets);
+                _mainViewModel.PresetsTreeViewModel.LoadItems(annoCanvas.BuildingPresets);
 
-                _mainWindowLocalization.PresetTreeViewModel.SetCondensedTreeState(treeState, annoCanvas.BuildingPresets.Version);
+                _mainViewModel.PresetsTreeViewModel.SetCondensedTreeState(treeState, annoCanvas.BuildingPresets.Version);
             }
         }
 
@@ -675,10 +664,6 @@ namespace AnnoDesigner
             //TODO: Redraw statistics when change is merged.
         }
 
-        private void MenuItemCloseClick(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
         //When changing 'SelectBox'
 
         private void ButtonPlaceBuildingClick(object sender, RoutedEventArgs e)
@@ -739,10 +724,10 @@ namespace AnnoDesigner
 
         private void ToggleBuildingList(bool showBuildingList)
         {
-            _mainWindowLocalization.StatisticsViewModel.ShowBuildingList = showBuildingList;
+            _mainViewModel.StatisticsViewModel.ShowBuildingList = showBuildingList;
             if (showBuildingList)
             {
-                _mainWindowLocalization.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
+                _mainViewModel.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
                     annoCanvas.SelectedObjects,
                     annoCanvas.BuildingPresets);
             }
@@ -798,23 +783,24 @@ namespace AnnoDesigner
                 MessageBoxImage.Information);
         }
 
-        private void MenuItemHomepageClick(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("https://github.com/AgmasGold/anno-designer");
-        }
-
         private void MenuItemOpenWelcomeClick(object sender, RoutedEventArgs e)
         {
-            var w = new Welcome
+            var welcomeWindow = new Welcome
             {
                 Owner = this
             };
-            w.Show();
+            welcomeWindow.DataContext = _mainViewModel.WelcomeViewModel;
+            welcomeWindow.Show();
         }
 
         private void MenuItemAboutClick(object sender, RoutedEventArgs e)
         {
-            new About { Owner = this }.ShowDialog();
+            var aboutWindow = new About
+            {
+                Owner = this
+            };
+            aboutWindow.DataContext = _mainViewModel.AboutViewModel;
+            aboutWindow.ShowDialog();
         }
 
         /// <summary>
@@ -898,7 +884,7 @@ namespace AnnoDesigner
         {
             if (!Settings.Default.ShowPavedRoadsWarning)
             {
-                MessageBox.Show(_mainWindowLocalization.BuildingSettingsViewModel.TextPavedStreetToolTip, _mainWindowLocalization.BuildingSettingsViewModel.TextPavedStreetWarningTitle);
+                MessageBox.Show(_mainViewModel.BuildingSettingsViewModel.TextPavedStreetToolTip, _mainViewModel.BuildingSettingsViewModel.TextPavedStreetWarningTitle);
                 Settings.Default.ShowPavedRoadsWarning = true;
             }
             if (!GetDistanceRange(this.CheckBoxPavedStreet.IsChecked.Value))
@@ -915,7 +901,7 @@ namespace AnnoDesigner
         public bool GetDistanceRange(bool value)
         {
             Settings.Default.IsPavedStreet = value;
-            var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == _mainWindowLocalization.BuildingSettingsViewModel.BuildingIdentifier);
+            var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == _mainViewModel.BuildingSettingsViewModel.BuildingIdentifier);
             SetPavedStreetCheckboxColor();
             if (buildingInfo != null)
             {
@@ -928,14 +914,14 @@ namespace AnnoDesigner
                         //WYSWYG : the minus 2 is what gamers see as they count the Dark Green area on Paved Street
                         if (buildingInfo.InfluenceRange > 0 && buildingInfo.Template == "CityInstitutionBuilding")
                         {
-                            _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round(((buildingInfo.InfluenceRange * 1.38) + 0.5) - 2);
+                            _mainViewModel.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round(((buildingInfo.InfluenceRange * 1.38) + 0.5) - 2);
                         }
                         //sum for range on paved street for Public Service Building = n*1.43 (Marketplaces, Pubs, Banks, ... (etc))
                         //to round up, there must be ad 0.5 to the numbers after the multiplier
                         //WYSWYG : the minus 2 is what gamers see as they count the Dark Green area on Paved Street
                         else if (buildingInfo.InfluenceRange > 0)
                         {
-                            _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round(((buildingInfo.InfluenceRange * 1.43) + 0.5) - 2);
+                            _mainViewModel.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round(((buildingInfo.InfluenceRange * 1.43) + 0.5) - 2);
                         }
                         return true;
                     }
@@ -944,13 +930,13 @@ namespace AnnoDesigner
                         if (buildingInfo.InfluenceRange > 0)
                         {
                             //WYSWYG : the minus 2 is what gamers see as they count the Dark Green area on Dirt Road
-                            _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = buildingInfo.InfluenceRange - 2;
+                            _mainViewModel.BuildingSettingsViewModel.BuildingInfluenceRange = buildingInfo.InfluenceRange - 2;
                         }
                         return true;
                     }
                 }
             }
-            _mainWindowLocalization.BuildingSettingsViewModel.BuildingInfluenceRange = 0;
+            _mainViewModel.BuildingSettingsViewModel.BuildingInfluenceRange = 0;
             return false;
         }
         public void SetPavedStreetCheckboxColor()
@@ -969,9 +955,9 @@ namespace AnnoDesigner
         {
             if (e.Source is TextBox)
             {
-                if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
+                if (_mainViewModel.PresetsTreeSearchViewModel.SearchText.Length == 0)
                 {
-                    _treeViewState = _mainWindowLocalization.PresetTreeViewModel.GetCondensedTreeState();
+                    _treeViewState = _mainViewModel.PresetsTreeViewModel.GetCondensedTreeState();
                 }
             }
         }
@@ -982,20 +968,19 @@ namespace AnnoDesigner
             {
                 if (e.Key == Key.Escape)
                 {
-                    _mainWindowLocalization.TreeViewSearchText = string.Empty;
+                    _mainViewModel.PresetsTreeSearchViewModel.SearchText = string.Empty;
                     TextBoxSearchPresets.UpdateLayout();
 
-                    _mainWindowLocalization.PresetTreeViewModel.FilterText = _mainWindowLocalization.TreeViewSearchText;
+                    _mainViewModel.PresetsTreeViewModel.FilterText = _mainViewModel.PresetsTreeSearchViewModel.SearchText;
                 }
-
-                if (_mainWindowLocalization.TreeViewSearchText.Length == 0)
+                else if (_mainViewModel.PresetsTreeSearchViewModel.SearchText.Length == 0)
                 {
-                    _mainWindowLocalization.PresetTreeViewModel.FilterText = null;
-                    _mainWindowLocalization.PresetTreeViewModel.SetCondensedTreeState(_treeViewState, annoCanvas.BuildingPresets.Version);
+                    _mainViewModel.PresetsTreeViewModel.FilterText = _mainViewModel.PresetsTreeSearchViewModel.SearchText;
+                    _mainViewModel.PresetsTreeViewModel.SetCondensedTreeState(_treeViewState, annoCanvas.BuildingPresets.Version);
                 }
                 else
                 {
-                    _mainWindowLocalization.PresetTreeViewModel.FilterText = _mainWindowLocalization.TreeViewSearchText;
+                    _mainViewModel.PresetsTreeViewModel.FilterText = _mainViewModel.PresetsTreeSearchViewModel.SearchText;
                 }
             }
             catch (Exception ex)
@@ -1012,19 +997,21 @@ namespace AnnoDesigner
             string savedTreeState = null;
             using (var ms = new MemoryStream())
             {
-                SerializationHelper.SaveToStream(_mainWindowLocalization.PresetTreeViewModel.GetCondensedTreeState(), ms);
+                SerializationHelper.SaveToStream(_mainViewModel.PresetsTreeViewModel.GetCondensedTreeState(), ms);
 
                 savedTreeState = Encoding.UTF8.GetString(ms.ToArray());
             }
             Settings.Default.PresetsTreeExpandedState = savedTreeState;
-            Settings.Default.PresetsTreeLastVersion = _mainWindowLocalization.PresetTreeViewModel.BuildingPresetsVersion;
+            Settings.Default.PresetsTreeLastVersion = _mainViewModel.PresetsTreeViewModel.BuildingPresetsVersion;
 
-            Settings.Default.TreeViewSearchText = _mainWindowLocalization.TreeViewSearchText;
+            Settings.Default.TreeViewSearchText = _mainViewModel.PresetsTreeSearchViewModel.SearchText;
 
             if (WindowState == WindowState.Minimized)
             {
                 WindowState = WindowState.Normal;
             }
+
+            Settings.Default.MainWindowWindowState = WindowState;
 
             Settings.Default.Save();
 
@@ -1172,8 +1159,8 @@ namespace AnnoDesigner
                         Margin = new Thickness(5, 0, 0, 0)
                     };
                     exportStatisticsView.statisticsViewModel.UpdateStatistics(target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
-                    exportStatisticsView.statisticsViewModel.CopyLocalization(_mainWindowLocalization.StatisticsViewModel);
-                    exportStatisticsView.statisticsViewModel.ShowBuildingList = _mainWindowLocalization.StatisticsViewModel.ShowBuildingList;
+                    exportStatisticsView.statisticsViewModel.CopyLocalization(_mainViewModel.StatisticsViewModel);
+                    exportStatisticsView.statisticsViewModel.ShowBuildingList = _mainViewModel.StatisticsViewModel.ShowBuildingList;
 
                     target.StatisticsPanel.Children.Add(exportStatisticsView);
 
