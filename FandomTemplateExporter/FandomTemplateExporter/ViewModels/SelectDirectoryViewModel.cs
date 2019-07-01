@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using FandomTemplateExporter.Models;
+using AnnoDesigner.Core.Models;
 
 namespace FandomTemplateExporter.ViewModels
 {

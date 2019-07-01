@@ -52,6 +52,9 @@
     <Compile Include="InputWindow.xaml.cs">
       <DependentUpon>InputWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="viewmodel\AboutViewModel.cs" />
+    <Compile Include="model\SupportedLanguage.cs" />
+    <Compile Include="viewmodel\MainViewModel.cs" />
     <Compile Include="model\AvailableRelease.cs" />
     <Compile Include="model\ICommons.cs" />
     <Compile Include="model\IUpdateHelper.cs" />
@@ -64,8 +67,6 @@
     <Compile Include="Localization\TreeLocalization.cs" />
     <Compile Include="MutexHelper.cs" />
     <Compile Include="model\StatisticsBuilding.cs" />
-    <Compile Include="model\Notify.cs" />
-    <Compile Include="model\RelayCommand.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -80,9 +81,11 @@
     <Compile Include="UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="viewmodel\PresetsTreeSearchViewModel.cs" />
     <Compile Include="viewmodel\PresetsTreeViewModel.cs" />
     <Compile Include="viewmodel\StatisticsViewModel.cs" />
     <Compile Include="viewmodel\BuildingSettingsViewModel.cs" />
+    <Compile Include="viewmodel\WelcomeViewModel.cs" />
     <Compile Include="Welcome.xaml.cs">
       <DependentUpon>Welcome.xaml</DependentUpon>
     </Compile>
