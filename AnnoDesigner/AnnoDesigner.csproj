@@ -54,6 +54,7 @@
       <DependentUpon>InputWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="model\BuildingInfluence.cs" />
+    <Compile Include="model\GameVersionFilter.cs" />
     <Compile Include="model\ICanUpdateLayout.cs" />
     <Compile Include="viewmodel\AboutViewModel.cs" />
     <Compile Include="model\SupportedLanguage.cs" />

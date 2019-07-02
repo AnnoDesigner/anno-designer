@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Localization;
+using static AnnoDesigner.Core.CoreConstants;
 
 namespace AnnoDesigner.viewmodel
 {
@@ -57,6 +58,23 @@ namespace AnnoDesigner.viewmodel
                     string.IsNullOrWhiteSpace(PresetsTreeSearchViewModel.SearchText))
             {
                 _treeViewState = PresetsTreeViewModel.GetCondensedTreeState();
+            }
+            else if (string.Equals(e.PropertyName, nameof(PresetsTreeSearchViewModel.SelectedGameVersionFilters), StringComparison.OrdinalIgnoreCase))
+            {
+                //if (PresetsTreeSearchViewModel.SelectedGameVersionFilters.Count == 0)
+                //{
+                //    PresetsTreeSearchViewModel.SelectedGameVersionFilters.Add(PresetsTreeSearchViewModel.GameVersionFilters.Single(x => x.Type == GameVersion.All));
+                //    return;
+                //}
+
+                var filterGameVersion = GameVersion.Unknown;
+
+                foreach (var curSelectedFilter in PresetsTreeSearchViewModel.SelectedGameVersionFilters)
+                {
+                    filterGameVersion |= curSelectedFilter.Type;
+                }
+
+                PresetsTreeViewModel.FilterGameVersion = filterGameVersion;
             }
         }
 
