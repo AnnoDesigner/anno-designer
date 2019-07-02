@@ -1,11 +1,16 @@
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Helper;
+using AnnoDesigner.Core.Presets.Models;
+using AnnoDesigner.model;
+using AnnoDesigner.Properties;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
+using Xceed.Wpf.Toolkit;
 
 namespace AnnoDesigner.viewmodel
 {
@@ -54,6 +59,10 @@ namespace AnnoDesigner.viewmodel
         private ObservableCollection<SerializableColor> _colorsInLayout;
         private AnnoCanvas _annoCanvasToUse;
         private ColorHueSaturationBrightnessComparer _colorSorter;
+        private ObservableCollection<BuildingInfluence> _buildingInfluences;
+        private BuildingInfluence _selectedBuildingInfluence;
+        private bool _isBuildingInfluenceInputRadiusVisible;
+        private bool _isBuildingInfluenceInputRangeVisible;
 
         /// <summary>
         /// only used for databinding
@@ -105,9 +114,37 @@ namespace AnnoDesigner.viewmodel
             IsBorderlessChecked = false;
             IsRoadChecked = false;
             ColorsInLayout = new ObservableCollection<SerializableColor>();
+
+            BuildingInfluences = new ObservableCollection<BuildingInfluence>();
+            InitBuildingInfluences();
+            SelectedBuildingInfluence = BuildingInfluences.SingleOrDefault(x => x.Type == BuildingInfluenceType.None);
+        }
+
+        private void InitBuildingInfluences()
+        {
+            string language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+
+            foreach (BuildingInfluenceType curInfluenceType in Enum.GetValues(typeof(BuildingInfluenceType)))
+            {
+                BuildingInfluences.Add(new BuildingInfluence
+                {
+                    Name = Localization.Localization.Translations[language][curInfluenceType.ToString()],
+                    Type = curInfluenceType
+                });
+            }
         }
 
         #region localization
+
+        public void UpdateLanguageBuildingInfluenceType()
+        {
+            string language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+
+            foreach (var curBuildingInfluence in BuildingInfluences)
+            {
+                curBuildingInfluence.Name = Localization.Localization.Translations[language][curBuildingInfluence.Type.ToString()];
+            }
+        }
 
         public string TextHeader
         {
@@ -320,11 +357,19 @@ namespace AnnoDesigner.viewmodel
             get { return _buildingInfluenceRange; }
             set { UpdateProperty(ref _buildingInfluenceRange, value); }
         }
+
         public bool IsPavedStreet
         {
             get { return _isPavedStreet; }
-            set { UpdateProperty(ref _isPavedStreet, value); }
+            set
+            {
+                if (UpdateProperty(ref _isPavedStreet, value))
+                {
+                    HandleIsPavedStreet();
+                }
+            }
         }
+
         public bool IsEnableLabelChecked
         {
             get { return _isEnableLabelChecked; }
@@ -376,6 +421,130 @@ namespace AnnoDesigner.viewmodel
         private ColorHueSaturationBrightnessComparer ColorSorter
         {
             get { return _colorSorter ?? (_colorSorter = new ColorHueSaturationBrightnessComparer()); }
+        }
+
+        public ObservableCollection<BuildingInfluence> BuildingInfluences
+        {
+            get { return _buildingInfluences; }
+            set { UpdateProperty(ref _buildingInfluences, value); }
+        }
+
+        public bool IsBuildingInfluenceInputRadiusVisible
+        {
+            get { return _isBuildingInfluenceInputRadiusVisible; }
+            set { UpdateProperty(ref _isBuildingInfluenceInputRadiusVisible, value); }
+        }
+
+        public bool IsBuildingInfluenceInputRangeVisible
+        {
+            get { return _isBuildingInfluenceInputRangeVisible; }
+            set { UpdateProperty(ref _isBuildingInfluenceInputRangeVisible, value); }
+        }
+
+        public BuildingInfluence SelectedBuildingInfluence
+        {
+            get { return _selectedBuildingInfluence; }
+            set
+            {
+                if (UpdateProperty(ref _selectedBuildingInfluence, value))
+                {
+                    UpdateBuildingInfluenceInputVisibility(_selectedBuildingInfluence.Type);
+                }
+            }
+        }
+
+        private void UpdateBuildingInfluenceInputVisibility(BuildingInfluenceType type)
+        {
+            switch (type)
+            {
+                case BuildingInfluenceType.Radius:
+                    IsBuildingInfluenceInputRadiusVisible = true;
+                    IsBuildingInfluenceInputRangeVisible = false;
+                    //dockPanelPavedStreet.Visibility = Visibility.Collapsed;
+                    break;
+                case BuildingInfluenceType.Distance:
+                    IsBuildingInfluenceInputRadiusVisible = false;
+                    IsBuildingInfluenceInputRangeVisible = true;
+                    //dockPanelPavedStreet.Visibility = Visibility.Visible;
+                    break;
+                case BuildingInfluenceType.Both:
+                    IsBuildingInfluenceInputRadiusVisible = true;
+                    IsBuildingInfluenceInputRangeVisible = true;
+                    //dockPanelPavedStreet.Visibility = Visibility.Visible;
+                    break;
+                case BuildingInfluenceType.None:
+                default:
+                    IsBuildingInfluenceInputRadiusVisible = false;
+                    IsBuildingInfluenceInputRangeVisible = false;
+                    //dockPanelPavedStreet.Visibility = Visibility.Collapsed;
+                    break;
+            }
+        }
+
+        private void HandleIsPavedStreet()
+        {
+            if (!Settings.Default.ShowPavedRoadsWarning)
+            {
+                MessageBox.Show(TextPavedStreetToolTip, TextPavedStreetWarningTitle);
+                Settings.Default.ShowPavedRoadsWarning = true;
+            }
+
+            if (!GetDistanceRange(IsPavedStreet, AnnoCanvasToUse.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == BuildingIdentifier)))
+            {
+                Debug.WriteLine("$Calculate Paved Street/Dirt Street Error: Can not obtain new Distance Value, value set to 0");
+            }
+            else
+            {
+                //I like to have here a isObjectOnMouse routine, to check of the command 'ApplyCurrentObject();' must be excecuted or not: 
+                //Check of Mouse has an object or not -> if mouse has Object then Renew Object, withouth placnig. (do ApplyCurrentObject();)
+            }
+        }
+
+        public bool GetDistanceRange(bool isPavedStreet, IBuildingInfo buildingInfo)
+        {
+            if (buildingInfo == null || buildingInfo.InfluenceRange <= 0)
+            {
+                BuildingInfluenceRange = 0;
+                return false;
+            }
+
+            if (isPavedStreet)
+            {
+                if (buildingInfo.InfluenceRange <= 1)
+                {
+                    BuildingInfluenceRange = 0;
+                    return false;
+                }
+
+                //sum for range on paved street for City Institution Building = n*1.38 (Police, Fire stations and Hospials)
+                //to round up, there must be added 0.5 to the numbers after the multiplier
+                //WYSWYG : the minus 2 is what gamers see as they count the Dark Green area on Paved Street
+                if (string.Equals(buildingInfo.Template, "CityInstitutionBuilding", StringComparison.OrdinalIgnoreCase))
+                {
+                    BuildingInfluenceRange = Math.Round(((buildingInfo.InfluenceRange * 1.38) + 0.5) - 2);
+                }
+                //sum for range on paved street for Public Service Building = n*1.43 (Marketplaces, Pubs, Banks, ... (etc))
+                //to round up, there must be added 0.5 to the numbers after the multiplier
+                //WYSWYG : the minus 2 is what gamers see as they count the Dark Green area on Paved Street
+                else
+                {
+                    BuildingInfluenceRange = Math.Round(((buildingInfo.InfluenceRange * 1.43) + 0.5) - 2);
+                }
+
+                return true;
+            }
+            else
+            {
+                if (buildingInfo.InfluenceRange <= 2)
+                {
+                    BuildingInfluenceRange = 0;
+                    return false;
+                }
+
+                //WYSWYG : the minus 2 is what gamers see as they count the Dark Green area on Dirt Road
+                BuildingInfluenceRange = buildingInfo.InfluenceRange - 2;
+                return true;
+            }
         }
 
         #region commands
@@ -434,8 +603,19 @@ namespace AnnoDesigner.viewmodel
 
         private void UseColorInLayout(object param)
         {
-            var clickedColor = (SerializableColor)param;
-            SelectedColor = clickedColor.MediaColor;
+            if (param == null)
+            {
+                return;
+            }
+
+            if (param is SerializableColor clickedSerializableColor)
+            {
+                SelectedColor = clickedSerializableColor.MediaColor;
+            }
+            else if (param is Color clickedColor)
+            {
+                SelectedColor = clickedColor;
+            }
         }
 
         private bool CanUseColorInLayout(object param)
@@ -449,7 +629,7 @@ namespace AnnoDesigner.viewmodel
         {
             ColorsInLayout.Clear();
 
-            foreach (var curColor in _annoCanvasToUse.PlacedObjects.Select(x => x.Color)
+            foreach (var curColor in AnnoCanvasToUse.PlacedObjects.Select(x => x.Color)
                 .OrderBy(x => x.MediaColor, ColorSorter)
                 .Distinct())
             {

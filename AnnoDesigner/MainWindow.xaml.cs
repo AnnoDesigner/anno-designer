@@ -30,6 +30,7 @@ using AnnoDesigner.Core.Layout.Exceptions;
 using System.Configuration;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.viewmodel;
+using System.Windows.Threading;
 
 namespace AnnoDesigner
 {
@@ -40,12 +41,13 @@ namespace AnnoDesigner
     {
         private IconImage _noIconItem;
         private static MainWindow _instance;
-        private Dictionary<int, bool> _treeViewState;
 
         private static string _selectedLanguage;
         //for identifier checking process
         private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
+
         public BuildingPresets BuildingPresets { get; }
+
         public static string SelectedLanguage
         {
             get
@@ -68,7 +70,6 @@ namespace AnnoDesigner
         }
 
         private static MainViewModel _mainViewModel;
-        //About window does not need to be called, as it get's instantiated and used when the about window is created
 
         private void SelectedLanguageChanged()
         {
@@ -86,16 +87,7 @@ namespace AnnoDesigner
                 }
             }
 
-            //refresh localized influence types in combo box
-            comboxBoxInfluenceType.Items.Clear();
-            string[] rangeTypes = Enum.GetNames(typeof(BuildingInfluenceType));
-            string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
-
-            foreach (string rangeType in rangeTypes)
-            {
-                comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
-            }
-            comboxBoxInfluenceType.SelectedIndex = 0;
+            _mainViewModel.BuildingSettingsViewModel.UpdateLanguageBuildingInfluenceType();
 
             //Force a language update on the clipboard status item.
             if (StatusBarItemClipboardStatus.Content != null) ClipboardChanged(annoCanvas.ObjectClipboard);
@@ -103,9 +95,7 @@ namespace AnnoDesigner
             //update settings
             Settings.Default.SelectedLanguage = SelectedLanguage;
 
-            _mainViewModel.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
-                annoCanvas.SelectedObjects,
-                annoCanvas.BuildingPresets);
+            _mainViewModel.UpdateStatistics();
 
             _mainViewModel.PresetsTreeSearchViewModel.SearchText = string.Empty;
         }
@@ -129,6 +119,7 @@ namespace AnnoDesigner
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
             _mainViewModel = DataContext as MainViewModel;
+            _mainViewModel.AnnoCanvas = annoCanvas;
 
             App.DpiScale = VisualTreeHelper.GetDpi(this);
 
@@ -138,7 +129,6 @@ namespace AnnoDesigner
             annoCanvas.OnStatusMessageChanged += StatusMessageChanged;
             annoCanvas.OnLoadedFileChanged += LoadedFileChanged;
             annoCanvas.OnClipboardChanged += ClipboardChanged;
-            annoCanvas.StatisticsUpdated += AnnoCanvas_StatisticsUpdated;
 
             DpiChanged += MainWindow_DpiChanged;
 
@@ -152,8 +142,6 @@ namespace AnnoDesigner
 
             LoadSettings();
 
-            _mainViewModel.BuildingSettingsViewModel.AnnoCanvasToUse = annoCanvas;
-
             // add icons to the combobox
             comboBoxIcon.Items.Clear();
             _noIconItem = new IconImage("None");
@@ -163,19 +151,6 @@ namespace AnnoDesigner
                 comboBoxIcon.Items.Add(icon.Value);
             }
             comboBoxIcon.SelectedIndex = 0;
-
-            string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
-
-            //add localized influence types to combo box
-            comboxBoxInfluenceType.Items.Clear();
-
-            string[] rangeTypes = Enum.GetNames(typeof(BuildingInfluenceType));
-            foreach (string rangeType in rangeTypes)
-            {
-                comboxBoxInfluenceType.Items.Add(new KeyValuePair<BuildingInfluenceType, string>((BuildingInfluenceType)Enum.Parse(typeof(BuildingInfluenceType), rangeType), Localization.Localization.Translations[language][rangeType]));
-            }
-
-            comboxBoxInfluenceType.SelectedIndex = 0;
 
             _mainViewModel.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
             _mainViewModel.FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
@@ -243,29 +218,21 @@ namespace AnnoDesigner
 
         private void LoadSettings()
         {
-            annoCanvas.RenderGrid = Settings.Default.ShowGrid;
-            annoCanvas.RenderIcon = Settings.Default.ShowIcons;
-            annoCanvas.RenderLabel = Settings.Default.ShowLabels;
             ToggleStatisticsView(Settings.Default.StatsShowStats);
-            ToggleBuildingList(Settings.Default.StatsShowBuildingCount);
-            AutomaticUpdateCheck.IsChecked = Settings.Default.EnableAutomaticUpdateCheck;
-            ShowGrid.IsChecked = Settings.Default.ShowGrid;
-            ShowIcons.IsChecked = Settings.Default.ShowIcons;
-            ShowLabels.IsChecked = Settings.Default.ShowLabels;
-            if (!string.IsNullOrWhiteSpace(Settings.Default.PresetsTreeExpandedState))
-            {
-                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(Settings.Default.PresetsTreeExpandedState)))
-                {
-                    _treeViewState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
-                }
-            }
-            else
-            {
-                _treeViewState = null;
-            }
+            _mainViewModel.StatisticsViewModel.ToggleBuildingList(Settings.Default.StatsShowBuildingCount, annoCanvas.PlacedObjects, annoCanvas.SelectedObjects, annoCanvas.BuildingPresets);
+
+            _mainViewModel.AutomaticUpdateCheck = Settings.Default.EnableAutomaticUpdateCheck;
+
+            _mainViewModel.UseCurrentZoomOnExportedImageValue = Settings.Default.UseCurrentZoomOnExportedImageValue;
+            _mainViewModel.RenderSelectionHighlightsOnExportedImageValue = Settings.Default.RenderSelectionHighlightsOnExportedImageValue;
+
+            _mainViewModel.CanvasShowGrid = Settings.Default.ShowGrid;
+            _mainViewModel.CanvasShowIcons = Settings.Default.ShowIcons;
+            _mainViewModel.CanvasShowLabels = Settings.Default.ShowLabels;
+
             _mainViewModel.PresetsTreeSearchViewModel.SearchText = Settings.Default.TreeViewSearchText ?? "";
-            CheckBoxPavedStreet.IsChecked = Settings.Default.IsPavedStreet;
-            SetPavedStreetCheckboxColor();
+
+            _mainViewModel.BuildingSettingsViewModel.IsPavedStreet = Settings.Default.IsPavedStreet;
         }
 
         #endregion
@@ -279,7 +246,7 @@ namespace AnnoDesigner
 
         private async Task CheckForUpdates(bool forcedCheck)
         {
-            if (Settings.Default.EnableAutomaticUpdateCheck || forcedCheck)
+            if (_mainViewModel.AutomaticUpdateCheck || forcedCheck)
             {
                 try
                 {
@@ -331,7 +298,7 @@ namespace AnnoDesigner
 
                     if (MessageBox.Show("Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.", "Continue checking for updates?", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
                     {
-                        Settings.Default.EnableAutomaticUpdateCheck = false;
+                        _mainViewModel.AutomaticUpdateCheck = false;
                     }
                 }
             }
@@ -403,13 +370,6 @@ namespace AnnoDesigner
 
         #region AnnoCanvas events
 
-        private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)
-        {
-            _mainViewModel.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
-                annoCanvas.SelectedObjects,
-                annoCanvas.BuildingPresets);
-        }
-
         /// <summary>
         /// Fired on the OnCurrentObjectChanged event
         /// </summary>
@@ -420,6 +380,7 @@ namespace AnnoDesigner
             {
                 return;
             }
+
             // size
             _mainViewModel.BuildingSettingsViewModel.BuildingWidth = (int)obj.Size.Width;
             _mainViewModel.BuildingSettingsViewModel.BuildingHeight = (int)obj.Size.Height;
@@ -453,30 +414,31 @@ namespace AnnoDesigner
 
             // radius
             _mainViewModel.BuildingSettingsViewModel.BuildingRadius = obj.Radius;
-            //InfluenceRadius
+            //InfluenceRange
             if (!_mainViewModel.BuildingSettingsViewModel.IsPavedStreet)
             {
                 _mainViewModel.BuildingSettingsViewModel.BuildingInfluenceRange = obj.InfluenceRange;
             }
             else
             {
-                GetDistanceRange(true);
-                SetPavedStreetCheckboxColor();
+                _mainViewModel.BuildingSettingsViewModel.GetDistanceRange(true, annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == _mainViewModel.BuildingSettingsViewModel.BuildingIdentifier));
             }
-            //Set Influence Type combo box
+
+            //Set Influence Type
             if (obj.Radius > 0 && obj.InfluenceRange > 0)
             {
                 //Building uses both a radius and an influence
                 //Has to be set manually 
-                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Both;
+                _mainViewModel.BuildingSettingsViewModel.SelectedBuildingInfluence = _mainViewModel.BuildingSettingsViewModel.BuildingInfluences.Single(x => x.Type == BuildingInfluenceType.Both);
             }
             else if (obj.Radius > 0)
             {
-                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Radius;
+                _mainViewModel.BuildingSettingsViewModel.SelectedBuildingInfluence = _mainViewModel.BuildingSettingsViewModel.BuildingInfluences.Single(x => x.Type == BuildingInfluenceType.Radius);
             }
             else if (obj.InfluenceRange > 0)
             {
-                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.Distance;
+                _mainViewModel.BuildingSettingsViewModel.SelectedBuildingInfluence = _mainViewModel.BuildingSettingsViewModel.BuildingInfluences.Single(x => x.Type == BuildingInfluenceType.Distance);
+
                 if (obj.PavedStreet)
                 {
                     _mainViewModel.BuildingSettingsViewModel.IsPavedStreet = obj.PavedStreet;
@@ -484,8 +446,9 @@ namespace AnnoDesigner
             }
             else
             {
-                comboxBoxInfluenceType.SelectedValue = BuildingInfluenceType.None;
+                _mainViewModel.BuildingSettingsViewModel.SelectedBuildingInfluence = _mainViewModel.BuildingSettingsViewModel.BuildingInfluences.Single(x => x.Type == BuildingInfluenceType.None);
             }
+
             // flags            
             //_mainWindowLocalization.BuildingSettingsViewModel.IsEnableLabelChecked = !string.IsNullOrEmpty(obj.Label);
             _mainViewModel.BuildingSettingsViewModel.IsBorderlessChecked = obj.Borderless;
@@ -512,11 +475,6 @@ namespace AnnoDesigner
         #endregion
 
         #region Main methods
-
-        private static bool IsChecked(ToggleButton checkBox)
-        {
-            return checkBox.IsChecked ?? false;
-        }
 
         private void ApplyCurrentObject()
         {
@@ -682,23 +640,7 @@ namespace AnnoDesigner
 
         private void MenuItemExportImageClick(object sender, RoutedEventArgs e)
         {
-            //annoCanvas.ExportImage(MenuItemExportZoom.IsChecked, MenuItemExportSelection.IsChecked);
-            ExportImage(MenuItemExportZoom.IsChecked, MenuItemExportSelection.IsChecked);
-        }
-
-        private void MenuItemGridClick(object sender, RoutedEventArgs e)
-        {
-            annoCanvas.RenderGrid = !annoCanvas.RenderGrid;
-        }
-
-        private void MenuItemLabelClick(object sender, RoutedEventArgs e)
-        {
-            annoCanvas.RenderLabel = !annoCanvas.RenderLabel;
-        }
-
-        private void MenuItemIconClick(object sender, RoutedEventArgs e)
-        {
-            annoCanvas.RenderIcon = !annoCanvas.RenderIcon;
+            ExportImage(_mainViewModel.UseCurrentZoomOnExportedImageValue, _mainViewModel.RenderSelectionHighlightsOnExportedImageValue);
         }
 
         private void MenuItemStatsShowStatsClick(object sender, RoutedEventArgs e)
@@ -719,33 +661,12 @@ namespace AnnoDesigner
 
         private void MenuItemStatsBuildingCountClick(object sender, RoutedEventArgs e)
         {
-            ToggleBuildingList(((MenuItem)sender).IsChecked);
-        }
-
-        private void ToggleBuildingList(bool showBuildingList)
-        {
-            _mainViewModel.StatisticsViewModel.ShowBuildingList = showBuildingList;
-            if (showBuildingList)
-            {
-                _mainViewModel.StatisticsViewModel.UpdateStatistics(annoCanvas.PlacedObjects,
-                    annoCanvas.SelectedObjects,
-                    annoCanvas.BuildingPresets);
-            }
+            _mainViewModel.StatisticsViewModel.ToggleBuildingList(((MenuItem)sender).IsChecked, annoCanvas.PlacedObjects, annoCanvas.SelectedObjects, annoCanvas.BuildingPresets);
         }
 
         private async void MenuItemVersionCheckImageClick(object sender, RoutedEventArgs e)
         {
             await CheckForUpdates(true);
-        }
-
-        private void MenuItemResetZoomClick(object sender, RoutedEventArgs e)
-        {
-            annoCanvas.ResetZoom();
-        }
-
-        private void MenuItemNormalizeClick(object sender, RoutedEventArgs e)
-        {
-            annoCanvas.Normalize(1);
         }
 
         private void MenuItemRegisterExtensionClick(object sender, RoutedEventArgs e)
@@ -842,151 +763,14 @@ namespace AnnoDesigner
 
         #endregion
 
-        private void ComboxBoxInfluenceType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var cbx = sender as ComboBox;
-            if (cbx.SelectedValue != null)
-            {
-                var influenceType = (BuildingInfluenceType)((KeyValuePair<BuildingInfluenceType, string>)cbx.SelectedItem).Key;
-                switch (influenceType)
-                {
-                    case BuildingInfluenceType.None:
-                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
-                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
-                        dockPanelPavedStreet.Visibility = Visibility.Collapsed;
-                        break;
-                    case BuildingInfluenceType.Radius:
-                        dockPanelInfluenceRadius.Visibility = Visibility.Visible;
-                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
-                        dockPanelPavedStreet.Visibility = Visibility.Collapsed;
-                        break;
-                    case BuildingInfluenceType.Distance:
-                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
-                        dockPanelInfluenceRange.Visibility = Visibility.Visible;
-                        dockPanelPavedStreet.Visibility = Visibility.Visible;
-                        break;
-                    case BuildingInfluenceType.Both:
-                        dockPanelInfluenceRadius.Visibility = Visibility.Visible;
-                        dockPanelInfluenceRange.Visibility = Visibility.Visible;
-                        dockPanelPavedStreet.Visibility = Visibility.Visible;
-                        break;
-                    default:
-                        dockPanelInfluenceRadius.Visibility = Visibility.Collapsed;
-                        dockPanelInfluenceRange.Visibility = Visibility.Collapsed;
-                        dockPanelPavedStreet.Visibility = Visibility.Collapsed;
-                        break;
-                }
-            }
-        }
-
-        //CheckBox PavedStreet : calculate distance range
-        private void CheckBoxPavedStreetClick(object sender, RoutedEventArgs o)
-        {
-            if (!Settings.Default.ShowPavedRoadsWarning)
-            {
-                MessageBox.Show(_mainViewModel.BuildingSettingsViewModel.TextPavedStreetToolTip, _mainViewModel.BuildingSettingsViewModel.TextPavedStreetWarningTitle);
-                Settings.Default.ShowPavedRoadsWarning = true;
-            }
-            if (!GetDistanceRange(this.CheckBoxPavedStreet.IsChecked.Value))
-            {
-                Debug.WriteLine("$Calculate Paved Street/Dirt Street Error: Can not obtain new Distance Value, value set to 0");
-            }
-            else
-            {
-                //I like to have here a isObjectOnMouse routine, to check of the command 'ApplyCurrentObject();' must be excecuted or not: 
-                //Check of Mouse has an object or not -> if mouse has Object then Renew Object, withouth placnig. (do ApplyCurrentObject();)
-            }
-        }
-
-        public bool GetDistanceRange(bool value)
-        {
-            Settings.Default.IsPavedStreet = value;
-            var buildingInfo = annoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == _mainViewModel.BuildingSettingsViewModel.BuildingIdentifier);
-            SetPavedStreetCheckboxColor();
-            if (buildingInfo != null)
-            {
-                if (buildingInfo.InfluenceRange > 0)
-                {
-                    if (value)
-                    {
-                        //sum for range on paved street for City Institution Building = n*1.38 (Police, Fire stations and Hospials)
-                        //to round up, there must be ad 0.5 to the numbers after the multiplier
-                        //WYSWYG : the minus 2 is what gamers see as they count the Dark Green area on Paved Street
-                        if (buildingInfo.InfluenceRange > 0 && buildingInfo.Template == "CityInstitutionBuilding")
-                        {
-                            _mainViewModel.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round(((buildingInfo.InfluenceRange * 1.38) + 0.5) - 2);
-                        }
-                        //sum for range on paved street for Public Service Building = n*1.43 (Marketplaces, Pubs, Banks, ... (etc))
-                        //to round up, there must be ad 0.5 to the numbers after the multiplier
-                        //WYSWYG : the minus 2 is what gamers see as they count the Dark Green area on Paved Street
-                        else if (buildingInfo.InfluenceRange > 0)
-                        {
-                            _mainViewModel.BuildingSettingsViewModel.BuildingInfluenceRange = Math.Round(((buildingInfo.InfluenceRange * 1.43) + 0.5) - 2);
-                        }
-                        return true;
-                    }
-                    else
-                    {
-                        if (buildingInfo.InfluenceRange > 0)
-                        {
-                            //WYSWYG : the minus 2 is what gamers see as they count the Dark Green area on Dirt Road
-                            _mainViewModel.BuildingSettingsViewModel.BuildingInfluenceRange = buildingInfo.InfluenceRange - 2;
-                        }
-                        return true;
-                    }
-                }
-            }
-            _mainViewModel.BuildingSettingsViewModel.BuildingInfluenceRange = 0;
-            return false;
-        }
-        public void SetPavedStreetCheckboxColor()
-        {
-            if (this.CheckBoxPavedStreet.IsChecked == true)
-            {
-                this.CheckBoxPavedStreet.Background = Brushes.OrangeRed;
-            }
-            else
-            {
-                this.CheckBoxPavedStreet.Background = Brushes.White;
-            }
-        }
-
-        private void TextBoxSearchPresetsGotFocus(object sender, RoutedEventArgs e)
-        {
-            if (e.Source is TextBox)
-            {
-                if (_mainViewModel.PresetsTreeSearchViewModel.SearchText.Length == 0)
-                {
-                    _treeViewState = _mainViewModel.PresetsTreeViewModel.GetCondensedTreeState();
-                }
-            }
-        }
-
         private void TextBoxSearchPresetsKeyUp(object sender, KeyEventArgs e)
         {
-            try
+            if (e.Key == Key.Escape)
             {
-                if (e.Key == Key.Escape)
-                {
-                    _mainViewModel.PresetsTreeSearchViewModel.SearchText = string.Empty;
-                    TextBoxSearchPresets.UpdateLayout();
-
-                    _mainViewModel.PresetsTreeViewModel.FilterText = _mainViewModel.PresetsTreeSearchViewModel.SearchText;
-                }
-                else if (_mainViewModel.PresetsTreeSearchViewModel.SearchText.Length == 0)
-                {
-                    _mainViewModel.PresetsTreeViewModel.FilterText = _mainViewModel.PresetsTreeSearchViewModel.SearchText;
-                    _mainViewModel.PresetsTreeViewModel.SetCondensedTreeState(_treeViewState, annoCanvas.BuildingPresets.Version);
-                }
-                else
-                {
-                    _mainViewModel.PresetsTreeViewModel.FilterText = _mainViewModel.PresetsTreeSearchViewModel.SearchText;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Failed to execute search successfully.");
-                App.WriteToErrorLog("Failed to execute search successfully", ex.Message, ex.StackTrace);
+                //used to fix issue with misplaced caret in TextBox
+                TextBoxSearchPresets.UpdateLayout();
+                TextBoxSearchPresets.Dispatcher.Invoke(DispatcherPriority.Render, new Action(() => { }));
+                //TextBoxSearchPresets.InvalidateVisual();                
             }
         }
 
@@ -994,6 +778,17 @@ namespace AnnoDesigner
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
+            Settings.Default.IsPavedStreet = _mainViewModel.BuildingSettingsViewModel.IsPavedStreet;
+
+            Settings.Default.ShowGrid = _mainViewModel.CanvasShowGrid;
+            Settings.Default.ShowIcons = _mainViewModel.CanvasShowIcons;
+            Settings.Default.ShowLabels = _mainViewModel.CanvasShowLabels;
+
+            Settings.Default.EnableAutomaticUpdateCheck = _mainViewModel.AutomaticUpdateCheck;
+
+            Settings.Default.UseCurrentZoomOnExportedImageValue = _mainViewModel.UseCurrentZoomOnExportedImageValue;
+            Settings.Default.RenderSelectionHighlightsOnExportedImageValue = _mainViewModel.RenderSelectionHighlightsOnExportedImageValue;
+
             string savedTreeState = null;
             using (var ms = new MemoryStream())
             {
@@ -1225,7 +1020,7 @@ namespace AnnoDesigner
                             annoCanvas.LoadedFile = string.Empty;
                             annoCanvas.Normalize(1);
 
-                            AnnoCanvas_StatisticsUpdated(this, EventArgs.Empty);
+                            _mainViewModel.UpdateStatistics();
                         }
                     }
                 }

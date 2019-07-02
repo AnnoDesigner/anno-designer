@@ -12,20 +12,151 @@ namespace AnnoDesigner.viewmodel
 {
     public class MainViewModel : Notify
     {
+        private Dictionary<int, bool> _treeViewState;
+        private bool _canvasShowGrid;
+        private bool _canvasShowIcons;
+        private bool _canvasShowLabels;
+        private bool _automaticUpdateCheck;
+        private string _versionValue;
+        private string _fileVersionValue;
+        private string _presetsVersionValue;
+        private bool _useCurrentZoomOnExportedImageValue;
+        private bool _renderSelectionHighlightsOnExportedImageValue;
+
         public MainViewModel()
         {
             _statisticsViewModel = new StatisticsViewModel();
             _buildingSettingsViewModel = new BuildingSettingsViewModel();
             _presetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization());
             _presetsTreeSearchViewModel = new PresetsTreeSearchViewModel();
+            _presetsTreeSearchViewModel.PropertyChanged += PresetsTreeSearchViewModel_PropertyChanged;
             _welcomeViewModel = new WelcomeViewModel();
             _aboutViewModel = new AboutViewModel();
 
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
+            CanvasResetZoomCommand = new RelayCommand(CanvasResetZoom);
+            CanvasNormalizeCommand = new RelayCommand(CanvasNormalize);
 
             UpdateLanguage();
         }
+
+        private void PresetsTreeSearchViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (string.Equals(e.PropertyName, nameof(PresetsTreeSearchViewModel.SearchText), StringComparison.OrdinalIgnoreCase))
+            {
+                PresetsTreeViewModel.FilterText = PresetsTreeSearchViewModel.SearchText;
+
+                if (string.IsNullOrWhiteSpace(PresetsTreeSearchViewModel.SearchText))
+                {
+                    PresetsTreeViewModel.SetCondensedTreeState(_treeViewState, AnnoCanvas.BuildingPresets.Version);
+                }
+            }
+            else if (string.Equals(e.PropertyName, nameof(PresetsTreeSearchViewModel.HasFocus), StringComparison.OrdinalIgnoreCase) &&
+                    PresetsTreeSearchViewModel.HasFocus &&
+                    string.IsNullOrWhiteSpace(PresetsTreeSearchViewModel.SearchText))
+            {
+                _treeViewState = PresetsTreeViewModel.GetCondensedTreeState();
+            }
+        }
+
+        private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)
+        {
+            UpdateStatistics();
+        }
+
+        public void UpdateStatistics()
+        {
+            StatisticsViewModel.UpdateStatistics(_annoCanvas.PlacedObjects,
+                _annoCanvas.SelectedObjects,
+                _annoCanvas.BuildingPresets);
+        }
+
+        #region properties
+
+        public AnnoCanvas AnnoCanvas
+        {
+            get { return _annoCanvas; }
+            set
+            {
+                if (_annoCanvas != null)
+                {
+                    _annoCanvas.StatisticsUpdated -= AnnoCanvas_StatisticsUpdated;
+                }
+
+                _annoCanvas = value;
+                _annoCanvas.StatisticsUpdated += AnnoCanvas_StatisticsUpdated;
+                BuildingSettingsViewModel.AnnoCanvasToUse = _annoCanvas;
+            }
+        }
+
+        public bool CanvasShowGrid
+        {
+            get { return _canvasShowGrid; }
+            set
+            {
+                UpdateProperty(ref _canvasShowGrid, value);
+                AnnoCanvas.RenderGrid = _canvasShowGrid;
+            }
+        }
+
+        public bool CanvasShowIcons
+        {
+            get { return _canvasShowIcons; }
+            set
+            {
+                UpdateProperty(ref _canvasShowIcons, value);
+                AnnoCanvas.RenderIcon = _canvasShowIcons;
+            }
+        }
+
+        public bool CanvasShowLabels
+        {
+            get { return _canvasShowLabels; }
+            set
+            {
+                UpdateProperty(ref _canvasShowLabels, value);
+                AnnoCanvas.RenderLabel = _canvasShowLabels;
+            }
+        }
+
+        public bool AutomaticUpdateCheck
+        {
+            get { return _automaticUpdateCheck; }
+            set { UpdateProperty(ref _automaticUpdateCheck, value); }
+        }
+
+        public string VersionValue
+        {
+            get { return _versionValue; }
+            set { UpdateProperty(ref _versionValue, value); }
+        }
+
+        public string FileVersionValue
+        {
+            get { return _fileVersionValue; }
+            set { UpdateProperty(ref _fileVersionValue, value); }
+        }
+
+        public string PresetsVersionValue
+        {
+            get { return _presetsVersionValue; }
+            set { UpdateProperty(ref _presetsVersionValue, value); }
+        }
+
+        public bool UseCurrentZoomOnExportedImageValue
+        {
+            get { return _useCurrentZoomOnExportedImageValue; }
+            set { UpdateProperty(ref _useCurrentZoomOnExportedImageValue, value); }
+        }
+
+        public bool RenderSelectionHighlightsOnExportedImageValue
+        {
+            get { return _renderSelectionHighlightsOnExportedImageValue; }
+            set { UpdateProperty(ref _renderSelectionHighlightsOnExportedImageValue, value); }
+        }
+
+        #endregion
 
         #region commands
 
@@ -43,7 +174,69 @@ namespace AnnoDesigner.viewmodel
             window?.Close();
         }
 
+        public ICommand CanvasResetZoomCommand { get; private set; }
+
+        private void CanvasResetZoom(object param)
+        {
+            AnnoCanvas.ResetZoom();
+        }
+
+        public ICommand CanvasNormalizeCommand { get; private set; }
+
+        private void CanvasNormalize(object param)
+        {
+            AnnoCanvas.Normalize(1);
+        }
+
         #endregion
+
+        #region view models
+
+        private StatisticsViewModel _statisticsViewModel;
+        public StatisticsViewModel StatisticsViewModel
+        {
+            get { return _statisticsViewModel; }
+            set { _statisticsViewModel = value; }
+        }
+
+        private BuildingSettingsViewModel _buildingSettingsViewModel;
+        public BuildingSettingsViewModel BuildingSettingsViewModel
+        {
+            get { return _buildingSettingsViewModel; }
+            set { _buildingSettingsViewModel = value; }
+        }
+
+        private PresetsTreeViewModel _presetsTreeViewModel;
+        public PresetsTreeViewModel PresetsTreeViewModel
+        {
+            get { return _presetsTreeViewModel; }
+            set { _presetsTreeViewModel = value; }
+        }
+
+        private PresetsTreeSearchViewModel _presetsTreeSearchViewModel;
+        public PresetsTreeSearchViewModel PresetsTreeSearchViewModel
+        {
+            get { return _presetsTreeSearchViewModel; }
+            set { _presetsTreeSearchViewModel = value; }
+        }
+
+        private WelcomeViewModel _welcomeViewModel;
+        public WelcomeViewModel WelcomeViewModel
+        {
+            get { return _welcomeViewModel; }
+            set { _welcomeViewModel = value; }
+        }
+
+        private AboutViewModel _aboutViewModel;
+        public AboutViewModel AboutViewModel
+        {
+            get { return _aboutViewModel; }
+            set { _aboutViewModel = value; }
+        }
+
+        #endregion
+
+        #region localization
 
         public void UpdateLanguage()
         {
@@ -420,16 +613,6 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
-        private string _versionValue;
-        public string VersionValue
-        {
-            get { return _versionValue; }
-            set
-            {
-                UpdateProperty(ref _versionValue, value);
-            }
-        }
-
         private string _fileVersion;
         public string FileVersion
         {
@@ -440,16 +623,6 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
-        private string _fileVersionValue;
-        public string FileVersionValue
-        {
-            get { return _fileVersionValue; }
-            set
-            {
-                UpdateProperty(ref _fileVersionValue, value);
-            }
-        }
-
         private string _presetsVersion;
         public string PresetsVersion
         {
@@ -457,16 +630,6 @@ namespace AnnoDesigner.viewmodel
             set
             {
                 UpdateProperty(ref _presetsVersion, value);
-            }
-        }
-
-        private string _presetsVersionValue;
-        public string PresetsVersionValue
-        {
-            get { return _presetsVersionValue; }
-            set
-            {
-                UpdateProperty(ref _presetsVersionValue, value);
             }
         }
 
@@ -591,6 +754,8 @@ namespace AnnoDesigner.viewmodel
         }
 
         private string _statusBarItemsOnClipboard;
+        private AnnoCanvas _annoCanvas;
+
         public string StatusBarItemsOnClipboard
         {
             get { return _statusBarItemsOnClipboard; }
@@ -602,47 +767,7 @@ namespace AnnoDesigner.viewmodel
 
         #endregion
 
-        private StatisticsViewModel _statisticsViewModel;
-        public StatisticsViewModel StatisticsViewModel
-        {
-            get { return _statisticsViewModel; }
-            set { _statisticsViewModel = value; }
-        }
-
-        private BuildingSettingsViewModel _buildingSettingsViewModel;
-        public BuildingSettingsViewModel BuildingSettingsViewModel
-        {
-            get { return _buildingSettingsViewModel; }
-            set { _buildingSettingsViewModel = value; }
-        }
-
-        private PresetsTreeViewModel _presetsTreeViewModel;
-        public PresetsTreeViewModel PresetsTreeViewModel
-        {
-            get { return _presetsTreeViewModel; }
-            set { _presetsTreeViewModel = value; }
-        }
-
-        private PresetsTreeSearchViewModel _presetsTreeSearchViewModel;
-        public PresetsTreeSearchViewModel PresetsTreeSearchViewModel
-        {
-            get { return _presetsTreeSearchViewModel; }
-            set { _presetsTreeSearchViewModel = value; }
-        }
-
-        private WelcomeViewModel _welcomeViewModel;
-        public WelcomeViewModel WelcomeViewModel
-        {
-            get { return _welcomeViewModel; }
-            set { _welcomeViewModel = value; }
-        }
-
-        private AboutViewModel _aboutViewModel;
-        public AboutViewModel AboutViewModel
-        {
-            get { return _aboutViewModel; }
-            set { _aboutViewModel = value; }
-        }
+        #endregion      
     }
 }
 

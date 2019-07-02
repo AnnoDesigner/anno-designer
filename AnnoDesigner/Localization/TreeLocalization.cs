@@ -400,21 +400,21 @@ namespace AnnoDesigner.Localization
             return GetLocalization(valueToTranslate, null);
         }
 
-        public string GetLocalization(string valueToTranslate, string language = null)
+        public string GetLocalization(string valueToTranslate, string languageCode = null)
         {
-            if (string.IsNullOrWhiteSpace(language))
+            if (string.IsNullOrWhiteSpace(languageCode))
             {
-                language = Localization.GetLanguageCodeFromName(AnnoDesigner.MainWindow.SelectedLanguage);
+                languageCode = Localization.GetLanguageCodeFromName(AnnoDesigner.MainWindow.SelectedLanguage);
             }
 
-            if (!Localization.LanguageCodeMap.ContainsValue(language))
+            if (!Localization.LanguageCodeMap.ContainsValue(languageCode))
             {
-                language = "eng";
+                languageCode = "eng";
             }
 
             try
             {
-                if (Translations[language].TryGetValue(valueToTranslate.Replace(" ", string.Empty), out string foundLocalization))
+                if (Translations[languageCode].TryGetValue(valueToTranslate.Replace(" ", string.Empty), out string foundLocalization))
                 {
                     return foundLocalization;
                 }
@@ -427,14 +427,14 @@ namespace AnnoDesigner.Localization
                     }
                     else
                     {
-                        Debug.WriteLine($"found no localization (\"eng\") and ({language}) for : \"{valueToTranslate}\"");
+                        Debug.WriteLine($"found no localization (\"eng\") and ({languageCode}) for : \"{valueToTranslate}\"");
                         return valueToTranslate;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"error getting localization ({language}) for: \"{valueToTranslate}\"{Environment.NewLine}{ex}");
+                Debug.WriteLine($"error getting localization ({languageCode}) for: \"{valueToTranslate}\"{Environment.NewLine}{ex}");
                 return valueToTranslate;
             }
         }

@@ -10,6 +10,6 @@ namespace AnnoDesigner.model
     {
         string GetLocalization(string valueToTranslate);
 
-        string GetLocalization(string valueToTranslate, string language);
+        string GetLocalization(string valueToTranslate, string languageCode);
     }
 }
