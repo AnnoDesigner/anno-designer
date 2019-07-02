@@ -12,6 +12,7 @@
         xmlns:modelPresetsTree="clr-namespace:AnnoDesigner.model.PresetsTree"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         xmlns:viewModel="clr-namespace:AnnoDesigner.viewmodel"
+        xmlns:myBehaviors="clr-namespace:AnnoDesigner.Behaviors"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewModel:MainViewModel, IsDesignTimeCreatable=True}"
         d:DesignHeight="480"
@@ -81,26 +82,18 @@
                         </Style.Triggers>
                     </Style>
                 </Menu.Resources>
-                <!--<Menu.DataContext>
-                
-            </Menu.DataContext>
-            <Menu.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <DockPanel HorizontalAlignment="Stretch"/>
-                </ItemsPanelTemplate>
-            </Menu.ItemsPanel>-->
-                <MenuItem Header="{Binding Path=File}"
+                <MenuItem Header="{Binding File}"
                           TabIndex="20">
-                    <MenuItem Header="{Binding Path=NewCanvas}"
+                    <MenuItem Header="{Binding NewCanvas}"
                               Command="ApplicationCommands.New"
                               CommandTarget="{Binding ElementName=annoCanvas}" />
-                    <MenuItem Header="{Binding Path=Open}"
+                    <MenuItem Header="{Binding Open}"
                               Command="ApplicationCommands.Open"
                               CommandTarget="{Binding ElementName=annoCanvas}" />
-                    <MenuItem Header="{Binding Path=Save}"
+                    <MenuItem Header="{Binding Save}"
                               Command="ApplicationCommands.Save"
                               CommandTarget="{Binding ElementName=annoCanvas}" />
-                    <MenuItem Header="{Binding Path=SaveAs}"
+                    <MenuItem Header="{Binding SaveAs}"
                               Command="ApplicationCommands.SaveAs"
                               CommandTarget="{Binding ElementName=annoCanvas}" />
                     <Separator />
@@ -109,40 +102,38 @@
                     <MenuItem Header="{Binding LoadLayoutFromJson}"
                               Click="MenuLoadLayoutFromJsonClick" />
                     <Separator />
-                    <MenuItem Header="{Binding Path=Exit}"
+                    <MenuItem Header="{Binding Exit}"
                               Command="{Binding CloseWindowCommand}"
                               CommandParameter="{Binding ElementName=mainWindow}" />
                 </MenuItem>
-                <MenuItem Header="{Binding Path=Extras}"
+                <MenuItem Header="{Binding Extras}"
                           TabIndex="21">
                     <!--<MenuItem Header="Prefer local presets" IsCheckable="True" IsEnabled="False" />
                 <MenuItem Header="Apply automatic color scheme" IsEnabled="False" />-->
-                    <MenuItem Header="{Binding Path=Normalize}"
-                              Click="MenuItemNormalizeClick" />
-                    <MenuItem Header="{Binding Path=ResetZoom}"
-                              Click="MenuItemResetZoomClick" />
+                    <MenuItem Header="{Binding Normalize}"
+                              Command="{Binding CanvasNormalizeCommand}" />
+                    <MenuItem Header="{Binding ResetZoom}"
+                              Command="{Binding CanvasResetZoomCommand}" />
                     <Separator />
-                    <MenuItem Header="{Binding Path=RegisterFileExtension}"
+                    <MenuItem Header="{Binding RegisterFileExtension}"
                               Click="MenuItemRegisterExtensionClick" />
-                    <MenuItem Header="{Binding Path=UnregisterFileExtension}"
+                    <MenuItem Header="{Binding UnregisterFileExtension}"
                               Click="MenuItemUnregisterExtensionClick" />
                 </MenuItem>
-                <MenuItem Header="{Binding Path=Export}"
+                <MenuItem Header="{Binding Export}"
                           TabIndex="22">
-                    <MenuItem Header="{Binding Path=ExportImage}"
+                    <MenuItem Header="{Binding ExportImage}"
                               Click="MenuItemExportImageClick" />
                     <Separator />
-                    <MenuItem Header="{Binding Path=UseCurrentZoomOnExportedImage}"
+                    <MenuItem Header="{Binding UseCurrentZoomOnExportedImage}"
                               IsCheckable="True"
-                              IsChecked="False"
-                              Name="MenuItemExportZoom" />
-                    <MenuItem Header="{Binding Path=RenderSelectionHighlightsOnExportedImage}"
+                              IsChecked="{Binding UseCurrentZoomOnExportedImageValue}" />
+                    <MenuItem Header="{Binding RenderSelectionHighlightsOnExportedImage}"
                               IsCheckable="True"
-                              IsChecked="False"
-                              Name="MenuItemExportSelection" />
+                              IsChecked="{Binding RenderSelectionHighlightsOnExportedImageValue}" />
                 </MenuItem>
                 <MenuItem Name="LanguageMenu"
-                          Header="{Binding Path=Language}"
+                          Header="{Binding Language}"
                           TabIndex="23"
                           Click="MenuItemLanguageClick">
                     <MenuItem Header="English"
@@ -169,26 +160,25 @@
                               Name="MenuItemLanguageRus" />
                     <!--<MenuItem Header="český" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageCze" />-->
                 </MenuItem>
-                <MenuItem Header="{Binding Path=ManageStats}"
+                <MenuItem Header="{Binding ManageStats}"
                           TabIndex="24"
                           HorizontalAlignment="Right">
-                    <MenuItem Header="{Binding Path=ShowStats}"
+                    <MenuItem Header="{Binding ShowStats}"
                               IsCheckable="True"
                               IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowStats, Mode=TwoWay}"
                               Click="MenuItemStatsShowStatsClick" />
                     <Separator></Separator>
                     <MenuItem Name="MenuItemStatsBuildingCount"
-                              Header="{Binding Path=BuildingCount}"
+                              Header="{Binding BuildingCount}"
                               IsCheckable="True"
                               IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowBuildingCount, Mode=TwoWay}"
                               IsEnabled="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowStats, Mode=OneWay}"
                               Click="MenuItemStatsBuildingCountClick" />
                 </MenuItem>
-                <MenuItem Header="{Binding Path=Help}"
+                <MenuItem Header="{Binding Help}"
                           TabIndex="25"
                           HorizontalAlignment="Right">
-                    <MenuItem Name="MenuItemVersion"
-                              IsEnabled="False">
+                    <MenuItem IsEnabled="False">
                         <MenuItem.Header>
                             <TextBlock>
                                 <TextBlock.Text>
@@ -200,8 +190,7 @@
                             </TextBlock>
                         </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Name="MenuItemFileVersion"
-                              IsEnabled="False">
+                    <MenuItem IsEnabled="False">
                         <MenuItem.Header>
                             <TextBlock>
                                 <TextBlock.Text>
@@ -213,8 +202,7 @@
                             </TextBlock>
                         </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Name="MenuItemPresetsVersion"
-                              IsEnabled="False">
+                    <MenuItem IsEnabled="False">
                         <MenuItem.Header>
                             <TextBlock>
                                 <TextBlock.Text>
@@ -226,38 +214,31 @@
                             </TextBlock>
                         </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Header="{Binding Path=CheckForUpdates}"
+                    <MenuItem Header="{Binding CheckForUpdates}"
                               Click="MenuItemVersionCheckImageClick" />
-                    <MenuItem Name="AutomaticUpdateCheck"
+                    <MenuItem Header="{Binding EnableAutomaticUpdateCheck}"
                               IsCheckable="True"
-                              Header="{Binding Path=EnableAutomaticUpdateCheck}"
-                              IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=EnableAutomaticUpdateCheck, Mode=TwoWay}"></MenuItem>
+                              IsChecked="{Binding AutomaticUpdateCheck}" />
                     <Separator />
-                    <MenuItem Header="{Binding Path=GoToProjectHomepage}"
+                    <MenuItem Header="{Binding GoToProjectHomepage}"
                               Command="{Binding OpenProjectHomepageCommand}" />
-                    <MenuItem Header="{Binding Path=OpenWelcomePage}"
-                              Click="MenuItemOpenWelcomeClick"></MenuItem>
-                    <MenuItem Header="{Binding Path=AboutAnnoDesigner}"
+                    <MenuItem Header="{Binding OpenWelcomePage}"
+                              Click="MenuItemOpenWelcomeClick" />
+                    <MenuItem Header="{Binding AboutAnnoDesigner}"
                               Click="MenuItemAboutClick" />
                 </MenuItem>
                 <Separator />
-                <MenuItem Name="ShowGrid"
-                          Header="{Binding Path=ShowGrid}"
+                <MenuItem Header="{Binding ShowGrid}"
                           IsCheckable="True"
-                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowGrid, Mode=TwoWay}"
-                          Click="MenuItemGridClick"
+                          IsChecked="{Binding CanvasShowGrid}"
                           TabIndex="26" />
-                <MenuItem Name="ShowLabels"
-                          Header="{Binding Path=ShowLabels}"
+                <MenuItem Header="{Binding ShowLabels}"
                           IsCheckable="True"
-                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowLabels, Mode=TwoWay}"
-                          Click="MenuItemLabelClick"
+                          IsChecked="{Binding CanvasShowLabels}"
                           TabIndex="27" />
-                <MenuItem Name="ShowIcons"
-                          Header="{Binding Path=ShowIcons}"
+                <MenuItem Header="{Binding ShowIcons}"
                           IsCheckable="True"
-                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=ShowIcons, Mode=TwoWay}"
-                          Click="MenuItemIconClick"
+                          IsChecked="{Binding CanvasShowIcons}"
                           TabIndex="28" />
             </Menu>
 
@@ -534,17 +515,14 @@
                                       Width="140"
                                       Height="22"
                                       IsEnabled="True"
-                                      x:Name="comboxBoxInfluenceType"
-                                      SelectedIndex="0"
-                                      TabIndex="6"
-                                      SelectedValuePath="Key"
-                                      DisplayMemberPath="Value"
-                                      SelectionChanged="ComboxBoxInfluenceType_SelectionChanged" />
+                                      ItemsSource="{Binding BuildingSettingsViewModel.BuildingInfluences}"
+                                      SelectedItem="{Binding BuildingSettingsViewModel.SelectedBuildingInfluence}"
+                                      DisplayMemberPath="Name"
+                                      TabIndex="6" />
                         </DockPanel>
-                        <DockPanel x:Name="dockPanelInfluenceRadius"
-                                   LastChildFill="False"
+                        <DockPanel LastChildFill="False"
                                    Height="26"
-                                   Visibility="Visible">
+                                   Visibility="{Binding BuildingSettingsViewModel.IsBuildingInfluenceInputRadiusVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}">
                             <Label Content="{Binding BuildingSettingsViewModel.TextRadius}" />
                             <xctk:DoubleUpDown DockPanel.Dock="Right"
                                                Height="23"
@@ -557,10 +535,9 @@
                                                TabIndex="8"
                                                Value="{Binding BuildingSettingsViewModel.BuildingRadius}" />
                         </DockPanel>
-                        <DockPanel x:Name="dockPanelInfluenceRange"
-                                   LastChildFill="False"
+                        <DockPanel LastChildFill="False"
                                    Height="26"
-                                   Visibility="Visible">
+                                   Visibility="{Binding BuildingSettingsViewModel.IsBuildingInfluenceInputRangeVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}">
                             <Label Content="{Binding BuildingSettingsViewModel.TextDistance}" />
                             <xctk:DoubleUpDown DockPanel.Dock="Right"
                                                Height="23"
@@ -574,18 +551,29 @@
                                                TabIndex="9"
                                                Value="{Binding BuildingSettingsViewModel.BuildingInfluenceRange}" />
                         </DockPanel>
-                        <DockPanel x:Name="dockPanelPavedStreet"
-                                   LastChildFill="False"
+                        <DockPanel LastChildFill="False"
                                    Height="25"
-                                   Visibility="Visible">
-                            <CheckBox Content="{Binding BuildingSettingsViewModel.TextPavedStreet}"
-                                      Name="CheckBoxPavedStreet"
-                                      ToolTip="{Binding BuildingSettingsViewModel.TextPavedStreetToolTip}"
-                                      Click="CheckBoxPavedStreetClick"
-                                      DockPanel.Dock="Right"
+                                   Visibility="{Binding BuildingSettingsViewModel.IsBuildingInfluenceInputRangeVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}">
+                            <CheckBox DockPanel.Dock="Right"
                                       Margin="0,3,0,5"
                                       IsThreeState="False"
-                                      IsChecked="{Binding BuildingSettingsViewModel.IsPavedStreet}" />
+                                      Content="{Binding BuildingSettingsViewModel.TextPavedStreet}"
+                                      IsChecked="{Binding BuildingSettingsViewModel.IsPavedStreet}"
+                                      ToolTip="{Binding BuildingSettingsViewModel.TextPavedStreetToolTip}">
+                                <CheckBox.Style>
+                                    <Style TargetType="{x:Type CheckBox}">
+                                        <Setter Property="Background"
+                                                Value="Green" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding BuildingSettingsViewModel.IsPavedStreet}"
+                                                         Value="True">
+                                                <Setter Property="Background"
+                                                        Value="OrangeRed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </CheckBox.Style>
+                            </CheckBox>
                         </DockPanel>
                         <DockPanel LastChildFill="False">
                             <Label Content="{Binding BuildingSettingsViewModel.TextOptions}" />
@@ -634,11 +622,26 @@
                                  Grid.Column="0"
                                  Grid.Row="0"
                                  Height="23"
-                                 KeyUp="TextBoxSearchPresetsKeyUp"
-                                 GotFocus="TextBoxSearchPresetsGotFocus"
                                  VerticalContentAlignment="Center"
                                  ToolTip="{Binding PresetsTreeSearchViewModel.TextSearchToolTip}"
-                                 Text="{Binding PresetsTreeSearchViewModel.SearchText, UpdateSourceTrigger=PropertyChanged}">
+                                 Text="{Binding PresetsTreeSearchViewModel.SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 KeyUp="TextBoxSearchPresetsKeyUp">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <i:InvokeCommandAction Command="{Binding PresetsTreeSearchViewModel.GotFocusCommand}" />
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding PresetsTreeSearchViewModel.LostFocusCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <!--<i:Interaction.Behaviors>
+                                <myBehaviors:FixCaretIndexBehavior />
+                            </i:Interaction.Behaviors>-->
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Esc"
+                                            Command="{Binding PresetsTreeSearchViewModel.ClearSearchTextCommand}"
+                                            CommandParameter="{Binding ElementName=TextBoxSearchPresets}" />
+                            </TextBox.InputBindings>
                         </TextBox>
                         <!-- Maybe add a clear text box button eventually. (Needs styling etc)-->
                         <!--<Button Grid.Column="1"

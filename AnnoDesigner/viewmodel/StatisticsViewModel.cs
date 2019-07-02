@@ -191,6 +191,15 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
+        public void ToggleBuildingList(bool showBuildingList, List<AnnoObject> placedObjects, List<AnnoObject> selectedObjects, BuildingPresets buildingPresets)
+        {
+            ShowBuildingList = showBuildingList;
+            if (showBuildingList)
+            {
+                UpdateStatistics(placedObjects, selectedObjects, buildingPresets);
+            }
+        }
+
         public void UpdateStatistics(List<AnnoObject> placedObjects,
             List<AnnoObject> selectedObjects,
             BuildingPresets buildingPresets)

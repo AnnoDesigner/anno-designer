@@ -307,5 +307,29 @@ namespace AnnoDesigner.Properties {
                 this["PresetsTreeLastVersion"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseCurrentZoomOnExportedImageValue {
+            get {
+                return ((bool)(this["UseCurrentZoomOnExportedImageValue"]));
+            }
+            set {
+                this["UseCurrentZoomOnExportedImageValue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool RenderSelectionHighlightsOnExportedImageValue {
+            get {
+                return ((bool)(this["RenderSelectionHighlightsOnExportedImageValue"]));
+            }
+            set {
+                this["RenderSelectionHighlightsOnExportedImageValue"] = value;
+            }
+        }
     }
 }

@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,8 +45,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuildingSettingsViewModelTests.cs" />
+    <Compile Include="MainViewModelTests.cs" />
+    <Compile Include="PresetsTreeSearchViewModelTests.cs" />
     <Compile Include="PresetsTreeViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WelcomeViewModelTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Moq">

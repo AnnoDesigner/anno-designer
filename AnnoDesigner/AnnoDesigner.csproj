@@ -46,12 +46,15 @@
     <Compile Include="About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Behaviors\FixCaretIndexBehavior.cs" />
     <Compile Include="BuildingInfoExtensions.cs" />
     <Compile Include="ColorHueSaturationBrightnessComparer.cs" />
     <Compile Include="Commons.cs" />
     <Compile Include="InputWindow.xaml.cs">
       <DependentUpon>InputWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="model\BuildingInfluence.cs" />
+    <Compile Include="model\ICanUpdateLayout.cs" />
     <Compile Include="viewmodel\AboutViewModel.cs" />
     <Compile Include="model\SupportedLanguage.cs" />
     <Compile Include="viewmodel\MainViewModel.cs" />

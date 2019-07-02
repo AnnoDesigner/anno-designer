@@ -1,0 +1,115 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using AnnoDesigner.viewmodel;
+using Xunit;
+using Moq;
+using AnnoDesigner.Core.Models;
+
+namespace AnnoDesigner.Tests
+{
+    public class MainViewModelTests
+    {
+        #region ctor tests
+
+        [Fact]
+        public void Ctor_ShouldSetDefaultValues()
+        {
+            // Arrange/Act
+            var viewModel = new MainViewModel();
+
+            // Assert
+            Assert.NotNull(viewModel.OpenProjectHomepageCommand);
+            Assert.NotNull(viewModel.CloseWindowCommand);
+            Assert.NotNull(viewModel.CanvasResetZoomCommand);
+            Assert.NotNull(viewModel.CanvasNormalizeCommand);
+
+            Assert.NotNull(viewModel.StatisticsViewModel);
+            Assert.NotNull(viewModel.BuildingSettingsViewModel);
+            Assert.NotNull(viewModel.PresetsTreeViewModel);
+            Assert.NotNull(viewModel.PresetsTreeSearchViewModel);
+            Assert.NotNull(viewModel.WelcomeViewModel);
+            Assert.NotNull(viewModel.AboutViewModel);
+
+            Assert.False(viewModel.CanvasShowGrid);
+            Assert.False(viewModel.CanvasShowIcons);
+            Assert.False(viewModel.CanvasShowLabels);
+            Assert.False(viewModel.AutomaticUpdateCheck);
+
+            Assert.Null(viewModel.VersionValue);
+            Assert.Null(viewModel.FileVersionValue);
+            Assert.Null(viewModel.PresetsVersionValue);
+
+            Assert.False(viewModel.UseCurrentZoomOnExportedImageValue);
+            Assert.False(viewModel.RenderSelectionHighlightsOnExportedImageValue);
+        }
+
+        #endregion
+
+        #region CloseWindowCommand tests
+
+        [Fact]
+        public void CloseWindowCommand_ShouldCanExecute()
+        {
+            // Arrange
+            var viewModel = new MainViewModel();
+
+            // Act
+            var result = viewModel.CloseWindowCommand.CanExecute(null);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void CloseWindowCommand_IsExecutedWithNull_ShouldNotThrow()
+        {
+            // Arrange
+            var viewModel = new MainViewModel();
+
+            // Act
+            var ex = Record.Exception(() => viewModel.CloseWindowCommand.Execute(null));
+
+            // Assert
+            Assert.Null(ex);
+        }
+
+        [Fact]
+        public void CloseWindowCommand_IsExecutedWithICloseable_ShouldCallClose()
+        {
+            // Arrange
+            var viewModel = new MainViewModel();
+            var mockedCloseable = new Mock<ICloseable>();
+
+            // Act
+            viewModel.CloseWindowCommand.Execute(mockedCloseable.Object);
+
+            // Assert
+            mockedCloseable.Verify(x => x.Close(), Times.Once);
+        }
+
+        #endregion
+
+        #region SearchText tests
+
+        [Fact]
+        public void PresetsTreeSearchViewModelPropertyChanged_SeachTextChanged_ShouldSetFilterTextOnPresetsTreeViewModel()
+        {
+            // Arrange
+            var viewModel = new MainViewModel();
+            viewModel.PresetsTreeViewModel.FilterText = "Lorem";
+
+            var textToSet = "dummy";
+
+            // Act
+            viewModel.PresetsTreeSearchViewModel.SearchText = textToSet;
+
+            // Assert
+            Assert.Equal(textToSet, viewModel.PresetsTreeViewModel.FilterText);
+        }
+
+        #endregion
+    }
+}
