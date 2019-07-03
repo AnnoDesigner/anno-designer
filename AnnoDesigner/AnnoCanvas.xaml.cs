@@ -18,6 +18,8 @@ using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
+using AnnoDesigner.Helper;
+using AnnoDesigner.model;
 using Microsoft.Win32;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
@@ -29,8 +31,6 @@ namespace AnnoDesigner
     public partial class AnnoCanvas : UserControl
     {
         public event EventHandler StatisticsUpdated;
-
-        private readonly ILayoutLoader _layoutLoader;
 
         #region Properties
         /// <summary>
@@ -51,21 +51,25 @@ namespace AnnoDesigner
         /// </summary>
         public int GridSize
         {
-            get
-            {
-                return _gridStep;
-            }
+            get { return _gridStep; }
             set
             {
                 var tmp = value;
+
                 if (tmp < Constants.GridStepMin)
+                {
                     tmp = Constants.GridStepMin;
-                if (tmp > Constants.GridStepMax)
+                }
+                else if (tmp > Constants.GridStepMax)
+                {
                     tmp = Constants.GridStepMax;
+                }
+
                 if (_gridStep != tmp)
                 {
                     InvalidateVisual();
                 }
+
                 _gridStep = tmp;
             }
         }
@@ -266,6 +270,9 @@ namespace AnnoDesigner
 
         #region Privates and constructor
 
+        private readonly ILayoutLoader _layoutLoader;
+        private readonly ICoordinateHelper _coordinateHelper;
+
         /// <summary>
         /// States the mode of mouse interaction.
         /// </summary>
@@ -396,9 +403,11 @@ namespace AnnoDesigner
 
         }
 
-        public AnnoCanvas(BuildingPresets presetsToUse, Dictionary<string, IconImage> iconsToUse)
+        public AnnoCanvas(BuildingPresets presetsToUse, Dictionary<string, IconImage> iconsToUse, ICoordinateHelper coordinateHelperToUse = null)
         {
             InitializeComponent();
+
+            _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -611,30 +620,30 @@ namespace AnnoDesigner
                     r.Union(GetObjectScreenRect(obj));
                 }
 
-                Point center = GetCenterPoint(r);
+                Point center = _coordinateHelper.GetCenterPoint(r);
 
                 var dx = _mousePosition.X - center.X;
                 var dy = _mousePosition.Y - center.Y;
 
                 //Ensure we move only in grid steps, to avoid rounding errors.
-                dx = GridToScreen(RoundScreenToGrid(dx));
-                dy = GridToScreen(RoundScreenToGrid(dy));
+                dx = _coordinateHelper.GridToScreen(_coordinateHelper.RoundScreenToGrid(dx, GridSize), GridSize);
+                dy = _coordinateHelper.GridToScreen(_coordinateHelper.RoundScreenToGrid(dy, GridSize), GridSize);
 
 
                 for (int i = 0; i < CurrentObjects.Count; i++)
                 {
-                    var pos = GridToScreen(CurrentObjects[i].Position);
-                    CurrentObjects[i].Position = RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy));
+                    var pos = _coordinateHelper.GridToScreen(CurrentObjects[i].Position, GridSize);
+                    CurrentObjects[i].Position = _coordinateHelper.RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy), GridSize);
                 }
             }
             else
             {
 
                 var pos = _mousePosition;
-                var size = GridToScreen(CurrentObjects[0].Size);
+                var size = _coordinateHelper.GridToScreen(CurrentObjects[0].Size, GridSize);
                 pos.X -= size.Width / 2;
                 pos.Y -= size.Height / 2;
-                CurrentObjects[0].Position = RoundScreenToGrid(pos);
+                CurrentObjects[0].Position = _coordinateHelper.RoundScreenToGrid(pos, GridSize);
             }
         }
 
@@ -673,7 +682,7 @@ namespace AnnoDesigner
                     // draw icon 2x2 grid cells large
                     var minSize = Math.Min(obj.Size.Width, obj.Size.Height);
                     //minSize = minSize == 1 ? minSize : Math.Floor(NthRoot(minSize, Constants.IconSizeFactor) + 1);
-                    var iconSize = GridToScreen(new Size(minSize, minSize));
+                    var iconSize = _coordinateHelper.GridToScreen(new Size(minSize, minSize), GridSize);
                     iconSize = minSize == 1 ? iconSize : new Size(NthRoot(iconSize.Width, Constants.IconSizeFactor), NthRoot(iconSize.Height, Constants.IconSizeFactor));
 
                     // center icon within the object
@@ -744,13 +753,13 @@ namespace AnnoDesigner
                 if (obj.Radius >= 0.5)
                 {
                     // highlight buildings within influence
-                    var radius = GridToScreen(obj.Radius);
-                    var circle = new EllipseGeometry(GetCenterPoint(GetObjectScreenRect(obj)), radius, radius);
+                    var radius = _coordinateHelper.GridToScreen(obj.Radius, GridSize);
+                    var circle = new EllipseGeometry(_coordinateHelper.GetCenterPoint(GetObjectScreenRect(obj)), radius, radius);
                     circle.Freeze();
                     foreach (var o in _placedObjects)
                     {
                         var oRect = GetObjectScreenRect(o);
-                        var distance = GetCenterPoint(oRect);
+                        var distance = _coordinateHelper.GetCenterPoint(oRect);
                         distance.X -= circle.Center.X;
                         distance.Y -= circle.Center.Y;
                         // check if the center is within the influence circle
@@ -832,11 +841,11 @@ namespace AnnoDesigner
 
                     using (StreamGeometryContext sgc = sg.Open())
                     {
-                        sgc.BeginFigure(GridToScreen(startPoint), geometryFill, geometryStroke);
+                        sgc.BeginFigure(_coordinateHelper.GridToScreen(startPoint, GridSize), geometryFill, geometryStroke);
 
                         ////////////////////////////////////////////////////////////////
                         //Draw in width of object
-                        sgc.LineTo(GridToScreen(new Point(topRightCorner.X, startPoint.Y)), stroked, smoothJoin);
+                        sgc.LineTo(_coordinateHelper.GridToScreen(new Point(topRightCorner.X, startPoint.Y), GridSize), stroked, smoothJoin);
 
                         //Draw quadrant 2
                         //Get end value to draw from top-right of 2nd quadrant to bottom-right of 2nd quadrant
@@ -848,15 +857,15 @@ namespace AnnoDesigner
                         while (endPoint != currentPoint)
                         {
                             currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
-                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
                             currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
-                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
                         }
 
                         ////////////////////////////////////////////////////////////////
                         startPoint = endPoint;
                         //Draw in height of object
-                        sgc.LineTo(GridToScreen(new Point(startPoint.X, bottomRightCorner.Y)), stroked, smoothJoin);
+                        sgc.LineTo(_coordinateHelper.GridToScreen(new Point(startPoint.X, bottomRightCorner.Y), GridSize), stroked, smoothJoin);
 
                         //Draw quadrant 3
                         //Get end value to draw from top-left of 3rd quadrant to bottom-left of 3rd quadrant
@@ -869,15 +878,15 @@ namespace AnnoDesigner
                         while (endPoint != currentPoint)
                         {
                             currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
-                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
                             currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
-                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
                         }
 
                         ////////////////////////////////////////////////////////////////
                         startPoint = endPoint;
                         //Draw in width of object
-                        sgc.LineTo(GridToScreen(new Point(bottomLeftCorner.X, startPoint.Y)), stroked, smoothJoin);
+                        sgc.LineTo(_coordinateHelper.GridToScreen(new Point(bottomLeftCorner.X, startPoint.Y), GridSize), stroked, smoothJoin);
 
                         //Draw quadrant 4
                         //Get end value to draw from bottom-right of 4th quadrant to top-left of 4th quadrant
@@ -890,15 +899,15 @@ namespace AnnoDesigner
                         while (endPoint != currentPoint)
                         {
                             currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
-                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
                             currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
-                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
                         }
 
                         ////////////////////////////////////////////////////////////////
                         startPoint = endPoint;
                         //Draw in height of object
-                        sgc.LineTo(GridToScreen(new Point(startPoint.X, topLeftCorner.Y)), stroked, smoothJoin);
+                        sgc.LineTo(_coordinateHelper.GridToScreen(new Point(startPoint.X, topLeftCorner.Y), GridSize), stroked, smoothJoin);
 
                         //Draw quadrant 1
                         //Get end value to draw from bottom-left of 1st quadrant to top-right of 1st quadrant
@@ -911,9 +920,9 @@ namespace AnnoDesigner
                         while (endPoint != currentPoint)
                         {
                             currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
-                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
                             currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
-                            sgc.LineTo(GridToScreen(currentPoint), stroked, smoothJoin);
+                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
                         }
 
                         //Shape should be complete by this point.
@@ -941,110 +950,7 @@ namespace AnnoDesigner
 
         #endregion
 
-        #region Coordinate and rectangle conversions
-
-        /// <summary>
-        /// Convert a screen coordinate to a grid coordinate by determining in which grid cell the point is contained.
-        /// </summary>
-        /// <param name="screenPoint"></param>
-        /// <returns></returns>
-        [Pure]
-        private Point ScreenToGrid(Point screenPoint)
-        {
-            return new Point(Math.Floor(screenPoint.X / _gridStep), Math.Floor(screenPoint.Y / _gridStep));
-        }
-
-        /// <summary>
-        /// Converts a screen coordinate to a grid coordinate by determining which grid cell is nearest.
-        /// </summary>
-        /// <param name="screenPoint"></param>
-        /// <returns></returns>
-        [Pure]
-        private Point RoundScreenToGrid(Point screenPoint)
-        {
-            return new Point(Math.Round(screenPoint.X / _gridStep), Math.Round(screenPoint.Y / _gridStep));
-        }
-
-        /// <summary>
-        /// Converts a length given in (pixel-)units to grid coordinate by determining which grid edge is nearest.
-        /// </summary>
-        /// <param name="screenLength"></param>
-        /// <returns></returns>
-        [Pure]
-        private double RoundScreenToGrid(double screenLength)
-        {
-            return Math.Round(screenLength / _gridStep);
-        }
-
-        /// <summary>
-        /// Converts a length given in (pixel-)units to a length given in grid cells.
-        /// </summary>
-        /// <param name="screenLength"></param>
-        /// <returns></returns>
-        [Pure]
-        private double ScreenToGrid(double screenLength)
-        {
-            return screenLength / _gridStep;
-        }
-
-        /// <summary>
-        /// Convert a grid coordinate to a screen coordinate.
-        /// </summary>
-        /// <param name="gridPoint"></param>
-        /// <returns></returns>
-        [Pure]
-        private Point GridToScreen(Point gridPoint)
-        {
-            return new Point(gridPoint.X * _gridStep, gridPoint.Y * _gridStep);
-        }
-
-        /// <summary>
-        /// Converts a size given in grid cells to a size given in (pixel-)units.
-        /// </summary>
-        /// <param name="gridSize"></param>
-        /// <returns></returns>
-        [Pure]
-        private Size GridToScreen(Size gridSize)
-        {
-            return new Size(gridSize.Width * _gridStep, gridSize.Height * _gridStep);
-        }
-
-        /// <summary>
-        /// Converts a length given in grid cells to a length given in (pixel-)units.
-        /// </summary>
-        /// <param name="gridLength"></param>
-        /// <returns></returns>
-        [Pure]
-        public double GridToScreen(double gridLength)
-        {
-            return gridLength * _gridStep;
-        }
-
-        /// <summary>
-        /// Calculates the exact center point of a given rect
-        /// </summary>
-        /// <param name="rect"></param>
-        /// <returns></returns>
-        [Pure]
-        private static Point GetCenterPoint(Rect rect)
-        {
-            var pos = rect.Location;
-            var size = rect.Size;
-            pos.X += size.Width / 2;
-            pos.Y += size.Height / 2;
-            return pos;
-        }
-
-        /// <summary>
-        /// Rotates the given Size object, i.e. switches width and height.
-        /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        [Pure]
-        private static Size Rotate(Size size)
-        {
-            return new Size(size.Height, size.Width);
-        }
+        #region Coordinate and rectangle conversions        
 
         /// <summary>
         /// Generates the rect to which the given object is rendered.
@@ -1054,7 +960,7 @@ namespace AnnoDesigner
         [Pure]
         private Rect GetObjectScreenRect(AnnoObject obj)
         {
-            return new Rect(GridToScreen(obj.Position), GridToScreen(obj.Size));
+            return new Rect(_coordinateHelper.GridToScreen(obj.Position, GridSize), _coordinateHelper.GridToScreen(obj.Size, GridSize));
         }
 
         /// <summary>
@@ -1077,7 +983,7 @@ namespace AnnoDesigner
         {
             for (int i = 0; i < l.Count; i++)
             {
-                l[i].Size = Rotate(l[i].Size);
+                l[i].Size = _coordinateHelper.Rotate(l[i].Size);
                 Point p = l[i].Position;
                 //Full formula left in for explanation
                 //var xPrime = x * Math.Cos(angle) - y * Math.Sin(angle);
@@ -1216,8 +1122,8 @@ namespace AnnoDesigner
             if (CurrentMode == MouseMode.DragAll)
             {
                 // move all selected objects
-                var dx = (int)ScreenToGrid(_mousePosition.X - _mouseDragStart.X);
-                var dy = (int)ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y);
+                var dx = (int)_coordinateHelper.ScreenToGrid(_mousePosition.X - _mouseDragStart.X, GridSize);
+                var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
                 // check if the mouse has moved at least one grid cell in any direction
                 if (dx != 0 || dy != 0)
                 {
@@ -1226,8 +1132,8 @@ namespace AnnoDesigner
                         obj.Position = new Point(obj.Position.X + dx, obj.Position.Y + dy);
                     }
                     // adjust the drag start to compensate the amount we already moved
-                    _mouseDragStart.X += GridToScreen(dx);
-                    _mouseDragStart.Y += GridToScreen(dy);
+                    _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
+                    _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
 
                     StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                 }
@@ -1263,8 +1169,8 @@ namespace AnnoDesigner
                             break;
                         case MouseMode.DragSelection:
                             // move all selected objects
-                            var dx = (int)ScreenToGrid(_mousePosition.X - _mouseDragStart.X);
-                            var dy = (int)ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y);
+                            var dx = (int)_coordinateHelper.ScreenToGrid(_mousePosition.X - _mouseDragStart.X, GridSize);
+                            var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
                             // check if the mouse has moved at least one grid cell in any direction
                             if (dx == 0 && dy == 0)
                             {
@@ -1296,8 +1202,8 @@ namespace AnnoDesigner
                                     obj.Position = new Point(obj.Position.X + dx, obj.Position.Y + dy);
                                 }
                                 // adjust the drag start to compensate the amount we already moved
-                                _mouseDragStart.X += GridToScreen(dx);
-                                _mouseDragStart.Y += GridToScreen(dy);
+                                _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
+                                _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
                             }
 
                             StatisticsUpdated?.Invoke(this, EventArgs.Empty);
@@ -1446,7 +1352,7 @@ namespace AnnoDesigner
                 case Key.R:
                     if (CurrentObjects.Count == 1)
                     {
-                        CurrentObjects[0].Size = Rotate(CurrentObjects[0].Size);
+                        CurrentObjects[0].Size = _coordinateHelper.Rotate(CurrentObjects[0].Size);
                     }
                     else if (CurrentObjects.Count > 1)
                     {
