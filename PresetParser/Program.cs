@@ -602,6 +602,7 @@ namespace PresetParser
                 if (factionName == "Techs") { factionName = "(3) Techs"; }
                 if (factionName == "(3) Techs" && identifierName == "underwater markethouse II") { factionName = "Others"; }
                 if (identifierName == "techs_academy") { groupName = "Public"; }
+                if (identifierName == "vineyard") { identifierName = "A5_vineyard"; }
                 if (groupName == "Farmfields" || groupName == "Farmfield") { groupName = "Farm Fields"; }
                 if (factionName == "Others" && identifierName.Contains("black_smoker_miner") == true) { groupName = "Black Smokers (Normal)"; }
                 if (factionName == "(3) Techs" && identifierName == "black_smoker_miner_platinum")
