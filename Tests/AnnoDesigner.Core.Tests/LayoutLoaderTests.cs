@@ -138,6 +138,30 @@ namespace AnnoDesigner.Core.Tests
         }
 
         [Fact]
+        public void LoadLayout_LayoutHasBuildingWithTransparentColor_ShouldReturnListWithObjectAndTransparentColor()
+        {
+            // Arrange
+            ILayoutLoader loader = new LayoutLoader();
+
+            var expectedA = 92;
+            var expectedR = 0;
+            var expectedG = 242;
+            var expectedB = 63;
+            var layoutContent = $"{{\"FileVersion\":{CoreConstants.LayoutFileVersion},\"Objects\":[{{\"Identifier\":\"Lorem\",\"Color\":{{\"A\":{expectedA},\"R\":{expectedR},\"G\":{expectedG},\"B\":{expectedB}}}}}]}}";
+            var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(layoutContent));
+
+            // Act
+            var result = loader.LoadLayout(streamWithLayout, true);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal(expectedA, result[0].Color.A);
+            Assert.Equal(expectedR, result[0].Color.R);
+            Assert.Equal(expectedG, result[0].Color.G);
+            Assert.Equal(expectedB, result[0].Color.B);
+        }
+
+        [Fact]
         public void SaveLayout_LayoutHasOneObject_ShouldReturnListWithOneObject()
         {
             // Arrange
@@ -156,6 +180,36 @@ namespace AnnoDesigner.Core.Tests
 
             // Assert
             Assert.Single(result);
+        }
+
+        [Fact]
+        public void SaveLayout_LayoutHasBuildingWithTransparentColor_ShouldReturnListWithOneObjectAndTransparentColor()
+        {
+            // Arrange
+            ILayoutLoader loader = new LayoutLoader();
+
+            byte expectedA = 92;
+            byte expectedR = 0;
+            byte expectedG = 242;
+            byte expectedB = 63;
+
+            var savedStream = new MemoryStream();
+
+            var listToSave = new List<AnnoObject> { new AnnoObject { Identifier = "Lorem", Color = new SerializableColor(expectedA, expectedR, expectedG, expectedB) } };
+
+            // Act
+            loader.SaveLayout(listToSave, savedStream);
+
+            savedStream.Position = 0;
+
+            var result = loader.LoadLayout(savedStream);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal(expectedA, result[0].Color.A);
+            Assert.Equal(expectedR, result[0].Color.R);
+            Assert.Equal(expectedG, result[0].Color.G);
+            Assert.Equal(expectedB, result[0].Color.B);
         }
     }
 }
