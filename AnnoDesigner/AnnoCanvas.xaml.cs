@@ -554,7 +554,7 @@ namespace AnnoDesigner
             //drawingContext.DrawRectangle(_lightBrush, _highlightPen, new Rect(GridToScreen(ScreenToGrid(_mousePosition)), new Size(_gridStep, _gridStep)));
 
             // draw placed objects
-            RenderObject(drawingContext, _placedObjects);
+            RenderObjectList(drawingContext, _placedObjects, useTransparency: false);
             RenderObjectInfluenceRadius(drawingContext, _selectedObjects);
             RenderObjectInfluenceRange(drawingContext, _selectedObjects);
             _selectedObjects.ForEach(_ => RenderObjectSelection(drawingContext, _));
@@ -579,9 +579,7 @@ namespace AnnoDesigner
                     // draw influence range
                     RenderObjectInfluenceRange(drawingContext, _currentObjects);
                     // draw with transparency
-                    CurrentObjects.ForEach(_ => _.Color = new SerializableColor(128, _.Color.R, _.Color.G, _.Color.B));
-                    RenderObject(drawingContext, CurrentObjects);
-                    CurrentObjects.ForEach(_ => _.Color = new SerializableColor(255, _.Color.R, _.Color.G, _.Color.B));
+                    RenderObjectList(drawingContext, CurrentObjects, useTransparency: true);
                 }
             }
 
@@ -652,17 +650,21 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object to render</param>
-        private void RenderObject(DrawingContext drawingContext, List<AnnoObject> objects)
+        private void RenderObjectList(DrawingContext drawingContext, List<AnnoObject> objects, bool useTransparency)
         {
-
             foreach (var obj in objects)
             {
-
                 // draw object rectangle
                 var objRect = GetObjectScreenRect(obj);
-                var brush = new SolidColorBrush(obj.Color);
-                brush.Freeze();
 
+                var color = obj.Color.MediaColor;
+                if (useTransparency)
+                {
+                    color.A = 128;
+                }
+
+                var brush = new SolidColorBrush(color);
+                brush.Freeze();
 
                 if (obj.Borderless)
                 {
