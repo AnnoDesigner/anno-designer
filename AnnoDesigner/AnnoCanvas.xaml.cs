@@ -1299,6 +1299,18 @@ namespace AnnoDesigner
 
                         StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                         break;
+                    case MouseMode.DragSelection:
+                        //clear selection
+                        _selectedObjects.Clear();
+
+                        if (CurrentObjects.Count != 0)
+                        {
+                            // cancel placement of object
+                            CurrentObjects.Clear();
+                        }
+
+                        CurrentMode = MouseMode.Standard;
+                        break;
                 }
             }
             // rotate current object
