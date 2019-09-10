@@ -662,7 +662,8 @@
                                             SelectedMemberPath="IsSelected"
                                             Delimiter=", "
                                             Command="{Binding PresetsTreeSearchViewModel.GameVersionFilterChangedCommand}"
-                                            SelectedItemsOverride="{Binding PresetsTreeSearchViewModel.SelectedGameVersionFilters}" />
+                                            IsSelectAllActive="True"
+                                            SelectAllContent="{Binding PresetsTreeSearchViewModel.TextSelectAll}" />
                     </Grid>
                 </GroupBox>
 

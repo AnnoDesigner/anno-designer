@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.model;
 using static AnnoDesigner.Core.CoreConstants;
@@ -17,11 +18,11 @@ namespace AnnoDesigner.viewmodel
     {
         private string _textSearch;
         private string _textSearchToolTip;
+        private string _textSelectAll;
 
         private string _searchText;
         private bool _hasFocus;
         private ObservableCollection<GameVersionFilter> _gameVersionFilters;
-        private ObservableCollection<GameVersionFilter> _selectedGameVersionFilters;
         private bool _isUpdatingGameVersionFilter;
 
         public PresetsTreeSearchViewModel()
@@ -34,21 +35,12 @@ namespace AnnoDesigner.viewmodel
             HasFocus = false;
             SearchText = string.Empty;
             GameVersionFilters = new ObservableCollection<GameVersionFilter>();
-            SelectedGameVersionFilters = new ObservableCollection<GameVersionFilter>();
             InitGameVersionFilters();
-            SelectedGameVersionFilters.Add(GameVersionFilters.Single(x => x.Type == GameVersion.All));
         }
 
         private void InitGameVersionFilters()
         {
-            //add "All" at first position
-            GameVersionFilters.Add(new GameVersionFilter
-            {
-                Name = GameVersion.All.ToString(),
-                Type = GameVersion.All,
-                IsSelected = true
-            });
-
+            var order = 0;
             foreach (GameVersion curGameVersion in Enum.GetValues(typeof(GameVersion)))
             {
                 if (curGameVersion == GameVersion.Unknown || curGameVersion == GameVersion.All)
@@ -59,7 +51,8 @@ namespace AnnoDesigner.viewmodel
                 GameVersionFilters.Add(new GameVersionFilter
                 {
                     Name = curGameVersion.ToString().Replace("Anno", "Anno "),
-                    Type = curGameVersion
+                    Type = curGameVersion,
+                    Order = ++order
                 });
             }
         }
@@ -84,15 +77,36 @@ namespace AnnoDesigner.viewmodel
 
         public ObservableCollection<GameVersionFilter> SelectedGameVersionFilters
         {
-            get { return _selectedGameVersionFilters; }
-            set { UpdateProperty(ref _selectedGameVersionFilters, value); }
+            get { return new ObservableCollection<GameVersionFilter>(GameVersionFilters.Where(x => x.IsSelected)); }
+        }
+
+        public GameVersion SelectedGameVersions
+        {
+            set
+            {
+                try
+                {
+                    _isUpdatingGameVersionFilter = true;
+
+                    foreach (var curFilter in GameVersionFilters)
+                    {
+                        curFilter.IsSelected = value.HasFlag(curFilter.Type);
+                    }
+                }
+                finally
+                {
+                    _isUpdatingGameVersionFilter = false;
+
+                    OnPropertyChanged(nameof(SelectedGameVersionFilters));
+                }
+            }
         }
 
         #region commands
 
         public ICommand ClearSearchTextCommand { get; private set; }
 
-        //TODO: refactor to use interface ICanUpdateLayout -> currently TextBox doe not implement it (create own control?)
+        //TODO: refactor to use interface ICanUpdateLayout -> currently TextBox does not implement it (create own control?)
         private void ClearSearchText(object param)
         {
             SearchText = string.Empty;
@@ -143,35 +157,9 @@ namespace AnnoDesigner.viewmodel
             {
                 _isUpdatingGameVersionFilter = true;
 
-                if (!(param is GameVersionFilter clickedFilter))
+                if (param is GameVersionFilter x)
                 {
-                    return;
-                }
-
-                ////at least "All" has to be selected
-                //if (SelectedGameVersionFilters.Count == 0 && clickedFilter.Type == GameVersion.All)
-                //{                   
-                //    //allFilter.IsSelected = true;
-                //    //SelectedGameVersionFilters.Clear();
-                //    SelectedGameVersionFilters.Add(GameVersionFilters.Single(x => x.Type == GameVersion.All));
-                //    return;
-                //}
-
-                var allFilter = GameVersionFilters.Single(x => x.Type == GameVersion.All);
-
-                if (clickedFilter.Type != GameVersion.All)
-                {
-                    allFilter.IsSelected = false;
-                    clickedFilter.IsSelected = true;
-                }
-                else
-                {
-                    foreach (var curGameFilter in GameVersionFilters.Where(x => x.Type != GameVersion.All))
-                    {
-                        curGameFilter.IsSelected = false;
-                    }
-
-                    allFilter.IsSelected = true;
+                    x.IsSelected = !x.IsSelected;
                 }
             }
             finally
@@ -196,6 +184,12 @@ namespace AnnoDesigner.viewmodel
         {
             get { return _textSearchToolTip; }
             set { UpdateProperty(ref _textSearchToolTip, value); }
+        }
+
+        public string TextSelectAll
+        {
+            get { return _textSelectAll; }
+            set { UpdateProperty(ref _textSelectAll, value); }
         }
 
         #endregion       

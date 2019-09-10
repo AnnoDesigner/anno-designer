@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,11 +9,13 @@ using static AnnoDesigner.Core.CoreConstants;
 
 namespace AnnoDesigner.model
 {
+    [DebuggerDisplay("{" + nameof(Name) + ",nq} ({" + nameof(IsSelected) + "})")]
     public class GameVersionFilter : Notify
     {
         private GameVersion _gameVersion;
         private string _name;
         private bool _isSelected;
+        private int _order;
 
         public GameVersion Type
         {
@@ -32,5 +35,10 @@ namespace AnnoDesigner.model
             set { UpdateProperty(ref _isSelected, value); }
         }
 
+        public int Order
+        {
+            get { return _order; }
+            set { UpdateProperty(ref _order, value); }
+        }
     }
 }
