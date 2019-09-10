@@ -31,6 +31,7 @@ using System.Configuration;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.viewmodel;
 using System.Windows.Threading;
+using AnnoDesigner.Helper;
 
 namespace AnnoDesigner
 {
@@ -109,6 +110,7 @@ namespace AnnoDesigner
 
         private readonly ICommons _commons;
         private readonly ILayoutLoader _layoutLoader;
+        private readonly ICoordinateHelper _coordinateHelper;
 
         #region Initialization
 
@@ -117,10 +119,11 @@ namespace AnnoDesigner
             InitializeComponent();
         }
 
-        public MainWindow(ICommons commonsToUse) : this()
+        public MainWindow(ICommons commonsToUse, ICoordinateHelper coordinateHelperToUse = null) : this()
         {
             _commons = commonsToUse;
             _layoutLoader = new LayoutLoader();
+            _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -991,8 +994,8 @@ namespace AnnoDesigner
                 }
 
                 // calculate output size
-                var width = target.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border);//if +1 then there are weird black lines next to the statistics view
-                var height = target.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border) + 1;//+1 for black grid line at bottom
+                var width = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border, target.GridSize);//if +1 then there are weird black lines next to the statistics view
+                var height = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border, target.GridSize) + 1;//+1 for black grid line at bottom
 
                 if (renderStatistics)
                 {

@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildingSettingsViewModelTests.cs" />
+    <Compile Include="CoordinateHelperTests.cs" />
     <Compile Include="MainViewModelTests.cs" />
     <Compile Include="PresetsTreeSearchViewModelTests.cs" />
     <Compile Include="PresetsTreeViewModelTests.cs" />

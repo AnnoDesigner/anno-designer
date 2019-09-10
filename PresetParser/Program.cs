@@ -30,7 +30,7 @@ namespace PresetParser
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
 
-        private const string BUILDING_PRESETS_VERSION = "3.2.5";
+        private const string BUILDING_PRESETS_VERSION = "3.2.6";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -312,21 +312,25 @@ namespace PresetParser
                 Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1404, Constants.ANNO_VERSION_1404);
                 BASE_PATH = BASE_PATH_1404;
                 DoAnnoPreset(Constants.ANNO_VERSION_1404);
+                annoBuildingLists.Clear();
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2070, Constants.ANNO_VERSION_2070);
                 BASE_PATH = BASE_PATH_2070;
                 DoAnnoPreset(Constants.ANNO_VERSION_2070);
+                annoBuildingLists.Clear();
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2205, Constants.ANNO_VERSION_2205);
                 BASE_PATH = BASE_PATH_2205;
                 DoAnnoPreset(Constants.ANNO_VERSION_2205);
+                annoBuildingLists.Clear();
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1800, Constants.ANNO_VERSION_1800);
                 BASE_PATH = BASE_PATH_1800;
                 DoAnnoPreset(Constants.ANNO_VERSION_1800);
+                annoBuildingLists.Clear();
             }
             #endregion
 
@@ -598,6 +602,7 @@ namespace PresetParser
                 if (factionName == "Techs") { factionName = "(3) Techs"; }
                 if (factionName == "(3) Techs" && identifierName == "underwater markethouse II") { factionName = "Others"; }
                 if (identifierName == "techs_academy") { groupName = "Public"; }
+                if (identifierName == "vineyard") { identifierName = "A5_vineyard"; }
                 if (groupName == "Farmfields" || groupName == "Farmfield") { groupName = "Farm Fields"; }
                 if (factionName == "Others" && identifierName.Contains("black_smoker_miner") == true) { groupName = "Black Smokers (Normal)"; }
                 if (factionName == "(3) Techs" && identifierName == "black_smoker_miner_platinum")
@@ -776,22 +781,25 @@ namespace PresetParser
             }
             else
             {
-                if (printTestText == 0)
+                if (testVersion)
                 {
-                    Console.WriteLine();
-                    Console.WriteLine("Testing GUID Result :");
-                    printTestText = 1;
-                }
+                    if (printTestText == 0)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Testing GUID Result :");
+                        printTestText = 1;
+                    }
 
-                if (buildingGuid.Contains(ExcludeGUIDList2205))
-                {
-                    Console.WriteLine("GUID : {0} (Checked GUID)", buildingGuid);
-                    Console.WriteLine("Name : {0}", nameValue);
-                }
-                else
-                {
-                    Console.WriteLine("GUID : {0} <<-- NOT IN GUID CHECK", buildingGuid);
-                    Console.WriteLine("Name : {0}", nameValue);
+                    if (buildingGuid.Contains(ExcludeGUIDList2205))
+                    {
+                        Console.WriteLine("GUID : {0} (Checked GUID)", buildingGuid);
+                        Console.WriteLine("Name : {0}", nameValue);
+                    }
+                    else
+                    {
+                        Console.WriteLine("GUID : {0} <<-- NOT IN GUID CHECK", buildingGuid);
+                        Console.WriteLine("Name : {0}", nameValue);
+                    }
                 }
             }
 
