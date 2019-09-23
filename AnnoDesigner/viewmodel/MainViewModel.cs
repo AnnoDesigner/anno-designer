@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Localization;
+using static AnnoDesigner.Core.CoreConstants;
 
 namespace AnnoDesigner.viewmodel
 {
@@ -22,6 +23,7 @@ namespace AnnoDesigner.viewmodel
         private string _presetsVersionValue;
         private bool _useCurrentZoomOnExportedImageValue;
         private bool _renderSelectionHighlightsOnExportedImageValue;
+        private bool _isLanguageChange;
 
         public MainViewModel()
         {
@@ -47,7 +49,7 @@ namespace AnnoDesigner.viewmodel
             {
                 PresetsTreeViewModel.FilterText = PresetsTreeSearchViewModel.SearchText;
 
-                if (string.IsNullOrWhiteSpace(PresetsTreeSearchViewModel.SearchText))
+                if (!IsLanguageChange && string.IsNullOrWhiteSpace(PresetsTreeSearchViewModel.SearchText))
                 {
                     PresetsTreeViewModel.SetCondensedTreeState(_treeViewState, AnnoCanvas.BuildingPresets.Version);
                 }
@@ -57,6 +59,17 @@ namespace AnnoDesigner.viewmodel
                     string.IsNullOrWhiteSpace(PresetsTreeSearchViewModel.SearchText))
             {
                 _treeViewState = PresetsTreeViewModel.GetCondensedTreeState();
+            }
+            else if (string.Equals(e.PropertyName, nameof(PresetsTreeSearchViewModel.SelectedGameVersionFilters), StringComparison.OrdinalIgnoreCase))
+            {
+                var filterGameVersion = GameVersion.Unknown;
+
+                foreach (var curSelectedFilter in PresetsTreeSearchViewModel.SelectedGameVersionFilters)
+                {
+                    filterGameVersion |= curSelectedFilter.Type;
+                }
+
+                PresetsTreeViewModel.FilterGameVersion = filterGameVersion;
             }
         }
 
@@ -155,6 +168,13 @@ namespace AnnoDesigner.viewmodel
             get { return _renderSelectionHighlightsOnExportedImageValue; }
             set { UpdateProperty(ref _renderSelectionHighlightsOnExportedImageValue, value); }
         }
+
+        public bool IsLanguageChange
+        {
+            get { return _isLanguageChange; }
+            set { UpdateProperty(ref _isLanguageChange, value); }
+        }
+
 
         #endregion
 
@@ -334,6 +354,7 @@ namespace AnnoDesigner.viewmodel
 
             PresetsTreeSearchViewModel.TextSearch = Localization.Localization.Translations[language]["Search"];
             PresetsTreeSearchViewModel.TextSearchToolTip = Localization.Localization.Translations[language]["SearchToolTip"];
+            PresetsTreeSearchViewModel.TextSelectAll = Localization.Localization.Translations[language]["SelectAll"];
 
             //Status Bar
             StatusBarControls = Localization.Localization.Translations[language]["StatusBarControls"];

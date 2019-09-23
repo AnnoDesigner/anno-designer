@@ -74,31 +74,38 @@ namespace AnnoDesigner
 
         private void SelectedLanguageChanged()
         {
-            _mainViewModel.UpdateLanguage();
-            _instance.RepopulateTreeView();
-            foreach (MenuItem item in LanguageMenu.Items)
+            try
             {
-                if (item.Header.ToString() == SelectedLanguage)
+                _mainViewModel.IsLanguageChange = true;
+
+                _mainViewModel.UpdateLanguage();
+                _instance.RepopulateTreeView();
+
+                foreach (MenuItem item in LanguageMenu.Items)
                 {
-                    item.IsChecked = true;
+                    item.IsChecked = item.Header.ToString() == SelectedLanguage;
                 }
-                else
-                {
-                    item.IsChecked = false;
-                }
+
+                _mainViewModel.BuildingSettingsViewModel.UpdateLanguageBuildingInfluenceType();
+
+                //Force a language update on the clipboard status item.
+                if (StatusBarItemClipboardStatus.Content != null) ClipboardChanged(annoCanvas.ObjectClipboard);
+
+                //update settings
+                Settings.Default.SelectedLanguage = SelectedLanguage;
+
+                _mainViewModel.UpdateStatistics();
+
+                _mainViewModel.PresetsTreeSearchViewModel.SearchText = string.Empty;
             }
-
-            _mainViewModel.BuildingSettingsViewModel.UpdateLanguageBuildingInfluenceType();
-
-            //Force a language update on the clipboard status item.
-            if (StatusBarItemClipboardStatus.Content != null) ClipboardChanged(annoCanvas.ObjectClipboard);
-
-            //update settings
-            Settings.Default.SelectedLanguage = SelectedLanguage;
-
-            _mainViewModel.UpdateStatistics();
-
-            _mainViewModel.PresetsTreeSearchViewModel.SearchText = string.Empty;
+            catch (Exception ex)
+            {
+                App.WriteToErrorLog("Error when changing the language.", ex.Message, ex.StackTrace);
+            }
+            finally
+            {
+                _mainViewModel.IsLanguageChange = false;
+            }
         }
 
         private readonly ICommons _commons;
@@ -159,7 +166,7 @@ namespace AnnoDesigner
             _mainViewModel.FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
 
             // check for updates on startup            
-            CheckForUpdates(false);//just fire and forget
+            _ = CheckForUpdates(false);//just fire and forget
 
             // load color presets
             colorPicker.StandardColors.Clear();
@@ -190,13 +197,54 @@ namespace AnnoDesigner
                 _mainViewModel.PresetsTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
                 _mainViewModel.PresetsTreeViewModel.LoadItems(annoCanvas.BuildingPresets);
 
+                var isFiltered = false;
+
                 //apply saved search before restoring state
                 if (!string.IsNullOrWhiteSpace(Settings.Default.TreeViewSearchText))
                 {
-                    _mainViewModel.PresetsTreeViewModel.FilterText = Settings.Default.TreeViewSearchText;
+                    _mainViewModel.PresetsTreeSearchViewModel.SearchText = Settings.Default.TreeViewSearchText;
+                    isFiltered = true;
                 }
 
-                if (!string.IsNullOrWhiteSpace(Settings.Default.PresetsTreeExpandedState))
+                if (Enum.TryParse<CoreConstants.GameVersion>(Settings.Default.PresetsTreeGameVersionFilter, ignoreCase: true, out var parsedValue))
+                {
+                    //if all games were deselected on last app run, now select all
+                    if (parsedValue == CoreConstants.GameVersion.Unknown)
+                    {
+                        foreach (CoreConstants.GameVersion curGameVersion in Enum.GetValues(typeof(CoreConstants.GameVersion)))
+                        {
+                            if (curGameVersion == CoreConstants.GameVersion.Unknown || curGameVersion == CoreConstants.GameVersion.All)
+                            {
+                                continue;
+                            }
+
+                            parsedValue |= curGameVersion;
+                        }
+                    }
+
+                    _mainViewModel.PresetsTreeSearchViewModel.SelectedGameVersions = parsedValue;
+                    isFiltered = true;
+                }
+                else
+                {
+                    //if saved value is not known, now select all
+                    parsedValue = CoreConstants.GameVersion.Unknown;
+
+                    foreach (CoreConstants.GameVersion curGameVersion in Enum.GetValues(typeof(CoreConstants.GameVersion)))
+                    {
+                        if (curGameVersion == CoreConstants.GameVersion.Unknown || curGameVersion == CoreConstants.GameVersion.All)
+                        {
+                            continue;
+                        }
+
+                        parsedValue |= curGameVersion;
+                    }
+
+                    _mainViewModel.PresetsTreeSearchViewModel.SelectedGameVersions = parsedValue;
+                }
+
+                //if not filtered, then restore tree state
+                if (!isFiltered && !string.IsNullOrWhiteSpace(Settings.Default.PresetsTreeExpandedState))
                 {
                     Dictionary<int, bool> savedTreeState = null;
                     using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(Settings.Default.PresetsTreeExpandedState)))
@@ -232,8 +280,6 @@ namespace AnnoDesigner
             _mainViewModel.CanvasShowGrid = Settings.Default.ShowGrid;
             _mainViewModel.CanvasShowIcons = Settings.Default.ShowIcons;
             _mainViewModel.CanvasShowLabels = Settings.Default.ShowLabels;
-
-            _mainViewModel.PresetsTreeSearchViewModel.SearchText = Settings.Default.TreeViewSearchText ?? "";
 
             _mainViewModel.BuildingSettingsViewModel.IsPavedStreet = Settings.Default.IsPavedStreet;
         }
@@ -803,6 +849,7 @@ namespace AnnoDesigner
             Settings.Default.PresetsTreeLastVersion = _mainViewModel.PresetsTreeViewModel.BuildingPresetsVersion;
 
             Settings.Default.TreeViewSearchText = _mainViewModel.PresetsTreeSearchViewModel.SearchText;
+            Settings.Default.PresetsTreeGameVersionFilter = _mainViewModel.PresetsTreeViewModel.FilterGameVersion.ToString();
 
             if (WindowState == WindowState.Minimized)
             {

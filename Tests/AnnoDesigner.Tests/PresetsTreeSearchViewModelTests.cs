@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AnnoDesigner.model;
 using AnnoDesigner.viewmodel;
 using Xunit;
 
@@ -24,6 +25,7 @@ namespace AnnoDesigner.Tests
             Assert.NotNull(viewModel.ClearSearchTextCommand);
             Assert.NotNull(viewModel.GotFocusCommand);
             Assert.NotNull(viewModel.LostFocusCommand);
+            Assert.NotNull(viewModel.GameVersionFilterChangedCommand);
         }
 
         #endregion
@@ -117,6 +119,78 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Empty(viewModel.SearchText);
+        }
+
+        #endregion
+
+        #region GameVersionFilterChangedCommand  tests
+
+        [Fact]
+        public void GameVersionFilterChangedCommand_IsExecutedWithGameVersionFilter_ShouldNegateIsSelected()
+        {
+            // Arrange
+            var viewModel = new PresetsTreeSearchViewModel();
+
+            var gameVersionFilter = new GameVersionFilter
+            {
+                IsSelected = true
+            };
+
+            // Act
+            viewModel.GameVersionFilterChangedCommand.Execute(gameVersionFilter);
+
+            // Assert
+            Assert.False(gameVersionFilter.IsSelected);
+        }
+
+        [Fact]
+        public void GameVersionFilterChangedCommand_IsExecuted_ShouldRaisePropertyChanged()
+        {
+            // Arrange
+            var viewModel = new PresetsTreeSearchViewModel();
+
+            // Act/Assert
+            Assert.PropertyChanged(viewModel,
+                nameof(PresetsTreeSearchViewModel.SelectedGameVersionFilters),
+                () => viewModel.GameVersionFilterChangedCommand.Execute(null));
+        }
+
+        #endregion
+
+        #region SelectedGameVersionFilters  tests
+
+        [Fact]
+        public void SelectedGameVersionFilters_IsCalled_ShouldReturnCorrectCollection()
+        {
+            // Arrange
+            var viewModel = new PresetsTreeSearchViewModel();
+            viewModel.GameVersionFilters[0].IsSelected = true;
+
+            // Act
+            var result = viewModel.SelectedGameVersionFilters;
+
+            // Assert
+            Assert.Single(result);
+        }
+
+        #endregion
+
+        #region SelectedGameVersions  tests
+
+        [Fact]
+        public void SelectedGameVersions_IsCalled_ShouldSetIsSelectedForCorrectItems()
+        {
+            // Arrange
+            var viewModel = new PresetsTreeSearchViewModel();
+            viewModel.GameVersionFilters[0].IsSelected = false;
+            viewModel.GameVersionFilters[1].IsSelected = false;
+
+            // Act
+            viewModel.SelectedGameVersions = viewModel.GameVersionFilters[0].Type | viewModel.GameVersionFilters[1].Type;
+
+            // Assert
+            Assert.True(viewModel.GameVersionFilters[0].IsSelected);
+            Assert.True(viewModel.GameVersionFilters[1].IsSelected);
         }
 
         #endregion

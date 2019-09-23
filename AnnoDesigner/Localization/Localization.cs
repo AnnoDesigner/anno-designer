@@ -126,6 +126,7 @@ namespace AnnoDesigner.Localization
                         { "ClipboardContainsLayoutAsJson" , "Clipboard contains current layout as JSON." },
                         { "OK" , "OK" },
                         { "Cancel" , "Cancel" },
+                        { "SelectAll" , "Select All" },
                     }
                 },
                 {
@@ -237,6 +238,7 @@ namespace AnnoDesigner.Localization
                         { "ClipboardContainsLayoutAsJson" , "Die Zwischenablage enthält das aktuelle Layout als JSON." },
                         { "OK" , "OK" },
                         { "Cancel" , "Abbrechen" },
+                        { "SelectAll" , "Alle auswählen" },
                     }
                 },
                 {
@@ -348,6 +350,7 @@ namespace AnnoDesigner.Localization
                         { "ClipboardContainsLayoutAsJson" , "Le presse-papiers contient la mise en page actuelle en tant que JSON." },
                         { "OK" , "OK" },
                         { "Cancel" , "Annuler" },
+                        { "SelectAll" , "Sélectionner tout" },
                     }
                 },
                 {
@@ -459,6 +462,7 @@ namespace AnnoDesigner.Localization
                         { "ClipboardContainsLayoutAsJson" , "Schowek zawiera aktualny układ jako JSON." },
                         { "OK" , "OK" },
                         { "Cancel" , "Odwołaj" },
+                        { "SelectAll" , "Wybierz wszystkie" },
                     }
                 },
                 {
@@ -570,6 +574,7 @@ namespace AnnoDesigner.Localization
                         { "ClipboardContainsLayoutAsJson" , "Буфер обмена содержит текущую верстку в виде JSON." },
                         { "OK" , "OK" },
                         { "Cancel" , "Отмена" },
+                        { "SelectAll" , "Выберите все" },
                     }
                 },
             };
