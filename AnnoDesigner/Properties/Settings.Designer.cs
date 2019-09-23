@@ -331,5 +331,17 @@ namespace AnnoDesigner.Properties {
                 this["RenderSelectionHighlightsOnExportedImageValue"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PresetsTreeGameVersionFilter {
+            get {
+                return ((string)(this["PresetsTreeGameVersionFilter"]));
+            }
+            set {
+                this["PresetsTreeGameVersionFilter"] = value;
+            }
+        }
     }
 }

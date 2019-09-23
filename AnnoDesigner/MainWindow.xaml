@@ -656,9 +656,17 @@
                         <xctk:CheckComboBox Grid.Column="0"
                                             Grid.Row="1"
                                             IsEditable="False"
-                                            Visibility="Collapsed" />
+                                            Visibility="Visible"
+                                            ItemsSource="{Binding PresetsTreeSearchViewModel.GameVersionFilters}"
+                                            DisplayMemberPath="Name"
+                                            SelectedMemberPath="IsSelected"
+                                            Delimiter=", "
+                                            Command="{Binding PresetsTreeSearchViewModel.GameVersionFilterChangedCommand}"
+                                            IsSelectAllActive="True"
+                                            SelectAllContent="{Binding PresetsTreeSearchViewModel.TextSelectAll}" />
                     </Grid>
                 </GroupBox>
+
                 <GroupBox x:Name="GroupBoxPresets"
                           Header="Building presets - not loaded"
                           IsEnabled="True"
