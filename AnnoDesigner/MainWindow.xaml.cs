@@ -32,6 +32,7 @@ using AnnoDesigner.Core.Helper;
 using AnnoDesigner.viewmodel;
 using System.Windows.Threading;
 using AnnoDesigner.Helper;
+using NLog;
 
 namespace AnnoDesigner
 {
@@ -40,6 +41,7 @@ namespace AnnoDesigner
     /// </summary>
     public partial class MainWindow : Window, ICloseable
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private IconImage _noIconItem;
         private static MainWindow _instance;
 
@@ -100,7 +102,7 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                App.WriteToErrorLog("Error when changing the language.", ex.Message, ex.StackTrace);
+                logger.Error(ex, "Error when changing the language.");
             }
             finally
             {
@@ -305,8 +307,8 @@ namespace AnnoDesigner
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error checking version. \n\nAdded error to error log.", "Version check failed");
-                    App.WriteToErrorLog("Error Checking Version", ex.Message, ex.StackTrace);
+                    logger.Error(ex, "Error checking version.");
+                    MessageBox.Show("Error checking version. \n\nAdded more information to log.", "Version check failed");
                     return;
                 }
             }
@@ -353,8 +355,8 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error checking version. \n\nAdded error to error log.", "Version check failed");
-                App.WriteToErrorLog("Error Checking Version", ex.Message, ex.StackTrace);
+                logger.Error(ex, "Error checking version.");
+                MessageBox.Show("Error checking version. \n\nAdded more information to log.", "Version check failed");
                 return;
             }
         }
@@ -507,13 +509,13 @@ namespace AnnoDesigner
         private void StatusMessageChanged(string message)
         {
             StatusBarItemStatus.Content = message;
-            System.Diagnostics.Debug.WriteLine(string.Format("Status message changed: {0}", message));
+            Debug.WriteLine($"Status message changed: {message}");
         }
 
         private void LoadedFileChanged(string filename)
         {
             Title = string.IsNullOrEmpty(filename) ? "Anno Designer" : string.Format("{0} - Anno Designer", Path.GetFileName(filename));
-            System.Diagnostics.Debug.WriteLine(string.Format("Loaded file: {0}", string.IsNullOrEmpty(filename) ? "(none)" : filename));
+            logger.Info($"Loaded file: {(string.IsNullOrEmpty(filename) ? "(none)" : filename)}");
         }
 
         private void ClipboardChanged(List<AnnoObject> l)
@@ -642,7 +644,7 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                App.WriteToErrorLog("Error in ApplyPreset()", ex.Message, ex.StackTrace);
+                logger.Error(ex, "Error applying preset.");
                 MessageBox.Show("Something went wrong while applying the preset.");
             }
         }
@@ -862,7 +864,7 @@ namespace AnnoDesigner
 
 #if DEBUG
             var userConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
-            Trace.WriteLine($"saving settings: \"{userConfig}\"");
+            logger.Trace($"saving settings: \"{userConfig}\"");
 #endif
         }
 
@@ -890,7 +892,7 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                App.WriteToErrorLog("Error saving layout to JSON", ex.Message, ex.StackTrace);
+                logger.Error(ex, "Error saving layout to JSON.");
                 MessageBox.Show(ex.Message, "Something went wrong while saving the layout.");
             }
         }
@@ -926,10 +928,13 @@ namespace AnnoDesigner
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    App.WriteToErrorLog("Error exporting image", e.Message, e.StackTrace);
-                    MessageBox.Show(e.Message, "Something went wrong while exporting the image.");
+                    logger.Error(ex, "Error exporting image.");
+                    MessageBox.Show("Something went wrong while exporting the image.",
+                        Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(SelectedLanguage)]["Error"],
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
             }
         }
@@ -1077,7 +1082,7 @@ namespace AnnoDesigner
             }
             catch (LayoutFileVersionMismatchException layoutEx)
             {
-                Trace.WriteLine(layoutEx);
+                logger.Warn(layoutEx, "Version of layout does not match.");
 
                 if (MessageBox.Show(
                         "Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
@@ -1086,10 +1091,13 @@ namespace AnnoDesigner
                     LoadLayoutFromJson(jsonString, true);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                App.WriteToErrorLog("Error loading layout from JSON", e.Message, e.StackTrace);
-                MessageBox.Show(e.Message, "Something went wrong while loading the layout.");
+                logger.Error(ex, "Error loading layout from JSON.");
+                MessageBox.Show("Something went wrong while loading the layout.",
+                        Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(SelectedLanguage)]["Error"],
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
             }
         }
     }

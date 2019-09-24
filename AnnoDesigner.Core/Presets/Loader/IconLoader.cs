@@ -1,6 +1,7 @@
 ﻿using AnnoDesigner.Core;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,6 +14,8 @@ namespace AnnoDesigner.Core.Presets.Loader
 {
     public class IconLoader
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public Dictionary<string, IconImage> Load(string pathToIconFolder, IconMappingPresets iconNameMapping)
         {
             Dictionary<string, IconImage> result = null;
@@ -51,7 +54,7 @@ namespace AnnoDesigner.Core.Presets.Loader
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error loading the icons.{Environment.NewLine}{ex}");
+                logger.Error(ex, "Error loading the icons.");
                 throw;
             }
 

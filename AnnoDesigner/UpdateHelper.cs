@@ -2,6 +2,7 @@
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.model;
 using AnnoDesigner.Properties;
+using NLog;
 using Octokit;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,8 @@ namespace AnnoDesigner
 {
     public class UpdateHelper : IUpdateHelper
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private const string GITHUB_USERNAME = "AgmasGold";
         private const string GITHUB_PROJECTNAME = "anno-designer";
 
@@ -145,21 +148,21 @@ namespace AnnoDesigner
                 var release = AllReleases.FirstOrDefault(x => x.Id == releaseToDownload.Id);
                 if (release == null)
                 {
-                    Trace.WriteLine($"No release found for {nameof(releaseToDownload.Id)}: {nameof(releaseToDownload.Id)}.");
+                    logger.Warn($"No release found for {nameof(releaseToDownload.Id)}: {nameof(releaseToDownload.Id)}.");
                     return null;
                 }
 
                 var assetName = GetAssetNameForReleaseType(releaseToDownload.Type);
                 if (string.IsNullOrWhiteSpace(assetName))
                 {
-                    Trace.WriteLine($"No asset name found for type: {releaseToDownload.Type}.");
+                    logger.Warn($"No asset name found for type: {releaseToDownload.Type}.");
                     return null;
                 }
 
                 var foundAsset = release.Assets.FirstOrDefault(x => x.Name.StartsWith(assetName, StringComparison.OrdinalIgnoreCase));
                 if (foundAsset == null)
                 {
-                    Trace.WriteLine($"No asset found with name: {assetName}.");
+                    logger.Warn($"No asset found with name: {assetName}.");
                     return null;
                 }
 
@@ -167,7 +170,7 @@ namespace AnnoDesigner
                 var pathToDownloadedFile = await DownloadFileAsync(foundAsset.BrowserDownloadUrl, Path.GetTempFileName()).ConfigureAwait(false);
                 if (string.IsNullOrWhiteSpace(pathToDownloadedFile))
                 {
-                    Trace.WriteLine($"Could not get path to downloaded file.");
+                    logger.Warn("Could not get path to downloaded file.");
                     return null;
                 }
 
@@ -177,7 +180,7 @@ namespace AnnoDesigner
                 var pathToUpdatedPresetsFile = GetPathToUpdatedPresetsFile(releaseToDownload.Type);
                 if (string.IsNullOrWhiteSpace(pathToUpdatedPresetsFile))
                 {
-                    Trace.WriteLine($"Could not get path to updated presets file for type: {releaseToDownload.Type}.");
+                    logger.Warn($"Could not get path to updated presets file for type: {releaseToDownload.Type}.");
                     return null;
                 }
 
@@ -193,7 +196,8 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                App.LogErrorMessage(ex);
+                logger.Error(ex, "Error downloading release.");
+                App.ShowMessageWithUnexpectedErrorAndExit();
                 return null;
             }
         }
@@ -261,7 +265,7 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                App.WriteToErrorLog("error replacing updated presets file", ex.Message, ex.StackTrace);
+                logger.Error(ex, "Error replacing updated presets file.");
 
                 string language = Localization.Localization.GetLanguageCodeFromName(Settings.Default.SelectedLanguage);
                 MessageBox.Show(Localization.Localization.Translations[language]["UpdateErrorPresetMessage"],
@@ -280,7 +284,7 @@ namespace AnnoDesigner
             {
                 if (!await ConnectivityHelper.IsConnected())
                 {
-                    Trace.WriteLine("Could not establish a connection to the internet.");
+                    logger.Info("Could not establish a connection to the internet.");
 
                     string language = Localization.Localization.GetLanguageCodeFromName(Settings.Default.SelectedLanguage);
                     MessageBox.Show(Localization.Localization.Translations[language]["UpdateNoConnectionMessage"],
@@ -301,7 +305,7 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error getting info about preset updates.{Environment.NewLine}{ex}");
+                logger.Error(ex, "Error getting info about preset updates.");
                 return null;
             }
         }
@@ -327,7 +331,7 @@ namespace AnnoDesigner
             var versionString = foundGithubRelease.TagName.Replace(tagToCheck, string.Empty).Trim();
             if (!Version.TryParse(versionString, out var foundVersion))
             {
-                Trace.WriteLine($"Could not get version of preset release. {nameof(foundGithubRelease.TagName)}: {foundGithubRelease.TagName}");
+                logger.Warn($"Could not get version of preset release. {nameof(foundGithubRelease.TagName)}: {foundGithubRelease.TagName}");
                 return result;
             }
 
@@ -442,8 +446,7 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                //Trace.WriteLine($"Error downloading file ({url}).{Environment.NewLine}{ex}");
-                App.WriteToErrorLog($"Error downloading file ({url}).", ex.Message, ex.StackTrace);
+                logger.Error(ex, $"Error downloading file ({url}).");
                 return string.Empty;
             }
         }

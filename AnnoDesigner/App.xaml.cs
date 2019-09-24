@@ -4,9 +4,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using AnnoDesigner.model;
 using AnnoDesigner.viewmodel;
+using NLog;
+using NLog.Targets;
 
 namespace AnnoDesigner
 {
@@ -16,10 +19,54 @@ namespace AnnoDesigner
     public partial class App : Application
     {
         private static readonly ICommons _commons;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         static App()
         {
             _commons = Commons.Instance;
+        }
+
+        public App()
+        {
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+                LogUnhandledException(e.ExceptionObject as Exception, "AppDomain.CurrentDomain.UnhandledException");
+
+            DispatcherUnhandledException += (s, e) =>
+                    LogUnhandledException(e.Exception, "Application.Current.DispatcherUnhandledException");
+
+            TaskScheduler.UnobservedTaskException += (s, e) =>
+                    LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");
+
+            logger.Info($"program version: {Assembly.GetExecutingAssembly().GetName().Version}");
+        }
+
+        private void LogUnhandledException(Exception ex, string @event)
+        {
+            logger.Error(ex, @event);
+
+            ShowMessageWithUnexpectedErrorAndExit();
+        }
+
+        public static void ShowMessageWithUnexpectedErrorAndExit()
+        {
+            var message = "An unhandled exception occurred.";
+
+            //find loaction of log file
+            var fileTarget = LogManager.Configuration.FindTargetByName("MainLogger") as FileTarget;
+            var logFile = fileTarget?.FileName.Render(new LogEventInfo());
+            if (!string.IsNullOrWhiteSpace(logFile))
+            {
+                logFile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), logFile);
+                if (File.Exists(logFile))
+                {
+                    logFile = logFile.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                    message += $"{Environment.NewLine}{Environment.NewLine}Details in \"{logFile}\".";
+                }
+            }
+
+            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            Environment.Exit(-1);
         }
 
         public static string ExecutablePath
@@ -34,57 +81,6 @@ namespace AnnoDesigner
         }
 
         public static string FilenameArgument { get; private set; }
-
-        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
-        {
-            LogErrorMessage(e.Exception);
-            e.Handled = true;
-        }
-
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Exception ex = e.ExceptionObject as Exception;
-            if (ex != null) LogErrorMessage(ex);
-        }
-
-        /// <summary>
-        /// Writes an exception to the error log
-        /// </summary>
-        /// <param name="e"></param>
-        public static void LogErrorMessage(Exception e)
-        {
-            try
-            {
-                MessageBox.Show("We have encountered a problem with the application. Please check the error-log.txt file in the application directory for more information. \n\n Attempting to resume...", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                WriteToErrorLog("Application Unhandled Error", e.Message, e.StackTrace);
-            }
-            catch (Exception)
-            {
-                //Don't rethrow.
-            }
-            finally
-            {
-                Environment.Exit(-1);
-            }
-        }
-
-        /// <summary>
-        /// Writes a message to the error log.
-        /// </summary>
-        /// <param name="heading">The value for the heading in the error log.</param>
-        /// <param name="message">The error message.</param>
-        /// <param name="stackTrace">The stack trace for the error.</param>
-        public static void WriteToErrorLog(string heading, string message, string stackTrace)
-        {
-            try
-            {
-                File.AppendAllText(App.ApplicationPath + "/error-log.txt", string.Format("\n\n*** {0} *** {1} \n\nMessage: {2} \n Stack Trace:\n{3}\n\n", heading, DateTime.Now.ToString("yyyy-MM-dd"), message, stackTrace));
-            }
-            catch (Exception)
-            {
-                //Don't rethrow.
-            }
-        }
 
         /// <summary>
         /// The DPI information for the current monitor.
@@ -102,9 +98,6 @@ namespace AnnoDesigner
                 }
             }
 
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
-
             using (var mutexAnnoDesigner = new Mutex(true, MutexHelper.MUTEX_ANNO_DESIGNER, out bool createdNewMutex))
             {
                 //Are there other processes still running?
@@ -116,7 +109,7 @@ namespace AnnoDesigner
                         const int maxTrys = 10;
                         while (!createdNewMutex && currentTry < maxTrys)
                         {
-                            Trace.WriteLine($"Waiting for other processes to finish. Try {currentTry} of {maxTrys}");
+                            logger.Trace($"Waiting for other processes to finish. Try {currentTry} of {maxTrys}");
 
                             createdNewMutex = mutexAnnoDesigner.WaitOne(TimeSpan.FromSeconds(1), true);
                             currentTry++;
@@ -149,6 +142,8 @@ namespace AnnoDesigner
                 }
                 catch (ConfigurationErrorsException ex)
                 {
+                    logger.Error(ex, "Error upgrading settings.");
+
                     MessageBox.Show("The settings file has become corrupted. We must reset your settings.",
                           "Error",
                           MessageBoxButton.OK,

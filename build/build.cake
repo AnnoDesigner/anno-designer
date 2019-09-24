@@ -271,6 +271,7 @@ var copyFilesTask = Task("Copy-Files")
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/colors.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/icons.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/Microsoft.Xaml.Behaviors.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/NLog.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/Octokit.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/presets.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/Xceed.Wpf.Toolkit.dll", $"{outDirectory}");

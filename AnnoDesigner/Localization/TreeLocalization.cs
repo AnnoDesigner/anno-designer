@@ -5,11 +5,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using AnnoDesigner.model;
+using NLog;
 
 namespace AnnoDesigner.Localization
 {
     public class TreeLocalization : ILocalizationHelper
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public static Dictionary<string, Dictionary<string, string>> Translations;
 
         static TreeLocalization()
@@ -420,21 +423,21 @@ namespace AnnoDesigner.Localization
                 }
                 else
                 {
-                    Debug.WriteLine($"try to set localization to english for: : \"{valueToTranslate}\"");
+                    logger.Trace($"try to set localization to english for: : \"{valueToTranslate}\"");
                     if (Translations["eng"].TryGetValue(valueToTranslate.Replace(" ", string.Empty), out string engLocalization))
                     {
                         return engLocalization;
                     }
                     else
                     {
-                        Debug.WriteLine($"found no localization (\"eng\") and ({languageCode}) for : \"{valueToTranslate}\"");
+                        logger.Trace($"found no localization (\"eng\") and ({languageCode}) for : \"{valueToTranslate}\"");
                         return valueToTranslate;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"error getting localization ({languageCode}) for: \"{valueToTranslate}\"{Environment.NewLine}{ex}");
+                logger.Error(ex, $"error getting localization ({languageCode}) for: \"{valueToTranslate}\"");
                 return valueToTranslate;
             }
         }
