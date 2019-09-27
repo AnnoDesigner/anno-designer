@@ -192,7 +192,8 @@ namespace AnnoDesigner
                 }
                 else
                 {
-                    AnnoDesigner.MainWindow.SelectedLanguage = AnnoDesigner.Properties.Settings.Default.SelectedLanguage;
+                    _commons.SelectedLanguage = AnnoDesigner.Properties.Settings.Default.SelectedLanguage;
+                    //AnnoDesigner.MainWindow.SelectedLanguage = AnnoDesigner.Properties.Settings.Default.SelectedLanguage;
                 }
 
                 MainWindow.ShowDialog();

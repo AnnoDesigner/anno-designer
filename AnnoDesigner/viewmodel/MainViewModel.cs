@@ -1,19 +1,28 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using AnnoDesigner.Core.Layout;
+using AnnoDesigner.Core.Layout.Exceptions;
+using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
+using AnnoDesigner.Helper;
 using AnnoDesigner.Localization;
 using AnnoDesigner.model;
 using AnnoDesigner.Properties;
+using Microsoft.Win32;
 using NLog;
 using Xceed.Wpf.Toolkit;
 using static AnnoDesigner.Core.CoreConstants;
@@ -26,6 +35,10 @@ namespace AnnoDesigner.viewmodel
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly ICommons _commons;
+        private readonly ILayoutLoader _layoutLoader;
+        private readonly ICoordinateHelper _coordinateHelper;
+
+        public event EventHandler ShowStatisticsChanged;
 
         private Dictionary<int, bool> _treeViewState;
         private bool _canvasShowGrid;
@@ -41,33 +54,107 @@ namespace AnnoDesigner.viewmodel
         private bool _isBusy;
         private string _statusMessage;
         private string _statusMessageClipboard;
+        private ObservableCollection<SupportedLanguage> _languages;
 
-        public MainViewModel(ICommons commonsToUse)
+        public MainViewModel(ICommons commonsToUse, ILayoutLoader _layoutLoaderToUse = null, ICoordinateHelper coordinateHelperToUse = null)
         {
             _commons = commonsToUse;
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
 
-            _statisticsViewModel = new StatisticsViewModel();
-            _buildingSettingsViewModel = new BuildingSettingsViewModel();
-            _presetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization());
+            _layoutLoader = _layoutLoaderToUse ?? new LayoutLoader();
+            _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
+
+            _statisticsViewModel = new StatisticsViewModel(_commons);
+            _statisticsViewModel.IsVisible = Settings.Default.StatsShowStats;
+            _statisticsViewModel.ShowStatisticsBuildingCount = Settings.Default.StatsShowBuildingCount;
+            _buildingSettingsViewModel = new BuildingSettingsViewModel(_commons);
+            _presetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization(_commons), _commons);
             _presetsTreeSearchViewModel = new PresetsTreeSearchViewModel();
             _presetsTreeSearchViewModel.PropertyChanged += PresetsTreeSearchViewModel_PropertyChanged;
-            _welcomeViewModel = new WelcomeViewModel();
-            _aboutViewModel = new AboutViewModel();
+            _welcomeViewModel = new WelcomeViewModel(_commons);
+            _aboutViewModel = new AboutViewModel(_commons);
 
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
             CanvasResetZoomCommand = new RelayCommand(CanvasResetZoom);
             CanvasNormalizeCommand = new RelayCommand(CanvasNormalize);
+            LoadLayoutFromJsonCommand = new RelayCommand(ExecuteLoadLayoutFromJson);
+            UnregisterExtensionCommand = new RelayCommand(UnregisterExtension);
+            RegisterExtensionCommand = new RelayCommand(RegisterExtension);
+            ExportImageCommand = new RelayCommand(ExecuteExportImage);
+            CopyLayoutToClipboardCommand = new RelayCommand(ExecuteCopyLayoutToClipboard);
+            LanguageSelectedCommand = new RelayCommand(ExecuteLanguageSelected);
+            ShowAboutWindowCommand = new RelayCommand(ExecuteShowAboutWindow);
+            ShowWelcomeWindowCommand = new RelayCommand(ExecuteShowWelcomeWindow);
+            CheckForUpdatesCommand = new RelayCommand(ExecuteCheckForUpdates);
+            ShowStatisticsCommand = new RelayCommand(ExecuteShowStatistics);
+            ShowStatisticsBuildingCountCommand = new RelayCommand(ExecuteShowStatisticsBuildingCount);
+
+            Languages = new ObservableCollection<SupportedLanguage>();
+            Languages.Add(new SupportedLanguage("English")
+            {
+                FlagPath = "Flags/United Kingdom.png"
+            });
+            Languages.Add(new SupportedLanguage("Deutsch")
+            {
+                FlagPath = "Flags/Germany.png"
+            });
+            Languages.Add(new SupportedLanguage("Français")
+            {
+                FlagPath = "Flags/France.png"
+            });
+            Languages.Add(new SupportedLanguage("Polski")
+            {
+                FlagPath = "Flags/Poland.png"
+            });
+            Languages.Add(new SupportedLanguage("Русский")
+            {
+                FlagPath = "Flags/Russia.png"
+            });
+            //Languages.Add(new SupportedLanguage("Español"));
+            //Languages.Add(new SupportedLanguage("Italiano"));
+            //Languages.Add(new SupportedLanguage("český"));
 
             UpdateLanguage();
         }
 
         private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
         {
-            UpdateLanguage();
+            try
+            {
+                InitLanguageMenu(_commons.SelectedLanguage);
+                UpdateLanguage();
 
-            BuildingSettingsViewModel.UpdateLanguageBuildingInfluenceType();
+                if (AnnoCanvas == null)
+                {
+                    return;
+                }
+
+                RepopulateTreeView();
+
+                BuildingSettingsViewModel.UpdateLanguageBuildingInfluenceType();
+
+                //Force a language update on the clipboard status item.
+                if (!string.IsNullOrWhiteSpace(StatusMessageClipboard))
+                {
+                    AnnoCanvas_ClipboardChanged(AnnoCanvas.ObjectClipboard);
+                }
+
+                //update settings
+                Settings.Default.SelectedLanguage = _commons.SelectedLanguage;
+
+                UpdateStatistics();
+
+                PresetsTreeSearchViewModel.SearchText = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error when changing the language.");
+            }
+            finally
+            {
+                IsLanguageChange = false;
+            }
         }
 
         private void PresetsTreeSearchViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -115,6 +202,25 @@ namespace AnnoDesigner.viewmodel
             StatisticsViewModel.UpdateStatistics(_annoCanvas.PlacedObjects,
                 _annoCanvas.SelectedObjects,
                 _annoCanvas.BuildingPresets);
+        }
+
+        public async Task CheckForUpdatesSub(bool forcedCheck)
+        {
+            if (AutomaticUpdateCheck || forcedCheck)
+            {
+                try
+                {
+                    await CheckForNewAppVersionAsync(forcedCheck);
+
+                    await CheckForPresetsAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Error checking version.");
+                    MessageBox.Show("Error checking version. \n\nAdded more information to log.", "Version check failed");
+                    return;
+                }
+            }
         }
 
         public async Task CheckForNewAppVersionAsync(bool forcedCheck)
@@ -176,7 +282,7 @@ namespace AnnoDesigner.viewmodel
             var isNewReleaseAvailable = foundRelease.Version > new Version(AnnoCanvas.BuildingPresets.Version);
             if (isNewReleaseAvailable)
             {
-                string language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+                string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
 
                 if (MessageBox.Show(Localization.Localization.Translations[language]["UpdateAvailablePresetMessage"],
                     Localization.Localization.Translations[language]["UpdateAvailableHeader"],
@@ -218,6 +324,21 @@ namespace AnnoDesigner.viewmodel
 
                     Environment.Exit(-1);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Called when localisation is changed, to repopulate the tree view
+        /// </summary>
+        private void RepopulateTreeView()
+        {
+            if (AnnoCanvas.BuildingPresets != null)
+            {
+                var treeState = PresetsTreeViewModel.GetCondensedTreeState();
+
+                PresetsTreeViewModel.LoadItems(AnnoCanvas.BuildingPresets);
+
+                PresetsTreeViewModel.SetCondensedTreeState(treeState, AnnoCanvas.BuildingPresets.Version);
             }
         }
 
@@ -330,6 +451,21 @@ namespace AnnoDesigner.viewmodel
             set { UpdateProperty(ref _statusMessageClipboard, value); }
         }
 
+        public ObservableCollection<SupportedLanguage> Languages
+        {
+            get { return _languages; }
+            set { UpdateProperty(ref _languages, value); }
+        }
+
+        private void InitLanguageMenu(string selectedLanguage)
+        {
+            //unselect all other languages
+            foreach (var curLanguage in Languages)
+            {
+                curLanguage.IsSelected = string.Equals(curLanguage.Name, selectedLanguage, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
         #endregion
 
         #region commands
@@ -360,6 +496,372 @@ namespace AnnoDesigner.viewmodel
         private void CanvasNormalize(object param)
         {
             AnnoCanvas.Normalize(1);
+        }
+
+        public ICommand LoadLayoutFromJsonCommand { get; private set; }
+
+        private void ExecuteLoadLayoutFromJson(object param)
+        {
+            string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
+
+            var input = InputWindow.Prompt(this, Localization.Localization.Translations[language]["LoadLayoutMessage"],
+                Localization.Localization.Translations[language]["LoadLayoutHeader"]);
+
+            ExecuteLoadLayoutFromJsonSub(input, false);
+        }
+
+        private void ExecuteLoadLayoutFromJsonSub(string jsonString, bool forceLoad = false)
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(jsonString))
+                {
+                    var jsonArray = Encoding.UTF8.GetBytes(jsonString);
+                    using (var ms = new MemoryStream(jsonArray))
+                    {
+                        var loadedLayout = _layoutLoader.LoadLayout(ms, forceLoad);
+                        if (loadedLayout != null)
+                        {
+                            AnnoCanvas.SelectedObjects.Clear();
+                            AnnoCanvas.PlacedObjects = loadedLayout;
+                            AnnoCanvas.LoadedFile = string.Empty;
+                            AnnoCanvas.Normalize(1);
+
+                            UpdateStatistics();
+                        }
+                    }
+                }
+            }
+            catch (LayoutFileVersionMismatchException layoutEx)
+            {
+                logger.Warn(layoutEx, "Version of layout does not match.");
+
+                if (MessageBox.Show(
+                        "Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
+                        "File version mismatch", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    ExecuteLoadLayoutFromJsonSub(jsonString, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error loading layout from JSON.");
+                MessageBox.Show("Something went wrong while loading the layout.",
+                        Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage)]["Error"],
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+            }
+        }
+
+        public ICommand UnregisterExtensionCommand { get; private set; }
+
+        private void UnregisterExtension(object param)
+        {
+            var regCheckADFileExtension = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default).OpenSubKey(@"Software\Classes\anno_designer", false);
+            if (regCheckADFileExtension != null)
+            {
+                // removes the registry entries when exists          
+                Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\anno_designer");
+                Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\.ad");
+
+                ShowRegistrationMessageBox(isDeregistration: true);
+            }
+        }
+
+        public ICommand RegisterExtensionCommand { get; private set; }
+
+        private void RegisterExtension(object param)
+        {
+            // registers the anno_designer class type and adds the correct command string to pass a file argument to the application
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\Classes\anno_designer\shell\open\command", null, string.Format("\"{0}\" \"%1\"", App.ExecutablePath));
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\Classes\anno_designer\DefaultIcon", null, string.Format("\"{0}\",0", App.ExecutablePath));
+            // registers the .ad file extension to the anno_designer class
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\Classes\.ad", null, "anno_designer");
+
+            ShowRegistrationMessageBox(isDeregistration: false);
+        }
+
+        private void ShowRegistrationMessageBox(bool isDeregistration)
+        {
+            var language = AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
+            var message = isDeregistration ? AnnoDesigner.Localization.Localization.Translations[language]["UnregisterFileExtensionSuccessful"] : AnnoDesigner.Localization.Localization.Translations[language]["RegisterFileExtensionSuccessful"];
+
+            MessageBox.Show(message,
+                AnnoDesigner.Localization.Localization.Translations[language]["Successful"],
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+
+        public ICommand ExportImageCommand { get; private set; }
+
+        private void ExecuteExportImage(object param)
+        {
+            ExecuteExportImageSub(UseCurrentZoomOnExportedImageValue, RenderSelectionHighlightsOnExportedImageValue);
+        }
+
+        /// <summary>
+        /// Renders the current layout to file.
+        /// </summary>
+        /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
+        /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
+        public void ExecuteExportImageSub(bool exportZoom, bool exportSelection)
+        {
+            var dialog = new SaveFileDialog
+            {
+                DefaultExt = Constants.ExportedImageExtension,
+                Filter = Constants.ExportDialogFilter
+            };
+
+            if (!string.IsNullOrEmpty(AnnoCanvas.LoadedFile))
+            {
+                // default the filename to the same name as the saved layout
+                dialog.FileName = Path.GetFileNameWithoutExtension(AnnoCanvas.LoadedFile);
+            }
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    RenderToFile(dialog.FileName, 1, exportZoom, exportSelection, StatisticsViewModel.IsVisible);
+
+                    MessageBox.Show(//this,
+                        Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage)]["ExportImageSuccessful"],
+                        Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage)]["Successful"],
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Error exporting image.");
+                    MessageBox.Show("Something went wrong while exporting the image.",
+                        Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage)]["Error"],
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously renders the current layout to file.
+        /// </summary>
+        /// <param name="filename">filename of the output image</param>
+        /// <param name="border">normalization value used prior to exporting</param>
+        /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
+        /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
+        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection, bool renderStatistics)
+        {
+            if (AnnoCanvas.PlacedObjects.Count == 0)
+            {
+                return;
+            }
+
+            // copy all objects
+            var allObjects = AnnoCanvas.PlacedObjects.Select(_ => new AnnoObject(_)).Cast<AnnoObject>().ToList();
+            // copy selected objects
+            // note: should be references to the correct copied objects from allObjects
+            var selectedObjects = AnnoCanvas.SelectedObjects.Select(_ => new AnnoObject(_)).ToList();
+
+            logger.Trace($"UI thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
+            void renderThread()
+            {
+                logger.Trace($"Render thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
+                var icons = new Dictionary<string, IconImage>(StringComparer.OrdinalIgnoreCase);
+                foreach (var curIcon in AnnoCanvas.Icons)
+                {
+                    icons.Add(curIcon.Key, new IconImage(curIcon.Value.Name, curIcon.Value.Localizations, curIcon.Value.IconPath));
+                }
+
+                // initialize output canvas
+                var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _coordinateHelper)
+                {
+                    PlacedObjects = allObjects,
+                    RenderGrid = AnnoCanvas.RenderGrid,
+                    RenderIcon = AnnoCanvas.RenderIcon,
+                    RenderLabel = AnnoCanvas.RenderLabel
+                };
+
+                sw.Stop();
+                logger.Trace($"creating canvas took: {sw.ElapsedMilliseconds}ms");
+
+                // normalize layout
+                target.Normalize(border);
+                // set zoom level
+                if (exportZoom)
+                {
+                    target.GridSize = AnnoCanvas.GridSize;
+                }
+                // set selection
+                if (exportSelection)
+                {
+                    target.SelectedObjects.AddRange(selectedObjects);
+                }
+
+                // calculate output size
+                var width = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border, target.GridSize);//if +1 then there are weird black lines next to the statistics view
+                var height = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border, target.GridSize) + 1;//+1 for black grid line at bottom
+
+                if (renderStatistics)
+                {
+                    var exportStatisticsViewModel = new StatisticsViewModel(_commons);
+
+                    var exportStatisticsView = new StatisticsView
+                    {
+                        Margin = new Thickness(5, 0, 0, 0)
+                    };
+                    exportStatisticsView.DataContext = exportStatisticsViewModel;
+
+                    exportStatisticsViewModel.UpdateStatistics(target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
+                    exportStatisticsViewModel.CopyLocalization(StatisticsViewModel);
+                    exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
+
+                    target.StatisticsPanel.Children.Add(exportStatisticsView);
+
+                    //according to https://stackoverflow.com/a/25507450
+                    // and https://stackoverflow.com/a/1320666
+                    exportStatisticsView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    //exportStatisticsView.Arrange(new Rect(new Point(0, 0), exportStatisticsView.DesiredSize));
+
+                    if (exportStatisticsView.DesiredSize.Height > height)
+                    {
+                        height = exportStatisticsView.DesiredSize.Height + target.LinePenThickness + border;
+                    }
+
+                    width += exportStatisticsView.DesiredSize.Width + target.LinePenThickness;
+                }
+
+                target.Width = width;
+                target.Height = height;
+                target.UpdateLayout();
+
+                // apply size
+                var outputSize = new Size(width, height);
+                target.Measure(outputSize);
+                target.Arrange(new Rect(outputSize));
+
+                // render canvas to file
+                DataIO.RenderToFile(target, filename);
+            }
+
+            var thread = new Thread(renderThread);
+            thread.IsBackground = true;
+            thread.Name = "exportImage";
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            thread.Join(TimeSpan.FromSeconds(10));
+        }
+
+        public ICommand CopyLayoutToClipboardCommand { get; private set; }
+
+        private void ExecuteCopyLayoutToClipboard(object param)
+        {
+            ExecuteCopyLayoutToClipboardSub();
+        }
+
+        public void ExecuteCopyLayoutToClipboardSub()
+        {
+            try
+            {
+                using (var ms = new MemoryStream())
+                {
+                    AnnoCanvas.Normalize(1);
+                    _layoutLoader.SaveLayout(AnnoCanvas.PlacedObjects, ms);
+
+                    var jsonString = Encoding.UTF8.GetString(ms.ToArray());
+
+                    Clipboard.SetText(jsonString, TextDataFormat.UnicodeText);
+
+                    string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
+
+                    MessageBox.Show(Localization.Localization.Translations[language]["ClipboardContainsLayoutAsJson"],
+                        Localization.Localization.Translations[language]["Successful"],
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information,
+                        MessageBoxResult.OK);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error saving layout to JSON.");
+                MessageBox.Show(ex.Message, "Something went wrong while saving the layout.");
+            }
+        }
+
+        public ICommand LanguageSelectedCommand { get; private set; }
+
+        private void ExecuteLanguageSelected(object param)
+        {
+            if (IsLanguageChange)
+            {
+                return;
+            }
+
+            try
+            {
+                IsLanguageChange = true;
+
+                if (!(param is SupportedLanguage selectedLanguage))
+                {
+                    return;
+                }
+
+                InitLanguageMenu(selectedLanguage.Name);
+
+                _commons.SelectedLanguage = selectedLanguage.Name;
+            }
+            finally
+            {
+                IsLanguageChange = false;
+            }
+        }
+
+        public ICommand ShowAboutWindowCommand { get; private set; }
+
+        private void ExecuteShowAboutWindow(object param)
+        {
+            var aboutWindow = new About
+            {
+                Owner = Application.Current.MainWindow
+            };
+
+            aboutWindow.DataContext = AboutViewModel;
+            aboutWindow.ShowDialog();
+        }
+
+        public ICommand ShowWelcomeWindowCommand { get; private set; }
+
+        private void ExecuteShowWelcomeWindow(object param)
+        {
+            var welcomeWindow = new Welcome
+            {
+                Owner = Application.Current.MainWindow
+            };
+            welcomeWindow.DataContext = WelcomeViewModel;
+            welcomeWindow.Show();
+        }
+
+        public ICommand CheckForUpdatesCommand { get; private set; }
+
+        private async void ExecuteCheckForUpdates(object param)
+        {
+            await CheckForUpdatesSub(true);
+        }
+
+        public ICommand ShowStatisticsCommand { get; private set; }
+
+        private void ExecuteShowStatistics(object param)
+        {
+            ShowStatisticsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public ICommand ShowStatisticsBuildingCountCommand { get; private set; }
+
+        private void ExecuteShowStatisticsBuildingCount(object param)
+        {
+            StatisticsViewModel.ToggleBuildingList(StatisticsViewModel.ShowStatisticsBuildingCount, AnnoCanvas.PlacedObjects, AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
         }
 
         #endregion
@@ -414,7 +916,7 @@ namespace AnnoDesigner.viewmodel
 
         public void UpdateLanguage()
         {
-            string language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+            string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
 
             StatisticsViewModel.TextNothingPlaced = Localization.Localization.Translations[language]["StatNothingPlaced"];
             StatisticsViewModel.TextBoundingBox = Localization.Localization.Translations[language]["StatBoundingBox"];

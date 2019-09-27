@@ -13,11 +13,13 @@ namespace AnnoDesigner.Tests
 {
     public class MainViewModelTests
     {
-        private readonly ICommons mockedCommons;
+        private readonly ICommons _mockedCommons;
 
         public MainViewModelTests()
         {
-            mockedCommons = new Mock<ICommons>().Object;
+            var commonsMock = new Mock<ICommons>();
+            commonsMock.SetupGet(x => x.SelectedLanguage).Returns(() => "English");
+            _mockedCommons = commonsMock.Object;
         }
 
         #region ctor tests
@@ -26,7 +28,7 @@ namespace AnnoDesigner.Tests
         public void Ctor_ShouldSetDefaultValues()
         {
             // Arrange/Act
-            var viewModel = new MainViewModel(mockedCommons);
+            var viewModel = new MainViewModel(_mockedCommons);
 
             // Assert
             Assert.NotNull(viewModel.OpenProjectHomepageCommand);
@@ -62,7 +64,7 @@ namespace AnnoDesigner.Tests
         public void CloseWindowCommand_ShouldCanExecute()
         {
             // Arrange
-            var viewModel = new MainViewModel(mockedCommons);
+            var viewModel = new MainViewModel(_mockedCommons);
 
             // Act
             var result = viewModel.CloseWindowCommand.CanExecute(null);
@@ -75,7 +77,7 @@ namespace AnnoDesigner.Tests
         public void CloseWindowCommand_IsExecutedWithNull_ShouldNotThrow()
         {
             // Arrange
-            var viewModel = new MainViewModel(mockedCommons);
+            var viewModel = new MainViewModel(_mockedCommons);
 
             // Act
             var ex = Record.Exception(() => viewModel.CloseWindowCommand.Execute(null));
@@ -88,7 +90,7 @@ namespace AnnoDesigner.Tests
         public void CloseWindowCommand_IsExecutedWithICloseable_ShouldCallClose()
         {
             // Arrange
-            var viewModel = new MainViewModel(mockedCommons);
+            var viewModel = new MainViewModel(_mockedCommons);
             var mockedCloseable = new Mock<ICloseable>();
 
             // Act
@@ -106,7 +108,7 @@ namespace AnnoDesigner.Tests
         public void PresetsTreeSearchViewModelPropertyChanged_SeachTextChanged_ShouldSetFilterTextOnPresetsTreeViewModel()
         {
             // Arrange
-            var viewModel = new MainViewModel(mockedCommons);
+            var viewModel = new MainViewModel(_mockedCommons);
             viewModel.PresetsTreeViewModel.FilterText = "Lorem";
 
             var textToSet = "dummy";

@@ -12,5 +12,7 @@ namespace AnnoDesigner.model
         event EventHandler SelectedLanguageChanged;
 
         IUpdateHelper UpdateHelper { get; }
+
+        string SelectedLanguage { get; set; }
     }
 }

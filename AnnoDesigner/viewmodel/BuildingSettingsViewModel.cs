@@ -3,6 +3,7 @@ using AnnoDesigner.Core.Presets.Helper;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.model;
 using AnnoDesigner.Properties;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,6 +17,10 @@ namespace AnnoDesigner.viewmodel
 {
     public class BuildingSettingsViewModel : Notify
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        private readonly ICommons _commons;
+
         private string _textHeader;
         private string _textSize;
         private string _textColor;
@@ -67,8 +72,10 @@ namespace AnnoDesigner.viewmodel
         /// <summary>
         /// only used for databinding
         /// </summary>
-        public BuildingSettingsViewModel()
+        public BuildingSettingsViewModel(ICommons commonsToUse)
         {
+            _commons = commonsToUse;
+
             ApplyColorToSelectionCommand = new RelayCommand(ApplyColorToSelection, CanApplyColorToSelection);
             ApplyPredefinedColorToSelectionCommand = new RelayCommand(ApplyPredefinedColorToSelection, CanApplyPredefinedColorToSelection);
             UseColorInLayoutCommand = new RelayCommand(UseColorInLayout, CanUseColorInLayout);
@@ -122,7 +129,7 @@ namespace AnnoDesigner.viewmodel
 
         private void InitBuildingInfluences()
         {
-            string language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+            string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
 
             foreach (BuildingInfluenceType curInfluenceType in Enum.GetValues(typeof(BuildingInfluenceType)))
             {
@@ -138,7 +145,7 @@ namespace AnnoDesigner.viewmodel
 
         public void UpdateLanguageBuildingInfluenceType()
         {
-            string language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+            string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
 
             foreach (var curBuildingInfluence in BuildingInfluences)
             {
@@ -491,7 +498,7 @@ namespace AnnoDesigner.viewmodel
 
             if (!GetDistanceRange(IsPavedStreet, AnnoCanvasToUse.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == BuildingIdentifier)))
             {
-                Debug.WriteLine("$Calculate Paved Street/Dirt Street Error: Can not obtain new Distance Value, value set to 0");
+                logger.Trace("$Calculate Paved Street/Dirt Street Error: Can not obtain new Distance Value, value set to 0");
             }
             else
             {

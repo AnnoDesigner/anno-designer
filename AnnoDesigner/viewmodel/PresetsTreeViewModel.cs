@@ -14,14 +14,18 @@ using AnnoDesigner.Core.Presets.Comparer;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.model;
 using AnnoDesigner.model.PresetsTree;
+using NLog;
 
 namespace AnnoDesigner.viewmodel
 {
     public class PresetsTreeViewModel : Notify
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public event EventHandler<EventArgs> ApplySelectedItem;
 
         private readonly ILocalizationHelper _localizationHelper;
+        private readonly ICommons _commons;
         private ObservableCollection<GenericTreeItem> _items;
         private ICollectionView _filteredItems;
         private GenericTreeItem _selectedItem;
@@ -29,9 +33,10 @@ namespace AnnoDesigner.viewmodel
         private string _filterText;
         private CoreConstants.GameVersion _filterGameVersion;
 
-        public PresetsTreeViewModel(ILocalizationHelper localizationHelperToUse)
+        public PresetsTreeViewModel(ILocalizationHelper localizationHelperToUse, ICommons commonsToUse)
         {
             _localizationHelper = localizationHelperToUse;
+            _commons = commonsToUse;
 
             Items = new ObservableCollection<GenericTreeItem>();
             FilteredItems = CollectionViewSource.GetDefaultView(Items);
@@ -223,12 +228,12 @@ namespace AnnoDesigner.viewmodel
                             Id = ++itemId
                         };
 
-                        foreach (var curBuildingInfo in curGroup.OrderBy(x => x.GetOrderParameter()))
+                        foreach (var curBuildingInfo in curGroup.OrderBy(x => x.GetOrderParameter(_commons.SelectedLanguage)))
                         {
                             groupItem.Children.Add(new GenericTreeItem(groupItem)
                             {
-                                Header = curBuildingInfo.ToAnnoObject().Label,
-                                AnnoObject = curBuildingInfo.ToAnnoObject(),
+                                Header = curBuildingInfo.ToAnnoObject(_commons.SelectedLanguage).Label,
+                                AnnoObject = curBuildingInfo.ToAnnoObject(_commons.SelectedLanguage),
                                 Id = ++itemId
                             });
                         }
@@ -248,8 +253,8 @@ namespace AnnoDesigner.viewmodel
                             {
                                 moduleItem.Children.Add(new GenericTreeItem(moduleItem)
                                 {
-                                    Header = fourthLevel.ToAnnoObject().Label,
-                                    AnnoObject = fourthLevel.ToAnnoObject(),
+                                    Header = fourthLevel.ToAnnoObject(_commons.SelectedLanguage).Label,
+                                    AnnoObject = fourthLevel.ToAnnoObject(_commons.SelectedLanguage),
                                     Id = ++itemId
                                 });
                             }
@@ -263,13 +268,13 @@ namespace AnnoDesigner.viewmodel
                         factionItem.Children.Add(groupItem);
                     }
 
-                    var groupedFactionBuildings = curFaction.Where(x => x.Group == null).OrderBy(x => x.GetOrderParameter());
+                    var groupedFactionBuildings = curFaction.Where(x => x.Group == null).OrderBy(x => x.GetOrderParameter(_commons.SelectedLanguage));
                     foreach (var curGroup in groupedFactionBuildings)
                     {
                         factionItem.Children.Add(new GenericTreeItem(factionItem)
                         {
-                            Header = curGroup.ToAnnoObject().Label,
-                            AnnoObject = curGroup.ToAnnoObject(),
+                            Header = curGroup.ToAnnoObject(_commons.SelectedLanguage).Label,
+                            AnnoObject = curGroup.ToAnnoObject(_commons.SelectedLanguage),
                             Id = ++itemId
                         });
                     }
@@ -282,7 +287,7 @@ namespace AnnoDesigner.viewmodel
 
 #if DEBUG
             sw.Stop();
-            Debug.WriteLine($"loading items for PresetsTree took: {sw.ElapsedMilliseconds}ms");
+            logger.Trace($"loading items for PresetsTree took: {sw.ElapsedMilliseconds}ms");
 #endif
         }
 

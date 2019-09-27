@@ -6,13 +6,18 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using AnnoDesigner.Core.Models;
+using AnnoDesigner.model;
 
 namespace AnnoDesigner.viewmodel
 {
     public class AboutViewModel : Notify
     {
-        public AboutViewModel()
+        private readonly ICommons _commons;
+
+        public AboutViewModel(ICommons commonsToUse)
         {
+            _commons = commonsToUse;
+
             OpenOriginalHomepageCommand = new RelayCommand(OpenOriginalHomepage);
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             OpenWikiHomepageCommand = new RelayCommand(OpenWikiHomepage);
@@ -25,7 +30,7 @@ namespace AnnoDesigner.viewmodel
 
         public void UpdateLanguage()
         {
-            string language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+            string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
 
             TitleAbout = Localization.Localization.Translations[language]["TitleAbout"];
             Title = Localization.Localization.Translations[language]["Title"];

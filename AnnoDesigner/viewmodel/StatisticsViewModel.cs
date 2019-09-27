@@ -14,6 +14,8 @@ namespace AnnoDesigner.viewmodel
 {
     public class StatisticsViewModel : Notify
     {
+        private readonly ICommons _commons;
+
         private string _textNothingPlaced;
         private string _textBoundingBox;
         private string _textMinimumArea;
@@ -23,19 +25,23 @@ namespace AnnoDesigner.viewmodel
         private string _textTiles;
         private string _textNameNotFound;
 
+        private bool _isVisible;
         private string _usedArea;
         private double _usedTiles;
         private double _minTiles;
         private string _efficiency;
         private bool _areStatisticsAvailable;
         private bool _showBuildingList;
+        private bool _showStatisticsBuildingCount;
         //private bool _showSelectedBuildingList;
         private ObservableCollection<StatisticsBuilding> _buildings;
         private ObservableCollection<StatisticsBuilding> _selectedBuildings;
         private StatisticsCalculationHelper _statisticsCalculationHelper;
 
-        public StatisticsViewModel()
+        public StatisticsViewModel(ICommons commonsToUse)
         {
+            _commons = commonsToUse;
+
             TextNothingPlaced = "Nothing Placed";
             TextBoundingBox = "Bounding Box";
             TextMinimumArea = "Minimum Area";
@@ -130,6 +136,15 @@ namespace AnnoDesigner.viewmodel
 
         #endregion
 
+        public bool IsVisible
+        {
+            get { return _isVisible; }
+            set
+            {
+                UpdateProperty(ref _isVisible, value);
+            }
+        }
+
         public string UsedArea
         {
             get { return _usedArea; }
@@ -168,6 +183,12 @@ namespace AnnoDesigner.viewmodel
                 UpdateProperty(ref _showBuildingList, value);
                 OnPropertyChanged(nameof(ShowSelectedBuildingList));
             }
+        }
+
+        public bool ShowStatisticsBuildingCount
+        {
+            get { return _showStatisticsBuildingCount; }
+            set { UpdateProperty(ref _showStatisticsBuildingCount, value); }
         }
 
         public bool ShowSelectedBuildingList
@@ -242,7 +263,7 @@ namespace AnnoDesigner.viewmodel
                 return result;
             }
 
-            var language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+            var language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
             var tempList = new List<StatisticsBuilding>();
 
             foreach (var item in groupedBuildingsByIdentifier

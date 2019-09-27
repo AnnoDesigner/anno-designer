@@ -477,7 +477,7 @@ namespace AnnoDesigner
                         logger.Error(ex, "Loading of the icon names failed.");
 
                         MessageBox.Show("Loading of the icon names failed",
-                            Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]["Error"],
+                            Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(Properties.Settings.Default.SelectedLanguage)]["Error"],
                             MessageBoxButton.OK,
                             MessageBoxImage.Error);
                     }

@@ -11,9 +11,9 @@ namespace AnnoDesigner
 {
     public static class BuildingInfoExtensions
     {
-        public static AnnoObject ToAnnoObject(this IBuildingInfo buildingInfo)
+        public static AnnoObject ToAnnoObject(this IBuildingInfo buildingInfo, string selectedLanguage)
         {
-            var labelLocalization = buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
+            var labelLocalization = buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(selectedLanguage)];
             if (string.IsNullOrEmpty(labelLocalization))
             {
                 labelLocalization = buildingInfo.Localization["eng"];
@@ -21,7 +21,7 @@ namespace AnnoDesigner
 
             return new AnnoObject
             {
-                //Label = (buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]),
+                //Label = (buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(selectedLanguage)]),
                 Label = labelLocalization,
                 Icon = buildingInfo.IconFileName,
                 Radius = buildingInfo.InfluenceRadius,
@@ -33,15 +33,15 @@ namespace AnnoDesigner
             };
         }
 
-        public static string GetOrderParameter(this IBuildingInfo buildingInfo)
+        public static string GetOrderParameter(this IBuildingInfo buildingInfo, string selectedLanguage)
         {
-            var labelLocalization = buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
+            var labelLocalization = buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(selectedLanguage)];
             if (string.IsNullOrEmpty(labelLocalization))
             {
                 labelLocalization = buildingInfo.Localization["eng"];
             }
 
-            //return buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)];
+            //return buildingInfo.Localization == null ? buildingInfo.Identifier : buildingInfo.Localization[AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(selectedLanguage)];
             return labelLocalization;
         }
     }

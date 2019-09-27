@@ -7,12 +7,10 @@
              xmlns:viewmodel="clr-namespace:AnnoDesigner.viewmodel"
              xmlns:converter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=viewModel:StatisticsViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="350"
              d:DesignWidth="200"
              Background="Transparent">
-    <UserControl.DataContext>
-        <viewmodel:StatisticsViewModel x:Name="statisticsViewModel" />
-    </UserControl.DataContext>
     <UserControl.Resources>
         <converter:BoolToVisibilityConverter x:Key="boolToVisConverter"
                                              TrueValue="Visible"

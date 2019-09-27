@@ -14,11 +14,14 @@ namespace AnnoDesigner.viewmodel
 {
     public class WelcomeViewModel : Notify
     {
+        private readonly ICommons _commons;
         private ObservableCollection<SupportedLanguage> _languages;
         private SupportedLanguage _selectedItem;
 
-        public WelcomeViewModel()
+        public WelcomeViewModel(ICommons commonsToUse)
         {
+            _commons = commonsToUse;
+
             Languages = new ObservableCollection<SupportedLanguage>();
             Languages.Add(new SupportedLanguage("English")
             {
@@ -70,9 +73,9 @@ namespace AnnoDesigner.viewmodel
 
         private void LoadSelectedLanguage(ICloseable window)
         {
-            MainWindow.SelectedLanguage = SelectedItem.Name;
+            _commons.SelectedLanguage = SelectedItem.Name;
 
-            Settings.Default.SelectedLanguage = MainWindow.SelectedLanguage;
+            Settings.Default.SelectedLanguage = _commons.SelectedLanguage;
             Settings.Default.Save();
 
             window?.Close();

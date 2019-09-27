@@ -15,6 +15,8 @@ namespace AnnoDesigner.Localization
 
         public static Dictionary<string, Dictionary<string, string>> Translations;
 
+        private readonly ICommons _commons;
+
         static TreeLocalization()
         {
             //This dictionary initialisation can be find on :
@@ -398,6 +400,11 @@ namespace AnnoDesigner.Localization
             };
         }
 
+        public TreeLocalization(ICommons commonsToUse)
+        {
+            _commons = commonsToUse;
+        }
+
         public string GetLocalization(string valueToTranslate)
         {
             return GetLocalization(valueToTranslate, null);
@@ -407,7 +414,7 @@ namespace AnnoDesigner.Localization
         {
             if (string.IsNullOrWhiteSpace(languageCode))
             {
-                languageCode = Localization.GetLanguageCodeFromName(AnnoDesigner.MainWindow.SelectedLanguage);
+                languageCode = Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
             }
 
             if (!Localization.LanguageCodeMap.ContainsValue(languageCode))
