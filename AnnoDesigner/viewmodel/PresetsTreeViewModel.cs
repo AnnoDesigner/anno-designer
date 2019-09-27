@@ -14,11 +14,14 @@ using AnnoDesigner.Core.Presets.Comparer;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.model;
 using AnnoDesigner.model.PresetsTree;
+using NLog;
 
 namespace AnnoDesigner.viewmodel
 {
     public class PresetsTreeViewModel : Notify
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public event EventHandler<EventArgs> ApplySelectedItem;
 
         private readonly ILocalizationHelper _localizationHelper;
@@ -282,7 +285,7 @@ namespace AnnoDesigner.viewmodel
 
 #if DEBUG
             sw.Stop();
-            Debug.WriteLine($"loading items for PresetsTree took: {sw.ElapsedMilliseconds}ms");
+            logger.Trace($"loading items for PresetsTree took: {sw.ElapsedMilliseconds}ms");
 #endif
         }
 

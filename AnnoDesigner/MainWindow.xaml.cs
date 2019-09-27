@@ -509,7 +509,7 @@ namespace AnnoDesigner
         private void StatusMessageChanged(string message)
         {
             StatusBarItemStatus.Content = message;
-            Debug.WriteLine($"Status message changed: {message}");
+            logger.Trace($"Status message changed: {message}");
         }
 
         private void LoadedFileChanged(string filename)
@@ -959,10 +959,10 @@ namespace AnnoDesigner
             // note: should be references to the correct copied objects from allObjects
             var selectedObjects = annoCanvas.SelectedObjects.Select(_ => new AnnoObject(_)).ToList();
 
-            Debug.WriteLine($"UI thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
+            logger.Trace($"UI thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
             void renderThread()
             {
-                Debug.WriteLine($"Render thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
+                logger.Trace($"Render thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
 
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
@@ -983,7 +983,7 @@ namespace AnnoDesigner
                 };
 
                 sw.Stop();
-                Debug.WriteLine($"creating canvas took: {sw.ElapsedMilliseconds}ms");
+                logger.Trace($"creating canvas took: {sw.ElapsedMilliseconds}ms");
 
                 // normalize layout
                 target.Normalize(border);
