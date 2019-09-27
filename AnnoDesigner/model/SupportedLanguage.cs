@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using AnnoDesigner.Core.Models;
-using AnnoDesigner.viewmodel;
 
 namespace AnnoDesigner.model
 {

@@ -1,8 +1,6 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -11,11 +9,9 @@ using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 using System.Windows.Media;
 using System.ComponentModel;
 using AnnoDesigner.Properties;
-using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Threading;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using AnnoDesigner.model;
 using AnnoDesigner.Core.Extensions;
@@ -23,15 +19,11 @@ using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.Presets.Helper;
-using AnnoDesigner.Core.Layout.Models;
-using AnnoDesigner.Core.Layout;
 using System.Text;
-using AnnoDesigner.Core.Layout.Exceptions;
 using System.Configuration;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.viewmodel;
 using System.Windows.Threading;
-using AnnoDesigner.Helper;
 using NLog;
 
 namespace AnnoDesigner

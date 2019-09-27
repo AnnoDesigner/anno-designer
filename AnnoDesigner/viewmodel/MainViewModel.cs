@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,7 +7,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +22,6 @@ using AnnoDesigner.model;
 using AnnoDesigner.Properties;
 using Microsoft.Win32;
 using NLog;
-using Xceed.Wpf.Toolkit;
 using static AnnoDesigner.Core.CoreConstants;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
