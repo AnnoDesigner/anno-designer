@@ -85,13 +85,16 @@ namespace AnnoDesigner
 
                 foreach (MenuItem item in LanguageMenu.Items)
                 {
-                    item.IsChecked = item.Header.ToString() == SelectedLanguage;
+                    item.IsChecked = string.Equals(item.Header.ToString(), SelectedLanguage, StringComparison.OrdinalIgnoreCase);
                 }
 
                 _mainViewModel.BuildingSettingsViewModel.UpdateLanguageBuildingInfluenceType();
 
                 //Force a language update on the clipboard status item.
-                if (StatusBarItemClipboardStatus.Content != null) ClipboardChanged(annoCanvas.ObjectClipboard);
+                if (!string.IsNullOrWhiteSpace(_mainViewModel.StatusMessageClipboard))
+                {
+                    _mainViewModel.AnnoCanvas_ClipboardChanged(annoCanvas.ObjectClipboard);
+                }
 
                 //update settings
                 Settings.Default.SelectedLanguage = SelectedLanguage;
@@ -110,7 +113,6 @@ namespace AnnoDesigner
             }
         }
 
-        private readonly ICommons _commons;
         private readonly ILayoutLoader _layoutLoader;
         private readonly ICoordinateHelper _coordinateHelper;
 
@@ -121,9 +123,8 @@ namespace AnnoDesigner
             InitializeComponent();
         }
 
-        public MainWindow(ICommons commonsToUse, ICoordinateHelper coordinateHelperToUse = null) : this()
+        public MainWindow(ICoordinateHelper coordinateHelperToUse = null) : this()
         {
-            _commons = commonsToUse;
             _layoutLoader = new LayoutLoader();
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
         }
@@ -140,16 +141,12 @@ namespace AnnoDesigner
             annoCanvas.OnCurrentObjectChanged += UpdateUIFromObject;
             annoCanvas.OnStatusMessageChanged += StatusMessageChanged;
             annoCanvas.OnLoadedFileChanged += LoadedFileChanged;
-            annoCanvas.OnClipboardChanged += ClipboardChanged;
 
             DpiChanged += MainWindow_DpiChanged;
 
             foreach (MenuItem item in LanguageMenu.Items)
             {
-                if (item.Header.ToString() == SelectedLanguage)
-                {
-                    item.IsChecked = true;
-                }
+                item.IsChecked = string.Equals(item.Header.ToString(), SelectedLanguage, StringComparison.OrdinalIgnoreCase);
             }
 
             LoadSettings();
@@ -301,118 +298,15 @@ namespace AnnoDesigner
             {
                 try
                 {
-                    await CheckForNewAppVersionAsync(forcedCheck);
+                    await _mainViewModel.CheckForNewAppVersionAsync(forcedCheck);
 
-                    await CheckForPresetsAsync();
+                    await _mainViewModel.CheckForPresetsAsync();
                 }
                 catch (Exception ex)
                 {
                     logger.Error(ex, "Error checking version.");
                     MessageBox.Show("Error checking version. \n\nAdded more information to log.", "Version check failed");
                     return;
-                }
-            }
-        }
-
-        private async Task CheckForNewAppVersionAsync(bool forcedCheck)
-        {
-            try
-            {
-                var dowloadedContent = "0.1";
-                using (var webClient = new WebClient())
-                {
-                    dowloadedContent = await webClient.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/AgmasGold/anno-designer/master/version.txt"));
-                }
-
-                if (double.Parse(dowloadedContent, CultureInfo.InvariantCulture) > Constants.Version)
-                {
-                    // new version found
-                    if (MessageBox.Show("A newer version was found, do you want to visit the releases page?\nhttps://github.com/AgmasGold/anno-designer/releases\n\n Clicking 'Yes' will open a new tab in your web browser.", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Asterisk, MessageBoxResult.OK) == MessageBoxResult.Yes)
-                    {
-                        Process.Start("https://github.com/AgmasGold/anno-designer/releases");
-                    }
-                }
-                else
-                {
-                    StatusMessageChanged("Version is up to date.");
-
-                    if (forcedCheck)
-                    {
-                        MessageBox.Show("This version is up to date.", "No updates found");
-                    }
-                }
-
-                //If not already prompted
-                if (!Settings.Default.PromptedForAutoUpdateCheck)
-                {
-                    Settings.Default.PromptedForAutoUpdateCheck = true;
-
-                    if (MessageBox.Show("Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.", "Continue checking for updates?", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
-                    {
-                        _mainViewModel.AutomaticUpdateCheck = false;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Error checking version.");
-                MessageBox.Show("Error checking version. \n\nAdded more information to log.", "Version check failed");
-                return;
-            }
-        }
-
-        private async Task CheckForPresetsAsync()
-        {
-            var foundRelease = await _commons.UpdateHelper.GetAvailableReleasesAsync(ReleaseType.Presets);
-            if (foundRelease == null)
-            {
-                return;
-            }
-
-            var isNewReleaseAvailable = foundRelease.Version > new Version(annoCanvas.BuildingPresets.Version);
-            if (isNewReleaseAvailable)
-            {
-                string language = Localization.Localization.GetLanguageCodeFromName(SelectedLanguage);
-
-                if (MessageBox.Show(Localization.Localization.Translations[language]["UpdateAvailablePresetMessage"],
-                    Localization.Localization.Translations[language]["UpdateAvailableHeader"],
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Asterisk,
-                    MessageBoxResult.OK) == MessageBoxResult.Yes)
-                {
-                    busyIndicator.IsBusy = true;
-
-                    if (!Commons.CanWriteInFolder())
-                    {
-                        //already asked for admin rights?
-                        if (Environment.GetCommandLineArgs().Any(x => x.Trim().Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            MessageBox.Show($"You have no write access to the folder.{Environment.NewLine}The update can not be installed.",
-                                Localization.Localization.Translations[language]["Error"],
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Warning);
-
-                            busyIndicator.IsBusy = false;
-                            return;
-                        }
-
-                        MessageBox.Show(Localization.Localization.Translations[language]["UpdateRequiresAdminRightsMessage"],
-                            Localization.Localization.Translations[language]["AdminRightsRequired"],
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Information,
-                            MessageBoxResult.OK);
-
-                        Commons.RestartApplication(true, Constants.Argument_Ask_For_Admin, App.ExecutablePath);
-                    }
-
-                    //Context is required here, do not use ConfigureAwait(false)
-                    var newLocation = await _commons.UpdateHelper.DownloadReleaseAsync(foundRelease);
-
-                    busyIndicator.IsBusy = false;
-
-                    Commons.RestartApplication(false, null, App.ExecutablePath);
-
-                    Environment.Exit(-1);
                 }
             }
         }
@@ -508,7 +402,7 @@ namespace AnnoDesigner
 
         private void StatusMessageChanged(string message)
         {
-            StatusBarItemStatus.Content = message;
+            _mainViewModel.StatusMessage = message;
             Debug.WriteLine($"Status message changed: {message}");
         }
 
@@ -516,11 +410,6 @@ namespace AnnoDesigner
         {
             Title = string.IsNullOrEmpty(filename) ? "Anno Designer" : string.Format("{0} - Anno Designer", Path.GetFileName(filename));
             logger.Info($"Loaded file: {(string.IsNullOrEmpty(filename) ? "(none)" : filename)}");
-        }
-
-        private void ClipboardChanged(List<AnnoObject> l)
-        {
-            StatusBarItemClipboardStatus.Content = _mainViewModel.StatusBarItemsOnClipboard + ": " + l.Count;
         }
 
         #endregion

@@ -13,6 +13,10 @@ namespace AnnoDesigner
     public class Commons : ICommons
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly IUpdateHelper _updateHelper;
+        private static string _selectedLanguage;
+
+        public event EventHandler SelectedLanguageChanged;
 
         #region ctor
 
@@ -23,22 +27,41 @@ namespace AnnoDesigner
             get { return lazy.Value; }
         }
 
+        static Commons()
+        {
+            _updateHelper = new UpdateHelper(App.ApplicationPath);
+        }
+
         private Commons()
         {
         }
 
         #endregion
 
-        private static readonly UpdateHelper _updateHelper;
-
-        static Commons()
-        {
-            _updateHelper = new UpdateHelper(App.ApplicationPath);
-        }
-
         public IUpdateHelper UpdateHelper
         {
             get { return _updateHelper; }
+        }
+
+        public string SelectedLanguage
+        {
+            get
+            {
+                if (_selectedLanguage != null && Localization.Localization.LanguageCodeMap.ContainsKey(_selectedLanguage))
+                {
+                    return _selectedLanguage;
+                }
+                else
+                {
+                    _selectedLanguage = "English";
+                    return _selectedLanguage;
+                }
+            }
+            set
+            {
+                _selectedLanguage = value ?? "English";
+                SelectedLanguageChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public static bool CanWriteInFolder(string folderPathToCheck = null)

@@ -9,6 +9,8 @@ namespace AnnoDesigner.model
 {
     public interface ICommons
     {
+        event EventHandler SelectedLanguageChanged;
+
         IUpdateHelper UpdateHelper { get; }
     }
 }

@@ -2,17 +2,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Localization;
+using AnnoDesigner.model;
+using AnnoDesigner.Properties;
+using NLog;
+using Xceed.Wpf.Toolkit;
 using static AnnoDesigner.Core.CoreConstants;
+using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner.viewmodel
 {
     public class MainViewModel : Notify
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        private readonly ICommons _commons;
+
         private Dictionary<int, bool> _treeViewState;
         private bool _canvasShowGrid;
         private bool _canvasShowIcons;
@@ -24,9 +38,15 @@ namespace AnnoDesigner.viewmodel
         private bool _useCurrentZoomOnExportedImageValue;
         private bool _renderSelectionHighlightsOnExportedImageValue;
         private bool _isLanguageChange;
+        private bool _isBusy;
+        private string _statusMessage;
+        private string _statusMessageClipboard;
 
-        public MainViewModel()
+        public MainViewModel(ICommons commonsToUse)
         {
+            _commons = commonsToUse;
+            _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
+
             _statisticsViewModel = new StatisticsViewModel();
             _buildingSettingsViewModel = new BuildingSettingsViewModel();
             _presetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization());
@@ -41,6 +61,13 @@ namespace AnnoDesigner.viewmodel
             CanvasNormalizeCommand = new RelayCommand(CanvasNormalize);
 
             UpdateLanguage();
+        }
+
+        private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
+        {
+            UpdateLanguage();
+
+            BuildingSettingsViewModel.UpdateLanguageBuildingInfluenceType();
         }
 
         private void PresetsTreeSearchViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -78,11 +105,120 @@ namespace AnnoDesigner.viewmodel
             UpdateStatistics();
         }
 
+        public void AnnoCanvas_ClipboardChanged(List<AnnoObject> itemsOnClipboard)
+        {
+            StatusMessageClipboard = StatusBarItemsOnClipboard + ": " + itemsOnClipboard.Count;
+        }
+
         public void UpdateStatistics()
         {
             StatisticsViewModel.UpdateStatistics(_annoCanvas.PlacedObjects,
                 _annoCanvas.SelectedObjects,
                 _annoCanvas.BuildingPresets);
+        }
+
+        public async Task CheckForNewAppVersionAsync(bool forcedCheck)
+        {
+            try
+            {
+                var dowloadedContent = "0.1";
+                using (var webClient = new WebClient())
+                {
+                    dowloadedContent = await webClient.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/AgmasGold/anno-designer/master/version.txt"));
+                }
+
+                if (double.Parse(dowloadedContent, CultureInfo.InvariantCulture) > Constants.Version)
+                {
+                    // new version found
+                    if (MessageBox.Show("A newer version was found, do you want to visit the releases page?\nhttps://github.com/AgmasGold/anno-designer/releases\n\n Clicking 'Yes' will open a new tab in your web browser.", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Asterisk, MessageBoxResult.OK) == MessageBoxResult.Yes)
+                    {
+                        Process.Start("https://github.com/AgmasGold/anno-designer/releases");
+                    }
+                }
+                else
+                {
+                    StatusMessage = "Version is up to date.";
+                    //StatusMessageChanged("Version is up to date.");
+
+                    if (forcedCheck)
+                    {
+                        MessageBox.Show("This version is up to date.", "No updates found");
+                    }
+                }
+
+                //If not already prompted
+                if (!Settings.Default.PromptedForAutoUpdateCheck)
+                {
+                    Settings.Default.PromptedForAutoUpdateCheck = true;
+
+                    if (MessageBox.Show("Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.", "Continue checking for updates?", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
+                    {
+                        AutomaticUpdateCheck = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error checking version.");
+                MessageBox.Show("Error checking version. \n\nAdded more information to log.", "Version check failed");
+                return;
+            }
+        }
+
+        public async Task CheckForPresetsAsync()
+        {
+            var foundRelease = await _commons.UpdateHelper.GetAvailableReleasesAsync(ReleaseType.Presets);
+            if (foundRelease == null)
+            {
+                return;
+            }
+
+            var isNewReleaseAvailable = foundRelease.Version > new Version(AnnoCanvas.BuildingPresets.Version);
+            if (isNewReleaseAvailable)
+            {
+                string language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+
+                if (MessageBox.Show(Localization.Localization.Translations[language]["UpdateAvailablePresetMessage"],
+                    Localization.Localization.Translations[language]["UpdateAvailableHeader"],
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Asterisk,
+                    MessageBoxResult.OK) == MessageBoxResult.Yes)
+                {
+                    IsBusy = true;
+
+                    if (!Commons.CanWriteInFolder())
+                    {
+                        //already asked for admin rights?
+                        if (Environment.GetCommandLineArgs().Any(x => x.Trim().Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            MessageBox.Show($"You have no write access to the folder.{Environment.NewLine}The update can not be installed.",
+                                Localization.Localization.Translations[language]["Error"],
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+
+                            IsBusy = false;
+                            return;
+                        }
+
+                        MessageBox.Show(Localization.Localization.Translations[language]["UpdateRequiresAdminRightsMessage"],
+                            Localization.Localization.Translations[language]["AdminRightsRequired"],
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information,
+                            MessageBoxResult.OK);
+
+                        Commons.RestartApplication(true, Constants.Argument_Ask_For_Admin, App.ExecutablePath);
+                    }
+
+                    //Context is required here, do not use ConfigureAwait(false)
+                    var newLocation = await _commons.UpdateHelper.DownloadReleaseAsync(foundRelease);
+
+                    IsBusy = false;
+
+                    Commons.RestartApplication(false, null, App.ExecutablePath);
+
+                    Environment.Exit(-1);
+                }
+            }
         }
 
         #region properties
@@ -99,6 +235,7 @@ namespace AnnoDesigner.viewmodel
 
                 _annoCanvas = value;
                 _annoCanvas.StatisticsUpdated += AnnoCanvas_StatisticsUpdated;
+                _annoCanvas.OnClipboardChanged += AnnoCanvas_ClipboardChanged;
                 BuildingSettingsViewModel.AnnoCanvasToUse = _annoCanvas;
             }
         }
@@ -175,6 +312,23 @@ namespace AnnoDesigner.viewmodel
             set { UpdateProperty(ref _isLanguageChange, value); }
         }
 
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set { UpdateProperty(ref _isBusy, value); }
+        }
+
+        public string StatusMessage
+        {
+            get { return _statusMessage; }
+            set { UpdateProperty(ref _statusMessage, value); }
+        }
+
+        public string StatusMessageClipboard
+        {
+            get { return _statusMessageClipboard; }
+            set { UpdateProperty(ref _statusMessageClipboard, value); }
+        }
 
         #endregion
 

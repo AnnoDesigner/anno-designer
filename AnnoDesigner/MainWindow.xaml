@@ -14,7 +14,7 @@
         xmlns:viewModel="clr-namespace:AnnoDesigner.viewmodel"
         xmlns:myBehaviors="clr-namespace:AnnoDesigner.Behaviors"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=viewModel:MainViewModel, IsDesignTimeCreatable=True}"
+        d:DataContext="{d:DesignInstance Type=viewModel:MainViewModel, IsDesignTimeCreatable=False}"
         d:DesignHeight="480"
         d:DesignWidth="640"
         Title="Anno Designer"
@@ -716,10 +716,9 @@
             <StatusBar Grid.Row="2"
                        Grid.ColumnSpan="3">
                 <StatusBarItem Content="{Binding StatusBarControls}" />
-                <StatusBarItem Name="StatusBarItemStatus"
-                               Content="Standard"
+                <StatusBarItem Content="{Binding StatusMessage}"
                                Margin="10,0,0,0" />
-                <StatusBarItem Name="StatusBarItemClipboardStatus"
+                <StatusBarItem Content="{Binding StatusMessageClipboard}"
                                Margin="10,0,0,0"
                                HorizontalAlignment="Right" />
             </StatusBar>
