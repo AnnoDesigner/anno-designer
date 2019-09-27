@@ -916,6 +916,8 @@ namespace AnnoDesigner.viewmodel
 
         public void UpdateLanguage()
         {
+            AboutViewModel.UpdateLanguage();
+
             string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
 
             StatisticsViewModel.TextNothingPlaced = Localization.Localization.Translations[language]["StatNothingPlaced"];
