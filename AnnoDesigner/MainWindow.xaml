@@ -17,7 +17,7 @@
         d:DataContext="{d:DesignInstance Type=viewModel:MainViewModel, IsDesignTimeCreatable=False}"
         d:DesignHeight="480"
         d:DesignWidth="640"
-        Title="Anno Designer"
+        Title="{Binding MainWindowTitle}"
         Icon="/AnnoDesigner;component/icon.ico"
         Height="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowHeight, Mode=TwoWay}"
         Width="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowWidth, Mode=TwoWay}"
@@ -34,18 +34,6 @@
                                              TrueValue="Visible"
                                              FalseValue="Collapsed" />
         <xctk:ColorToSolidColorBrushConverter x:Key="converterColorToSolidColorBrush" />
-        <DataTemplate DataType="{x:Type coreModels:IconImage}">
-            <StackPanel Orientation="Horizontal">
-                <Viewbox Margin="5">
-                    <Image Width="23"
-                           Height="23"
-                           Source="{Binding Path=Icon}" />
-                </Viewbox>
-                <TextBlock Margin="0,5,5,5"
-                           VerticalAlignment="Center"
-                           Text="{Binding Path=DisplayName}" />
-            </StackPanel>
-        </DataTemplate>
         <HierarchicalDataTemplate DataType="{x:Type coreModels:AnnoObject}">
             <TextBlock Text="{Binding Label}" />
         </HierarchicalDataTemplate>
@@ -485,18 +473,46 @@
                                    Height="46">
                             <Label Content="{Binding BuildingSettingsViewModel.TextIcon}"
                                    VerticalAlignment="Center" />
-                            <ComboBox DockPanel.Dock="Right"
+                            <ComboBox x:Name="comboBoxIcon"
+                                      DockPanel.Dock="Right"
                                       Width="140"
                                       Height="46"
                                       IsEnabled="True"
-                                      x:Name="comboBoxIcon"
-                                      SelectedIndex="0"
+                                      ItemsSource="{Binding AvailableIcons}"
+                                      SelectedItem="{Binding SelectedIcon}"
                                       TabIndex="6"
-                                      TextSearch.TextPath="DisplayName">
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True"
-                                                            VirtualizingStackPanel.VirtualizationMode="Recycling"></VirtualizingStackPanel>
-                                </ItemsPanelTemplate>
+                                      TextSearch.TextPath="DisplayName"
+                                      ScrollViewer.CanContentScroll="True">
+                                <ComboBox.Resources>
+                                    <Style TargetType="{x:Type Popup}">
+                                        <!--<Setter Property="MinWidth"
+                                                Value="140" />
+                                        <Setter Property="MaxWidth"
+                                                Value="340" />-->
+                                        <Setter Property="Width"
+                                                Value="300" />
+                                    </Style>
+                                </ComboBox.Resources>
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True"
+                                                                VirtualizingStackPanel.VirtualizationMode="Recycling" />
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Viewbox Margin="5">
+                                                <Image Width="23"
+                                                       Height="23"
+                                                       Source="{Binding Icon}" />
+                                            </Viewbox>
+                                            <TextBlock Margin="0,5,5,5"
+                                                       VerticalAlignment="Center"
+                                                       Text="{Binding DisplayName}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
                             </ComboBox>
                         </DockPanel>
                         <DockPanel LastChildFill="False"
@@ -590,8 +606,8 @@
                                           IsChecked="{Binding BuildingSettingsViewModel.IsRoadChecked}" />
                             </StackPanel>
                         </DockPanel>
-                        <Button Click="ButtonPlaceBuildingClick"
-                                Content="{Binding BuildingSettingsViewModel.TextPlaceBuilding}"
+                        <Button Content="{Binding BuildingSettingsViewModel.TextPlaceBuilding}"
+                                Command="{Binding PlaceBuildingCommand}"
                                 Height="23"
                                 TabIndex="12" />
                     </StackPanel>

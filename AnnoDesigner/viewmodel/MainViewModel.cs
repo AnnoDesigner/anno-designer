@@ -12,14 +12,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Presets.Helper;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Localization;
 using AnnoDesigner.model;
-using AnnoDesigner.Properties;
 using Microsoft.Win32;
 using NLog;
 using static AnnoDesigner.Core.CoreConstants;
@@ -32,11 +34,13 @@ namespace AnnoDesigner.viewmodel
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly ICommons _commons;
+        private readonly IAppSettings _appSettings;
         private readonly ILayoutLoader _layoutLoader;
         private readonly ICoordinateHelper _coordinateHelper;
 
-        public event EventHandler ShowStatisticsChanged;
+        public event EventHandler<EventArgs> ShowStatisticsChanged;
 
+        private AnnoCanvas _annoCanvas;
         private Dictionary<int, bool> _treeViewState;
         private bool _canvasShowGrid;
         private bool _canvasShowIcons;
@@ -52,23 +56,38 @@ namespace AnnoDesigner.viewmodel
         private string _statusMessage;
         private string _statusMessageClipboard;
         private ObservableCollection<SupportedLanguage> _languages;
+        private ObservableCollection<IconImage> _availableIcons;
+        private IconImage _selectedIcon;
+        private string _mainWindowTitle;
 
-        public MainViewModel(ICommons commonsToUse, ILayoutLoader _layoutLoaderToUse = null, ICoordinateHelper coordinateHelperToUse = null)
+        //for identifier checking process
+        private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
+        private readonly IconImage _noIconItem;
+
+        public MainViewModel(ICommons commonsToUse, IAppSettings appSettingsToUse, ILayoutLoader _layoutLoaderToUse = null, ICoordinateHelper coordinateHelperToUse = null)
         {
             _commons = commonsToUse;
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
+
+            _appSettings = appSettingsToUse;
 
             _layoutLoader = _layoutLoaderToUse ?? new LayoutLoader();
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
 
             _statisticsViewModel = new StatisticsViewModel(_commons);
-            _statisticsViewModel.IsVisible = Settings.Default.StatsShowStats;
-            _statisticsViewModel.ShowStatisticsBuildingCount = Settings.Default.StatsShowBuildingCount;
-            _buildingSettingsViewModel = new BuildingSettingsViewModel(_commons);
+            _statisticsViewModel.IsVisible = _appSettings.StatsShowStats;
+            _statisticsViewModel.ShowStatisticsBuildingCount = _appSettings.StatsShowBuildingCount;
+
+            _buildingSettingsViewModel = new BuildingSettingsViewModel(_commons, _appSettings);
+
             _presetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization(_commons), _commons);
+            _presetsTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
+
             _presetsTreeSearchViewModel = new PresetsTreeSearchViewModel();
             _presetsTreeSearchViewModel.PropertyChanged += PresetsTreeSearchViewModel_PropertyChanged;
-            _welcomeViewModel = new WelcomeViewModel(_commons);
+
+            _welcomeViewModel = new WelcomeViewModel(_commons, _appSettings);
+
             _aboutViewModel = new AboutViewModel(_commons);
 
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
@@ -86,6 +105,12 @@ namespace AnnoDesigner.viewmodel
             CheckForUpdatesCommand = new RelayCommand(ExecuteCheckForUpdates);
             ShowStatisticsCommand = new RelayCommand(ExecuteShowStatistics);
             ShowStatisticsBuildingCountCommand = new RelayCommand(ExecuteShowStatisticsBuildingCount);
+            PlaceBuildingCommand = new RelayCommand(ExecutePlaceBuilding);
+
+            AvailableIcons = new ObservableCollection<IconImage>();
+            _noIconItem = new IconImage("None");
+            AvailableIcons.Add(_noIconItem);
+            SelectedIcon = _noIconItem;
 
             Languages = new ObservableCollection<SupportedLanguage>();
             Languages.Add(new SupportedLanguage("English")
@@ -111,6 +136,8 @@ namespace AnnoDesigner.viewmodel
             //Languages.Add(new SupportedLanguage("Español"));
             //Languages.Add(new SupportedLanguage("Italiano"));
             //Languages.Add(new SupportedLanguage("český"));
+
+            MainWindowTitle = "Anno Designer";
 
             UpdateLanguage();
         }
@@ -138,7 +165,7 @@ namespace AnnoDesigner.viewmodel
                 }
 
                 //update settings
-                Settings.Default.SelectedLanguage = _commons.SelectedLanguage;
+                _appSettings.SelectedLanguage = _commons.SelectedLanguage;
 
                 UpdateStatistics();
 
@@ -184,21 +211,245 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
+        private void PresetTreeViewModel_ApplySelectedItem(object sender, EventArgs e)
+        {
+            ApplyPreset(PresetsTreeViewModel.SelectedItem.AnnoObject);
+        }
+
+        private void ApplyPreset(AnnoObject selectedItem)
+        {
+            try
+            {
+                if (selectedItem != null)
+                {
+                    UpdateUIFromObject(new AnnoObject(selectedItem)
+                    {
+                        Color = BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
+                    });
+
+                    ApplyCurrentObject();
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error applying preset.");
+                MessageBox.Show("Something went wrong while applying the preset.");
+            }
+        }
+
+        private void ApplyCurrentObject()
+        {
+            // parse user inputs and create new object
+            var obj = new AnnoObject
+            {
+                Size = new Size(BuildingSettingsViewModel.BuildingWidth, BuildingSettingsViewModel.BuildingHeight),
+                Color = BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
+                Label = BuildingSettingsViewModel.IsEnableLabelChecked ? BuildingSettingsViewModel.BuildingName : string.Empty,
+                Icon = SelectedIcon == _noIconItem ? null : SelectedIcon.Name,
+                Radius = BuildingSettingsViewModel.BuildingRadius,
+                InfluenceRange = BuildingSettingsViewModel.BuildingInfluenceRange,
+                PavedStreet = BuildingSettingsViewModel.IsPavedStreet,
+                Borderless = BuildingSettingsViewModel.IsBorderlessChecked,
+                Road = BuildingSettingsViewModel.IsRoadChecked,
+                Identifier = BuildingSettingsViewModel.BuildingIdentifier,
+                Template = BuildingSettingsViewModel.BuildingTemplate
+            };
+
+            var objIconFileName = "";
+            //Parse the Icon path into something we can check.
+            if (!string.IsNullOrWhiteSpace(obj.Icon))
+            {
+                if (obj.Icon.StartsWith("A5_"))
+                {
+                    objIconFileName = obj.Icon.Remove(0, 3) + ".png"; //when Anno 2070, it use not A5_ in the original naming.
+                }
+                else
+                {
+                    objIconFileName = obj.Icon + ".png";
+                }
+            }
+
+            // do some sanity checks
+            if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
+            {
+                if (!string.IsNullOrWhiteSpace(obj.Icon) && !obj.Icon.Contains(IconFieldNamesCheck))
+                {
+                    //the identifier text 'Uknown Object' is localized within the StatisticsView, which is why it's not localized here  
+                    //gets icons origin building info
+                    var buildingInfo = AnnoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName?.Equals(objIconFileName, StringComparison.OrdinalIgnoreCase) ?? false);
+                    if (buildingInfo != null)
+                    {
+                        // Check X and Z Sizes of the Building Info, if one or both not right, the Object will be Unknown
+                        //Building could be in rotated form - so 5x4 should be equivalent to checking for 4x5
+                        if ((obj.Size.Width == buildingInfo.BuildBlocker["x"] && obj.Size.Height == buildingInfo.BuildBlocker["z"])
+                            || (obj.Size.Height == buildingInfo.BuildBlocker["x"] && obj.Size.Width == buildingInfo.BuildBlocker["z"]))
+                        {
+                            //if sizes match and icon is a existing building in the presets, call it that object
+                            if (obj.Identifier != "Residence_New_World")
+                            {
+                                obj.Identifier = buildingInfo.Identifier;
+                            }
+                        }
+                        else
+                        {
+                            //Sizes and icon do not match
+                            obj.Identifier = "Unknown Object";
+                        }
+                    }
+                    else if (!BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase)) //check if the icon is removed from a template field
+                    {
+                        obj.Identifier = "Unknown Object";
+                    }
+                }
+                else if (!string.IsNullOrWhiteSpace(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck))
+                {
+                    //Check if Field Icon belongs to the field identifier, else set the official icon
+                    var buildingInfo = AnnoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == obj.Identifier);
+                    if (buildingInfo != null)
+                    {
+                        if (!string.Equals(objIconFileName, buildingInfo.IconFileName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            obj.Icon = buildingInfo.IconFileName.Remove(buildingInfo.IconFileName.Length - 4, 4); //remove the .png for the combobox
+                            try
+                            {
+                                SelectedIcon = string.IsNullOrEmpty(obj.Icon) ? _noIconItem : AvailableIcons.Single(_ => _.Name == Path.GetFileNameWithoutExtension(obj.Icon));
+                            }
+                            catch (Exception)
+                            {
+                                SelectedIcon = _noIconItem;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        obj.Identifier = "Unknown Object";
+                    }
+                }
+                if (string.IsNullOrEmpty(obj.Icon) && !BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase))
+                {
+                    obj.Identifier = "Unknown Object";
+                }
+
+                AnnoCanvas.SetCurrentObject(obj);
+            }
+            else
+            {
+                throw new Exception("Invalid building configuration.");
+            }
+        }
+
+        /// <summary>
+        /// Fired on the OnCurrentObjectChanged event
+        /// </summary>
+        /// <param name="obj"></param>
+        private void UpdateUIFromObject(AnnoObject obj)
+        {
+            if (obj == null)
+            {
+                return;
+            }
+
+            // size
+            BuildingSettingsViewModel.BuildingWidth = (int)obj.Size.Width;
+            BuildingSettingsViewModel.BuildingHeight = (int)obj.Size.Height;
+            // color
+            BuildingSettingsViewModel.SelectedColor = ColorPresetsHelper.Instance.GetPredefinedColor(obj) ?? obj.Color;
+            // label
+            BuildingSettingsViewModel.BuildingName = obj.Label;
+            // Identifier
+            BuildingSettingsViewModel.BuildingIdentifier = obj.Identifier;
+            // Template
+            BuildingSettingsViewModel.BuildingTemplate = obj.Template;
+            // icon
+            try
+            {
+                if (string.IsNullOrWhiteSpace(obj.Icon))
+                {
+                    SelectedIcon = _noIconItem;
+                }
+                else
+                {
+                    var foundIconImage = AvailableIcons.SingleOrDefault(x => x.Name.Equals(Path.GetFileNameWithoutExtension(obj.Icon), StringComparison.OrdinalIgnoreCase));
+                    SelectedIcon = foundIconImage ?? _noIconItem;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error finding {nameof(IconImage)} for value \"{obj.Icon}\".{Environment.NewLine}{ex}");
+
+                SelectedIcon = _noIconItem;
+            }
+
+            // radius
+            BuildingSettingsViewModel.BuildingRadius = obj.Radius;
+            //InfluenceRange
+            if (!BuildingSettingsViewModel.IsPavedStreet)
+            {
+                BuildingSettingsViewModel.BuildingInfluenceRange = obj.InfluenceRange;
+            }
+            else
+            {
+                BuildingSettingsViewModel.GetDistanceRange(true, AnnoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == BuildingSettingsViewModel.BuildingIdentifier));
+            }
+
+            //Set Influence Type
+            if (obj.Radius > 0 && obj.InfluenceRange > 0)
+            {
+                //Building uses both a radius and an influence
+                //Has to be set manually 
+                BuildingSettingsViewModel.SelectedBuildingInfluence = BuildingSettingsViewModel.BuildingInfluences.Single(x => x.Type == BuildingInfluenceType.Both);
+            }
+            else if (obj.Radius > 0)
+            {
+                BuildingSettingsViewModel.SelectedBuildingInfluence = BuildingSettingsViewModel.BuildingInfluences.Single(x => x.Type == BuildingInfluenceType.Radius);
+            }
+            else if (obj.InfluenceRange > 0)
+            {
+                BuildingSettingsViewModel.SelectedBuildingInfluence = BuildingSettingsViewModel.BuildingInfluences.Single(x => x.Type == BuildingInfluenceType.Distance);
+
+                if (obj.PavedStreet)
+                {
+                    BuildingSettingsViewModel.IsPavedStreet = obj.PavedStreet;
+                }
+            }
+            else
+            {
+                BuildingSettingsViewModel.SelectedBuildingInfluence = BuildingSettingsViewModel.BuildingInfluences.Single(x => x.Type == BuildingInfluenceType.None);
+            }
+
+            // flags            
+            //BuildingSettingsViewModel.IsEnableLabelChecked = !string.IsNullOrEmpty(obj.Label);
+            BuildingSettingsViewModel.IsBorderlessChecked = obj.Borderless;
+            BuildingSettingsViewModel.IsRoadChecked = obj.Road;
+        }
+
         private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)
         {
             UpdateStatistics();
         }
 
-        public void AnnoCanvas_ClipboardChanged(List<AnnoObject> itemsOnClipboard)
+        private void AnnoCanvas_ClipboardChanged(List<AnnoObject> itemsOnClipboard)
         {
             StatusMessageClipboard = StatusBarItemsOnClipboard + ": " + itemsOnClipboard.Count;
         }
 
+        private void AnnoCanvas_StatusMessageChanged(string message)
+        {
+            StatusMessage = message;
+            logger.Trace($"Status message changed: {message}");
+        }
+
+        private void AnnoCanvas_LoadedFileChanged(string filename)
+        {
+            MainWindowTitle = string.IsNullOrEmpty(filename) ? "Anno Designer" : string.Format("{0} - Anno Designer", Path.GetFileName(filename));
+            logger.Info($"Loaded file: {(string.IsNullOrEmpty(filename) ? "(none)" : filename)}");
+        }
+
         public void UpdateStatistics()
         {
-            StatisticsViewModel.UpdateStatistics(_annoCanvas.PlacedObjects,
-                _annoCanvas.SelectedObjects,
-                _annoCanvas.BuildingPresets);
+            StatisticsViewModel.UpdateStatistics(AnnoCanvas.PlacedObjects,
+                AnnoCanvas.SelectedObjects,
+                AnnoCanvas.BuildingPresets);
         }
 
         public async Task CheckForUpdatesSub(bool forcedCheck)
@@ -220,7 +471,7 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
-        public async Task CheckForNewAppVersionAsync(bool forcedCheck)
+        private async Task CheckForNewAppVersionAsync(bool forcedCheck)
         {
             try
             {
@@ -250,9 +501,9 @@ namespace AnnoDesigner.viewmodel
                 }
 
                 //If not already prompted
-                if (!Settings.Default.PromptedForAutoUpdateCheck)
+                if (!_appSettings.PromptedForAutoUpdateCheck)
                 {
-                    Settings.Default.PromptedForAutoUpdateCheck = true;
+                    _appSettings.PromptedForAutoUpdateCheck = true;
 
                     if (MessageBox.Show("Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.", "Continue checking for updates?", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
                     {
@@ -268,7 +519,7 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
-        public async Task CheckForPresetsAsync()
+        private async Task CheckForPresetsAsync()
         {
             var foundRelease = await _commons.UpdateHelper.GetAvailableReleasesAsync(ReleaseType.Presets);
             if (foundRelease == null)
@@ -339,6 +590,30 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
+        public void LoadAvailableIcons()
+        {
+            foreach (var icon in AnnoCanvas.Icons)
+            {
+                AvailableIcons.Add(icon.Value);
+            }
+        }
+
+        public void LoadSettings()
+        {
+            StatisticsViewModel.ToggleBuildingList(_appSettings.StatsShowBuildingCount, AnnoCanvas.PlacedObjects, AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
+
+            AutomaticUpdateCheck = _appSettings.EnableAutomaticUpdateCheck;
+
+            UseCurrentZoomOnExportedImageValue = _appSettings.UseCurrentZoomOnExportedImageValue;
+            RenderSelectionHighlightsOnExportedImageValue = _appSettings.RenderSelectionHighlightsOnExportedImageValue;
+
+            CanvasShowGrid = _appSettings.ShowGrid;
+            CanvasShowIcons = _appSettings.ShowIcons;
+            CanvasShowLabels = _appSettings.ShowLabels;
+
+            BuildingSettingsViewModel.IsPavedStreet = _appSettings.IsPavedStreet;
+        }
+
         #region properties
 
         public AnnoCanvas AnnoCanvas
@@ -354,6 +629,9 @@ namespace AnnoDesigner.viewmodel
                 _annoCanvas = value;
                 _annoCanvas.StatisticsUpdated += AnnoCanvas_StatisticsUpdated;
                 _annoCanvas.OnClipboardChanged += AnnoCanvas_ClipboardChanged;
+                _annoCanvas.OnCurrentObjectChanged += UpdateUIFromObject;
+                _annoCanvas.OnStatusMessageChanged += AnnoCanvas_StatusMessageChanged;
+                _annoCanvas.OnLoadedFileChanged += AnnoCanvas_LoadedFileChanged;
                 BuildingSettingsViewModel.AnnoCanvasToUse = _annoCanvas;
             }
         }
@@ -461,6 +739,24 @@ namespace AnnoDesigner.viewmodel
             {
                 curLanguage.IsSelected = string.Equals(curLanguage.Name, selectedLanguage, StringComparison.OrdinalIgnoreCase);
             }
+        }
+
+        public ObservableCollection<IconImage> AvailableIcons
+        {
+            get { return _availableIcons; }
+            set { UpdateProperty(ref _availableIcons, value); }
+        }
+
+        public IconImage SelectedIcon
+        {
+            get { return _selectedIcon; }
+            set { UpdateProperty(ref _selectedIcon, value); }
+        }
+
+        public string MainWindowTitle
+        {
+            get { return _mainWindowTitle; }
+            set { UpdateProperty(ref _mainWindowTitle, value); }
         }
 
         #endregion
@@ -601,7 +897,7 @@ namespace AnnoDesigner.viewmodel
         /// </summary>
         /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
         /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
-        public void ExecuteExportImageSub(bool exportZoom, bool exportSelection)
+        private void ExecuteExportImageSub(bool exportZoom, bool exportSelection)
         {
             var dialog = new SaveFileDialog
             {
@@ -758,7 +1054,7 @@ namespace AnnoDesigner.viewmodel
             ExecuteCopyLayoutToClipboardSub();
         }
 
-        public void ExecuteCopyLayoutToClipboardSub()
+        private void ExecuteCopyLayoutToClipboardSub()
         {
             try
             {
@@ -859,6 +1155,20 @@ namespace AnnoDesigner.viewmodel
         private void ExecuteShowStatisticsBuildingCount(object param)
         {
             StatisticsViewModel.ToggleBuildingList(StatisticsViewModel.ShowStatisticsBuildingCount, AnnoCanvas.PlacedObjects, AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
+        }
+
+        public ICommand PlaceBuildingCommand { get; private set; }
+
+        private void ExecutePlaceBuilding(object param)
+        {
+            try
+            {
+                ApplyCurrentObject();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error: Invalid building configuration.");
+            }
         }
 
         #endregion
@@ -1430,8 +1740,6 @@ namespace AnnoDesigner.viewmodel
         }
 
         private string _statusBarItemsOnClipboard;
-        private AnnoCanvas _annoCanvas;
-
         public string StatusBarItemsOnClipboard
         {
             get { return _statusBarItemsOnClipboard; }

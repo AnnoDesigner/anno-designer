@@ -13,12 +13,20 @@ namespace AnnoDesigner.Tests
     public class BuildingSettingsViewModelTests
     {
         private readonly ICommons _mockedCommons;
+        private readonly IAppSettings _mockedAppSettings;
 
         public BuildingSettingsViewModelTests()
         {
             var commonsMock = new Mock<ICommons>();
             commonsMock.SetupGet(x => x.SelectedLanguage).Returns(() => "English");
             _mockedCommons = commonsMock.Object;
+
+            _mockedAppSettings = new Mock<IAppSettings>().Object;
+        }
+
+        private BuildingSettingsViewModel GetViewModel(ICommons commonsToUse = null, IAppSettings appSettingsToUse = null)
+        {
+            return new BuildingSettingsViewModel(commonsToUse ?? _mockedCommons, appSettingsToUse ?? _mockedAppSettings);
         }
 
         #region ctor tests
@@ -27,7 +35,7 @@ namespace AnnoDesigner.Tests
         public void Ctor_ShouldSetDefaultValues()
         {
             // Arrange/Act
-            var viewModel = new BuildingSettingsViewModel(_mockedCommons);
+            var viewModel = GetViewModel();
 
             // Assert
             Assert.NotNull(viewModel.ApplyColorToSelectionCommand);
@@ -43,7 +51,7 @@ namespace AnnoDesigner.Tests
         public void Ctor_ShouldSetCorrectNumberOfBuildingInfluences()
         {
             // Arrange/Act
-            var viewModel = new BuildingSettingsViewModel(_mockedCommons);
+            var viewModel = GetViewModel();
             var expectedCount = Enum.GetValues(typeof(BuildingInfluenceType)).Length;
 
             // Assert
@@ -62,7 +70,7 @@ namespace AnnoDesigner.Tests
         public void SelectedBuildingInfluence_TypeIsGiven_ShouldAdjustInputVisibility(BuildingInfluenceType typeToSet, bool expectedRadiusVisible, bool expectedRangeVisible)
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel(_mockedCommons);
+            var viewModel = GetViewModel();
             //to trigger PropertyChanged
             if (typeToSet != BuildingInfluenceType.None)
             {
@@ -91,7 +99,7 @@ namespace AnnoDesigner.Tests
         public void GetDistanceRange_BuildingInfoIsNull_ShouldSetInfluenceRangeToZeroAndReturnFalse()
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel(_mockedCommons);
+            var viewModel = GetViewModel();
             viewModel.BuildingInfluenceRange = -1;
 
             // Act
@@ -109,7 +117,7 @@ namespace AnnoDesigner.Tests
         public void GetDistanceRange_BuildingInfluenceRangeIsZeroOrLower_ShouldSetInfluenceRangeToZeroAndReturnFalse(int influenceRangeToSet)
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel(_mockedCommons);
+            var viewModel = GetViewModel();
             viewModel.BuildingInfluenceRange = int.MaxValue;
 
             var mockedBuildingInfo = new Mock<IBuildingInfo>();
@@ -132,7 +140,7 @@ namespace AnnoDesigner.Tests
         public void GetDistanceRange_IsNotPavedStreet_ShouldSetInfluenceRangeCorrect(int influenceRangeToSet, int expectedInfluenceRange, bool expectedResult)
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel(_mockedCommons);
+            var viewModel = GetViewModel();
             viewModel.BuildingInfluenceRange = int.MaxValue;
 
             var mockedBuildingInfo = new Mock<IBuildingInfo>();
@@ -160,7 +168,7 @@ namespace AnnoDesigner.Tests
         public void GetDistanceRange_IsPavedStreet_ShouldSetInfluenceRangeCorrect(int influenceRangeToSet, int expectedInfluenceRange, bool expectedResult)
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel(_mockedCommons);
+            var viewModel = GetViewModel();
             viewModel.BuildingInfluenceRange = int.MaxValue;
 
             var mockedBuildingInfo = new Mock<IBuildingInfo>();
@@ -189,7 +197,7 @@ namespace AnnoDesigner.Tests
         public void GetDistanceRange_IsPavedStreetAndBuildingIsCityInstitutionBuilding_ShouldSetInfluenceRangeCorrect(int influenceRangeToSet, int expectedInfluenceRange, bool expectedResult)
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel(_mockedCommons);
+            var viewModel = GetViewModel();
             viewModel.BuildingInfluenceRange = int.MaxValue;
 
             var mockedBuildingInfo = new Mock<IBuildingInfo>();
@@ -218,7 +226,7 @@ namespace AnnoDesigner.Tests
         public void GetDistanceRange_IsPavedStreetAndBuildingIsCityInstitutionBuilding_ShouldIgnoreCase(int influenceRangeToSet, int expectedInfluenceRange, bool expectedResult)
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel(_mockedCommons);
+            var viewModel = GetViewModel();
             viewModel.BuildingInfluenceRange = int.MaxValue;
 
             var mockedBuildingInfo = new Mock<IBuildingInfo>();
@@ -241,7 +249,7 @@ namespace AnnoDesigner.Tests
         public void UseColorInLayoutCommand_ShouldCanExecute()
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel(_mockedCommons);
+            var viewModel = GetViewModel();
 
             // Act
             var result = viewModel.UseColorInLayoutCommand.CanExecute(null);
@@ -254,7 +262,7 @@ namespace AnnoDesigner.Tests
         public void UseColorInLayoutCommand_IsExecutedWithNull_ShouldNotThrow()
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel(_mockedCommons);
+            var viewModel = GetViewModel();
             var expectedColor = viewModel.SelectedColor;
 
             // Act
@@ -268,7 +276,7 @@ namespace AnnoDesigner.Tests
         public void UseColorInLayoutCommand_IsExecutedWithColor_ShouldSetSelectedColor()
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel(_mockedCommons);
+            var viewModel = GetViewModel();
             var expectedColor = Colors.LimeGreen;
 
             // Act
@@ -282,7 +290,7 @@ namespace AnnoDesigner.Tests
         public void UseColorInLayoutCommand_IsExecutedWithSerializableColor_ShouldSetSelectedColor()
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel(_mockedCommons);
+            var viewModel = GetViewModel();
             var expectedColor = new SerializableColor(Colors.LimeGreen);
 
             // Act

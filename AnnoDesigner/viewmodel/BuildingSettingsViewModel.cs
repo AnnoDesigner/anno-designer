@@ -19,6 +19,7 @@ namespace AnnoDesigner.viewmodel
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly ICommons _commons;
+        private readonly IAppSettings _appSettings;
 
         private string _textHeader;
         private string _textSize;
@@ -71,9 +72,10 @@ namespace AnnoDesigner.viewmodel
         /// <summary>
         /// only used for databinding
         /// </summary>
-        public BuildingSettingsViewModel(ICommons commonsToUse)
+        public BuildingSettingsViewModel(ICommons commonsToUse, IAppSettings appSettingsToUse)
         {
             _commons = commonsToUse;
+            _appSettings = appSettingsToUse;
 
             ApplyColorToSelectionCommand = new RelayCommand(ApplyColorToSelection, CanApplyColorToSelection);
             ApplyPredefinedColorToSelectionCommand = new RelayCommand(ApplyPredefinedColorToSelection, CanApplyPredefinedColorToSelection);
@@ -489,10 +491,10 @@ namespace AnnoDesigner.viewmodel
 
         private void HandleIsPavedStreet()
         {
-            if (!Settings.Default.ShowPavedRoadsWarning)
+            if (!_appSettings.ShowPavedRoadsWarning)
             {
                 MessageBox.Show(TextPavedStreetToolTip, TextPavedStreetWarningTitle);
-                Settings.Default.ShowPavedRoadsWarning = true;
+                _appSettings.ShowPavedRoadsWarning = true;
             }
 
             if (!GetDistanceRange(IsPavedStreet, AnnoCanvasToUse.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == BuildingIdentifier)))

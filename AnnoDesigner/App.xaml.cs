@@ -19,11 +19,13 @@ namespace AnnoDesigner
     public partial class App : Application
     {
         private static readonly ICommons _commons;
+        private static readonly IAppSettings _appSettings;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         static App()
         {
             _commons = Commons.Instance;
+            _appSettings = new AppSettings();
         }
 
         public App()
@@ -131,13 +133,13 @@ namespace AnnoDesigner
                 try
                 {
                     //check if file is not corrupt
-                    AnnoDesigner.Properties.Settings.Default.Reload();
+                    _appSettings.Reload();
 
-                    if (AnnoDesigner.Properties.Settings.Default.SettingsUpgradeNeeded)
+                    if (_appSettings.SettingsUpgradeNeeded)
                     {
-                        AnnoDesigner.Properties.Settings.Default.Upgrade();
-                        AnnoDesigner.Properties.Settings.Default.SettingsUpgradeNeeded = false;
-                        AnnoDesigner.Properties.Settings.Default.Save();
+                        _appSettings.Upgrade();
+                        _appSettings.SettingsUpgradeNeeded = false;
+                        _appSettings.Save();
                     }
                 }
                 catch (ConfigurationErrorsException ex)
@@ -168,13 +170,13 @@ namespace AnnoDesigner
                         File.Delete(fileName);
                     }
 
-                    AnnoDesigner.Properties.Settings.Default.Reload();
+                    _appSettings.Reload();
                 }
 
                 //var updateWindow = new UpdateWindow();                
                 await _commons.UpdateHelper.ReplaceUpdatedPresetsFilesAsync();
 
-                var mainVM = new MainViewModel(_commons);
+                var mainVM = new MainViewModel(_commons, _appSettings);
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
                 MainWindow = new MainWindow();
@@ -184,7 +186,7 @@ namespace AnnoDesigner
                 //updateWindow.Show();
 
                 //If language is not recognized, bring up the language selection screen
-                if (!Localization.Localization.LanguageCodeMap.ContainsKey(AnnoDesigner.Properties.Settings.Default.SelectedLanguage))
+                if (!Localization.Localization.LanguageCodeMap.ContainsKey(_appSettings.SelectedLanguage))
                 {
                     var w = new Welcome();
                     w.DataContext = mainVM.WelcomeViewModel;
@@ -192,8 +194,7 @@ namespace AnnoDesigner
                 }
                 else
                 {
-                    _commons.SelectedLanguage = AnnoDesigner.Properties.Settings.Default.SelectedLanguage;
-                    //AnnoDesigner.MainWindow.SelectedLanguage = AnnoDesigner.Properties.Settings.Default.SelectedLanguage;
+                    _commons.SelectedLanguage = _appSettings.SelectedLanguage;
                 }
 
                 MainWindow.ShowDialog();

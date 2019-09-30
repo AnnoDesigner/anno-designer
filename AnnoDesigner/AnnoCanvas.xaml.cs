@@ -946,7 +946,7 @@ namespace AnnoDesigner
         //I was really just checking to see if there was a built in function, but this works
         //https://stackoverflow.com/questions/18657508/c-sharp-find-nth-root
         [Pure]
-        static double NthRoot(double A, double N)
+        private static double NthRoot(double A, double N)
         {
             return Math.Pow(A, 1.0 / N);
         }
