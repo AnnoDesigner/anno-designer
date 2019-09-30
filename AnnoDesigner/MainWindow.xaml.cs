@@ -12,7 +12,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core;
-using AnnoDesigner.Core.Presets.Models;
 using System.Text;
 using System.Configuration;
 using AnnoDesigner.Core.Helper;
@@ -79,77 +78,7 @@ namespace AnnoDesigner
             //    MessageBox.Show(ex.Message, "Loading of the color presets failed");
             //}
 
-            // load presets
-            BuildingPresets presets = annoCanvas.BuildingPresets;
-            if (presets != null)
-            {
-                GroupBoxPresets.Header = string.Format("Building presets - loaded v{0}", presets.Version);
-
-                _mainViewModel.PresetsVersionValue = presets.Version;
-                _mainViewModel.PresetsTreeViewModel.LoadItems(annoCanvas.BuildingPresets);
-
-                var isFiltered = false;
-
-                //apply saved search before restoring state
-                if (!string.IsNullOrWhiteSpace(Settings.Default.TreeViewSearchText))
-                {
-                    _mainViewModel.PresetsTreeSearchViewModel.SearchText = Settings.Default.TreeViewSearchText;
-                    isFiltered = true;
-                }
-
-                if (Enum.TryParse<CoreConstants.GameVersion>(Settings.Default.PresetsTreeGameVersionFilter, ignoreCase: true, out var parsedValue))
-                {
-                    //if all games were deselected on last app run, now select all
-                    if (parsedValue == CoreConstants.GameVersion.Unknown)
-                    {
-                        foreach (CoreConstants.GameVersion curGameVersion in Enum.GetValues(typeof(CoreConstants.GameVersion)))
-                        {
-                            if (curGameVersion == CoreConstants.GameVersion.Unknown || curGameVersion == CoreConstants.GameVersion.All)
-                            {
-                                continue;
-                            }
-
-                            parsedValue |= curGameVersion;
-                        }
-                    }
-
-                    _mainViewModel.PresetsTreeSearchViewModel.SelectedGameVersions = parsedValue;
-                    isFiltered = true;
-                }
-                else
-                {
-                    //if saved value is not known, now select all
-                    parsedValue = CoreConstants.GameVersion.Unknown;
-
-                    foreach (CoreConstants.GameVersion curGameVersion in Enum.GetValues(typeof(CoreConstants.GameVersion)))
-                    {
-                        if (curGameVersion == CoreConstants.GameVersion.Unknown || curGameVersion == CoreConstants.GameVersion.All)
-                        {
-                            continue;
-                        }
-
-                        parsedValue |= curGameVersion;
-                    }
-
-                    _mainViewModel.PresetsTreeSearchViewModel.SelectedGameVersions = parsedValue;
-                }
-
-                //if not filtered, then restore tree state
-                if (!isFiltered && !string.IsNullOrWhiteSpace(Settings.Default.PresetsTreeExpandedState))
-                {
-                    Dictionary<int, bool> savedTreeState = null;
-                    using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(Settings.Default.PresetsTreeExpandedState)))
-                    {
-                        savedTreeState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
-                    }
-
-                    _mainViewModel.PresetsTreeViewModel.SetCondensedTreeState(savedTreeState, Settings.Default.PresetsTreeLastVersion);
-                }
-            }
-            else
-            {
-                GroupBoxPresets.Header = "Building presets - load failed";
-            }
+            _mainViewModel.LoadPresets();
 
             // load file given by argument
             if (!string.IsNullOrEmpty(App.FilenameArgument))

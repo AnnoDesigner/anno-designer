@@ -675,7 +675,7 @@
                 </GroupBox>
 
                 <GroupBox x:Name="GroupBoxPresets"
-                          Header="Building presets - not loaded"
+                          Header="{Binding PresetsSectionHeader}"
                           IsEnabled="True"
                           Width="{Binding ElementName=BuildingsPanel, Path=ActualWidth, Mode=OneWay}"
                           DockPanel.Dock="Top">

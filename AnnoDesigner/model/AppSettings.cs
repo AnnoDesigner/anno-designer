@@ -107,6 +107,29 @@ namespace AnnoDesigner.model
             set { Settings.Default.IsPavedStreet = value; }
         }
 
+        public string TreeViewSearchText
+        {
+            get { return Settings.Default.TreeViewSearchText; }
+            set { Settings.Default.TreeViewSearchText = value; }
+        }
+
+        public string PresetsTreeGameVersionFilter
+        {
+            get { return Settings.Default.PresetsTreeGameVersionFilter; }
+            set { Settings.Default.PresetsTreeGameVersionFilter = value; }
+        }
+
+        public string PresetsTreeExpandedState
+        {
+            get { return Settings.Default.PresetsTreeExpandedState; }
+            set { Settings.Default.PresetsTreeExpandedState = value; }
+        }
+
+        public string PresetsTreeLastVersion
+        {
+            get { return Settings.Default.PresetsTreeLastVersion; }
+            set { Settings.Default.PresetsTreeLastVersion = value; }
+        }
     }
 }
 

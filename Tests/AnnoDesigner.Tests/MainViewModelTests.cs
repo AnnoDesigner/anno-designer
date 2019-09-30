@@ -82,6 +82,7 @@ namespace AnnoDesigner.Tests
             Assert.NotNull(viewModel.SelectedIcon);
             Assert.NotNull(viewModel.Languages);
             Assert.NotNull(viewModel.MainWindowTitle);
+            Assert.NotNull(viewModel.PresetsSectionHeader);
         }
 
         #endregion

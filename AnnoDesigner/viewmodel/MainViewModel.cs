@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core.Extensions;
+using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Models;
@@ -59,6 +60,7 @@ namespace AnnoDesigner.viewmodel
         private ObservableCollection<IconImage> _availableIcons;
         private IconImage _selectedIcon;
         private string _mainWindowTitle;
+        private string _presetsSectionHeader;
 
         //for identifier checking process
         private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
@@ -138,6 +140,7 @@ namespace AnnoDesigner.viewmodel
             //Languages.Add(new SupportedLanguage("český"));
 
             MainWindowTitle = "Anno Designer";
+            PresetsSectionHeader = "Building presets - not loaded";
 
             UpdateLanguage();
         }
@@ -614,6 +617,84 @@ namespace AnnoDesigner.viewmodel
             BuildingSettingsViewModel.IsPavedStreet = _appSettings.IsPavedStreet;
         }
 
+        public void LoadPresets()
+        {
+            var presets = AnnoCanvas.BuildingPresets;
+            if (presets == null)
+            {
+                PresetsSectionHeader = "Building presets - load failed";
+                return;
+            }
+
+            PresetsSectionHeader = string.Format("Building presets - loaded v{0}", presets.Version);
+
+            PresetsVersionValue = presets.Version;
+            PresetsTreeViewModel.LoadItems(presets);
+
+            RestoreSearchAndFilter();
+        }
+
+        private void RestoreSearchAndFilter()
+        {
+            var isFiltered = false;
+
+            //apply saved search before restoring state
+            if (!string.IsNullOrWhiteSpace(_appSettings.TreeViewSearchText))
+            {
+                PresetsTreeSearchViewModel.SearchText = _appSettings.TreeViewSearchText;
+                isFiltered = true;
+            }
+
+            if (Enum.TryParse<GameVersion>(_appSettings.PresetsTreeGameVersionFilter, ignoreCase: true, out var parsedValue))
+            {
+                //if all games were deselected on last app run, now select all
+                if (parsedValue == GameVersion.Unknown)
+                {
+                    foreach (GameVersion curGameVersion in Enum.GetValues(typeof(GameVersion)))
+                    {
+                        if (curGameVersion == GameVersion.Unknown || curGameVersion == GameVersion.All)
+                        {
+                            continue;
+                        }
+
+                        parsedValue |= curGameVersion;
+                    }
+                }
+
+                PresetsTreeSearchViewModel.SelectedGameVersions = parsedValue;
+                isFiltered = true;
+            }
+            else
+            {
+                //if saved value is not known, now select all
+                parsedValue = GameVersion.Unknown;
+
+                foreach (GameVersion curGameVersion in Enum.GetValues(typeof(GameVersion)))
+                {
+                    if (curGameVersion == GameVersion.Unknown || curGameVersion == GameVersion.All)
+                    {
+                        continue;
+                    }
+
+                    parsedValue |= curGameVersion;
+                }
+
+                PresetsTreeSearchViewModel.SelectedGameVersions = parsedValue;
+            }
+
+            //if not filtered, then restore tree state
+            if (!isFiltered && !string.IsNullOrWhiteSpace(_appSettings.PresetsTreeExpandedState))
+            {
+                Dictionary<int, bool> savedTreeState = null;
+                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(_appSettings.PresetsTreeExpandedState)))
+                {
+                    savedTreeState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
+                }
+
+                PresetsTreeViewModel.SetCondensedTreeState(savedTreeState, _appSettings.PresetsTreeLastVersion);
+            }
+        }
+
         #region properties
 
         public AnnoCanvas AnnoCanvas
@@ -759,6 +840,12 @@ namespace AnnoDesigner.viewmodel
             set { UpdateProperty(ref _mainWindowTitle, value); }
         }
 
+        public string PresetsSectionHeader
+        {
+            get { return _presetsSectionHeader; }
+            set { UpdateProperty(ref _presetsSectionHeader, value); }
+        }
+
         #endregion
 
         #region commands
@@ -767,7 +854,7 @@ namespace AnnoDesigner.viewmodel
 
         private void OpenProjectHomepage(object param)
         {
-            System.Diagnostics.Process.Start("https://github.com/AgmasGold/anno-designer/");
+            Process.Start("https://github.com/AgmasGold/anno-designer/");
         }
 
         public ICommand CloseWindowCommand { get; private set; }
@@ -876,11 +963,11 @@ namespace AnnoDesigner.viewmodel
 
         private void ShowRegistrationMessageBox(bool isDeregistration)
         {
-            var language = AnnoDesigner.Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
-            var message = isDeregistration ? AnnoDesigner.Localization.Localization.Translations[language]["UnregisterFileExtensionSuccessful"] : AnnoDesigner.Localization.Localization.Translations[language]["RegisterFileExtensionSuccessful"];
+            var language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
+            var message = isDeregistration ? Localization.Localization.Translations[language]["UnregisterFileExtensionSuccessful"] : Localization.Localization.Translations[language]["RegisterFileExtensionSuccessful"];
 
             MessageBox.Show(message,
-                AnnoDesigner.Localization.Localization.Translations[language]["Successful"],
+                Localization.Localization.Translations[language]["Successful"],
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
         }
@@ -959,7 +1046,7 @@ namespace AnnoDesigner.viewmodel
             {
                 logger.Trace($"Render thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
 
-                Stopwatch sw = new Stopwatch();
+                var sw = new Stopwatch();
                 sw.Start();
 
                 var icons = new Dictionary<string, IconImage>(StringComparer.OrdinalIgnoreCase);
