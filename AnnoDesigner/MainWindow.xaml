@@ -19,11 +19,13 @@
         d:DesignWidth="640"
         Title="{Binding MainWindowTitle}"
         Icon="/AnnoDesigner;component/icon.ico"
-        Height="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowHeight, Mode=TwoWay}"
-        Width="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowWidth, Mode=TwoWay}"
-        Top="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowTop, Mode=TwoWay}"
-        Left="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowLeft, Mode=TwoWay}"
-        WindowState="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowWindowState, Mode=TwoWay}"
+        Height="{Binding MainWindowHeight, Mode=TwoWay}"
+        Width="{Binding MainWindowWidth, Mode=TwoWay}"
+        Top="{Binding MainWindowTop, Mode=TwoWay}"
+        Left="{Binding MainWindowLeft, Mode=TwoWay}"
+        WindowState="{Binding MainWindowWindowState, Mode=TwoWay}"
+        MinHeight="480"
+        MinWidth="640"
         Loaded="WindowLoaded"
         Closing="WindowClosing">
     <Window.Resources>

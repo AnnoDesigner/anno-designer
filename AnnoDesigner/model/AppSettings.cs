@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using AnnoDesigner.Properties;
 
 namespace AnnoDesigner.model
@@ -129,6 +130,36 @@ namespace AnnoDesigner.model
         {
             get { return Settings.Default.PresetsTreeLastVersion; }
             set { Settings.Default.PresetsTreeLastVersion = value; }
+        }
+
+        public int MainWindowHeight
+        {
+            get { return Settings.Default.MainWindowHeight; }
+            set { Settings.Default.MainWindowHeight = value; }
+        }
+
+        public int MainWindowWidth
+        {
+            get { return Settings.Default.MainWindowWidth; }
+            set { Settings.Default.MainWindowWidth = value; }
+        }
+
+        public int MainWindowLeft
+        {
+            get { return Settings.Default.MainWindowLeft; }
+            set { Settings.Default.MainWindowLeft = value; }
+        }
+
+        public int MainWindowTop
+        {
+            get { return Settings.Default.MainWindowTop; }
+            set { Settings.Default.MainWindowTop = value; }
+        }
+
+        public WindowState MainWindowWindowState
+        {
+            get { return Settings.Default.MainWindowWindowState; }
+            set { Settings.Default.MainWindowWindowState = value; }
         }
     }
 }

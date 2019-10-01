@@ -61,6 +61,11 @@ namespace AnnoDesigner.viewmodel
         private IconImage _selectedIcon;
         private string _mainWindowTitle;
         private string _presetsSectionHeader;
+        private int _mainWindowHeight;
+        private int _mainWindowWidth;
+        private int _mainWindowLeft;
+        private int _mainWindowTop;
+        private WindowState _minWindowWindowState;
 
         //for identifier checking process
         private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
@@ -618,6 +623,46 @@ namespace AnnoDesigner.viewmodel
             CanvasShowLabels = _appSettings.ShowLabels;
 
             BuildingSettingsViewModel.IsPavedStreet = _appSettings.IsPavedStreet;
+
+            MainWindowHeight = _appSettings.MainWindowHeight;
+            MainWindowWidth = _appSettings.MainWindowWidth;
+            MainWindowLeft = _appSettings.MainWindowLeft;
+            MainWindowTop = _appSettings.MainWindowTop;
+            MainWindowWindowState = _appSettings.MainWindowWindowState;
+        }
+
+        public void SaveSettings()
+        {
+            _appSettings.IsPavedStreet = BuildingSettingsViewModel.IsPavedStreet;
+
+            _appSettings.ShowGrid = CanvasShowGrid;
+            _appSettings.ShowIcons = CanvasShowIcons;
+            _appSettings.ShowLabels = CanvasShowLabels;
+
+            _appSettings.StatsShowStats = StatisticsViewModel.IsVisible;
+            _appSettings.StatsShowBuildingCount = StatisticsViewModel.ShowStatisticsBuildingCount;
+
+            _appSettings.EnableAutomaticUpdateCheck = AutomaticUpdateCheck;
+
+            _appSettings.UseCurrentZoomOnExportedImageValue = UseCurrentZoomOnExportedImageValue;
+            _appSettings.RenderSelectionHighlightsOnExportedImageValue = RenderSelectionHighlightsOnExportedImageValue;
+
+            string savedTreeState = null;
+            using (var ms = new MemoryStream())
+            {
+                SerializationHelper.SaveToStream(PresetsTreeViewModel.GetCondensedTreeState(), ms);
+
+                savedTreeState = Encoding.UTF8.GetString(ms.ToArray());
+            }
+            _appSettings.PresetsTreeExpandedState = savedTreeState;
+            _appSettings.PresetsTreeLastVersion = PresetsTreeViewModel.BuildingPresetsVersion;
+
+            _appSettings.TreeViewSearchText = PresetsTreeSearchViewModel.SearchText;
+            _appSettings.PresetsTreeGameVersionFilter = PresetsTreeViewModel.FilterGameVersion.ToString();
+
+            _appSettings.MainWindowWindowState = MainWindowWindowState;
+
+            _appSettings.Save();
         }
 
         public void LoadPresets()
@@ -847,6 +892,36 @@ namespace AnnoDesigner.viewmodel
         {
             get { return _presetsSectionHeader; }
             set { UpdateProperty(ref _presetsSectionHeader, value); }
+        }
+
+        public int MainWindowHeight
+        {
+            get { return _mainWindowHeight; }
+            set { UpdateProperty(ref _mainWindowHeight, value); }
+        }
+
+        public int MainWindowWidth
+        {
+            get { return _mainWindowWidth; }
+            set { UpdateProperty(ref _mainWindowWidth, value); }
+        }
+
+        public int MainWindowLeft
+        {
+            get { return _mainWindowLeft; }
+            set { UpdateProperty(ref _mainWindowLeft, value); }
+        }
+
+        public int MainWindowTop
+        {
+            get { return _mainWindowTop; }
+            set { UpdateProperty(ref _mainWindowTop, value); }
+        }
+
+        public WindowState MainWindowWindowState
+        {
+            get { return _minWindowWindowState; }
+            set { UpdateProperty(ref _minWindowWindowState, value); }
         }
 
         #endregion

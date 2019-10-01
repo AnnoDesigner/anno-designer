@@ -125,41 +125,14 @@ namespace AnnoDesigner
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
-            Settings.Default.IsPavedStreet = _mainViewModel.BuildingSettingsViewModel.IsPavedStreet;
-
-            Settings.Default.ShowGrid = _mainViewModel.CanvasShowGrid;
-            Settings.Default.ShowIcons = _mainViewModel.CanvasShowIcons;
-            Settings.Default.ShowLabels = _mainViewModel.CanvasShowLabels;
-
-            Settings.Default.StatsShowStats = _mainViewModel.StatisticsViewModel.IsVisible;
-            Settings.Default.StatsShowBuildingCount = _mainViewModel.StatisticsViewModel.ShowStatisticsBuildingCount;
-
-            Settings.Default.EnableAutomaticUpdateCheck = _mainViewModel.AutomaticUpdateCheck;
-
-            Settings.Default.UseCurrentZoomOnExportedImageValue = _mainViewModel.UseCurrentZoomOnExportedImageValue;
-            Settings.Default.RenderSelectionHighlightsOnExportedImageValue = _mainViewModel.RenderSelectionHighlightsOnExportedImageValue;
-
-            string savedTreeState = null;
-            using (var ms = new MemoryStream())
-            {
-                SerializationHelper.SaveToStream(_mainViewModel.PresetsTreeViewModel.GetCondensedTreeState(), ms);
-
-                savedTreeState = Encoding.UTF8.GetString(ms.ToArray());
-            }
-            Settings.Default.PresetsTreeExpandedState = savedTreeState;
-            Settings.Default.PresetsTreeLastVersion = _mainViewModel.PresetsTreeViewModel.BuildingPresetsVersion;
-
-            Settings.Default.TreeViewSearchText = _mainViewModel.PresetsTreeSearchViewModel.SearchText;
-            Settings.Default.PresetsTreeGameVersionFilter = _mainViewModel.PresetsTreeViewModel.FilterGameVersion.ToString();
-
             if (WindowState == WindowState.Minimized)
             {
                 WindowState = WindowState.Normal;
             }
 
-            Settings.Default.MainWindowWindowState = WindowState;
+            _mainViewModel.MainWindowWindowState = WindowState;
 
-            Settings.Default.Save();
+            _mainViewModel.SaveSettings();
 
 #if DEBUG
             var userConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
