@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using AnnoDesigner.Core;
 using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout;
@@ -25,7 +26,6 @@ using AnnoDesigner.Localization;
 using AnnoDesigner.model;
 using Microsoft.Win32;
 using NLog;
-using static AnnoDesigner.Core.CoreConstants;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner.viewmodel
@@ -142,6 +142,9 @@ namespace AnnoDesigner.viewmodel
             MainWindowTitle = "Anno Designer";
             PresetsSectionHeader = "Building presets - not loaded";
 
+            VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
+            FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
+
             UpdateLanguage();
         }
 
@@ -203,7 +206,7 @@ namespace AnnoDesigner.viewmodel
             }
             else if (string.Equals(e.PropertyName, nameof(PresetsTreeSearchViewModel.SelectedGameVersionFilters), StringComparison.OrdinalIgnoreCase))
             {
-                var filterGameVersion = GameVersion.Unknown;
+                var filterGameVersion = CoreConstants.GameVersion.Unknown;
 
                 foreach (var curSelectedFilter in PresetsTreeSearchViewModel.SelectedGameVersionFilters)
                 {
@@ -645,14 +648,14 @@ namespace AnnoDesigner.viewmodel
                 isFiltered = true;
             }
 
-            if (Enum.TryParse<GameVersion>(_appSettings.PresetsTreeGameVersionFilter, ignoreCase: true, out var parsedValue))
+            if (Enum.TryParse<CoreConstants.GameVersion>(_appSettings.PresetsTreeGameVersionFilter, ignoreCase: true, out var parsedValue))
             {
                 //if all games were deselected on last app run, now select all
-                if (parsedValue == GameVersion.Unknown)
+                if (parsedValue == CoreConstants.GameVersion.Unknown)
                 {
-                    foreach (GameVersion curGameVersion in Enum.GetValues(typeof(GameVersion)))
+                    foreach (CoreConstants.GameVersion curGameVersion in Enum.GetValues(typeof(CoreConstants.GameVersion)))
                     {
-                        if (curGameVersion == GameVersion.Unknown || curGameVersion == GameVersion.All)
+                        if (curGameVersion == CoreConstants.GameVersion.Unknown || curGameVersion == CoreConstants.GameVersion.All)
                         {
                             continue;
                         }
@@ -667,11 +670,11 @@ namespace AnnoDesigner.viewmodel
             else
             {
                 //if saved value is not known, now select all
-                parsedValue = GameVersion.Unknown;
+                parsedValue = CoreConstants.GameVersion.Unknown;
 
-                foreach (GameVersion curGameVersion in Enum.GetValues(typeof(GameVersion)))
+                foreach (CoreConstants.GameVersion curGameVersion in Enum.GetValues(typeof(CoreConstants.GameVersion)))
                 {
-                    if (curGameVersion == GameVersion.Unknown || curGameVersion == GameVersion.All)
+                    if (curGameVersion == CoreConstants.GameVersion.Unknown || curGameVersion == CoreConstants.GameVersion.All)
                     {
                         continue;
                     }

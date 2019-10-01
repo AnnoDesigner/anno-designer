@@ -53,9 +53,6 @@ namespace AnnoDesigner
 
             _mainViewModel.LoadAvailableIcons();
 
-            _mainViewModel.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
-            _mainViewModel.FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
-
             // check for updates on startup            
             _ = _mainViewModel.CheckForUpdatesSub(false);//just fire and forget
 

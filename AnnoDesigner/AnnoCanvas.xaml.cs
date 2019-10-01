@@ -951,7 +951,7 @@ namespace AnnoDesigner
             return Math.Pow(A, 1.0 / N);
         }
 
-        static List<AnnoObject> CloneList(List<AnnoObject> list)
+        private static List<AnnoObject> CloneList(List<AnnoObject> list)
         {
             var newList = new List<AnnoObject>(list.Capacity);
             list.ForEach(_ => newList.Add(new AnnoObject(_)));
@@ -1107,6 +1107,7 @@ namespace AnnoDesigner
         protected override void OnMouseMove(MouseEventArgs e)
         {
             HandleMouse(e);
+
             // check if user begins to drag
             if (Math.Abs(_mouseDragStart.X - _mousePosition.X) > 1 || Math.Abs(_mouseDragStart.Y - _mousePosition.Y) > 1)
             {
@@ -1129,6 +1130,7 @@ namespace AnnoDesigner
                         break;
                 }
             }
+
             if (CurrentMode == MouseMode.DragAll)
             {
                 // move all selected objects
@@ -1187,6 +1189,7 @@ namespace AnnoDesigner
                                 StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                                 break;
                             }
+
                             var unselected = _placedObjects.FindAll(_ => !_selectedObjects.Contains(_));
                             var collisionsExist = false;
                             // temporarily move each object and check if collisions with unselected objects exist
@@ -1221,6 +1224,7 @@ namespace AnnoDesigner
                     }
                 }
             }
+
             InvalidateVisual();
         }
 
