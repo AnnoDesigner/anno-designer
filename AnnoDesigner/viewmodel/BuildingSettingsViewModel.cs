@@ -403,11 +403,11 @@ namespace AnnoDesigner.viewmodel
             {
                 if (_annoCanvasToUse != null)
                 {
-                    _annoCanvasToUse.StatisticsUpdated -= AnnoCanvasToUse_StatisticsUpdated;
+                    _annoCanvasToUse.ColorsInLayoutUpdated -= AnnoCanvasToUse_ColorsUpdated;
                 }
 
                 _annoCanvasToUse = value;
-                _annoCanvasToUse.StatisticsUpdated += AnnoCanvasToUse_StatisticsUpdated;
+                _annoCanvasToUse.ColorsInLayoutUpdated += AnnoCanvasToUse_ColorsUpdated;
             }
         }
 
@@ -573,7 +573,7 @@ namespace AnnoDesigner.viewmodel
 
             AnnoCanvasToUse.InvalidateVisual();
 
-            AnnoCanvasToUse_StatisticsUpdated(this, EventArgs.Empty);
+            AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
         }
 
         private bool CanApplyColorToSelection(object param)
@@ -600,6 +600,7 @@ namespace AnnoDesigner.viewmodel
             }
 
             AnnoCanvasToUse.InvalidateVisual();
+            AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
         }
 
         private bool CanApplyPredefinedColorToSelection(object param)
@@ -633,7 +634,7 @@ namespace AnnoDesigner.viewmodel
 
         #endregion
 
-        private void AnnoCanvasToUse_StatisticsUpdated(object sender, EventArgs e)
+        private void AnnoCanvasToUse_ColorsUpdated(object sender, EventArgs e)
         {
             ColorsInLayout.Clear();
 
