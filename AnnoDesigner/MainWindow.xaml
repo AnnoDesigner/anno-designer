@@ -22,7 +22,7 @@
         Height="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowHeight, Mode=TwoWay}"
         Width="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowWidth, Mode=TwoWay}"
         Top="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowTop, Mode=TwoWay}"
-        Left="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowTop, Mode=TwoWay}"
+        Left="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowLeft, Mode=TwoWay}"
         WindowState="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowWindowState, Mode=TwoWay}"
         Loaded="WindowLoaded"
         Closing="WindowClosing">
