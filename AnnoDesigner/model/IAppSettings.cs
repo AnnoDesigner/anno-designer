@@ -31,10 +31,10 @@ namespace AnnoDesigner.model
         string PresetsTreeGameVersionFilter { get; set; }
         string PresetsTreeExpandedState { get; set; }
         string PresetsTreeLastVersion { get; set; }
-        int MainWindowHeight { get; set; }
-        int MainWindowWidth { get; set; }
-        int MainWindowLeft { get; set; }
-        int MainWindowTop { get; set; }
+        double MainWindowHeight { get; set; }
+        double MainWindowWidth { get; set; }
+        double MainWindowLeft { get; set; }
+        double MainWindowTop { get; set; }
         WindowState MainWindowWindowState { get; set; }
     }
 }

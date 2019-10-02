@@ -132,25 +132,25 @@ namespace AnnoDesigner.model
             set { Settings.Default.PresetsTreeLastVersion = value; }
         }
 
-        public int MainWindowHeight
+        public double MainWindowHeight
         {
             get { return Settings.Default.MainWindowHeight; }
             set { Settings.Default.MainWindowHeight = value; }
         }
 
-        public int MainWindowWidth
+        public double MainWindowWidth
         {
             get { return Settings.Default.MainWindowWidth; }
             set { Settings.Default.MainWindowWidth = value; }
         }
 
-        public int MainWindowLeft
+        public double MainWindowLeft
         {
             get { return Settings.Default.MainWindowLeft; }
             set { Settings.Default.MainWindowLeft = value; }
         }
 
-        public int MainWindowTop
+        public double MainWindowTop
         {
             get { return Settings.Default.MainWindowTop; }
             set { Settings.Default.MainWindowTop = value; }

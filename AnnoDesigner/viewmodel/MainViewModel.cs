@@ -61,10 +61,10 @@ namespace AnnoDesigner.viewmodel
         private IconImage _selectedIcon;
         private string _mainWindowTitle;
         private string _presetsSectionHeader;
-        private int _mainWindowHeight;
-        private int _mainWindowWidth;
-        private int _mainWindowLeft;
-        private int _mainWindowTop;
+        private double _mainWindowHeight;
+        private double _mainWindowWidth;
+        private double _mainWindowLeft;
+        private double _mainWindowTop;
         private WindowState _minWindowWindowState;
 
         //for identifier checking process
@@ -660,6 +660,10 @@ namespace AnnoDesigner.viewmodel
             _appSettings.TreeViewSearchText = PresetsTreeSearchViewModel.SearchText;
             _appSettings.PresetsTreeGameVersionFilter = PresetsTreeViewModel.FilterGameVersion.ToString();
 
+            _appSettings.MainWindowHeight = MainWindowHeight;
+            _appSettings.MainWindowWidth = MainWindowWidth;
+            _appSettings.MainWindowLeft = MainWindowLeft;
+            _appSettings.MainWindowTop = MainWindowTop;
             _appSettings.MainWindowWindowState = MainWindowWindowState;
 
             _appSettings.Save();
@@ -894,25 +898,25 @@ namespace AnnoDesigner.viewmodel
             set { UpdateProperty(ref _presetsSectionHeader, value); }
         }
 
-        public int MainWindowHeight
+        public double MainWindowHeight
         {
             get { return _mainWindowHeight; }
             set { UpdateProperty(ref _mainWindowHeight, value); }
         }
 
-        public int MainWindowWidth
+        public double MainWindowWidth
         {
             get { return _mainWindowWidth; }
             set { UpdateProperty(ref _mainWindowWidth, value); }
         }
 
-        public int MainWindowLeft
+        public double MainWindowLeft
         {
             get { return _mainWindowLeft; }
             set { UpdateProperty(ref _mainWindowLeft, value); }
         }
 
-        public int MainWindowTop
+        public double MainWindowTop
         {
             get { return _mainWindowTop; }
             set { UpdateProperty(ref _mainWindowTop, value); }
