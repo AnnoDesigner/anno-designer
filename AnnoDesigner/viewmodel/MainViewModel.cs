@@ -775,7 +775,10 @@ namespace AnnoDesigner.viewmodel
             set
             {
                 UpdateProperty(ref _canvasShowGrid, value);
-                AnnoCanvas.RenderGrid = _canvasShowGrid;
+                if (AnnoCanvas != null)
+                {
+                    AnnoCanvas.RenderGrid = _canvasShowGrid;
+                }
             }
         }
 
@@ -785,7 +788,10 @@ namespace AnnoDesigner.viewmodel
             set
             {
                 UpdateProperty(ref _canvasShowIcons, value);
-                AnnoCanvas.RenderIcon = _canvasShowIcons;
+                if (AnnoCanvas != null)
+                {
+                    AnnoCanvas.RenderIcon = _canvasShowIcons;
+                }
             }
         }
 
@@ -795,7 +801,10 @@ namespace AnnoDesigner.viewmodel
             set
             {
                 UpdateProperty(ref _canvasShowLabels, value);
-                AnnoCanvas.RenderLabel = _canvasShowLabels;
+                if (AnnoCanvas != null)
+                {
+                    AnnoCanvas.RenderLabel = _canvasShowLabels;
+                }
             }
         }
 
