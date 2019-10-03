@@ -139,10 +139,7 @@ namespace AnnoDesigner.viewmodel
         public bool IsVisible
         {
             get { return _isVisible; }
-            set
-            {
-                UpdateProperty(ref _isVisible, value);
-            }
+            set { UpdateProperty(ref _isVisible, value); }
         }
 
         public string UsedArea

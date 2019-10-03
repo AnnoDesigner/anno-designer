@@ -7,6 +7,7 @@ using Xunit;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
 using Moq;
+using System.Collections.ObjectModel;
 
 namespace AnnoDesigner.Tests
 {
@@ -41,10 +42,22 @@ namespace AnnoDesigner.Tests
             Assert.NotNull(viewModel.ApplyColorToSelectionCommand);
             Assert.NotNull(viewModel.ApplyPredefinedColorToSelectionCommand);
             Assert.NotNull(viewModel.UseColorInLayoutCommand);
-            Assert.Equal(Colors.Red, viewModel.SelectedColor);
             Assert.NotNull(viewModel.ColorsInLayout);
             Assert.NotNull(viewModel.BuildingInfluences);
+
             Assert.Equal(BuildingInfluenceType.None, viewModel.SelectedBuildingInfluence.Type);
+            Assert.Equal(Colors.Red, viewModel.SelectedColor);
+            Assert.Equal(4, viewModel.BuildingHeight);
+            Assert.Equal(4, viewModel.BuildingWidth);
+            Assert.Equal(string.Empty, viewModel.BuildingTemplate);
+            Assert.Equal(string.Empty, viewModel.BuildingName);
+            Assert.Equal(string.Empty, viewModel.BuildingIdentifier);
+            Assert.Equal(0, viewModel.BuildingRadius);
+            Assert.Equal(0, viewModel.BuildingInfluenceRange);
+
+            Assert.False(viewModel.IsEnableLabelChecked);
+            Assert.False(viewModel.IsBorderlessChecked);
+            Assert.False(viewModel.IsRoadChecked);
         }
 
         [Fact]
@@ -298,6 +311,62 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedColor, viewModel.SelectedColor);
+        }
+
+        #endregion
+
+        #region ShowColorsInLayout tests
+
+        [Fact]
+        public void ShowColorsInLayout_ColorsInLayoutIsNull_ShouldReturnFalse()
+        {
+            // Arrange
+            var viewModel = GetViewModel();
+            viewModel.ColorsInLayout = null;
+
+            // Act/Assert
+            Assert.False(viewModel.ShowColorsInLayout);
+        }
+
+        [Fact]
+        public void ShowColorsInLayout_ColorsInLayoutIsEmpty_ShouldReturnFalse()
+        {
+            // Arrange
+            var viewModel = GetViewModel();
+            viewModel.ColorsInLayout = new ObservableCollection<SerializableColor>();
+
+            // Act/Assert
+            Assert.False(viewModel.ShowColorsInLayout);
+        }
+
+        [Fact]
+        public void ShowColorsInLayout_ColorsInLayoutContainsItem_ShouldReturnTrue()
+        {
+            // Arrange
+            var viewModel = GetViewModel();
+            var colorsInLayout = new ObservableCollection<SerializableColor>();
+            colorsInLayout.Add(new SerializableColor());
+
+            viewModel.ColorsInLayout = colorsInLayout;
+
+            // Act/Assert
+            Assert.True(viewModel.ShowColorsInLayout);
+        }
+
+        #endregion
+
+        #region ColorsInLayout tests
+
+        [Fact]
+        public void ColorsInLayout_IsSet_ShouldNotifyShowColorsInLayout()
+        {
+            // Arrange
+            var viewModel = GetViewModel();
+
+            // Act/Assert
+            Assert.PropertyChanged(viewModel,
+                nameof(BuildingSettingsViewModel.ShowColorsInLayout),
+                () => viewModel.ColorsInLayout = new ObservableCollection<SerializableColor>());
         }
 
         #endregion

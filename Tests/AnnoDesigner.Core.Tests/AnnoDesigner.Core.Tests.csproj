@@ -49,6 +49,7 @@
     <Compile Include="IconMappingPresetsLoaderTests.cs" />
     <Compile Include="LayoutLoaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StatisticsCalculationHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Moq">

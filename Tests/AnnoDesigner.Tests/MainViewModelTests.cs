@@ -8,6 +8,8 @@ using Xunit;
 using Moq;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.model;
+using AnnoDesigner.Core;
+using System.Globalization;
 
 namespace AnnoDesigner.Tests
 {
@@ -76,13 +78,14 @@ namespace AnnoDesigner.Tests
             Assert.Null(viewModel.StatusMessage);
             Assert.Null(viewModel.StatusMessageClipboard);
 
-            Assert.NotNull(viewModel.VersionValue);
-            Assert.NotNull(viewModel.FileVersionValue);
             Assert.NotNull(viewModel.AvailableIcons);
             Assert.NotNull(viewModel.SelectedIcon);
             Assert.NotNull(viewModel.Languages);
             Assert.NotNull(viewModel.MainWindowTitle);
             Assert.NotNull(viewModel.PresetsSectionHeader);
+
+            Assert.Equal(Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture), viewModel.VersionValue);
+            Assert.Equal(CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture), viewModel.FileVersionValue);
         }
 
         #endregion
@@ -250,14 +253,14 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
-        [Fact]
-        public void SaveSettings_IsCalled_ShouldSaveMainWindowWindowState()
+        [Theory]
+        [InlineData(System.Windows.WindowState.Maximized)]
+        [InlineData(System.Windows.WindowState.Normal)]
+        public void SaveSettings_IsCalled_ShouldSaveMainWindowWindowState(System.Windows.WindowState expectedMainMainWindowWindowState)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
             appSettings.SetupAllProperties();
-
-            var expectedMainMainWindowWindowState = System.Windows.WindowState.Normal;
 
             var viewModel = GetViewModel(null, appSettings.Object);
             viewModel.MainWindowWindowState = expectedMainMainWindowWindowState;
@@ -270,14 +273,14 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
-        [Fact]
-        public void SaveSettings_IsCalled_ShouldSaveShowGrid()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveShowGrid(bool expectedShowGrid)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
             appSettings.SetupAllProperties();
-
-            var expectedShowGrid = true;
 
             var viewModel = GetViewModel(null, appSettings.Object);
             viewModel.CanvasShowGrid = expectedShowGrid;
@@ -290,14 +293,14 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
-        [Fact]
-        public void SaveSettings_IsCalled_ShouldSaveShowIcons()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveShowIcons(bool expectedShowIcons)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
             appSettings.SetupAllProperties();
-
-            var expectedShowIcons = true;
 
             var viewModel = GetViewModel(null, appSettings.Object);
             viewModel.CanvasShowIcons = expectedShowIcons;
@@ -310,14 +313,14 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
-        [Fact]
-        public void SaveSettings_IsCalled_ShouldSaveShowLabels()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveShowLabels(bool expectedShowLabels)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
             appSettings.SetupAllProperties();
-
-            var expectedShowLabels = true;
 
             var viewModel = GetViewModel(null, appSettings.Object);
             viewModel.CanvasShowLabels = expectedShowLabels;
@@ -330,14 +333,14 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
-        [Fact]
-        public void SaveSettings_IsCalled_ShouldSaveEnableAutomaticUpdateCheck()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveEnableAutomaticUpdateCheck(bool expectedEnableAutomaticUpdateCheck)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
             appSettings.SetupAllProperties();
-
-            var expectedEnableAutomaticUpdateCheck = true;
 
             var viewModel = GetViewModel(null, appSettings.Object);
             viewModel.AutomaticUpdateCheck = expectedEnableAutomaticUpdateCheck;
@@ -350,14 +353,14 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
-        [Fact]
-        public void SaveSettings_IsCalled_ShouldSaveUseCurrentZoomOnExportedImageValue()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveUseCurrentZoomOnExportedImageValue(bool expectedUseCurrentZoomOnExportedImageValue)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
             appSettings.SetupAllProperties();
-
-            var expectedUseCurrentZoomOnExportedImageValue = true;
 
             var viewModel = GetViewModel(null, appSettings.Object);
             viewModel.UseCurrentZoomOnExportedImageValue = expectedUseCurrentZoomOnExportedImageValue;
@@ -370,14 +373,14 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
-        [Fact]
-        public void SaveSettings_IsCalled_ShouldSaveRenderSelectionHighlightsOnExportedImageValue()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveRenderSelectionHighlightsOnExportedImageValue(bool expectedRenderSelectionHighlightsOnExportedImageValue)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
             appSettings.SetupAllProperties();
-
-            var expectedRenderSelectionHighlightsOnExportedImageValue = true;
 
             var viewModel = GetViewModel(null, appSettings.Object);
             viewModel.RenderSelectionHighlightsOnExportedImageValue = expectedRenderSelectionHighlightsOnExportedImageValue;
@@ -390,14 +393,14 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
-        [Fact(Skip = "needs abstraction of 'MessageBox.Show' in BuildingSettingsViewModel")]
-        public void SaveSettings_IsCalled_ShouldSaveIsPavedStreet()
+        [Theory(Skip = "needs abstraction of 'MessageBox.Show' in BuildingSettingsViewModel")]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveIsPavedStreet(bool expectedIsPavedStreet)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
             appSettings.SetupAllProperties();
-
-            var expectedIsPavedStreet = true;
 
             var viewModel = GetViewModel(null, appSettings.Object);
             viewModel.BuildingSettingsViewModel.IsPavedStreet = expectedIsPavedStreet;
@@ -410,14 +413,14 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
-        [Fact]
-        public void SaveSettings_IsCalled_ShouldSaveStatsShowStats()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveStatsShowStats(bool expectedStatsShowStats)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
             appSettings.SetupAllProperties();
-
-            var expectedStatsShowStats = true;
 
             var viewModel = GetViewModel(null, appSettings.Object);
             viewModel.StatisticsViewModel.IsVisible = expectedStatsShowStats;
@@ -430,14 +433,14 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
-        [Fact]
-        public void SaveSettings_IsCalled_ShouldSaveStatsShowBuildingCount()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveStatsShowBuildingCount(bool expectedStatsShowBuildingCount)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
             appSettings.SetupAllProperties();
-
-            var expectedStatsShowBuildingCount = true;
 
             var viewModel = GetViewModel(null, appSettings.Object);
             viewModel.StatisticsViewModel.ShowStatisticsBuildingCount = expectedStatsShowBuildingCount;
@@ -448,6 +451,150 @@ namespace AnnoDesigner.Tests
             // Assert
             Assert.Equal(expectedStatsShowBuildingCount, appSettings.Object.StatsShowBuildingCount);
             appSettings.Verify(x => x.Save(), Times.Once);
+        }
+
+        [Theory]
+        //[InlineData("")] Skip = "needs abstraction of 'AnnoCanvas' in MainViewModel"
+        //[InlineData(" ")] Skip = "needs abstraction of 'AnnoCanvas' in MainViewModel"
+        //[InlineData(null)] Skip = "needs abstraction of 'AnnoCanvas' in MainViewModel"
+        [InlineData("lorem")]
+        public void SaveSettings_IsCalled_ShouldSaveTreeViewSearchText(string expectedTreeViewSearchText)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.PresetsTreeSearchViewModel.SearchText = expectedTreeViewSearchText;
+
+            // Act
+            viewModel.SaveSettings();
+
+            // Assert
+            Assert.Equal(expectedTreeViewSearchText, appSettings.Object.TreeViewSearchText);
+            appSettings.Verify(x => x.Save(), Times.Once);
+        }
+
+        [Theory]
+        [InlineData(CoreConstants.GameVersion.All)]
+        [InlineData(CoreConstants.GameVersion.Anno1404)]
+        [InlineData(CoreConstants.GameVersion.Anno1800)]
+        [InlineData(CoreConstants.GameVersion.Anno2070)]
+        [InlineData(CoreConstants.GameVersion.Anno2205)]
+        [InlineData(CoreConstants.GameVersion.Unknown)]
+        [InlineData(CoreConstants.GameVersion.Anno1404 | CoreConstants.GameVersion.Anno1800)]
+        [InlineData(CoreConstants.GameVersion.Anno2070 | CoreConstants.GameVersion.Anno2205 | CoreConstants.GameVersion.Anno1800)]
+        public void SaveSettings_IsCalled_ShouldSavePresetsTreeGameVersionFilter(CoreConstants.GameVersion expectedPresetsTreeGameVersionFilter)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.PresetsTreeViewModel.FilterGameVersion = expectedPresetsTreeGameVersionFilter;
+
+            // Act
+            viewModel.SaveSettings();
+
+            // Assert
+            Assert.Equal(expectedPresetsTreeGameVersionFilter.ToString(), appSettings.Object.PresetsTreeGameVersionFilter);
+            appSettings.Verify(x => x.Save(), Times.Once);
+        }
+
+        #endregion
+
+        #region LanguageSelectedCommand tests
+
+        [Fact]
+        public void LanguageSelectedCommand_IsExecutedWithNull_ShouldNotThrow()
+        {
+            // Arrange
+            var viewModel = GetViewModel();
+
+            // Act
+            var ex = Record.Exception(() => viewModel.LanguageSelectedCommand.Execute(null));
+
+            // Assert
+            Assert.Null(ex);
+        }
+
+        [Fact]
+        public void LanguageSelectedCommand_IsExecutedWithUnknownDataType_ShouldNotThrow()
+        {
+            // Arrange
+            var viewModel = GetViewModel();
+
+            // Act
+            var ex = Record.Exception(() => viewModel.LanguageSelectedCommand.Execute(42));
+
+            // Assert
+            Assert.Null(ex);
+        }
+
+        [Fact]
+        public void LanguageSelectedCommand_AlreadyIsLanguageChange_ShouldNotSetLanguage()
+        {
+            // Arrange
+            var languageBeforeChange = "English";
+
+            var commons = new Mock<ICommons>();
+            commons.SetupAllProperties();
+            commons.Object.SelectedLanguage = languageBeforeChange;
+
+            var viewModel = GetViewModel(commons.Object, null);
+            viewModel.IsLanguageChange = true;
+
+            var languageToSet = new SupportedLanguage("Deutsch");
+
+            // Act
+            var ex = Record.Exception(() => viewModel.LanguageSelectedCommand.Execute(languageToSet));
+
+            // Assert
+            Assert.Null(ex);
+            Assert.Equal(languageBeforeChange, commons.Object.SelectedLanguage);
+        }
+
+        [Fact]
+        public void LanguageSelectedCommand_IsExecutedWithSupportedLanguage_ShouldSetLanguage()
+        {
+            // Arrange
+            var languageBeforeChange = "English";
+
+            var commons = new Mock<ICommons>();
+            commons.SetupAllProperties();
+            commons.Object.SelectedLanguage = languageBeforeChange;
+
+            var viewModel = GetViewModel(commons.Object, null);
+
+            var languageToSet = new SupportedLanguage("Deutsch");
+
+            // Act
+            viewModel.LanguageSelectedCommand.Execute(languageToSet);
+
+            // Assert
+            Assert.Equal(languageToSet.Name, commons.Object.SelectedLanguage);
+        }
+
+        [Fact]
+        public void LanguageSelectedCommand_IsExecutedWithSupportedLanguage_ShouldSetIsLanguageChangeToFalse()
+        {
+            // Arrange
+            var languageBeforeChange = "English";
+
+            var commons = new Mock<ICommons>();
+            commons.SetupAllProperties();
+            commons.Object.SelectedLanguage = languageBeforeChange;
+
+            var viewModel = GetViewModel(commons.Object, null);
+
+            var languageToSet = new SupportedLanguage("Deutsch");
+
+            // Act
+            viewModel.LanguageSelectedCommand.Execute(languageToSet);
+
+            // Assert
+            Assert.Equal(languageToSet.Name, commons.Object.SelectedLanguage);
+            Assert.False(viewModel.IsLanguageChange);
         }
 
         #endregion

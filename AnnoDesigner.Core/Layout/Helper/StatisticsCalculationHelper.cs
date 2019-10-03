@@ -12,7 +12,17 @@ namespace AnnoDesigner.Core.Layout.Helper
     {
         public StatisticsCalculationResult CalculateStatistics(List<AnnoObject> placedObjects)
         {
+            if (placedObjects == null)
+            {
+                return null;
+            }
+
             var result = new StatisticsCalculationResult();
+
+            if (placedObjects.Count == 0)
+            {
+                return result;
+            }
 
             // calculate bouding box
             var boxX = placedObjects.Max(_ => _.Position.X + _.Size.Width) - placedObjects.Min(_ => _.Position.X);
