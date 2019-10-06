@@ -21,6 +21,7 @@ using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Helper;
 using AnnoDesigner.model;
 using Microsoft.Win32;
+using NLog;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner
@@ -30,6 +31,8 @@ namespace AnnoDesigner
     /// </summary>
     public partial class AnnoCanvas : UserControl
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public event EventHandler StatisticsUpdated;
 
         #region Properties
@@ -431,7 +434,7 @@ namespace AnnoDesigner
             _influencedBrush = new SolidColorBrush(color);
 
             sw.Stop();
-            Debug.WriteLine($"init variables took: {sw.ElapsedMilliseconds}ms");
+            logger.Trace($"init variables took: {sw.ElapsedMilliseconds}ms");
 
             // load presets and icons if not in design time
             if (!DesignerProperties.GetIsInDesignMode(this))
@@ -456,7 +459,7 @@ namespace AnnoDesigner
                 }
 
                 sw.Stop();
-                Debug.WriteLine($"loading presets took: {sw.ElapsedMilliseconds}ms");
+                logger.Trace($"loading presets took: {sw.ElapsedMilliseconds}ms");
 
                 if (iconsToUse == null)
                 {
@@ -471,11 +474,16 @@ namespace AnnoDesigner
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, "Loading of the icon names failed");
+                        logger.Error(ex, "Loading of the icon names failed.");
+
+                        MessageBox.Show("Loading of the icon names failed",
+                            Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage)]["Error"],
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
                     }
 
                     sw.Stop();
-                    Debug.WriteLine($"loading icon mapping took: {sw.ElapsedMilliseconds}ms");
+                    logger.Trace($"loading icon mapping took: {sw.ElapsedMilliseconds}ms");
 
                     sw.Start();
 
@@ -484,7 +492,7 @@ namespace AnnoDesigner
                     Icons = iconLoader.Load(Path.Combine(App.ApplicationPath, Constants.IconFolder), iconNameMapping);
 
                     sw.Stop();
-                    Debug.WriteLine($"loading icons took: {sw.ElapsedMilliseconds}ms");
+                    logger.Trace($"loading icons took: {sw.ElapsedMilliseconds}ms");
                 }
                 else
                 {
@@ -1614,7 +1622,7 @@ namespace AnnoDesigner
             }
             catch (LayoutFileVersionMismatchException layoutEx)
             {
-                Trace.WriteLine(layoutEx);
+                logger.Warn(layoutEx, "Version of layout does not match.");
 
                 if (MessageBox.Show(
                         "Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
@@ -1623,9 +1631,11 @@ namespace AnnoDesigner
                     OpenFile(filename, true);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                IOErrorMessageBox(e);
+                logger.Error(ex, "Error loading layout from JSON.");
+
+                IOErrorMessageBox(ex);
             }
 
         }

@@ -93,7 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.IO.Abstractions">
-      <Version>6.0.7</Version>
+      <Version>6.0.32</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

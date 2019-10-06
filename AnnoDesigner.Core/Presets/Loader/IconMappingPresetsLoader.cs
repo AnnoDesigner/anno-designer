@@ -1,5 +1,6 @@
 ﻿using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Presets.Models;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +16,8 @@ namespace AnnoDesigner.Core.Presets.Loader
     /// </summary>
     public class IconMappingPresetsLoader
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public IconMappingPresets Load(string pathToIconNameMappingFile)
         {
             if (string.IsNullOrWhiteSpace(pathToIconNameMappingFile))
@@ -56,7 +59,7 @@ namespace AnnoDesigner.Core.Presets.Loader
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error loading the icon name mapping file.{Environment.NewLine}{ex}");
+                logger.Error(ex, "Error loading the icon name mapping file.");
                 throw;
             }
 

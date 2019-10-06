@@ -1,4 +1,5 @@
 ﻿using AnnoDesigner.model;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,6 +12,8 @@ namespace AnnoDesigner
 {
     public class Commons : ICommons
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         #region ctor
 
         private static readonly Lazy<Commons> lazy = new Lazy<Commons>(() => new Commons());
@@ -61,7 +64,7 @@ namespace AnnoDesigner
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Cannot write to folder (\"{folderPathToCheck}\").{Environment.NewLine}{ex}");
+                logger.Error(ex, $"Cannot write to folder (\"{folderPathToCheck}\").");
             }
 
             return result;
@@ -91,7 +94,7 @@ namespace AnnoDesigner
                 psi.Verb = "runas";
             }
 
-            Trace.WriteLine($"{nameof(RestartApplication)} {nameof(asAdmin)}: {asAdmin}{Environment.NewLine}Path: \"{psi.FileName}\"{Environment.NewLine}Arguments: {psi.Arguments}");
+            logger.Trace($"{nameof(RestartApplication)} {nameof(asAdmin)}: {asAdmin}{Environment.NewLine}Path: \"{psi.FileName}\"{Environment.NewLine}Arguments: {psi.Arguments}");
 
             var process = new Process();
             process.StartInfo = psi;

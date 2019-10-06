@@ -7,11 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Presets.Models;
+using NLog;
 
 namespace AnnoDesigner.Core.Presets.Loader
 {
     public class BuildingPresetsLoader
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public BuildingPresets Load(string pathToBuildingPresetsFile)
         {
             BuildingPresets result = null;
@@ -22,7 +25,7 @@ namespace AnnoDesigner.Core.Presets.Loader
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error loading the buildings.{Environment.NewLine}{ex}");
+                logger.Error(ex, "Error loading the buildings.");
                 throw;
             }
 

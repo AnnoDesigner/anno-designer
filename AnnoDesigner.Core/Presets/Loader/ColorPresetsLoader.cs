@@ -7,11 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Presets.Models;
+using NLog;
 
 namespace AnnoDesigner.Core.Presets.Loader
 {
     public class ColorPresetsLoader
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public ColorPresets Load(string pathToColorPresetsFile)
         {
             ColorPresets result = null;
@@ -22,7 +25,7 @@ namespace AnnoDesigner.Core.Presets.Loader
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error loading the colors.{Environment.NewLine}{ex}");
+                logger.Error(ex, "Error loading the colors.");
                 throw;
             }
 
@@ -41,7 +44,7 @@ namespace AnnoDesigner.Core.Presets.Loader
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error loading the default scheme.{Environment.NewLine}{ex}");
+                logger.Error(ex, "Error loading the default scheme.");
                 throw;
             }
 

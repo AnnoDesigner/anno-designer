@@ -81,6 +81,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helper\SerializationHelper.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="NLog">
+      <Version>4.6.7</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
