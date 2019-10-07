@@ -78,7 +78,7 @@ namespace PresetParser
         private static readonly List<string> testGUIDNames2205 = new List<string> { "NODOUBLES YET" };
         #endregion
 
-        #region anno 1800
+        #region Anno 1800
         /// <summary>
         /// i need the IncludeBuildingsTemplateNames to get Building informaton from, as it is also the Presets Template String or Template GUID
         /// </summary>
@@ -105,9 +105,9 @@ namespace PresetParser
         ///              OW1 (Old World - Jornaleros) and OW2 (Old World - Obreros)
         /// <2> wil be the Group under <1>, like Production, Public, etc
         /// </summary>
-            #endregion
+        #endregion
 
-            #endregion
+        #endregion
 
         static Program()
         {
@@ -1136,7 +1136,7 @@ namespace PresetParser
                 case "Residence_colony01_tier01": { factionName = "(7) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; templateName = "ResidenceBuilding7"; break; }
                 case "Coastal_03 (Quartz Sand Coast Building)": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
             }
- 
+
             // Place the rest of the buildings in the right Faction > Group menu
             #region Order the Buildings to the right tiers and factions as in the game
 
