@@ -682,9 +682,10 @@
                           Width="{Binding ElementName=BuildingsPanel, Path=ActualWidth, Mode=OneWay}"
                           DockPanel.Dock="Top">
                     <TreeView x:Name="PresetsTree"
-                              ItemsSource="{Binding PresetsTreeViewModel.FilteredItems}"
-                              VirtualizingStackPanel.IsVirtualizing="True"
-                              VirtualizingStackPanel.VirtualizationMode="Recycling">
+                              ItemsSource="{Binding PresetsTreeViewModel.FilteredItems}">
+                        <!-- virtualization brings the SelectedItem out of view
+                        VirtualizingStackPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"-->
                         <TreeView.InputBindings>
                             <KeyBinding Command="{Binding PresetsTreeViewModel.ReturnKeyPressedCommand}"
                                         Key="Return"
@@ -717,6 +718,8 @@
                                         Value="{Binding IsExpanded, Mode=TwoWay}" />
                                 <Setter Property="Visibility"
                                         Value="{Binding IsVisible, Mode=TwoWay, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
+                                <Setter Property="IsSelected"
+                                        Value="{Binding IsSelected, Mode=TwoWay}" />
                             </Style>
                         </TreeView.ItemContainerStyle>
                     </TreeView>

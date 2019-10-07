@@ -18,6 +18,7 @@ namespace AnnoDesigner.model.PresetsTree
         private ObservableCollection<GenericTreeItem> _children;
         private bool _isExpanded;
         private bool _isVisible;
+        private bool _isSelected;
         private int _id;
 
         public GenericTreeItem(GenericTreeItem parent)
@@ -27,6 +28,7 @@ namespace AnnoDesigner.model.PresetsTree
             Children = new ObservableCollection<GenericTreeItem>();
             IsExpanded = false;
             IsVisible = true;
+            IsSelected = false;
         }
 
         public GenericTreeItem Parent
@@ -77,6 +79,12 @@ namespace AnnoDesigner.model.PresetsTree
         {
             get { return _isVisible; }
             set { UpdateProperty(ref _isVisible, value); }
+        }
+
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set { UpdateProperty(ref _isSelected, value); }
         }
 
         /// <summary>
