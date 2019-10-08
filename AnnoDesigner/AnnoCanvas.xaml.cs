@@ -1148,7 +1148,8 @@ namespace AnnoDesigner
                     _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
                     _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
 
-                    StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                    //all is moved -> no need to update statistics
+                    //StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                 }
             }
             else if (e.LeftButton == MouseButtonState.Pressed)
