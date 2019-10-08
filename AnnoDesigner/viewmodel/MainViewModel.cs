@@ -233,10 +233,10 @@ namespace AnnoDesigner.viewmodel
             {
                 if (selectedItem != null)
                 {
-                    UpdateUIFromObject(new AnnoObject(selectedItem)
+                    UpdateUIFromObject(new LayoutObject(new AnnoObject(selectedItem)
                     {
                         Color = BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
-                    });
+                    }, _coordinateHelper));
 
                     ApplyCurrentObject();
                 }
@@ -341,7 +341,7 @@ namespace AnnoDesigner.viewmodel
                     obj.Identifier = "Unknown Object";
                 }
 
-                AnnoCanvas.SetCurrentObject(obj);
+                AnnoCanvas.SetCurrentObject(new LayoutObject(obj, _coordinateHelper));
             }
             else
             {
@@ -353,8 +353,9 @@ namespace AnnoDesigner.viewmodel
         /// Fired on the OnCurrentObjectChanged event
         /// </summary>
         /// <param name="obj"></param>
-        private void UpdateUIFromObject(AnnoObject obj)
+        private void UpdateUIFromObject(LayoutObject layoutObject)
         {
+            var obj = layoutObject?.WrappedAnnoObject;
             if (obj == null)
             {
                 return;
@@ -439,7 +440,7 @@ namespace AnnoDesigner.viewmodel
             UpdateStatistics();
         }
 
-        private void AnnoCanvas_ClipboardChanged(List<AnnoObject> itemsOnClipboard)
+        private void AnnoCanvas_ClipboardChanged(List<LayoutObject> itemsOnClipboard)
         {
             StatusMessageClipboard = StatusBarItemsOnClipboard + ": " + itemsOnClipboard.Count;
         }
@@ -994,7 +995,14 @@ namespace AnnoDesigner.viewmodel
                         if (loadedLayout != null)
                         {
                             AnnoCanvas.SelectedObjects.Clear();
-                            AnnoCanvas.PlacedObjects = loadedLayout;
+
+                            var layoutObjects = new List<LayoutObject>(loadedLayout.Count);
+                            foreach (var curObj in loadedLayout)
+                            {
+                                layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper));
+                            }
+
+                            AnnoCanvas.PlacedObjects = layoutObjects;
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 
@@ -1127,10 +1135,10 @@ namespace AnnoDesigner.viewmodel
             }
 
             // copy all objects
-            var allObjects = AnnoCanvas.PlacedObjects.Select(_ => new AnnoObject(_)).Cast<AnnoObject>().ToList();
+            var allObjects = AnnoCanvas.PlacedObjects.Select(_ => new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper)).ToList();
             // copy selected objects
             // note: should be references to the correct copied objects from allObjects
-            var selectedObjects = AnnoCanvas.SelectedObjects.Select(_ => new AnnoObject(_)).ToList();
+            var selectedObjects = AnnoCanvas.SelectedObjects.Select(_ => new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper)).ToList();
 
             logger.Trace($"UI thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
             void renderThread()
@@ -1172,8 +1180,8 @@ namespace AnnoDesigner.viewmodel
                 }
 
                 // calculate output size
-                var width = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border, target.GridSize);//if +1 then there are weird black lines next to the statistics view
-                var height = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border, target.GridSize) + 1;//+1 for black grid line at bottom
+                var width = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.WrappedAnnoObject.Size.Width) + border, target.GridSize);//if +1 then there are weird black lines next to the statistics view
+                var height = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.WrappedAnnoObject.Size.Height) + border, target.GridSize) + 1;//+1 for black grid line at bottom
 
                 if (renderStatistics)
                 {
@@ -1239,7 +1247,7 @@ namespace AnnoDesigner.viewmodel
                 using (var ms = new MemoryStream())
                 {
                     AnnoCanvas.Normalize(1);
-                    _layoutLoader.SaveLayout(AnnoCanvas.PlacedObjects, ms);
+                    _layoutLoader.SaveLayout(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList(), ms);
 
                     var jsonString = Encoding.UTF8.GetString(ms.ToArray());
 

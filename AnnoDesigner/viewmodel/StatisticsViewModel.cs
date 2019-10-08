@@ -209,7 +209,7 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
-        public void ToggleBuildingList(bool showBuildingList, List<AnnoObject> placedObjects, List<AnnoObject> selectedObjects, BuildingPresets buildingPresets)
+        public void ToggleBuildingList(bool showBuildingList, List<LayoutObject> placedObjects, List<LayoutObject> selectedObjects, BuildingPresets buildingPresets)
         {
             ShowBuildingList = showBuildingList;
             if (showBuildingList)
@@ -218,11 +218,11 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
-        public void UpdateStatistics(List<AnnoObject> placedObjects,
-            List<AnnoObject> selectedObjects,
+        public void UpdateStatistics(List<LayoutObject> placedObjects,
+            List<LayoutObject> selectedObjects,
             BuildingPresets buildingPresets)
         {
-            if (!placedObjects.Any())
+            if (placedObjects.Count == 0)
             {
                 AreStatisticsAvailable = false;
                 return;
@@ -230,7 +230,7 @@ namespace AnnoDesigner.viewmodel
 
             AreStatisticsAvailable = true;
 
-            var calculatedStatistics = _statisticsCalculationHelper.CalculateStatistics(placedObjects);
+            var calculatedStatistics = _statisticsCalculationHelper.CalculateStatistics(placedObjects.Select(_ => _.WrappedAnnoObject).ToList());
 
             UsedArea = string.Format("{0}x{1}", calculatedStatistics.UsedAreaX, calculatedStatistics.UsedAreaY);
             UsedTiles = calculatedStatistics.UsedTiles;
@@ -239,8 +239,8 @@ namespace AnnoDesigner.viewmodel
 
             if (ShowBuildingList)
             {
-                var groupedBuildings = placedObjects.GroupBy(_ => _.Identifier);
-                var groupedSelectedBuildings = selectedObjects.Count > 0 ? selectedObjects.GroupBy(_ => _.Identifier) : null;
+                var groupedBuildings = placedObjects.GroupBy(_ => _.WrappedAnnoObject.Identifier);
+                var groupedSelectedBuildings = selectedObjects.Count > 0 ? selectedObjects.GroupBy(_ => _.WrappedAnnoObject.Identifier) : null;
 
                 Buildings = GetStatisticBuildings(groupedBuildings, buildingPresets);
                 SelectedBuildings = GetStatisticBuildings(groupedSelectedBuildings, buildingPresets);
@@ -251,7 +251,7 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
-        private ObservableCollection<StatisticsBuilding> GetStatisticBuildings(IEnumerable<IGrouping<string, AnnoObject>> groupedBuildingsByIdentifier, BuildingPresets buildingPresets)
+        private ObservableCollection<StatisticsBuilding> GetStatisticBuildings(IEnumerable<IGrouping<string, LayoutObject>> groupedBuildingsByIdentifier, BuildingPresets buildingPresets)
         {
             var result = new ObservableCollection<StatisticsBuilding>();
 
@@ -263,18 +263,20 @@ namespace AnnoDesigner.viewmodel
             var language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
             var tempList = new List<StatisticsBuilding>();
 
-            foreach (var item in groupedBuildingsByIdentifier
-                        .Where(_ => !_.ElementAt(0).Road && _.ElementAt(0).Identifier != null)
-                        .OrderByDescending(_ => _.Count()))
+            var validBuildingsGrouped = groupedBuildingsByIdentifier
+                        .Where(_ => !_.ElementAt(0).WrappedAnnoObject.Road && _.ElementAt(0).WrappedAnnoObject.Identifier != null)
+                        .OrderByDescending(_ => _.Count());
+            foreach (var item in validBuildingsGrouped)
             {
                 var statisticBuilding = new StatisticsBuilding();
 
-                if (!string.IsNullOrWhiteSpace(item.ElementAt(0).Identifier))
+                var firstElement = item.ElementAt(0);
+                if (!string.IsNullOrWhiteSpace(firstElement.WrappedAnnoObject.Identifier))
                 {
-                    var building = buildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
-                    if (building != null || item.ElementAt(0).Identifier == "Unknown Object")
+                    var building = buildingPresets.Buildings.Find(_ => string.Equals(_.Identifier, firstElement.WrappedAnnoObject.Identifier, StringComparison.OrdinalIgnoreCase));
+                    if (building != null || firstElement.WrappedAnnoObject.Identifier == "Unknown Object")
                     {
-                        if (item.ElementAt(0).Identifier == "Unknown Object")
+                        if (firstElement.WrappedAnnoObject.Identifier == "Unknown Object")
                         {
                             statisticBuilding.Count = item.Count();
                             statisticBuilding.Name = Localization.Localization.Translations[language]["UnknownObject"];
@@ -287,7 +289,7 @@ namespace AnnoDesigner.viewmodel
                     }
                     else
                     {
-                        item.ElementAt(0).Identifier = "";
+                        firstElement.WrappedAnnoObject.Identifier = "";
 
                         statisticBuilding.Count = item.Count();
                         statisticBuilding.Name = TextNameNotFound;

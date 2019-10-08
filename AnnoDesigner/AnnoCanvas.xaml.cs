@@ -153,12 +153,12 @@ namespace AnnoDesigner
         /// <summary>
         /// Backing field of the CurrentObject property
         /// </summary>
-        private List<AnnoObject> _currentObjects = new List<AnnoObject>();
+        private List<LayoutObject> _currentObjects = new List<LayoutObject>();
 
         /// <summary>
         /// Current object to be placed. Fires an event when changed.
         /// </summary>
-        public List<AnnoObject> CurrentObjects
+        public List<LayoutObject> CurrentObjects
         {
             get
             {
@@ -180,17 +180,17 @@ namespace AnnoDesigner
         /// <summary>
         /// Event which is fired when the current object is changed
         /// </summary>
-        public event Action<AnnoObject> OnCurrentObjectChanged;
+        public event Action<LayoutObject> OnCurrentObjectChanged;
 
         /// <summary>
         /// backing field of the ObjectClipboard property
         /// </summary>
-        private List<AnnoObject> _objectClipboard = new List<AnnoObject>();
+        private List<LayoutObject> _objectClipboard = new List<LayoutObject>();
 
         /// <summary>
         /// Holds a list of objects that are currently on the clipboard.
         /// </summary>
-        public List<AnnoObject> ObjectClipboard
+        public List<LayoutObject> ObjectClipboard
         {
             get
             {
@@ -210,7 +210,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Event which is fired when the clipboard content is changed.
         /// </summary>
-        public event Action<List<AnnoObject>> OnClipboardChanged;
+        public event Action<List<LayoutObject>> OnClipboardChanged;
 
         /// <summary>
         /// Backing field of the StatusMessage property.
@@ -340,8 +340,8 @@ namespace AnnoDesigner
         /// <summary>
         /// List of all currently placed objects.
         /// </summary>
-        private List<AnnoObject> _placedObjects;
-        public List<AnnoObject> PlacedObjects
+        private List<LayoutObject> _placedObjects;
+        public List<LayoutObject> PlacedObjects
         {
             get { return _placedObjects; }
             set { _placedObjects = value; }
@@ -351,8 +351,8 @@ namespace AnnoDesigner
         /// List of all currently selected objects.
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
-        private List<AnnoObject> _selectedObjects;
-        public List<AnnoObject> SelectedObjects
+        private List<LayoutObject> _selectedObjects;
+        public List<LayoutObject> SelectedObjects
         {
             get { return _selectedObjects; }
             set { _selectedObjects = value; }
@@ -404,7 +404,6 @@ namespace AnnoDesigner
         /// </summary>
         public AnnoCanvas() : this(null, null)
         {
-
         }
 
         public AnnoCanvas(BuildingPresets presetsToUse, Dictionary<string, IconImage> iconsToUse, ICoordinateHelper coordinateHelperToUse = null)
@@ -418,8 +417,8 @@ namespace AnnoDesigner
 
             // initialize
             CurrentMode = MouseMode.Standard;
-            _placedObjects = new List<AnnoObject>();
-            _selectedObjects = new List<AnnoObject>();
+            _placedObjects = new List<LayoutObject>();
+            _selectedObjects = new List<LayoutObject>();
             _linePen = new Pen(Brushes.Black, 1);
             _highlightPen = new Pen(Brushes.Yellow, 1);
             _radiusPen = new Pen(Brushes.Black, 1);
@@ -565,7 +564,7 @@ namespace AnnoDesigner
             RenderObjectList(drawingContext, _placedObjects, useTransparency: false);
             RenderObjectInfluenceRadius(drawingContext, _selectedObjects);
             RenderObjectInfluenceRange(drawingContext, _selectedObjects);
-            _selectedObjects.ForEach(_ => RenderObjectSelection(drawingContext, _));
+            RenderObjectSelection(drawingContext, _selectedObjects);
 
             if (CurrentObjects.Count == 0)
             {
@@ -573,7 +572,7 @@ namespace AnnoDesigner
                 var hoveredObj = GetObjectAt(_mousePosition);
                 if (hoveredObj != null)
                 {
-                    drawingContext.DrawRectangle(null, _highlightPen, GetObjectScreenRect(hoveredObj));
+                    drawingContext.DrawRectangle(null, _highlightPen, hoveredObj.CalculateScreenRect(GridSize));
                 }
             }
             else
@@ -614,14 +613,13 @@ namespace AnnoDesigner
             if (CurrentObjects.Count > 1)
             {
                 //Get the center of the current selection
-                var r = GetObjectScreenRect(CurrentObjects[0]);
+                var r = CurrentObjects[0].CalculateScreenRect(GridSize);
                 foreach (var obj in CurrentObjects.Skip(1))
                 {
-                    r.Union(GetObjectScreenRect(obj));
+                    r.Union(obj.CalculateScreenRect(GridSize));
                 }
 
-                Point center = _coordinateHelper.GetCenterPoint(r);
-
+                var center = _coordinateHelper.GetCenterPoint(r);
                 var dx = _mousePosition.X - center.X;
                 var dy = _mousePosition.Y - center.Y;
 
@@ -629,8 +627,7 @@ namespace AnnoDesigner
                 dx = _coordinateHelper.GridToScreen(_coordinateHelper.RoundScreenToGrid(dx, GridSize), GridSize);
                 dy = _coordinateHelper.GridToScreen(_coordinateHelper.RoundScreenToGrid(dy, GridSize), GridSize);
 
-
-                for (int i = 0; i < CurrentObjects.Count; i++)
+                for (var i = 0; i < CurrentObjects.Count; i++)
                 {
                     var pos = _coordinateHelper.GridToScreen(CurrentObjects[i].Position, GridSize);
                     CurrentObjects[i].Position = _coordinateHelper.RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy), GridSize);
@@ -639,7 +636,7 @@ namespace AnnoDesigner
             else
             {
                 var pos = _mousePosition;
-                var size = _coordinateHelper.GridToScreen(CurrentObjects[0].Size, GridSize);
+                var size = _coordinateHelper.GridToScreen(CurrentObjects[0].WrappedAnnoObject.Size, GridSize);
                 pos.X -= size.Width / 2;
                 pos.Y -= size.Height / 2;
                 CurrentObjects[0].Position = _coordinateHelper.RoundScreenToGrid(pos, GridSize);
@@ -651,85 +648,61 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object to render</param>
-        private void RenderObjectList(DrawingContext drawingContext, List<AnnoObject> objects, bool useTransparency)
+        private void RenderObjectList(DrawingContext drawingContext, List<LayoutObject> objects, bool useTransparency)
         {
-            foreach (var obj in objects)
+            foreach (var curLayoutObject in objects)
             {
+                var obj = curLayoutObject.WrappedAnnoObject;
+
                 // draw object rectangle
-                var objRect = GetObjectScreenRect(obj);
+                var objRect = curLayoutObject.CalculateScreenRect(GridSize);
 
-                var color = obj.Color.MediaColor;
-                if (useTransparency)
-                {
-                    color.A = 128;
-                }
+                var brush = useTransparency ? curLayoutObject.TransparentBrush : curLayoutObject.RenderBrush;
 
-                var brush = new SolidColorBrush(color);
-                brush.Freeze();
-
-                if (obj.Borderless)
-                {
-                    var borderlessPen = new Pen(brush, _linePen.Thickness);
-                    borderlessPen.Freeze();
-                    drawingContext.DrawRectangle(brush, borderlessPen, objRect);
-                }
-                else
-                {
-                    drawingContext.DrawRectangle(brush, _linePen, objRect);
-                }
+                var borderPen = obj.Borderless ? curLayoutObject.GetBorderlessPen(brush, _linePen.Thickness) : _linePen;
+                drawingContext.DrawRectangle(brush, borderPen, objRect);
 
                 // draw object icon if it is at least 2x2 cells
                 var iconRendered = false;
-                if (_renderIcon && !string.IsNullOrEmpty(obj.Icon))
+                if (RenderIcon && !string.IsNullOrEmpty(obj.Icon))
                 {
-                    // draw icon 2x2 grid cells large
-                    var minSize = Math.Min(obj.Size.Width, obj.Size.Height);
-                    //minSize = minSize == 1 ? minSize : Math.Floor(NthRoot(minSize, Constants.IconSizeFactor) + 1);
-                    var iconSize = _coordinateHelper.GridToScreen(new Size(minSize, minSize), GridSize);
-                    iconSize = minSize == 1 ? iconSize : new Size(NthRoot(iconSize.Width, Constants.IconSizeFactor), NthRoot(iconSize.Height, Constants.IconSizeFactor));
-
-                    // center icon within the object
-                    var iconPos = objRect.TopLeft;
-                    iconPos.X += (objRect.Width / 2) - (iconSize.Width / 2);
-                    iconPos.Y += (objRect.Height / 2) - (iconSize.Height / 2);
-                    var iconName = Path.GetFileNameWithoutExtension(obj.Icon); // for backwards compatibility to older layouts
-                    if (iconName != null && Icons.ContainsKey(iconName))
+                    var iconName = curLayoutObject.IconNameWithoutExtension; // for backwards compatibility to older layouts
+                    if (iconName != null && Icons.TryGetValue(iconName, out var iconImage))
                     {
-                        drawingContext.DrawImage(Icons[iconName].Icon, new Rect(iconPos, iconSize));
+                        var iconRect = curLayoutObject.GetIconRect(GridSize);
+
+                        drawingContext.DrawImage(iconImage.Icon, iconRect);
                         iconRendered = true;
                     }
                     else
                     {
-                        StatusMessage = string.Format("Icon file missing ({0}).", iconName);
+                        var message = $"Icon file missing ({iconName}).";
+                        logger.Warn(message);
+                        StatusMessage = message;
                     }
                 }
 
                 // draw object label
-                if (_renderLabel && obj.Label != "")
+                if (RenderLabel && !string.IsNullOrEmpty(obj.Label))
                 {
-                    var textPoint = objRect.TopLeft;
-                    var text = new FormattedText(obj.Label, Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                                 TYPEFACE, 12, Brushes.Black, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
-                    {
-                        MaxTextWidth = objRect.Width,
-                        MaxTextHeight = objRect.Height
-                    };
+                    var textAlignment = iconRendered ? TextAlignment.Left : TextAlignment.Center;
+                    var text = curLayoutObject.GetFormattedText(textAlignment, Thread.CurrentThread.CurrentCulture,
+                        TYPEFACE, App.DpiScale.PixelsPerDip, objRect.Width, objRect.Height);
 
+                    var textLocation = objRect.TopLeft;
                     if (iconRendered)
                     {
-                        // place the text in the top left corner if a icon is present
-                        text.TextAlignment = TextAlignment.Left;
-                        textPoint.X += 3;
-                        textPoint.Y += 2;
+                        // place the text in the top left corner if a icon is present                        
+                        textLocation.X += 3;
+                        textLocation.Y += 2;
                     }
                     else
                     {
-                        // center the text if no icon is present
-                        text.TextAlignment = TextAlignment.Center;
-                        textPoint.Y += (objRect.Height - text.Height) / 2;
+                        // center the text if no icon is present                        
+                        textLocation.Y += (objRect.Height - text.Height) / 2;
                     }
 
-                    drawingContext.DrawText(text, textPoint);
+                    drawingContext.DrawText(text, textLocation);
                 }
             }
         }
@@ -739,11 +712,13 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object to render as selected</param>
-        private void RenderObjectSelection(DrawingContext drawingContext, AnnoObject obj)
+        private void RenderObjectSelection(DrawingContext drawingContext, List<LayoutObject> objects)
         {
-            // draw object rectangle
-            var objRect = GetObjectScreenRect(obj);
-            drawingContext.DrawRectangle(null, _highlightPen, objRect);
+            foreach (var curLayoutObject in objects)
+            {
+                // draw object rectangle                
+                drawingContext.DrawRectangle(null, _highlightPen, curLayoutObject.CalculateScreenRect(GridSize));
+            }
         }
 
         /// <summary>
@@ -751,27 +726,28 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object which's influence is rendered</param>
-        private void RenderObjectInfluenceRadius(DrawingContext drawingContext, List<AnnoObject> objects)
+        private void RenderObjectInfluenceRadius(DrawingContext drawingContext, List<LayoutObject> objects)
         {
-            foreach (var obj in objects)
+            foreach (var curLayoutObject in objects)
             {
-                if (obj.Radius >= 0.5)
+                if (curLayoutObject.WrappedAnnoObject.Radius >= 0.5)
                 {
                     // highlight buildings within influence
-                    var radius = _coordinateHelper.GridToScreen(obj.Radius, GridSize);
-                    var circle = new EllipseGeometry(_coordinateHelper.GetCenterPoint(GetObjectScreenRect(obj)), radius, radius);
-                    circle.Freeze();
+                    var radius = curLayoutObject.GetScreenRadius(GridSize);
+                    var circle = curLayoutObject.GetInfluenceCircle(GridSize, radius);
 
-                    foreach (var o in _placedObjects)
+                    var circleCenterX = circle.Center.X;
+                    var circleCenterY = circle.Center.Y;
+
+                    foreach (var curPlacedObject in _placedObjects)
                     {
-                        var oRect = GetObjectScreenRect(o);
-                        var distance = _coordinateHelper.GetCenterPoint(oRect);
-                        distance.X -= circle.Center.X;
-                        distance.Y -= circle.Center.Y;
+                        var distance = curPlacedObject.GetScreenRectCenterPoint(GridSize);
+                        distance.X -= circleCenterX;
+                        distance.Y -= circleCenterY;
                         // check if the center is within the influence circle
                         if ((distance.X * distance.X) + (distance.Y * distance.Y) <= radius * radius)
                         {
-                            drawingContext.DrawRectangle(_influencedBrush, _influencedPen, oRect);
+                            drawingContext.DrawRectangle(_influencedBrush, _influencedPen, curPlacedObject.CalculateScreenRect(GridSize));
                         }
                         //o.Label = (Math.Sqrt(distance.X*distance.X + distance.Y*distance.Y) - Math.Sqrt(radius*radius)).ToString();
                     }
@@ -782,10 +758,11 @@ namespace AnnoDesigner
             }
         }
 
-        private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<AnnoObject> objects)
+        private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
-            foreach (var obj in objects)
+            foreach (var curLayoutObject in objects)
             {
+                var obj = curLayoutObject.WrappedAnnoObject;
                 if (obj.InfluenceRange > 0.5)
                 {
                     //The below code looks very complex, but is surprisingly quick as most of its
@@ -828,10 +805,10 @@ namespace AnnoDesigner
                     //Quadrant 4 = max(x), max(y)
 
                     //In grid units
-                    var topLeftCorner = obj.Position;
-                    var topRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y);
-                    var bottomLeftCorner = new Point(obj.Position.X, obj.Position.Y + obj.Size.Height);
-                    var bottomRightCorner = new Point(obj.Position.X + obj.Size.Width, obj.Position.Y + obj.Size.Height);
+                    var topLeftCorner = curLayoutObject.Position;
+                    var topRightCorner = new Point(curLayoutObject.Position.X + obj.Size.Width, curLayoutObject.Position.Y);
+                    var bottomLeftCorner = new Point(curLayoutObject.Position.X, curLayoutObject.Position.Y + obj.Size.Height);
+                    var bottomRightCorner = new Point(curLayoutObject.Position.X + obj.Size.Width, curLayoutObject.Position.Y + obj.Size.Height);
 
                     var influenceRange = obj.InfluenceRange;
 
@@ -933,80 +910,52 @@ namespace AnnoDesigner
                         //Shape should be complete by this point.
                     }
 
-                    sg.Freeze();
+                    if (sg.CanFreeze)
+                    {
+                        sg.Freeze();
+                    }
                     drawingContext.DrawGeometry(_lightBrush, _radiusPen, sg);
                 }
             }
         }
 
-        //I was really just checking to see if there was a built in function, but this works
-        //https://stackoverflow.com/questions/18657508/c-sharp-find-nth-root
-        [Pure]
-        private static double NthRoot(double A, double N)
+        private List<LayoutObject> CloneList(List<LayoutObject> list)
         {
-            return Math.Pow(A, 1.0 / N);
-        }
-
-        private static List<AnnoObject> CloneList(List<AnnoObject> list)
-        {
-            var newList = new List<AnnoObject>(list.Capacity);
-            list.ForEach(_ => newList.Add(new AnnoObject(_)));
+            var newList = new List<LayoutObject>(list.Capacity);
+            list.ForEach(_ => newList.Add(new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper)));
             return newList;
         }
 
         #endregion
 
-        #region Coordinate and rectangle conversions        
-
-        /// <summary>
-        /// Generates the rect to which the given object is rendered.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        [Pure]
-        private Rect GetObjectScreenRect(AnnoObject obj)
-        {
-            return new Rect(_coordinateHelper.GridToScreen(obj.Position, GridSize), _coordinateHelper.GridToScreen(obj.Size, GridSize));
-        }
-
-        /// <summary>
-        /// Gets the rect which is used for collision detection for the given object.
-        /// Prevents undesired collisions which occur when using GetObjectScreenRect().
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        [Pure]
-        private Rect GetObjectCollisionRect(AnnoObject obj)
-        {
-            return new Rect(obj.Position, new Size(obj.Size.Width - 0.5, obj.Size.Height - 0.5));
-        }
+        #region Coordinate and rectangle conversions
 
         /// <summary>
         /// Rotates a group of objects.
         /// </summary>
-        /// <param name="l"></param>
-        private void Rotate(List<AnnoObject> l)
+        /// <param name="objects"></param>
+        private void Rotate(List<LayoutObject> objects)
         {
-            for (int i = 0; i < l.Count; i++)
+            for (var i = 0; i < objects.Count; i++)
             {
-                l[i].Size = _coordinateHelper.Rotate(l[i].Size);
-                Point p = l[i].Position;
+                objects[i].WrappedAnnoObject.Size = _coordinateHelper.Rotate(objects[i].WrappedAnnoObject.Size);
+                var position = objects[i].Position;
                 //Full formula left in for explanation
                 //var xPrime = x * Math.Cos(angle) - y * Math.Sin(angle);
                 //var yPrime = x * Math.Sin(angle) - y * Math.Cos(angle);
 
                 //Cos 90 = 0, sin 90 = 1
                 //Therefore, the below is equivalent
-                var xPrime = 0 - p.Y;
-                var yPrime = p.X;
+                var xPrime = 0 - position.Y;
+                var yPrime = position.X;
 
                 //When the building is rotated, the xPrime and yPrime values no 
                 //longer represent the top left corner, they will represent the 
                 //top-right corner instead. We need to account for this, by 
                 //moving the xPrime position (still in grid coordinates).
-                xPrime -= l[i].Size.Width;
+                xPrime -= objects[i].WrappedAnnoObject.Size.Width;
 
-                l[i].Position = new Point(xPrime, yPrime);
+                objects[i].Position = new Point(xPrime, yPrime);
             }
         }
 
@@ -1068,7 +1017,7 @@ namespace AnnoDesigner
                 if (obj != null)
                 {
                     CurrentObjects.Clear();
-                    CurrentObjects.Add(new AnnoObject(obj));
+                    CurrentObjects.Add(new LayoutObject(new AnnoObject(obj.WrappedAnnoObject), _coordinateHelper));
                     OnCurrentObjectChanged(obj);
                 }
                 return;
@@ -1140,9 +1089,9 @@ namespace AnnoDesigner
                 // check if the mouse has moved at least one grid cell in any direction
                 if (dx != 0 || dy != 0)
                 {
-                    foreach (var obj in _placedObjects)
+                    foreach (var curLayoutObject in _placedObjects)
                     {
-                        obj.Position = new Point(obj.Position.X + dx, obj.Position.Y + dy);
+                        curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
                     }
                     // adjust the drag start to compensate the amount we already moved
                     _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
@@ -1167,7 +1116,7 @@ namespace AnnoDesigner
                             if (IsControlPressed() || IsShiftPressed())
                             {
                                 // remove previously selected by the selection rect
-                                _selectedObjects.RemoveAll(_ => GetObjectScreenRect(_).IntersectsWith(_selectionRect));
+                                _selectedObjects.RemoveAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
                             }
                             else
                             {
@@ -1176,7 +1125,7 @@ namespace AnnoDesigner
                             // adjust rect
                             _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                             // select intersecting objects
-                            _selectedObjects.AddRange(_placedObjects.FindAll(_ => GetObjectScreenRect(_).IntersectsWith(_selectionRect)));
+                            _selectedObjects.AddRange(_placedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)));
 
                             StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                             break;
@@ -1194,14 +1143,14 @@ namespace AnnoDesigner
                             var unselected = _placedObjects.FindAll(_ => !_selectedObjects.Contains(_));
                             var collisionsExist = false;
                             // temporarily move each object and check if collisions with unselected objects exist
-                            foreach (var obj in _selectedObjects)
+                            foreach (var curLayoutObject in _selectedObjects)
                             {
-                                var originalPosition = obj.Position;
+                                var originalPosition = curLayoutObject.Position;
                                 // move object                                
-                                obj.Position = new Point(obj.Position.X + dx, obj.Position.Y + dy);
+                                curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
                                 // check for collisions
-                                var collides = unselected.Find(_ => ObjectIntersectionExists(obj, _)) != null;
-                                obj.Position = originalPosition;
+                                var collides = unselected.Find(_ => ObjectIntersectionExists(curLayoutObject, _)) != null;
+                                curLayoutObject.Position = originalPosition;
                                 if (collides)
                                 {
                                     collisionsExist = true;
@@ -1211,9 +1160,9 @@ namespace AnnoDesigner
                             // if no collisions were found, permanently move all selected objects
                             if (!collisionsExist)
                             {
-                                foreach (var obj in _selectedObjects)
+                                foreach (var curLayoutObject in _selectedObjects)
                                 {
-                                    obj.Position = new Point(obj.Position.X + dx, obj.Position.Y + dy);
+                                    curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
                                 }
                                 // adjust the drag start to compensate the amount we already moved
                                 _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
@@ -1384,7 +1333,7 @@ namespace AnnoDesigner
                 case Key.R:
                     if (CurrentObjects.Count == 1)
                     {
-                        CurrentObjects[0].Size = _coordinateHelper.Rotate(CurrentObjects[0].Size);
+                        CurrentObjects[0].WrappedAnnoObject.Size = _coordinateHelper.Rotate(CurrentObjects[0].WrappedAnnoObject.Size);
                     }
                     else if (CurrentObjects.Count > 1)
                     {
@@ -1434,9 +1383,9 @@ namespace AnnoDesigner
         /// <param name="a">first object</param>
         /// <param name="b">second object</param>
         /// <returns>true if there is a collision, otherwise false</returns>
-        private bool ObjectIntersectionExists(AnnoObject a, AnnoObject b)
+        private bool ObjectIntersectionExists(LayoutObject a, LayoutObject b)
         {
-            return GetObjectCollisionRect(a).IntersectsWith(GetObjectCollisionRect(b));
+            return a.CollisionRect.IntersectsWith(b.CollisionRect);
         }
 
         /// <summary>
@@ -1445,9 +1394,9 @@ namespace AnnoDesigner
         /// <param name="a">List of objects</param>
         /// <param name="b">second object</param>
         /// <returns>true if there is a collision, otherwise false</returns>
-        private bool ObjectIntersectionExists(List<AnnoObject> a, AnnoObject b)
+        private bool ObjectIntersectionExists(List<LayoutObject> a, LayoutObject b)
         {
-            return a.Exists(_ => GetObjectCollisionRect(_).IntersectsWith(GetObjectCollisionRect(b)));
+            return a.Exists(_ => _.CollisionRect.IntersectsWith(b.CollisionRect));
         }
 
         /// <summary>
@@ -1462,7 +1411,7 @@ namespace AnnoDesigner
             {
                 _placedObjects.AddRange(CloneList(CurrentObjects));
                 // sort the objects because borderless objects should be drawn first
-                _placedObjects.Sort((a, b) => b.Borderless.CompareTo(a.Borderless));
+                _placedObjects.Sort((a, b) => b.WrappedAnnoObject.Borderless.CompareTo(a.WrappedAnnoObject.Borderless));
 
                 StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                 //no need to update colors if drawing the same object(s)
@@ -1482,9 +1431,9 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="position">position given in screen coordinates</param>
         /// <returns>object at the position, if there is no object null</returns>
-        private AnnoObject GetObjectAt(Point position)
+        private LayoutObject GetObjectAt(Point position)
         {
-            return _placedObjects.FindLast(_ => GetObjectScreenRect(_).Contains(position));
+            return _placedObjects.FindLast(_ => _.CalculateScreenRect(GridSize).Contains(position));
         }
 
         #endregion
@@ -1495,7 +1444,7 @@ namespace AnnoDesigner
         /// Sets the current object, i.e. the object which the user can place.
         /// </summary>
         /// <param name="obj">object to apply</param>
-        public void SetCurrentObject(AnnoObject obj)
+        public void SetCurrentObject(LayoutObject obj)
         {
             obj.Position = _mousePosition;
             // note: setting of the backing field doens't fire the changed event
@@ -1565,7 +1514,7 @@ namespace AnnoDesigner
             try
             {
                 Normalize(1);
-                _layoutLoader.SaveLayout(_placedObjects, LoadedFile);
+                _layoutLoader.SaveLayout(_placedObjects.Select(x => x.WrappedAnnoObject).ToList(), LoadedFile);
             }
             catch (Exception e)
             {
@@ -1633,7 +1582,14 @@ namespace AnnoDesigner
                 if (layout != null)
                 {
                     _selectedObjects.Clear();
-                    _placedObjects = layout;
+
+                    var layoutObjects = new List<LayoutObject>(layout.Count);
+                    foreach (var curObj in layout)
+                    {
+                        layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper));
+                    }
+
+                    _placedObjects = layoutObjects;
                     LoadedFile = filename;
                     Normalize(1);
 
@@ -1658,7 +1614,6 @@ namespace AnnoDesigner
 
                 IOErrorMessageBox(ex);
             }
-
         }
 
         /// <summary>
@@ -1706,8 +1661,7 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         private static void ExecuteCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            var canvas = sender as AnnoCanvas;
-            if (canvas != null && CommandExecuteMappings.ContainsKey(e.Command))
+            if (sender is AnnoCanvas canvas && CommandExecuteMappings.ContainsKey(e.Command))
             {
                 CommandExecuteMappings[e.Command].Invoke(canvas);
                 e.Handled = true;
