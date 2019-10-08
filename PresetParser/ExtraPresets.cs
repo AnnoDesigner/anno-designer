@@ -46,7 +46,8 @@ namespace PresetParser
             result.Add(new ExtraPreset { BuildBlockerX = 5, BuildBlockerZ = 6, Faction = "Others", Group = "Black Smokers (Deep Sea)", Header = "(A5) Anno 2070", IconFileName = "icon_30_282.png", Identifier = "black_smoker_miner_copper_II", InfluenceRadius = 0, InfluenceRange = 0, Template = "FarmBuilding", LocaEng = "Copper Metal converter", LocaGer = "Metallkonverter Kupfer", LocaFra = "Copère Convertisseur métallique", LocaPol = "Konwerter warstw miedzionośnych", LocaRus = "Конвертер меди" });
             result.Add(new ExtraPreset { BuildBlockerX = 5, BuildBlockerZ = 6, Faction = "Others", Group = "Black Smokers (Deep Sea)", Header = "(A5) Anno 2070", IconFileName = "icon_30_283.png", Identifier = "black_smoker_miner_uranium_II", InfluenceRadius = 0, InfluenceRange = 0, Template = "FarmBuilding", LocaEng = "Uranium Metal converter", LocaGer = "Metallkonverter Uran", LocaFra = "L'uranium Convertisseur métallique", LocaPol = "Konwerter warstw bogatych w uran", LocaRus = "Конвертер урана" });
             result.Add(new ExtraPreset { BuildBlockerX = 5, BuildBlockerZ = 6, Faction = "Others", Group = "Black Smokers (Deep Sea)", Header = "(A5) Anno 2070", IconFileName = "icon_30_280.png", Identifier = "black_smoker_miner_iron_II", InfluenceRadius = 0, InfluenceRange = 0, Template = "FarmBuilding", LocaEng = "Iron Metal converter", LocaGer = "Metallkonverter Eisen", LocaFra = "Fer Convertisseur métallique", LocaPol = "Konwerter żelaza", LocaRus = "Конвертер железа" });
-
+            result.Add(new ExtraPreset { BuildBlockerX = 4, BuildBlockerZ = 4, Faction = "Others", Group = "Public", Header = "(A5) Anno 2070", IconFileName = "icon_27_10.png", Identifier = "markethouse", InfluenceRadius = 20, InfluenceRange = 0, Template = "Markethouse", LocaEng = "Depot", LocaGer = "Warendepot", LocaFra = "Dépôt", LocaPol = "Skład", LocaRus = "Хранилище" });
+         
             return result;
         }
 

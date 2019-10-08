@@ -30,7 +30,7 @@ namespace PresetParser
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
 
-        private const string BUILDING_PRESETS_VERSION = "3.2.7";
+        private const string BUILDING_PRESETS_VERSION = "3.2.8";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
