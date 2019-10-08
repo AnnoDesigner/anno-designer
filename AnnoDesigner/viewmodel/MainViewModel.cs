@@ -496,7 +496,11 @@ namespace AnnoDesigner.viewmodel
                 if (double.Parse(dowloadedContent, CultureInfo.InvariantCulture) > Constants.Version)
                 {
                     // new version found
-                    if (MessageBox.Show("A newer version was found, do you want to visit the releases page?\nhttps://github.com/AgmasGold/anno-designer/releases\n\n Clicking 'Yes' will open a new tab in your web browser.", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Asterisk, MessageBoxResult.OK) == MessageBoxResult.Yes)
+                    if (MessageBox.Show("A newer version was found, do you want to visit the releases page?\nhttps://github.com/AgmasGold/anno-designer/releases\n\n Clicking 'Yes' will open a new tab in your web browser.",
+                        "Update available",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Asterisk,
+                        MessageBoxResult.OK) == MessageBoxResult.Yes)
                     {
                         Process.Start("https://github.com/AgmasGold/anno-designer/releases");
                     }
@@ -504,7 +508,6 @@ namespace AnnoDesigner.viewmodel
                 else
                 {
                     StatusMessage = "Version is up to date.";
-                    //StatusMessageChanged("Version is up to date.");
 
                     if (forcedCheck)
                     {
@@ -526,7 +529,10 @@ namespace AnnoDesigner.viewmodel
             catch (Exception ex)
             {
                 logger.Error(ex, "Error checking version.");
-                MessageBox.Show("Error checking version. \n\nAdded more information to log.", "Version check failed");
+                MessageBox.Show($"Error checking version.{Environment.NewLine}{Environment.NewLine}More information is found in the log.",
+                    "Version check failed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 return;
             }
         }

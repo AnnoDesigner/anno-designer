@@ -133,7 +133,7 @@ namespace AnnoDesigner.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("8.1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("8.4")]
         public double CurrentVersion {
             get {
                 return ((double)(this["CurrentVersion"]));
