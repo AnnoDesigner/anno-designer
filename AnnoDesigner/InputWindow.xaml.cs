@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using AnnoDesigner.viewmodel;
 
 namespace AnnoDesigner
 {
@@ -24,9 +25,11 @@ namespace AnnoDesigner
             InitializeComponent();
         }
 
-        public InputWindow(string message, string title, string defaultValue = "")
+        public InputWindow(MainViewModel context, string message, string title, string defaultValue = "") : this()
         {
             InitializeComponent();
+
+            DataContext = context;
 
             Loaded += new RoutedEventHandler(InputWindow_Loaded);
 
@@ -40,9 +43,9 @@ namespace AnnoDesigner
             input.Focus();
         }
 
-        public static string Prompt(string message, string title, string defaultValue = "")
+        public static string Prompt(MainViewModel context, string message, string title, string defaultValue = "")
         {
-            var inputWindow = new InputWindow(message, title, defaultValue);
+            var inputWindow = new InputWindow(context, message, title, defaultValue);
             inputWindow.ShowDialog();
 
             if (inputWindow.DialogResult == true)

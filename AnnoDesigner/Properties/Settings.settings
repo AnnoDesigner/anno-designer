@@ -2,28 +2,28 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="AnnoDesigner.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="MainWindowTop" Type="System.Int32" Scope="User">
+    <Setting Name="MainWindowTop" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="MainWindowLeft" Type="System.Int32" Scope="User">
+    <Setting Name="MainWindowLeft" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="MainWindowHeight" Type="System.Int32" Scope="User">
+    <Setting Name="MainWindowHeight" Type="System.Double" Scope="User">
       <Value Profile="(Default)">800</Value>
     </Setting>
-    <Setting Name="MainWindowWidth" Type="System.Int32" Scope="User">
+    <Setting Name="MainWindowWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1200</Value>
     </Setting>
-    <Setting Name="WelcomeTop" Type="System.Int32" Scope="User">
+    <Setting Name="WelcomeTop" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="WelcomeLeft" Type="System.Int32" Scope="User">
+    <Setting Name="WelcomeLeft" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="AboutTop" Type="System.Int32" Scope="User">
+    <Setting Name="AboutTop" Type="System.Double" Scope="User">
       <Value Profile="(Default)">200</Value>
     </Setting>
-    <Setting Name="AboutLeft" Type="System.Int32" Scope="User">
+    <Setting Name="AboutLeft" Type="System.Double" Scope="User">
       <Value Profile="(Default)">200</Value>
     </Setting>
     <Setting Name="SelectedLanguage" Type="System.String" Scope="User">

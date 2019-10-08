@@ -4,15 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:AnnoDesigner"
-             xmlns:viewmodel="clr-namespace:AnnoDesigner.viewmodel"
+             xmlns:viewModel="clr-namespace:AnnoDesigner.viewmodel"
              xmlns:converter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=viewModel:StatisticsViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="350"
              d:DesignWidth="200"
              Background="Transparent">
-    <UserControl.DataContext>
-        <viewmodel:StatisticsViewModel x:Name="statisticsViewModel" />
-    </UserControl.DataContext>
     <UserControl.Resources>
         <converter:BoolToVisibilityConverter x:Key="boolToVisConverter"
                                              TrueValue="Visible"

@@ -9,7 +9,7 @@
         xmlns:viewModel="clr-namespace:AnnoDesigner.viewmodel"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=viewModel:WelcomeViewModel, IsDesignTimeCreatable=True}"
+        d:DataContext="{d:DesignInstance Type=viewModel:WelcomeViewModel, IsDesignTimeCreatable=False}"
         d:DesignHeight="705"
         d:DesignWidth="525"
         Title="Welcome"

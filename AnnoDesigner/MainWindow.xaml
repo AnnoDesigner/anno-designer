@@ -14,16 +14,18 @@
         xmlns:viewModel="clr-namespace:AnnoDesigner.viewmodel"
         xmlns:myBehaviors="clr-namespace:AnnoDesigner.Behaviors"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=viewModel:MainViewModel, IsDesignTimeCreatable=True}"
+        d:DataContext="{d:DesignInstance Type=viewModel:MainViewModel, IsDesignTimeCreatable=False}"
         d:DesignHeight="480"
         d:DesignWidth="640"
-        Title="Anno Designer"
+        Title="{Binding MainWindowTitle}"
         Icon="/AnnoDesigner;component/icon.ico"
-        Height="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowHeight, Mode=TwoWay}"
-        Width="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowWidth, Mode=TwoWay}"
-        Top="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowTop, Mode=TwoWay}"
-        Left="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowTop, Mode=TwoWay}"
-        WindowState="{Binding Source={x:Static properties:Settings.Default},Path=MainWindowWindowState, Mode=TwoWay}"
+        Height="{Binding MainWindowHeight, Mode=TwoWay}"
+        Width="{Binding MainWindowWidth, Mode=TwoWay}"
+        Top="{Binding MainWindowTop, Mode=TwoWay}"
+        Left="{Binding MainWindowLeft, Mode=TwoWay}"
+        WindowState="{Binding MainWindowWindowState, Mode=TwoWay}"
+        MinHeight="480"
+        MinWidth="640"
         Loaded="WindowLoaded"
         Closing="WindowClosing">
     <Window.Resources>
@@ -34,18 +36,6 @@
                                              TrueValue="Visible"
                                              FalseValue="Collapsed" />
         <xctk:ColorToSolidColorBrushConverter x:Key="converterColorToSolidColorBrush" />
-        <DataTemplate DataType="{x:Type coreModels:IconImage}">
-            <StackPanel Orientation="Horizontal">
-                <Viewbox Margin="5">
-                    <Image Width="23"
-                           Height="23"
-                           Source="{Binding Path=Icon}" />
-                </Viewbox>
-                <TextBlock Margin="0,5,5,5"
-                           VerticalAlignment="Center"
-                           Text="{Binding Path=DisplayName}" />
-            </StackPanel>
-        </DataTemplate>
         <HierarchicalDataTemplate DataType="{x:Type coreModels:AnnoObject}">
             <TextBlock Text="{Binding Label}" />
         </HierarchicalDataTemplate>
@@ -98,9 +88,9 @@
                               CommandTarget="{Binding ElementName=annoCanvas}" />
                     <Separator />
                     <MenuItem Header="{Binding CopyLayoutToClipboard}"
-                              Click="MenuCopyLayoutToClipboardClick" />
+                              Command="{Binding CopyLayoutToClipboardCommand}" />
                     <MenuItem Header="{Binding LoadLayoutFromJson}"
-                              Click="MenuLoadLayoutFromJsonClick" />
+                              Command="{Binding LoadLayoutFromJsonCommand}" />
                     <Separator />
                     <MenuItem Header="{Binding Exit}"
                               Command="{Binding CloseWindowCommand}"
@@ -116,14 +106,14 @@
                               Command="{Binding CanvasResetZoomCommand}" />
                     <Separator />
                     <MenuItem Header="{Binding RegisterFileExtension}"
-                              Click="MenuItemRegisterExtensionClick" />
+                              Command="{Binding RegisterExtensionCommand}" />
                     <MenuItem Header="{Binding UnregisterFileExtension}"
-                              Click="MenuItemUnregisterExtensionClick" />
+                              Command="{Binding UnregisterExtensionCommand}" />
                 </MenuItem>
                 <MenuItem Header="{Binding Export}"
                           TabIndex="22">
                     <MenuItem Header="{Binding ExportImage}"
-                              Click="MenuItemExportImageClick" />
+                              Command="{Binding ExportImageCommand}" />
                     <Separator />
                     <MenuItem Header="{Binding UseCurrentZoomOnExportedImage}"
                               IsCheckable="True"
@@ -132,48 +122,37 @@
                               IsCheckable="True"
                               IsChecked="{Binding RenderSelectionHighlightsOnExportedImageValue}" />
                 </MenuItem>
-                <MenuItem Name="LanguageMenu"
-                          Header="{Binding Language}"
+                <MenuItem Header="{Binding Language}"
                           TabIndex="23"
-                          Click="MenuItemLanguageClick">
-                    <MenuItem Header="English"
-                              IsCheckable="True"
-                              IsChecked="True"
-                              Name="MenuItemLanguageEng" />
-                    <MenuItem Header="Deutsch"
-                              IsCheckable="True"
-                              IsChecked="False"
-                              Name="MenuItemLanguageGer" />
-                    <MenuItem Header="Français"
-                              IsCheckable="True"
-                              IsChecked="False"
-                              Name="MenuItemLanguageFra" />
-                    <!--<MenuItem Header="Español" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageEsp" />-->
-                    <!--<MenuItem Header="Italiano" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageIta" />-->
-                    <MenuItem Header="Polski"
-                              IsCheckable="True"
-                              IsChecked="False"
-                              Name="MenuItemLanguagePol" />
-                    <MenuItem Header="Русский"
-                              IsCheckable="True"
-                              IsChecked="False"
-                              Name="MenuItemLanguageRus" />
-                    <!--<MenuItem Header="český" IsCheckable="True" IsChecked="False" Name="MenuItemLanguageCze" />-->
+                          ItemsSource="{Binding Languages}">
+                    <MenuItem.ItemContainerStyle>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="Header"
+                                    Value="{Binding Name}" />
+                            <Setter Property="IsCheckable"
+                                    Value="True" />
+                            <Setter Property="IsChecked"
+                                    Value="{Binding IsSelected, Mode=TwoWay}" />
+                            <Setter Property="Command"
+                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.LanguageSelectedCommand}" />
+                            <Setter Property="CommandParameter"
+                                    Value="{Binding}" />
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
                 </MenuItem>
                 <MenuItem Header="{Binding ManageStats}"
                           TabIndex="24"
                           HorizontalAlignment="Right">
                     <MenuItem Header="{Binding ShowStats}"
                               IsCheckable="True"
-                              IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowStats, Mode=TwoWay}"
-                              Click="MenuItemStatsShowStatsClick" />
+                              IsChecked="{Binding StatisticsViewModel.IsVisible}"
+                              Command="{Binding ShowStatisticsCommand}" />
                     <Separator></Separator>
-                    <MenuItem Name="MenuItemStatsBuildingCount"
-                              Header="{Binding BuildingCount}"
+                    <MenuItem Header="{Binding BuildingCount}"
                               IsCheckable="True"
-                              IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowBuildingCount, Mode=TwoWay}"
-                              IsEnabled="{Binding Source={x:Static properties:Settings.Default},Path=StatsShowStats, Mode=OneWay}"
-                              Click="MenuItemStatsBuildingCountClick" />
+                              IsChecked="{Binding StatisticsViewModel.ShowStatisticsBuildingCount}"
+                              IsEnabled="{Binding StatisticsViewModel.IsVisible, Mode=OneWay}"
+                              Command="{Binding ShowStatisticsBuildingCountCommand}" />
                 </MenuItem>
                 <MenuItem Header="{Binding Help}"
                           TabIndex="25"
@@ -215,7 +194,7 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem Header="{Binding CheckForUpdates}"
-                              Click="MenuItemVersionCheckImageClick" />
+                              Command="{Binding CheckForUpdatesCommand}" />
                     <MenuItem Header="{Binding EnableAutomaticUpdateCheck}"
                               IsCheckable="True"
                               IsChecked="{Binding AutomaticUpdateCheck}" />
@@ -223,9 +202,9 @@
                     <MenuItem Header="{Binding GoToProjectHomepage}"
                               Command="{Binding OpenProjectHomepageCommand}" />
                     <MenuItem Header="{Binding OpenWelcomePage}"
-                              Click="MenuItemOpenWelcomeClick" />
+                              Command="{Binding ShowWelcomeWindowCommand}" />
                     <MenuItem Header="{Binding AboutAnnoDesigner}"
-                              Click="MenuItemAboutClick" />
+                              Command="{Binding ShowAboutWindowCommand}" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="{Binding ShowGrid}"
@@ -246,8 +225,9 @@
                   Grid.Row="1"
                   Grid.Column="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"
+                    <ColumnDefinition Width="17*"
                                       MinWidth="100" />
+                    <ColumnDefinition Width="31*" />
                     <ColumnDefinition Width="5" />
                     <ColumnDefinition x:Name="colStatisticsView"
                                       Width="Auto"
@@ -260,16 +240,17 @@
                                Grid.Column="0"
                                RenderGrid="True"
                                RenderIcon="True"
-                               RenderLabel="True" />
+                               RenderLabel="True"
+                               Grid.ColumnSpan="2" />
 
                 <GridSplitter x:Name="splitterStatisticsView"
-                              Grid.Column="1"
+                              Grid.Column="2"
                               Width="5"
                               VerticalAlignment="Stretch"
                               HorizontalAlignment="Center" />
 
                 <my:StatisticsView x:Name="statisticsView"
-                                   Grid.Column="2"
+                                   Grid.Column="3"
                                    DataContext="{Binding StatisticsViewModel}">
                 </my:StatisticsView>
 
@@ -494,18 +475,46 @@
                                    Height="46">
                             <Label Content="{Binding BuildingSettingsViewModel.TextIcon}"
                                    VerticalAlignment="Center" />
-                            <ComboBox DockPanel.Dock="Right"
+                            <ComboBox x:Name="comboBoxIcon"
+                                      DockPanel.Dock="Right"
                                       Width="140"
                                       Height="46"
                                       IsEnabled="True"
-                                      x:Name="comboBoxIcon"
-                                      SelectedIndex="0"
+                                      ItemsSource="{Binding AvailableIcons}"
+                                      SelectedItem="{Binding SelectedIcon}"
                                       TabIndex="6"
-                                      TextSearch.TextPath="DisplayName">
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True"
-                                                            VirtualizingStackPanel.VirtualizationMode="Recycling"></VirtualizingStackPanel>
-                                </ItemsPanelTemplate>
+                                      TextSearch.TextPath="DisplayName"
+                                      ScrollViewer.CanContentScroll="True">
+                                <ComboBox.Resources>
+                                    <Style TargetType="{x:Type Popup}">
+                                        <!--<Setter Property="MinWidth"
+                                                Value="140" />
+                                        <Setter Property="MaxWidth"
+                                                Value="340" />-->
+                                        <Setter Property="Width"
+                                                Value="300" />
+                                    </Style>
+                                </ComboBox.Resources>
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True"
+                                                                VirtualizingStackPanel.VirtualizationMode="Recycling" />
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Viewbox Margin="5">
+                                                <Image Width="23"
+                                                       Height="23"
+                                                       Source="{Binding Icon}" />
+                                            </Viewbox>
+                                            <TextBlock Margin="0,5,5,5"
+                                                       VerticalAlignment="Center"
+                                                       Text="{Binding DisplayName}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
                             </ComboBox>
                         </DockPanel>
                         <DockPanel LastChildFill="False"
@@ -599,8 +608,8 @@
                                           IsChecked="{Binding BuildingSettingsViewModel.IsRoadChecked}" />
                             </StackPanel>
                         </DockPanel>
-                        <Button Click="ButtonPlaceBuildingClick"
-                                Content="{Binding BuildingSettingsViewModel.TextPlaceBuilding}"
+                        <Button Content="{Binding BuildingSettingsViewModel.TextPlaceBuilding}"
+                                Command="{Binding PlaceBuildingCommand}"
                                 Height="23"
                                 TabIndex="12" />
                     </StackPanel>
@@ -668,14 +677,15 @@
                 </GroupBox>
 
                 <GroupBox x:Name="GroupBoxPresets"
-                          Header="Building presets - not loaded"
+                          Header="{Binding PresetsSectionHeader}"
                           IsEnabled="True"
                           Width="{Binding ElementName=BuildingsPanel, Path=ActualWidth, Mode=OneWay}"
                           DockPanel.Dock="Top">
                     <TreeView x:Name="PresetsTree"
-                              ItemsSource="{Binding PresetsTreeViewModel.FilteredItems}"
-                              VirtualizingStackPanel.IsVirtualizing="True"
-                              VirtualizingStackPanel.VirtualizationMode="Recycling">
+                              ItemsSource="{Binding PresetsTreeViewModel.FilteredItems}">
+                        <!-- virtualization brings the SelectedItem out of view
+                        VirtualizingStackPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"-->
                         <TreeView.InputBindings>
                             <KeyBinding Command="{Binding PresetsTreeViewModel.ReturnKeyPressedCommand}"
                                         Key="Return"
@@ -708,6 +718,8 @@
                                         Value="{Binding IsExpanded, Mode=TwoWay}" />
                                 <Setter Property="Visibility"
                                         Value="{Binding IsVisible, Mode=TwoWay, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
+                                <Setter Property="IsSelected"
+                                        Value="{Binding IsSelected, Mode=TwoWay}" />
                             </Style>
                         </TreeView.ItemContainerStyle>
                     </TreeView>
@@ -716,10 +728,9 @@
             <StatusBar Grid.Row="2"
                        Grid.ColumnSpan="3">
                 <StatusBarItem Content="{Binding StatusBarControls}" />
-                <StatusBarItem Name="StatusBarItemStatus"
-                               Content="Standard"
+                <StatusBarItem Content="{Binding StatusMessage}"
                                Margin="10,0,0,0" />
-                <StatusBarItem Name="StatusBarItemClipboardStatus"
+                <StatusBarItem Content="{Binding StatusMessageClipboard}"
                                Margin="10,0,0,0"
                                HorizontalAlignment="Right" />
             </StatusBar>

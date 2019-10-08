@@ -7,34 +7,64 @@ using Xunit;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
 using Moq;
+using System.Collections.ObjectModel;
 
 namespace AnnoDesigner.Tests
 {
     public class BuildingSettingsViewModelTests
     {
+        private readonly ICommons _mockedCommons;
+        private readonly IAppSettings _mockedAppSettings;
+
+        public BuildingSettingsViewModelTests()
+        {
+            var commonsMock = new Mock<ICommons>();
+            commonsMock.SetupGet(x => x.SelectedLanguage).Returns(() => "English");
+            _mockedCommons = commonsMock.Object;
+
+            _mockedAppSettings = new Mock<IAppSettings>().Object;
+        }
+
+        private BuildingSettingsViewModel GetViewModel(ICommons commonsToUse = null, IAppSettings appSettingsToUse = null)
+        {
+            return new BuildingSettingsViewModel(commonsToUse ?? _mockedCommons, appSettingsToUse ?? _mockedAppSettings);
+        }
+
         #region ctor tests
 
         [Fact]
         public void Ctor_ShouldSetDefaultValues()
         {
             // Arrange/Act
-            var viewModel = new BuildingSettingsViewModel();
+            var viewModel = GetViewModel();
 
             // Assert
             Assert.NotNull(viewModel.ApplyColorToSelectionCommand);
             Assert.NotNull(viewModel.ApplyPredefinedColorToSelectionCommand);
             Assert.NotNull(viewModel.UseColorInLayoutCommand);
-            Assert.Equal(Colors.Red, viewModel.SelectedColor);
             Assert.NotNull(viewModel.ColorsInLayout);
             Assert.NotNull(viewModel.BuildingInfluences);
+
             Assert.Equal(BuildingInfluenceType.None, viewModel.SelectedBuildingInfluence.Type);
+            Assert.Equal(Colors.Red, viewModel.SelectedColor);
+            Assert.Equal(4, viewModel.BuildingHeight);
+            Assert.Equal(4, viewModel.BuildingWidth);
+            Assert.Equal(string.Empty, viewModel.BuildingTemplate);
+            Assert.Equal(string.Empty, viewModel.BuildingName);
+            Assert.Equal(string.Empty, viewModel.BuildingIdentifier);
+            Assert.Equal(0, viewModel.BuildingRadius);
+            Assert.Equal(0, viewModel.BuildingInfluenceRange);
+
+            Assert.False(viewModel.IsEnableLabelChecked);
+            Assert.False(viewModel.IsBorderlessChecked);
+            Assert.False(viewModel.IsRoadChecked);
         }
 
         [Fact]
         public void Ctor_ShouldSetCorrectNumberOfBuildingInfluences()
         {
             // Arrange/Act
-            var viewModel = new BuildingSettingsViewModel();
+            var viewModel = GetViewModel();
             var expectedCount = Enum.GetValues(typeof(BuildingInfluenceType)).Length;
 
             // Assert
@@ -53,7 +83,7 @@ namespace AnnoDesigner.Tests
         public void SelectedBuildingInfluence_TypeIsGiven_ShouldAdjustInputVisibility(BuildingInfluenceType typeToSet, bool expectedRadiusVisible, bool expectedRangeVisible)
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel();
+            var viewModel = GetViewModel();
             //to trigger PropertyChanged
             if (typeToSet != BuildingInfluenceType.None)
             {
@@ -82,7 +112,7 @@ namespace AnnoDesigner.Tests
         public void GetDistanceRange_BuildingInfoIsNull_ShouldSetInfluenceRangeToZeroAndReturnFalse()
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel();
+            var viewModel = GetViewModel();
             viewModel.BuildingInfluenceRange = -1;
 
             // Act
@@ -100,7 +130,7 @@ namespace AnnoDesigner.Tests
         public void GetDistanceRange_BuildingInfluenceRangeIsZeroOrLower_ShouldSetInfluenceRangeToZeroAndReturnFalse(int influenceRangeToSet)
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel();
+            var viewModel = GetViewModel();
             viewModel.BuildingInfluenceRange = int.MaxValue;
 
             var mockedBuildingInfo = new Mock<IBuildingInfo>();
@@ -123,7 +153,7 @@ namespace AnnoDesigner.Tests
         public void GetDistanceRange_IsNotPavedStreet_ShouldSetInfluenceRangeCorrect(int influenceRangeToSet, int expectedInfluenceRange, bool expectedResult)
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel();
+            var viewModel = GetViewModel();
             viewModel.BuildingInfluenceRange = int.MaxValue;
 
             var mockedBuildingInfo = new Mock<IBuildingInfo>();
@@ -151,7 +181,7 @@ namespace AnnoDesigner.Tests
         public void GetDistanceRange_IsPavedStreet_ShouldSetInfluenceRangeCorrect(int influenceRangeToSet, int expectedInfluenceRange, bool expectedResult)
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel();
+            var viewModel = GetViewModel();
             viewModel.BuildingInfluenceRange = int.MaxValue;
 
             var mockedBuildingInfo = new Mock<IBuildingInfo>();
@@ -180,7 +210,7 @@ namespace AnnoDesigner.Tests
         public void GetDistanceRange_IsPavedStreetAndBuildingIsCityInstitutionBuilding_ShouldSetInfluenceRangeCorrect(int influenceRangeToSet, int expectedInfluenceRange, bool expectedResult)
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel();
+            var viewModel = GetViewModel();
             viewModel.BuildingInfluenceRange = int.MaxValue;
 
             var mockedBuildingInfo = new Mock<IBuildingInfo>();
@@ -209,7 +239,7 @@ namespace AnnoDesigner.Tests
         public void GetDistanceRange_IsPavedStreetAndBuildingIsCityInstitutionBuilding_ShouldIgnoreCase(int influenceRangeToSet, int expectedInfluenceRange, bool expectedResult)
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel();
+            var viewModel = GetViewModel();
             viewModel.BuildingInfluenceRange = int.MaxValue;
 
             var mockedBuildingInfo = new Mock<IBuildingInfo>();
@@ -232,7 +262,7 @@ namespace AnnoDesigner.Tests
         public void UseColorInLayoutCommand_ShouldCanExecute()
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel();
+            var viewModel = GetViewModel();
 
             // Act
             var result = viewModel.UseColorInLayoutCommand.CanExecute(null);
@@ -245,7 +275,7 @@ namespace AnnoDesigner.Tests
         public void UseColorInLayoutCommand_IsExecutedWithNull_ShouldNotThrow()
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel();
+            var viewModel = GetViewModel();
             var expectedColor = viewModel.SelectedColor;
 
             // Act
@@ -259,7 +289,7 @@ namespace AnnoDesigner.Tests
         public void UseColorInLayoutCommand_IsExecutedWithColor_ShouldSetSelectedColor()
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel();
+            var viewModel = GetViewModel();
             var expectedColor = Colors.LimeGreen;
 
             // Act
@@ -273,7 +303,7 @@ namespace AnnoDesigner.Tests
         public void UseColorInLayoutCommand_IsExecutedWithSerializableColor_ShouldSetSelectedColor()
         {
             // Arrange
-            var viewModel = new BuildingSettingsViewModel();
+            var viewModel = GetViewModel();
             var expectedColor = new SerializableColor(Colors.LimeGreen);
 
             // Act
@@ -281,6 +311,62 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedColor, viewModel.SelectedColor);
+        }
+
+        #endregion
+
+        #region ShowColorsInLayout tests
+
+        [Fact]
+        public void ShowColorsInLayout_ColorsInLayoutIsNull_ShouldReturnFalse()
+        {
+            // Arrange
+            var viewModel = GetViewModel();
+            viewModel.ColorsInLayout = null;
+
+            // Act/Assert
+            Assert.False(viewModel.ShowColorsInLayout);
+        }
+
+        [Fact]
+        public void ShowColorsInLayout_ColorsInLayoutIsEmpty_ShouldReturnFalse()
+        {
+            // Arrange
+            var viewModel = GetViewModel();
+            viewModel.ColorsInLayout = new ObservableCollection<SerializableColor>();
+
+            // Act/Assert
+            Assert.False(viewModel.ShowColorsInLayout);
+        }
+
+        [Fact]
+        public void ShowColorsInLayout_ColorsInLayoutContainsItem_ShouldReturnTrue()
+        {
+            // Arrange
+            var viewModel = GetViewModel();
+            var colorsInLayout = new ObservableCollection<SerializableColor>();
+            colorsInLayout.Add(new SerializableColor());
+
+            viewModel.ColorsInLayout = colorsInLayout;
+
+            // Act/Assert
+            Assert.True(viewModel.ShowColorsInLayout);
+        }
+
+        #endregion
+
+        #region ColorsInLayout tests
+
+        [Fact]
+        public void ColorsInLayout_IsSet_ShouldNotifyShowColorsInLayout()
+        {
+            // Arrange
+            var viewModel = GetViewModel();
+
+            // Act/Assert
+            Assert.PropertyChanged(viewModel,
+                nameof(BuildingSettingsViewModel.ShowColorsInLayout),
+                () => viewModel.ColorsInLayout = new ObservableCollection<SerializableColor>());
         }
 
         #endregion

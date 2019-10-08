@@ -12,7 +12,7 @@ namespace AnnoDesigner.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.1.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.3.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -26,9 +26,9 @@ namespace AnnoDesigner.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int MainWindowTop {
+        public double MainWindowTop {
             get {
-                return ((int)(this["MainWindowTop"]));
+                return ((double)(this["MainWindowTop"]));
             }
             set {
                 this["MainWindowTop"] = value;
@@ -38,9 +38,9 @@ namespace AnnoDesigner.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int MainWindowLeft {
+        public double MainWindowLeft {
             get {
-                return ((int)(this["MainWindowLeft"]));
+                return ((double)(this["MainWindowLeft"]));
             }
             set {
                 this["MainWindowLeft"] = value;
@@ -50,9 +50,9 @@ namespace AnnoDesigner.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("800")]
-        public int MainWindowHeight {
+        public double MainWindowHeight {
             get {
-                return ((int)(this["MainWindowHeight"]));
+                return ((double)(this["MainWindowHeight"]));
             }
             set {
                 this["MainWindowHeight"] = value;
@@ -62,9 +62,9 @@ namespace AnnoDesigner.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1200")]
-        public int MainWindowWidth {
+        public double MainWindowWidth {
             get {
-                return ((int)(this["MainWindowWidth"]));
+                return ((double)(this["MainWindowWidth"]));
             }
             set {
                 this["MainWindowWidth"] = value;
@@ -74,9 +74,9 @@ namespace AnnoDesigner.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int WelcomeTop {
+        public double WelcomeTop {
             get {
-                return ((int)(this["WelcomeTop"]));
+                return ((double)(this["WelcomeTop"]));
             }
             set {
                 this["WelcomeTop"] = value;
@@ -86,9 +86,9 @@ namespace AnnoDesigner.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int WelcomeLeft {
+        public double WelcomeLeft {
             get {
-                return ((int)(this["WelcomeLeft"]));
+                return ((double)(this["WelcomeLeft"]));
             }
             set {
                 this["WelcomeLeft"] = value;
@@ -98,9 +98,9 @@ namespace AnnoDesigner.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("200")]
-        public int AboutTop {
+        public double AboutTop {
             get {
-                return ((int)(this["AboutTop"]));
+                return ((double)(this["AboutTop"]));
             }
             set {
                 this["AboutTop"] = value;
@@ -110,9 +110,9 @@ namespace AnnoDesigner.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("200")]
-        public int AboutLeft {
+        public double AboutLeft {
             get {
-                return ((int)(this["AboutLeft"]));
+                return ((double)(this["AboutLeft"]));
             }
             set {
                 this["AboutLeft"] = value;

@@ -7,7 +7,6 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -18,6 +17,9 @@ namespace AnnoDesigner.viewmodel
     public class BuildingSettingsViewModel : Notify
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        private readonly ICommons _commons;
+        private readonly IAppSettings _appSettings;
 
         private string _textHeader;
         private string _textSize;
@@ -70,8 +72,11 @@ namespace AnnoDesigner.viewmodel
         /// <summary>
         /// only used for databinding
         /// </summary>
-        public BuildingSettingsViewModel()
+        public BuildingSettingsViewModel(ICommons commonsToUse, IAppSettings appSettingsToUse)
         {
+            _commons = commonsToUse;
+            _appSettings = appSettingsToUse;
+
             ApplyColorToSelectionCommand = new RelayCommand(ApplyColorToSelection, CanApplyColorToSelection);
             ApplyPredefinedColorToSelectionCommand = new RelayCommand(ApplyPredefinedColorToSelection, CanApplyPredefinedColorToSelection);
             UseColorInLayoutCommand = new RelayCommand(UseColorInLayout, CanUseColorInLayout);
@@ -125,7 +130,7 @@ namespace AnnoDesigner.viewmodel
 
         private void InitBuildingInfluences()
         {
-            string language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+            string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
 
             foreach (BuildingInfluenceType curInfluenceType in Enum.GetValues(typeof(BuildingInfluenceType)))
             {
@@ -141,7 +146,7 @@ namespace AnnoDesigner.viewmodel
 
         public void UpdateLanguageBuildingInfluenceType()
         {
-            string language = Localization.Localization.GetLanguageCodeFromName(MainWindow.SelectedLanguage);
+            string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
 
             foreach (var curBuildingInfluence in BuildingInfluences)
             {
@@ -398,11 +403,11 @@ namespace AnnoDesigner.viewmodel
             {
                 if (_annoCanvasToUse != null)
                 {
-                    _annoCanvasToUse.StatisticsUpdated -= AnnoCanvasToUse_StatisticsUpdated;
+                    _annoCanvasToUse.ColorsInLayoutUpdated -= AnnoCanvasToUse_ColorsUpdated;
                 }
 
                 _annoCanvasToUse = value;
-                _annoCanvasToUse.StatisticsUpdated += AnnoCanvasToUse_StatisticsUpdated;
+                _annoCanvasToUse.ColorsInLayoutUpdated += AnnoCanvasToUse_ColorsUpdated;
             }
         }
 
@@ -486,10 +491,10 @@ namespace AnnoDesigner.viewmodel
 
         private void HandleIsPavedStreet()
         {
-            if (!Settings.Default.ShowPavedRoadsWarning)
+            if (!_appSettings.ShowPavedRoadsWarning)
             {
                 MessageBox.Show(TextPavedStreetToolTip, TextPavedStreetWarningTitle);
-                Settings.Default.ShowPavedRoadsWarning = true;
+                _appSettings.ShowPavedRoadsWarning = true;
             }
 
             if (!GetDistanceRange(IsPavedStreet, AnnoCanvasToUse.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == BuildingIdentifier)))
@@ -568,7 +573,7 @@ namespace AnnoDesigner.viewmodel
 
             AnnoCanvasToUse.InvalidateVisual();
 
-            AnnoCanvasToUse_StatisticsUpdated(this, EventArgs.Empty);
+            AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
         }
 
         private bool CanApplyColorToSelection(object param)
@@ -595,6 +600,7 @@ namespace AnnoDesigner.viewmodel
             }
 
             AnnoCanvasToUse.InvalidateVisual();
+            AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
         }
 
         private bool CanApplyPredefinedColorToSelection(object param)
@@ -628,7 +634,7 @@ namespace AnnoDesigner.viewmodel
 
         #endregion
 
-        private void AnnoCanvasToUse_StatisticsUpdated(object sender, EventArgs e)
+        private void AnnoCanvasToUse_ColorsUpdated(object sender, EventArgs e)
         {
             ColorsInLayout.Clear();
 

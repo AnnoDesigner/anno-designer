@@ -1,6 +1,4 @@
 ﻿using AnnoDesigner.Core.Models;
-using AnnoDesigner.model;
-using AnnoDesigner.Properties;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +12,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner
 {

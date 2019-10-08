@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutViewModelTests.cs" />
     <Compile Include="BuildingSettingsViewModelTests.cs" />
     <Compile Include="CoordinateHelperTests.cs" />
     <Compile Include="MainViewModelTests.cs" />

@@ -8,17 +8,21 @@ using System.Windows;
 using System.Windows.Input;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.model;
-using AnnoDesigner.Properties;
 
 namespace AnnoDesigner.viewmodel
 {
     public class WelcomeViewModel : Notify
     {
+        private readonly ICommons _commons;
+        private readonly IAppSettings _appSettings;
         private ObservableCollection<SupportedLanguage> _languages;
         private SupportedLanguage _selectedItem;
 
-        public WelcomeViewModel()
+        public WelcomeViewModel(ICommons commonsToUse, IAppSettings appSettingsToUse)
         {
+            _commons = commonsToUse;
+            _appSettings = appSettingsToUse;
+
             Languages = new ObservableCollection<SupportedLanguage>();
             Languages.Add(new SupportedLanguage("English")
             {
@@ -70,10 +74,10 @@ namespace AnnoDesigner.viewmodel
 
         private void LoadSelectedLanguage(ICloseable window)
         {
-            MainWindow.SelectedLanguage = SelectedItem.Name;
+            _commons.SelectedLanguage = SelectedItem.Name;
 
-            Settings.Default.SelectedLanguage = MainWindow.SelectedLanguage;
-            Settings.Default.Save();
+            _appSettings.SelectedLanguage = _commons.SelectedLanguage;
+            _appSettings.Save();
 
             window?.Close();
         }
