@@ -37,6 +37,7 @@ namespace AnnoDesigner.viewmodel
         private ObservableCollection<StatisticsBuilding> _buildings;
         private ObservableCollection<StatisticsBuilding> _selectedBuildings;
         private StatisticsCalculationHelper _statisticsCalculationHelper;
+        private readonly Dictionary<string, BuildingInfo> _cachedPresetsBuilding;
 
         public StatisticsViewModel(ICommons commonsToUse)
         {
@@ -61,6 +62,7 @@ namespace AnnoDesigner.viewmodel
             Buildings = new ObservableCollection<StatisticsBuilding>();
             SelectedBuildings = new ObservableCollection<StatisticsBuilding>();
             _statisticsCalculationHelper = new StatisticsCalculationHelper();
+            _cachedPresetsBuilding = new Dictionary<string, BuildingInfo>(50);
         }
 
         #region localization
@@ -253,11 +255,9 @@ namespace AnnoDesigner.viewmodel
 
         private ObservableCollection<StatisticsBuilding> GetStatisticBuildings(IEnumerable<IGrouping<string, LayoutObject>> groupedBuildingsByIdentifier, BuildingPresets buildingPresets)
         {
-            var result = new ObservableCollection<StatisticsBuilding>();
-
             if (groupedBuildingsByIdentifier == null)
             {
-                return result;
+                return new ObservableCollection<StatisticsBuilding>();
             }
 
             var language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
@@ -273,19 +273,19 @@ namespace AnnoDesigner.viewmodel
                 var firstElement = item.ElementAt(0);
                 if (!string.IsNullOrWhiteSpace(firstElement.WrappedAnnoObject.Identifier))
                 {
-                    var building = buildingPresets.Buildings.Find(_ => string.Equals(_.Identifier, firstElement.WrappedAnnoObject.Identifier, StringComparison.OrdinalIgnoreCase));
-                    if (building != null || firstElement.WrappedAnnoObject.Identifier == "Unknown Object")
+                    //try to find building in presets by identifier
+                    if (!_cachedPresetsBuilding.TryGetValue(firstElement.WrappedAnnoObject.Identifier, out var building))
                     {
-                        if (firstElement.WrappedAnnoObject.Identifier == "Unknown Object")
-                        {
-                            statisticBuilding.Count = item.Count();
-                            statisticBuilding.Name = Localization.Localization.Translations[language]["UnknownObject"];
-                        }
-                        else
-                        {
-                            statisticBuilding.Count = item.Count();
-                            statisticBuilding.Name = building.Localization[language];
-                        }
+                        building = buildingPresets.Buildings.Find(_ => string.Equals(_.Identifier, firstElement.WrappedAnnoObject.Identifier, StringComparison.OrdinalIgnoreCase));
+                        _cachedPresetsBuilding.Add(firstElement.WrappedAnnoObject.Identifier, building);
+                    }
+
+                    if (building != null)
+                    {
+                        var isUnknownObject = string.Equals(firstElement.WrappedAnnoObject.Identifier, "Unknown Object", StringComparison.OrdinalIgnoreCase);
+
+                        statisticBuilding.Count = item.Count();
+                        statisticBuilding.Name = isUnknownObject ? Localization.Localization.Translations[language]["UnknownObject"] : building.Localization[language];
                     }
                     else
                     {
@@ -304,12 +304,7 @@ namespace AnnoDesigner.viewmodel
                 tempList.Add(statisticBuilding);
             }
 
-            foreach (var curBuilding in tempList.OrderByDescending(x => x.Count).ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase))
-            {
-                result.Add(curBuilding);
-            }
-
-            return result;
+            return new ObservableCollection<StatisticsBuilding>(tempList.OrderByDescending(x => x.Count).ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase));
         }
 
         public void CopyLocalization(StatisticsViewModel other)

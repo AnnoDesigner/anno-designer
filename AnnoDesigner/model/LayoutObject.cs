@@ -25,6 +25,7 @@ namespace AnnoDesigner.model
         private Point _position;
         private Rect _screenRect;
         private Rect _collisionRect;
+        private Size _collisionSize;
         private string _iconNameWithoutExtension;
         private FormattedText _formattedText;
         private CultureInfo _usedTextCulture;
@@ -186,10 +187,23 @@ namespace AnnoDesigner.model
             {
                 if (_collisionRect == default)
                 {
-                    _collisionRect = new Rect(Position, new Size(WrappedAnnoObject.Size.Width - 0.5, WrappedAnnoObject.Size.Height - 0.5));
+                    _collisionRect = new Rect(Position, CollisionSize);
                 }
 
                 return _collisionRect;
+            }
+        }
+
+        private Size CollisionSize
+        {
+            get
+            {
+                if (_collisionSize == default)
+                {
+                    _collisionSize = new Size(WrappedAnnoObject.Size.Width - 0.5, WrappedAnnoObject.Size.Height - 0.5);
+                }
+
+                return _collisionSize;
             }
         }
 
