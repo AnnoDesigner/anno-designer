@@ -636,7 +636,7 @@ namespace AnnoDesigner
             else
             {
                 var pos = _mousePosition;
-                var size = _coordinateHelper.GridToScreen(CurrentObjects[0].WrappedAnnoObject.Size, GridSize);
+                var size = _coordinateHelper.GridToScreen(CurrentObjects[0].Size, GridSize);
                 pos.X -= size.Width / 2;
                 pos.Y -= size.Height / 2;
                 CurrentObjects[0].Position = _coordinateHelper.RoundScreenToGrid(pos, GridSize);
@@ -806,9 +806,9 @@ namespace AnnoDesigner
 
                     //In grid units
                     var topLeftCorner = curLayoutObject.Position;
-                    var topRightCorner = new Point(curLayoutObject.Position.X + obj.Size.Width, curLayoutObject.Position.Y);
-                    var bottomLeftCorner = new Point(curLayoutObject.Position.X, curLayoutObject.Position.Y + obj.Size.Height);
-                    var bottomRightCorner = new Point(curLayoutObject.Position.X + obj.Size.Width, curLayoutObject.Position.Y + obj.Size.Height);
+                    var topRightCorner = new Point(curLayoutObject.Position.X + curLayoutObject.Size.Width, curLayoutObject.Position.Y);
+                    var bottomLeftCorner = new Point(curLayoutObject.Position.X, curLayoutObject.Position.Y + curLayoutObject.Size.Height);
+                    var bottomRightCorner = new Point(curLayoutObject.Position.X + curLayoutObject.Size.Width, curLayoutObject.Position.Y + curLayoutObject.Size.Height);
 
                     var influenceRange = obj.InfluenceRange;
 
@@ -938,7 +938,7 @@ namespace AnnoDesigner
         {
             for (var i = 0; i < objects.Count; i++)
             {
-                objects[i].WrappedAnnoObject.Size = _coordinateHelper.Rotate(objects[i].WrappedAnnoObject.Size);
+                objects[i].Size = _coordinateHelper.Rotate(objects[i].Size);
                 var position = objects[i].Position;
                 //Full formula left in for explanation
                 //var xPrime = x * Math.Cos(angle) - y * Math.Sin(angle);
@@ -953,7 +953,7 @@ namespace AnnoDesigner
                 //longer represent the top left corner, they will represent the 
                 //top-right corner instead. We need to account for this, by 
                 //moving the xPrime position (still in grid coordinates).
-                xPrime -= objects[i].WrappedAnnoObject.Size.Width;
+                xPrime -= objects[i].Size.Width;
 
                 objects[i].Position = new Point(xPrime, yPrime);
             }
@@ -1041,15 +1041,19 @@ namespace AnnoDesigner
                 {
                     // user clicked nothing: start dragging the selection rect
                     CurrentMode = MouseMode.SelectionRectStart;
+                    _unselectedObjects = null;
                 }
                 else if (!(IsControlPressed() || IsShiftPressed()))
                 {
                     CurrentMode = _selectedObjects.Contains(obj) ? MouseMode.DragSelectionStart : MouseMode.DragSingleStart;
+                    _unselectedObjects = null;
                 }
             }
 
             InvalidateVisual();
         }
+
+        private List<LayoutObject> _unselectedObjects = null;
 
         /// <summary>
         /// Here be dragons.
@@ -1137,11 +1141,16 @@ namespace AnnoDesigner
                             // check if the mouse has moved at least one grid cell in any direction
                             if (dx == 0 && dy == 0)
                             {
-                                StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                                //no relevant mouse move -> no need for update
+                                //StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                                 break;
                             }
 
-                            var unselected = _placedObjects.FindAll(_ => !_selectedObjects.Contains(_));
+                            if (_unselectedObjects == null)
+                            {
+                                _unselectedObjects = _placedObjects.FindAll(_ => !_selectedObjects.Contains(_));
+                            }
+
                             var collisionsExist = false;
                             // temporarily move each object and check if collisions with unselected objects exist
                             foreach (var curLayoutObject in _selectedObjects)
@@ -1149,8 +1158,8 @@ namespace AnnoDesigner
                                 var originalPosition = curLayoutObject.Position;
                                 // move object                                
                                 curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
-                                // check for collisions
-                                var collides = unselected.Find(_ => ObjectIntersectionExists(curLayoutObject, _)) != null;
+                                // check for collisions                                
+                                var collides = _unselectedObjects.Find(_ => ObjectIntersectionExists(curLayoutObject, _)) != null;
                                 curLayoutObject.Position = originalPosition;
                                 if (collides)
                                 {
@@ -1158,6 +1167,7 @@ namespace AnnoDesigner
                                     break;
                                 }
                             }
+
                             // if no collisions were found, permanently move all selected objects
                             if (!collisionsExist)
                             {
@@ -1168,9 +1178,13 @@ namespace AnnoDesigner
                                 // adjust the drag start to compensate the amount we already moved
                                 _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
                                 _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
+
+                                //position change -> update
+                                StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                             }
 
-                            StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                            //only update when positions were changed
+                            //StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                             break;
                     }
                 }
@@ -1334,7 +1348,7 @@ namespace AnnoDesigner
                 case Key.R:
                     if (CurrentObjects.Count == 1)
                     {
-                        CurrentObjects[0].WrappedAnnoObject.Size = _coordinateHelper.Rotate(CurrentObjects[0].WrappedAnnoObject.Size);
+                        CurrentObjects[0].Size = _coordinateHelper.Rotate(CurrentObjects[0].Size);
                     }
                     else if (CurrentObjects.Count > 1)
                     {

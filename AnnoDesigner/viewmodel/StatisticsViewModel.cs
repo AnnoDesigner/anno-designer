@@ -241,8 +241,8 @@ namespace AnnoDesigner.viewmodel
 
             if (ShowBuildingList)
             {
-                var groupedBuildings = placedObjects.GroupBy(_ => _.WrappedAnnoObject.Identifier);
-                var groupedSelectedBuildings = selectedObjects.Count > 0 ? selectedObjects.GroupBy(_ => _.WrappedAnnoObject.Identifier) : null;
+                var groupedBuildings = placedObjects.GroupBy(_ => _.Identifier);
+                var groupedSelectedBuildings = selectedObjects.Count > 0 ? selectedObjects.GroupBy(_ => _.Identifier) : null;
 
                 Buildings = GetStatisticBuildings(groupedBuildings, buildingPresets);
                 SelectedBuildings = GetStatisticBuildings(groupedSelectedBuildings, buildingPresets);
@@ -264,7 +264,7 @@ namespace AnnoDesigner.viewmodel
             var tempList = new List<StatisticsBuilding>();
 
             var validBuildingsGrouped = groupedBuildingsByIdentifier
-                        .Where(_ => !_.ElementAt(0).WrappedAnnoObject.Road && _.ElementAt(0).WrappedAnnoObject.Identifier != null)
+                        .Where(_ => !_.ElementAt(0).WrappedAnnoObject.Road && _.ElementAt(0).Identifier != null)
                         .OrderByDescending(_ => _.Count());
             foreach (var item in validBuildingsGrouped)
             {
@@ -280,10 +280,9 @@ namespace AnnoDesigner.viewmodel
                         _cachedPresetsBuilding.Add(firstElement.WrappedAnnoObject.Identifier, building);
                     }
 
-                    if (building != null)
+                    var isUnknownObject = string.Equals(firstElement.WrappedAnnoObject.Identifier, "Unknown Object", StringComparison.OrdinalIgnoreCase);
+                    if (building != null || isUnknownObject)
                     {
-                        var isUnknownObject = string.Equals(firstElement.WrappedAnnoObject.Identifier, "Unknown Object", StringComparison.OrdinalIgnoreCase);
-
                         statisticBuilding.Count = item.Count();
                         statisticBuilding.Name = isUnknownObject ? Localization.Localization.Translations[language]["UnknownObject"] : building.Localization[language];
                     }

@@ -27,6 +27,8 @@ namespace AnnoDesigner.model
         private Rect _collisionRect;
         private Size _collisionSize;
         private string _iconNameWithoutExtension;
+        private string _identifier;
+        private Size _size;
         private FormattedText _formattedText;
         private CultureInfo _usedTextCulture;
         private Typeface _usedTextTypeFace;
@@ -170,7 +172,7 @@ namespace AnnoDesigner.model
             {
                 if (_screenRect == default)
                 {
-                    _screenRect = new Rect(_coordinateHelper.GridToScreen(Position, _gridSizeScreenRect), _coordinateHelper.GridToScreen(WrappedAnnoObject.Size, _gridSizeScreenRect));
+                    _screenRect = new Rect(_coordinateHelper.GridToScreen(Position, _gridSizeScreenRect), _coordinateHelper.GridToScreen(Size, _gridSizeScreenRect));
                 }
 
                 return _screenRect;
@@ -200,7 +202,7 @@ namespace AnnoDesigner.model
             {
                 if (_collisionSize == default)
                 {
-                    _collisionSize = new Size(WrappedAnnoObject.Size.Width - 0.5, WrappedAnnoObject.Size.Height - 0.5);
+                    _collisionSize = new Size(Size.Width - 0.5, Size.Height - 0.5);
                 }
 
                 return _collisionSize;
@@ -217,6 +219,41 @@ namespace AnnoDesigner.model
                 }
 
                 return _iconNameWithoutExtension;
+            }
+        }
+
+        public string Identifier
+        {
+            get
+            {
+                if (_identifier == null)
+                {
+                    _identifier = WrappedAnnoObject.Identifier;
+                }
+
+                return _identifier;
+            }
+        }
+
+        public Size Size
+        {
+            get
+            {
+                if (_size == default)
+                {
+                    _size = WrappedAnnoObject.Size;
+                }
+
+                return _size;
+            }
+            set
+            {
+                WrappedAnnoObject.Size = value;
+                _size = value;
+
+                _collisionSize = default;
+                _screenRect = default;
+                _iconRect = default;
             }
         }
 
@@ -253,7 +290,7 @@ namespace AnnoDesigner.model
             if (_iconRect == default || _gridSizeIconRect != gridSize || _lastScreenRectForIcon != objRect)
             {
                 // draw icon 2x2 grid cells large
-                var minSize = Math.Min(WrappedAnnoObject.Size.Width, WrappedAnnoObject.Size.Height);
+                var minSize = Math.Min(Size.Width, Size.Height);
                 //minSize = minSize == 1 ? minSize : Math.Floor(NthRoot(minSize, Constants.IconSizeFactor) + 1);
                 var iconSize = _coordinateHelper.GridToScreen(new Size(minSize, minSize), gridSize);
                 iconSize = minSize == 1 ? iconSize : new Size(NthRoot(iconSize.Width, Constants.IconSizeFactor), NthRoot(iconSize.Height, Constants.IconSizeFactor));

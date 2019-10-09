@@ -362,14 +362,14 @@ namespace AnnoDesigner.viewmodel
             }
 
             // size
-            BuildingSettingsViewModel.BuildingWidth = (int)obj.Size.Width;
-            BuildingSettingsViewModel.BuildingHeight = (int)obj.Size.Height;
+            BuildingSettingsViewModel.BuildingWidth = (int)layoutObject.Size.Width;
+            BuildingSettingsViewModel.BuildingHeight = (int)layoutObject.Size.Height;
             // color
             BuildingSettingsViewModel.SelectedColor = ColorPresetsHelper.Instance.GetPredefinedColor(obj) ?? obj.Color;
             // label
             BuildingSettingsViewModel.BuildingName = obj.Label;
             // Identifier
-            BuildingSettingsViewModel.BuildingIdentifier = obj.Identifier;
+            BuildingSettingsViewModel.BuildingIdentifier = layoutObject.Identifier;
             // Template
             BuildingSettingsViewModel.BuildingTemplate = obj.Template;
             // icon
@@ -1186,8 +1186,8 @@ namespace AnnoDesigner.viewmodel
                 }
 
                 // calculate output size
-                var width = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.WrappedAnnoObject.Size.Width) + border, target.GridSize);//if +1 then there are weird black lines next to the statistics view
-                var height = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.WrappedAnnoObject.Size.Height) + border, target.GridSize) + 1;//+1 for black grid line at bottom
+                var width = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border, target.GridSize);//if +1 then there are weird black lines next to the statistics view
+                var height = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border, target.GridSize) + 1;//+1 for black grid line at bottom
 
                 if (renderStatistics)
                 {
