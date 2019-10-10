@@ -365,7 +365,7 @@ namespace AnnoDesigner.viewmodel
             BuildingSettingsViewModel.BuildingWidth = (int)layoutObject.Size.Width;
             BuildingSettingsViewModel.BuildingHeight = (int)layoutObject.Size.Height;
             // color
-            BuildingSettingsViewModel.SelectedColor = ColorPresetsHelper.Instance.GetPredefinedColor(obj) ?? obj.Color;
+            BuildingSettingsViewModel.SelectedColor = ColorPresetsHelper.Instance.GetPredefinedColor(obj) ?? layoutObject.Color;
             // label
             BuildingSettingsViewModel.BuildingName = obj.Label;
             // Identifier

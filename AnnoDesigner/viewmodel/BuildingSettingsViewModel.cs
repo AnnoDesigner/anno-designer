@@ -568,7 +568,7 @@ namespace AnnoDesigner.viewmodel
 
             foreach (var curSelectedObject in AnnoCanvasToUse.SelectedObjects)
             {
-                curSelectedObject.WrappedAnnoObject.Color = SelectedColor.Value;
+                curSelectedObject.Color = SelectedColor.Value;
             }
 
             AnnoCanvasToUse.InvalidateVisual();
@@ -595,7 +595,7 @@ namespace AnnoDesigner.viewmodel
                 var foundPredefinedColor = ColorPresetsHelper.Instance.GetPredefinedColor(curSelectedObject.WrappedAnnoObject);
                 if (foundPredefinedColor != null && foundPredefinedColor.HasValue)
                 {
-                    curSelectedObject.WrappedAnnoObject.Color = foundPredefinedColor.Value;
+                    curSelectedObject.Color = foundPredefinedColor.Value;
                 }
             }
 
@@ -638,9 +638,9 @@ namespace AnnoDesigner.viewmodel
         {
             ColorsInLayout.Clear();
 
-            foreach (var curColor in AnnoCanvasToUse.PlacedObjects.Select(x => x.WrappedAnnoObject.Color)
-                .OrderBy(x => x.MediaColor, ColorSorter)
-                .Distinct())
+            foreach (var curColor in AnnoCanvasToUse.PlacedObjects.Select(_ => _.Color)
+                .Distinct()
+                .OrderBy(_ => _.MediaColor, ColorSorter))
             {
                 ColorsInLayout.Add(curColor);
             }

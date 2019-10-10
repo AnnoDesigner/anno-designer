@@ -41,6 +41,7 @@ namespace AnnoDesigner.model
         private Rect _lastScreenRectForCenterPoint;
         private double _screenRadius;
         private int _lastGridSizeForScreenRadius;
+        private SerializableColor _color;
 
         public LayoutObject(AnnoObject annoObjectToWrap, ICoordinateHelper coordinateHelperToUse)
         {
@@ -357,6 +358,29 @@ namespace AnnoDesigner.model
             }
 
             return _screenRadius;
+        }
+
+        public SerializableColor Color
+        {
+            get
+            {
+                if (_color == default)
+                {
+                    _color = WrappedAnnoObject.Color;
+                }
+
+                return _color;
+            }
+            set
+            {
+                WrappedAnnoObject.Color = value;
+                _color = value;
+
+                _transparentColor = null;
+                _transparentBrush = null;
+                _renderColor = null;
+                _renderBrush = null;
+            }
         }
     }
 }
