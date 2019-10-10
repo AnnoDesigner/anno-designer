@@ -32,4 +32,4 @@ Sting_McRay has also done a lot of work on this, extracting icons from Anno 2205
 Included in this repo is a modified version of the PresetParser - which supports the extraction of data from all the different Anno versions. It is not required to run the app (and is not included in any release).
 
 ## License
-MIT
+[MIT](https://github.com/AgmasGold/anno-designer/blob/master/LICENSE)
