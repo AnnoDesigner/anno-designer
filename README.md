@@ -1,3 +1,5 @@
+![GitHub](https://img.shields.io/github/license/AgmasGold/anno-designer) ![version](https://img.shields.io/badge/latest--version-8.4-blue) ![presets version](https://img.shields.io/badge/presets--version-3.2.8-blue) ![Discord](https://img.shields.io/discord/571011757317947406?label=help%2Fdiscord)
+
 # Anno Designer
 A building layout designer for Ubisoft's Anno-series
 
