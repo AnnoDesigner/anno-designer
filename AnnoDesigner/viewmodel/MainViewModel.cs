@@ -1101,7 +1101,7 @@ namespace AnnoDesigner.viewmodel
                 {
                     RenderToFile(dialog.FileName, 1, exportZoom, exportSelection, StatisticsViewModel.IsVisible);
 
-                    MessageBox.Show(//this,
+                    MessageBox.Show(Application.Current.MainWindow,
                         Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage)]["ExportImageSuccessful"],
                         Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage)]["Successful"],
                         MessageBoxButton.OK,
@@ -1110,7 +1110,8 @@ namespace AnnoDesigner.viewmodel
                 catch (Exception ex)
                 {
                     logger.Error(ex, "Error exporting image.");
-                    MessageBox.Show("Something went wrong while exporting the image.",
+                    MessageBox.Show(Application.Current.MainWindow,
+                        "Something went wrong while exporting the image.",
                         Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage)]["Error"],
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
@@ -1197,8 +1198,10 @@ namespace AnnoDesigner.viewmodel
 
                     target.StatisticsPanel.Children.Add(exportStatisticsView);
 
+                    //fix wrong for wrong width: https://stackoverflow.com/q/27894477
+                    exportStatisticsView.Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
                     //according to https://stackoverflow.com/a/25507450
-                    // and https://stackoverflow.com/a/1320666
+                    //and https://stackoverflow.com/a/1320666
                     exportStatisticsView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
                     //exportStatisticsView.Arrange(new Rect(new Point(0, 0), exportStatisticsView.DesiredSize));
 
