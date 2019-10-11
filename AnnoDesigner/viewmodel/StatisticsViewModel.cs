@@ -216,11 +216,11 @@ namespace AnnoDesigner.viewmodel
             ShowBuildingList = showBuildingList;
             if (showBuildingList)
             {
-                UpdateStatistics(UpdateMode.All, placedObjects, selectedObjects, buildingPresets);
+                _ = UpdateStatisticsAsync(UpdateMode.All, placedObjects, selectedObjects, buildingPresets);
             }
         }
 
-        public void UpdateStatistics(UpdateMode mode,
+        public async Task UpdateStatisticsAsync(UpdateMode mode,
             List<LayoutObject> placedObjects,
             List<LayoutObject> selectedObjects,
             BuildingPresets buildingPresets)
@@ -233,16 +233,20 @@ namespace AnnoDesigner.viewmodel
 
             AreStatisticsAvailable = true;
 
+            var calculateStatisticsTask = Task.Run(() => _statisticsCalculationHelper.CalculateStatistics(placedObjects.Select(_ => _.WrappedAnnoObject)));
+
             if (mode != UpdateMode.NoBuildingList && ShowBuildingList)
             {
                 var groupedBuildings = placedObjects.GroupBy(_ => _.Identifier);
                 var groupedSelectedBuildings = selectedObjects.Count > 0 ? selectedObjects.GroupBy(_ => _.Identifier) : null;
 
-                SelectedBuildings = GetStatisticBuildings(groupedBuildings, buildingPresets);
-                Buildings = GetStatisticBuildings(groupedSelectedBuildings, buildingPresets);
+                var buildingsTask = Task.Run(() => GetStatisticBuildings(groupedBuildings, buildingPresets));
+                var selectedBuildingsTask = Task.Run(() => GetStatisticBuildings(groupedSelectedBuildings, buildingPresets));
+                SelectedBuildings = await selectedBuildingsTask;
+                Buildings = await buildingsTask;
             }
 
-            var calculatedStatistics = _statisticsCalculationHelper.CalculateStatistics(placedObjects.Select(_ => _.WrappedAnnoObject).ToList());
+            var calculatedStatistics = await calculateStatisticsTask;
 
             UsedArea = string.Format("{0}x{1}", calculatedStatistics.UsedAreaX, calculatedStatistics.UsedAreaY);
             UsedTiles = calculatedStatistics.UsedTiles;

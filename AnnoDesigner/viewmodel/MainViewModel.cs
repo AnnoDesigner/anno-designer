@@ -179,7 +179,7 @@ namespace AnnoDesigner.viewmodel
                 //update settings
                 _appSettings.SelectedLanguage = _commons.SelectedLanguage;
 
-                UpdateStatistics(UpdateMode.All);
+                _ = UpdateStatisticsAsync(UpdateMode.All);
 
                 PresetsTreeSearchViewModel.SearchText = string.Empty;
             }
@@ -438,7 +438,7 @@ namespace AnnoDesigner.viewmodel
 
         private void AnnoCanvas_StatisticsUpdated(object sender, UpdateStatisticsEventArgs e)
         {
-            UpdateStatistics(e.Mode);
+            _ = UpdateStatisticsAsync(e.Mode);
         }
 
         private void AnnoCanvas_ClipboardChanged(List<LayoutObject> itemsOnClipboard)
@@ -458,9 +458,9 @@ namespace AnnoDesigner.viewmodel
             logger.Info($"Loaded file: {(string.IsNullOrEmpty(filename) ? "(none)" : filename)}");
         }
 
-        public void UpdateStatistics(UpdateMode mode)
+        public Task UpdateStatisticsAsync(UpdateMode mode)
         {
-            StatisticsViewModel.UpdateStatistics(mode,
+            return StatisticsViewModel.UpdateStatisticsAsync(mode,
                 AnnoCanvas.PlacedObjects,
                 AnnoCanvas.SelectedObjects,
                 AnnoCanvas.BuildingPresets);
@@ -1014,7 +1014,7 @@ namespace AnnoDesigner.viewmodel
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 
-                            UpdateStatistics(UpdateMode.All);
+                            _ = UpdateStatisticsAsync(UpdateMode.All);
                         }
                     }
                 }
@@ -1202,7 +1202,7 @@ namespace AnnoDesigner.viewmodel
                     };
                     exportStatisticsView.DataContext = exportStatisticsViewModel;
 
-                    exportStatisticsViewModel.UpdateStatistics(UpdateMode.All, target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
+                    exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects, target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult(); ;
                     exportStatisticsViewModel.CopyLocalization(StatisticsViewModel);
                     exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 

@@ -10,7 +10,7 @@ namespace AnnoDesigner.Core.Layout.Helper
 {
     public class StatisticsCalculationHelper
     {
-        public StatisticsCalculationResult CalculateStatistics(List<AnnoObject> placedObjects)
+        public StatisticsCalculationResult CalculateStatistics(IEnumerable<AnnoObject> placedObjects)
         {
             if (placedObjects == null)
             {
@@ -19,7 +19,7 @@ namespace AnnoDesigner.Core.Layout.Helper
 
             var result = new StatisticsCalculationResult();
 
-            if (placedObjects.Count == 0)
+            if (!placedObjects.Any())
             {
                 return result;
             }

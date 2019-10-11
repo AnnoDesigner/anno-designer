@@ -1119,74 +1119,79 @@ namespace AnnoDesigner
                     switch (CurrentMode)
                     {
                         case MouseMode.SelectionRect:
-                            if (IsControlPressed() || IsShiftPressed())
                             {
-                                // remove previously selected by the selection rect
-                                _selectedObjects.RemoveAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
-                            }
-                            else
-                            {
-                                _selectedObjects.Clear();
-                            }
-                            // adjust rect
-                            _selectionRect = new Rect(_mouseDragStart, _mousePosition);
-                            // select intersecting objects
-                            _selectedObjects.AddRange(_placedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)));
+                                if (IsControlPressed() || IsShiftPressed())
+                                {
+                                    // remove previously selected by the selection rect
+                                    _selectedObjects.RemoveAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
+                                }
+                                else
+                                {
+                                    _selectedObjects.Clear();
+                                }
 
-                            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-                            break;
+                                // adjust rect
+                                _selectionRect = new Rect(_mouseDragStart, _mousePosition);
+                                // select intersecting objects
+                                _selectedObjects.AddRange(_placedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)));
+
+                                StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+                                break;
+                            }
                         case MouseMode.DragSelection:
-                            // move all selected objects
-                            var dx = (int)_coordinateHelper.ScreenToGrid(_mousePosition.X - _mouseDragStart.X, GridSize);
-                            var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
-                            // check if the mouse has moved at least one grid cell in any direction
-                            if (dx == 0 && dy == 0)
                             {
-                                //no relevant mouse move -> no need for update
+                                // move all selected objects
+                                var dx = (int)_coordinateHelper.ScreenToGrid(_mousePosition.X - _mouseDragStart.X, GridSize);
+                                var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
+                                // check if the mouse has moved at least one grid cell in any direction
+                                if (dx == 0 && dy == 0)
+                                {
+                                    //no relevant mouse move -> no need for update
+                                    //StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                                    break;
+                                }
+
+                                if (_unselectedObjects == null)
+                                {
+                                    _unselectedObjects = _placedObjects.FindAll(_ => !_selectedObjects.Contains(_));
+                                }
+
+                                var collisionsExist = false;
+                                // temporarily move each object and check if collisions with unselected objects exist
+                                foreach (var curLayoutObject in _selectedObjects)
+                                {
+                                    var originalPosition = curLayoutObject.Position;
+                                    // move object                                
+                                    curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
+                                    // check for collisions                                
+                                    var collides = _unselectedObjects.Find(_ => ObjectIntersectionExists(curLayoutObject, _)) != null;
+                                    curLayoutObject.Position = originalPosition;
+                                    if (collides)
+                                    {
+                                        collisionsExist = true;
+                                        break;
+                                    }
+                                }
+
+                                // if no collisions were found, permanently move all selected objects
+                                if (!collisionsExist)
+                                {
+                                    foreach (var curLayoutObject in _selectedObjects)
+                                    {
+                                        curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
+                                    }
+                                    // adjust the drag start to compensate the amount we already moved
+                                    _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
+                                    _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
+
+                                    //position change -> update
+                                    StatisticsUpdated?.Invoke(this, new UpdateStatisticsEventArgs(UpdateMode.NoBuildingList));
+                                }
+
+                                //only update when positions were changed
                                 //StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                                 break;
                             }
-
-                            if (_unselectedObjects == null)
-                            {
-                                _unselectedObjects = _placedObjects.FindAll(_ => !_selectedObjects.Contains(_));
-                            }
-
-                            var collisionsExist = false;
-                            // temporarily move each object and check if collisions with unselected objects exist
-                            foreach (var curLayoutObject in _selectedObjects)
-                            {
-                                var originalPosition = curLayoutObject.Position;
-                                // move object                                
-                                curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
-                                // check for collisions                                
-                                var collides = _unselectedObjects.Find(_ => ObjectIntersectionExists(curLayoutObject, _)) != null;
-                                curLayoutObject.Position = originalPosition;
-                                if (collides)
-                                {
-                                    collisionsExist = true;
-                                    break;
-                                }
-                            }
-
-                            // if no collisions were found, permanently move all selected objects
-                            if (!collisionsExist)
-                            {
-                                foreach (var curLayoutObject in _selectedObjects)
-                                {
-                                    curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
-                                }
-                                // adjust the drag start to compensate the amount we already moved
-                                _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
-                                _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
-
-                                //position change -> update
-                                StatisticsUpdated?.Invoke(this, new UpdateStatisticsEventArgs(UpdateMode.NoBuildingList));
-                            }
-
-                            //only update when positions were changed
-                            //StatisticsUpdated?.Invoke(this, EventArgs.Empty);
-                            break;
                     }
                 }
             }
@@ -1216,30 +1221,32 @@ namespace AnnoDesigner
                 switch (CurrentMode)
                 {
                     default:
-                        // clear selection if no key is pressed
-                        if (!(IsControlPressed() || IsShiftPressed()))
                         {
-                            _selectedObjects.Clear();
-                        }
-
-                        var obj = GetObjectAt(_mousePosition);
-                        if (obj != null)
-                        {
-                            // user clicked an object: select or deselect it
-                            if (_selectedObjects.Contains(obj))
+                            // clear selection if no key is pressed
+                            if (!(IsControlPressed() || IsShiftPressed()))
                             {
-                                _selectedObjects.Remove(obj);
+                                _selectedObjects.Clear();
                             }
-                            else
-                            {
-                                _selectedObjects.Add(obj);
-                            }
-                        }
 
-                        StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-                        // return to standard mode, i.e. clear any drag-start modes
-                        CurrentMode = MouseMode.Standard;
-                        break;
+                            var obj = GetObjectAt(_mousePosition);
+                            if (obj != null)
+                            {
+                                // user clicked an object: select or deselect it
+                                if (_selectedObjects.Contains(obj))
+                                {
+                                    _selectedObjects.Remove(obj);
+                                }
+                                else
+                                {
+                                    _selectedObjects.Add(obj);
+                                }
+                            }
+
+                            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+                            // return to standard mode, i.e. clear any drag-start modes
+                            CurrentMode = MouseMode.Standard;
+                            break;
+                        }
                     case MouseMode.SelectionRect:
                         // cancel dragging of selection rect
                         CurrentMode = MouseMode.Standard;
@@ -1255,44 +1262,48 @@ namespace AnnoDesigner
                 switch (CurrentMode)
                 {
                     case MouseMode.Standard:
-                        if (CurrentObjects.Count == 0)
                         {
-                            var obj = GetObjectAt(_mousePosition);
-                            if (obj == null)
+                            if (CurrentObjects.Count == 0)
                             {
-                                if (!(IsControlPressed() || IsShiftPressed()))
+                                var obj = GetObjectAt(_mousePosition);
+                                if (obj == null)
                                 {
-                                    // clear selection
-                                    _selectedObjects.Clear();
+                                    if (!(IsControlPressed() || IsShiftPressed()))
+                                    {
+                                        // clear selection
+                                        _selectedObjects.Clear();
+                                    }
+                                }
+                                else
+                                {
+                                    // remove clicked object
+                                    _placedObjects.Remove(obj);
+                                    _selectedObjects.Remove(obj);
                                 }
                             }
                             else
                             {
-                                // remove clicked object
-                                _placedObjects.Remove(obj);
-                                _selectedObjects.Remove(obj);
+                                // cancel placement of object
+                                CurrentObjects.Clear();
                             }
-                        }
-                        else
-                        {
-                            // cancel placement of object
-                            CurrentObjects.Clear();
-                        }
 
-                        StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-                        break;
+                            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+                            break;
+                        }
                     case MouseMode.DragSelection:
-                        //clear selection
-                        _selectedObjects.Clear();
-
-                        if (CurrentObjects.Count != 0)
                         {
-                            // cancel placement of object
-                            CurrentObjects.Clear();
-                        }
+                            //clear selection
+                            _selectedObjects.Clear();
 
-                        CurrentMode = MouseMode.Standard;
-                        break;
+                            if (CurrentObjects.Count != 0)
+                            {
+                                // cancel placement of object
+                                CurrentObjects.Clear();
+                            }
+
+                            CurrentMode = MouseMode.Standard;
+                            break;
+                        }
                 }
             }
             // rotate current object
