@@ -561,7 +561,7 @@ namespace AnnoDesigner
             // draw mouse grid position highlight
             //drawingContext.DrawRectangle(_lightBrush, _highlightPen, new Rect(GridToScreen(ScreenToGrid(_mousePosition)), new Size(_gridStep, _gridStep)));
 
-            // draw placed objects
+            // draw placed objects            
             RenderObjectList(drawingContext, _placedObjects, useTransparency: false);
             RenderObjectSelection(drawingContext, _selectedObjects);
             RenderObjectInfluenceRadius(drawingContext, _selectedObjects);
