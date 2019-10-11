@@ -24,15 +24,13 @@ namespace AnnoDesigner.Core.Layout.Helper
                 return result;
             }
 
-            #region old logic is easier to understand, but slower
-
-            //// calculate bouding box
-            //var boxX = placedObjects.Max(_ => _.Position.X + _.Size.Width) - placedObjects.Min(_ => _.Position.X);
-            //var boxY = placedObjects.Max(_ => _.Position.Y + _.Size.Height) - placedObjects.Min(_ => _.Position.Y);
-            //// calculate area of all buildings
-            //var minTiles = placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
-
-            #endregion
+            /* old logic is easier to understand, but slower
+             // calculate bouding box
+             var boxX = placedObjects.Max(_ => _.Position.X + _.Size.Width) - placedObjects.Min(_ => _.Position.X);
+             var boxY = placedObjects.Max(_ => _.Position.Y + _.Size.Height) - placedObjects.Min(_ => _.Position.Y);
+             // calculate area of all buildings
+             var minTiles = placedObjects.Where(_ => !_.Road).Sum(_ => _.Size.Width * _.Size.Height);
+            */
 
             var maxX = double.MinValue;
             var maxY = double.MinValue;
