@@ -21,6 +21,7 @@ using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Helper;
+using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Localization;
 using AnnoDesigner.model;
@@ -178,7 +179,7 @@ namespace AnnoDesigner.viewmodel
                 //update settings
                 _appSettings.SelectedLanguage = _commons.SelectedLanguage;
 
-                UpdateStatistics();
+                UpdateStatistics(UpdateMode.All);
 
                 PresetsTreeSearchViewModel.SearchText = string.Empty;
             }
@@ -435,9 +436,9 @@ namespace AnnoDesigner.viewmodel
             BuildingSettingsViewModel.IsRoadChecked = obj.Road;
         }
 
-        private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)
+        private void AnnoCanvas_StatisticsUpdated(object sender, UpdateStatisticsEventArgs e)
         {
-            UpdateStatistics();
+            UpdateStatistics(e.Mode);
         }
 
         private void AnnoCanvas_ClipboardChanged(List<LayoutObject> itemsOnClipboard)
@@ -457,9 +458,10 @@ namespace AnnoDesigner.viewmodel
             logger.Info($"Loaded file: {(string.IsNullOrEmpty(filename) ? "(none)" : filename)}");
         }
 
-        public void UpdateStatistics()
+        public void UpdateStatistics(UpdateMode mode)
         {
-            StatisticsViewModel.UpdateStatistics(AnnoCanvas.PlacedObjects,
+            StatisticsViewModel.UpdateStatistics(mode,
+                AnnoCanvas.PlacedObjects,
                 AnnoCanvas.SelectedObjects,
                 AnnoCanvas.BuildingPresets);
         }
@@ -1012,7 +1014,7 @@ namespace AnnoDesigner.viewmodel
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 
-                            UpdateStatistics();
+                            UpdateStatistics(UpdateMode.All);
                         }
                     }
                 }
@@ -1199,7 +1201,7 @@ namespace AnnoDesigner.viewmodel
                     };
                     exportStatisticsView.DataContext = exportStatisticsViewModel;
 
-                    exportStatisticsViewModel.UpdateStatistics(target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
+                    exportStatisticsViewModel.UpdateStatistics(UpdateMode.All, target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
                     exportStatisticsViewModel.CopyLocalization(StatisticsViewModel);
                     exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 

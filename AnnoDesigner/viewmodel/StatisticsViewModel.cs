@@ -216,11 +216,12 @@ namespace AnnoDesigner.viewmodel
             ShowBuildingList = showBuildingList;
             if (showBuildingList)
             {
-                UpdateStatistics(placedObjects, selectedObjects, buildingPresets);
+                UpdateStatistics(UpdateMode.All, placedObjects, selectedObjects, buildingPresets);
             }
         }
 
-        public void UpdateStatistics(List<LayoutObject> placedObjects,
+        public void UpdateStatistics(UpdateMode mode,
+            List<LayoutObject> placedObjects,
             List<LayoutObject> selectedObjects,
             BuildingPresets buildingPresets)
         {
@@ -232,25 +233,21 @@ namespace AnnoDesigner.viewmodel
 
             AreStatisticsAvailable = true;
 
+            if (mode != UpdateMode.NoBuildingList && ShowBuildingList)
+            {
+                var groupedBuildings = placedObjects.GroupBy(_ => _.Identifier);
+                var groupedSelectedBuildings = selectedObjects.Count > 0 ? selectedObjects.GroupBy(_ => _.Identifier) : null;
+
+                SelectedBuildings = GetStatisticBuildings(groupedBuildings, buildingPresets);
+                Buildings = GetStatisticBuildings(groupedSelectedBuildings, buildingPresets);
+            }
+
             var calculatedStatistics = _statisticsCalculationHelper.CalculateStatistics(placedObjects.Select(_ => _.WrappedAnnoObject).ToList());
 
             UsedArea = string.Format("{0}x{1}", calculatedStatistics.UsedAreaX, calculatedStatistics.UsedAreaY);
             UsedTiles = calculatedStatistics.UsedTiles;
             MinTiles = calculatedStatistics.MinTiles;
             Efficiency = string.Format("{0}%", calculatedStatistics.Efficiency);
-
-            if (ShowBuildingList)
-            {
-                var groupedBuildings = placedObjects.GroupBy(_ => _.Identifier);
-                var groupedSelectedBuildings = selectedObjects.Count > 0 ? selectedObjects.GroupBy(_ => _.Identifier) : null;
-
-                Buildings = GetStatisticBuildings(groupedBuildings, buildingPresets);
-                SelectedBuildings = GetStatisticBuildings(groupedSelectedBuildings, buildingPresets);
-            }
-            else
-            {
-
-            }
         }
 
         private ObservableCollection<StatisticsBuilding> GetStatisticBuildings(IEnumerable<IGrouping<string, LayoutObject>> groupedBuildingsByIdentifier, BuildingPresets buildingPresets)

@@ -18,6 +18,7 @@ using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
+using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
 using AnnoDesigner.model;
 using Microsoft.Win32;
@@ -33,7 +34,7 @@ namespace AnnoDesigner
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public event EventHandler StatisticsUpdated;
+        public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
 
         #region Properties
@@ -510,7 +511,7 @@ namespace AnnoDesigner
             _lightBrush.Freeze();
             _influencedBrush.Freeze();
 
-            StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
 
             _layoutLoader = new LayoutLoader();
         }
@@ -1132,7 +1133,7 @@ namespace AnnoDesigner
                             // select intersecting objects
                             _selectedObjects.AddRange(_placedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)));
 
-                            StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                             break;
                         case MouseMode.DragSelection:
                             // move all selected objects
@@ -1180,7 +1181,7 @@ namespace AnnoDesigner
                                 _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
 
                                 //position change -> update
-                                StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                                StatisticsUpdated?.Invoke(this, new UpdateStatisticsEventArgs(UpdateMode.NoBuildingList));
                             }
 
                             //only update when positions were changed
@@ -1235,7 +1236,7 @@ namespace AnnoDesigner
                             }
                         }
 
-                        StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                        StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                         // return to standard mode, i.e. clear any drag-start modes
                         CurrentMode = MouseMode.Standard;
                         break;
@@ -1278,7 +1279,7 @@ namespace AnnoDesigner
                             CurrentObjects.Clear();
                         }
 
-                        StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                        StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                         break;
                     case MouseMode.DragSelection:
                         //clear selection
@@ -1324,7 +1325,7 @@ namespace AnnoDesigner
                     // remove all currently selected objects from the grid and clear selection
                     _selectedObjects.ForEach(_ => _placedObjects.Remove(_));
                     _selectedObjects.Clear();
-                    StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                    StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                     break;
                 case Key.C:
                     if (IsControlPressed())
@@ -1428,7 +1429,7 @@ namespace AnnoDesigner
                 // sort the objects because borderless objects should be drawn first
                 _placedObjects.Sort((a, b) => b.WrappedAnnoObject.Borderless.CompareTo(a.WrappedAnnoObject.Borderless));
 
-                StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                 //no need to update colors if drawing the same object(s)
                 if (!isContinuousDrawing)
                 {
@@ -1517,7 +1518,7 @@ namespace AnnoDesigner
             LoadedFile = "";
             InvalidateVisual();
 
-            StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
             ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
         }
 
@@ -1608,7 +1609,7 @@ namespace AnnoDesigner
                     LoadedFile = filename;
                     Normalize(1);
 
-                    StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                    StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                     ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
                 }
             }
