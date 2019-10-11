@@ -1,5 +1,7 @@
+![GitHub](https://img.shields.io/github/license/AgmasGold/anno-designer) ![version](https://img.shields.io/badge/latest--version-8.4-blue) ![presets version](https://img.shields.io/badge/presets--version-3.2.8-blue) ![Discord](https://img.shields.io/discord/571011757317947406?label=help%2Fdiscord)
+
 # Anno Designer
-A building layout designer for Ubisofts Anno-series
+A building layout designer for Ubisoft's Anno-series
 
 This is a fork of the project created by JcBernack - https://github.com/JcBernack/anno-designer
 
@@ -32,4 +34,4 @@ Sting_McRay has also done a lot of work on this, extracting icons from Anno 2205
 Included in this repo is a modified version of the PresetParser - which supports the extraction of data from all the different Anno versions. It is not required to run the app (and is not included in any release).
 
 ## License
-MIT
+[MIT](https://github.com/AgmasGold/anno-designer/blob/master/LICENSE)
