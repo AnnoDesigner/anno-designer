@@ -234,6 +234,11 @@ namespace AnnoDesigner.model
 
                 return _identifier;
             }
+            set
+            {
+                WrappedAnnoObject.Identifier = value;
+                _identifier = value;
+            }
         }
 
         public Size Size

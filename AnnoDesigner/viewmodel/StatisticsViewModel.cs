@@ -267,17 +267,17 @@ namespace AnnoDesigner.viewmodel
             {
                 var statisticBuilding = new StatisticsBuilding();
 
-                var firstElement = item.ElementAt(0);
-                if (!string.IsNullOrWhiteSpace(firstElement.WrappedAnnoObject.Identifier))
+                var identifierToCheck = item.ElementAt(0).Identifier;
+                if (!string.IsNullOrWhiteSpace(identifierToCheck))
                 {
                     //try to find building in presets by identifier
-                    if (!_cachedPresetsBuilding.TryGetValue(firstElement.WrappedAnnoObject.Identifier, out var building))
+                    if (!_cachedPresetsBuilding.TryGetValue(identifierToCheck, out var building))
                     {
-                        building = buildingPresets.Buildings.Find(_ => string.Equals(_.Identifier, firstElement.WrappedAnnoObject.Identifier, StringComparison.OrdinalIgnoreCase));
-                        _cachedPresetsBuilding.Add(firstElement.WrappedAnnoObject.Identifier, building);
+                        building = buildingPresets.Buildings.Find(_ => string.Equals(_.Identifier, identifierToCheck, StringComparison.OrdinalIgnoreCase));
+                        _cachedPresetsBuilding.Add(identifierToCheck, building);
                     }
 
-                    var isUnknownObject = string.Equals(firstElement.WrappedAnnoObject.Identifier, "Unknown Object", StringComparison.OrdinalIgnoreCase);
+                    var isUnknownObject = string.Equals(identifierToCheck, "Unknown Object", StringComparison.OrdinalIgnoreCase);
                     if (building != null || isUnknownObject)
                     {
                         statisticBuilding.Count = item.Count();
@@ -285,7 +285,7 @@ namespace AnnoDesigner.viewmodel
                     }
                     else
                     {
-                        firstElement.WrappedAnnoObject.Identifier = "";
+                        item.ElementAt(0).Identifier = "";
 
                         statisticBuilding.Count = item.Count();
                         statisticBuilding.Name = TextNameNotFound;
