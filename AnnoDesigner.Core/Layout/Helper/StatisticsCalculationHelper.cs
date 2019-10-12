@@ -36,7 +36,7 @@ namespace AnnoDesigner.Core.Layout.Helper
             var maxY = double.MinValue;
             var minX = double.MaxValue;
             var minY = double.MaxValue;
-            double sum = 0;
+            var sum = 0d;
             foreach (var curObject in placedObjects)
             {
                 var curPosX = curObject.Position.X;

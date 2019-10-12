@@ -7,7 +7,6 @@ using AnnoDesigner.model;
 
 namespace AnnoDesigner.CustomEventArgs
 {
-    [Serializable]
     public class UpdateStatisticsEventArgs : EventArgs
     {
         public new static readonly UpdateStatisticsEventArgs Empty = new UpdateStatisticsEventArgs();

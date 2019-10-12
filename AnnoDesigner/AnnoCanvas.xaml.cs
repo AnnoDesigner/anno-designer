@@ -1146,8 +1146,7 @@ namespace AnnoDesigner
                                 // check if the mouse has moved at least one grid cell in any direction
                                 if (dx == 0 && dy == 0)
                                 {
-                                    //no relevant mouse move -> no need for update
-                                    //StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                                    //no relevant mouse move -> no further action                                    
                                     break;
                                 }
 
@@ -1188,8 +1187,6 @@ namespace AnnoDesigner
                                     StatisticsUpdated?.Invoke(this, new UpdateStatisticsEventArgs(UpdateMode.NoBuildingList));
                                 }
 
-                                //only update when positions were changed
-                                //StatisticsUpdated?.Invoke(this, EventArgs.Empty);
                                 break;
                             }
                     }
@@ -1276,7 +1273,7 @@ namespace AnnoDesigner
                                 }
                                 else
                                 {
-                                    // remove clicked object
+                                    // remove selected object
                                     _placedObjects.Remove(obj);
                                     _selectedObjects.Remove(obj);
                                 }

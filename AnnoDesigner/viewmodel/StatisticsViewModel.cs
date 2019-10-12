@@ -225,7 +225,7 @@ namespace AnnoDesigner.viewmodel
             List<LayoutObject> selectedObjects,
             BuildingPresets buildingPresets)
         {
-            if (placedObjects.Count == 0)
+            if (!placedObjects.Any())
             {
                 AreStatisticsAvailable = false;
                 return;

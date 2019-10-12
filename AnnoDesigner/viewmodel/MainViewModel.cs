@@ -1004,13 +1004,8 @@ namespace AnnoDesigner.viewmodel
                         {
                             AnnoCanvas.SelectedObjects.Clear();
 
-                            var layoutObjects = new List<LayoutObject>(loadedLayout.Count);
-                            foreach (var curObj in loadedLayout)
-                            {
-                                layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper));
-                            }
-
-                            AnnoCanvas.PlacedObjects = layoutObjects;
+                            AnnoCanvas.PlacedObjects.Clear();
+                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Select(x => new LayoutObject(x, _coordinateHelper)));
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 

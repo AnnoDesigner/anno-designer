@@ -11,6 +11,10 @@ using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.model
 {
+    /// <summary>
+    /// This class is mainly for performance and a wrapper for <see cref="AnnoObject"/>.
+    /// It caches all kinds of Visuals (e.g. Brushes, Pens) and calculations (e.g. CollisionRect).
+    /// </summary>
     public class LayoutObject
     {
         private AnnoObject _wrappedAnnoObject;
@@ -43,6 +47,11 @@ namespace AnnoDesigner.model
         private int _lastGridSizeForScreenRadius;
         private SerializableColor _color;
 
+        /// <summary>
+        /// Creates a new instance of a wrapper for <see cref="AnnoObject"/>.
+        /// </summary>
+        /// <param name="annoObjectToWrap">The <see cref="AnnoObject"/> to wrap. Reference will be kept.</param>
+        /// <param name="coordinateHelperToUse">The <see cref="ICoordinateHelper"/> to use in calculations.</param>
         public LayoutObject(AnnoObject annoObjectToWrap, ICoordinateHelper coordinateHelperToUse)
         {
             WrappedAnnoObject = annoObjectToWrap;
