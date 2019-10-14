@@ -37,6 +37,7 @@ namespace AnnoDesigner.viewmodel
         private ObservableCollection<StatisticsBuilding> _buildings;
         private ObservableCollection<StatisticsBuilding> _selectedBuildings;
         private StatisticsCalculationHelper _statisticsCalculationHelper;
+        private readonly Dictionary<string, BuildingInfo> _cachedPresetsBuilding;
 
         public StatisticsViewModel(ICommons commonsToUse)
         {
@@ -61,6 +62,7 @@ namespace AnnoDesigner.viewmodel
             Buildings = new ObservableCollection<StatisticsBuilding>();
             SelectedBuildings = new ObservableCollection<StatisticsBuilding>();
             _statisticsCalculationHelper = new StatisticsCalculationHelper();
+            _cachedPresetsBuilding = new Dictionary<string, BuildingInfo>(50);
         }
 
         #region localization
@@ -209,17 +211,18 @@ namespace AnnoDesigner.viewmodel
             }
         }
 
-        public void ToggleBuildingList(bool showBuildingList, List<AnnoObject> placedObjects, List<AnnoObject> selectedObjects, BuildingPresets buildingPresets)
+        public void ToggleBuildingList(bool showBuildingList, List<LayoutObject> placedObjects, List<LayoutObject> selectedObjects, BuildingPresets buildingPresets)
         {
             ShowBuildingList = showBuildingList;
             if (showBuildingList)
             {
-                UpdateStatistics(placedObjects, selectedObjects, buildingPresets);
+                _ = UpdateStatisticsAsync(UpdateMode.All, placedObjects, selectedObjects, buildingPresets);
             }
         }
 
-        public void UpdateStatistics(List<AnnoObject> placedObjects,
-            List<AnnoObject> selectedObjects,
+        public async Task UpdateStatisticsAsync(UpdateMode mode,
+            List<LayoutObject> placedObjects,
+            List<LayoutObject> selectedObjects,
             BuildingPresets buildingPresets)
         {
             if (!placedObjects.Any())
@@ -230,60 +233,59 @@ namespace AnnoDesigner.viewmodel
 
             AreStatisticsAvailable = true;
 
-            var calculatedStatistics = _statisticsCalculationHelper.CalculateStatistics(placedObjects);
+            var calculateStatisticsTask = Task.Run(() => _statisticsCalculationHelper.CalculateStatistics(placedObjects.Select(_ => _.WrappedAnnoObject)));
+
+            if (mode != UpdateMode.NoBuildingList && ShowBuildingList)
+            {
+                var groupedBuildings = placedObjects.GroupBy(_ => _.Identifier);
+                var groupedSelectedBuildings = selectedObjects.Count > 0 ? selectedObjects.GroupBy(_ => _.Identifier) : null;
+
+                var buildingsTask = Task.Run(() => GetStatisticBuildings(groupedBuildings, buildingPresets));
+                var selectedBuildingsTask = Task.Run(() => GetStatisticBuildings(groupedSelectedBuildings, buildingPresets));
+                SelectedBuildings = await selectedBuildingsTask;
+                Buildings = await buildingsTask;
+            }
+
+            var calculatedStatistics = await calculateStatisticsTask;
 
             UsedArea = string.Format("{0}x{1}", calculatedStatistics.UsedAreaX, calculatedStatistics.UsedAreaY);
             UsedTiles = calculatedStatistics.UsedTiles;
             MinTiles = calculatedStatistics.MinTiles;
             Efficiency = string.Format("{0}%", calculatedStatistics.Efficiency);
-
-            if (ShowBuildingList)
-            {
-                var groupedBuildings = placedObjects.GroupBy(_ => _.Identifier);
-                var groupedSelectedBuildings = selectedObjects.Count > 0 ? selectedObjects.GroupBy(_ => _.Identifier) : null;
-
-                Buildings = GetStatisticBuildings(groupedBuildings, buildingPresets);
-                SelectedBuildings = GetStatisticBuildings(groupedSelectedBuildings, buildingPresets);
-            }
-            else
-            {
-
-            }
         }
 
-        private ObservableCollection<StatisticsBuilding> GetStatisticBuildings(IEnumerable<IGrouping<string, AnnoObject>> groupedBuildingsByIdentifier, BuildingPresets buildingPresets)
+        private ObservableCollection<StatisticsBuilding> GetStatisticBuildings(IEnumerable<IGrouping<string, LayoutObject>> groupedBuildingsByIdentifier, BuildingPresets buildingPresets)
         {
-            var result = new ObservableCollection<StatisticsBuilding>();
-
             if (groupedBuildingsByIdentifier == null)
             {
-                return result;
+                return new ObservableCollection<StatisticsBuilding>();
             }
 
             var language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
             var tempList = new List<StatisticsBuilding>();
 
-            foreach (var item in groupedBuildingsByIdentifier
-                        .Where(_ => !_.ElementAt(0).Road && _.ElementAt(0).Identifier != null)
-                        .OrderByDescending(_ => _.Count()))
+            var validBuildingsGrouped = groupedBuildingsByIdentifier
+                        .Where(_ => !_.ElementAt(0).WrappedAnnoObject.Road && _.ElementAt(0).Identifier != null)
+                        .OrderByDescending(_ => _.Count());
+            foreach (var item in validBuildingsGrouped)
             {
                 var statisticBuilding = new StatisticsBuilding();
 
-                if (!string.IsNullOrWhiteSpace(item.ElementAt(0).Identifier))
+                var identifierToCheck = item.ElementAt(0).Identifier;
+                if (!string.IsNullOrWhiteSpace(identifierToCheck))
                 {
-                    var building = buildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == item.ElementAt(0).Identifier);
-                    if (building != null || item.ElementAt(0).Identifier == "Unknown Object")
+                    //try to find building in presets by identifier
+                    if (!_cachedPresetsBuilding.TryGetValue(identifierToCheck, out var building))
                     {
-                        if (item.ElementAt(0).Identifier == "Unknown Object")
-                        {
-                            statisticBuilding.Count = item.Count();
-                            statisticBuilding.Name = Localization.Localization.Translations[language]["UnknownObject"];
-                        }
-                        else
-                        {
-                            statisticBuilding.Count = item.Count();
-                            statisticBuilding.Name = building.Localization[language];
-                        }
+                        building = buildingPresets.Buildings.Find(_ => string.Equals(_.Identifier, identifierToCheck, StringComparison.OrdinalIgnoreCase));
+                        _cachedPresetsBuilding.Add(identifierToCheck, building);
+                    }
+
+                    var isUnknownObject = string.Equals(identifierToCheck, "Unknown Object", StringComparison.OrdinalIgnoreCase);
+                    if (building != null || isUnknownObject)
+                    {
+                        statisticBuilding.Count = item.Count();
+                        statisticBuilding.Name = isUnknownObject ? Localization.Localization.Translations[language]["UnknownObject"] : building.Localization[language];
                     }
                     else
                     {
@@ -302,12 +304,7 @@ namespace AnnoDesigner.viewmodel
                 tempList.Add(statisticBuilding);
             }
 
-            foreach (var curBuilding in tempList.OrderByDescending(x => x.Count).ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase))
-            {
-                result.Add(curBuilding);
-            }
-
-            return result;
+            return new ObservableCollection<StatisticsBuilding>(tempList.OrderByDescending(x => x.Count).ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase));
         }
 
         public void CopyLocalization(StatisticsViewModel other)

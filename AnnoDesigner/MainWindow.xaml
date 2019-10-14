@@ -424,35 +424,38 @@
                             </DockPanel.Resources>
                             <Expander Header="{Binding BuildingSettingsViewModel.TextColorsInLayout}"
                                       MaxWidth="{Binding ElementName=BuildingsPanel, Path=ActualWidth, Mode=OneWay}"
+                                      MaxHeight="90"
                                       IsExpanded="False"
                                       Visibility="{Binding BuildingSettingsViewModel.ShowColorsInLayout, Converter={StaticResource converterBoolToVisibility}}"
                                       ToolTip="{Binding BuildingSettingsViewModel.TextColorsInLayoutToolTip}">
-                                <ItemsControl ItemsSource="{Binding BuildingSettingsViewModel.ColorsInLayout}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Rectangle Fill="{Binding MediaColor, Converter={StaticResource converterColorToSolidColorBrush}}"
-                                                       Style="{StaticResource styleRectangle}"
-                                                       Stroke="#FFABADB3"
-                                                       StrokeThickness="1"
-                                                       ToolTip="{Binding}">
-                                                <Rectangle.InputBindings>
-                                                    <MouseBinding Gesture="LeftDoubleClick"
-                                                                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.BuildingSettingsViewModel.UseColorInLayoutCommand}"
-                                                                  CommandParameter="{Binding}" />
-                                                </Rectangle.InputBindings>
-                                            </Rectangle>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel Orientation="Horizontal"
-                                                       HorizontalAlignment="Right"
-                                                       ItemHeight="20"
-                                                       ItemWidth="20"
-                                                       Margin="0" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                </ItemsControl>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl ItemsSource="{Binding BuildingSettingsViewModel.ColorsInLayout}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Rectangle Fill="{Binding MediaColor, Converter={StaticResource converterColorToSolidColorBrush}}"
+                                                           Style="{StaticResource styleRectangle}"
+                                                           Stroke="#FFABADB3"
+                                                           StrokeThickness="1"
+                                                           ToolTip="{Binding}">
+                                                    <Rectangle.InputBindings>
+                                                        <MouseBinding Gesture="LeftDoubleClick"
+                                                                      Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.BuildingSettingsViewModel.UseColorInLayoutCommand}"
+                                                                      CommandParameter="{Binding}" />
+                                                    </Rectangle.InputBindings>
+                                                </Rectangle>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal"
+                                                           HorizontalAlignment="Right"
+                                                           ItemHeight="20"
+                                                           ItemWidth="20"
+                                                           Margin="0" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+                                </ScrollViewer>
                             </Expander>
                         </DockPanel>
                         <DockPanel LastChildFill="False"

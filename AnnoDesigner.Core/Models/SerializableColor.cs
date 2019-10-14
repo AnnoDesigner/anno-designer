@@ -11,7 +11,7 @@ namespace AnnoDesigner.Core.Models
     [Serializable]
     [DataContract]
     [DebuggerDisplay("{" + nameof(A) + "},{" + nameof(R) + "},{" + nameof(G) + "},{" + nameof(B) + "}")]
-    public struct SerializableColor
+    public struct SerializableColor : IEquatable<SerializableColor>
     {
         [DataMember(Order = 0)]
         public byte A;
@@ -64,6 +64,31 @@ namespace AnnoDesigner.Core.Models
         public string ToHexString()
         {
             return $"#{A:X2}{R:X2}{G:X2}{B:X2}";
+        }
+
+        public static bool operator ==(SerializableColor left, SerializableColor right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(SerializableColor left, SerializableColor right)
+        {
+            return !Equals(left, right);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return (obj is SerializableColor color) && Equals(color);
+        }
+
+        public bool Equals(SerializableColor other)
+        {
+            return (A, R, G, B) == (other.A, other.R, other.G, other.B);
+        }
+
+        public override int GetHashCode()
+        {
+            return (A, R, G, B).GetHashCode();
         }
     }
 }

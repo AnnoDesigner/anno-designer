@@ -21,6 +21,7 @@ using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Helper;
+using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Localization;
 using AnnoDesigner.model;
@@ -178,7 +179,7 @@ namespace AnnoDesigner.viewmodel
                 //update settings
                 _appSettings.SelectedLanguage = _commons.SelectedLanguage;
 
-                UpdateStatistics();
+                _ = UpdateStatisticsAsync(UpdateMode.All);
 
                 PresetsTreeSearchViewModel.SearchText = string.Empty;
             }
@@ -233,10 +234,10 @@ namespace AnnoDesigner.viewmodel
             {
                 if (selectedItem != null)
                 {
-                    UpdateUIFromObject(new AnnoObject(selectedItem)
+                    UpdateUIFromObject(new LayoutObject(new AnnoObject(selectedItem)
                     {
                         Color = BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
-                    });
+                    }, _coordinateHelper));
 
                     ApplyCurrentObject();
                 }
@@ -341,7 +342,7 @@ namespace AnnoDesigner.viewmodel
                     obj.Identifier = "Unknown Object";
                 }
 
-                AnnoCanvas.SetCurrentObject(obj);
+                AnnoCanvas.SetCurrentObject(new LayoutObject(obj, _coordinateHelper));
             }
             else
             {
@@ -353,22 +354,23 @@ namespace AnnoDesigner.viewmodel
         /// Fired on the OnCurrentObjectChanged event
         /// </summary>
         /// <param name="obj"></param>
-        private void UpdateUIFromObject(AnnoObject obj)
+        private void UpdateUIFromObject(LayoutObject layoutObject)
         {
+            var obj = layoutObject?.WrappedAnnoObject;
             if (obj == null)
             {
                 return;
             }
 
             // size
-            BuildingSettingsViewModel.BuildingWidth = (int)obj.Size.Width;
-            BuildingSettingsViewModel.BuildingHeight = (int)obj.Size.Height;
+            BuildingSettingsViewModel.BuildingWidth = (int)layoutObject.Size.Width;
+            BuildingSettingsViewModel.BuildingHeight = (int)layoutObject.Size.Height;
             // color
-            BuildingSettingsViewModel.SelectedColor = ColorPresetsHelper.Instance.GetPredefinedColor(obj) ?? obj.Color;
+            BuildingSettingsViewModel.SelectedColor = ColorPresetsHelper.Instance.GetPredefinedColor(obj) ?? layoutObject.Color;
             // label
             BuildingSettingsViewModel.BuildingName = obj.Label;
             // Identifier
-            BuildingSettingsViewModel.BuildingIdentifier = obj.Identifier;
+            BuildingSettingsViewModel.BuildingIdentifier = layoutObject.Identifier;
             // Template
             BuildingSettingsViewModel.BuildingTemplate = obj.Template;
             // icon
@@ -434,12 +436,12 @@ namespace AnnoDesigner.viewmodel
             BuildingSettingsViewModel.IsRoadChecked = obj.Road;
         }
 
-        private void AnnoCanvas_StatisticsUpdated(object sender, EventArgs e)
+        private void AnnoCanvas_StatisticsUpdated(object sender, UpdateStatisticsEventArgs e)
         {
-            UpdateStatistics();
+            _ = UpdateStatisticsAsync(e.Mode);
         }
 
-        private void AnnoCanvas_ClipboardChanged(List<AnnoObject> itemsOnClipboard)
+        private void AnnoCanvas_ClipboardChanged(List<LayoutObject> itemsOnClipboard)
         {
             StatusMessageClipboard = StatusBarItemsOnClipboard + ": " + itemsOnClipboard.Count;
         }
@@ -456,9 +458,10 @@ namespace AnnoDesigner.viewmodel
             logger.Info($"Loaded file: {(string.IsNullOrEmpty(filename) ? "(none)" : filename)}");
         }
 
-        public void UpdateStatistics()
+        public Task UpdateStatisticsAsync(UpdateMode mode)
         {
-            StatisticsViewModel.UpdateStatistics(AnnoCanvas.PlacedObjects,
+            return StatisticsViewModel.UpdateStatisticsAsync(mode,
+                AnnoCanvas.PlacedObjects,
                 AnnoCanvas.SelectedObjects,
                 AnnoCanvas.BuildingPresets);
         }
@@ -1000,11 +1003,13 @@ namespace AnnoDesigner.viewmodel
                         if (loadedLayout != null)
                         {
                             AnnoCanvas.SelectedObjects.Clear();
-                            AnnoCanvas.PlacedObjects = loadedLayout;
+
+                            AnnoCanvas.PlacedObjects.Clear();
+                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Select(x => new LayoutObject(x, _coordinateHelper)));
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 
-                            UpdateStatistics();
+                            _ = UpdateStatisticsAsync(UpdateMode.All);
                         }
                     }
                 }
@@ -1134,10 +1139,10 @@ namespace AnnoDesigner.viewmodel
             }
 
             // copy all objects
-            var allObjects = AnnoCanvas.PlacedObjects.Select(_ => new AnnoObject(_)).Cast<AnnoObject>().ToList();
+            var allObjects = AnnoCanvas.PlacedObjects.Select(_ => new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper)).ToList();
             // copy selected objects
             // note: should be references to the correct copied objects from allObjects
-            var selectedObjects = AnnoCanvas.SelectedObjects.Select(_ => new AnnoObject(_)).ToList();
+            var selectedObjects = AnnoCanvas.SelectedObjects.Select(_ => new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper)).ToList();
 
             logger.Trace($"UI thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
             void renderThread()
@@ -1192,7 +1197,7 @@ namespace AnnoDesigner.viewmodel
                     };
                     exportStatisticsView.DataContext = exportStatisticsViewModel;
 
-                    exportStatisticsViewModel.UpdateStatistics(target.PlacedObjects, target.SelectedObjects, target.BuildingPresets);
+                    exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects, target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult(); ;
                     exportStatisticsViewModel.CopyLocalization(StatisticsViewModel);
                     exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 
@@ -1248,7 +1253,7 @@ namespace AnnoDesigner.viewmodel
                 using (var ms = new MemoryStream())
                 {
                     AnnoCanvas.Normalize(1);
-                    _layoutLoader.SaveLayout(AnnoCanvas.PlacedObjects, ms);
+                    _layoutLoader.SaveLayout(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList(), ms);
 
                     var jsonString = Encoding.UTF8.GetString(ms.ToArray());
 
