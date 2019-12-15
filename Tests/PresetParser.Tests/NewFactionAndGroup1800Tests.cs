@@ -339,6 +339,89 @@ namespace PresetParser.Tests
             }
         }
 
+        public static TheoryData<string> ExplorersPublicBuildingsTestdata
+        {
+            get
+            {
+                return new TheoryData<string>
+                {
+                    "Service_arctic_01 (Canteen)",
+                    "Institution_arctic_01 (Ranger Station)"
+                };
+            }
+        }
+
+        public static TheoryData<string> ExplorersProductionBuildingsTestdata
+        {
+            get
+            {
+                return new TheoryData<string>
+                {
+                     "Agriculture_arctic_01 (Timber Yard)",
+                    "Factory_arctic_01 (Timber Factory)",
+                    "Agriculture_arctic_02 (Caribou Hunter)",
+                    "Factory_arctic_02 (Sleeping Bags Factory)",
+                    "Heavy_arctic_01 (Coal Heavy Industry)",
+                    "Coastal_arctic_01 (Whale Coast Building)",
+                    "Coastal_arctic_02 (Seal Hunter)",
+                    "Factory_arctic_03 (Oil Lamp Factory)",
+                    "Food_arctic_01 (Pemmican)"
+                };
+            }
+        }
+
+        public static TheoryData<string> ExplorersFarmBuildingsTestdata
+        {
+            get
+            {
+                return new TheoryData<string>
+                {
+                   "Agriculture_arctic_03 (Goose Farm)"
+                };
+            }
+        }
+
+        public static TheoryData<string> TechniciansPublicBuildingsTestdata
+        {
+            get
+            {
+                return new TheoryData<string>
+                {
+                    "Service_arctic_02 (Post Office)"
+                };
+            }
+        }
+
+        public static TheoryData<string> TechniciansProductionBuildingsTestdata
+        {
+            get
+            {
+                return new TheoryData<string>
+                {
+                    "Agriculture_arctic_04 (Bear Hunter)",
+                    "Factory_arctic_04 (Parka Factory)",
+                    "Agriculture_arctic_06 (Normal Fur Hunter)",
+                    "Factory_arctic_05 (Sled Frame Factory)",
+                    "Factory_arctic_06 (Husky Sled Factory)",
+                    "Mining_arctic_01 (Gas Mine)",
+                    "Mining_arctic_02 (Gold Mine)",
+                    "Mining_arctic_01_pump (Gas Pump)",
+                    "Monument_arctic_01_00"
+                };
+            }
+        }
+
+        public static TheoryData<string> TechniciansFarmBuildingsTestdata
+        {
+            get
+            {
+                return new TheoryData<string>
+                {
+                    "Agriculture_arctic_05 (Husky Farm)"
+                };
+            }
+        }
+
         #endregion
 
         [Theory]
@@ -763,6 +846,112 @@ namespace PresetParser.Tests
             // Assert
             Assert.Null(result[1]);
             Assert.Contains("All Worlds", result[0]);
+        }
+
+        #endregion
+
+        #region Explorers tests
+
+        [Theory]
+        [MemberData(nameof(ExplorersPublicBuildingsTestdata))]
+        [MemberData(nameof(ExplorersProductionBuildingsTestdata))]
+        [MemberData(nameof(ExplorersFarmBuildingsTestdata))]
+        public void GetNewFactionAndGroup1800_IdentifierBelongsToExplorers_ShouldReturnCorrectFaction(string identifier)
+        {
+            // Arrange/Act
+            var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
+
+            // Assert
+            Assert.Contains("(10) Explorers", result[0]);
+        }
+
+        [Theory]
+        [MemberData(nameof(ExplorersPublicBuildingsTestdata))]
+        public void GetNewFactionAndGroup1800_IdentifierBelongsToExplorersPublicBuildings_ShouldReturnCorrectGroup(string identifier)
+        {
+            // Arrange/Act
+            var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
+
+            // Assert
+            Assert.Contains("Public Buildings", result[1]);
+            Assert.Contains("(10) Explorers", result[0]);
+        }
+
+        [Theory]
+        [MemberData(nameof(ExplorersProductionBuildingsTestdata))]
+        public void GetNewFactionAndGroup1800_IdentifierBelongsToExplorersProductionBuildings_ShouldReturnCorrectGroup(string identifier)
+        {
+            // Arrange/Act
+            var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
+
+            // Assert
+            Assert.Contains("Production Buildings", result[1]);
+            Assert.Contains("(10) Explorers", result[0]);
+        }
+
+        [Theory]
+        [MemberData(nameof(ExplorersFarmBuildingsTestdata))]
+        public void GetNewFactionAndGroup1800_IdentifierBelongsToExplorersFarmBuildings_ShouldReturnCorrectGroup(string identifier)
+        {
+            // Arrange/Act
+            var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
+
+            // Assert
+            Assert.Contains("Farm Buildings", result[1]);
+            Assert.Contains("(10) Explorers", result[0]);
+        }
+
+        #endregion
+
+        #region Technicians tests
+
+        [Theory]
+        [MemberData(nameof(TechniciansPublicBuildingsTestdata))]
+        [MemberData(nameof(TechniciansProductionBuildingsTestdata))]
+        [MemberData(nameof(TechniciansFarmBuildingsTestdata))]
+        public void GetNewFactionAndGroup1800_IdentifierBelongsToTechnicians_ShouldReturnCorrectFaction(string identifier)
+        {
+            // Arrange/Act
+            var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
+
+            // Assert
+            Assert.Contains("(11) Technicians", result[0]);
+        }
+
+        [Theory]
+        [MemberData(nameof(TechniciansPublicBuildingsTestdata))]
+        public void GetNewFactionAndGroup1800_IdentifierBelongsToTechniciansPublicBuildings_ShouldReturnCorrectGroup(string identifier)
+        {
+            // Arrange/Act
+            var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
+
+            // Assert
+            Assert.Contains("Public Buildings", result[1]);
+            Assert.Contains("(11) Technicians", result[0]);
+        }
+
+        [Theory]
+        [MemberData(nameof(TechniciansProductionBuildingsTestdata))]
+        public void GetNewFactionAndGroup1800_IdentifierBelongsToTechniciansProductionBuildings_ShouldReturnCorrectGroup(string identifier)
+        {
+            // Arrange/Act
+            var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
+
+            // Assert
+            Assert.Contains("Production Buildings", result[1]);
+            Assert.Contains("(11) Technicians", result[0]);
+        }
+
+        [Theory]
+        [MemberData(nameof(TechniciansFarmBuildingsTestdata))]
+        public void GetNewFactionAndGroup1800_IdentifierBelongsToTechniciansFarmBuildings_ShouldReturnCorrectGroup(string identifier)
+        {
+            // Arrange/Act
+            var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
+
+            // Assert
+            Assert.Contains("Farm Buildings", result[1]);
+            Assert.Contains("(11) Technicians", result[0]);
         }
 
         #endregion
