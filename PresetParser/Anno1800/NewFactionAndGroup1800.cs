@@ -109,7 +109,7 @@ namespace PresetParser.Anno1800
             if (identifierName.IsPartOf(ChangeBuildingsToOW2_FarmBuilding_1800)) { factionName = "(08) Obreros"; groupName = "Farm Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToAT1_FarmBuilding_1800)) { factionName = "(10) Explorers"; groupName = "Farm Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToAT2_FarmBuilding_1800)) { factionName = "(11) Technicians"; groupName = "Farm Buildings"; }
-            
+
             //Special Buildings
             if (identifierName.IsPartOf(ChangeBuildingsToAW_SpecialBuilding_1800)) { factionName = "All Worlds"; groupName = "Special Buildings"; }
             //Ornamentals 

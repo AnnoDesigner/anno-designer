@@ -106,9 +106,9 @@ namespace PresetParser
         ///              AT1 (Arctic - Explorers) - AT2 (Arctic - Technicians)
         /// <2> wil be the Group under <1>, like Production, Public, etc
         /// </summary>
-            #endregion
+        #endregion
 
-            #endregion
+        #endregion
 
         static Program()
         {
@@ -306,7 +306,7 @@ namespace PresetParser
             if (annoVersion != "-ALL")
             {
                 //execute a Signle Anno Preset
-                DoAnnoPreset(annoVersion, "Roads");
+                DoAnnoPreset(annoVersion, addRoads: true);
             }
             else
             {
@@ -315,25 +315,25 @@ namespace PresetParser
                 Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1404, Constants.ANNO_VERSION_1404);
                 BASE_PATH = BASE_PATH_1404;
-                DoAnnoPreset(Constants.ANNO_VERSION_1404, "NoRoads");
+                DoAnnoPreset(Constants.ANNO_VERSION_1404, addRoads: false);
                 annoBuildingLists.Clear();
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2070, Constants.ANNO_VERSION_2070);
                 BASE_PATH = BASE_PATH_2070;
-                DoAnnoPreset(Constants.ANNO_VERSION_2070, "NoRoads");
+                DoAnnoPreset(Constants.ANNO_VERSION_2070, addRoads: false);
                 annoBuildingLists.Clear();
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2205, Constants.ANNO_VERSION_2205);
                 BASE_PATH = BASE_PATH_2205;
-                DoAnnoPreset(Constants.ANNO_VERSION_2205, "NoRoads");
+                DoAnnoPreset(Constants.ANNO_VERSION_2205, addRoads: false);
                 annoBuildingLists.Clear();
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1800, Constants.ANNO_VERSION_1800);
                 BASE_PATH = BASE_PATH_1800;
-                DoAnnoPreset(Constants.ANNO_VERSION_1800, "Roads");
+                DoAnnoPreset(Constants.ANNO_VERSION_1800, addRoads: false);
                 annoBuildingLists.Clear();
             }
             #endregion
@@ -395,7 +395,7 @@ namespace PresetParser
 
         // Prepare building list for preset/icon file
         #region Prepare buildings list for presets, depending on the Anno Version thats given
-        private static void DoAnnoPreset(string annoVersion, string OptionRoads)
+        private static void DoAnnoPreset(string annoVersion, bool addRoads)
         {
             Console.WriteLine();
             Console.WriteLine("Parsing assets.xml:");
@@ -447,7 +447,7 @@ namespace PresetParser
 
                 // Add extra buildings to the anno version preset file
                 AddExtraPreset(annoVersion, buildings);
-                if (OptionRoads == "Roads") 
+                if (addRoads)
                 {
                     AddExtraRoads(buildings);
                 }
@@ -460,7 +460,7 @@ namespace PresetParser
                 }
                 // Add extra buildings to the anno version preset file
                 AddExtraPreset(annoVersion, buildings);
-                if (OptionRoads == "Roads")
+                if (addRoads)
                 {
                     AddExtraRoads(buildings);
                 }
@@ -474,7 +474,7 @@ namespace PresetParser
                 // Add extra buildings to the anno version preset file
                 AddExtraPreset(annoVersion, buildings);
                 // Whaterver Annoversion is "-ALL" or "1800", add the Extra Roads Bars 
-                if (OptionRoads == "Roads")
+                if (addRoads)
                 {
                     AddExtraRoads(buildings);
                 }
@@ -529,33 +529,34 @@ namespace PresetParser
 
         private static void AddExtraRoads(List<IBuildingInfo> buildings)
         {
-            foreach (var curExtraRoads in ExtraPresets.GetExtraRoads())
+            foreach (var curExtraRoad in ExtraPresets.GetExtraRoads())
             {
                 IBuildingInfo buildingToAdd = new BuildingInfo
                 {
-                    Header = curExtraRoads.Header,
-                    Faction = curExtraRoads.Faction,
-                    Group = curExtraRoads.Group,
-                    IconFileName = curExtraRoads.IconFileName,
-                    Identifier = curExtraRoads.Identifier,
-                    InfluenceRadius = curExtraRoads.InfluenceRadius,
-                    InfluenceRange = curExtraRoads.InfluenceRange,
-                    Template = curExtraRoads.Template,
-                    Road = curExtraRoads.Road,
-                    Borderless = curExtraRoads.Borderless,
+                    Header = curExtraRoad.Header,
+                    Faction = curExtraRoad.Faction,
+                    Group = curExtraRoad.Group,
+                    IconFileName = curExtraRoad.IconFileName,
+                    Identifier = curExtraRoad.Identifier,
+                    InfluenceRadius = curExtraRoad.InfluenceRadius,
+                    InfluenceRange = curExtraRoad.InfluenceRange,
+                    Template = curExtraRoad.Template,
+                    Road = curExtraRoad.Road,
+                    Borderless = curExtraRoad.Borderless,
                 };
 
                 Console.WriteLine("Extra Road Bar : {0}", buildingToAdd.Identifier);
+
                 buildingToAdd.BuildBlocker = new SerializableDictionary<int>();
-                buildingToAdd.BuildBlocker["x"] = curExtraRoads.BuildBlockerX;
-                buildingToAdd.BuildBlocker["z"] = curExtraRoads.BuildBlockerZ;
+                buildingToAdd.BuildBlocker["x"] = curExtraRoad.BuildBlockerX;
+                buildingToAdd.BuildBlocker["z"] = curExtraRoad.BuildBlockerZ;
 
                 buildingToAdd.Localization = new SerializableDictionary<string>();
-                buildingToAdd.Localization["eng"] = curExtraRoads.LocaEng;
-                buildingToAdd.Localization["ger"] = curExtraRoads.LocaGer;
-                buildingToAdd.Localization["fra"] = curExtraRoads.LocaFra;
-                buildingToAdd.Localization["pol"] = curExtraRoads.LocaPol;
-                buildingToAdd.Localization["rus"] = curExtraRoads.LocaRus;
+                buildingToAdd.Localization["eng"] = curExtraRoad.LocaEng;
+                buildingToAdd.Localization["ger"] = curExtraRoad.LocaGer;
+                buildingToAdd.Localization["fra"] = curExtraRoad.LocaFra;
+                buildingToAdd.Localization["pol"] = curExtraRoad.LocaPol;
+                buildingToAdd.Localization["rus"] = curExtraRoad.LocaRus;
 
                 annoBuildingsListCount++;
 
@@ -1168,8 +1169,8 @@ namespace PresetParser
                 case "100451": { templateName = "FactoryBuilding7"; break; }
                 case "1010288": { templateName = "FactoryBuilding7"; break; }
                 case "1010320": { templateName = "FactoryBuilding7"; break; }
-                case "101331": { templateName = "HeavyFactoryBuilding"; break;}
-                case "FarmBuilding_Arctic": { templateName = "FarmBuilding"; break;}
+                case "101331": { templateName = "HeavyFactoryBuilding"; break; }
+                case "FarmBuilding_Arctic": { templateName = "FarmBuilding"; break; }
                 default: { groupName = templateName.FirstCharToUpper(); break; }
             }
 
@@ -1192,7 +1193,7 @@ namespace PresetParser
                 case "Coastal_03 (Quartz Sand Coast Building)": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
                 case "Electricity_03 (Gas Power Plant)": { factionName = "(11) Technicians"; groupName = "Public Buildings"; break; }
             }
- 
+
             // Place the rest of the buildings in the right Faction > Group menu
             #region Order the Buildings to the right tiers and factions as in the game
 
