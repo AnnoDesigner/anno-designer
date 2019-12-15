@@ -29,9 +29,6 @@
     <Setting Name="SelectedLanguage" Type="System.String" Scope="User">
       <Value Profile="(Default)">Default</Value>
     </Setting>
-    <Setting Name="CurrentVersion" Type="System.Double" Scope="Application">
-      <Value Profile="(Default)">8.1</Value>
-    </Setting>
     <Setting Name="MainWindowWindowState" Type="System.Windows.WindowState" Scope="User">
       <Value Profile="(Default)">Normal</Value>
     </Setting>
@@ -82,6 +79,9 @@
     </Setting>
     <Setting Name="PresetsTreeGameVersionFilter" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="CurrentVersion" Type="System.Double" Scope="Application">
+      <Value Profile="(Default)">8.5</Value>
     </Setting>
   </Settings>
 </SettingsFile>

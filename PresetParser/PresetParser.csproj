@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="BuildingBlockProvider.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Models\ExtraRoads.cs" />
     <Compile Include="Models\ExtraPreset.cs" />
     <Compile Include="ExtraPresets.cs" />
     <Compile Include="Anno1800\Models\FarmField.cs" />
@@ -98,6 +99,7 @@
       <Version>6.0.32</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

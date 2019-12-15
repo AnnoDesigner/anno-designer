@@ -96,13 +96,14 @@ namespace PresetParser
             "Fake Ornament [test 2nd party]", "Kontor_imperial_02", "Kontor_imperial_03","(Oil Harbor II)","(Oil Harbor III)", "Third_party_", "CQO_", "Kontor_imperial_01", "- Pirates",
             "Harbor_colony01_09 (tourism_pier_01)", "Ai_", "AarhantLighthouseFake", "CO_Tunnel_Entrance01_Fake","Park_1x1_fence", "Electricity_01", "AI Version No Unlock",
             "Entertainment_musicpavillion_1701", "Entertainment_musicpavillion_1404", "Entertainment_musicpavillion_2070", "Entertainment_musicpavillion_2205", "Entertainment_musicpavillion_1800",
-            "Culture_01_module_06_empty","Culture_02_module_06_empty", "AnarchyBanner", "Culture_props_system_all_nohedge"};
+            "Culture_01_module_06_empty","Culture_02_module_06_empty", "AnarchyBanner", "Culture_props_system_all_nohedge", "Monument_arctic_01_01", "Monument_arctic_01_02", "Monument_arctic_01_03"};
         /// <summary>
         /// in NewFactionAndGroup1800.cs are made the following lists
         /// ChangeBuildingTo<1>_<2>_1800 
         /// <1> can be : AW (All Worlds) - NW1 (New World - Farmers) - NW2 (New World - Workers) - NW3 (New World - Artisans)
-        ///              NW4 (New World - Engineers) - NW5 (New World - Investors) - 
-        ///              OW1 (Old World - Jornaleros) and OW2 (Old World - Obreros)
+        ///              NW4 (New World - Engineers) - NW5 (New World - Investors)  
+        ///              OW1 (Old World - Jornaleros) - OW2 (Old World - Obreros)
+        ///              AT1 (Arctic - Explorers) - AT2 (Arctic - Technicians)
         /// <2> wil be the Group under <1>, like Production, Public, etc
         /// </summary>
             #endregion
@@ -305,7 +306,7 @@ namespace PresetParser
             if (annoVersion != "-ALL")
             {
                 //execute a Signle Anno Preset
-                DoAnnoPreset(annoVersion);
+                DoAnnoPreset(annoVersion, "Roads");
             }
             else
             {
@@ -314,25 +315,25 @@ namespace PresetParser
                 Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1404, Constants.ANNO_VERSION_1404);
                 BASE_PATH = BASE_PATH_1404;
-                DoAnnoPreset(Constants.ANNO_VERSION_1404);
+                DoAnnoPreset(Constants.ANNO_VERSION_1404, "NoRoads");
                 annoBuildingLists.Clear();
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2070, Constants.ANNO_VERSION_2070);
                 BASE_PATH = BASE_PATH_2070;
-                DoAnnoPreset(Constants.ANNO_VERSION_2070);
+                DoAnnoPreset(Constants.ANNO_VERSION_2070, "NoRoads");
                 annoBuildingLists.Clear();
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_2205, Constants.ANNO_VERSION_2205);
                 BASE_PATH = BASE_PATH_2205;
-                DoAnnoPreset(Constants.ANNO_VERSION_2205);
+                DoAnnoPreset(Constants.ANNO_VERSION_2205, "NoRoads");
                 annoBuildingLists.Clear();
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1800, Constants.ANNO_VERSION_1800);
                 BASE_PATH = BASE_PATH_1800;
-                DoAnnoPreset(Constants.ANNO_VERSION_1800);
+                DoAnnoPreset(Constants.ANNO_VERSION_1800, "Roads");
                 annoBuildingLists.Clear();
             }
             #endregion
@@ -394,7 +395,7 @@ namespace PresetParser
 
         // Prepare building list for preset/icon file
         #region Prepare buildings list for presets, depending on the Anno Version thats given
-        private static void DoAnnoPreset(string annoVersion)
+        private static void DoAnnoPreset(string annoVersion, string OptionRoads)
         {
             Console.WriteLine();
             Console.WriteLine("Parsing assets.xml:");
@@ -446,6 +447,10 @@ namespace PresetParser
 
                 // Add extra buildings to the anno version preset file
                 AddExtraPreset(annoVersion, buildings);
+                if (OptionRoads == "Roads") 
+                {
+                    AddExtraRoads(buildings);
+                }
             }
             else if (annoVersion == Constants.ANNO_VERSION_2205)
             {
@@ -455,6 +460,10 @@ namespace PresetParser
                 }
                 // Add extra buildings to the anno version preset file
                 AddExtraPreset(annoVersion, buildings);
+                if (OptionRoads == "Roads")
+                {
+                    AddExtraRoads(buildings);
+                }
             }
             else if (annoVersion == Constants.ANNO_VERSION_1800)
             {
@@ -464,6 +473,11 @@ namespace PresetParser
                 }
                 // Add extra buildings to the anno version preset file
                 AddExtraPreset(annoVersion, buildings);
+                // Whaterver Annoversion is "-ALL" or "1800", add the Extra Roads Bars 
+                if (OptionRoads == "Roads")
+                {
+                    AddExtraRoads(buildings);
+                }
             }
         }
 
@@ -490,6 +504,8 @@ namespace PresetParser
                     InfluenceRadius = curExtraPreset.InfluenceRadius,
                     InfluenceRange = curExtraPreset.InfluenceRange,
                     Template = curExtraPreset.Template,
+                    Road = false,
+                    Borderless = false,
                 };
 
                 Console.WriteLine("Extra Building : {0}", buildingToAdd.Identifier);
@@ -504,6 +520,42 @@ namespace PresetParser
                 buildingToAdd.Localization["fra"] = curExtraPreset.LocaFra;
                 buildingToAdd.Localization["pol"] = curExtraPreset.LocaPol;
                 buildingToAdd.Localization["rus"] = curExtraPreset.LocaRus;
+
+                annoBuildingsListCount++;
+
+                buildings.Add(buildingToAdd);
+            }
+        }
+
+        private static void AddExtraRoads(List<IBuildingInfo> buildings)
+        {
+            foreach (var curExtraRoads in ExtraPresets.GetExtraRoads())
+            {
+                IBuildingInfo buildingToAdd = new BuildingInfo
+                {
+                    Header = curExtraRoads.Header,
+                    Faction = curExtraRoads.Faction,
+                    Group = curExtraRoads.Group,
+                    IconFileName = curExtraRoads.IconFileName,
+                    Identifier = curExtraRoads.Identifier,
+                    InfluenceRadius = curExtraRoads.InfluenceRadius,
+                    InfluenceRange = curExtraRoads.InfluenceRange,
+                    Template = curExtraRoads.Template,
+                    Road = curExtraRoads.Road,
+                    Borderless = curExtraRoads.Borderless,
+                };
+
+                Console.WriteLine("Extra Road Bar : {0}", buildingToAdd.Identifier);
+                buildingToAdd.BuildBlocker = new SerializableDictionary<int>();
+                buildingToAdd.BuildBlocker["x"] = curExtraRoads.BuildBlockerX;
+                buildingToAdd.BuildBlocker["z"] = curExtraRoads.BuildBlockerZ;
+
+                buildingToAdd.Localization = new SerializableDictionary<string>();
+                buildingToAdd.Localization["eng"] = curExtraRoads.LocaEng;
+                buildingToAdd.Localization["ger"] = curExtraRoads.LocaGer;
+                buildingToAdd.Localization["fra"] = curExtraRoads.LocaFra;
+                buildingToAdd.Localization["pol"] = curExtraRoads.LocaPol;
+                buildingToAdd.Localization["rus"] = curExtraRoads.LocaRus;
 
                 annoBuildingsListCount++;
 
@@ -1091,7 +1143,7 @@ namespace PresetParser
             {
                 case "Farmfield": { groupName = "Farm Fields"; break; }
                 case "SlotFactoryBuilding7": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
-                case "Warehouse": { factionName = "(1) Farmers"; groupName = null; break; }
+                case "Warehouse": { factionName = "(01) Farmers"; groupName = null; break; }
                 case "HarborWarehouse7": { factionName = "Harbor"; groupName = null; break; }
                 case "HarborWarehouseStrategic": { factionName = "Harbor"; groupName = "Logistics"; break; }
                 case "HarborDepot": { factionName = "Harbor"; groupName = "Depots"; break; }
@@ -1116,14 +1168,16 @@ namespace PresetParser
                 case "100451": { templateName = "FactoryBuilding7"; break; }
                 case "1010288": { templateName = "FactoryBuilding7"; break; }
                 case "1010320": { templateName = "FactoryBuilding7"; break; }
-                case "101331": { templateName = "HeavyFactoryBuilding"; break; }
+                case "101331": { templateName = "HeavyFactoryBuilding"; break;}
+                case "FarmBuilding_Arctic": { templateName = "FarmBuilding"; break;}
                 default: { groupName = templateName.FirstCharToUpper(); break; }
             }
 
             if (groupName == "Farm Fields")
             {
-                if (factionName == "Moderate") { factionName = "(6) Old World Fields"; groupName = null; }
-                if (factionName == "Colony01") { factionName = "(9) New World Fields"; groupName = null; }
+                if (factionName == "Moderate") { factionName = "(06) Old World Fields"; groupName = null; }
+                if (factionName == "Colony01") { factionName = "(09) New World Fields"; groupName = null; }
+                if (factionName == "Arctic") { factionName = "(12) Arctic Farm Fields"; groupName = null; }
             }
 
             switch (identifierName)
@@ -1132,9 +1186,11 @@ namespace PresetParser
                 case "Culture_01 (Zoo)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Culture_02 (Museum)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Culture_03 (BotanicalGarden)": { factionName = "Attractiveness"; groupName = null; break; }
-                case "Residence_tier01": { factionName = "(1) Farmers"; identifierName = "Residence_Old_World"; groupName = "Residence"; break; }
-                case "Residence_colony01_tier01": { factionName = "(7) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; templateName = "ResidenceBuilding7"; break; }
+                case "Residence_tier01": { factionName = "(01) Farmers"; identifierName = "Residence_Old_World"; groupName = "Residence"; break; }
+                case "Residence_colony01_tier01": { factionName = "(07) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; templateName = "ResidenceBuilding7"; break; }
+                case "Residence_arctic_tier01": { factionName = "(10) Explorers"; identifierName = "Residence_Arctic_World"; groupName = "Residence"; break; }
                 case "Coastal_03 (Quartz Sand Coast Building)": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
+                case "Electricity_03 (Gas Power Plant)": { factionName = "(11) Technicians"; groupName = "Public Buildings"; break; }
             }
  
             // Place the rest of the buildings in the right Faction > Group menu
@@ -1149,7 +1205,7 @@ namespace PresetParser
             if (factionName?.Length == 0 || factionName == "Moderate" || factionName == "Colony01")
             {
                 factionName = "Not Placed Yet -" + factionName;
-                // Because the Culture_03 (BotanicalGarden) is in the xPath that i normaly skipp, i must skipp this group now.
+                // Because the Culture_03 (BotanicalGarden) is in the xPath that i normaly skipp, i must skipp this group here now.
                 if (groupName == "OrnamentalBuilding") { return; }
                 if (groupName == "CultureModule") { return; }
             }
@@ -1476,7 +1532,7 @@ namespace PresetParser
                         case "FarmBuilding":
                             {
                                 fieldGuidValue = values["ModuleOwner"]["ConstructionOptions"]["Item"]["ModuleGUID"].InnerText;
-                                fieldAmountValue = values?["ModuleOwner"]?["ModuleLimit"]?.InnerText;
+                                fieldAmountValue = values?["ModuleOwner"]?["ModuleLimits"]?["Main"]?["Limit"]?.InnerText;
                                 break;
                             };
                         case "Farmfield":

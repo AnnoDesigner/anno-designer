@@ -12,7 +12,7 @@ namespace AnnoDesigner.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.5.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -128,15 +128,6 @@ namespace AnnoDesigner.Properties {
             }
             set {
                 this["SelectedLanguage"] = value;
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("8.4")]
-        public double CurrentVersion {
-            get {
-                return ((double)(this["CurrentVersion"]));
             }
         }
         
@@ -341,6 +332,15 @@ namespace AnnoDesigner.Properties {
             }
             set {
                 this["PresetsTreeGameVersionFilter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8.5")]
+        public double CurrentVersion {
+            get {
+                return ((double)(this["CurrentVersion"]));
             }
         }
     }

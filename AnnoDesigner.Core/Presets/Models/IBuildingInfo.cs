@@ -13,6 +13,8 @@ namespace AnnoDesigner.Core.Presets.Models
         string Template { get; set; }
         int InfluenceRange { get; set; }
         int InfluenceRadius { get; set; }
+        bool Borderless { get; set; }
+        bool Road { get; set; }
         SerializableDictionary<string> Localization { get; set; }
     }
 }

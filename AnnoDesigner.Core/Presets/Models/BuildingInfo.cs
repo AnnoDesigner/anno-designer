@@ -71,6 +71,15 @@ namespace AnnoDesigner.Core.Presets.Models
         public int InfluenceRadius { get; set; }
 
         /// <summary>
+        /// When it is not a building, but a road and if that is borderless
+        /// </summary>
+        [DataMember(Order = 9)]
+        public bool Road { get; set; }
+
+        [DataMember(Order = 10)]
+        public bool Borderless { get; set; }
+
+        /// <summary>
         /// The localized names of this building.
         /// </summary>
         [DataMember(Order = 99)]
