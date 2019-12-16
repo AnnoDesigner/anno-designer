@@ -333,7 +333,7 @@ namespace PresetParser
                 Console.WriteLine("----------------------------------------------");
                 Console.WriteLine("Reading RDA data from {0} for anno version {1}.", BASE_PATH_1800, Constants.ANNO_VERSION_1800);
                 BASE_PATH = BASE_PATH_1800;
-                DoAnnoPreset(Constants.ANNO_VERSION_1800, addRoads: false);
+                DoAnnoPreset(Constants.ANNO_VERSION_1800, addRoads: true);
                 annoBuildingLists.Clear();
             }
             #endregion
@@ -1197,9 +1197,10 @@ namespace PresetParser
             // Place the rest of the buildings in the right Faction > Group menu
             #region Order the Buildings to the right tiers and factions as in the game
 
-            var newFactionGroupName = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName);
+            var newFactionGroupName = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName, templateName);
             factionName = newFactionGroupName[0];
             groupName = newFactionGroupName[1];
+            templateName = newFactionGroupName[2];
 
             #endregion
 

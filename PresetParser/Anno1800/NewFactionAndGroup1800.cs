@@ -66,8 +66,9 @@ namespace PresetParser.Anno1800
         /// <param name="identifierName">The given Buildingname, this will not changed</param>
         /// <param name="factionName">If Buildingmane is in one of the lists, factionName will be changed</param>
         /// <param name="groupName">If Buildingmane is in one of the lists, groupName will be changed</param>
+        /// <param name="templateName">if buildingname is in ToAT1 or ToAT2 and is a Production Building, the Templatename will be changed</param>
         /// <returns></returns>
-        public static string[] GetNewFactionAndGroup1800(string identifierName, string factionName, string groupName)
+        public static string[] GetNewFactionAndGroup1800(string identifierName, string factionName, string groupName, string templateName)
         {
             if (string.IsNullOrWhiteSpace(identifierName))
             {
@@ -95,8 +96,8 @@ namespace PresetParser.Anno1800
             if (identifierName.IsPartOf(ChangeBuildingsToNW5_Productions_1800)) { factionName = "(05) Investors"; groupName = "Production Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToOW1_Productions_1800)) { factionName = "(07) Jornaleros"; groupName = "Production Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToOW2_Productions_1800)) { factionName = "(08) Obreros"; groupName = "Production Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAT1_Productions_1800)) { factionName = "(10) Explorers"; groupName = "Production Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAT2_Productions_1800)) { factionName = "(11) Technicians"; groupName = "Production Buildings"; }
+            if (identifierName.IsPartOf(ChangeBuildingsToAT1_Productions_1800)) { factionName = "(10) Explorers"; groupName = "Production Buildings"; templateName = "FactoryBuilding7"; }
+            if (identifierName.IsPartOf(ChangeBuildingsToAT2_Productions_1800)) { factionName = "(11) Technicians"; groupName = "Production Buildings"; templateName = "FactoryBuilding7"; }
 
             //Farm buildings
             //if (identifierName.IsPartOf(ChangeBuildingsToAW_FarmBuilding_1800)) { factionName = "All Worlds"; groupName = "Farm Buildings"; }
@@ -115,7 +116,7 @@ namespace PresetParser.Anno1800
             //Ornamentals 
             if (identifierName.IsPartOf(ChangeBuildingsToAW_Ornamentals_1800)) { factionName = "All Worlds"; }
 
-            return new string[] { factionName, groupName };
+            return new string[] { factionName, groupName, templateName };
         }
     }
 }
