@@ -28,7 +28,9 @@ namespace AnnoDesigner
                 InfluenceRange = buildingInfo.InfluenceRange - 2,
                 Identifier = buildingInfo.Identifier,
                 Size = buildingInfo.BuildBlocker == null ? new Size() : new Size(buildingInfo.BuildBlocker["x"], buildingInfo.BuildBlocker["z"]),
-                Template = buildingInfo.Template
+                Template = buildingInfo.Template,
+                Road = buildingInfo.Road,
+                Borderless = buildingInfo.Borderless
                 //BuildCosts = BuildCost
             };
         }
