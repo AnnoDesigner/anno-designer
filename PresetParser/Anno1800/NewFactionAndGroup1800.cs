@@ -68,7 +68,7 @@ namespace PresetParser.Anno1800
         /// <param name="groupName">If Buildingmane is in one of the lists, groupName will be changed</param>
         /// <param name="templateName">if buildingname is in ToAT1 or ToAT2 and is a Production Building, the Templatename will be changed</param>
         /// <returns></returns>
-        public static string[] GetNewFactionAndGroup1800(string identifierName, string factionName, string groupName, string templateName)
+        public static string[] GetNewFactionAndGroup1800(string identifierName, string factionName, string groupName, string templateName = "")
         {
             if (string.IsNullOrWhiteSpace(identifierName))
             {
