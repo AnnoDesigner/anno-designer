@@ -29,7 +29,7 @@ The .NET Framework is available via Windows Update and further information about
 
 The building presets and icons are extracted from game files using the [RDA explorer](https://github.com/lysannschlegel/RDAExplorer)  and a custom script written by Peter Hozak. See the development pages at wikia: http://anno2070.wikia.com/wiki/Development_Pages
 
-Sting_McRay has also done a lot of work on this, extracting icons from Anno 2205 and Anno 1800.
+[StingMcRay](https://github.com/StingMcRay) has also done a lot of work on this, extracting icons from Anno 2205 and Anno 1800.
 
 Included in this repo is a modified version of the PresetParser - which supports the extraction of data from all the different Anno versions. It is not required to run the app (and is not included in any release).
 
