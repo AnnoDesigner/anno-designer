@@ -30,7 +30,7 @@ namespace PresetParser
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
 
-        private const string BUILDING_PRESETS_VERSION = "3.2.9";
+        private const string BUILDING_PRESETS_VERSION = "3.2.10";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -87,16 +87,17 @@ namespace PresetParser
         private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding",
             "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding",
-            "CultureModule"};
+            "CultureModule","Palace"};
         private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358", "1010462",
-            "1010463", "1010464", "1010275", "1010271"};
+            "1010463", "1010464", "1010275", "1010271","1010516"};
         //private static readonly List<string> ExcludeBuildingsGUID1800 = new List<string> { "102139", "102140", "102141", "102142", "102143", "102828" };
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System",
             "module_01_birds", "module_02_peacock", "(Warehouse II)", "(Warehouse III)", "logistic_colony01_01 (Warehouse I)", "Kontor_main_02", "Kontor_main_03", "kontor_main_colony01",
             "Fake Ornament [test 2nd party]", "Kontor_imperial_02", "Kontor_imperial_03","(Oil Harbor II)","(Oil Harbor III)", "Third_party_", "CQO_", "Kontor_imperial_01", "- Pirates",
             "Harbor_colony01_09 (tourism_pier_01)", "Ai_", "AarhantLighthouseFake", "CO_Tunnel_Entrance01_Fake","Park_1x1_fence", "Electricity_01", "AI Version No Unlock",
             "Entertainment_musicpavillion_1701", "Entertainment_musicpavillion_1404", "Entertainment_musicpavillion_2070", "Entertainment_musicpavillion_2205", "Entertainment_musicpavillion_1800",
-            "Culture_01_module_06_empty","Culture_02_module_06_empty", "AnarchyBanner", "Culture_props_system_all_nohedge", "Monument_arctic_01_01", "Monument_arctic_01_02", "Monument_arctic_01_03"};
+            "Culture_01_module_06_empty","Culture_02_module_06_empty", "AnarchyBanner", "Culture_props_system_all_nohedge", "Monument_arctic_01_01", "Monument_arctic_01_02", "Monument_arctic_01_03",
+            "Active fertility","- Decree","Ministry of Public Services","Ministry of Productivity","Arctic Shepherd","fertility","Arctic Cook","Arctic Builder","Arctic Hunter","Arctic Sewer"," Buff"," Seeds"};
         /// <summary>
         /// in NewFactionAndGroup1800.cs are made the following lists
         /// ChangeBuildingTo<1>_<2>_1800 
@@ -723,11 +724,10 @@ namespace PresetParser
             }
 
             #endregion
-
             //get Influence Radius if existing
             try
             {
-                b.InfluenceRadius = Convert.ToInt32(values["Influence"]["InfluenceRadius"].InnerText);
+                b.InfluenceRadius = Convert.ToInt32(values["Influence"]?["InfluenceRadius"]?.InnerText);
             }
             catch (NullReferenceException)
             { }
@@ -1140,6 +1140,12 @@ namespace PresetParser
                 groupName = "Not Placed Yet";
             }
 
+            //skipp double trade union, as i made the trade union manually!
+            if (templateName == "1010516" && identifierName == "Guild_house_colony01")
+            {
+                return;
+            }
+
             switch (templateName)
             {
                 case "Farmfield": { groupName = "Farm Fields"; break; }
@@ -1171,6 +1177,10 @@ namespace PresetParser
                 case "1010320": { templateName = "FactoryBuilding7"; break; }
                 case "101331": { templateName = "HeavyFactoryBuilding"; break; }
                 case "FarmBuilding_Arctic": { templateName = "FarmBuilding"; break; }
+                case "PalaceModule": { templateName = "PalaceBuilding"; factionName = "(05) Investors"; groupName = "Palace Buildings"; break; }
+                case "Palace": { templateName = "PalaceBuilding"; factionName = "(05) Investors"; groupName = "Palace Buildings"; break; }
+                case "PalaceMinistry": { templateName = "PalaceBuilding"; factionName = "All Worlds"; groupName = "Special Buildings"; break; }
+                case "1010516": { templateName = "ArcticLodge"; factionName = "(11) Technicians"; groupName = "Special Buildings"; break; }
                 default: { groupName = templateName.FirstCharToUpper(); break; }
             }
 
@@ -1286,6 +1296,7 @@ namespace PresetParser
                     case "102142": { icon = replaceName + "park_props_1x1_30.png"; break; } //Path Corecting Icon
                     case "102143": { icon = replaceName + "park_props_1x1_31.png"; break; } //Path Corecting Icon 
                     case "102131": { icon = replaceName + "park_props_1x1_17.png"; break; } //Cypress corecting Icon
+                    case "101284": { icon = replaceName = "community_lodge.png"; break; } //corecting Arctic Lodge Icon
                 }
 
                 b.IconFileName = icon;
