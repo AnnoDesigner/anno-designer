@@ -70,6 +70,29 @@ namespace PresetParser.Tests
         }
 
         [Fact]
+        public void GetBuildingBlocker_Anno1404BuildBlockerHasNoChildNode_ShouldReturnFalse()
+        {
+            // Arrange
+            var mockedDocument = new XmlDocument();
+            mockedDocument.LoadXml("<Info><BuildBlocker></BuildBlocker></Info>");
+
+            var mockedIfoProvider = new Mock<IIfoFileProvider>();
+            mockedIfoProvider.Setup(x => x.GetIfoFileContent(It.IsAny<string>(), It.IsAny<string>())).Returns(() => mockedDocument);
+
+            var provider = new BuildingBlockProvider(mockedIfoProvider.Object);
+
+            var mockedBuilding = new Mock<IBuildingInfo>();
+            mockedBuilding.SetupAllProperties();
+
+            // Act
+            var result = provider.GetBuildingBlocker("basePath", mockedBuilding.Object, "variationFilename", Constants.ANNO_VERSION_1404);
+
+            // Assert
+            Assert.False(result);
+            Assert.Null(mockedBuilding.Object.BuildBlocker);
+        }
+
+        [Fact]
         public void GetBuildingBlocker_Anno1404BothValuesZero_ShouldReturnFalse()
         {
             // Arrange
@@ -317,6 +340,32 @@ namespace PresetParser.Tests
             Assert.NotNull(mockedBuilding.Object.BuildBlocker);
             Assert.Equal(4, mockedBuilding.Object.BuildBlocker["x"]);
             Assert.Equal(1, mockedBuilding.Object.BuildBlocker["z"]);
+        }
+
+        [Fact]
+        public void GetBuildingBlocker_Anno1800BuildingIsPalaceGate_ShouldSetCorrectSize()
+        {
+            // Arrange
+            var mockedDocument = new XmlDocument();
+            mockedDocument.LoadXml("<Info><BuildBlocker><Position><xf>2</xf><zf>2</zf></Position></BuildBlocker></Info>");
+
+            var mockedIfoProvider = new Mock<IIfoFileProvider>();
+            mockedIfoProvider.Setup(x => x.GetIfoFileContent(It.IsAny<string>(), It.IsAny<string>())).Returns(() => mockedDocument);
+
+            var provider = new BuildingBlockProvider(mockedIfoProvider.Object);
+
+            var mockedBuilding = new Mock<IBuildingInfo>();
+            mockedBuilding.SetupAllProperties();
+            mockedBuilding.SetupGet(x => x.Identifier).Returns("Palace_Module_05 (gate)");
+
+            // Act
+            var result = provider.GetBuildingBlocker("basePath", mockedBuilding.Object, "variationFilename", Constants.ANNO_VERSION_1800);
+
+            // Assert
+            Assert.True(result);
+            Assert.NotNull(mockedBuilding.Object.BuildBlocker);
+            Assert.Equal(3, mockedBuilding.Object.BuildBlocker["x"]);
+            Assert.Equal(3, mockedBuilding.Object.BuildBlocker["z"]);
         }
 
         #endregion
