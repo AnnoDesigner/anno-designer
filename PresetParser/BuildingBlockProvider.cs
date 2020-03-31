@@ -52,10 +52,17 @@ namespace PresetParser
                 var xf = ParseBuildingBlockerNumber(xfNormal);
                 var zf = ParseBuildingBlockerNumber(zfNormal);
 
+                //In case buildings have wrong size change it here.
+                //Check by identifier. *Caps Sensetive*
+                if (building.Identifier == "Palace_Module_05 (gate)")
+                {
+                    xf = 3; zf = 3;
+                }
+
                 //if both values are zero, then skip building
                 if (xf < 1 && zf < 1)
                 {
-                    Console.WriteLine("-'X' and 'Z' are both 0 - Building will skipped!");
+                    Console.WriteLine("-'X' and 'Z' are both 0 - Building will be skipped!");
                     return false;
                 }
 
@@ -92,7 +99,12 @@ namespace PresetParser
 
             try
             {
-                XmlNode node = ifoDocument.FirstChild[BUILDBLOCKER].FirstChild;
+                XmlNode node = ifoDocument.FirstChild[BUILDBLOCKER]?.FirstChild;
+                if (node is null)
+                {
+                    return false;
+                }
+
                 building.BuildBlocker = new SerializableDictionary<int>();
 
                 var x = Math.Abs(Convert.ToInt32(node[X].InnerText) / 2048);
