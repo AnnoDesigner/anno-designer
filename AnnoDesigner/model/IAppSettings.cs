@@ -36,5 +36,6 @@ namespace AnnoDesigner.model
         double MainWindowLeft { get; set; }
         double MainWindowTop { get; set; }
         WindowState MainWindowWindowState { get; set; }
+        bool UpdateSupportsPrerelease { get; set; }
     }
 }

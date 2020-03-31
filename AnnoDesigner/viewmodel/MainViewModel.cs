@@ -585,6 +585,7 @@ namespace AnnoDesigner.viewmodel
 
                     //Context is required here, do not use ConfigureAwait(false)
                     var newLocation = await _commons.UpdateHelper.DownloadReleaseAsync(foundRelease);
+                    logger.Debug($"downloaded new preset ({foundRelease.Version}): {newLocation}");
 
                     IsBusy = false;
 
