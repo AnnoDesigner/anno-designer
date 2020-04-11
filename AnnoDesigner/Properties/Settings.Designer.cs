@@ -343,5 +343,17 @@ namespace AnnoDesigner.Properties {
                 return ((double)(this["CurrentVersion"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UpdateSupportsPrerelease {
+            get {
+                return ((bool)(this["UpdateSupportsPrerelease"]));
+            }
+            set {
+                this["UpdateSupportsPrerelease"] = value;
+            }
+        }
     }
 }

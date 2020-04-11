@@ -161,6 +161,12 @@ namespace AnnoDesigner.model
             get { return Settings.Default.MainWindowWindowState; }
             set { Settings.Default.MainWindowWindowState = value; }
         }
+
+        public bool UpdateSupportsPrerelease
+        {
+            get { return Settings.Default.UpdateSupportsPrerelease; }
+            set { Settings.Default.UpdateSupportsPrerelease = value; }
+        }
     }
 }
 

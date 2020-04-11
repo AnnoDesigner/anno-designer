@@ -33,6 +33,7 @@ namespace AnnoDesigner
         private GitHubClient _apiClient;
         private HttpClient _httpClient;
         private readonly string _basePath;
+        private readonly IAppSettings _appSettings;
 
         /// <summary>
         /// Initializes a new instance of <see cref="AnnoDesigner.UpdateHelper"./>
@@ -41,9 +42,10 @@ namespace AnnoDesigner
         /// <remarks>
         /// example to get the basePath: <c>string basePath = AppDomain.CurrentDomain.BaseDirectory;</c>
         /// </remarks>
-        public UpdateHelper(string basePathToUse)
+        public UpdateHelper(string basePathToUse, IAppSettings appSettingsToUse)
         {
             _basePath = basePathToUse;
+            _appSettings = appSettingsToUse;
         }
 
         private GitHubClient ApiClient
@@ -143,6 +145,8 @@ namespace AnnoDesigner
                     return null;
                 }
 
+                logger.Debug($"Download asset for release {releaseToDownload.Version}.");
+
                 var release = AllReleases.FirstOrDefault(x => x.Id == releaseToDownload.Id);
                 if (release == null)
                 {
@@ -158,6 +162,14 @@ namespace AnnoDesigner
                 }
 
                 var foundAsset = release.Assets.FirstOrDefault(x => x.Name.StartsWith(assetName, StringComparison.OrdinalIgnoreCase));
+                if (foundAsset == null && releaseToDownload.Type == ReleaseType.Presets)
+                {
+                    //check for release of presets with icons
+                    releaseToDownload.Type = ReleaseType.PresetsAndIcons;
+                    assetName = GetAssetNameForReleaseType(releaseToDownload.Type);
+                    foundAsset = release.Assets.FirstOrDefault(x => x.Name.StartsWith(assetName, StringComparison.OrdinalIgnoreCase));
+                }
+
                 if (foundAsset == null)
                 {
                     logger.Warn($"No asset found with name: {assetName}.");
@@ -208,19 +220,21 @@ namespace AnnoDesigner
                 {
                     foreach (ReleaseType curReleaseType in Enum.GetValues(typeof(ReleaseType)))
                     {
-                        var pathToUpdatesPresetsFile = GetPathToUpdatedPresetsFile(curReleaseType);
-                        if (string.IsNullOrWhiteSpace(pathToUpdatesPresetsFile) || !File.Exists(pathToUpdatesPresetsFile))
+                        var pathToUpdatedPresetsFile = GetPathToUpdatedPresetsFile(curReleaseType);
+                        if (string.IsNullOrWhiteSpace(pathToUpdatedPresetsFile) || !File.Exists(pathToUpdatedPresetsFile))
                         {
                             continue;
                         }
 
+                        logger.Debug($"start replacing presets with update: {pathToUpdatedPresetsFile}");
+
                         if (curReleaseType == ReleaseType.PresetsAndIcons)
                         {
-                            using (var archive = ZipFile.OpenRead(pathToUpdatesPresetsFile))
+                            using (var archive = ZipFile.OpenRead(pathToUpdatedPresetsFile))
                             {
                                 foreach (var curEntry in archive.Entries)
                                 {
-                                    var destinationPath = Path.Combine(Path.GetDirectoryName(pathToUpdatesPresetsFile), curEntry.FullName);
+                                    var destinationPath = Path.Combine(Path.GetDirectoryName(pathToUpdatedPresetsFile), curEntry.FullName);
                                     var destinationDirectory = Path.GetDirectoryName(destinationPath);
 
                                     if (!Directory.Exists(destinationDirectory))
@@ -244,20 +258,24 @@ namespace AnnoDesigner
                             //wait extra time for extraction to finish (sometimes the disk needs extra time)
                             await Task.Delay(TimeSpan.FromMilliseconds(200));
 
-                            File.Delete(pathToUpdatesPresetsFile);
+                            File.Delete(pathToUpdatedPresetsFile);
+
+                            logger.Debug("finished extracting updated presets file");
 
                             continue;
                         }
 
-                        var originalPresetsFileName = Path.GetFileName(pathToUpdatesPresetsFile).Replace(CoreConstants.PrefixUpdatedPresetsFile, string.Empty);
-                        var pathToOriginalPresetsFile = Path.Combine(Path.GetDirectoryName(pathToUpdatesPresetsFile), originalPresetsFileName);
+                        var originalPresetsFileName = Path.GetFileName(pathToUpdatedPresetsFile).Replace(CoreConstants.PrefixUpdatedPresetsFile, string.Empty);
+                        var pathToOriginalPresetsFile = Path.Combine(Path.GetDirectoryName(pathToUpdatedPresetsFile), originalPresetsFileName);
                         if (File.Exists(pathToOriginalPresetsFile))
                         {
                             FileHelper.ResetFileAttributes(pathToOriginalPresetsFile);
                             File.Delete(pathToOriginalPresetsFile);
                         }
 
-                        File.Move(pathToUpdatesPresetsFile, pathToOriginalPresetsFile);
+                        File.Move(pathToUpdatedPresetsFile, pathToOriginalPresetsFile);
+
+                        logger.Debug("finished replacing presets with update");
                     }
                 });
             }
@@ -318,7 +336,12 @@ namespace AnnoDesigner
                 return result;
             }
 
-            var foundGithubRelease = AllReleases.FirstOrDefault(x => !x.Draft && !x.Prerelease && x.TagName.StartsWith(tagToCheck, StringComparison.OrdinalIgnoreCase));
+            var supportPrerelease = _appSettings.UpdateSupportsPrerelease;
+            logger.Debug($"Update supports prereleases: {supportPrerelease}");
+
+            var foundGithubRelease = AllReleases.FirstOrDefault(x => !x.Draft &&
+            x.Prerelease == supportPrerelease &&
+            x.TagName.StartsWith(tagToCheck, StringComparison.OrdinalIgnoreCase));
             //for testing - latest preset and icons release
             //var latestPresetRelease = releases.FirstOrDefault(x => !x.Draft && !x.Prerelease && x.TagName.StartsWith("Presetsv3.0.0", StringComparison.OrdinalIgnoreCase));
             if (foundGithubRelease == null)
@@ -434,11 +457,15 @@ namespace AnnoDesigner
         {
             try
             {
+                logger.Debug($"start downloading file: {url}");
+
                 var stream = await LocalHttpClient.GetStreamAsync(url).ConfigureAwait(false);
                 using (var fileStream = new FileStream(pathToSavedFile, System.IO.FileMode.Create))
                 {
                     await stream.CopyToAsync(fileStream).ConfigureAwait(false);
                 }
+
+                logger.Debug($"finished downloading file to \"{pathToSavedFile}\"");
 
                 return pathToSavedFile;
             }
