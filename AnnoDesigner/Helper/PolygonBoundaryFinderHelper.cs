@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace AnnoDesigner.Helper
 {
@@ -13,67 +14,68 @@ namespace AnnoDesigner.Helper
             Right
         }
 
-        private static (int x, int y) GetLeftPixel((int x, int y) point, Direction direction)
+        private static Point GetLeftCell(Point point, Direction direction)
         {
             switch (direction)
             {
                 case Direction.Up:
-                    return (point.x - 1, point.y - 1);
+                    return new Point(point.X - 1, point.Y - 1);
                 case Direction.Left:
-                    return (point.x - 1, point.y);
+                    return new Point(point.X - 1, point.Y);
                 case Direction.Down:
                     return point;
                 default:
-                    return (point.x, point.y - 1);
+                    return new Point(point.X, point.Y - 1);
             }
         }
 
-        private static (int x, int y) GetRightPixel((int x, int y) point, Direction direction)
+        private static Point GetRightCell(Point point, Direction direction)
         {
             switch (direction)
             {
                 case Direction.Up:
-                    return (point.x, point.y - 1);
+                    return new Point(point.X, point.Y - 1);
                 case Direction.Left:
-                    return (point.x - 1, point.y - 1);
+                    return new Point(point.X - 1, point.Y - 1);
                 case Direction.Down:
-                    return (point.x - 1, point.y);
+                    return new Point(point.X - 1, point.Y);
                 default:
                     return point;
             }
         }
 
-        private static (int x, int y) MoveForward((int x, int y) point, Direction direction)
+        private static Point MoveForward(Point point, Direction direction)
         {
             switch (direction)
             {
                 case Direction.Up:
-                    return (point.x, point.y - 1);
+                    return new Point(point.X, point.Y - 1);
                 case Direction.Left:
-                    return (point.x - 1, point.y);
+                    return new Point(point.X - 1, point.Y);
                 case Direction.Down:
-                    return (point.x, point.y + 1);
+                    return new Point(point.X, point.Y + 1);
                 default:
-                    return (point.x + 1, point.y);
+                    return new Point(point.X + 1, point.Y);
             }
         }
 
-        public static IList<(int x, int y)> GetBoundaryPoints(ISet<(int x, int y)> insidePoints)
+        public static IList<Point> GetBoundaryPoints(ISet<Point> insidePoints)
         {
-            var points = new List<(int, int)>();
+            var points = new List<Point>();
 
             if (insidePoints.Count == 0)
                 return points;
 
-            var startPoint = insidePoints.Min();
+            var minPoint = insidePoints.Min(p => (p.X, p.Y));
+            var startPoint = new Point(minPoint.X, minPoint.Y);
             var point = startPoint;
             var direction = Direction.Down;
             points.Add(point);
 
             do
             {
-                var left = GetLeftPixel(point, direction);
-                var right = GetRightPixel(point, direction);
+                var left = GetLeftCell(point, direction);
+                var right = GetRightCell(point, direction);
 
                 if (insidePoints.Contains(left))
                 {

@@ -785,7 +785,7 @@ namespace AnnoDesigner
 
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
-            Dictionary<int, Dictionary<int, AnnoObject>> gridDictionary = null;
+            Dictionary<double, Dictionary<double, AnnoObject>> gridDictionary = null;
             if (RenderTrueInfluenceRange)
             {
                 var placedAnnoObjects = PlacedObjects.Select(o => o.WrappedAnnoObject).ToList();
@@ -797,7 +797,7 @@ namespace AnnoDesigner
                 }
 
                 gridDictionary = RoadSearchHelper.PrepareGridDictionary(placedAnnoObjects);
-                RoadSearchHelper.BreathFirstSearch(placedAnnoObjects, objects.Select(o => o.WrappedAnnoObject), o => (int)o.InfluenceRange, Highlight, gridDictionary);
+                RoadSearchHelper.BreadthFirstSearch(placedAnnoObjects, objects.Select(o => o.WrappedAnnoObject), o => o.InfluenceRange, Highlight, gridDictionary);
             }
 
             foreach (var curLayoutObject in objects)
@@ -827,7 +827,7 @@ namespace AnnoDesigner
             }
         }
 
-        private void DrawTrueInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc, Dictionary<int, Dictionary<int, AnnoObject>> gridDictionary)
+        private void DrawTrueInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc, Dictionary<double, Dictionary<double, AnnoObject>> gridDictionary)
         {
             var stroked = true;
             var smoothJoin = true;
@@ -835,18 +835,18 @@ namespace AnnoDesigner
             var geometryFill = true;
             var geometryStroke = true;
 
-            var cellsInInfluenceRange = RoadSearchHelper.BreathFirstSearch(
+            var cellsInInfluenceRange = RoadSearchHelper.BreadthFirstSearch(
                 PlacedObjects.Select(o => o.WrappedAnnoObject),
                 Enumerable.Repeat(curLayoutObject.WrappedAnnoObject, 1),
-                o => (int)o.InfluenceRange - 1,// reduce distance to get cells INSIDE influence range (not those which are touching the influence range)
+                o => o.InfluenceRange - 1,// reduce distance to get cells INSIDE influence range (not those which are touching the influence range)
                 gridDictionary: gridDictionary);
 
             var points = PolygonBoundaryFinderHelper.GetBoundaryPoints(cellsInInfluenceRange);
 
-            sgc.BeginFigure(_coordinateHelper.GridToScreen(new Point(points[0].x, points[0].y), GridSize), geometryFill, geometryStroke);
+            sgc.BeginFigure(_coordinateHelper.GridToScreen(new Point(points[0].X, points[0].Y), GridSize), geometryFill, geometryStroke);
             for (var i = 1; i < points.Count; i++)
             {
-                sgc.LineTo(_coordinateHelper.GridToScreen(new Point(points[i].x, points[i].y), GridSize), stroked, smoothJoin);
+                sgc.LineTo(_coordinateHelper.GridToScreen(new Point(points[i].X, points[i].Y), GridSize), stroked, smoothJoin);
             }
         }
 
