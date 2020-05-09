@@ -55,6 +55,7 @@
     <Compile Include="CustomEventArgs\UpdateStatisticsEventArgs.cs" />
     <Compile Include="Helper\CoordinateHelper.cs" />
     <Compile Include="Helper\PolygonBoundaryFinderHelper.cs" />
+    <Compile Include="Helper\RoadSearchHelper.cs" />
     <Compile Include="model\AppSettings.cs" />
     <Compile Include="model\IAppSettings.cs" />
     <Compile Include="model\ICoordinateHelper.cs" />

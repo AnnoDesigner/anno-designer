@@ -385,13 +385,6 @@ namespace AnnoDesigner
 
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
 
-        /// <summary>
-        /// 2D dictionary of grid cell location to layout object in specified cell.
-        /// Recalculated during every re-render if RenderTrueInfluenceRange is true.
-        /// Used multiple times during one render.
-        /// </summary>
-        private Dictionary<int, Dictionary<int, LayoutObject>> _gridLayoutObjects;
-
         #region Pens and Brushes
 
         /// <summary>
@@ -792,10 +785,19 @@ namespace AnnoDesigner
 
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
+            Dictionary<int, Dictionary<int, AnnoObject>> gridDictionary = null;
             if (RenderTrueInfluenceRange)
             {
-                PrepareGridDictionary();
-                HighlightObjectsInInfluenceRange(drawingContext, objects);
+                var placedAnnoObjects = PlacedObjects.Select(o => o.WrappedAnnoObject).ToList();
+                var placedObjectDictionary = PlacedObjects.ToDictionary(o => o.WrappedAnnoObject);
+
+                void Highlight(AnnoObject objectInRange)
+                {
+                    drawingContext.DrawRectangle(_influencedBrush, _influencedPen, placedObjectDictionary[objectInRange].CalculateScreenRect(GridSize));
+                }
+
+                gridDictionary = RoadSearchHelper.PrepareGridDictionary(placedAnnoObjects);
+                RoadSearchHelper.BreathFirstSearch(placedAnnoObjects, objects.Select(o => o.WrappedAnnoObject), o => (int)o.InfluenceRange, Highlight, gridDictionary);
             }
 
             foreach (var curLayoutObject in objects)
@@ -808,7 +810,7 @@ namespace AnnoDesigner
                     {
                         if (RenderTrueInfluenceRange)
                         {
-                            DrawTrueInfluenceRangePolygon(curLayoutObject, sgc);
+                            DrawTrueInfluenceRangePolygon(curLayoutObject, sgc, gridDictionary);
                         }
                         else
                         {
@@ -825,7 +827,7 @@ namespace AnnoDesigner
             }
         }
 
-        private void DrawTrueInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc)
+        private void DrawTrueInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc, Dictionary<int, Dictionary<int, AnnoObject>> gridDictionary)
         {
             var stroked = true;
             var smoothJoin = true;
@@ -833,7 +835,12 @@ namespace AnnoDesigner
             var geometryFill = true;
             var geometryStroke = true;
 
-            var cellsInInfluenceRange = HighlightObjectsInInfluenceRange(null, new List<LayoutObject>() { curLayoutObject });
+            var cellsInInfluenceRange = RoadSearchHelper.BreathFirstSearch(
+                PlacedObjects.Select(o => o.WrappedAnnoObject),
+                Enumerable.Repeat(curLayoutObject.WrappedAnnoObject, 1),
+                o => (int)o.InfluenceRange - 1,// reduce distance to get cells INSIDE influence range (not those which are touching the influence range)
+                gridDictionary: gridDictionary);
+
             var points = PolygonBoundaryFinderHelper.GetBoundaryPoints(cellsInInfluenceRange);
 
             sgc.BeginFigure(_coordinateHelper.GridToScreen(new Point(points[0].x, points[0].y), GridSize), geometryFill, geometryStroke);
@@ -984,98 +991,6 @@ namespace AnnoDesigner
             }
 
             //Shape should be complete by this point.
-        }
-
-        private void PrepareGridDictionary()
-        {
-            _gridLayoutObjects = new Dictionary<int, Dictionary<int, LayoutObject>>();
-
-            foreach (var placedObject in PlacedObjects)
-            {
-                var x = (int)placedObject.WrappedAnnoObject.Position.X;
-                var y = (int)placedObject.WrappedAnnoObject.Position.Y;
-                for (var i = 0; i < placedObject.WrappedAnnoObject.Size.Width; i++)
-                {
-                    if (!_gridLayoutObjects.ContainsKey(x + i))
-                    {
-                        _gridLayoutObjects.Add(x + i, new Dictionary<int, LayoutObject>());
-                    }
-
-                    for (var j = 0; j < placedObject.WrappedAnnoObject.Size.Height; j++)
-                    {
-                        _gridLayoutObjects[x + i][y + j] = placedObject;
-                    }
-                }
-            }
-        }
-
-        private HashSet<(int, int)> HighlightObjectsInInfluenceRange(DrawingContext drawingContext, List<LayoutObject> layoutObjects)
-        {
-            var sourceObjects = layoutObjects.Where(l => l.WrappedAnnoObject.InfluenceRange > 0.5).ToList();
-            if (sourceObjects.Count == 0)
-                return null;
-
-            var searchedCells = new Queue<(int remainingDistance, int x, int y)>();
-            var blackCells = new HashSet<(int x, int y)>();
-            var blackObjects = new HashSet<LayoutObject>();
-
-            foreach (var layoutObject in sourceObjects)
-            {
-                var wrapped = layoutObject.WrappedAnnoObject;
-                for (var i = 0; i < wrapped.Size.Width; i++)
-                {
-                    searchedCells.Enqueue(((int)wrapped.InfluenceRange, i + (int)wrapped.Position.X, (int)wrapped.Position.Y - 1));
-                    searchedCells.Enqueue(((int)wrapped.InfluenceRange, i + (int)wrapped.Position.X, (int)(wrapped.Position.Y + wrapped.Size.Height)));
-                    blackCells.Add((i + (int)wrapped.Position.X, (int)wrapped.Position.Y - 1));
-                    blackCells.Add((i + (int)wrapped.Position.X, (int)(wrapped.Position.Y + wrapped.Size.Height)));
-                }
-                for (var i = 0; i < wrapped.Size.Height; i++)
-                {
-                    searchedCells.Enqueue(((int)wrapped.InfluenceRange, (int)wrapped.Position.X - 1, i + (int)wrapped.Position.Y));
-                    searchedCells.Enqueue(((int)wrapped.InfluenceRange, (int)(wrapped.Position.X + wrapped.Size.Width), i + (int)wrapped.Position.Y));
-                    blackCells.Add(((int)wrapped.Position.X - 1, i + (int)wrapped.Position.Y));
-                    blackCells.Add(((int)(wrapped.Position.X + wrapped.Size.Width), i + (int)wrapped.Position.Y));
-                }
-
-                blackObjects.Add(layoutObject);
-                for (var i = 0; i < wrapped.Size.Width; i++)
-                    for (var j = 0; j < wrapped.Size.Height; j++)
-                        blackCells.Add(((int)wrapped.Position.X + i, (int)wrapped.Position.Y + j));
-            }
-
-            void Enqueue(int distance, int x, int y)
-            {
-                if (!blackCells.Contains((x, y)) && _gridLayoutObjects.ContainsKey(x) && _gridLayoutObjects[x].ContainsKey(y))
-                {
-                    var layoutObject = _gridLayoutObjects[x][y];
-
-                    searchedCells.Enqueue((distance, x, y));
-                    if (!blackObjects.Contains(layoutObject) && !layoutObject.WrappedAnnoObject.Road && drawingContext != null)
-                    {
-                        drawingContext.DrawRectangle(_influencedBrush, _influencedPen, layoutObject.CalculateScreenRect(GridSize));
-                    }
-                    blackObjects.Add(layoutObject);
-                }
-                blackCells.Add((x, y));
-            }
-
-            while (searchedCells.Count > 0)
-            {
-                var (distance, x, y) = searchedCells.Dequeue();
-                if (
-                    (drawingContext != null && distance > 0 || distance > 1) && // HACK to increase the influence range by one when highlighting affected buildings
-                    _gridLayoutObjects.ContainsKey(x) &&
-                    _gridLayoutObjects[x].ContainsKey(y) &&
-                    _gridLayoutObjects[x][y].WrappedAnnoObject.Road)
-                {
-                    Enqueue(distance - 1, x + 1, y);
-                    Enqueue(distance - 1, x - 1, y);
-                    Enqueue(distance - 1, x, y + 1);
-                    Enqueue(distance - 1, x, y - 1);
-                }
-            }
-
-            return blackCells;
         }
 
         private List<LayoutObject> CloneList(List<LayoutObject> list)
