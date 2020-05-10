@@ -7,6 +7,7 @@ This is a fork of the project created by JcBernack - https://github.com/JcBernac
 
 ## Discord
 Keep up to date with the latest developments. This discord is also used for collaboration between contributors. Please note this is  completely **optional** - you are not required to join this to make contributions to the repo.
+Also Users of Anno Designer may join this discord, as you maybe have questions, errors, or ideas you want to share with us.
 
 https://discord.gg/JJpHWRB
 
