@@ -6,8 +6,7 @@ A building layout designer for Ubisoft's Anno-series
 This is a fork of the project created by JcBernack - https://github.com/JcBernack/anno-designer
 
 ## Discord
-Keep up to date with the latest developments. This discord is also used for collaboration between contributors. Please note this is  completely **optional** - you are not required to join this to make contributions to the repo.
-Also Users of Anno Designer may join this discord, as you maybe have questions, errors, or ideas you want to share with us.
+Keep up to date the latest developments. If you have any ideas or questions that you want to share with us, or are running into an error with the designer, then the discord is the perfect place to join.
 
 https://discord.gg/JJpHWRB
 
