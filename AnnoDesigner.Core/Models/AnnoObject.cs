@@ -119,14 +119,5 @@ namespace AnnoDesigner.Core.Models
         /// </summary>
         [DataMember(Order = 11)]
         public bool PavedStreet { get; set; }
-
-        ///// <summary>
-        ///// Localization string
-        ///// </summary>
-        //[DataMember]
-        //public string[] Localization { get; set; }
-
-        //[DataMember]
-        //public SerializableDictionary<int> BuildCosts { get; set; }
     }
 }

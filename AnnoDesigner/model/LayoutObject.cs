@@ -68,7 +68,7 @@ namespace AnnoDesigner.model
         {
             get
             {
-                if (_transparentColor == null)
+                if (_transparentColor.Equals(default))
                 {
                     var tmp = WrappedAnnoObject.Color.MediaColor;
                     tmp.A = 128;
@@ -101,7 +101,7 @@ namespace AnnoDesigner.model
         {
             get
             {
-                if (_renderColor == null)
+                if (_renderColor.Equals(default))
                 {
                     _renderColor = WrappedAnnoObject.Color.MediaColor;
                 }
@@ -167,7 +167,7 @@ namespace AnnoDesigner.model
         /// </summary>
         public Rect CalculateScreenRect(int gridSize)
         {
-            if (_gridSizeScreenRect != gridSize)
+            if (!_gridSizeScreenRect.Equals(gridSize))
             {
                 _gridSizeScreenRect = gridSize;
                 _screenRect = default;
