@@ -145,7 +145,7 @@ namespace AnnoDesigner.model
         {
             get
             {
-                if (_position == default)
+                if (_position.Equals(default))
                 {
                     _position = WrappedAnnoObject.Position;
                 }
@@ -180,7 +180,7 @@ namespace AnnoDesigner.model
         {
             get
             {
-                if (_screenRect == default)
+                if (_screenRect.Equals(default))
                 {
                     _screenRect = new Rect(_coordinateHelper.GridToScreen(Position, _gridSizeScreenRect), _coordinateHelper.GridToScreen(Size, _gridSizeScreenRect));
                 }
@@ -197,7 +197,7 @@ namespace AnnoDesigner.model
         {
             get
             {
-                if (_collisionRect == default)
+                if (_collisionRect.Equals(default))
                 {
                     _collisionRect = new Rect(Position, CollisionSize);
                 }
@@ -210,7 +210,7 @@ namespace AnnoDesigner.model
         {
             get
             {
-                if (_collisionSize == default)
+                if (_collisionSize.Equals(default))
                 {
                     _collisionSize = new Size(Size.Width - 0.5, Size.Height - 0.5);
                 }
@@ -254,7 +254,7 @@ namespace AnnoDesigner.model
         {
             get
             {
-                if (_size == default)
+                if (_size.Equals(default))
                 {
                     _size = WrappedAnnoObject.Size;
                 }
@@ -302,7 +302,7 @@ namespace AnnoDesigner.model
         {
             var objRect = CalculateScreenRect(gridSize);
 
-            if (_iconRect == default || _gridSizeIconRect != gridSize || _lastScreenRectForIcon != objRect)
+            if (_iconRect.Equals(default) || _gridSizeIconRect != gridSize || _lastScreenRectForIcon != objRect)
             {
                 // draw icon 2x2 grid cells large
                 var minSize = Math.Min(Size.Width, Size.Height);
@@ -336,7 +336,7 @@ namespace AnnoDesigner.model
         {
             var objRect = CalculateScreenRect(gridSize);
 
-            if (_screenRectCenterPoint == default || _lastScreenRectForCenterPoint != objRect)
+            if (_screenRectCenterPoint.Equals(default) || _lastScreenRectForCenterPoint != objRect)
             {
                 _screenRectCenterPoint = _coordinateHelper.GetCenterPoint(objRect);
 
@@ -364,7 +364,7 @@ namespace AnnoDesigner.model
 
         public double GetScreenRadius(int gridSize)
         {
-            if (_screenRadius == default || _lastGridSizeForScreenRadius != gridSize)
+            if (_screenRadius.Equals(default) || _lastGridSizeForScreenRadius != gridSize)
             {
                 _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius, gridSize);
 
@@ -378,7 +378,7 @@ namespace AnnoDesigner.model
         {
             get
             {
-                if (_color == default)
+                if (_color.Equals(default))
                 {
                     _color = WrappedAnnoObject.Color;
                 }
