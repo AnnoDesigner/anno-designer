@@ -12,7 +12,7 @@ namespace AnnoDesigner.Helper
 
         public static Dictionary<double, Dictionary<double, AnnoObject>> PrepareGridDictionary(IEnumerable<AnnoObject> placedObjects)
         {
-            var dictionary = new Dictionary<double, Dictionary<double, AnnoObject>>();
+            var result = new Dictionary<double, Dictionary<double, AnnoObject>>();
 
             foreach (var placedObject in placedObjects)
             {
@@ -20,19 +20,19 @@ namespace AnnoDesigner.Helper
                 var y = placedObject.Position.Y;
                 for (var i = 0; i < placedObject.Size.Width; i++)
                 {
-                    if (!dictionary.ContainsKey(x + i))
+                    if (!result.ContainsKey(x + i))
                     {
-                        dictionary.Add(x + i, new Dictionary<double, AnnoObject>());
+                        result.Add(x + i, new Dictionary<double, AnnoObject>());
                     }
 
                     for (var j = 0; j < placedObject.Size.Height; j++)
                     {
-                        dictionary[x + i][y + j] = placedObject;
+                        result[x + i][y + j] = placedObject;
                     }
                 }
             }
 
-            return dictionary;
+            return result;
         }
 
         public static HashSet<Point> BreadthFirstSearch(

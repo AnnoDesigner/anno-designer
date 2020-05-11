@@ -50,6 +50,8 @@
     <Compile Include="BuildingSettingsViewModelTests.cs" />
     <Compile Include="CoordinateHelperTests.cs" />
     <Compile Include="MainViewModelTests.cs" />
+    <Compile Include="RoadSearchHelperTests.cs" />
+    <Compile Include="PolygonBoundaryFinderHelperTests.cs" />
     <Compile Include="PresetsTreeSearchViewModelTests.cs" />
     <Compile Include="PresetsTreeViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -85,6 +87,21 @@
       <Project>{3AF4C58B-FEF0-485F-8DBF-CC61F9AF6FAD}</Project>
       <Name>AnnoDesigner</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="TestData\RoadSearchHelper\BreadthFirstSearch_FindBuildingInfluenceRange.ad">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\RoadSearchHelper\BreadthFirstSearch_FindObjectsInInfluenceRange.ad">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\RoadSearchHelper\PrepareGridDictionary_MultipleObjects.ad">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\RoadSearchHelper\PrepareGridDictionary_SingleObject.ad">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

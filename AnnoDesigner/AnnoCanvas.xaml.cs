@@ -843,10 +843,10 @@ namespace AnnoDesigner
 
             var points = PolygonBoundaryFinderHelper.GetBoundaryPoints(cellsInInfluenceRange);
 
-            sgc.BeginFigure(_coordinateHelper.GridToScreen(new Point(points[0].X, points[0].Y), GridSize), geometryFill, geometryStroke);
+            sgc.BeginFigure(_coordinateHelper.GridToScreen(points[0], GridSize), geometryFill, geometryStroke);
             for (var i = 1; i < points.Count; i++)
             {
-                sgc.LineTo(_coordinateHelper.GridToScreen(new Point(points[i].X, points[i].Y), GridSize), stroked, smoothJoin);
+                sgc.LineTo(_coordinateHelper.GridToScreen(points[i], GridSize), stroked, smoothJoin);
             }
         }
 

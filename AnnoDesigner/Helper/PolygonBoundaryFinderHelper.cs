@@ -61,16 +61,16 @@ namespace AnnoDesigner.Helper
 
         public static IList<Point> GetBoundaryPoints(ISet<Point> insidePoints)
         {
-            var points = new List<Point>();
+            var result = new List<Point>();
 
             if (insidePoints.Count == 0)
-                return points;
+                return result;
 
             var minPoint = insidePoints.Min(p => (p.X, p.Y));
             var startPoint = new Point(minPoint.X, minPoint.Y);
             var point = startPoint;
             var direction = Direction.Down;
-            points.Add(point);
+            result.Add(point);
 
             do
             {
@@ -81,7 +81,7 @@ namespace AnnoDesigner.Helper
                 {
                     if (insidePoints.Contains(right))// turn right
                     {
-                        points.Add(point);
+                        result.Add(point);
 
                         direction = (Direction)(((int)direction + 3) % 4);
                     }
@@ -89,7 +89,7 @@ namespace AnnoDesigner.Helper
                 }
                 else// turn left
                 {
-                    points.Add(point);
+                    result.Add(point);
 
                     direction = (Direction)(((int)direction + 1) % 4);
                 }
@@ -98,7 +98,7 @@ namespace AnnoDesigner.Helper
             }
             while (point != startPoint);
 
-            return points;
+            return result;
         }
     }
 }
