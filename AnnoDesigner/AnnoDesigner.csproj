@@ -53,7 +53,7 @@
     <Compile Include="ColorHueSaturationBrightnessComparer.cs" />
     <Compile Include="Commons.cs" />
     <Compile Include="CustomEventArgs\UpdateStatisticsEventArgs.cs" />
-    <Compile Include="Helper\BrushHelper.cs" />
+    <Compile Include="BrushCache.cs" />
     <Compile Include="Helper\CoordinateHelper.cs" />
     <Compile Include="model\AppSettings.cs" />
     <Compile Include="model\IAppSettings.cs" />
