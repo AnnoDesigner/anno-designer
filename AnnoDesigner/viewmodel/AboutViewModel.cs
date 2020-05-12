@@ -206,7 +206,7 @@ namespace AnnoDesigner.viewmodel
 
         private void OpenProjectHomepage(object param)
         {
-            System.Diagnostics.Process.Start("https://github.com/AgmasGold/anno-designer/");
+            System.Diagnostics.Process.Start("https://github.com/AnnoDesigner/anno-designer/");
         }
 
         public ICommand OpenWikiHomepageCommand { get; private set; }
