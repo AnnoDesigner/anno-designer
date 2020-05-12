@@ -1462,7 +1462,8 @@ namespace AnnoDesigner
         /// <returns>object at the position, if there is no object null</returns>
         private LayoutObject GetObjectAt(Point position)
         {
-            return _placedObjects.FindLast(_ => _.CalculateScreenRect(GridSize).Contains(position));
+            var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
+            return _placedObjects.FirstOrDefault(_ => _.CollisionRect.Contains(gridPosition));
         }
 
         #endregion
