@@ -19,6 +19,7 @@ namespace AnnoDesigner.model
     {
         private AnnoObject _wrappedAnnoObject;
         private readonly ICoordinateHelper _coordinateHelper;
+        private readonly IBrushHelper _brushHelper;
 
         private Color? _transparentColor;
         private SolidColorBrush _transparentBrush;
@@ -52,10 +53,12 @@ namespace AnnoDesigner.model
         /// </summary>
         /// <param name="annoObjectToWrap">The <see cref="AnnoObject"/> to wrap. Reference will be kept.</param>
         /// <param name="coordinateHelperToUse">The <see cref="ICoordinateHelper"/> to use in calculations.</param>
-        public LayoutObject(AnnoObject annoObjectToWrap, ICoordinateHelper coordinateHelperToUse)
+        /// <param name="brushHelperToUse">The <see cref="IBrushHelper"/> used as a cache.</param>
+        public LayoutObject(AnnoObject annoObjectToWrap, ICoordinateHelper coordinateHelperToUse, IBrushHelper brushHelperToUse)
         {
             WrappedAnnoObject = annoObjectToWrap;
             _coordinateHelper = coordinateHelperToUse;
+            _brushHelper = brushHelperToUse;
         }
 
         public AnnoObject WrappedAnnoObject
@@ -86,11 +89,7 @@ namespace AnnoDesigner.model
             {
                 if (_transparentBrush == null)
                 {
-                    _transparentBrush = new SolidColorBrush(TransparentColor);
-                    if (_transparentBrush.CanFreeze)
-                    {
-                        _transparentBrush.Freeze();
-                    }
+                    _transparentBrush = _brushHelper.GetSolidBrush(TransparentColor);
                 }
 
                 return _transparentBrush;
@@ -116,11 +115,7 @@ namespace AnnoDesigner.model
             {
                 if (_renderBrush == null)
                 {
-                    _renderBrush = new SolidColorBrush(RenderColor);
-                    if (_renderBrush.CanFreeze)
-                    {
-                        _renderBrush.Freeze();
-                    }
+                    _renderBrush = _brushHelper.GetSolidBrush(RenderColor);
                 }
 
                 return _renderBrush;

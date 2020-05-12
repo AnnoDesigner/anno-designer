@@ -277,6 +277,7 @@ namespace AnnoDesigner
 
         private readonly ILayoutLoader _layoutLoader;
         private readonly ICoordinateHelper _coordinateHelper;
+        private readonly IBrushHelper _brushHelper;
 
         /// <summary>
         /// States the mode of mouse interaction.
@@ -407,11 +408,15 @@ namespace AnnoDesigner
         {
         }
 
-        public AnnoCanvas(BuildingPresets presetsToUse, Dictionary<string, IconImage> iconsToUse, ICoordinateHelper coordinateHelperToUse = null)
+        public AnnoCanvas(BuildingPresets presetsToUse,
+            Dictionary<string, IconImage> iconsToUse,
+            ICoordinateHelper coordinateHelperToUse = null,
+            IBrushHelper brushHelperToUse = null)
         {
             InitializeComponent();
 
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
+            _brushHelper = brushHelperToUse ?? new BrushHelper();
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -923,7 +928,7 @@ namespace AnnoDesigner
         private List<LayoutObject> CloneList(List<LayoutObject> list)
         {
             var newList = new List<LayoutObject>(list.Capacity);
-            list.ForEach(_ => newList.Add(new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper)));
+            list.ForEach(_ => newList.Add(new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushHelper)));
             return newList;
         }
 
@@ -1018,7 +1023,7 @@ namespace AnnoDesigner
                 if (obj != null)
                 {
                     CurrentObjects.Clear();
-                    CurrentObjects.Add(new LayoutObject(new AnnoObject(obj.WrappedAnnoObject), _coordinateHelper));
+                    CurrentObjects.Add(new LayoutObject(new AnnoObject(obj.WrappedAnnoObject), _coordinateHelper, _brushHelper));
                     OnCurrentObjectChanged(obj);
                 }
                 return;
@@ -1610,7 +1615,7 @@ namespace AnnoDesigner
                     var layoutObjects = new List<LayoutObject>(layout.Count);
                     foreach (var curObj in layout)
                     {
-                        layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper));
+                        layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushHelper));
                     }
 
                     _placedObjects = layoutObjects;

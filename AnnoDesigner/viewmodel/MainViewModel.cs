@@ -39,6 +39,7 @@ namespace AnnoDesigner.viewmodel
         private readonly IAppSettings _appSettings;
         private readonly ILayoutLoader _layoutLoader;
         private readonly ICoordinateHelper _coordinateHelper;
+        private readonly IBrushHelper _brushHelper;
 
         public event EventHandler<EventArgs> ShowStatisticsChanged;
 
@@ -72,7 +73,11 @@ namespace AnnoDesigner.viewmodel
         private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
         private readonly IconImage _noIconItem;
 
-        public MainViewModel(ICommons commonsToUse, IAppSettings appSettingsToUse, ILayoutLoader _layoutLoaderToUse = null, ICoordinateHelper coordinateHelperToUse = null)
+        public MainViewModel(ICommons commonsToUse,
+            IAppSettings appSettingsToUse,
+            ILayoutLoader _layoutLoaderToUse = null,
+            ICoordinateHelper coordinateHelperToUse = null,
+            IBrushHelper brushHelperToUse = null)
         {
             _commons = commonsToUse;
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
@@ -81,6 +86,7 @@ namespace AnnoDesigner.viewmodel
 
             _layoutLoader = _layoutLoaderToUse ?? new LayoutLoader();
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
+            _brushHelper = brushHelperToUse ?? new BrushHelper();
 
             _statisticsViewModel = new StatisticsViewModel(_commons);
             _statisticsViewModel.IsVisible = _appSettings.StatsShowStats;
@@ -237,7 +243,9 @@ namespace AnnoDesigner.viewmodel
                     UpdateUIFromObject(new LayoutObject(new AnnoObject(selectedItem)
                     {
                         Color = BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
-                    }, _coordinateHelper));
+                    },
+                    _coordinateHelper,
+                    _brushHelper));
 
                     ApplyCurrentObject();
                 }
@@ -342,7 +350,7 @@ namespace AnnoDesigner.viewmodel
                     obj.Identifier = "Unknown Object";
                 }
 
-                AnnoCanvas.SetCurrentObject(new LayoutObject(obj, _coordinateHelper));
+                AnnoCanvas.SetCurrentObject(new LayoutObject(obj, _coordinateHelper, _brushHelper));
             }
             else
             {
@@ -1006,7 +1014,7 @@ namespace AnnoDesigner.viewmodel
                             AnnoCanvas.SelectedObjects.Clear();
 
                             AnnoCanvas.PlacedObjects.Clear();
-                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Select(x => new LayoutObject(x, _coordinateHelper)));
+                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Select(x => new LayoutObject(x, _coordinateHelper, _brushHelper)));
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 
@@ -1140,10 +1148,10 @@ namespace AnnoDesigner.viewmodel
             }
 
             // copy all objects
-            var allObjects = AnnoCanvas.PlacedObjects.Select(_ => new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper)).ToList();
+            var allObjects = AnnoCanvas.PlacedObjects.Select(_ => new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushHelper)).ToList();
             // copy selected objects
             // note: should be references to the correct copied objects from allObjects
-            var selectedObjects = AnnoCanvas.SelectedObjects.Select(_ => new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper)).ToList();
+            var selectedObjects = AnnoCanvas.SelectedObjects.Select(_ => new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushHelper)).ToList();
 
             logger.Trace($"UI thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
             void renderThread()
@@ -1160,7 +1168,7 @@ namespace AnnoDesigner.viewmodel
                 }
 
                 // initialize output canvas
-                var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _coordinateHelper)
+                var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _coordinateHelper, _brushHelper)
                 {
                     PlacedObjects = allObjects,
                     RenderGrid = AnnoCanvas.RenderGrid,
