@@ -33,9 +33,6 @@ namespace AnnoDesigner.viewmodel
             string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
 
             TitleAbout = Localization.Localization.Translations[language]["TitleAbout"];
-            Title = Localization.Localization.Translations[language]["Title"];
-            //Title = "Modified", ModifiedAnnoDesigner = "Modified" + " Anno Designer"
-            ModifiedAnnoDesigner = Localization.Localization.Translations[language]["Title"];
             BuildingLayoutDesigner = Localization.Localization.Translations[language]["BuildingLayoutDesigner"];
 
             //Credits
@@ -61,25 +58,13 @@ namespace AnnoDesigner.viewmodel
                 UpdateProperty(ref _titleAbout, value);
             }
         }
-        private string _title;
-        public string Title
+
+        //This string is the same in every language, so does not need to be localized.
+        public string AnnoDesigner
         {
-            get { return TitleAbout + " Anno Designer (" + _title + ")"; }
-            set
-            {
-                UpdateProperty(ref _title, value);
-            }
+            get { return "Anno Designer"; }
         }
 
-        private string _modifiedAnnoDesigner;
-        public string ModifiedAnnoDesigner
-        {
-            get { return _modifiedAnnoDesigner + " Anno Designer"; }
-            set
-            {
-                UpdateProperty(ref _modifiedAnnoDesigner, value);
-            }
-        }
         private string _buildingLayoutDesigner;
         public string BuildingLayoutDesigner
         {
@@ -136,6 +121,7 @@ namespace AnnoDesigner.viewmodel
                 UpdateProperty(ref _additionalChanges, value);
             }
         }
+
         private string _manyThanks;
         public string ManyThanks
         {
