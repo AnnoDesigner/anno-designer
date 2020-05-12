@@ -57,7 +57,7 @@
     <Compile Include="Helper\CoordinateHelper.cs" />
     <Compile Include="model\AppSettings.cs" />
     <Compile Include="model\IAppSettings.cs" />
-    <Compile Include="model\IBrushHelper.cs" />
+    <Compile Include="model\IBrushCache.cs" />
     <Compile Include="model\ICoordinateHelper.cs" />
     <Compile Include="InputWindow.xaml.cs">
       <DependentUpon>InputWindow.xaml</DependentUpon>

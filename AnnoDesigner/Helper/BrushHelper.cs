@@ -8,11 +8,11 @@ using AnnoDesigner.model;
 
 namespace AnnoDesigner.Helper
 {
-    public class BrushHelper : IBrushHelper
+    public class BrushCache : IBrushCache
     {
         private static Dictionary<Color, SolidColorBrush> _cachedBrushes;
 
-        static BrushHelper()
+        static BrushCache()
         {
             _cachedBrushes = new Dictionary<Color, SolidColorBrush>();
         }

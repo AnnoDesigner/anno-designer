@@ -7,7 +7,7 @@ using System.Windows.Media;
 
 namespace AnnoDesigner.model
 {
-    public interface IBrushHelper
+    public interface IBrushCache
     {
         SolidColorBrush GetSolidBrush(Color color);
     }

@@ -19,7 +19,7 @@ namespace AnnoDesigner.model
     {
         private AnnoObject _wrappedAnnoObject;
         private readonly ICoordinateHelper _coordinateHelper;
-        private readonly IBrushHelper _brushHelper;
+        private readonly IBrushCache _brushCache;
 
         private Color? _transparentColor;
         private SolidColorBrush _transparentBrush;
@@ -53,12 +53,12 @@ namespace AnnoDesigner.model
         /// </summary>
         /// <param name="annoObjectToWrap">The <see cref="AnnoObject"/> to wrap. Reference will be kept.</param>
         /// <param name="coordinateHelperToUse">The <see cref="ICoordinateHelper"/> to use in calculations.</param>
-        /// <param name="brushHelperToUse">The <see cref="IBrushHelper"/> used as a cache.</param>
-        public LayoutObject(AnnoObject annoObjectToWrap, ICoordinateHelper coordinateHelperToUse, IBrushHelper brushHelperToUse)
+        /// <param name="brushCacheToUse">The <see cref="IBrushCache"/> used as a cache.</param>
+        public LayoutObject(AnnoObject annoObjectToWrap, ICoordinateHelper coordinateHelperToUse, IBrushCache brushCacheToUse)
         {
             WrappedAnnoObject = annoObjectToWrap;
             _coordinateHelper = coordinateHelperToUse;
-            _brushHelper = brushHelperToUse;
+            _brushCache = brushCacheToUse;
         }
 
         public AnnoObject WrappedAnnoObject
@@ -89,7 +89,7 @@ namespace AnnoDesigner.model
             {
                 if (_transparentBrush == null)
                 {
-                    _transparentBrush = _brushHelper.GetSolidBrush(TransparentColor);
+                    _transparentBrush = _brushCache.GetSolidBrush(TransparentColor);
                 }
 
                 return _transparentBrush;
@@ -115,7 +115,7 @@ namespace AnnoDesigner.model
             {
                 if (_renderBrush == null)
                 {
-                    _renderBrush = _brushHelper.GetSolidBrush(RenderColor);
+                    _renderBrush = _brushCache.GetSolidBrush(RenderColor);
                 }
 
                 return _renderBrush;
