@@ -797,7 +797,12 @@ namespace AnnoDesigner
                 }
 
                 gridDictionary = RoadSearchHelper.PrepareGridDictionary(placedAnnoObjects);
-                RoadSearchHelper.BreadthFirstSearch(placedAnnoObjects, objects.Select(o => o.WrappedAnnoObject), o => o.InfluenceRange, Highlight, gridDictionary);
+                RoadSearchHelper.BreadthFirstSearch(
+                    placedAnnoObjects,
+                    objects.Select(o => o.WrappedAnnoObject).Where(o => o.InfluenceRange > 0.5),
+                    o => o.InfluenceRange + 1,// increase distance to get objects that are touching even the last road cell in influence range
+                    Highlight,
+                    gridDictionary);
             }
 
             foreach (var curLayoutObject in objects)
@@ -838,7 +843,7 @@ namespace AnnoDesigner
             var cellsInInfluenceRange = RoadSearchHelper.BreadthFirstSearch(
                 PlacedObjects.Select(o => o.WrappedAnnoObject),
                 Enumerable.Repeat(curLayoutObject.WrappedAnnoObject, 1),
-                o => o.InfluenceRange - 1,// reduce distance to get cells INSIDE influence range (not those which are touching the influence range)
+                o => o.InfluenceRange,
                 gridDictionary: gridDictionary);
 
             var points = PolygonBoundaryFinderHelper.GetBoundaryPoints(cellsInInfluenceRange);

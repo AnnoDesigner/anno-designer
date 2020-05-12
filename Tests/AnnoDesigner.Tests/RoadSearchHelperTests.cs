@@ -107,7 +107,7 @@ namespace AnnoDesigner.Tests
 
             // Act
             var objectsInInfluence = new List<AnnoObject>();
-            RoadSearchHelper.BreadthFirstSearch(placedObjects, startObjects, o => o.InfluenceRange, o => objectsInInfluence.Add(o));
+            RoadSearchHelper.BreadthFirstSearch(placedObjects, startObjects, o => o.InfluenceRange + 1, o => objectsInInfluence.Add(o));
 
             // Assert
             Assert.Equal(objectsInInfluence, placedObjects.Where(o => o.Label == "TargetIn"));
@@ -125,7 +125,7 @@ namespace AnnoDesigner.Tests
                 var expectedCount = 4 * Enumerable.Range(1, (int)startObject.InfluenceRange).Sum() + 1;
 
                 // Act
-                var visitedCells = RoadSearchHelper.BreadthFirstSearch(placedObjects, new[] { startObject }, o => o.InfluenceRange - 1);
+                var visitedCells = RoadSearchHelper.BreadthFirstSearch(placedObjects, new[] { startObject }, o => o.InfluenceRange);
 
                 // Assert
                 Assert.Equal(expectedCount, visitedCells.Count);
