@@ -664,7 +664,7 @@ namespace AnnoDesigner
                 var objRect = curLayoutObject.CalculateScreenRect(GridSize);
 
                 var brush = useTransparency ? curLayoutObject.TransparentBrush : curLayoutObject.RenderBrush;
-
+                
                 var borderPen = obj.Borderless ? curLayoutObject.GetBorderlessPen(brush, _linePen.Thickness) : _linePen;
                 drawingContext.DrawRectangle(brush, borderPen, objRect);
 
@@ -673,7 +673,13 @@ namespace AnnoDesigner
                 if (RenderIcon && !string.IsNullOrEmpty(obj.Icon))
                 {
                     var iconName = curLayoutObject.IconNameWithoutExtension; // for backwards compatibility to older layouts
-                    if (iconName != null && Icons.TryGetValue(iconName, out var iconImage))
+
+                    //if (iconName != null && Icons.TryGetValue(iconName, out var iconImage))
+
+                    //null check is not needed here, as IconNameWithoutExtension uses obj.Icon, and we already check if that is 
+                    //null or empty, meaning this value can never be null (Path.GetFileNameWithoutExtension will throw if 
+                    //the path is invalid - e.g null or missing an extension)
+                    if (Icons.TryGetValue(iconName, out var iconImage))
                     {
                         var iconRect = curLayoutObject.GetIconRect(GridSize);
 
