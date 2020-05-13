@@ -155,6 +155,9 @@ namespace AnnoDesigner.model
                 _screenRect = default;
                 _collisionRect = default;
                 _influenceCircle = null;
+                _iconRect = default;
+                _screenRectCenterPoint = default;
+                _lastScreenRectForIcon = default;
             }
         }
 
