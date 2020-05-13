@@ -677,7 +677,12 @@ namespace AnnoDesigner
                     if (curLayoutObject.Icon is null)
                     {
                         var iconName = curLayoutObject.IconNameWithoutExtension; // for backwards compatibility to older layouts
-                        if (iconName != null && Icons.TryGetValue(iconName, out var iconImage))
+
+                        //a null check is not needed here, as IconNameWithoutExtension uses obj.Icon, and we already check if that 
+                        //is null or empty, meaning the value that we feed into Path.GetFileNameWithoutExtension cannot be null, and
+                        //Path.GetFileNameWithoutExtension will either throw (representing an invalid path) or return a string 
+                        //(representing the file name)
+                        if (Icons.TryGetValue(iconName, out var iconImage))
                         {
                             curLayoutObject.Icon = iconImage;
                             iconFound = true;
@@ -727,6 +732,7 @@ namespace AnnoDesigner
                 }
             }
         }
+
 
         /// <summary>
         /// Renders a selection highlight on the specified object.
@@ -1477,7 +1483,8 @@ namespace AnnoDesigner
         /// <returns>object at the position, if there is no object null</returns>
         private LayoutObject GetObjectAt(Point position)
         {
-            return _placedObjects.FindLast(_ => _.CalculateScreenRect(GridSize).Contains(position));
+            var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
+            return _placedObjects.Find(_ => _.CollisionRect.Contains(gridPosition));
         }
 
         #endregion
