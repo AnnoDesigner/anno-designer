@@ -44,6 +44,7 @@ namespace AnnoDesigner.model
         private EllipseGeometry _influenceCircle;
         private double _influenceCircleRadius;
         private Rect _lastScreenRectForCenterPoint;
+        private int _gridSizeScreenRectForCenterPoint;
         private double _screenRadius;
         private int _lastGridSizeForScreenRadius;
         private SerializableColor _color;
@@ -295,29 +296,30 @@ namespace AnnoDesigner.model
 
         public Rect GetIconRect(int gridSize)
         {
-            var objRect = CalculateScreenRect(gridSize);
-
-            if (_iconRect == default || _gridSizeIconRect != gridSize || _lastScreenRectForIcon != objRect)
+            if (_iconRect == default || _gridSizeIconRect != gridSize)
             {
-                // draw icon 2x2 grid cells large
-                var minSize = Math.Min(Size.Width, Size.Height);
-                //minSize = minSize == 1 ? minSize : Math.Floor(NthRoot(minSize, Constants.IconSizeFactor) + 1);
-                var iconSize = _coordinateHelper.GridToScreen(new Size(minSize, minSize), gridSize);
-                iconSize = minSize == 1 ? iconSize : new Size(NthRoot(iconSize.Width, Constants.IconSizeFactor), NthRoot(iconSize.Height, Constants.IconSizeFactor));
+                var objRect = CalculateScreenRect(gridSize);
+                if (_lastScreenRectForIcon != objRect)
+                {
+                    // draw icon 2x2 grid cells large
+                    var minSize = Math.Min(Size.Width, Size.Height);
+                    //minSize = minSize == 1 ? minSize : Math.Floor(NthRoot(minSize, Constants.IconSizeFactor) + 1);
+                    var iconSize = _coordinateHelper.GridToScreen(new Size(minSize, minSize), gridSize);
+                    iconSize = minSize == 1 ? iconSize : new Size(NthRoot(iconSize.Width, Constants.IconSizeFactor), NthRoot(iconSize.Height, Constants.IconSizeFactor));
 
-                // center icon within the object
-                var iconPos = objRect.TopLeft;
-                iconPos.X += (objRect.Width / 2) - (iconSize.Width / 2);
-                iconPos.Y += (objRect.Height / 2) - (iconSize.Height / 2);
+                    // center icon within the object
+                    var iconPos = objRect.TopLeft;
+                    iconPos.X += (objRect.Width / 2) - (iconSize.Width / 2);
+                    iconPos.Y += (objRect.Height / 2) - (iconSize.Height / 2);
 
-                _iconRect = new Rect(iconPos, iconSize);
+                    _iconRect = new Rect(iconPos, iconSize);
 
-                _gridSizeIconRect = gridSize;
-                _lastScreenRectForIcon = objRect;
+                    _gridSizeIconRect = gridSize;
+                    _lastScreenRectForIcon = objRect;
+                }
             }
 
             return _iconRect;
-
         }
 
         //I was really just checking to see if there was a built in function, but this works
@@ -329,13 +331,16 @@ namespace AnnoDesigner.model
 
         public Point GetScreenRectCenterPoint(int gridSize)
         {
-            var objRect = CalculateScreenRect(gridSize);
-
-            if (_screenRectCenterPoint == default || _lastScreenRectForCenterPoint != objRect)
+            if (_screenRectCenterPoint == default || _gridSizeScreenRectForCenterPoint != gridSize)
             {
-                _screenRectCenterPoint = _coordinateHelper.GetCenterPoint(objRect);
+                var objRect = CalculateScreenRect(gridSize);
+                if (_lastScreenRectForCenterPoint != objRect)
+                {
+                    _screenRectCenterPoint = _coordinateHelper.GetCenterPoint(objRect);
 
-                _lastScreenRectForCenterPoint = objRect;
+                    _gridSizeScreenRectForCenterPoint = gridSize;
+                    _lastScreenRectForCenterPoint = objRect;
+                }
             }
 
             return _screenRectCenterPoint;
