@@ -22,7 +22,7 @@ namespace AnnoDesigner
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private const string GITHUB_USERNAME = "AgmasGold";
+        private const string GITHUB_USERNAME = "AnnoDesigner";
         private const string GITHUB_PROJECTNAME = "anno-designer";
 
         private const string TAG_PRESETS = "Presetsv";
