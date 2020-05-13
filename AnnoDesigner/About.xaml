@@ -40,7 +40,7 @@
                Margin="82,12,0,0"
                VerticalAlignment="Top"
                FontSize="24"
-               Content="{Binding ModifiedAnnoDesigner}" />
+               Content="{Binding AnnoDesigner}" />
         <Label Margin="82,48,0,0"
                VerticalAlignment="Top"
                Content="{Binding BuildingLayoutDesigner}" />
@@ -67,10 +67,11 @@
         <TextBlock Margin="24,225,0,0"
                    VerticalAlignment="Top"
                    Text="{Binding BuildingPresets, StringFormat='\{0\} Anno 1800 by Sting McRay'}" />
-        <TextBlock Margin="24,2,0,0"
-                   VerticalAlignment="Top"
-                   Text="{Binding AdditionalChanges, StringFormat='\{0\} Agmas, Sting McRay and Gosolceser1'}"
-                   Grid.Row="1" />
+        <Label Margin="24,2,0,0"
+               VerticalAlignment="Top"
+               HorizontalAlignment="Center"
+               Content="{Binding AdditionalChanges}"
+               Grid.Row="1" />
         <Label Margin="0,30,0,0"
                VerticalAlignment="Top"
                HorizontalContentAlignment="Center"

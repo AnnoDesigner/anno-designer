@@ -33,9 +33,6 @@ namespace AnnoDesigner.viewmodel
             string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
 
             TitleAbout = Localization.Localization.Translations[language]["TitleAbout"];
-            Title = Localization.Localization.Translations[language]["Title"];
-            //Title = "Modified", ModifiedAnnoDesigner = "Modified" + " Anno Designer"
-            ModifiedAnnoDesigner = Localization.Localization.Translations[language]["Title"];
             BuildingLayoutDesigner = Localization.Localization.Translations[language]["BuildingLayoutDesigner"];
 
             //Credits
@@ -56,38 +53,20 @@ namespace AnnoDesigner.viewmodel
         public string TitleAbout
         {
             get { return _titleAbout; }
-            set
-            {
-                UpdateProperty(ref _titleAbout, value);
-            }
-        }
-        private string _title;
-        public string Title
-        {
-            get { return TitleAbout + " Anno Designer (" + _title + ")"; }
-            set
-            {
-                UpdateProperty(ref _title, value);
-            }
+            set { UpdateProperty(ref _titleAbout, value); }
         }
 
-        private string _modifiedAnnoDesigner;
-        public string ModifiedAnnoDesigner
+        //This string is the same in every language, so does not need to be localized.
+        public string AnnoDesigner
         {
-            get { return _modifiedAnnoDesigner + " Anno Designer"; }
-            set
-            {
-                UpdateProperty(ref _modifiedAnnoDesigner, value);
-            }
+            get { return "Anno Designer"; }
         }
+
         private string _buildingLayoutDesigner;
         public string BuildingLayoutDesigner
         {
             get { return _buildingLayoutDesigner; }
-            set
-            {
-                UpdateProperty(ref _buildingLayoutDesigner, value);
-            }
+            set { UpdateProperty(ref _buildingLayoutDesigner, value); }
         }
 
         //Credits
@@ -95,100 +74,67 @@ namespace AnnoDesigner.viewmodel
         public string Credits
         {
             get { return _credits; }
-            set
-            {
-                UpdateProperty(ref _credits, value);
-            }
+            set { UpdateProperty(ref _credits, value); }
         }
         private string _originalApplicationBy;
         public string OriginalApplicationBy
         {
             get { return _originalApplicationBy; }
-            set
-            {
-                UpdateProperty(ref _originalApplicationBy, value);
-            }
+            set { UpdateProperty(ref _originalApplicationBy, value); }
         }
         private string _buildingPresets;
         public string BuildingPresets
         {
             get { return _buildingPresets; }
-            set
-            {
-                UpdateProperty(ref _buildingPresets, value);
-            }
+            set { UpdateProperty(ref _buildingPresets, value); }
         }
         private string _combinedForAnnoVersions;
         public string CombinedForAnnoVersions
         {
             get { return _combinedForAnnoVersions; }
-            set
-            {
-                UpdateProperty(ref _combinedForAnnoVersions, value);
-            }
+            set { UpdateProperty(ref _combinedForAnnoVersions, value); }
         }
         private string _additionalChanges;
         public string AdditionalChanges
         {
             get { return _additionalChanges; }
-            set
-            {
-                UpdateProperty(ref _additionalChanges, value);
-            }
+            set { UpdateProperty(ref _additionalChanges, value); }
         }
         private string _manyThanks;
         public string ManyThanks
         {
             get { return _manyThanks; }
-            set
-            {
-                UpdateProperty(ref _manyThanks, value);
-            }
+            set { UpdateProperty(ref _manyThanks, value); }
         }
         private string _visitTheFandom;
         public string VisitTheFandom
         {
             get { return _visitTheFandom; }
-            set
-            {
-                UpdateProperty(ref _visitTheFandom, value);
-            }
+            set { UpdateProperty(ref _visitTheFandom, value); }
         }
         private string _originalHomepage;
         public string OriginalHomepage
         {
             get { return _originalHomepage; }
-            set
-            {
-                UpdateProperty(ref _originalHomepage, value);
-            }
+            set { UpdateProperty(ref _originalHomepage, value); }
         }
         private string _projectHomepage;
         public string ProjectHomepage
         {
             get { return _projectHomepage; }
-            set
-            {
-                UpdateProperty(ref _projectHomepage, value);
-            }
+            set { UpdateProperty(ref _projectHomepage, value); }
         }
         private string _goToFandom;
         public string GoToFandom
         {
             get { return _goToFandom; }
-            set
-            {
-                UpdateProperty(ref _goToFandom, value);
-            }
+            set { UpdateProperty(ref _goToFandom, value); }
         }
         private string _close;
         public string Close
         {
             get { return _close; }
-            set
-            {
-                UpdateProperty(ref _close, value);
-            }
+            set { UpdateProperty(ref _close, value); }
         }
 
         #endregion
@@ -206,7 +152,7 @@ namespace AnnoDesigner.viewmodel
 
         private void OpenProjectHomepage(object param)
         {
-            System.Diagnostics.Process.Start("https://github.com/AgmasGold/anno-designer/");
+            System.Diagnostics.Process.Start("https://github.com/AnnoDesigner/anno-designer/");
         }
 
         public ICommand OpenWikiHomepageCommand { get; private set; }
