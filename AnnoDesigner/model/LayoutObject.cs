@@ -158,6 +158,7 @@ namespace AnnoDesigner.model
                 _iconRect = default;
                 _screenRectCenterPoint = default;
                 _lastScreenRectForIcon = default;
+                _lastScreenRectForCenterPoint = default;
             }
         }
 
