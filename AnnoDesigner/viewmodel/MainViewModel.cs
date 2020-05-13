@@ -500,19 +500,19 @@ namespace AnnoDesigner.viewmodel
                 var dowloadedContent = "0.1";
                 using (var webClient = new WebClient())
                 {
-                    dowloadedContent = await webClient.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/AgmasGold/anno-designer/master/version.txt"));
+                    dowloadedContent = await webClient.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/AnnoDesigner/anno-designer/master/version.txt"));
                 }
 
                 if (double.Parse(dowloadedContent, CultureInfo.InvariantCulture) > Constants.Version)
                 {
                     // new version found
-                    if (MessageBox.Show("A newer version was found, do you want to visit the releases page?\nhttps://github.com/AgmasGold/anno-designer/releases\n\n Clicking 'Yes' will open a new tab in your web browser.",
+                    if (MessageBox.Show("A newer version was found, do you want to visit the releases page?\nhttps://github.com/AnnoDesigner/anno-designer/releases\n\n Clicking 'Yes' will open a new tab in your web browser.",
                         "Update available",
                         MessageBoxButton.YesNo,
                         MessageBoxImage.Asterisk,
                         MessageBoxResult.OK) == MessageBoxResult.Yes)
                     {
-                        Process.Start("https://github.com/AgmasGold/anno-designer/releases");
+                        Process.Start("https://github.com/AnnoDesigner/anno-designer/releases");
                     }
                 }
                 else
@@ -963,7 +963,7 @@ namespace AnnoDesigner.viewmodel
 
         private void OpenProjectHomepage(object param)
         {
-            Process.Start("https://github.com/AgmasGold/anno-designer/");
+            Process.Start("https://github.com/AnnoDesigner/anno-designer/");
         }
 
         public ICommand CloseWindowCommand { get; private set; }

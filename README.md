@@ -1,4 +1,4 @@
-[![GitHub](https://img.shields.io/github/license/AgmasGold/anno-designer)](https://github.com/AgmasGold/anno-designer/blob/master/LICENSE) [![version](https://img.shields.io/badge/latest--version-8.6-blue)](https://github.com/AgmasGold/anno-designer/releases/tag/AnnoDesignerv8.6) [![presets version](https://img.shields.io/badge/presets--version-3.2.10-blue)](https://github.com/AgmasGold/anno-designer/releases/tag/AnnoDesignerv8.6) [![Discord](https://img.shields.io/discord/571011757317947406?label=help%2Fdiscord)](https://discord.gg/JJpHWRB)
+[![GitHub](https://img.shields.io/github/license/AnnoDesigner/anno-designer)](https://github.com/AnnoDesigner/anno-designer/blob/master/LICENSE) [![version](https://img.shields.io/badge/latest--version-8.6-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv8.6) [![presets version](https://img.shields.io/badge/presets--version-3.2.10-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv8.6) [![Discord](https://img.shields.io/discord/571011757317947406?label=help%2Fdiscord)](https://discord.gg/JJpHWRB)
 
 # Anno Designer
 A building layout designer for Ubisoft's Anno-series
@@ -17,7 +17,7 @@ The **Anno Designer** is a standalone windows application that can be used for c
 
 ## How to use
 
-**Download the latest version from the [Releases page](https://github.com/AgmasGold/anno-designer/releases)**. Run it, and use it to design layouts!
+**Download the latest version from the [Releases page](https://github.com/AnnoDesigner/anno-designer/releases)**. Run it, and use it to design layouts!
 
 ## Technology
 
@@ -34,4 +34,4 @@ The building presets and icons are extracted from game files using the [RDA expl
 Included in this repo is a modified version of the PresetParser - which supports the extraction of data from all the different Anno versions. It is not required to run the app (and is not included in any release).
 
 ## License
-[MIT](https://github.com/AgmasGold/anno-designer/blob/master/LICENSE)
+[MIT](https://github.com/AnnoDesigner/anno-designer/blob/master/LICENSE)

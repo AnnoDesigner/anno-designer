@@ -664,7 +664,7 @@ namespace AnnoDesigner
                 var objRect = curLayoutObject.CalculateScreenRect(GridSize);
 
                 var brush = useTransparency ? curLayoutObject.TransparentBrush : curLayoutObject.RenderBrush;
-                
+
                 var borderPen = obj.Borderless ? curLayoutObject.GetBorderlessPen(brush, _linePen.Thickness) : _linePen;
                 drawingContext.DrawRectangle(brush, borderPen, objRect);
 
@@ -672,25 +672,39 @@ namespace AnnoDesigner
                 var iconRendered = false;
                 if (RenderIcon && !string.IsNullOrEmpty(obj.Icon))
                 {
-                    var iconName = curLayoutObject.IconNameWithoutExtension; // for backwards compatibility to older layouts
+                    var iconFound = false;
 
-                    //if (iconName != null && Icons.TryGetValue(iconName, out var iconImage))
-
-                    //null check is not needed here, as IconNameWithoutExtension uses obj.Icon, and we already check if that is 
-                    //null or empty, meaning this value can never be null (Path.GetFileNameWithoutExtension will throw if 
-                    //the path is invalid - e.g null or missing an extension)
-                    if (Icons.TryGetValue(iconName, out var iconImage))
+                    if (curLayoutObject.Icon is null)
                     {
-                        var iconRect = curLayoutObject.GetIconRect(GridSize);
+                        var iconName = curLayoutObject.IconNameWithoutExtension; // for backwards compatibility to older layouts
 
-                        drawingContext.DrawImage(iconImage.Icon, iconRect);
-                        iconRendered = true;
+                        //a null check is not needed here, as IconNameWithoutExtension uses obj.Icon, and we already check if that 
+                        //is null or empty, meaning the value that we feed into Path.GetFileNameWithoutExtension cannot be null, and
+                        //Path.GetFileNameWithoutExtension will either throw (representing an invalid path) or return a string 
+                        //(representing the file name)
+                        if (Icons.TryGetValue(iconName, out var iconImage))
+                        {
+                            curLayoutObject.Icon = iconImage;
+                            iconFound = true;
+                        }
+                        else
+                        {
+                            var message = $"Icon file missing ({iconName}).";
+                            logger.Warn(message);
+                            StatusMessage = message;
+                        }
                     }
                     else
                     {
-                        var message = $"Icon file missing ({iconName}).";
-                        logger.Warn(message);
-                        StatusMessage = message;
+                        iconFound = true;
+                    }
+
+                    if (iconFound)
+                    {
+                        var iconRect = curLayoutObject.GetIconRect(GridSize);
+
+                        drawingContext.DrawImage(curLayoutObject.Icon.Icon, iconRect);
+                        iconRendered = true;
                     }
                 }
 
@@ -718,6 +732,7 @@ namespace AnnoDesigner
                 }
             }
         }
+
 
         /// <summary>
         /// Renders a selection highlight on the specified object.
