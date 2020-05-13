@@ -1484,7 +1484,7 @@ namespace AnnoDesigner
         private LayoutObject GetObjectAt(Point position)
         {
             var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
-            return _placedObjects.Where(_ => _.CollisionRect.Contains(gridPosition)).FirstOrDefault();//.Where(predicate).FirstOrDefault() is faster than .FirstOrDefault(predicate)
+            return _placedObjects.Find(_ => _.CollisionRect.Contains(gridPosition));
         }
 
         #endregion
