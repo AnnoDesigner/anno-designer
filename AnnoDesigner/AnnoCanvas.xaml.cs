@@ -672,19 +672,34 @@ namespace AnnoDesigner
                 var iconRendered = false;
                 if (RenderIcon && !string.IsNullOrEmpty(obj.Icon))
                 {
-                    var iconName = curLayoutObject.IconNameWithoutExtension; // for backwards compatibility to older layouts
-                    if (iconName != null && Icons.TryGetValue(iconName, out var iconImage))
-                    {
-                        var iconRect = curLayoutObject.GetIconRect(GridSize);
+                    var iconFound = false;
 
-                        drawingContext.DrawImage(iconImage.Icon, iconRect);
-                        iconRendered = true;
+                    if (curLayoutObject.Icon is null)
+                    {
+                        var iconName = curLayoutObject.IconNameWithoutExtension; // for backwards compatibility to older layouts
+                        if (iconName != null && Icons.TryGetValue(iconName, out var iconImage))
+                        {
+                            curLayoutObject.Icon = iconImage;
+                            iconFound = true;
+                        }
+                        else
+                        {
+                            var message = $"Icon file missing ({iconName}).";
+                            logger.Warn(message);
+                            StatusMessage = message;
+                        }
                     }
                     else
                     {
-                        var message = $"Icon file missing ({iconName}).";
-                        logger.Warn(message);
-                        StatusMessage = message;
+                        iconFound = true;
+                    }
+
+                    if (iconFound)
+                    {
+                        var iconRect = curLayoutObject.GetIconRect(GridSize);
+
+                        drawingContext.DrawImage(curLayoutObject.Icon.Icon, iconRect);
+                        iconRendered = true;
                     }
                 }
 

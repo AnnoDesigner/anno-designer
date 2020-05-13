@@ -232,6 +232,8 @@ namespace AnnoDesigner.model
             }
         }
 
+        public IconImage Icon { get; set; }
+
         public string Identifier
         {
             get
