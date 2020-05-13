@@ -96,7 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.IO.Abstractions">
-      <Version>6.0.32</Version>
+      <Version>11.0.6</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />
