@@ -20,6 +20,7 @@ namespace AnnoDesigner.model
         private AnnoObject _wrappedAnnoObject;
         private readonly ICoordinateHelper _coordinateHelper;
         private readonly IBrushCache _brushCache;
+        private readonly IPenCache _penCache;
 
         private Color? _transparentColor;
         private SolidColorBrush _transparentBrush;
@@ -55,11 +56,12 @@ namespace AnnoDesigner.model
         /// <param name="annoObjectToWrap">The <see cref="AnnoObject"/> to wrap. Reference will be kept.</param>
         /// <param name="coordinateHelperToUse">The <see cref="ICoordinateHelper"/> to use in calculations.</param>
         /// <param name="brushCacheToUse">The <see cref="IBrushCache"/> used as a cache.</param>
-        public LayoutObject(AnnoObject annoObjectToWrap, ICoordinateHelper coordinateHelperToUse, IBrushCache brushCacheToUse)
+        public LayoutObject(AnnoObject annoObjectToWrap, ICoordinateHelper coordinateHelperToUse, IBrushCache brushCacheToUse, IPenCache penCacheToUse)
         {
             WrappedAnnoObject = annoObjectToWrap;
             _coordinateHelper = coordinateHelperToUse;
             _brushCache = brushCacheToUse;
+            _penCache = penCacheToUse;
         }
 
         public AnnoObject WrappedAnnoObject
@@ -127,11 +129,7 @@ namespace AnnoDesigner.model
         {
             if (_borderlessPen == null || _borderlessPen.Thickness != thickness || _borderlessPen.Brush != brush)
             {
-                _borderlessPen = new Pen(brush, thickness);
-                if (_borderlessPen.CanFreeze)
-                {
-                    _borderlessPen.Freeze();
-                }
+                _borderlessPen = _penCache.GetPen(brush, thickness);
             }
 
             return _borderlessPen;

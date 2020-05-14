@@ -65,8 +65,10 @@
     <Compile Include="model\BuildingInfluence.cs" />
     <Compile Include="model\GameVersionFilter.cs" />
     <Compile Include="model\ICanUpdateLayout.cs" />
+    <Compile Include="model\IPenCache.cs" />
     <Compile Include="model\LayoutObject.cs" />
     <Compile Include="model\UpdateMode.cs" />
+    <Compile Include="PenCache.cs" />
     <Compile Include="viewmodel\AboutViewModel.cs" />
     <Compile Include="model\SupportedLanguage.cs" />
     <Compile Include="viewmodel\MainViewModel.cs" />
