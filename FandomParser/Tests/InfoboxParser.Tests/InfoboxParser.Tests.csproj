@@ -1,57 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DD498223-FFDE-4720-82F0-692DBAB0DC43}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InfoboxParser.Tests</RootNamespace>
-    <AssemblyName>InfoboxParser.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Attributes\UseCultureAttribute.cs" />
-    <Compile Include="InfoboxParserTests.cs" />
-    <Compile Include="ParserBothWorldsTests.cs" />
-    <Compile Include="ParserTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpecialBuildingNameHelperTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Moq">
       <Version>4.13.0</Version>
     </PackageReference>
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="xunit">
       <Version>2.4.1</Version>
     </PackageReference>
@@ -70,50 +28,42 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\FandomParser.Core\FandomParser.Core.csproj">
-      <Project>{64ec51c9-33fb-48cb-8c7d-1ea881d565ef}</Project>
-      <Name>FandomParser.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\InfoboxParser\InfoboxParser.csproj">
-      <Project>{7a621e6c-a32b-46c2-8a3a-7e5de65b379b}</Project>
-      <Name>InfoboxParser</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\FandomParser.Core\FandomParser.Core.csproj" />
+    <ProjectReference Include="..\..\InfoboxParser\InfoboxParser.csproj" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <None Include="Testdata\Bakery.infobox">
+    <None Update="Testdata\Bakery.infobox">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Testdata\Brick_Factory.infobox">
+    <None Update="Testdata\Brick_Factory.infobox">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Testdata\Cannery.infobox">
+    <None Update="Testdata\Cannery.infobox">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Testdata\Chapel.infobox">
+    <None Update="Testdata\Chapel.infobox">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Testdata\empty.infobox">
+    <None Update="Testdata\empty.infobox">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Testdata\empty_BothWorlds.infobox">
+    <None Update="Testdata\empty_BothWorlds.infobox">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Testdata\Hospital.infobox">
+    <None Update="Testdata\Hospital.infobox">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Testdata\Marketplace.infobox">
+    <None Update="Testdata\Marketplace.infobox">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Testdata\Police_Station.infobox">
+    <None Update="Testdata\Police_Station.infobox">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Testdata\Schnapps_Distillery.infobox">
+    <None Update="Testdata\Schnapps_Distillery.infobox">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Testdata\Small_Warehouse.infobox">
+    <None Update="Testdata\Small_Warehouse.infobox">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
