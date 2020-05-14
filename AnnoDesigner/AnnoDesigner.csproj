@@ -100,16 +100,15 @@
     <Resource Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Stuff\icon32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Stuff\icon64.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Presetsv8\" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Flags\*.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Presetsv8\**" />
+    <Compile Remove="Stuff\**" />
+    <EmbeddedResource Remove="Presetsv8\**" />
+    <EmbeddedResource Remove="Stuff\**" />
+    <None Remove="Presetsv8\**" />
+    <None Remove="Stuff\**" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnnoDesigner.Core\AnnoDesigner.Core.csproj" />
