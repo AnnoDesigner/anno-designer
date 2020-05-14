@@ -147,7 +147,7 @@ namespace AnnoDesigner.Tests
         #region SearchText tests
 
         [Fact]
-        public void PresetsTreeSearchViewModelPropertyChanged_SeachTextChanged_ShouldSetFilterTextOnPresetsTreeViewModel()
+        public void PresetsTreeSearchViewModelPropertyChanged_SearchTextChanged_ShouldSetFilterTextOnPresetsTreeViewModel()
         {
             // Arrange
             var viewModel = GetViewModel();
