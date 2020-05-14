@@ -445,13 +445,13 @@ namespace AnnoDesigner
 
             PlacedObjects = new List<LayoutObject>();
             SelectedObjects = new List<LayoutObject>();
-            
+
             const int dpiFactor = 1;
             _linePen = _penCache.GetPen(Brushes.Black, dpiFactor * 1);
             _highlightPen = _penCache.GetPen(Brushes.Yellow, dpiFactor * 2);
             _radiusPen = _penCache.GetPen(Brushes.Black, dpiFactor * 2);
             _influencedPen = _penCache.GetPen(Brushes.LawnGreen, dpiFactor * 2);
-            
+
             var color = Colors.LightYellow;
             color.A = 32;
             _lightBrush = _brushCache.GetSolidBrush(color);
