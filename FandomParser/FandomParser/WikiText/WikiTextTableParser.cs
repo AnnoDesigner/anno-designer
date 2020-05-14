@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using FandomParser.Core.Presets.Models;
 
@@ -10,6 +11,8 @@ namespace FandomParser.WikiText
     public class WikiTextTableParser
     {
         private static Dictionary<WorldRegion, Dictionary<string, string>> RegionTables { get; set; }
+
+        private static readonly Regex regexNormalizeLineEndings = new Regex(@"\r\n|\n|\r", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public WikiTextTableContainer GetTables(string wikiText)
         {
@@ -112,7 +115,9 @@ namespace FandomParser.WikiText
             foreach (var curTable in tables)
             {
                 var splitted = curTable.Split(new string[] { " ===" }, StringSplitOptions.RemoveEmptyEntries);
-                var parsedTableHeader = splitted[0].Trim().Replace(" buildings", string.Empty);
+                var parsedTableHeader = splitted[0].Trim()
+                    .Replace(" buildings", string.Empty)
+                    .Replace(" Buildings", string.Empty);
 
                 //align linebreaks for each table
                 var x = AlignLineBreaksInTables(new List<string> { splitted[1] });
@@ -154,10 +159,14 @@ namespace FandomParser.WikiText
 
             foreach (var curTable in tableList)
             {
-                var splittedTable = curTable.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                var tableWithLineBreaks = string.Join(Environment.NewLine, splittedTable);
+                var normalized = regexNormalizeLineEndings.Replace(curTable, Environment.NewLine);
+                //var normalized = Regex.Replace(curTable, @"\r\n|\n|\r", "\r\n");
+                tablesWithLineBreaks.Add(normalized);
 
-                tablesWithLineBreaks.Add(tableWithLineBreaks);
+                //var splittedTable = curTable.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                //var tableWithLineBreaks = string.Join(Environment.NewLine, splittedTable);
+
+                //tablesWithLineBreaks.Add(tableWithLineBreaks);
             }
 
             return tablesWithLineBreaks;
@@ -169,7 +178,7 @@ namespace FandomParser.WikiText
 
             foreach (var curTable in tablesWithLineBreaks)
             {
-                var split = curTable.Split(new[] { $"|Size{Environment.NewLine}" }, StringSplitOptions.RemoveEmptyEntries);
+                var split = curTable.Split(new[] { $"! style=\"text-align:center;\" |Size" }, StringSplitOptions.RemoveEmptyEntries);
                 cleanedTables.Add(split[1]);
             }
 
@@ -210,10 +219,30 @@ namespace FandomParser.WikiText
 
             WikiTextTableEntry curEntry = null;
             var entryCounter = 0;
+            var lastLineWasCollapsible = false;
             //read string line by line
             //use StringReader?
             foreach (var curLine in curTable.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
+                //line is a collapsible information
+                if (lastLineWasCollapsible)
+                {
+                    lastLineWasCollapsible = !lastLineWasCollapsible;
+                    continue;
+                }
+
+                if (curLine.StartsWith("!", StringComparison.OrdinalIgnoreCase) && curLine.Contains("colspan=\"6\""))
+                {
+                    lastLineWasCollapsible = true;
+                    continue;
+                }
+
+                //line is empty
+                if (string.IsNullOrWhiteSpace(curLine))
+                {
+                    continue;
+                }
+
                 //line is end of table
                 if (curLine.Equals("=", StringComparison.OrdinalIgnoreCase))
                 {

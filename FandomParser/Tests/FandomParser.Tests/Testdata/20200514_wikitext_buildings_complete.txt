@@ -1,0 +1,2961 @@
+Buildings are the main element of Anno 1800. It's the base of every empire, constructing them is the main task of the player.
+
+You can select a building from the construction menu at the bottom of your screen.
+
+== Old World Buildings ==
+
+=== Farmers Buildings ===
+{| class="mw-collapsible mw-collapsed article-table" style="text-align: center; width:100%"
+|-
+! style="width: 60px" |[[File:Farmers.png|48px]]
+! colspan="3" |Farmers Buildings
+!
+!
+|-
+! style="text-align:center;" |Icon
+! style="text-align:center;" |Name
+! style="text-align:center;" |Description
+! style="text-align:center;" |Construction cost
+! style="text-align:center;" |Maintenance cost
+! style="text-align:center;" |Size
+|-
+|[[File:Dirt_road.png|40px]]
+|[[Roads|Dirt Road]]
+|Connects buildings and allows for transportation of goods.
+| style="text-align:center;" |3{{Infoicon Credits}}
+|
+|
+|-
+|[[File:Marketplace.png|40px]]
+|[[Marketplace]]
+|A place that provides your inhabitants with all the necessities of daily life.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />10{{Infoicon Timber}}
+| style="text-align:center;" |−20{{Infoicon Balance}}
+| style="text-align:center;" |5x6
+|-
+|[[File:Residence.png|40px]]
+|[[Farmer Residence]]
+|Your residents live here. Residents provide income and workforce.
+| style="text-align:center;" |2{{Infoicon Timber}}
+|
+| style="text-align:center;" |3x3
+|-
+|[[File:Warehouse.png|40px]]
+|[[Small Warehouse]]
+|Accepts and distributes goods from, and to your production buildings.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />10{{Infoicon Timber}}
+| style="text-align:center;" |−20{{Infoicon Balance}}
+| style="text-align:center;" |5x5
+|-
+|[[File:Wood.png|40px]]
+|[[Lumberjack's Hut]]
+|
+Produces 1t of wood in 00:15.
+
+Requires undeveloped tiles within its radius.
+| style="text-align:center;" |100{{Infoicon Credits}}
+| style="text-align:center;" |−10{{Infoicon Balance}}<br />−5{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |4x4
+(r:7)
+|-
+|[[File:Timber.png|40px]]
+|[[Sawmill]]
+|
+Produces 1t of timber in 00:15.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |100{{Infoicon Credits}}
+| style="text-align:center;" |−10{{Infoicon Balance}}<br />−10{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |3x4
+|-
+! colspan="6" |50 Farmers
+|-
+|[[File:Fish.png|40px]]
+|[[Fishery]]
+|
+Produces 1t of fish in 00:30.
+
+Requires free coastline.
+| style="text-align:center;" |100{{Infoicon Credits}}<br />2{{Infoicon Timber}}
+| style="text-align:center;" |−40{{Infoicon Balance}}<br />−25{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |5x11
+(5x16)
+|-
+! colspan="6" |100 Farmers
+|-
+|[[File:Potato.png|40px]]
+|[[Potato Farm]]
+|
+Produces 1t of potatoes in 00:30.
+
+Requires potato [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |100{{Infoicon Credits}}<br />2{{Infoicon Timber}}
+| style="text-align:center;" |−20{{Infoicon Balance}}<br />−20{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |3x3
+(f:72)
+|-
+|[[File:Schnapps.png|40px]]
+|[[Schnapps Distillery]]
+|
+Produces 1t of schnapps in 00:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |100{{Infoicon Credits}}<br />2{{Infoicon Timber}}
+| style="text-align:center;" |−40{{Infoicon Balance}}<br />−50{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |3x4
+|-
+|[[File:Wool.png|40px]]
+|[[Sheep Farm]]
+|Produces 1t of wool in 00:30.
+| style="text-align:center;" |100{{Infoicon Credits}}<br />2{{Infoicon Timber}}
+| style="text-align:center;" |−20{{Infoicon Balance}}<br />−10{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |3x3
+(f:3 of 3x3)
+|-
+|[[File:Work clothes.png|40px]]
+|[[Framework Knitters]]
+|
+Produces 1t of work clothes in 00:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |400{{Infoicon Credits}}<br />2{{Infoicon Timber}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−50{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |4x4
+|-
+! colspan="6" |150 Farmers
+|-
+|[[File:Fire station.png|40px]]
+|[[Fire Station]]
+|Fights fire in its influence radius. Can mobilise additional special units if required.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />4{{Infoicon Timber}}
+| style="text-align:center;" |−25{{Infoicon Balance}}
+| style="text-align:center;" |3x5
+|-
+|[[File:Pub.png|40px]]
+|[[Pub]]
+|Provides a public service for your residents.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />10{{Infoicon Timber}}
+| style="text-align:center;" |−20{{Infoicon Balance}}
+| style="text-align:center;" |4x6
+|-
+|[[File:Grass.png|40px]]
+|[[Grass]]
+|Ornaments generate a small amount of attractiveness for the city.
+| style="text-align:center;" |15{{Infoicon Credits}}
+|
+| style="text-align:center;" |1x1
+|-
+|[[File:Bush.png|40px]]
+|[[Shrubbery]]
+|Ornaments generate a small amount of attractiveness for the city.
+| style="text-align:center;" |25{{Infoicon Credits}}
+|
+| style="text-align:center;" |1x1
+|-
+|[[File:MatureShrubbery.png|40px]]
+|[[Mature Shrubbery]]
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Fully Grown Tree.png|40px]]
+|[[Mature Tree]]
+|Ornaments generate a small amount of attractiveness for the city.
+| style="text-align:center;" |75{{Infoicon Credits}}
+|
+| style="text-align:center;" |1x1
+|-
+|[[File:AppleTree.png|40px]]
+|[[Apple Tree]]
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Well.png|40px]]
+|Well
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:1602Memorial.png|40px]]
+|1602 Memorial
+|Ornaments generate a small amount of attractiveness for the city.
+Available for pre-order versions of the game.
+|200{{Infoicon Credits}}
+|
+|2x2
+|-
+|[[File:FountainSquare.png|40px]]
+|Fountain Square
+|Ornaments generate a small amount of attractiveness for the city.
+Available as [[Ubisoft Club]] reward.
+|200{{Infoicon Credits}}
+|
+|2x3
+|-
+|[[File:BronzeLion.png|40px]]
+|Bronze Lion
+|Ornaments generate a small amount of attractiveness for the city.
+Available as [[Ubisoft Club]] reward.
+|200{{Infoicon Credits}}
+|
+|1x2
+|-
+|[[File:ChessTables.png|40px]]
+|Chess Tables
+|Ornaments generate a small amount of attractiveness for the city.
+Available as [[Ubisoft Club]] reward.
+|200{{Infoicon Credits}}
+|
+|2x2
+|}
+
+=== Workers Buildings ===
+{| class="mw-collapsible mw-collapsed article-table" style="text-align: center; width:100%"
+|-
+! style="width: 60px" |[[File:Workers.png|48px]]
+! colspan="3" |Workers Buildings
+!
+!
+|-
+! style="text-align:center;" |Icon
+! style="text-align:center;" |Name
+! style="text-align:center;" |Description
+! style="text-align:center;" |Construction cost
+! style="text-align:center;" |Maintenance cost
+! style="text-align:center;" |Size
+|-
+|[[File:Paved street.png|40px]]
+|[[Roads|Paved Street]]
+|Improves street connections and allows for faster transportation of goods.
+| style="text-align:center;" |13{{Infoicon Credits}}<br />1{{Infoicon Bricks}}
+|
+|
+|-
+|[[File:Clay.png|40px]]
+|[[Clay Pit]]
+|
+Produces 1t of clay in 00:30.
+
+Requires [[Fertilities_and_resources|resource deposit]].
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />4{{Infoicon Timber}}
+| style="text-align:center;" |−10{{Infoicon Balance}}<br />−50{{Infoicon Workforce Workers}}
+| style="text-align:center;" |5x5
+|-
+|[[File:Bricks.png|40px]]
+|[[Brick Factory]]
+|
+Produces 1t of bricks in 01:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />8{{Infoicon Timber}}
+| style="text-align:center;" |−20{{Infoicon Balance}}<br />−25{{Infoicon Workforce Workers}}
+| style="text-align:center;" |5x5
+|-
+|[[File:Pigs.png|40px]]
+|[[Pig Farm]]
+|Produces 1t of pigs in 01:00.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />4{{Infoicon Timber}}
+| style="text-align:center;" |−40{{Infoicon Balance}}<br />−30{{Infoicon Workforce Farmers}}<br />−3{{Infoicon Attractiveness}}
+| style="text-align:center;" |3x4
+(f:5 of 2x3)
+|-
+|[[File:Sausages.png|40px]]
+|[[Slaughterhouse]]
+|
+Produces 1t of sausages in 01:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}
+| style="text-align:center;" |−80{{Infoicon Balance}}<br />−50{{Infoicon Workforce Workers}}<br />−5{{Infoicon Attractiveness}}
+| style="text-align:center;" |3x4
+|-
+|[[File:Trade Union.png|40px]]
+|[[Trade Union]]
+|Only useful if equipped with items. Attach items here to provide bonuses to production.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />25{{Infoicon Timber}}<br />5{{Infoicon Bricks}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−20 {{Infoicon Influence}}
+| style="text-align:center;" |
+4x4
+
+(r: 13)
+|-
+! colspan="6" |150 Workers
+|-
+|[[File:Grain.png|40px]]
+|[[Grain Farm]]
+|
+Produces 1t of grain in 01:00.
+
+Requires grain [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />4{{Infoicon Timber}}
+| style="text-align:center;" |−20{{Infoicon Balance}}<br />−20{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |3x4
+(f:144)
+|-
+|[[File:Flour.png|40px]]
+|[[Flour Mill]]
+|
+Produces 1t of flour in 00:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−10{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |3x4
+|-
+|[[File:Bread.png|40px]]
+|[[Bakery]]
+|
+Produces 1t of bread in 01:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |1000{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}
+| style="text-align:center;" |−60{{Infoicon Balance}}<br />−50{{Infoicon Workforce Workers}}
+| style="text-align:center;" |3x4
+|-
+|[[File:Church.png|40px]]
+|[[Church]]
+|Provides a public service for your residents.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}
+| style="text-align:center;" |−50{{Infoicon Balance}}
+| style="text-align:center;" |6x8
+|-
+|[[File:Sails.png|40px]]
+|[[Sailmakers]]
+|
+Produces 1t of sails in 00:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />10{{Infoicon Bricks}}
+| style="text-align:center;" |−75{{Infoicon Balance}}<br />−50{{Infoicon Workforce Workers}}
+| style="text-align:center;" |5x5
+|-
+|[[File:Quay.png|40px]]
+|Quay
+|
+Beautifies your harbour area.
+
+Requires free harbour area.
+| style="text-align:center;" |5{{Infoicon Credits}}<br />1{{Infoicon Bricks}}
+|
+|
+|-
+|[[File:Sailing shipyard.png|40px]]
+|[[Sailing Shipyard]]
+|
+Builds ships.
+
+Requires free coastline.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |10000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}
+| style="text-align:center;" |−100{{Infoicon Balance}}<br />−100{{Infoicon Workforce Workers}}
+| style="text-align:center;" |6x17
+|-
+|[[File:Depot.png|40px]]
+|[[Depot]]
+|
+Increases overall storage capacity by 50 tons.
+
+Requires free harbour area.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />10{{Infoicon Bricks}}
+| style="text-align:center;" |−20{{Infoicon Balance}}
+| style="text-align:center;" |4x10
+|-
+|[[File:Harbourmaster's Office.png|40px]]
+|[[Harbourmaster's Office]]
+|Only useful if equipped with items. Attach items here to provide bonuses to harbour buildings.
+Requires free harbour area.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />10{{Infoicon Bricks}}
+| style="text-align:center;" |−50[[File:Balance.png|20px]]<br />−20[[File:Influence.png|22px]]
+| style="text-align:center;" |
+4x4
+
+(r: 18)
+|-
+|[[File:Mounted guns.png|40px]]
+|[[Mounted Guns]]
+|
+Attacks and slows enemies over a medium range. More accurate up close.
+
+Requires free harbour area.
+| style="text-align:center;" |2000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />5{{Infoicon Weapons}}
+| style="text-align:center;" |−10[[File:Balance.png|20px]]<br />−3[[File:Influence.png|22px]]
+| style="text-align:center;" |4x4
+|-
+|[[File:Cannon Tower.png|40px]]
+|[[Cannon Tower]]
+|
+Does solid damage to enemies at long range, with good all-round defense.
+
+Requires free harbour area.
+| style="text-align:center;" |4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}<br />10{{Infoicon Weapons}}
+| style="text-align:center;" |−30[[File:Balance.png|20px]]<br />−7[[File:Influence.png|22px]]
+| style="text-align:center;" |4x4
+|-
+! colspan="6" |300 Workers
+|-
+|[[File:Iron.png|40px]]
+|[[Iron Mine]]
+|
+Produces 1t of iron in 00:15.
+
+Requires [[Fertilities_and_resources|resource deposit]].
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |800{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−50 {{Infoicon Workforce Workers}}
+|3x3
+|-
+|[[File:Charcoal kiln.png|40px]]
+|[[Charcoal Kiln]]
+|
+Produces 1t of coal in 00:30.
+
+Requires undeveloped tiles within its radius.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}
+| style="text-align:center;" |−20{{Infoicon Balance}}<br />−10{{Infoicon Workforce Workers}}<br />−5{{Infoicon Attractiveness}}
+| style="text-align:center;" |5x5
+(r:9)
+|-
+|[[File:Steel.png|40px]]
+|[[Furnace]]
+|
+Produces 1t of steel in 00:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}
+| style="text-align:center;" |−100{{Infoicon Balance}}<br />−100{{Infoicon Workforce Workers}}<br />−5{{Infoicon Attractiveness}}
+| style="text-align:center;" |4x7
+|-
+|[[File:Steel beams.png|40px]]
+|[[Steelworks]]
+|
+Produces 1t of steel beams in 00:45.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |1000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />10{{Infoicon Bricks}}
+| style="text-align:center;" |−200{{Infoicon Balance}}<br />−200{{Infoicon Workforce Workers}}<br />−10{{Infoicon Attractiveness}}
+| style="text-align:center;" |5x10
+|-
+|[[File:Tallow.png|40px]]
+|[[Rendering Works]]
+|
+Produces 1t of tallow in 01:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}<br />4{{Infoicon Steel Beams}}
+| style="text-align:center;" |−40{{Infoicon Balance}}<br />−40{{Infoicon Workforce Workers}}<br />−5{{Infoicon Attractiveness}}
+| style="text-align:center;" |3x3
+|-
+|[[File:Soap.png|40px]]
+|[[Soap Factory]]
+|
+Produces 1t of soap in 00:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}<br />4{{Infoicon Steel Beams}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−50{{Infoicon Workforce Workers}}<br />−5{{Infoicon Attractiveness}}
+| style="text-align:center;" |4x4
+|-
+|[[File:Weapons.png|40px]]
+|[[Weapon Factory]]
+|
+Produces 1t of weapons in 01:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |700{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}
+| style="text-align:center;" |−150{{Infoicon Balance}}<br />−50{{Infoicon Workforce Workers}}<br />−5{{Infoicon Attractiveness}}
+| style="text-align:center;" |5x7
+|-
+! colspan="6" |500 Workers
+|-
+|[[File:Malt.png|40px]]
+|[[Malthouse]]
+|
+Produces 1t of malt in 00:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}<br />4{{Infoicon Steel Beams}}
+| style="text-align:center;" |−150{{Infoicon Balance}}<br />−25{{Infoicon Workforce Workers}}
+| style="text-align:center;" |4x5
+|-
+|[[File:Hops.png|40px]]
+|[[Hop Farm]]
+|
+Produces 1t of hops in 01:30.
+
+Requires hops [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />4{{Infoicon Timber}}
+| style="text-align:center;" |−20{{Infoicon Balance}}<br />−20{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |3x4
+(f:96)
+|-
+|[[File:Beer.png|40px]]
+|[[Brewery]]
+|
+Produces 1t of beer in 01:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |1600{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}<br />4{{Infoicon Steel Beams}}
+| style="text-align:center;" |−200{{Infoicon Balance}}<br />−75{{Infoicon Workforce Workers}}
+| style="text-align:center;" |4x5
+|-
+|[[File:Police Station.png|40px]]
+|[[Police Station]]
+|Fights riots in its influence radius. Can mobilise additional special units if required.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />10{{Infoicon Bricks}}
+| style="text-align:center;" |−50{{Infoicon Balance}}
+| style="text-align:center;" |4x6
+|-
+! colspan="6" |750 Workers
+|-
+|[[File:School icon.png|40px]]
+|[[School]]
+|Provides a public service for your residents.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}<br />20{{Infoicon Steel Beams}}
+| style="text-align:center;" |−50{{Infoicon Balance}}
+| style="text-align:center;" |5x6
+|-
+|[[File:TemperateGrove.png|40px]]
+|Temperate Grove
+|Ornaments generate a small amount of attractiveness for the city.
+|60{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Small Tree.png|40px]]
+|Small Tree
+|Ornaments generate a small amount of attractiveness for the city.
+| style="text-align:center;" |30{{Infoicon Credits}}
+|
+| style="text-align:center;" |1x1
+|-
+|[[File:Poplar.png|40px]]
+|Poplar Grove
+|Ornaments generate a small amount of attractiveness for the city.
+|60{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Poplar2.png|40px]]
+|Poplar
+|Ornaments generate a small amount of attractiveness for the city.
+|60{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FlowerBed.png|40px]]
+|Flower Bed
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:WateringHole.png|40px]]
+|Watering Hole
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:TremblingAspen.png|40px]]
+|Trembling Aspen
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:ElmTree.png|40px]]
+|Elm Tree
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|}
+
+=== Artisans Buildings ===
+{| class="mw-collapsible mw-collapsed article-table" style="text-align: center; width:100%"
+|-
+! style="width: 60px" |[[File:Artisans.png|48px]]
+! colspan="3" |Artisans Buildings
+!
+!
+|-
+! style="text-align:center;" |Icon
+! style="text-align:center;" |Name
+! style="text-align:center;" |Description
+! style="text-align:center;" |Construction cost
+! style="text-align:center;" |Maintenance cost
+! style="text-align:center;" |Size
+|-
+|[[File:Quartz sand.png|40px]]
+|[[Sand Mine]]
+|
+Produces 1t of quartz sand in 00:30.
+
+Requires free coastline.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |2000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />5{{Infoicon Bricks}}
+| style="text-align:center;" |−120{{Infoicon Balance}}<br />−25{{Infoicon Workforce Workers}}
+| style="text-align:center;" |
+6x7
+
+(6x17)
+|-
+|[[File:Glass.png|40px]]
+|[[Glassmakers]]
+|
+Produces 1t of glass in 00:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |5400{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}
+| style="text-align:center;" |−100{{Infoicon Balance}}<br />−100{{Infoicon Workforce Artisans}}
+| style="text-align:center;" |4x6
+|-
+|[[File:Windows.png|40px]]
+|[[Window Makers]]
+|
+Produces 1t of windows in 01:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |6500{{Infoicon Credits}}<br />12{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}
+| style="text-align:center;" |−200{{Infoicon Balance}}<br />−100{{Infoicon Workforce Artisans}}
+| style="text-align:center;" |5x5
+|-
+|[[File:Beef.png|40px]]
+|[[Cattle Farm]]
+|Produces 1t of beef in 02:00.
+| style="text-align:center;" |2000{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−20{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |4x5
+(f:4 of 3x4)
+|-
+|[[File:Red peppers.png|40px]]
+|[[Red Pepper Farm]]
+|
+Produces 1t of red peppers in 02:00.
+
+Requires red pepper [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |2000{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−100{{Infoicon Balance}}<br />−10{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |3x3
+(f:108)
+|-
+|[[File:Goulash.png|40px]]
+|[[Artisanal Kitchen]]
+|
+Produces 1t of goulash in 02:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |7000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}<br />8{{Infoicon Windows}}
+| style="text-align:center;" |−100{{Infoicon Balance}}<br />−75{{Infoicon Workforce Artisans}}
+| style="text-align:center;" |5x5
+|-
+|[[File:Canned food.png|40px]]
+|[[Cannery]]
+|
+Produces 1t of canned food in 01:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |15000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}<br />8{{Infoicon Windows}}
+| style="text-align:center;" |−100{{Infoicon Balance}}<br />−75{{Infoicon Workforce Artisans}}
+| style="text-align:center;" |6x7
+|-
+|[[File:Town Hall.png|40px]]
+|[[Town Hall]]
+|Only useful if equipped with items. Attach items here to provide bonuses to residences and public buildings.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}<br />20{{Infoicon Steel Beams}}<br />5{{Infoicon Windows}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−20 {{Infoicon Influence}}
+| style="text-align:center;" |4x4
+|-
+! colspan="6" |250 Artisans
+|-
+|[[File:Coal.png|40px]]
+|[[Coal Mine]]
+|
+Produces 1t of coal in 00:15.
+
+Requires [[Fertilities_and_resources|resource deposit]].
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |600{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−50{{Infoicon Workforce Workers}}
+| style="text-align:center;" |3x3
+|-
+|[[File:Sewing machines.png|40px]]
+|[[Sewing Machine Factory]]
+|
+Produces 1t of sewing machines in 00:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |12000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}<br />8{{Infoicon Windows}}
+| style="text-align:center;" |−500{{Infoicon Balance}}<br />−150{{Infoicon Workforce Artisans}}
+| style="text-align:center;" |6x9
+|-
+|[[File:Variety theatre.png|40px]]
+|[[Variety Theatre]]
+|Provides a public service for your residents.
+| style="text-align:center;" |10000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />50{{Infoicon Bricks}}<br />40{{Infoicon Steel Beams}}<br />40{{Infoicon Windows}}
+| style="text-align:center;" |−100{{Infoicon Balance}}
+| style="text-align:center;" |4x5
+|-
+|[[File:Public mooring.png|40px]]
+|[[Public Mooring]]
+|
+Enables visitors to make a stopover on your island.
+
+Requires free coastline.
+
+Limited to one per island.
+| style="text-align:center;" |25000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />10{{Infoicon Steel Beams}}<br />8{{Infoicon Windows}}
+| style="text-align:center;" |−400{{Infoicon Balance}}
+| style="text-align:center;" |8x25
+|-
+|[[File:Repair crane.png|40px]]
+|[[Repair Crane]]
+|
+Repairs nearby ships and buildings.
+
+Requires free harbour area.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />15{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />25{{Infoicon Steel Beams}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−3{{Infoicon Influence}}
+| style="text-align:center;" |5x5
+|-
+|[[File:Pier.png|40px]]
+|[[Pier]]
+|
+Provides additional space for ships to load and unload goods.
+
+Requires free harbour area.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />50{{Infoicon Bricks}}<br />40{{Infoicon Steel Beams}}<br />40{{Infoicon Windows}}
+| style="text-align:center;" |−50{{Infoicon Balance}}
+| style="text-align:center;" |7x6
+|-
+! colspan="6" |500 Artisans
+|-
+|[[File:Sugar cane.png|40px]]
+|[[Sugar Cane Plantation]]
+|
+Produces 1t of sugar cane in 00:30.
+
+Requires sugar cane [[Fertilities and resources|fertility]].
+
+Construction only in The New World.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−5{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |3x4
+(f:128)
+|-
+|[[File:Rum.png|40px]]
+|[[Rum Distillery]]
+|
+Produces 1t of rum in 00:30.
+
+Construction only in The New World.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−30{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |6x7
+|-
+|[[File:Zoo.png|40px]]
+|[[Zoo]]
+|The finest selection of animals will make your city far more attractive.
+| style="text-align:center;" |10000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />30{{Infoicon Bricks}}<br />10{{Infoicon Steel Beams}}<br />5{{Infoicon Windows}}
+| style="text-align:center;" |−100{{Infoicon Balance}}
+| style="text-align:center;" |4x7
+(c:4x6)
+|-
+|[[File:Path1.png|40px]]
+|Straight Path
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Path2.png|40px]]
+|Path End
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Path3.png|40px]]
+|Path Angle
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Path4.png|40px]]
+|Path Crossing
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Path5.png|40px]]
+|Path Junction
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Hedge1.1|40x40px]]
+|Straight Hedge
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Hedge 1-0.2|40x40px]]
+|Hedge End
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Hedge 1.3|40x40px]]
+|Hedge Angle
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Hedge 1.4|40x40px]]
+|Hedge Crossing
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Hedge 1.5|40x40px]]
+|Hedge Junction
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:EntranceHedge.png|40px]]
+|Entrance
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Garden benches.png|40px]]
+|Garden Benches
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Memorial statue.png|40px]]
+|Memorial Statue
+|Ornaments generate a small amount of attractiveness for the city.
+|150{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Newsstand.png|40px]]
+|Newsstand
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Fountain garden.png|40px]]
+|Fountain Garden
+|Ornaments generate a small amount of attractiveness for the city.
+|150{{Infoicon Credits}}
+|
+|2x2
+|-
+|[[File:Garden.png|40px]]
+|Garden
+|Ornaments generate a small amount of attractiveness for the city.
+|125{{Infoicon Credits}}
+|
+|2x2
+|-
+|[[File:Gazebo garden.png|40px]]
+|Gazebo Garden
+|Ornaments generate a small amount of attractiveness for the city.
+|250{{Infoicon Credits}}
+|
+|2x2
+|-
+|[[File:Hedge 2.|40x40px]]
+|Straight Hedge
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Hedge 2.1|40x40px]]
+|Hedge End
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Hedge 2.2|40x40px]]
+|Hedge Angle
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Hedge 2.4|40x40px]]
+|Hedge Crossing
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Hedge 2.5|40x40px]]
+|Hedge Junction
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:WideEntranceHedge.png|40px]]
+|Wide Entrance
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Piazza benches.png|40px]]
+|Piazza Benches
+|Ornaments generate a small amount of attractiveness for the city.
+| style="text-align:center;" |75{{Infoicon Credits}}
+|
+| style="text-align:center;" |1x1
+|-
+|[[File:Newsstand cult.png|40px]]
+|Newsstand
+|Ornaments generate a small amount of attractiveness for the city.
+| style="text-align:center;" |100{{Infoicon Credits}}
+|
+| style="text-align:center;" |1x1
+|-
+|[[File:Memorial statue cult.png|40px]]
+|Memorial Statue
+|Ornaments generate a small amount of attractiveness for the city.
+| style="text-align:center;" |175{{Infoicon Credits}}
+|
+| style="text-align:center;" |1x1
+|-
+! colspan="6" |900 Artisans
+|-
+|[[File:Furs.png|40px]]
+|[[Hunting Cabin]]
+|
+Produces 1t of furs in 01:00.
+
+Requires furs [[Fertilities and resources|fertility]].
+
+Requires undeveloped tiles within its radius.
+| style="text-align:center;" |2000{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−10{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |5x5
+(r:9)
+|-
+|[[File:Cotton.png|40px]]
+|[[Cotton Plantation]]
+|
+Produces 1t of cotton in 01:00.
+
+Requires cotton [[Fertilities_and_resources|fertility]].
+Construction only in The New World.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−5{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |4x4
+(f:144)
+|-
+|[[File:Cotton fabric.png|40px]]
+|[[Cotton Mill]]
+|
+Produces 1t of cotton fabric in 00:30.
+
+Construction only in The New World.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−10{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |4x4
+|-
+|[[File:Fur Coats.png|40px]]
+|[[Fur Dealer]]
+|
+Produces 1t of fur coats in 00:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |2000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}<br />5{{Infoicon Windows}}
+| style="text-align:center;" |−500{{Infoicon Balance}}<br />−200{{Infoicon Workforce Artisans}}
+| style="text-align:center;" |4x6
+|-
+|[[File:Hospital.png|40px]]
+|[[Hospital]]
+|Fights illness in its influence radius. Can mobilise additional special units if required.
+| style="text-align:center;" |10000{{Infoicon Credits}}<br />12{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />40{{Infoicon Windows}}
+| style="text-align:center;" |−100{{Infoicon Balance}}
+| style="text-align:center;" |6x6
+|-
+! colspan="6" |1500 Artisans
+|-
+|[[File:University.png|40px]]
+|[[University]]
+|Provides a public service for your residents.
+| style="text-align:center;" |15000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />50{{Infoicon Bricks}}<br />40{{Infoicon Steel Beams}}<br />40{{Infoicon Windows}}
+| style="text-align:center;" |−400{{Infoicon Balance}}
+| style="text-align:center;" |6x9
+|-
+|[[File:Museum.png|40px]]
+|[[Museum]]
+|Artefacts from the past can be exposed here to attract curious travellers.
+| style="text-align:center;" |10000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />30{{Infoicon Bricks}}<br />10{{Infoicon Steel Beams}}<br />5{{Infoicon Windows}}
+| style="text-align:center;" |−100{{Infoicon Balance}}
+| style="text-align:center;" |5x8
+(e:4x5)
+|}
+
+=== Engineers Buildings ===
+{| class="mw-collapsible mw-collapsed article-table" style="text-align: center; width:100%"
+|-
+! style="width: 60px" |[[File:Engineers.png|48px]]
+! colspan="3" |Engineers Buildings
+!
+!
+|-
+! style="text-align:center;" |Icon
+! style="text-align:center;" |Name
+! style="text-align:center;" |Description
+! style="text-align:center;" |Construction cost
+! style="text-align:center;" |Maintenance cost
+! style="text-align:center;" |Size
+|-
+|[[File:Cement.png|40px]]
+|[[Limestone Quarry]]
+|
+Produces 1t of cement in 00:30.
+
+Requires [[Fertilities_and_resources|resource deposit]].
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |6000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}
+| style="text-align:center;" |−250{{Infoicon Balance}}<br />−25{{Infoicon Workforce Workers}}
+|3x3
+|-
+|[[File:Reinforced_concrete.png|40px]]
+|[[Concrete Factory]]
+|
+Produces 1t of reinforced concrete in 01:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |15000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />30{{Infoicon Bricks}}<br />24{{Infoicon Steel Beams}}<br />25{{Infoicon Windows}}
+| style="text-align:center;" |−400{{Infoicon Balance}}<br />−75{{Infoicon Workforce Engineers}}
+|5x6
+|-
+|[[File:Oil.png|40px]]
+|[[Oil Refinery]]
+|
+Produces 1t of oil in 00:15.
+
+Requires [[Fertilities and resources|oil fields]] in its influence radius.
+| style="text-align:center;" |25000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−250{{Infoicon Balance}}<br />−100{{Infoicon Workforce Workers}}<br />−20{{Infoicon Attractiveness}}
+|5x5
+(r:?)
+|-
+|[[File:OilWell.png|40px]]
+|[[Oil Well]]
+|
+Extracts raw oil from oil fields.
+
+Requires [[Fertilities and resources|resource deposit]].
+|4000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}
+|
+|3x3
+|-
+|[[File:Railway.png|40px]]
+|[[Railway]]
+|Allows for transportation of oil by trains.
+| style="text-align:center;" |50{{Infoicon Credits}}<br />1{{Infoicon Timber}}<br />1{{Infoicon Steel Beams}}
+|
+|
+|-
+|[[File:Oil_Harbour.png|40px]]
+|[[Small Oil Harbour]]
+|
+Provides trains for transportation and allows you to store and trade oil (+500 oil storage).
+
+Requires free coastline.
+
+Limited to one per island.
+| style="text-align:center;" |10000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}<br />20{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−100{{Infoicon Balance}}
+| style="text-align:center;" |7x8
+|-
+|[[File:Oil_Storage.png|40px]]
+|[[Oil Storage]]
+|
+Increases island storage for oil by 200.
+
+Requires free harbour area.
+| style="text-align:center;" |8000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−50{{Infoicon Balance}}
+| style="text-align:center;" |4x8
+|-
+|
+[[File:Oil Power Plant.png|40px]]
+|[[Oil Power Plant]]
+|Burns oil to provide electricity to surrounding factories. Requires 1t of oil every 5 seconds.
+| style="text-align:center;" |25000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />50{{Infoicon Bricks}}<br />40{{Infoicon Steel Beams}}<br />30{{Infoicon Windows}}<br />25{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−400{{Infoicon Balance}}<br />−150{{Infoicon Workforce Engineers}}<br />−15{{Infoicon Attractiveness}}
+| style="text-align: center;" |5x5
+|-
+|[[File:Zinc.png|40px]]
+|[[Zinc Mine]]
+|
+Produces 1t of zinc in 00:30.
+
+Requires [[Fertilities_and_resources|resource deposit]].
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |5000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−250{{Infoicon Balance}}<br />−25{{Infoicon Workforce Workers}}
+|3x3
+|-
+|[[File:Copper.png|40px]]
+|[[Copper Mine]]
+|
+Produces 1t of copper in 00:30.
+
+Requires [[Fertilities_and_resources|resource deposit]].
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |5000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−250{{Infoicon Balance}}<br />−25{{Infoicon Workforce Workers}}
+|3x3
+|-
+|[[File:Brass.png|40px]]
+|[[Brass Smeltery]]
+|
+Produces 1t of brass in 01:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |17000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−250{{Infoicon Balance}}<br />−25{{Infoicon Workforce Workers}}<br />−10{{Infoicon Attractiveness}}
+|5x5
+|-
+|[[File:Glasses.png|40px]]
+|[[Spectacle Factory]]
+|
+Produces 1t of glasses in 01:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |17000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−1000{{Infoicon Balance}}<br />−100{{Infoicon Workforce Engineers}}
+|4x6
+|-
+|[[File:StraightFence.png|40px]]
+|Straight Fence
+|Ornaments generate a small amount of attractiveness for the city.
+|75[[File:Credits.png|22px]]
+|
+|1x1
+|-
+|[[File:FenceEnd.png|40px]]
+|Fence End
+|Ornaments generate a small amount of attractiveness for the city.
+|75[[File:Credits.png|22px]]
+|
+|1x1
+|-
+|[[File:FenceAngle.png|40px]]
+|Fence Angle
+|Ornaments generate a small amount of attractiveness for the city.
+|75[[File:Credits.png|22px]]
+|
+|1x1
+|-
+|[[File:FenceCrossing.png|40px]]
+|Fence Crossing
+|Ornaments generate a small amount of attractiveness for the city.
+|75[[File:Credits.png|22px]]
+|
+|1x1
+|-
+|[[File:FenceJunction.png|40px]]
+|Fence Junction
+|Ornaments generate a small amount of attractiveness for the city.
+|75[[File:Credits.png|22px]]
+|
+|1x1
+|-
+|[[File:Archway.png|40px]]
+|Archway
+|Ornaments generate a small amount of attractiveness for the city.
+|75[[File:Credits.png|22px]]
+|
+|1x1
+|-
+|[[File:Garden.png|40px]]
+|Memorial Garden
+|Ornaments generate a small amount of attractiveness for the city.
+|200[[File:Credits.png|22px]]
+|
+|2x2
+|-
+|[[File:EquestrianStatueGarden.png|40px]]
+|Equestrian Statue Garden
+|Ornaments generate a small amount of attractiveness for the city.
+|250[[File:Credits.png|22px]]
+|
+|2x2
+|-
+|[[File:Cypress.png|40px]]
+|Cypress
+|Ornaments generate a small amount of attractiveness for the city.
+|50[[File:Credits.png|22px]]
+|
+|1x1
+|-
+|[[File:TallCypress.png|40px]]
+|Tall Cypress
+|Ornaments generate a small amount of attractiveness for the city.
+|50[[File:Credits.png|22px]]
+|
+|1x1
+|-
+|[[File:Commuter_pier.png|40px]]
+|[[Commuter Pier]]
+|Enables the transfer of workforce between two or more islands.
+|25000[[File:Credits.png|22px]]<br />50[[File:Steel beams.png|22px]]<br />40[[File:Windows.png|22px]]<br />30{{Infoicon Reinforced Concrete}}
+|−1000[[File:Balance.png|20px]]<br />−15[[File:Influence.png|22px]]
+|5x4
+|-
+! colspan="6" |500 Engineers
+|-
+|[[File:Steam_shipyard.png|40px]]
+|[[Steam Shipyard]]
+|
+Produces steam-powered ships.
+
+Requires free coastline.
+
+Requires [[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |90000{{Infoicon Credits}}<br />50{{Infoicon Timber}}<br />100{{Infoicon Bricks}}<br />80{{Infoicon Steel Beams}}<br />75{{Infoicon Windows}}<br />75{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−400{{Infoicon Balance}}<br />−200{{Infoicon Workforce Engineers}}
+|7x17
+|-
+|[[File:Big Betty.png|40px]]
+|[[Big Betty]]
+|
+Deals huge area damage to enemies over a very long range, at the cost of long reload times.
+
+Requires free coastline.
+|22000[[File:Credits.png|22px]]<br />40[[File:Timber.png|22px]]<br />75[[File:Bricks.png|22px]]<br />60[[File:Steel beams.png|22px]]<br />60[[File:Windows.png|22px]]<br />50{{Infoicon Reinforced Concrete}}<br />20{{Infoicon Advanced Weapons}}
+|−350[[File:Balance.png|20px]]<br />−14[[File:Influence.png|22px]]
+|4x6
+|-
+|[[File:Saltpeter.png|40px]]
+|[[Saltpeter Works]]
+|
+Produces 1t of saltpeter in 02:00.
+
+Requires saltpeter [[Fertilities and resources|fertility]].
+
+Requires free coastline.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |12500{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}
+| style="text-align:center;" |−500{{Infoicon Balance}}<br />−25{{Infoicon Workforce Workers}}
+|4x6
+|-
+|[[File:Dynamite.png|40px]]
+|[[Dynamite Factory]]
+|
+Produces 1t of dynamite in 01:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |54000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−1000{{Infoicon Balance}}<br />−250{{Infoicon Workforce Engineers}}
+|5x6
+|-
+|[[File:Advanced_weapons.png|40px]]
+|[[Heavy Weapons Factory]]
+|
+Produces 1t of advanced weapons in 01:00.
+Requires[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |85000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />40{{Infoicon Bricks}}<br />32{{Infoicon Steel Beams}}<br />30{{Infoicon Windows}}<br />30{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−2200{{Infoicon Balance}}<br />−250{{Infoicon Workforce Engineers}}<br />−15{{Infoicon Attractiveness}}
+|9x10
+|-
+|[[File:Caoutchouc.png|40px]]
+|[[Caoutchouc Plantation]]
+|
+Produces 1t of caoutchouc in 01:00.
+
+Requires caoutchouc [[Fertilities_and_resources|fertility]].
+
+Construction only in The New World.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}
+| style="text-align:center;" |−25{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+|3x3
+(fields: 144)
+|-
+|[[File:High_wheeler.png|40px]]
+|[[Bicycle Factory]]
+|
+Produces 1t of penny farthings in 00:15.
+
+Requires[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |42000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−1200{{Infoicon Balance}}<br />−150{{Infoicon Workforce Engineers}}
+|6x6
+|-
+|[[File:Steam motors.png|40px]]
+|[[Motor Assembly Line]]
+|
+Produces 1t of steam motors in 00:45.
+
+Requires[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |75000{{Infoicon Credits}}<br />16{{Infoicon Timber}}<br />30{{Infoicon Bricks}}<br />24{{Infoicon Steel Beams}}<br />20{{Infoicon Windows}}<br />20{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−1800{{Infoicon Balance}}<br />−250{{Infoicon Workforce Engineers}}<br />−10{{Infoicon Attractiveness}}
+|6x9
+|-
+! colspan="6" |1000 Engineers
+|-
+|[[File:Coffee beans.png|40px]]
+|[[Coffee Plantation]]
+|
+Produces 1t of coffee beans in 01:00.
+
+Requires coffee [[Fertilities and resources|fertility]].
+
+Construction only in The New World.
+|2500{{Infoicon Credits}}<br />5{{Infoicon Timber}}
+|−25{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+|3x4
+(f:168)
+|-
+|[[File:Coffee.png|40px]]
+|[[Coffee Roaster]]
+|
+Produces 1t of coffee in 00:30.
+
+Construction only in The New World.
+|9000{{Infoicon Credits}}<br />5{{Infoicon Timber}}<br />3{{Infoicon Bricks}}
+|−150{{Infoicon Balance}}<br />−150{{Infoicon Workforce Obreros}}
+|5x6
+|-
+|[[File:Gold Ore.png|40px]]
+|[[Gold Mine]]
+|
+Produces 1t of gold ore in 02:30.
+
+Requires [[Fertilities_and_resources|resource deposit]].
+
+Construction only in The New World.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}
+| style="text-align:center;" |−250{{Infoicon Balance}}<br />−100{{Infoicon Workforce Obreros}}
+|3x3
+|-
+|[[File:Gold.png|40px]]
+|[[Goldsmiths]]
+|
+Produces 1t of gold in 01:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |27000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−750{{Infoicon Balance}}<br />−125{{Infoicon Workforce Engineers}}
+|4x5
+|-
+|[[File:Pocket_watch.png|40px]]
+|[[Clockmakers]]
+|
+Produces 1t of pocket watches in 00:45.
+
+Requires[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |48000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−1400{{Infoicon Balance}}<br />−150{{Infoicon Workforce Engineers}}
+|5x7
+|-
+! colspan="6" |1750 Engineers
+|-
+|[[File:Carbon_filament.png|40px]]
+|[[Filament Factory]]
+|
+Produces 1t of filaments in 01:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |30000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−725{{Infoicon Balance}}<br />−150{{Infoicon Workforce Engineers}}
+|6x7
+|-
+|[[File:Light_bulb.png|40px]]
+|[[Light Bulb Factory]]
+|
+Produces 1t of light bulbs in 01:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |45000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−1000{{Infoicon Balance}}<br />−150{{Infoicon Workforce Engineers}}
+|6x6
+|-
+|[[File:StraightFence.png|40px]]
+|Straight Fence
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FenceEnd2.png|40px]]
+|Fence End
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FenceAngle.png|40px]]
+|Fence Angle
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FenceCrossing2.png|40px]]
+|Fence Crossing
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FenceJunction2.png|40px]]
+|Fence Junction
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Archway2.png|40px]]
+|Archway
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+! colspan="6" |3000 Engineers
+|-
+|[[File:Bank.png|40px]]
+|[[Bank]]
+|Provides a public service for your residents.
+| style="text-align:center;" |100000{{Infoicon Credits}}<br />40{{Infoicon Timber}}<br />75{{Infoicon Bricks}}<br />60{{Infoicon Steel Beams}}<br />60{{Infoicon Windows}}<br />50{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−1000{{Infoicon Balance}}
+|12x10
+|}
+
+=== Investors Buildings ===
+{| class="mw-collapsible mw-collapsed article-table" style="text-align: center; width: 100%"
+|-
+! style="width: 60px" |[[File:Investors.png|48px]]
+! colspan="3" |Investors Buildings
+!
+!
+|-
+! style="text-align:center;" |Icon
+! style="text-align:center;" |Name
+! style="text-align:center;" |Description
+! style="text-align:center;" |Construction cost
+! style="text-align:center;" |Maintenance cost
+! style="text-align:center;" |Size
+|-
+|[[File:Worlds fair.png|40px]]
+|[[World's Fair|World's Fair: Foundations]]
+|
+The World's Fair is an exhibition space. Constructed in multiple phases, it can host sumptuous events that reward good organisation with unique items.
+
+Limited to one per island.
+| style="text-align:center;" |
+300000{{Infoicon Credits}}<br />100{{Infoicon Timber}}<br />200{{Infoicon Bricks}}<br />160{{Infoicon Steel Beams}}<br />150{{Infoicon Windows}}<br />150{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−500{{Infoicon Workforce Farmers}}
+|18x22
+|-
+|[[File:Icon palace.png|40px]]
+|[[Palace]]
+|
+The palace is not only a unique symbol of your empire's grandeur, but a place to improve and elevate your favourite city.
+
+Limited to one per savegame.
+
+Seat of Power DLC is required.
+| style="text-align:center;" |
+1000000{{Infoicon Credits}}<br />100{{Infoicon Timber}}<br />150{{Infoicon Bricks}}<br />150{{Infoicon Steel Beams}}<br />120{{Infoicon Windows}}<br />200{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−5000{{Infoicon Balance}}+150{{Infoicon Attractiveness}}
+|9x9
+|-
+|[[File:Icon local department.png|40px]]
+|[[Local Department]]
+|
+Local departments allow you to issue the policies and effects of the palace in your other cities.
+
+Limited to one per island.
+
+Seat of Power DLC is required.
+| style="text-align:center;" |
+150000{{Infoicon Credits}}<br />40{{Infoicon Timber}}<br />60{{Infoicon Bricks}}<br />40{{Infoicon Steel Beams}}<br />35{{Infoicon Windows}}<br />60{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−1000{{Infoicon Balance}}
+|5x8
+|-
+|[[File:Icon electric works gas 0.png|40px]]
+|[[Gas Power Plant]]
+|
+Burns gas to provide electricity to surrounding buildings. Requires 1t of gas every 45 seconds.
+
+The Passage DLC is required.
+| style="text-align:center;" |
+75000{{Infoicon Credits}}<br />40{{Infoicon Timber}}<br />60{{Infoicon Bricks}}<br />60{{Infoicon Steel Beams}}<br />40{{Infoicon Windows}}<br />40{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−1200{{Infoicon Balance}}<br />−250{{Infoicon Workforce Engineers}}
+|5x6
+|-
+|[[File:Grapes.png|40px]]
+|[[Vineyard]]
+|
+Produces 1t of grapes in 02:00.
+
+Requires grape [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |8000{{Infoicon Credits}}<br />10{{Infoicon Timber}}
+| style="text-align:center;" |−200{{Infoicon Balance}}<br />−10{{Infoicon Workforce Farmers}}
+| style="text-align:center;" |3x4<br />(f:128)
+|-
+|[[File:Champagne.png|40px]]
+|[[Champagne Cellar]]
+|
+Produces 1t of champagne in 00:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |35000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−1000{{Infoicon Balance}}<br />−150{{Infoicon Workforce Artisans}}
+|5x6
+|-
+|[[File:FountainPlaza.png|40px]]
+|Fountain Plaza
+|Ornaments generate a small amount of attractiveness for the city.
+|400{{Infoicon Credits}}
+|
+|3x3
+|-
+|[[File:GazeboPlaza.png|40px]]
+|Gazebo Plaza
+|Ornaments generate a small amount of attractiveness for the city.
+|500{{Infoicon Credits}}
+|
+|3x3
+|-
+! colspan="6" |750 Investors
+|-
+|[[File:Tobacco.png|40px]]
+|[[Tobacco Plantation]]
+|
+Produces 1t of tobacco in 02:00.
+
+Requires tobacco [[Fertilities_and_resources|fertility]].
+
+Construction only in The New World.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />10{{Infoicon Timber}}
+| style="text-align:center;" |−25{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |3x4
+(f:192)
+|-
+|[[File:Wood_veneers.png|40px]]
+|[[Marquetry Workshop]]
+|
+Produces 1t of wood veneers in 01:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |22000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−750{{Infoicon Balance}}<br />−150{{Infoicon Workforce Engineers}}
+|5x5
+|-
+|[[File:Cigars.png|40px]]
+|[[Cigar Factory]]
+|
+Produces 1t of cigars in 00:30.
+
+Construction only in The New World.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}
+| style="text-align:center;" |−250{{Infoicon Balance}}<br />−175{{Infoicon Workforce Obreros}}
+| style="text-align:center;" |7x7
+|-
+|[[File:Members club.png|40px]]
+|[[Members Club]]
+|Provides a public service for your residents.
+| style="text-align:center;" |50000{{Infoicon Credits}}<br />50{{Infoicon Timber}}<br />100{{Infoicon Bricks}}<br />80{{Infoicon Steel Beams}}<br />75{{Infoicon Windows}}<br />75{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−350{{Infoicon Balance}}
+|6x6
+|-
+! colspan="6" |1750 Investors
+|-
+|[[File:Pearls.png|40px]]
+|[[Pearl Farm]]
+|
+Produces 1t of pearls in 01:30.
+
+Requires pearls [[Fertilities and resources|fertility]].
+
+Requires free coastline.
+
+Construction only in The New World.
+| style="text-align:center;" |8500{{Infoicon Credits}}<br />10{{Infoicon Timber}}
+| style="text-align:center;" |−25{{Infoicon Balance}}<br />−50{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |6x14
+|-
+|[[File:Jewelry.png|40px]]
+|[[Jewellers]]
+|
+Produces 1t of jewellery in 00:30.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |33000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−2500{{Infoicon Balance}}<br />−150{{Infoicon Workforce Artisans}}
+|5x5
+|-
+! colspan="6" |3000 Investors
+|-
+|[[File:Gramophone.png|40px]]
+|[[Gramophone Factory]]
+|
+Produces 1t of gramophones in 01:00.
+
+Requires [[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |60000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−1600{{Infoicon Balance}}<br />−150{{Infoicon Workforce Engineers}}
+|7x7
+|-
+! colspan="6" |5000 Investors
+|-
+|[[File:Chassis.png|40px]]
+|[[Coachmakers]]
+|
+Produces 1t of chassis in 02:00.
+
+Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |55000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−1200{{Infoicon Balance}}<br />−150{{Infoicon Workforce Engineers}}
+|6x9
+|-
+|[[File:Steam_carriages.png|40px]]
+|[[Cab Assembly Line]]
+|
+Produces 1t of steam carriages in 00:30.
+
+Requires [[File:Electricity.png|20px|link=Electricity]][[electricity]].
+| style="text-align:center;" |115000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />40{{Infoicon Bricks}}<br />32{{Infoicon Steel Beams}}<br />30{{Infoicon Windows}}<br />30{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |−3000{{Infoicon Balance}}<br />−500{{Infoicon Workforce Engineers}}<br />−10{{Infoicon Attractiveness}}
+|8x12
+|}
+
+== New World Buildings ==
+
+=== Jornaleros Buildings ===
+{| class="mw-collapsible mw-collapsed article-table" style="text-align: center; width:100%"
+|-
+! style="width: 60px" |[[File:Jornaleros.png|48px]]
+! colspan="3" |Jornaleros Buildings
+!
+!
+|-
+! style="text-align:center;" |Icon
+! style="text-align:center;" |Name
+! style="text-align:center;" |Description
+! style="text-align:center;" |Construction cost
+! style="text-align:center;" |Maintenance cost
+! style="text-align:center;" |Size
+|-
+|[[File:Dirt_road.png|40px]]
+|[[Roads|Dirt Road]]
+|Connects buildings and allows for transportation of goods.
+| style="text-align:center;" |3{{Infoicon Credits}}
+|
+|
+|-
+|[[File:Marketplace.png|40px]]
+|[[Marketplace]]
+|A place that provides your inhabitants with all the necessities of daily life.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />10{{Infoicon Timber}}
+| style="text-align:center;" |−20{{Infoicon Balance}}
+| style="text-align:center;" |5x6
+|-
+|[[File:Residence.png|40px]]
+|[[Jornalero Residence]]
+|Your residents live here. Residents provide income and workforce.
+| style="text-align:center;" |1{{Infoicon Timber}}
+|
+| style="text-align:center;" |3x3
+|-
+|[[File:Warehouse.png|40px]]
+|[[Small Warehouse]]
+|Accepts and distributes goods from and to your production buildings.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />10{{Infoicon Timber}}
+| style="text-align:center;" |−10{{Infoicon Balance}}
+| style="text-align:center;" |5x5
+|-
+|[[File:Wood.png|40px]]
+|[[Lumberjack's Hut]]
+|
+Produces 1t of wood in 00:15.
+
+Requires undeveloped tiles within its radius.
+| style="text-align:center;" |500{{Infoicon Credits}}
+| style="text-align:center;" |−10{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |4x4
+(r:7)
+|-
+|[[File:Timber.png|40px]]
+|[[Sawmill]]
+|Produces 1t of timber in 00:15.
+| style="text-align:center;" |500{{Infoicon Credits}}
+| style="text-align:center;" |−10{{Infoicon Balance}}<br />−20{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |3x4
+|-
+! colspan="6" |50 Jornaleros
+|-
+|[[File:Fish Oil.png|40px]]
+|[[Fish Oil Factory]]
+|
+Produces 1t of fish oil in 00:30.
+
+Requires free coastline.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−5{{Infoicon Balance}}<br />−15{{Infoicon Workforce Jornaleros}}<br />−5{{Infoicon Attractiveness}}
+| style="text-align:center;" |5x8
+(5x16)
+|-
+|[[File:Plantains.png|40px]]
+|[[Plantain Plantation]]
+|
+Produces 1t of plantains in 00:30.
+
+Requires plantain [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−5{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |3x3
+(f:128)
+|-
+|[[File:Fried plantains.png|40px]]
+|[[Fried Plantain Kitchen]]
+|Produces 1t of fried plantains in 00:30.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />2{{Infoicon Timber}}
+| style="text-align:center;" |−15{{Infoicon Balance}}<br />−25{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |3x4
+|-
+|[[File:Trade Union.png|40px]]
+|[[Trade Union]]
+|Only useful if equipped with items. Attach items here to provide bonuses to production.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />25{{Infoicon Timber}}<br />5{{Infoicon Bricks}}
+| style="text-align:center;" |−50[[File:Balance.png|20px]]<br />−20[[File:Influence.png|22px]]
+| style="text-align:center;" |4x4
+|-
+! colspan="6" |100 Jornaleros
+|-
+|[[File:Sugar cane.png|40px]]
+|[[Sugar Cane Plantation]]
+|
+Produces 1t of sugar cane in 00:30.
+
+Requires sugar cane [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−5{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |3x4
+(f:128)
+|-
+|[[File:Rum.png|40px]]
+|[[Rum Distillery]]
+|Produces 1t of rum in 00:30.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−30{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |6x7
+|-
+|[[File:Cotton.png|40px]]
+|[[Cotton Plantation]]
+|
+Produces 1t of cotton in 01:00.
+
+Requires cotton [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−5{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |4x4
+(f:144)
+|-
+|[[File:Cotton fabric.png|40px]]
+|[[Cotton Mill]]
+|Produces 1t of cotton fabric in 00:30.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−10{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |4x4
+|-
+|[[File:Sails.png|40px]]
+|[[Sailmakers]]
+|Produces 1t of sails in 00:30.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />8{{Infoicon Timber}}
+| style="text-align:center;" |−15{{Infoicon Balance}}<br />−20{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |5x5
+|-
+|[[File:Quay.png|40px]]
+|Quay
+|
+Beautifies your harbour area.
+
+Requires free harbour area.
+| style="text-align:center;" |20{{Infoicon Credits}}
+|
+|
+|-
+|[[File:Sailing shipyard.png|40px]]
+|[[Sailing Shipyard]]
+|
+Builds ships.
+
+Requires free coastline.
+| style="text-align:center;" |10000{{Infoicon Credits}}<br />20{{Infoicon Timber}}
+| style="text-align:center;" |−100{{Infoicon Balance}}<br />−100{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |6x17
+|-
+|[[File:Depot.png|40px]]
+|[[Depot]]
+|
+Increases overall storage capacity by 50 tons.
+
+Requires free harbour area.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />10{{Infoicon Bricks}}
+| style="text-align:center;" |−20{{Infoicon Balance}}
+| style="text-align:center;" |4x10
+|-
+|[[File:Harbourmaster's Office.png|40px]]
+|[[Harbourmaster's Office]]
+|
+Only useful if equipped with items. Attach items here to provide bonuses to harbour buildings.
+
+Requires free harbour area.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />10{{Infoicon Bricks}}
+| style="text-align:center;" |−50[[File:Balance.png|20px]]<br />−20[[File:Influence.png|22px]]
+| style="text-align:center;" |4x4
+|-
+! colspan="6" |200 Jornaleros
+|-
+|[[File:Repair crane.png|40px]]
+|[[Repair Crane]]
+|
+Repairs nearby ships and buildings.
+
+Requires free harbour area.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />50{{Infoicon Timber}}<br />75{{Infoicon Bricks}}
+| style="text-align:center;" |−50[[File:Balance.png|20px]]<br />−3[[File:Influence.png|22px]]
+| style="text-align:center;" |5x5
+|-
+|[[File:Mounted guns.png|40px]]
+|[[Mounted Guns]]
+|
+Attacks and slows enemies over a medium range. More accurate up close.
+
+Requires free harbour area.
+| style="text-align:center;" |5000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />5{{Infoicon Weapons}}
+| style="text-align:center;" |−10[[File:Balance.png|20px]]<br />−3[[File:Influence.png|22px]]
+| style="text-align:center;" |4x4
+|-
+|[[File:Alpaca wool.png|40px]]
+|[[Alpaca Farm]]
+|Produces 1t of alpaca wool in 00:30.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−5{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |3x3
+(f:4 of 3x3)
+|-
+|[[File:Poncho.png|40px]]
+|[[Poncho Darner]]
+|Produces 1t of ponchos in 00:30.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−15{{Infoicon Balance}}<br />−30{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |4x5
+|-
+|[[File:Caoutchouc.png|40px]]
+|[[Caoutchouc Plantation]]
+|
+Produces 1t of caoutchouc in 01:00.
+
+Requires caoutchouc [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}
+| style="text-align:center;" |−25{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |3x3
+(f:144)
+|-
+|[[File:Fire station.png|40px]]
+|[[Fire Station]]
+|Fights fire in its influence radius. Can mobilise additional special units if required.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />4{{Infoicon Timber}}
+| style="text-align:center;" |−25{{Infoicon Balance}}
+| style="text-align:center;" |3x5
+|-
+! colspan="6" |300 Jornaleros
+|-
+|[[File:Pearls.png|40px]]
+|[[Pearl Farm]]
+|
+Produces 1t of pearls in 01:30.
+
+Requires pearl [[Fertilities and resources|fertility]].
+
+Requires free coastline.
+| style="text-align:center;" |8500{{Infoicon Credits}}<br />10{{Infoicon Timber}}
+| style="text-align:center;" |−25{{Infoicon Balance}}<br />−50{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |6x14
+|-
+|[[File:Church.png|40px]]
+|[[Chapel]]
+|Provides a public service for your residents.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />10{{Infoicon Timber}}
+| style="text-align:center;" |−10{{Infoicon Balance}}
+| style="text-align:center;" |3x4
+|-
+|[[File:Police Station.png|40px]]
+|[[Police Station]]
+|Fights riots in its influence radius. Can mobilise additional special units if required.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−50{{Infoicon Balance}}
+| style="text-align:center;" |4x5
+|-
+|[[File:Path1.png|40px]]
+|Straight Path
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Path2.png|40px]]
+|Path End
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Path3.png|40px]]
+|Path Angle
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Path4.png|40px]]
+|Path Crossing
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Path5.png|40px]]
+|Path Wall
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:StraightHedgeNW.png|40px]]
+|Straight Hedge
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:HedgeEndNW.png|40px]]
+|Hedge End
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:HedgeAngleNW.png|40px]]
+|Hedge Angle
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:HedgeCrossingNW.png|40px]]
+|Hedge Crossing
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:HedgeWallNW.png|40px]]
+|Hedge Wall
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:EntranceHedge.png|40px]]
+|Entrance
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Grass.png|40px]]
+|Grass
+|Ornaments generate a small amount of attractiveness for the city.
+|15{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Philodendron.png|40px]]
+|Philodendron
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:SmallTreeNW.png|40px]]
+|Small Tree
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Ferns.png|40px]]
+|Ferns
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:BushNW.png|40px]]
+|Bush
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:ShrubNW.png|40px]]
+|Shrub
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:SmallPalmTree.png|40px]]
+|Small Palm Tree
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:PalmTree.png|40px]]
+|Palm Tree
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Well.png|40px]]
+|Well
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:1602Memorial.png|40px]]
+|1602 Memorial
+|Ornaments generate a small amount of attractiveness for the city.
+Available for pre-order versions of the game.
+|200{{Infoicon Credits}}
+|
+|2x2
+|-
+|[[File:FountainSquare.png|40px]]
+|Fountain Square
+|Ornaments generate a small amount of attractiveness for the city.
+Available as [[Ubisoft Club]] reward.
+|200{{Infoicon Credits}}
+|
+|2x3
+|-
+|[[File:BronzeLion.png|40px]]
+|Bronze Lion
+|Ornaments generate a small amount of attractiveness for the city.
+Available as [[Ubisoft Club]] reward.
+|200{{Infoicon Credits}}
+|
+|1x2
+|-
+|[[File:ChessTables.png|40px]]
+|Chess Tables
+|Ornaments generate a small amount of attractiveness for the city.
+Available as [[Ubisoft Club]] reward.
+|200{{Infoicon Credits}}
+|
+|2x2
+|}
+
+=== Obreros Buildings ===
+{| class="mw-collapsible mw-collapsed article-table" style="text-align: center; width: 100%"
+|-
+! style="width: 60px" |[[File:Obreros.png|48px]]
+! colspan="3" |Obreros Buildings
+!
+!
+|-
+! style="text-align:center;" |Icon
+! style="text-align:center;" |Name
+! style="text-align:center;" |Description
+! style="text-align:center;" |Construction cost
+! style="text-align:center;" |Maintenance cost
+! style="text-align:center;" |Size
+|-
+|[[File:Paved street.png|40px]]
+|[[Roads|Paved Street]]
+|Improves street connections and allows for faster transportation of goods.
+| style="text-align:center;" |13{{Infoicon Credits}}<br />1{{Infoicon Bricks}}
+|
+|
+|-
+|[[File:Clay.png|40px]]
+|[[Clay Pit]]
+|
+Produces 1t of clay in 00:30.
+
+Requires [[Fertilities_and_resources|resource deposit]].
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />4{{Infoicon Timber}}
+| style="text-align:center;" |−10{{Infoicon Balance}}<br />−100{{Infoicon Workforce Obreros}}
+| style="text-align:center;" |5x5
+|-
+|[[File:Bricks.png|40px]]
+|[[Brick Factory]]
+|Produces 1t of bricks in 01:00.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}
+| style="text-align:center;" |−20{{Infoicon Balance}}<br />−50{{Infoicon Workforce Obreros}}
+| style="text-align:center;" |5x5
+|-
+|[[File:Beef.png|40px]]
+|[[Cattle Farm]]
+|Produces 1t of beef in 01:00.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−25{{Infoicon Balance}}<br />−20{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |4x5
+(f:6 of 3x4)
+|-
+|[[File:Corn.png|40px]]
+|[[Corn Farm]]
+|
+Produces 1t of corn in 01:00.
+
+Requires corn [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />3{{Infoicon Timber}}
+| style="text-align:center;" |−25{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |3x3
+(f:168)
+|-
+|[[File:Tortilla.png|40px]]
+|[[Tortilla Maker]]
+|Produces 1t of tortillas in 00:30.
+| style="text-align:center;" |4500{{Infoicon Credits}}<br />3{{Infoicon Timber}}<br />2{{Infoicon Bricks}}
+| style="text-align:center;" |−100{{Infoicon Balance}}<br />−100{{Infoicon Workforce Obreros}}
+| style="text-align:center;" |3x5
+|-
+|[[File:Town Hall.png|40px]]
+|[[Town Hall]]
+|Only useful if equipped with items. Attach items here to provide bonuses to residences and public buildings.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />25{{Infoicon Timber}}<br />25{{Infoicon Bricks}}
+| style="text-align:center;" |−50[[File:Balance.png|20px]]<br />−20[[File:Influence.png|22px]]
+| style="text-align:center;" |4x4
+|-
+! colspan="6" |300 Obreros
+|-
+|[[File:Coffee beans.png|40px]]
+|[[Coffee Plantation]]
+|
+Produces 1t of coffee beans in 01:00.
+
+Requires coffee [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />5{{Infoicon Timber}}
+| style="text-align:center;" |−25{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |3x4
+(f:168)
+|-
+|[[File:Coffee.png|40px]]
+|[[Coffee Roaster]]
+|Produces 1t of coffee in 00:30.
+| style="text-align:center;" |9000{{Infoicon Credits}}<br />5{{Infoicon Timber}}<br />3{{Infoicon Bricks}}
+| style="text-align:center;" |−150{{Infoicon Balance}}<br />−150{{Infoicon Workforce Obreros}}
+| style="text-align:center;" |5x6
+|-
+|[[File:Boxing Arena.png|40px]]
+|[[Boxing Arena]]
+|Provides a public service for your residents.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}
+| style="text-align:center;" |−20{{Infoicon Balance}}
+| style="text-align:center;" |5x6
+|-
+|[[File:Gold Ore.png|40px]]
+|[[Gold Mine]]
+|
+Produces 1t of gold ore in 02:30.
+
+Requires [[Fertilities_and_resources|resource deposit]].
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}
+| style="text-align:center;" |−250{{Infoicon Balance}}<br />−100{{Infoicon Workforce Obreros}}
+|3x3
+|-
+|[[File:Public mooring.png|40px]]
+|[[Public Mooring]]
+|
+Enables visitors to make a stopover on your island.
+
+Requires free coastline.
+Limited to one per island.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />10{{Infoicon Bricks}}
+| style="text-align:center;" |−250{{Infoicon Balance}}
+| style="text-align:center;" |8x25
+|-
+|[[File:Pier.png|40px]]
+|[[Pier]]
+|
+Provides additional space for ships to load and unload goods.
+
+Requires free harbour area.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />50{{Infoicon Bricks}}
+| style="text-align:center;" |−50{{Infoicon Balance}}
+| style="text-align:center;" |6x7
+|-
+|[[File:Cannon Tower.png|40px]]
+|[[Cannon Tower]]
+|
+Does solid damage to enemies at long range, with good all-round defense.
+
+Requires free harbour area.
+| style="text-align:center;" |10000{{Infoicon Credits}}<br />40{{Infoicon Timber}}<br />40{{Infoicon Bricks}}<br />10{{Infoicon Weapons}}
+| style="text-align:center;" |−30{{Infoicon Balance}}
+| style="text-align:center;" |4x4
+|-
+! colspan="6" |600 Obreros
+|-
+|[[File:Oil Harbour.png|40px]]
+|[[Small Oil Harbour]]
+|
+Provides trains for transportation and allows you to store and trade oil (+500 oil storage).
+
+Requires free coastline.
+
+Limited to one per island.
+| style="text-align:center;" |10000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}
+| style="text-align:center;" |−100{{Infoicon Balance}}
+| style="text-align:center;" |7x8
+|-
+|[[File:Oil Storage.png|40px]]
+|[[Oil Storage]]
+|
+Increases island storage for oil by 200.
+
+Requires free harbour area.
+| style="text-align:center;" |8000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}
+| style="text-align:center;" |−50{{Infoicon Balance}}
+| style="text-align:center;" |4x8
+|-
+|[[File:Felt.png|40px]]
+|[[Felt Producer]]
+|Produces 1t of felt in 00:30.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />3{{Infoicon Timber}}<br />2{{Infoicon Bricks}}
+| style="text-align:center;" |−10{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |4x4
+|-
+|[[File:Bowler hats.png|40px]]
+|[[Bombín Weaver]]
+|Produces 1t of bowler hats in 00:30.
+| style="text-align:center;" |9000{{Infoicon Credits}}<br />3{{Infoicon Timber}}<br />2{{Infoicon Bricks}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−20{{Infoicon Workforce Obreros}}
+| style="text-align:center;" |4x6
+|-
+|[[File:Hospital.png|40px]]
+|[[Hospital]]
+|Fights illness in its influence radius. Can mobilise additional special units if required.
+| style="text-align:center;" |10000{{Infoicon Credits}}<br />12{{Infoicon Timber}}<br />20{{Infoicon Bricks}}
+| style="text-align:center;" |−100{{Infoicon Balance}}
+| style="text-align:center;" |5x6
+|-
+|[[File:Oil.png|40px]]
+|[[Oil Refinery]]
+|
+Produces 1t of oil in 00:15.
+
+Requires [[Fertilities and resources|oil fields]] in its influence radius.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10[[File:Reinforced concrete.png|22px]]
+| style="text-align:center;" |−250{{Infoicon Balance}}<br />−75{{Infoicon Workforce Obreros}}<br />−20{{Infoicon Attractiveness}}
+| style="text-align:center;" |5x5
+(r:9)
+|-
+|[[File:OilWell.png|40px]]
+|[[Oil Well]]
+|
+Extracts raw oil from oil fields.
+
+Requires [[Fertilities and resources|resource deposit]].
+|4000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}
+|
+|3x3
+|-
+|[[File:Railway.png|40px]]
+|[[Railway]]
+|Allows for transportation of oil by trains.
+| style="text-align:center;" |50{{Infoicon Credits}}<br />1{{Infoicon Timber}}<br />1{{Infoicon Steel Beams}}
+|
+|
+|-
+! colspan="6" |1000 Obreros
+|-
+|[[File:Tobacco.png|40px]]
+|[[Tobacco Plantation]]
+|
+Produces 1t of tobacco in 02:00.
+
+Requires tobacco [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |7000{{Infoicon Credits}}<br />10{{Infoicon Timber}}
+| style="text-align:center;" |−25{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |3x4
+(f:192)
+|-
+|[[File:Wood veneers.png|40px]]
+|[[Marquetry Workshop]]
+|Produces 1t of wood veneers in 01:00.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}
+| style="text-align:center;" |−100{{Infoicon Balance}}<br />−100{{Infoicon Workforce Obreros}}
+| style="text-align:center;" |5x5
+|-
+|[[File:Cigars.png|40px]]
+|[[Cigar Factory]]
+|Produces 1t of cigars in 00:30.
+| style="text-align:center;" |2500{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}
+| style="text-align:center;" |−250{{Infoicon Balance}}<br />−175{{Infoicon Workforce Obreros}}
+| style="text-align:center;" |7x7
+|-
+|[[File:Zoo.png|40px]]
+|[[Zoo]]
+|The finest selection of animals will make your city far more attractive.
+| style="text-align:center;" |10000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />30{{Infoicon Bricks}}<br />10{{Infoicon Steel Beams}}<br />5{{Infoicon Windows}}
+| style="text-align:center;" |−100{{Infoicon Balance}}
+| style="text-align:center;" |4x7
+(c:4x6)
+|-
+! colspan="6" |1500 Obreros
+|-
+|[[File:Cocoa.png|40px]]
+|[[Cocoa Plantation]]
+|
+Produces 1t of cocoa in 01:00.
+Requires cocoa [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |7600{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−5{{Infoicon Balance}}<br />−10{{Infoicon Workforce Jornaleros}}
+| style="text-align:center;" |4x5
+(f:128)
+|-
+|[[File:Sugar.png|40px]]
+|[[Sugar Refinery]]
+|Produces 1t of sugar in 00:30.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−10{{Infoicon Balance}}<br />−50{{Infoicon Workforce Obreros}}
+| style="text-align:center;" |4x6
+|-
+|[[File:Chocolate.png|40px]]
+|[[Chocolate Factory]]
+|Produces 1t of chocolate in 00:30.
+| style="text-align:center;" |24000{{Infoicon Credits}}<br />6{{Infoicon Timber}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−100{{Infoicon Workforce Obreros}}
+| style="text-align:center;" |5x7
+|-
+|[[File:Museum.png|40px]]
+|[[Museum]]
+|Artefacts from the past can be exposed here to attract curious travellers.
+| style="text-align:center;" |10000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />30{{Infoicon Bricks}}<br />10{{Infoicon Steel Beams}}<br />5{{Infoicon Windows}}
+| style="text-align:center;" |−100{{Infoicon Balance}}
+| style="text-align:center;" |5x8
+(e:4x5)
+|-
+|[[File:StraightFenceNW.png|40px]]
+|Straight Fence
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FenceEnd.png|40px]]
+|Fence End
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FenceAngle.png|40px]]
+|Fence Angle
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FenceCrossingNW.png|40px]]
+|Fence Crossing
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FenceWallNW.png|40px]]
+|Fence Wall
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Archway.png|40px]]
+|Archway
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Garden_benches.png|40px]]
+|Garden Benches
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Memorial_statue.png|40px]]
+|Memorial Statue
+|Ornaments generate a small amount of attractiveness for the city.
+|150{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Newsstand.png|40px]]
+|Newsstand
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:TropicalForest.png|40px]]
+|Tropical Forest
+|Ornaments generate a small amount of attractiveness for the city.
+|60{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FloweringShrub.png|40px]]
+|Flowering Shrub
+|Ornaments generate a small amount of attractiveness for the city.
+|25{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:EquestrianStatueGarden.png|40px]]
+|Equestrian Statue Garden
+|Ornaments generate a small amount of attractiveness for the city.
+|250{{Infoicon Credits}}
+|
+|2x2
+|-
+|[[File:WateringHole.png|40px]]
+|Watering Hole
+|Ornaments generate a small amount of attractiveness for the city.
+|50{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Garden.png|40px]]
+|Memorial Garden
+|Ornaments generate a small amount of attractiveness for the city.
+|200{{Infoicon Credits}}
+|
+|2x2
+|-
+|[[File:Fountain_garden.png|40px]]
+|Fountain Garden
+|Ornaments generate a small amount of attractiveness for the city.
+|150{{Infoicon Credits}}
+|
+|2x2
+|-
+|[[File:GardenNW.png|40px]]
+|Garden
+|Ornaments generate a small amount of attractiveness for the city.
+|125{{Infoicon Credits}}
+|
+|2x2
+|-
+|[[File:Gazebo_garden.png|40px]]
+|Gazebo Garden
+|Ornaments generate a small amount of attractiveness for the city.
+|250{{Infoicon Credits}}
+|
+|2x2
+|-
+|[[File:FountainPlazaNW.png|40px]]
+|Fountain Plaza
+|Ornaments generate a small amount of attractiveness for the city.
+|400{{Infoicon Credits}}
+|
+|3x3
+|-
+|[[File:GazeboPlazaNW.png|40px]]
+|Gazebo Plaza
+|Ornaments generate a small amount of attractiveness for the city.
+|500{{Infoicon Credits}}
+|
+|3x3
+|-
+|[[File:Hedge_2.|40px]]
+|Straight Hedge
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Hedge_2.1|40px]]
+|Hedge End
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Hedge_2.2|40px]]
+|Hedge Angle
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Hedge_2.4|40px]]
+|Hedge Crossing
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Hedge_2.5|40px]]
+|Hedge Wall
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:WideEntranceHedge.png|40px]]
+|Wide Entrance
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:StraightFence.png|40px]]
+|Fence
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FenceEnd2.png|40px]]
+|Fence
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FenceAngle.png|40px]]
+|Fence
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FenceCrossing2.png|40px]]
+|Fence
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:FenceJunction2.png|40px]]
+|Fence
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Archway2.png|40px]]
+|Archway
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Piazza_benches.png|40px]]
+|Piazza Benches
+|Ornaments generate a small amount of attractiveness for the city.
+|75{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Newsstand_cult.png|40px]]
+|Newsstand
+|Ornaments generate a small amount of attractiveness for the city.
+|100{{Infoicon Credits}}
+|
+|1x1
+|-
+|[[File:Memorial_statue_cult.png|40px]]
+|Memorial Statue
+|Ornaments generate a small amount of attractiveness for the city.
+|175{{Infoicon Credits}}
+|
+|1x1
+|}
+
+== The Arctic Buildings ==
+
+=== Explorers Buildings ===
+{| class="mw-collapsible mw-collapsed article-table" style="text-align: center; width: 100%"
+|-
+! style="width: 60px" |[[File:Explorers.png|48px]]
+! colspan="3" |Explorers Buildings
+!
+!
+|-
+! style="text-align:center;" |Icon
+! style="text-align:center;" |Name
+! style="text-align:center;" |Description
+! style="text-align:center;" |Construction cost
+! style="text-align:center;" |Maintenance cost
+! style="text-align:center;" |Size
+|-
+|[[File:Road Arctic.png|40px]]
+|[[Roads|Road]]
+|Connects buildings and allows for transportation of goods.
+| style="text-align:center;" |5{{Infoicon Credits}}
+|
+|
+|-
+|[[File:Canteen.png|40px]]
+|[[Canteen]]
+|
+Provides a public service for your residents.
+| style="text-align:center;" |1000{{Infoicon Credits}}<br />5{{Infoicon Timber}}
+| style="text-align:center;" |−100{{Infoicon Balance}}
+| style="text-align:center;" |5x6
+|-
+|[[File:Residence.png|40px]]
+|[[Explorer Residence|Explorer Shelter]]
+|Your residents live here. Residents provide income and workforce.
+| style="text-align:center;" |2{{Infoicon Timber}}
+| style="text-align:center;" |
+| style="text-align:center;" |3x3
+|-
+|[[File:Warehouse.png|40px]]
+|[[Small Warehouse]]
+|Accepts and distributes goods from, and to your production buildings.
+| style="text-align:center;" |500{{Infoicon Credits}}<br />5{{Infoicon Timber}}
+| style="text-align:center;" |−20{{Infoicon Balance}}
+| style="text-align:center;" |5x5
+|-
+|[[File:Charcoal_kiln.png|40px]]
+|[[Charcoal Kiln]]
+|
+Produces 1t of coal in 00:30.
+
+Requires forest [[Fertilities_and_resources|fertility]].
+| style="text-align:center;" |500{{Infoicon Credits}}<br />2{{Infoicon Timber}}
+| style="text-align:center;" |−20{{Infoicon Balance}}<br />−10{{Infoicon Workforce Explorers}}
+| style="text-align:center;" |5x5
+(r:9)
+|-
+|[[File:Heater.png|40px]]
+|[[Heater]]
+|Burns coal (1t every 30 seconds) to provide heating to other buildings in its influence radius.
+| style="text-align:center;" |1000{{Infoicon Credits}}<br />5{{Infoicon Timber}}
+| style="text-align:center;" |−50{{Infoicon Balance}}
+| style="text-align:center;" |3x4
+|-
+|[[File:Wood.png|40px]]
+|[[Lumberjack's Hut]]
+|Produces 1t of wood in 00:15.
+Requires undeveloped tiles within its radius.
+
+Requires heating.
+| style="text-align:center;" |100{{Infoicon Credits}}
+| style="text-align:center;" |−20[[File:Balance.png|20px]]<br />−10{{Infoicon Workforce Explorers}}
+| style="text-align:center;" |4x4
+(r:7)
+|-
+|[[File:Timber.png|40px]]
+|[[Sawmill]]
+|
+Produces 1t of timber in 00:15.
+
+Requires heating.
+| style="text-align:center;" |100{{Infoicon Credits}}
+| style="text-align:center;" |−20{{Infoicon Balance}}<br />−10{{Infoicon Workforce Explorers}}
+| style="text-align:center;" |3x4
+|-
+! colspan="6" |100 Explorers
+|-
+|[[File:Whaling_Station.png|40px]]
+|[[Whaling Station]]
+|Produces 1t of whale oil in 01:00.
+Requires whale fertility.
+Requires free coastline.
+
+Requires heating.
+| style="text-align:center;" |200{{Infoicon Credits}}<br />5{{Infoicon Timber}}
+| style="text-align:center;" |−40{{Infoicon Balance}}<br />−30{{Infoicon Workforce Explorers}}
+| style="text-align:center;" |6x17
+|-
+|[[File:Caribou Hunting Cabin.png|40px]]
+|[[Caribou Hunting Cabin]]
+|Produces 1t of caribou meat in 01:00.
+
+Requires undeveloped tiles within its radius.
+
+Requires caribou fertility.
+
+Requires heating.
+| style="text-align:center;" |200{{Infoicon Credits}}<br />2{{Infoicon Timber}}
+| style="text-align:center;" |−40{{Infoicon Balance}}<br />−25{{Infoicon Workforce Explorers}}
+| style="text-align:center;" |5x5
+(r:9)
+|-
+|[[File:Pemmican Cookhouse.png|40px]]
+|[[Pemmican Cookhouse]]
+|Produces 1t of pemmican in 01:00.
+
+Requires heating.
+| style="text-align:center;" |1000{{Infoicon Credits}}<br />5{{Infoicon Timber}}
+| style="text-align:center;" |−60{{Infoicon Balance}}<br />−30{{Infoicon Workforce Explorers}}
+|4x5
+|-
+! colspan="6" |250 Explorers
+|-
+|[[File:Ranger Station.png|40px]]
+|[[Ranger Station]]
+|Fights fire and arctic flu in its influence radius.
+
+Requires heating.
+| style="text-align:center;" |4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}
+| style="text-align:center;" |−75{{Infoicon Balance}}
+| style="text-align:center;" |4x4
+|-
+|[[File:Seal Hunting Docks.png|40px]]
+|[[Seal Hunting Docks]]
+|Produces 1t of seal skin in 00:30.
+
+Requires seal fertility.
+
+Requires free coastline.
+
+Requires heating.
+| style="text-align:center;" |200{{Infoicon Credits}}<br />5{{Infoicon Timber}}
+| style="text-align:center;" |−50{{Infoicon Balance}}<br />−20{{Infoicon Workforce Explorers}}
+| style="text-align:center;" |5x7
+|-
+|[[File:Goose Farm.png|40px]]
+|[[Goose Farm]]
+|Produces 1t of goose feathers in 02:00.
+
+Requires heating.
+| style="text-align:center;" |200{{Infoicon Credits}}<br />10{{Infoicon Timber}}
+| style="text-align:center;" |−70{{Infoicon Balance}}<br />−35{{Infoicon Workforce Explorers}}
+| style="text-align:center;" |3x3
+(f:5 of 2x3)
+|-
+|[[File:Sleeping Bag Factory.png|40px]]
+|[[Sleeping Bag Factory]]
+|Produces 1t of sleeping bags in 01:00.
+
+Requires heating.
+| style="text-align:center;" |1500{{Infoicon Credits}}<br />15{{Infoicon Timber}}
+| style="text-align:center;" |−120{{Infoicon Balance}}<br />−50{{Infoicon Workforce Explorers}}
+| style="text-align:center;" |4x4
+|-
+! colspan="6" |500 Explorers
+|-
+|[[File:Oil Lamp Factory.png|40px]]
+|[[Oil Lamp Factory]]
+|Produces 1t of oil lamps in 01:00.
+
+Requires heating.
+| style="text-align:center;" |2000{{Infoicon Credits}}<br />15{{Infoicon Timber}}
+| style="text-align:center;" |−200{{Infoicon Balance}}<br />−70{{Infoicon Workforce Explorers}}
+| style="text-align:center;" |4x4
+|}
+
+=== Technicians Buildings ===
+{| class="mw-collapsible mw-collapsed article-table" style="text-align: center; width: 100%"
+|-
+! style="width: 60px" |[[File:Technicians.png|48px]]
+! colspan="3" |Technicians Buildings
+!
+!
+|-
+! style="text-align:center;" |Icon
+! style="text-align:center;" |Name
+! style="text-align:center;" |Description
+! style="text-align:center;" |Construction cost
+! style="text-align:center;" |Maintenance cost
+! style="text-align:center;" |Size
+|-
+|[[File:Airship Hangar.png|40px]]
+|[[Airship Hangar|Airship Hangar: Foundations]]
+|
+| style="text-align:center;" |?{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />10{{Infoicon Steel Beams}}
+|−150{{Infoicon Workforce Explorers}}
+|12x16
+|-
+|[[File:Depot.png|40px]]
+|[[Depot]]
+|
+Increases overall storage capacity by 50 tons.
+
+Requires free harbour area.
+| style="text-align:center;" |4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}
+| style="text-align:center;" |−?{{Infoicon Balance}}
+| style="text-align:center;" |?x?
+|-
+|[[File:Cannon Tower.png|40px]]
+|[[Cannon Tower]]
+|Does solid damage to enemies at long range, with good all-round defense.
+Requires free harbour area.
+| style="text-align:center;" |4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}<br />10{{Infoicon Weapons}}
+| style="text-align:center;" |−30[[File:Balance.png|20px]]<br />−7[[File:Influence.png|22px]]
+| style="text-align:center;" |4x4
+|-
+|[[File:Pier.png|40px]]
+|[[Pier]]
+|Provides additional space for ships to load and unload goods.
+Requires free harbour area.
+| style="text-align:center;" |4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}
+| style="text-align:center;" |−?{{Infoicon Balance}}
+| style="text-align:center;" |6x7
+|-
+! colspan="6" |100 Technicians
+|-
+|[[File:Post Office.png|40px]]
+|[[Post Office]]
+|
+Provides a public service for your residents.
+| style="text-align:center;" |4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}
+| style="text-align:center;" |−?{{Infoicon Balance}}
+| style="text-align:center;" |3x4
+|-
+|[[File:Arctic Lodge.png|40px]]
+|[[Arctic Lodge]]
+|Only useful if equipped with items. Attach items here to provide bonuses to production and residences.
+| style="text-align:center;" |4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}
+| style="text-align:center;" |−30[[File:Balance.png|20px]]<br />−20[[File:Influence.png|22px]]
+| style="text-align:center;" |4x4
+(r:?)
+|-
+! colspan="6" |300 Technicians
+|-
+|[[File:Bear Hunting Cabin.png|40px]]
+|[[Bear Hunting Cabin]]
+|Produces 1t of bear furs in 01:30.
+Requires undeveloped tiles within its radius.
+
+Requires heating.
+| style="text-align:center;" |4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}
+| style="text-align:center;" |−20[[File:Balance.png|20px]]<br />−10{{Infoicon Workforce Explorers}}
+| style="text-align:center;" |5x5
+(r:9)
+|-
+|[[File:Parka Factory.png|40px]]
+|[[Parka Factory]]
+|
+Produces 1t of parkas in 01:30.
+
+Requires heating.
+| style="text-align:center;" |4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}
+| style="text-align:center;" |−70{{Infoicon Balance}}<br />−35{{Infoicon Workforce Technicians}}
+| style="text-align:center;" |4x4
+|-
+|[[File:Prime Hunting Cabin.png|40px]]
+|[[Hunting Cabin|Pristine Hunting Cabin]]
+|Produces 1t of furs in 00:15.
+Requires furs fertility.
+
+Requires undeveloped tiles within radius.
+
+Requires heating.
+| style="text-align:center;" |4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}
+| style="text-align:center;" |−40{{Infoicon Balance}}<br />−30{{Infoicon Workforce Explorers}}
+| style="text-align:center;" |5x5
+(r:9)
+|-
+! colspan="6" |750 Technicians
+|-
+|[[File:Husky Farm.png|40px]]
+|[[Husky Farm]]
+|Produces 1t of huskies in 02:00.
+
+Requires heating.
+| style="text-align:center;" |4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}
+| style="text-align:center;" |−70{{Infoicon Balance}}<br />−35{{Infoicon Workforce Technicians}}
+| style="text-align:center;" |3x3
+(f:5 of 2x3)
+|-
+|[[File:Sled Frame Factory.png|40px]]
+|[[Sled Frame Factory]]
+|Produces 1t of sleds in 01:00.
+
+Requires heating.
+| style="text-align:center;" |4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}
+| style="text-align:center;" |−70{{Infoicon Balance}}<br />−35{{Infoicon Workforce Technicians}}
+|4x5
+|-
+|[[File:Husky Sled Factory.png|40px]]
+|[[Husky Sled Factory]]
+|Produces 1t of husky sleds in 01:00.
+
+Requires heating.
+| style="text-align:center;" |4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}
+| style="text-align:center;" |−70{{Infoicon Balance}}<br />−35{{Infoicon Workforce Technicians}}
+| style="text-align:center;" |4x4
+|-
+|[[File:Deep Gold Mine.png|40px]]
+|[[Gold Mine|Deep Gold Mine]]
+|Produces 1t of gold ore in 01:00.
+
+Requires gold deposits.
+
+Requires heating.
+| style="text-align:center;" |5000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}
+| style="text-align:center;" |−400{{Infoicon Balance}}<br />−100{{Infoicon Workforce Technicians}}
+| style="text-align:center;" |3x3
+|-
+|[[File:Gas Mine.png|40px]]
+|[[Gas Mine]]
+|Produces 1t of gas in 04:30.
+Requires gas deposits in its influence radius.
+
+Requires heating.
+| style="text-align:center;" |8000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}
+| style="text-align:center;" |−1000{{Infoicon Balance}}<br />−250{{Infoicon Workforce Technicians}}
+| style="text-align:center;" |4x4
+(r:8)
+|}
+[[Category:Gameplay]]
+[[Category:Buildings]]
