@@ -30,7 +30,7 @@ namespace AnnoDesigner
     /// <summary>
     /// Interaction logic for AnnoCanvas.xaml
     /// </summary>
-    public partial class AnnoCanvas : UserControl
+    public partial class AnnoCanvas : UserControl, IAnnoCanvas
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -210,22 +210,22 @@ namespace AnnoDesigner
         /// <summary>
         /// backing field of the ObjectClipboard property
         /// </summary>
-        private List<LayoutObject> _objectClipboard = new List<LayoutObject>();
+        private List<LayoutObject> _clipboardObjects = new List<LayoutObject>();
 
         /// <summary>
         /// Holds a list of objects that are currently on the clipboard.
         /// </summary>
-        public List<LayoutObject> ObjectClipboard
+        public List<LayoutObject> ClipboardObjects
         {
             get
             {
-                return _objectClipboard;
+                return _clipboardObjects;
             }
             private set
             {
                 if (value != null)
                 {
-                    _objectClipboard = value;
+                    _clipboardObjects = value;
                     StatusMessage = value.Count + " items copied";
                     OnClipboardChanged?.Invoke(value);
                 }
@@ -1389,16 +1389,16 @@ namespace AnnoDesigner
                     {
                         if (SelectedObjects.Count != 0)
                         {
-                            ObjectClipboard = CloneList(SelectedObjects);
+                            ClipboardObjects = CloneList(SelectedObjects);
                         }
                     }
                     break;
                 case Key.V:
                     if (IsControlPressed())
                     {
-                        if (ObjectClipboard.Count != 0)
+                        if (ClipboardObjects.Count != 0)
                         {
-                            CurrentObjects = CloneList(ObjectClipboard);
+                            CurrentObjects = CloneList(ClipboardObjects);
                             MoveCurrentObjectsToMouse();
                         }
                     }

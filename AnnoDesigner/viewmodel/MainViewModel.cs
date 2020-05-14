@@ -43,7 +43,7 @@ namespace AnnoDesigner.viewmodel
 
         public event EventHandler<EventArgs> ShowStatisticsChanged;
 
-        private AnnoCanvas _annoCanvas;
+        private IAnnoCanvas _annoCanvas;
         private Dictionary<int, bool> _treeViewState;
         private bool _canvasShowGrid;
         private bool _canvasShowIcons;
@@ -180,7 +180,7 @@ namespace AnnoDesigner.viewmodel
                 //Force a language update on the clipboard status item.
                 if (!string.IsNullOrWhiteSpace(StatusMessageClipboard))
                 {
-                    AnnoCanvas_ClipboardChanged(AnnoCanvas.ObjectClipboard);
+                    AnnoCanvas_ClipboardChanged(AnnoCanvas.ClipboardObjects);
                 }
 
                 //update settings
@@ -770,7 +770,7 @@ namespace AnnoDesigner.viewmodel
 
         #region properties
 
-        public AnnoCanvas AnnoCanvas
+        public IAnnoCanvas AnnoCanvas
         {
             get { return _annoCanvas; }
             set

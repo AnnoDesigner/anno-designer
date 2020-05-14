@@ -56,6 +56,7 @@
     <Compile Include="BrushCache.cs" />
     <Compile Include="Helper\CoordinateHelper.cs" />
     <Compile Include="model\AppSettings.cs" />
+    <Compile Include="model\IAnnoCanvas.cs" />
     <Compile Include="model\IAppSettings.cs" />
     <Compile Include="model\IBrushCache.cs" />
     <Compile Include="model\ICoordinateHelper.cs" />

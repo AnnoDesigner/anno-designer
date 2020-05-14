@@ -17,6 +17,7 @@ namespace AnnoDesigner.Tests
     {
         private readonly ICommons _mockedCommons;
         private readonly IAppSettings _mockedAppSettings;
+        private readonly IAnnoCanvas _mockedAnnoCanvas;
 
         public MainViewModelTests()
         {
@@ -25,11 +26,20 @@ namespace AnnoDesigner.Tests
             _mockedCommons = commonsMock.Object;
 
             _mockedAppSettings = new Mock<IAppSettings>().Object;
+
+            var annoCanvasMock = new Mock<IAnnoCanvas>();
+            annoCanvasMock.SetupAllProperties();
+            _mockedAnnoCanvas = annoCanvasMock.Object;
         }
 
-        private MainViewModel GetViewModel(ICommons commonsToUse = null, IAppSettings appSettingsToUse = null)
+        private MainViewModel GetViewModel(ICommons commonsToUse = null,
+            IAppSettings appSettingsToUse = null,
+            IAnnoCanvas annoCanvasToUse = null)
         {
-            return new MainViewModel(commonsToUse ?? _mockedCommons, appSettingsToUse ?? _mockedAppSettings);
+            return new MainViewModel(commonsToUse ?? _mockedCommons, appSettingsToUse ?? _mockedAppSettings)
+            {
+                AnnoCanvas = annoCanvasToUse ?? _mockedAnnoCanvas
+            };
         }
 
         #region ctor tests
@@ -336,6 +346,26 @@ namespace AnnoDesigner.Tests
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveShowInfluences(bool expectedShowInfluences)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.CanvasShowInfluences = expectedShowInfluences;
+
+            // Act
+            viewModel.SaveSettings();
+
+            // Assert
+            Assert.Equal(expectedShowInfluences, appSettings.Object.ShowInfluences);
+            appSettings.Verify(x => x.Save(), Times.Once);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
         public void SaveSettings_IsCalled_ShouldSaveEnableAutomaticUpdateCheck(bool expectedEnableAutomaticUpdateCheck)
         {
             // Arrange            
@@ -499,6 +529,30 @@ namespace AnnoDesigner.Tests
             // Assert
             Assert.Equal(expectedPresetsTreeGameVersionFilter.ToString(), appSettings.Object.PresetsTreeGameVersionFilter);
             appSettings.Verify(x => x.Save(), Times.Once);
+        }
+
+        #endregion
+
+        #region LoadSettings tests
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void LoadSettings_IsCalled_ShouldLoadShowInfluences(bool expectedShowInfluences)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.ShowInfluences).Returns(() => expectedShowInfluences);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.CanvasShowInfluences = expectedShowInfluences;
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedShowInfluences, viewModel.CanvasShowInfluences);
         }
 
         #endregion

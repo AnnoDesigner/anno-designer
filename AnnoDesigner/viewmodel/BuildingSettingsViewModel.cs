@@ -62,7 +62,7 @@ namespace AnnoDesigner.viewmodel
         private bool _isBorderlessChecked;
         private bool _isRoadChecked;
         private ObservableCollection<SerializableColor> _colorsInLayout;
-        private AnnoCanvas _annoCanvasToUse;
+        private IAnnoCanvas _annoCanvasToUse;
         private ColorHueSaturationBrightnessComparer _colorSorter;
         private ObservableCollection<BuildingInfluence> _buildingInfluences;
         private BuildingInfluence _selectedBuildingInfluence;
@@ -396,7 +396,7 @@ namespace AnnoDesigner.viewmodel
             set { UpdateProperty(ref _isRoadChecked, value); }
         }
 
-        public AnnoCanvas AnnoCanvasToUse
+        public IAnnoCanvas AnnoCanvasToUse
         {
             get { return _annoCanvasToUse; }
             set
