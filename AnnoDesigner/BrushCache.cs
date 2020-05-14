@@ -10,7 +10,7 @@ namespace AnnoDesigner.Helper
 {
     public class BrushCache : IBrushCache
     {
-        private static Dictionary<Color, SolidColorBrush> _cachedBrushes;
+        private static readonly Dictionary<Color, SolidColorBrush> _cachedBrushes;
 
         static BrushCache()
         {

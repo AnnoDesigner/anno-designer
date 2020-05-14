@@ -302,6 +302,7 @@ namespace AnnoDesigner
         private readonly ILayoutLoader _layoutLoader;
         private readonly ICoordinateHelper _coordinateHelper;
         private readonly IBrushCache _brushCache;
+        private readonly IPenCache _penCache;
 
         /// <summary>
         /// States the mode of mouse interaction.
@@ -425,30 +426,38 @@ namespace AnnoDesigner
         public AnnoCanvas(BuildingPresets presetsToUse,
             Dictionary<string, IconImage> iconsToUse,
             ICoordinateHelper coordinateHelperToUse = null,
-            IBrushCache brushCacheToUse = null)
+            IBrushCache brushCacheToUse = null,
+            IPenCache penCacheToUse = null)
         {
             InitializeComponent();
 
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
+            _penCache = penCacheToUse ?? new PenCache();
+
+            _layoutLoader = new LayoutLoader();
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
             // initialize
             CurrentMode = MouseMode.Standard;
+
             PlacedObjects = new List<LayoutObject>();
             SelectedObjects = new List<LayoutObject>();
-            _linePen = new Pen(Brushes.Black, 1);
-            _highlightPen = new Pen(Brushes.Yellow, 1);
-            _radiusPen = new Pen(Brushes.Black, 1);
-            _influencedPen = new Pen(Brushes.LawnGreen, 1);
+            
+            const int dpiFactor = 1;
+            _linePen = _penCache.GetPen(Brushes.Black, dpiFactor * 1);
+            _highlightPen = _penCache.GetPen(Brushes.Yellow, dpiFactor * 2);
+            _radiusPen = _penCache.GetPen(Brushes.Black, dpiFactor * 2);
+            _influencedPen = _penCache.GetPen(Brushes.LawnGreen, dpiFactor * 2);
+            
             var color = Colors.LightYellow;
             color.A = 32;
-            _lightBrush = new SolidColorBrush(color);
+            _lightBrush = _brushCache.GetSolidBrush(color);
             color = Colors.LawnGreen;
             color.A = 32;
-            _influencedBrush = new SolidColorBrush(color);
+            _influencedBrush = _brushCache.GetSolidBrush(color);
 
             sw.Stop();
             logger.Trace($"init variables took: {sw.ElapsedMilliseconds}ms");
@@ -517,22 +526,7 @@ namespace AnnoDesigner
                 }
             }
 
-            const int dpiFactor = 1;
-            _linePen.Thickness = dpiFactor * 1;
-            _highlightPen.Thickness = dpiFactor * 2;
-            _radiusPen.Thickness = dpiFactor * 2;
-            _influencedPen.Thickness = dpiFactor * 2;
-
-            _linePen.Freeze();
-            _highlightPen.Freeze();
-            _radiusPen.Freeze();
-            _influencedPen.Freeze();
-            _lightBrush.Freeze();
-            _influencedBrush.Freeze();
-
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-
-            _layoutLoader = new LayoutLoader();
         }
 
         #endregion
@@ -972,7 +966,7 @@ namespace AnnoDesigner
         private List<LayoutObject> CloneList(List<LayoutObject> list)
         {
             var newList = new List<LayoutObject>(list.Capacity);
-            list.ForEach(_ => newList.Add(new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushCache)));
+            list.ForEach(_ => newList.Add(new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)));
             return newList;
         }
 
@@ -1067,7 +1061,7 @@ namespace AnnoDesigner
                 if (obj != null)
                 {
                     CurrentObjects.Clear();
-                    CurrentObjects.Add(new LayoutObject(new AnnoObject(obj.WrappedAnnoObject), _coordinateHelper, _brushCache));
+                    CurrentObjects.Add(new LayoutObject(new AnnoObject(obj.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache));
                     OnCurrentObjectChanged(obj);
                 }
                 return;
@@ -1660,7 +1654,7 @@ namespace AnnoDesigner
                     var layoutObjects = new List<LayoutObject>(layout.Count);
                     foreach (var curObj in layout)
                     {
-                        layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache));
+                        layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
                     }
 
                     PlacedObjects = layoutObjects;
