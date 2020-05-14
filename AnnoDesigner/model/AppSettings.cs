@@ -102,6 +102,12 @@ namespace AnnoDesigner.model
             set { Settings.Default.ShowGrid = value; }
         }
 
+        public bool ShowInfluences
+        {
+            get { return Settings.Default.ShowInfluences; }
+            set { Settings.Default.ShowInfluences = value; }
+        }
+
         public bool IsPavedStreet
         {
             get { return Settings.Default.IsPavedStreet; }

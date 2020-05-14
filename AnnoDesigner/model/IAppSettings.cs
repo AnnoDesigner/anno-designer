@@ -26,6 +26,7 @@ namespace AnnoDesigner.model
         bool ShowLabels { get; set; }
         bool ShowIcons { get; set; }
         bool ShowGrid { get; set; }
+        bool ShowInfluences { get; set; }
         bool IsPavedStreet { get; set; }
         string TreeViewSearchText { get; set; }
         string PresetsTreeGameVersionFilter { get; set; }

@@ -104,6 +104,30 @@ namespace AnnoDesigner
         }
 
         /// <summary>
+        /// Backing field of the RenderInfluences property.
+        /// </summary>
+        private bool _renderInfluences;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the influences should be rendered.
+        /// </summary>
+        public bool RenderInfluences
+        {
+            get
+            {
+                return _renderInfluences;
+            }
+            set
+            {
+                if (_renderInfluences != value)
+                {
+                    InvalidateVisual();
+                }
+                _renderInfluences = value;
+            }
+        }
+
+        /// <summary>
         /// Backing field of the RenderLabel property.
         /// </summary>
         private bool _renderLabel;
