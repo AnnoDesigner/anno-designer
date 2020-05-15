@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Models;
-using AnnoDesigner.model;
-using AnnoDesigner.viewmodel;
+using AnnoDesigner.Models;
+using AnnoDesigner.ViewModels;
 using Moq;
 using Xunit;
 

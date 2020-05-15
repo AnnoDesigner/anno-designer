@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AnnoDesigner.model;
-using AnnoDesigner.viewmodel;
+using AnnoDesigner.Models;
+using AnnoDesigner.ViewModels;
 using Xunit;
 
 namespace AnnoDesigner.Tests

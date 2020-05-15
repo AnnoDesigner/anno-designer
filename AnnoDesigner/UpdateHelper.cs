@@ -1,6 +1,6 @@
 ﻿using AnnoDesigner.Core;
 using AnnoDesigner.Core.Helper;
-using AnnoDesigner.model;
+using AnnoDesigner.Models;
 using AnnoDesigner.Properties;
 using NLog;
 using Octokit;
