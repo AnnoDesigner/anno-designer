@@ -12,11 +12,19 @@ using InfoboxParser.Models;
 
 namespace InfoboxParser
 {
-    internal class ParserBothWorlds : IParser
+    internal class Parser2Regions : IParser
     {
         private readonly ICommons _commons;
+        private readonly ISpecialBuildingNameHelper _specialBuildingNameHelper;
 
         //TODO support edge cases in regex like "|Input 1 Amount Electricity (OW) = 1.79769313486232E+308"
+
+        //|Title A      = Building
+        private static readonly Regex regexBuildingName = new Regex(@"(?<begin>\|Title)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<buildingName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        //|Tab A               = Old World
+        private static readonly Regex regexRegionName = new Regex(@"(?<begin>\|Tab)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<regionName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
 
         //|Building Type (OW)     = Institution
         //|Building Type (NW)     = Institution
@@ -50,11 +58,12 @@ namespace InfoboxParser
 
         private List<string> possibleRegions;
 
-        public ParserBothWorlds(ICommons commons)
+        public Parser2Regions(ICommons commons, ISpecialBuildingNameHelper specialBuildingNameHelper)
         {
             _commons = commons;
+            _specialBuildingNameHelper = specialBuildingNameHelper;
 
-            possibleRegions = new List<string> { "OW", "NW" };
+            possibleRegions = new List<string> { "A", "B" };
         }
 
         public List<IInfobox> GetInfobox(string wikiText)
@@ -66,15 +75,14 @@ namespace InfoboxParser
 
             var result = new List<IInfobox>();
 
-            //same for both
-            var buildingName = getBuildingName(wikiText);
-            if (string.IsNullOrWhiteSpace(buildingName))
-            {
-            }
-
             //parse wikitext 2 times. first time with parameter "OW", second time with parameter "NW"
             foreach (var curRegion in possibleRegions)
             {
+                var buildingName = getBuildingName(wikiText, curRegion);
+                if (string.IsNullOrWhiteSpace(buildingName))
+                {
+                }
+
                 var buildingType = getBuildingType(wikiText, curRegion);
                 if (buildingType == BuildingType.Unknown)
                 {
@@ -90,17 +98,20 @@ namespace InfoboxParser
                 var supplyInfo = getSupplyInfo(wikiText, curRegion);
                 var unlockInfo = getUnlockInfo(wikiText, curRegion);
 
-                var specialBuildingNameHelper = new SpecialBuildingNameHelper();
-                buildingName = specialBuildingNameHelper.CheckSpecialBuildingName(buildingName);
+                buildingName = _specialBuildingNameHelper.CheckSpecialBuildingName(buildingName);
 
+                var parsedRegion = getRegionName(wikiText, curRegion);
                 var region = WorldRegion.Unknown;
-                switch (curRegion)
+                switch (parsedRegion)
                 {
-                    case "OW":
+                    case "Old World":
                         region = WorldRegion.OldWorld;
                         break;
-                    case "NW":
+                    case "New World":
                         region = WorldRegion.NewWorld;
+                        break;
+                    case "The Arctic":
+                        region = WorldRegion.Arctic;
                         break;
                     default:
                         break;
@@ -122,7 +133,7 @@ namespace InfoboxParser
             return result;
         }
 
-        private string getBuildingName(string infobox)
+        private string getBuildingName(string infobox, string regionToParse)
         {
             var result = string.Empty;
 
@@ -140,9 +151,76 @@ namespace InfoboxParser
 
                     if (curLine.StartsWith("|Title", StringComparison.OrdinalIgnoreCase))
                     {
-                        result = curLine.Replace("|Title", string.Empty)
-                            .Replace("=", string.Empty)
-                            .Trim();
+                        var matchBuildingName = regexBuildingName.Match(curLine);
+                        if (matchBuildingName.Success)
+                        {
+                            var matchedRegion = matchBuildingName.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
+                            {
+                                continue;
+                            }
+
+                            //handle entry with no value e.g. "|Title A     = "
+                            var parsedBuildingName = matchBuildingName.Groups["buildingName"].Value;
+                            if (string.IsNullOrWhiteSpace(parsedBuildingName))
+                            {
+                                continue;
+                            }
+
+                            result = parsedBuildingName;
+
+
+                            break;
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private string getRegionName(string infobox, string regionToParse)
+        {
+            var result = string.Empty;
+
+            if (!infobox.Contains("|Tab"))
+            {
+                return result;
+            }
+
+            using (var reader = new StringReader(infobox))
+            {
+                string curLine;
+                while ((curLine = reader.ReadLine()) != null)
+                {
+                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
+
+                    if (curLine.StartsWith("|Tab", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var matchRegionName = regexRegionName.Match(curLine);
+                        if (matchRegionName.Success)
+                        {
+                            var matchedRegion = matchRegionName.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
+                            {
+                                continue;
+                            }
+
+                            //handle entry with no value e.g. "|Tab A     = "
+                            var parsedRegionName = matchRegionName.Groups["regionName"].Value;
+                            if (string.IsNullOrWhiteSpace(parsedRegionName))
+                            {
+                                continue;
+                            }
+
+                            result = parsedRegionName;
+
+
+                            break;
+                        }
+
                         break;
                     }
                 }

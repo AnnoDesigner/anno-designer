@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using InfoboxParser.Models;
 
 namespace InfoboxParser
 {
-    public class SpecialBuildingNameHelper
+    public class SpecialBuildingNameHelper : ISpecialBuildingNameHelper
     {
         public string CheckSpecialBuildingName(string buildingName)
         {
@@ -21,6 +22,12 @@ namespace InfoboxParser
                     break;
                 case "World's Fair: Foundations":
                     buildingName = "World's Fair|World's Fair: Foundations";
+                    break;
+                case "Airship Hangar":
+                    buildingName = "Airship Hangar|Airship Hangar: Foundations";
+                    break;
+                case "Explorer Residence":
+                    buildingName = "Explorer Residence|Explorer Shelter";
                     break;
                 default:
                     break;

@@ -12,7 +12,7 @@ using InfoboxParser.Models;
 
 namespace InfoboxParser
 {
-    internal class Parser
+    internal class Parser : IParser
     {
         private readonly ICommons _commons;
 

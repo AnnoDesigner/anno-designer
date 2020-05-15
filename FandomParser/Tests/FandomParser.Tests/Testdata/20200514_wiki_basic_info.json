@@ -1,0 +1,2935 @@
+﻿{
+  "Version": "1.0.0.0",
+  "Entries": [
+    {
+      "Name": "[[Roads|Dirt Road]]",
+      "Icon": "[[File:Dirt_road.png|40px]]",
+      "Description": "Connects buildings and allows for transportation of goods.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "3{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": ""
+    },
+    {
+      "Name": "[[Marketplace]]",
+      "Icon": "[[File:Marketplace.png|40px]]",
+      "Description": "A place that provides your inhabitants with all the necessities of daily life.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />10{{Infoicon Timber}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}",
+      "Size": "5x6"
+    },
+    {
+      "Name": "[[Farmer Residence]]",
+      "Icon": "[[File:Residence.png|40px]]",
+      "Description": "Your residents live here. Residents provide income and workforce.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "2{{Infoicon Timber}}",
+      "MaintenanceCost": "",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Small Warehouse]]",
+      "Icon": "[[File:Warehouse.png|40px]]",
+      "Description": "Accepts and distributes goods from, and to your production buildings.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />10{{Infoicon Timber}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Lumberjack's Hut]]",
+      "Icon": "[[File:Wood.png|40px]]",
+      "Description": "\r\nProduces 1t of wood in 00:15.\r\nRequires undeveloped tiles within its radius.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "100{{Infoicon Credits}}",
+      "MaintenanceCost": "-10{{Infoicon Balance}}<br />-5{{Infoicon Workforce Farmers}}",
+      "Size": "4x4\r\n(r:7)"
+    },
+    {
+      "Name": "[[Sawmill]]",
+      "Icon": "[[File:Timber.png|40px]]",
+      "Description": "\r\nProduces 1t of timber in 00:15.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "100{{Infoicon Credits}}",
+      "MaintenanceCost": "-10{{Infoicon Balance}}<br />-10{{Infoicon Workforce Farmers}}",
+      "Size": "3x4"
+    },
+    {
+      "Name": "[[Fishery]]",
+      "Icon": "[[File:Fish.png|40px]]",
+      "Description": "\r\nProduces 1t of fish in 00:30.\r\nRequires free coastline.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "100{{Infoicon Credits}}<br />2{{Infoicon Timber}}",
+      "MaintenanceCost": "-40{{Infoicon Balance}}<br />-25{{Infoicon Workforce Farmers}}",
+      "Size": "5x11\r\n(5x16)"
+    },
+    {
+      "Name": "[[Potato Farm]]",
+      "Icon": "[[File:Potato.png|40px]]",
+      "Description": "\r\nProduces 1t of potatoes in 00:30.\r\nRequires potato [[Fertilities_and_resources|fertility]].",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "100{{Infoicon Credits}}<br />2{{Infoicon Timber}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}<br />-20{{Infoicon Workforce Farmers}}",
+      "Size": "3x3\r\n(f:72)"
+    },
+    {
+      "Name": "[[Schnapps Distillery]]",
+      "Icon": "[[File:Schnapps.png|40px]]",
+      "Description": "\r\nProduces 1t of schnapps in 00:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "100{{Infoicon Credits}}<br />2{{Infoicon Timber}}",
+      "MaintenanceCost": "-40{{Infoicon Balance}}<br />-50{{Infoicon Workforce Farmers}}",
+      "Size": "3x4"
+    },
+    {
+      "Name": "[[Sheep Farm]]",
+      "Icon": "[[File:Wool.png|40px]]",
+      "Description": "Produces 1t of wool in 00:30.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "100{{Infoicon Credits}}<br />2{{Infoicon Timber}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}<br />-10{{Infoicon Workforce Farmers}}",
+      "Size": "3x3\r\n(f:3 of 3x3)"
+    },
+    {
+      "Name": "[[Framework Knitters]]",
+      "Icon": "[[File:Work clothes.png|40px]]",
+      "Description": "\r\nProduces 1t of work clothes in 00:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "400{{Infoicon Credits}}<br />2{{Infoicon Timber}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-50{{Infoicon Workforce Farmers}}",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Fire Station]]",
+      "Icon": "[[File:Fire station.png|40px]]",
+      "Description": "Fights fire in its influence radius. Can mobilise additional special units if required.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />4{{Infoicon Timber}}",
+      "MaintenanceCost": "-25{{Infoicon Balance}}",
+      "Size": "3x5"
+    },
+    {
+      "Name": "[[Pub]]",
+      "Icon": "[[File:Pub.png|40px]]",
+      "Description": "Provides a public service for your residents.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />10{{Infoicon Timber}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}",
+      "Size": "4x6"
+    },
+    {
+      "Name": "[[Grass]]",
+      "Icon": "[[File:Grass.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "15{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "[[Shrubbery]]",
+      "Icon": "[[File:Bush.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "[[Mature Shrubbery]]",
+      "Icon": "[[File:MatureShrubbery.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "[[Mature Tree]]",
+      "Icon": "[[File:Fully Grown Tree.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "[[Apple Tree]]",
+      "Icon": "[[File:AppleTree.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Well",
+      "Icon": "[[File:Well.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "1602 Memorial",
+      "Icon": "[[File:1602Memorial.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.\r\nAvailable for pre-order versions of the game.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "200{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "Fountain Square",
+      "Icon": "[[File:FountainSquare.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.\r\nAvailable as [[Ubisoft Club]] reward.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "200{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x3"
+    },
+    {
+      "Name": "Bronze Lion",
+      "Icon": "[[File:BronzeLion.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.\r\nAvailable as [[Ubisoft Club]] reward.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "200{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x2"
+    },
+    {
+      "Name": "Chess Tables",
+      "Icon": "[[File:ChessTables.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.\r\nAvailable as [[Ubisoft Club]] reward.",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "ConstructionCost": "200{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "[[Roads|Paved Street]]",
+      "Icon": "[[File:Paved street.png|40px]]",
+      "Description": "Improves street connections and allows for faster transportation of goods.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "13{{Infoicon Credits}}<br />1{{Infoicon Bricks}}",
+      "MaintenanceCost": "",
+      "Size": ""
+    },
+    {
+      "Name": "[[Clay Pit]]",
+      "Icon": "[[File:Clay.png|40px]]",
+      "Description": "\r\nProduces 1t of clay in 00:30.\r\nRequires [[Fertilities_and_resources|resource deposit]].\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />4{{Infoicon Timber}}",
+      "MaintenanceCost": "-10{{Infoicon Balance}}<br />-50{{Infoicon Workforce Workers}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Brick Factory]]",
+      "Icon": "[[File:Bricks.png|40px]]",
+      "Description": "\r\nProduces 1t of bricks in 01:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />8{{Infoicon Timber}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}<br />-25{{Infoicon Workforce Workers}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Pig Farm]]",
+      "Icon": "[[File:Pigs.png|40px]]",
+      "Description": "Produces 1t of pigs in 01:00.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />4{{Infoicon Timber}}",
+      "MaintenanceCost": "-40{{Infoicon Balance}}<br />-30{{Infoicon Workforce Farmers}}<br />-3{{Infoicon Attractiveness}}",
+      "Size": "3x4\r\n(f:5 of 2x3)"
+    },
+    {
+      "Name": "[[Slaughterhouse]]",
+      "Icon": "[[File:Sausages.png|40px]]",
+      "Description": "\r\nProduces 1t of sausages in 01:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}",
+      "MaintenanceCost": "-80{{Infoicon Balance}}<br />-50{{Infoicon Workforce Workers}}<br />-5{{Infoicon Attractiveness}}",
+      "Size": "3x4"
+    },
+    {
+      "Name": "[[Trade Union]]",
+      "Icon": "[[File:Trade Union.png|40px]]",
+      "Description": "Only useful if equipped with items. Attach items here to provide bonuses to production.\r\n4x4",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />25{{Infoicon Timber}}<br />5{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-20 {{Infoicon Influence}}",
+      "Size": "\r\n(r: 13)"
+    },
+    {
+      "Name": "[[Grain Farm]]",
+      "Icon": "[[File:Grain.png|40px]]",
+      "Description": "\r\nProduces 1t of grain in 01:00.\r\nRequires grain [[Fertilities_and_resources|fertility]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />4{{Infoicon Timber}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}<br />-20{{Infoicon Workforce Farmers}}",
+      "Size": "3x4\r\n(f:144)"
+    },
+    {
+      "Name": "[[Flour Mill]]",
+      "Icon": "[[File:Flour.png|40px]]",
+      "Description": "\r\nProduces 1t of flour in 00:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-10{{Infoicon Workforce Farmers}}",
+      "Size": "3x4"
+    },
+    {
+      "Name": "[[Bakery]]",
+      "Icon": "[[File:Bread.png|40px]]",
+      "Description": "\r\nProduces 1t of bread in 01:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "1000{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}",
+      "MaintenanceCost": "-60{{Infoicon Balance}}<br />-50{{Infoicon Workforce Workers}}",
+      "Size": "3x4"
+    },
+    {
+      "Name": "[[Church]]",
+      "Icon": "[[File:Church.png|40px]]",
+      "Description": "Provides a public service for your residents.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}",
+      "Size": "6x8"
+    },
+    {
+      "Name": "[[Sailmakers]]",
+      "Icon": "[[File:Sails.png|40px]]",
+      "Description": "\r\nProduces 1t of sails in 00:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />10{{Infoicon Bricks}}",
+      "MaintenanceCost": "-75{{Infoicon Balance}}<br />-50{{Infoicon Workforce Workers}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "Quay",
+      "Icon": "[[File:Quay.png|40px]]",
+      "Description": "\r\nBeautifies your harbour area.\r\nRequires free harbour area.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "5{{Infoicon Credits}}<br />1{{Infoicon Bricks}}",
+      "MaintenanceCost": "",
+      "Size": ""
+    },
+    {
+      "Name": "[[Sailing Shipyard]]",
+      "Icon": "[[File:Sailing shipyard.png|40px]]",
+      "Description": "\r\nBuilds ships.\r\nRequires free coastline.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "10000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}<br />-100{{Infoicon Workforce Workers}}",
+      "Size": "6x17"
+    },
+    {
+      "Name": "[[Depot]]",
+      "Icon": "[[File:Depot.png|40px]]",
+      "Description": "\r\nIncreases overall storage capacity by 50 tons.\r\nRequires free harbour area.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />10{{Infoicon Bricks}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}",
+      "Size": "4x10"
+    },
+    {
+      "Name": "[[Harbourmaster's Office]]",
+      "Icon": "[[File:Harbourmaster's Office.png|40px]]",
+      "Description": "Only useful if equipped with items. Attach items here to provide bonuses to harbour buildings.\r\nRequires free harbour area.\r\n4x4",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />10{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50[[File:Balance.png|20px]]<br />-20[[File:Influence.png|22px]]",
+      "Size": "\r\n(r: 18)"
+    },
+    {
+      "Name": "[[Mounted Guns]]",
+      "Icon": "[[File:Mounted guns.png|40px]]",
+      "Description": "\r\nAttacks and slows enemies over a medium range. More accurate up close.\r\nRequires free harbour area.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "2000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />5{{Infoicon Weapons}}",
+      "MaintenanceCost": "-10[[File:Balance.png|20px]]<br />-3[[File:Influence.png|22px]]",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Cannon Tower]]",
+      "Icon": "[[File:Cannon Tower.png|40px]]",
+      "Description": "\r\nDoes solid damage to enemies at long range, with good all-round defense.\r\nRequires free harbour area.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}<br />10{{Infoicon Weapons}}",
+      "MaintenanceCost": "-30[[File:Balance.png|20px]]<br />-7[[File:Influence.png|22px]]",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Iron Mine]]",
+      "Icon": "[[File:Iron.png|40px]]",
+      "Description": "\r\nProduces 1t of iron in 00:15.\r\nRequires [[Fertilities_and_resources|resource deposit]].\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "800{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-50 {{Infoicon Workforce Workers}}",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Charcoal Kiln]]",
+      "Icon": "[[File:Charcoal kiln.png|40px]]",
+      "Description": "\r\nProduces 1t of coal in 00:30.\r\nRequires undeveloped tiles within its radius.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}<br />-10{{Infoicon Workforce Workers}}<br />-5{{Infoicon Attractiveness}}",
+      "Size": "5x5\r\n(r:9)"
+    },
+    {
+      "Name": "[[Furnace]]",
+      "Icon": "[[File:Steel.png|40px]]",
+      "Description": "\r\nProduces 1t of steel in 00:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}<br />-100{{Infoicon Workforce Workers}}<br />-5{{Infoicon Attractiveness}}",
+      "Size": "4x7"
+    },
+    {
+      "Name": "[[Steelworks]]",
+      "Icon": "[[File:Steel beams.png|40px]]",
+      "Description": "\r\nProduces 1t of steel beams in 00:45.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "1000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />10{{Infoicon Bricks}}",
+      "MaintenanceCost": "-200{{Infoicon Balance}}<br />-200{{Infoicon Workforce Workers}}<br />-10{{Infoicon Attractiveness}}",
+      "Size": "5x10"
+    },
+    {
+      "Name": "[[Rendering Works]]",
+      "Icon": "[[File:Tallow.png|40px]]",
+      "Description": "\r\nProduces 1t of tallow in 01:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}<br />4{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-40{{Infoicon Balance}}<br />-40{{Infoicon Workforce Workers}}<br />-5{{Infoicon Attractiveness}}",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Soap Factory]]",
+      "Icon": "[[File:Soap.png|40px]]",
+      "Description": "\r\nProduces 1t of soap in 00:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}<br />4{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-50{{Infoicon Workforce Workers}}<br />-5{{Infoicon Attractiveness}}",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Weapon Factory]]",
+      "Icon": "[[File:Weapons.png|40px]]",
+      "Description": "\r\nProduces 1t of weapons in 01:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "700{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-150{{Infoicon Balance}}<br />-50{{Infoicon Workforce Workers}}<br />-5{{Infoicon Attractiveness}}",
+      "Size": "5x7"
+    },
+    {
+      "Name": "[[Malthouse]]",
+      "Icon": "[[File:Malt.png|40px]]",
+      "Description": "\r\nProduces 1t of malt in 00:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}<br />4{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-150{{Infoicon Balance}}<br />-25{{Infoicon Workforce Workers}}",
+      "Size": "4x5"
+    },
+    {
+      "Name": "[[Hop Farm]]",
+      "Icon": "[[File:Hops.png|40px]]",
+      "Description": "\r\nProduces 1t of hops in 01:30.\r\nRequires hops [[Fertilities_and_resources|fertility]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />4{{Infoicon Timber}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}<br />-20{{Infoicon Workforce Farmers}}",
+      "Size": "3x4\r\n(f:96)"
+    },
+    {
+      "Name": "[[Brewery]]",
+      "Icon": "[[File:Beer.png|40px]]",
+      "Description": "\r\nProduces 1t of beer in 01:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "1600{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}<br />4{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-200{{Infoicon Balance}}<br />-75{{Infoicon Workforce Workers}}",
+      "Size": "4x5"
+    },
+    {
+      "Name": "[[Police Station]]",
+      "Icon": "[[File:Police Station.png|40px]]",
+      "Description": "Fights riots in its influence radius. Can mobilise additional special units if required.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />10{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}",
+      "Size": "4x6"
+    },
+    {
+      "Name": "[[School]]",
+      "Icon": "[[File:School icon.png|40px]]",
+      "Description": "Provides a public service for your residents.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}<br />20{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}",
+      "Size": "5x6"
+    },
+    {
+      "Name": "Temperate Grove",
+      "Icon": "[[File:TemperateGrove.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "60{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Small Tree",
+      "Icon": "[[File:Small Tree.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "30{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Poplar Grove",
+      "Icon": "[[File:Poplar.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "60{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Poplar",
+      "Icon": "[[File:Poplar2.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "60{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Flower Bed",
+      "Icon": "[[File:FlowerBed.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Watering Hole",
+      "Icon": "[[File:WateringHole.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Trembling Aspen",
+      "Icon": "[[File:TremblingAspen.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Elm Tree",
+      "Icon": "[[File:ElmTree.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "[[Sand Mine]]",
+      "Icon": "[[File:Quartz sand.png|40px]]",
+      "Description": "\r\nProduces 1t of quartz sand in 00:30.\r\nRequires free coastline.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].\r\n6x7",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "2000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />5{{Infoicon Bricks}}",
+      "MaintenanceCost": "-120{{Infoicon Balance}}<br />-25{{Infoicon Workforce Workers}}",
+      "Size": "\r\n(6x17)"
+    },
+    {
+      "Name": "[[Glassmakers]]",
+      "Icon": "[[File:Glass.png|40px]]",
+      "Description": "\r\nProduces 1t of glass in 00:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "5400{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}<br />-100{{Infoicon Workforce Artisans}}",
+      "Size": "4x6"
+    },
+    {
+      "Name": "[[Window Makers]]",
+      "Icon": "[[File:Windows.png|40px]]",
+      "Description": "\r\nProduces 1t of windows in 01:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "6500{{Infoicon Credits}}<br />12{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-200{{Infoicon Balance}}<br />-100{{Infoicon Workforce Artisans}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Cattle Farm]]",
+      "Icon": "[[File:Beef.png|40px]]",
+      "Description": "Produces 1t of beef in 02:00.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "2000{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-20{{Infoicon Workforce Farmers}}",
+      "Size": "4x5\r\n(f:4 of 3x4)"
+    },
+    {
+      "Name": "[[Red Pepper Farm]]",
+      "Icon": "[[File:Red peppers.png|40px]]",
+      "Description": "\r\nProduces 1t of red peppers in 02:00.\r\nRequires red pepper [[Fertilities_and_resources|fertility]].",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "2000{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}<br />-10{{Infoicon Workforce Farmers}}",
+      "Size": "3x3\r\n(f:108)"
+    },
+    {
+      "Name": "[[Artisanal Kitchen]]",
+      "Icon": "[[File:Goulash.png|40px]]",
+      "Description": "\r\nProduces 1t of goulash in 02:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "7000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}<br />8{{Infoicon Windows}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}<br />-75{{Infoicon Workforce Artisans}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Cannery]]",
+      "Icon": "[[File:Canned food.png|40px]]",
+      "Description": "\r\nProduces 1t of canned food in 01:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "15000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}<br />8{{Infoicon Windows}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}<br />-75{{Infoicon Workforce Artisans}}",
+      "Size": "6x7"
+    },
+    {
+      "Name": "[[Town Hall]]",
+      "Icon": "[[File:Town Hall.png|40px]]",
+      "Description": "Only useful if equipped with items. Attach items here to provide bonuses to residences and public buildings.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}<br />20{{Infoicon Steel Beams}}<br />5{{Infoicon Windows}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-20 {{Infoicon Influence}}",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Coal Mine]]",
+      "Icon": "[[File:Coal.png|40px]]",
+      "Description": "\r\nProduces 1t of coal in 00:15.\r\nRequires [[Fertilities_and_resources|resource deposit]].\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "600{{Infoicon Credits}}<br />4{{Infoicon Timber}}<br />5{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-50{{Infoicon Workforce Workers}}",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Sewing Machine Factory]]",
+      "Icon": "[[File:Sewing machines.png|40px]]",
+      "Description": "\r\nProduces 1t of sewing machines in 00:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "12000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}<br />8{{Infoicon Windows}}",
+      "MaintenanceCost": "-500{{Infoicon Balance}}<br />-150{{Infoicon Workforce Artisans}}",
+      "Size": "6x9"
+    },
+    {
+      "Name": "[[Variety Theatre]]",
+      "Icon": "[[File:Variety theatre.png|40px]]",
+      "Description": "Provides a public service for your residents.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "10000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />50{{Infoicon Bricks}}<br />40{{Infoicon Steel Beams}}<br />40{{Infoicon Windows}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}",
+      "Size": "4x5"
+    },
+    {
+      "Name": "[[Public Mooring]]",
+      "Icon": "[[File:Public mooring.png|40px]]",
+      "Description": "\r\nEnables visitors to make a stopover on your island.\r\nRequires free coastline.\r\nLimited to one per island.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "25000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />10{{Infoicon Steel Beams}}<br />8{{Infoicon Windows}}",
+      "MaintenanceCost": "-400{{Infoicon Balance}}",
+      "Size": "8x25"
+    },
+    {
+      "Name": "[[Repair Crane]]",
+      "Icon": "[[File:Repair crane.png|40px]]",
+      "Description": "\r\nRepairs nearby ships and buildings.\r\nRequires free harbour area.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />15{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />25{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-3{{Infoicon Influence}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Pier]]",
+      "Icon": "[[File:Pier.png|40px]]",
+      "Description": "\r\nProvides additional space for ships to load and unload goods.\r\nRequires free harbour area.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />50{{Infoicon Bricks}}<br />40{{Infoicon Steel Beams}}<br />40{{Infoicon Windows}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}",
+      "Size": "7x6"
+    },
+    {
+      "Name": "[[Sugar Cane Plantation]]",
+      "Icon": "[[File:Sugar cane.png|40px]]",
+      "Description": "\r\nProduces 1t of sugar cane in 00:30.\r\nRequires sugar cane [[Fertilities and resources|fertility]].\r\nConstruction only in The New World.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-5{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "3x4\r\n(f:128)"
+    },
+    {
+      "Name": "[[Rum Distillery]]",
+      "Icon": "[[File:Rum.png|40px]]",
+      "Description": "\r\nProduces 1t of rum in 00:30.\r\nConstruction only in The New World.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-30{{Infoicon Workforce Jornaleros}}",
+      "Size": "6x7"
+    },
+    {
+      "Name": "[[Zoo]]",
+      "Icon": "[[File:Zoo.png|40px]]",
+      "Description": "The finest selection of animals will make your city far more attractive.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "10000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />30{{Infoicon Bricks}}<br />10{{Infoicon Steel Beams}}<br />5{{Infoicon Windows}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}",
+      "Size": "4x7\r\n(c:4x6)"
+    },
+    {
+      "Name": "Straight Path",
+      "Icon": "[[File:Path1.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Path End",
+      "Icon": "[[File:Path2.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Path Angle",
+      "Icon": "[[File:Path3.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Path Crossing",
+      "Icon": "[[File:Path4.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Path Junction",
+      "Icon": "[[File:Path5.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Straight Hedge",
+      "Icon": "[[File:Hedge1.1|40x40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Hedge End",
+      "Icon": "[[File:Hedge 1-0.2|40x40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Hedge Angle",
+      "Icon": "[[File:Hedge 1.3|40x40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Hedge Crossing",
+      "Icon": "[[File:Hedge 1.4|40x40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Hedge Junction",
+      "Icon": "[[File:Hedge 1.5|40x40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Entrance",
+      "Icon": "[[File:EntranceHedge.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Garden Benches",
+      "Icon": "[[File:Garden benches.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Memorial Statue",
+      "Icon": "[[File:Memorial statue.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "150{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Newsstand",
+      "Icon": "[[File:Newsstand.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Fountain Garden",
+      "Icon": "[[File:Fountain garden.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "150{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "Garden",
+      "Icon": "[[File:Garden.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "125{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "Gazebo Garden",
+      "Icon": "[[File:Gazebo garden.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "250{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "Wide Entrance",
+      "Icon": "[[File:WideEntranceHedge.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "100{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Piazza Benches",
+      "Icon": "[[File:Piazza benches.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "[[Hunting Cabin]]",
+      "Icon": "[[File:Furs.png|40px]]",
+      "Description": "\r\nProduces 1t of furs in 01:00.\r\nRequires furs [[Fertilities and resources|fertility]].\r\nRequires undeveloped tiles within its radius.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "2000{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-10{{Infoicon Workforce Farmers}}",
+      "Size": "5x5\r\n(r:9)"
+    },
+    {
+      "Name": "[[Cotton Plantation]]",
+      "Icon": "[[File:Cotton.png|40px]]",
+      "Description": "\r\nProduces 1t of cotton in 01:00.\r\nRequires cotton [[Fertilities_and_resources|fertility]].\r\nConstruction only in The New World.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-5{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "4x4\r\n(f:144)"
+    },
+    {
+      "Name": "[[Cotton Mill]]",
+      "Icon": "[[File:Cotton fabric.png|40px]]",
+      "Description": "\r\nProduces 1t of cotton fabric in 00:30.\r\nConstruction only in The New World.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-10{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Fur Dealer]]",
+      "Icon": "[[File:Fur Coats.png|40px]]",
+      "Description": "\r\nProduces 1t of fur coats in 00:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "2000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}<br />5{{Infoicon Windows}}",
+      "MaintenanceCost": "-500{{Infoicon Balance}}<br />-200{{Infoicon Workforce Artisans}}",
+      "Size": "4x6"
+    },
+    {
+      "Name": "[[Hospital]]",
+      "Icon": "[[File:Hospital.png|40px]]",
+      "Description": "Fights illness in its influence radius. Can mobilise additional special units if required.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "10000{{Infoicon Credits}}<br />12{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />40{{Infoicon Windows}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}",
+      "Size": "6x6"
+    },
+    {
+      "Name": "[[University]]",
+      "Icon": "[[File:University.png|40px]]",
+      "Description": "Provides a public service for your residents.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "15000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />50{{Infoicon Bricks}}<br />40{{Infoicon Steel Beams}}<br />40{{Infoicon Windows}}",
+      "MaintenanceCost": "-400{{Infoicon Balance}}",
+      "Size": "6x9"
+    },
+    {
+      "Name": "[[Museum]]",
+      "Icon": "[[File:Museum.png|40px]]",
+      "Description": "Artefacts from the past can be exposed here to attract curious travellers.",
+      "Region": "OldWorld",
+      "Tier": "Artisans",
+      "ConstructionCost": "10000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />30{{Infoicon Bricks}}<br />10{{Infoicon Steel Beams}}<br />5{{Infoicon Windows}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}",
+      "Size": "5x8\r\n(e:4x5)"
+    },
+    {
+      "Name": "[[Limestone Quarry]]",
+      "Icon": "[[File:Cement.png|40px]]",
+      "Description": "\r\nProduces 1t of cement in 00:30.\r\nRequires [[Fertilities_and_resources|resource deposit]].\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "6000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}",
+      "MaintenanceCost": "-250{{Infoicon Balance}}<br />-25{{Infoicon Workforce Workers}}",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Concrete Factory]]",
+      "Icon": "[[File:Reinforced_concrete.png|40px]]",
+      "Description": "\r\nProduces 1t of reinforced concrete in 01:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "15000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />30{{Infoicon Bricks}}<br />24{{Infoicon Steel Beams}}<br />25{{Infoicon Windows}}",
+      "MaintenanceCost": "-400{{Infoicon Balance}}<br />-75{{Infoicon Workforce Engineers}}",
+      "Size": "5x6"
+    },
+    {
+      "Name": "[[Oil Refinery]]",
+      "Icon": "[[File:Oil.png|40px]]",
+      "Description": "\r\nProduces 1t of oil in 00:15.\r\nRequires [[Fertilities and resources|oil fields]] in its influence radius.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "25000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-250{{Infoicon Balance}}<br />-100{{Infoicon Workforce Workers}}<br />-20{{Infoicon Attractiveness}}",
+      "Size": "5x5\r\n(r:?)"
+    },
+    {
+      "Name": "[[Oil Well]]",
+      "Icon": "[[File:OilWell.png|40px]]",
+      "Description": "\r\nExtracts raw oil from oil fields.\r\nRequires [[Fertilities and resources|resource deposit]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Railway]]",
+      "Icon": "[[File:Railway.png|40px]]",
+      "Description": "Allows for transportation of oil by trains.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "50{{Infoicon Credits}}<br />1{{Infoicon Timber}}<br />1{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "",
+      "Size": ""
+    },
+    {
+      "Name": "[[Small Oil Harbour]]",
+      "Icon": "[[File:Oil_Harbour.png|40px]]",
+      "Description": "\r\nProvides trains for transportation and allows you to store and trade oil (+500 oil storage).\r\nRequires free coastline.\r\nLimited to one per island.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "10000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}<br />20{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}",
+      "Size": "7x8"
+    },
+    {
+      "Name": "[[Oil Storage]]",
+      "Icon": "[[File:Oil_Storage.png|40px]]",
+      "Description": "\r\nIncreases island storage for oil by 200.\r\nRequires free harbour area.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "8000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}",
+      "Size": "4x8"
+    },
+    {
+      "Name": "[[Oil Power Plant]]",
+      "Icon": "",
+      "Description": "Burns oil to provide electricity to surrounding factories. Requires 1t of oil every 5 seconds.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "25000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />50{{Infoicon Bricks}}<br />40{{Infoicon Steel Beams}}<br />30{{Infoicon Windows}}<br />25{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-400{{Infoicon Balance}}<br />-150{{Infoicon Workforce Engineers}}<br />-15{{Infoicon Attractiveness}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Zinc Mine]]",
+      "Icon": "[[File:Zinc.png|40px]]",
+      "Description": "\r\nProduces 1t of zinc in 00:30.\r\nRequires [[Fertilities_and_resources|resource deposit]].\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "5000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-250{{Infoicon Balance}}<br />-25{{Infoicon Workforce Workers}}",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Copper Mine]]",
+      "Icon": "[[File:Copper.png|40px]]",
+      "Description": "\r\nProduces 1t of copper in 00:30.\r\nRequires [[Fertilities_and_resources|resource deposit]].\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "5000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-250{{Infoicon Balance}}<br />-25{{Infoicon Workforce Workers}}",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Brass Smeltery]]",
+      "Icon": "[[File:Brass.png|40px]]",
+      "Description": "\r\nProduces 1t of brass in 01:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "17000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-250{{Infoicon Balance}}<br />-25{{Infoicon Workforce Workers}}<br />-10{{Infoicon Attractiveness}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Spectacle Factory]]",
+      "Icon": "[[File:Glasses.png|40px]]",
+      "Description": "\r\nProduces 1t of glasses in 01:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "17000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-1000{{Infoicon Balance}}<br />-100{{Infoicon Workforce Engineers}}",
+      "Size": "4x6"
+    },
+    {
+      "Name": "Straight Fence",
+      "Icon": "[[File:StraightFence.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "75[[File:Credits.png|22px]]",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Fence End",
+      "Icon": "[[File:FenceEnd.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "75[[File:Credits.png|22px]]",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Fence Angle",
+      "Icon": "[[File:FenceAngle.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "75[[File:Credits.png|22px]]",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Fence Crossing",
+      "Icon": "[[File:FenceCrossing.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "75[[File:Credits.png|22px]]",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Fence Junction",
+      "Icon": "[[File:FenceJunction.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "75[[File:Credits.png|22px]]",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Archway",
+      "Icon": "[[File:Archway.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "75[[File:Credits.png|22px]]",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Memorial Garden",
+      "Icon": "[[File:Garden.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "200[[File:Credits.png|22px]]",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "Equestrian Statue Garden",
+      "Icon": "[[File:EquestrianStatueGarden.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "250[[File:Credits.png|22px]]",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "Cypress",
+      "Icon": "[[File:Cypress.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "50[[File:Credits.png|22px]]",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Tall Cypress",
+      "Icon": "[[File:TallCypress.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "50[[File:Credits.png|22px]]",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "[[Commuter Pier]]",
+      "Icon": "[[File:Commuter_pier.png|40px]]",
+      "Description": "Enables the transfer of workforce between two or more islands.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "25000[[File:Credits.png|22px]]<br />50[[File:Steel beams.png|22px]]<br />40[[File:Windows.png|22px]]<br />30{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-1000[[File:Balance.png|20px]]<br />-15[[File:Influence.png|22px]]",
+      "Size": "5x4"
+    },
+    {
+      "Name": "[[Steam Shipyard]]",
+      "Icon": "[[File:Steam_shipyard.png|40px]]",
+      "Description": "\r\nProduces steam-powered ships.\r\nRequires free coastline.\r\nRequires [[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "90000{{Infoicon Credits}}<br />50{{Infoicon Timber}}<br />100{{Infoicon Bricks}}<br />80{{Infoicon Steel Beams}}<br />75{{Infoicon Windows}}<br />75{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-400{{Infoicon Balance}}<br />-200{{Infoicon Workforce Engineers}}",
+      "Size": "7x17"
+    },
+    {
+      "Name": "[[Big Betty]]",
+      "Icon": "[[File:Big Betty.png|40px]]",
+      "Description": "\r\nDeals huge area damage to enemies over a very long range, at the cost of long reload times.\r\nRequires free coastline.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "22000[[File:Credits.png|22px]]<br />40[[File:Timber.png|22px]]<br />75[[File:Bricks.png|22px]]<br />60[[File:Steel beams.png|22px]]<br />60[[File:Windows.png|22px]]<br />50{{Infoicon Reinforced Concrete}}<br />20{{Infoicon Advanced Weapons}}",
+      "MaintenanceCost": "-350[[File:Balance.png|20px]]<br />-14[[File:Influence.png|22px]]",
+      "Size": "4x6"
+    },
+    {
+      "Name": "[[Saltpeter Works]]",
+      "Icon": "[[File:Saltpeter.png|40px]]",
+      "Description": "\r\nProduces 1t of saltpeter in 02:00.\r\nRequires saltpeter [[Fertilities and resources|fertility]].\r\nRequires free coastline.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "12500{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-500{{Infoicon Balance}}<br />-25{{Infoicon Workforce Workers}}",
+      "Size": "4x6"
+    },
+    {
+      "Name": "[[Dynamite Factory]]",
+      "Icon": "[[File:Dynamite.png|40px]]",
+      "Description": "\r\nProduces 1t of dynamite in 01:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "54000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-1000{{Infoicon Balance}}<br />-250{{Infoicon Workforce Engineers}}",
+      "Size": "5x6"
+    },
+    {
+      "Name": "[[Heavy Weapons Factory]]",
+      "Icon": "[[File:Advanced_weapons.png|40px]]",
+      "Description": "\r\nProduces 1t of advanced weapons in 01:00.\r\nRequires[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "85000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />40{{Infoicon Bricks}}<br />32{{Infoicon Steel Beams}}<br />30{{Infoicon Windows}}<br />30{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-2200{{Infoicon Balance}}<br />-250{{Infoicon Workforce Engineers}}<br />-15{{Infoicon Attractiveness}}",
+      "Size": "9x10"
+    },
+    {
+      "Name": "[[Caoutchouc Plantation]]",
+      "Icon": "[[File:Caoutchouc.png|40px]]",
+      "Description": "\r\nProduces 1t of caoutchouc in 01:00.\r\nRequires caoutchouc [[Fertilities_and_resources|fertility]].\r\nConstruction only in The New World.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}",
+      "MaintenanceCost": "-25{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "3x3\r\n(fields: 144)"
+    },
+    {
+      "Name": "[[Bicycle Factory]]",
+      "Icon": "[[File:High_wheeler.png|40px]]",
+      "Description": "\r\nProduces 1t of penny farthings in 00:15.\r\nRequires[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "42000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-1200{{Infoicon Balance}}<br />-150{{Infoicon Workforce Engineers}}",
+      "Size": "6x6"
+    },
+    {
+      "Name": "[[Motor Assembly Line]]",
+      "Icon": "[[File:Steam motors.png|40px]]",
+      "Description": "\r\nProduces 1t of steam motors in 00:45.\r\nRequires[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "75000{{Infoicon Credits}}<br />16{{Infoicon Timber}}<br />30{{Infoicon Bricks}}<br />24{{Infoicon Steel Beams}}<br />20{{Infoicon Windows}}<br />20{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-1800{{Infoicon Balance}}<br />-250{{Infoicon Workforce Engineers}}<br />-10{{Infoicon Attractiveness}}",
+      "Size": "6x9"
+    },
+    {
+      "Name": "[[Coffee Plantation]]",
+      "Icon": "[[File:Coffee beans.png|40px]]",
+      "Description": "\r\nProduces 1t of coffee beans in 01:00.\r\nRequires coffee [[Fertilities and resources|fertility]].\r\nConstruction only in The New World.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />5{{Infoicon Timber}}",
+      "MaintenanceCost": "-25{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "3x4\r\n(f:168)"
+    },
+    {
+      "Name": "[[Coffee Roaster]]",
+      "Icon": "[[File:Coffee.png|40px]]",
+      "Description": "\r\nProduces 1t of coffee in 00:30.\r\nConstruction only in The New World.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "9000{{Infoicon Credits}}<br />5{{Infoicon Timber}}<br />3{{Infoicon Bricks}}",
+      "MaintenanceCost": "-150{{Infoicon Balance}}<br />-150{{Infoicon Workforce Obreros}}",
+      "Size": "5x6"
+    },
+    {
+      "Name": "[[Gold Mine]]",
+      "Icon": "[[File:Gold Ore.png|40px]]",
+      "Description": "\r\nProduces 1t of gold ore in 02:30.\r\nRequires [[Fertilities_and_resources|resource deposit]].\r\nConstruction only in The New World.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}",
+      "MaintenanceCost": "-250{{Infoicon Balance}}<br />-100{{Infoicon Workforce Obreros}}",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Goldsmiths]]",
+      "Icon": "[[File:Gold.png|40px]]",
+      "Description": "\r\nProduces 1t of gold in 01:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "27000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-750{{Infoicon Balance}}<br />-125{{Infoicon Workforce Engineers}}",
+      "Size": "4x5"
+    },
+    {
+      "Name": "[[Clockmakers]]",
+      "Icon": "[[File:Pocket_watch.png|40px]]",
+      "Description": "\r\nProduces 1t of pocket watches in 00:45.\r\nRequires[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "48000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-1400{{Infoicon Balance}}<br />-150{{Infoicon Workforce Engineers}}",
+      "Size": "5x7"
+    },
+    {
+      "Name": "[[Filament Factory]]",
+      "Icon": "[[File:Carbon_filament.png|40px]]",
+      "Description": "\r\nProduces 1t of filaments in 01:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "30000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-725{{Infoicon Balance}}<br />-150{{Infoicon Workforce Engineers}}",
+      "Size": "6x7"
+    },
+    {
+      "Name": "[[Light Bulb Factory]]",
+      "Icon": "[[File:Light_bulb.png|40px]]",
+      "Description": "\r\nProduces 1t of light bulbs in 01:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "45000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-1000{{Infoicon Balance}}<br />-150{{Infoicon Workforce Engineers}}",
+      "Size": "6x6"
+    },
+    {
+      "Name": "[[Bank]]",
+      "Icon": "[[File:Bank.png|40px]]",
+      "Description": "Provides a public service for your residents.",
+      "Region": "OldWorld",
+      "Tier": "Engineers",
+      "ConstructionCost": "100000{{Infoicon Credits}}<br />40{{Infoicon Timber}}<br />75{{Infoicon Bricks}}<br />60{{Infoicon Steel Beams}}<br />60{{Infoicon Windows}}<br />50{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-1000{{Infoicon Balance}}",
+      "Size": "12x10"
+    },
+    {
+      "Name": "[[World's Fair|World's Fair: Foundations]]",
+      "Icon": "[[File:Worlds fair.png|40px]]",
+      "Description": "\r\nThe World's Fair is an exhibition space. Constructed in multiple phases, it can host sumptuous events that reward good organisation with unique items.\r\nLimited to one per island.\r\n300000{{Infoicon Credits}}<br />100{{Infoicon Timber}}<br />200{{Infoicon Bricks}}<br />160{{Infoicon Steel Beams}}<br />150{{Infoicon Windows}}<br />150{{Infoicon Reinforced Concrete}}",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "",
+      "MaintenanceCost": "-500{{Infoicon Workforce Farmers}}",
+      "Size": "18x22"
+    },
+    {
+      "Name": "[[Palace]]",
+      "Icon": "[[File:Icon palace.png|40px]]",
+      "Description": "\r\nThe palace is not only a unique symbol of your empire's grandeur, but a place to improve and elevate your favourite city.\r\nLimited to one per savegame.\r\nSeat of Power DLC is required.\r\n1000000{{Infoicon Credits}}<br />100{{Infoicon Timber}}<br />150{{Infoicon Bricks}}<br />150{{Infoicon Steel Beams}}<br />120{{Infoicon Windows}}<br />200{{Infoicon Reinforced Concrete}}",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "",
+      "MaintenanceCost": "-5000{{Infoicon Balance}}+150{{Infoicon Attractiveness}}",
+      "Size": "9x9"
+    },
+    {
+      "Name": "[[Local Department]]",
+      "Icon": "[[File:Icon local department.png|40px]]",
+      "Description": "\r\nLocal departments allow you to issue the policies and effects of the palace in your other cities.\r\nLimited to one per island.\r\nSeat of Power DLC is required.\r\n150000{{Infoicon Credits}}<br />40{{Infoicon Timber}}<br />60{{Infoicon Bricks}}<br />40{{Infoicon Steel Beams}}<br />35{{Infoicon Windows}}<br />60{{Infoicon Reinforced Concrete}}",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "",
+      "MaintenanceCost": "-1000{{Infoicon Balance}}",
+      "Size": "5x8"
+    },
+    {
+      "Name": "[[Gas Power Plant]]",
+      "Icon": "[[File:Icon electric works gas 0.png|40px]]",
+      "Description": "\r\nBurns gas to provide electricity to surrounding buildings. Requires 1t of gas every 45 seconds.\r\nThe Passage DLC is required.\r\n75000{{Infoicon Credits}}<br />40{{Infoicon Timber}}<br />60{{Infoicon Bricks}}<br />60{{Infoicon Steel Beams}}<br />40{{Infoicon Windows}}<br />40{{Infoicon Reinforced Concrete}}",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "",
+      "MaintenanceCost": "-1200{{Infoicon Balance}}<br />-250{{Infoicon Workforce Engineers}}",
+      "Size": "5x6"
+    },
+    {
+      "Name": "[[Vineyard]]",
+      "Icon": "[[File:Grapes.png|40px]]",
+      "Description": "\r\nProduces 1t of grapes in 02:00.\r\nRequires grape [[Fertilities_and_resources|fertility]].",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "8000{{Infoicon Credits}}<br />10{{Infoicon Timber}}",
+      "MaintenanceCost": "-200{{Infoicon Balance}}<br />-10{{Infoicon Workforce Farmers}}",
+      "Size": "3x4<br />(f:128)"
+    },
+    {
+      "Name": "[[Champagne Cellar]]",
+      "Icon": "[[File:Champagne.png|40px]]",
+      "Description": "\r\nProduces 1t of champagne in 00:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "35000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-1000{{Infoicon Balance}}<br />-150{{Infoicon Workforce Artisans}}",
+      "Size": "5x6"
+    },
+    {
+      "Name": "Fountain Plaza",
+      "Icon": "[[File:FountainPlaza.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "400{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "3x3"
+    },
+    {
+      "Name": "Gazebo Plaza",
+      "Icon": "[[File:GazeboPlaza.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "500{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Tobacco Plantation]]",
+      "Icon": "[[File:Tobacco.png|40px]]",
+      "Description": "\r\nProduces 1t of tobacco in 02:00.\r\nRequires tobacco [[Fertilities_and_resources|fertility]].\r\nConstruction only in The New World.",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />10{{Infoicon Timber}}",
+      "MaintenanceCost": "-25{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "3x4\r\n(f:192)"
+    },
+    {
+      "Name": "[[Marquetry Workshop]]",
+      "Icon": "[[File:Wood_veneers.png|40px]]",
+      "Description": "\r\nProduces 1t of wood veneers in 01:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "22000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-750{{Infoicon Balance}}<br />-150{{Infoicon Workforce Engineers}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Cigar Factory]]",
+      "Icon": "[[File:Cigars.png|40px]]",
+      "Description": "\r\nProduces 1t of cigars in 00:30.\r\nConstruction only in The New World.",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}",
+      "MaintenanceCost": "-250{{Infoicon Balance}}<br />-175{{Infoicon Workforce Obreros}}",
+      "Size": "7x7"
+    },
+    {
+      "Name": "[[Members Club]]",
+      "Icon": "[[File:Members club.png|40px]]",
+      "Description": "Provides a public service for your residents.",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "50000{{Infoicon Credits}}<br />50{{Infoicon Timber}}<br />100{{Infoicon Bricks}}<br />80{{Infoicon Steel Beams}}<br />75{{Infoicon Windows}}<br />75{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-350{{Infoicon Balance}}",
+      "Size": "6x6"
+    },
+    {
+      "Name": "[[Pearl Farm]]",
+      "Icon": "[[File:Pearls.png|40px]]",
+      "Description": "\r\nProduces 1t of pearls in 01:30.\r\nRequires pearls [[Fertilities and resources|fertility]].\r\nRequires free coastline.\r\nConstruction only in The New World.",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "8500{{Infoicon Credits}}<br />10{{Infoicon Timber}}",
+      "MaintenanceCost": "-25{{Infoicon Balance}}<br />-50{{Infoicon Workforce Jornaleros}}",
+      "Size": "6x14"
+    },
+    {
+      "Name": "[[Jewellers]]",
+      "Icon": "[[File:Jewelry.png|40px]]",
+      "Description": "\r\nProduces 1t of jewellery in 00:30.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "33000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-2500{{Infoicon Balance}}<br />-150{{Infoicon Workforce Artisans}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Gramophone Factory]]",
+      "Icon": "[[File:Gramophone.png|40px]]",
+      "Description": "\r\nProduces 1t of gramophones in 01:00.\r\nRequires [[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "60000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-1600{{Infoicon Balance}}<br />-150{{Infoicon Workforce Engineers}}",
+      "Size": "7x7"
+    },
+    {
+      "Name": "[[Coachmakers]]",
+      "Icon": "[[File:Chassis.png|40px]]",
+      "Description": "\r\nProduces 1t of chassis in 02:00.\r\nCan be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "55000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}<br />16{{Infoicon Steel Beams}}<br />15{{Infoicon Windows}}<br />15{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-1200{{Infoicon Balance}}<br />-150{{Infoicon Workforce Engineers}}",
+      "Size": "6x9"
+    },
+    {
+      "Name": "[[Cab Assembly Line]]",
+      "Icon": "[[File:Steam_carriages.png|40px]]",
+      "Description": "\r\nProduces 1t of steam carriages in 00:30.\r\nRequires [[File:Electricity.png|20px|link=Electricity]][[electricity]].",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "ConstructionCost": "115000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />40{{Infoicon Bricks}}<br />32{{Infoicon Steel Beams}}<br />30{{Infoicon Windows}}<br />30{{Infoicon Reinforced Concrete}}",
+      "MaintenanceCost": "-3000{{Infoicon Balance}}<br />-500{{Infoicon Workforce Engineers}}<br />-10{{Infoicon Attractiveness}}",
+      "Size": "8x12"
+    },
+    {
+      "Name": "[[Roads|Dirt Road]]",
+      "Icon": "[[File:Dirt_road.png|40px]]",
+      "Description": "Connects buildings and allows for transportation of goods.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "3{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": ""
+    },
+    {
+      "Name": "[[Marketplace]]",
+      "Icon": "[[File:Marketplace.png|40px]]",
+      "Description": "A place that provides your inhabitants with all the necessities of daily life.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />10{{Infoicon Timber}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}",
+      "Size": "5x6"
+    },
+    {
+      "Name": "[[Jornalero Residence]]",
+      "Icon": "[[File:Residence.png|40px]]",
+      "Description": "Your residents live here. Residents provide income and workforce.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "1{{Infoicon Timber}}",
+      "MaintenanceCost": "",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Small Warehouse]]",
+      "Icon": "[[File:Warehouse.png|40px]]",
+      "Description": "Accepts and distributes goods from and to your production buildings.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />10{{Infoicon Timber}}",
+      "MaintenanceCost": "-10{{Infoicon Balance}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Lumberjack's Hut]]",
+      "Icon": "[[File:Wood.png|40px]]",
+      "Description": "\r\nProduces 1t of wood in 00:15.\r\nRequires undeveloped tiles within its radius.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}",
+      "MaintenanceCost": "-10{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "4x4\r\n(r:7)"
+    },
+    {
+      "Name": "[[Sawmill]]",
+      "Icon": "[[File:Timber.png|40px]]",
+      "Description": "Produces 1t of timber in 00:15.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}",
+      "MaintenanceCost": "-10{{Infoicon Balance}}<br />-20{{Infoicon Workforce Jornaleros}}",
+      "Size": "3x4"
+    },
+    {
+      "Name": "[[Fish Oil Factory]]",
+      "Icon": "[[File:Fish Oil.png|40px]]",
+      "Description": "\r\nProduces 1t of fish oil in 00:30.\r\nRequires free coastline.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-5{{Infoicon Balance}}<br />-15{{Infoicon Workforce Jornaleros}}<br />-5{{Infoicon Attractiveness}}",
+      "Size": "5x8\r\n(5x16)"
+    },
+    {
+      "Name": "[[Plantain Plantation]]",
+      "Icon": "[[File:Plantains.png|40px]]",
+      "Description": "\r\nProduces 1t of plantains in 00:30.\r\nRequires plantain [[Fertilities_and_resources|fertility]].",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-5{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "3x3\r\n(f:128)"
+    },
+    {
+      "Name": "[[Fried Plantain Kitchen]]",
+      "Icon": "[[File:Fried plantains.png|40px]]",
+      "Description": "Produces 1t of fried plantains in 00:30.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />2{{Infoicon Timber}}",
+      "MaintenanceCost": "-15{{Infoicon Balance}}<br />-25{{Infoicon Workforce Jornaleros}}",
+      "Size": "3x4"
+    },
+    {
+      "Name": "[[Trade Union]]",
+      "Icon": "[[File:Trade Union.png|40px]]",
+      "Description": "Only useful if equipped with items. Attach items here to provide bonuses to production.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />25{{Infoicon Timber}}<br />5{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50[[File:Balance.png|20px]]<br />-20[[File:Influence.png|22px]]",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Sugar Cane Plantation]]",
+      "Icon": "[[File:Sugar cane.png|40px]]",
+      "Description": "\r\nProduces 1t of sugar cane in 00:30.\r\nRequires sugar cane [[Fertilities_and_resources|fertility]].",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-5{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "3x4\r\n(f:128)"
+    },
+    {
+      "Name": "[[Rum Distillery]]",
+      "Icon": "[[File:Rum.png|40px]]",
+      "Description": "Produces 1t of rum in 00:30.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-30{{Infoicon Workforce Jornaleros}}",
+      "Size": "6x7"
+    },
+    {
+      "Name": "[[Cotton Plantation]]",
+      "Icon": "[[File:Cotton.png|40px]]",
+      "Description": "\r\nProduces 1t of cotton in 01:00.\r\nRequires cotton [[Fertilities_and_resources|fertility]].",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-5{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "4x4\r\n(f:144)"
+    },
+    {
+      "Name": "[[Cotton Mill]]",
+      "Icon": "[[File:Cotton fabric.png|40px]]",
+      "Description": "Produces 1t of cotton fabric in 00:30.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-10{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Sailmakers]]",
+      "Icon": "[[File:Sails.png|40px]]",
+      "Description": "Produces 1t of sails in 00:30.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />8{{Infoicon Timber}}",
+      "MaintenanceCost": "-15{{Infoicon Balance}}<br />-20{{Infoicon Workforce Jornaleros}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "Quay",
+      "Icon": "[[File:Quay.png|40px]]",
+      "Description": "\r\nBeautifies your harbour area.\r\nRequires free harbour area.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "20{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": ""
+    },
+    {
+      "Name": "[[Sailing Shipyard]]",
+      "Icon": "[[File:Sailing shipyard.png|40px]]",
+      "Description": "\r\nBuilds ships.\r\nRequires free coastline.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "10000{{Infoicon Credits}}<br />20{{Infoicon Timber}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}<br />-100{{Infoicon Workforce Jornaleros}}",
+      "Size": "6x17"
+    },
+    {
+      "Name": "[[Depot]]",
+      "Icon": "[[File:Depot.png|40px]]",
+      "Description": "\r\nIncreases overall storage capacity by 50 tons.\r\nRequires free harbour area.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />10{{Infoicon Bricks}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}",
+      "Size": "4x10"
+    },
+    {
+      "Name": "[[Harbourmaster's Office]]",
+      "Icon": "[[File:Harbourmaster's Office.png|40px]]",
+      "Description": "\r\nOnly useful if equipped with items. Attach items here to provide bonuses to harbour buildings.\r\nRequires free harbour area.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />10{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50[[File:Balance.png|20px]]<br />-20[[File:Influence.png|22px]]",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Repair Crane]]",
+      "Icon": "[[File:Repair crane.png|40px]]",
+      "Description": "\r\nRepairs nearby ships and buildings.\r\nRequires free harbour area.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />50{{Infoicon Timber}}<br />75{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50[[File:Balance.png|20px]]<br />-3[[File:Influence.png|22px]]",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Mounted Guns]]",
+      "Icon": "[[File:Mounted guns.png|40px]]",
+      "Description": "\r\nAttacks and slows enemies over a medium range. More accurate up close.\r\nRequires free harbour area.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "5000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />5{{Infoicon Weapons}}",
+      "MaintenanceCost": "-10[[File:Balance.png|20px]]<br />-3[[File:Influence.png|22px]]",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Alpaca Farm]]",
+      "Icon": "[[File:Alpaca wool.png|40px]]",
+      "Description": "Produces 1t of alpaca wool in 00:30.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-5{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "3x3\r\n(f:4 of 3x3)"
+    },
+    {
+      "Name": "[[Poncho Darner]]",
+      "Icon": "[[File:Poncho.png|40px]]",
+      "Description": "Produces 1t of ponchos in 00:30.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-15{{Infoicon Balance}}<br />-30{{Infoicon Workforce Jornaleros}}",
+      "Size": "4x5"
+    },
+    {
+      "Name": "[[Caoutchouc Plantation]]",
+      "Icon": "[[File:Caoutchouc.png|40px]]",
+      "Description": "\r\nProduces 1t of caoutchouc in 01:00.\r\nRequires caoutchouc [[Fertilities_and_resources|fertility]].",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}",
+      "MaintenanceCost": "-25{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "3x3\r\n(f:144)"
+    },
+    {
+      "Name": "[[Fire Station]]",
+      "Icon": "[[File:Fire station.png|40px]]",
+      "Description": "Fights fire in its influence radius. Can mobilise additional special units if required.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />4{{Infoicon Timber}}",
+      "MaintenanceCost": "-25{{Infoicon Balance}}",
+      "Size": "3x5"
+    },
+    {
+      "Name": "[[Pearl Farm]]",
+      "Icon": "[[File:Pearls.png|40px]]",
+      "Description": "\r\nProduces 1t of pearls in 01:30.\r\nRequires pearl [[Fertilities and resources|fertility]].\r\nRequires free coastline.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "8500{{Infoicon Credits}}<br />10{{Infoicon Timber}}",
+      "MaintenanceCost": "-25{{Infoicon Balance}}<br />-50{{Infoicon Workforce Jornaleros}}",
+      "Size": "6x14"
+    },
+    {
+      "Name": "[[Chapel]]",
+      "Icon": "[[File:Church.png|40px]]",
+      "Description": "Provides a public service for your residents.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />10{{Infoicon Timber}}",
+      "MaintenanceCost": "-10{{Infoicon Balance}}",
+      "Size": "3x4"
+    },
+    {
+      "Name": "[[Police Station]]",
+      "Icon": "[[File:Police Station.png|40px]]",
+      "Description": "Fights riots in its influence radius. Can mobilise additional special units if required.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}",
+      "Size": "4x5"
+    },
+    {
+      "Name": "Straight Path",
+      "Icon": "[[File:Path1.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Path End",
+      "Icon": "[[File:Path2.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Path Angle",
+      "Icon": "[[File:Path3.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Path Crossing",
+      "Icon": "[[File:Path4.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Path Wall",
+      "Icon": "[[File:Path5.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Straight Hedge",
+      "Icon": "[[File:StraightHedgeNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Hedge End",
+      "Icon": "[[File:HedgeEndNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Hedge Angle",
+      "Icon": "[[File:HedgeAngleNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Hedge Crossing",
+      "Icon": "[[File:HedgeCrossingNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Hedge Wall",
+      "Icon": "[[File:HedgeWallNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Entrance",
+      "Icon": "[[File:EntranceHedge.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Grass",
+      "Icon": "[[File:Grass.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "15{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Philodendron",
+      "Icon": "[[File:Philodendron.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Small Tree",
+      "Icon": "[[File:SmallTreeNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Ferns",
+      "Icon": "[[File:Ferns.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Bush",
+      "Icon": "[[File:BushNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Shrub",
+      "Icon": "[[File:ShrubNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Small Palm Tree",
+      "Icon": "[[File:SmallPalmTree.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Palm Tree",
+      "Icon": "[[File:PalmTree.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Well",
+      "Icon": "[[File:Well.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "1602 Memorial",
+      "Icon": "[[File:1602Memorial.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.\r\nAvailable for pre-order versions of the game.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "200{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "Fountain Square",
+      "Icon": "[[File:FountainSquare.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.\r\nAvailable as [[Ubisoft Club]] reward.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "200{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x3"
+    },
+    {
+      "Name": "Bronze Lion",
+      "Icon": "[[File:BronzeLion.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.\r\nAvailable as [[Ubisoft Club]] reward.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "200{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x2"
+    },
+    {
+      "Name": "Chess Tables",
+      "Icon": "[[File:ChessTables.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.\r\nAvailable as [[Ubisoft Club]] reward.",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "ConstructionCost": "200{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "[[Roads|Paved Street]]",
+      "Icon": "[[File:Paved street.png|40px]]",
+      "Description": "Improves street connections and allows for faster transportation of goods.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "13{{Infoicon Credits}}<br />1{{Infoicon Bricks}}",
+      "MaintenanceCost": "",
+      "Size": ""
+    },
+    {
+      "Name": "[[Clay Pit]]",
+      "Icon": "[[File:Clay.png|40px]]",
+      "Description": "\r\nProduces 1t of clay in 00:30.\r\nRequires [[Fertilities_and_resources|resource deposit]].",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />4{{Infoicon Timber}}",
+      "MaintenanceCost": "-10{{Infoicon Balance}}<br />-100{{Infoicon Workforce Obreros}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Brick Factory]]",
+      "Icon": "[[File:Bricks.png|40px]]",
+      "Description": "Produces 1t of bricks in 01:00.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}<br />-50{{Infoicon Workforce Obreros}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Cattle Farm]]",
+      "Icon": "[[File:Beef.png|40px]]",
+      "Description": "Produces 1t of beef in 01:00.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-25{{Infoicon Balance}}<br />-20{{Infoicon Workforce Jornaleros}}",
+      "Size": "4x5\r\n(f:6 of 3x4)"
+    },
+    {
+      "Name": "[[Corn Farm]]",
+      "Icon": "[[File:Corn.png|40px]]",
+      "Description": "\r\nProduces 1t of corn in 01:00.\r\nRequires corn [[Fertilities_and_resources|fertility]].",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />3{{Infoicon Timber}}",
+      "MaintenanceCost": "-25{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "3x3\r\n(f:168)"
+    },
+    {
+      "Name": "[[Tortilla Maker]]",
+      "Icon": "[[File:Tortilla.png|40px]]",
+      "Description": "Produces 1t of tortillas in 00:30.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "4500{{Infoicon Credits}}<br />3{{Infoicon Timber}}<br />2{{Infoicon Bricks}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}<br />-100{{Infoicon Workforce Obreros}}",
+      "Size": "3x5"
+    },
+    {
+      "Name": "[[Town Hall]]",
+      "Icon": "[[File:Town Hall.png|40px]]",
+      "Description": "Only useful if equipped with items. Attach items here to provide bonuses to residences and public buildings.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />25{{Infoicon Timber}}<br />25{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50[[File:Balance.png|20px]]<br />-20[[File:Influence.png|22px]]",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Coffee Plantation]]",
+      "Icon": "[[File:Coffee beans.png|40px]]",
+      "Description": "\r\nProduces 1t of coffee beans in 01:00.\r\nRequires coffee [[Fertilities_and_resources|fertility]].",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />5{{Infoicon Timber}}",
+      "MaintenanceCost": "-25{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "3x4\r\n(f:168)"
+    },
+    {
+      "Name": "[[Coffee Roaster]]",
+      "Icon": "[[File:Coffee.png|40px]]",
+      "Description": "Produces 1t of coffee in 00:30.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "9000{{Infoicon Credits}}<br />5{{Infoicon Timber}}<br />3{{Infoicon Bricks}}",
+      "MaintenanceCost": "-150{{Infoicon Balance}}<br />-150{{Infoicon Workforce Obreros}}",
+      "Size": "5x6"
+    },
+    {
+      "Name": "[[Boxing Arena]]",
+      "Icon": "[[File:Boxing Arena.png|40px]]",
+      "Description": "Provides a public service for your residents.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}",
+      "Size": "5x6"
+    },
+    {
+      "Name": "[[Gold Mine]]",
+      "Icon": "[[File:Gold Ore.png|40px]]",
+      "Description": "\r\nProduces 1t of gold ore in 02:30.\r\nRequires [[Fertilities_and_resources|resource deposit]].",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}",
+      "MaintenanceCost": "-250{{Infoicon Balance}}<br />-100{{Infoicon Workforce Obreros}}",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Public Mooring]]",
+      "Icon": "[[File:Public mooring.png|40px]]",
+      "Description": "\r\nEnables visitors to make a stopover on your island.\r\nRequires free coastline.\r\nLimited to one per island.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />10{{Infoicon Bricks}}",
+      "MaintenanceCost": "-250{{Infoicon Balance}}",
+      "Size": "8x25"
+    },
+    {
+      "Name": "[[Pier]]",
+      "Icon": "[[File:Pier.png|40px]]",
+      "Description": "\r\nProvides additional space for ships to load and unload goods.\r\nRequires free harbour area.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />50{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}",
+      "Size": "6x7"
+    },
+    {
+      "Name": "[[Cannon Tower]]",
+      "Icon": "[[File:Cannon Tower.png|40px]]",
+      "Description": "\r\nDoes solid damage to enemies at long range, with good all-round defense.\r\nRequires free harbour area.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "10000{{Infoicon Credits}}<br />40{{Infoicon Timber}}<br />40{{Infoicon Bricks}}<br />10{{Infoicon Weapons}}",
+      "MaintenanceCost": "-30{{Infoicon Balance}}",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Small Oil Harbour]]",
+      "Icon": "[[File:Oil Harbour.png|40px]]",
+      "Description": "\r\nProvides trains for transportation and allows you to store and trade oil (+500 oil storage).\r\nRequires free coastline.\r\nLimited to one per island.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "10000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />25{{Infoicon Bricks}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}",
+      "Size": "7x8"
+    },
+    {
+      "Name": "[[Oil Storage]]",
+      "Icon": "[[File:Oil Storage.png|40px]]",
+      "Description": "\r\nIncreases island storage for oil by 200.\r\nRequires free harbour area.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "8000{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}",
+      "Size": "4x8"
+    },
+    {
+      "Name": "[[Felt Producer]]",
+      "Icon": "[[File:Felt.png|40px]]",
+      "Description": "Produces 1t of felt in 00:30.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />3{{Infoicon Timber}}<br />2{{Infoicon Bricks}}",
+      "MaintenanceCost": "-10{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Bombín Weaver]]",
+      "Icon": "[[File:Bowler hats.png|40px]]",
+      "Description": "Produces 1t of bowler hats in 00:30.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "9000{{Infoicon Credits}}<br />3{{Infoicon Timber}}<br />2{{Infoicon Bricks}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-20{{Infoicon Workforce Obreros}}",
+      "Size": "4x6"
+    },
+    {
+      "Name": "[[Hospital]]",
+      "Icon": "[[File:Hospital.png|40px]]",
+      "Description": "Fights illness in its influence radius. Can mobilise additional special units if required.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "10000{{Infoicon Credits}}<br />12{{Infoicon Timber}}<br />20{{Infoicon Bricks}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}",
+      "Size": "5x6"
+    },
+    {
+      "Name": "[[Oil Refinery]]",
+      "Icon": "[[File:Oil.png|40px]]",
+      "Description": "\r\nProduces 1t of oil in 00:15.\r\nRequires [[Fertilities and resources|oil fields]] in its influence radius.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />8{{Infoicon Timber}}<br />15{{Infoicon Bricks}}<br />12{{Infoicon Steel Beams}}<br />10{{Infoicon Windows}}<br />10[[File:Reinforced concrete.png|22px]]",
+      "MaintenanceCost": "-250{{Infoicon Balance}}<br />-75{{Infoicon Workforce Obreros}}<br />-20{{Infoicon Attractiveness}}",
+      "Size": "5x5\r\n(r:9)"
+    },
+    {
+      "Name": "[[Oil Well]]",
+      "Icon": "[[File:OilWell.png|40px]]",
+      "Description": "\r\nExtracts raw oil from oil fields.\r\nRequires [[Fertilities and resources|resource deposit]].",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />6{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Railway]]",
+      "Icon": "[[File:Railway.png|40px]]",
+      "Description": "Allows for transportation of oil by trains.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "50{{Infoicon Credits}}<br />1{{Infoicon Timber}}<br />1{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "",
+      "Size": ""
+    },
+    {
+      "Name": "[[Tobacco Plantation]]",
+      "Icon": "[[File:Tobacco.png|40px]]",
+      "Description": "\r\nProduces 1t of tobacco in 02:00.\r\nRequires tobacco [[Fertilities_and_resources|fertility]].",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "7000{{Infoicon Credits}}<br />10{{Infoicon Timber}}",
+      "MaintenanceCost": "-25{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "3x4\r\n(f:192)"
+    },
+    {
+      "Name": "[[Marquetry Workshop]]",
+      "Icon": "[[File:Wood veneers.png|40px]]",
+      "Description": "Produces 1t of wood veneers in 01:00.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}<br />-100{{Infoicon Workforce Obreros}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Cigar Factory]]",
+      "Icon": "[[File:Cigars.png|40px]]",
+      "Description": "Produces 1t of cigars in 00:30.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "2500{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />20{{Infoicon Bricks}}",
+      "MaintenanceCost": "-250{{Infoicon Balance}}<br />-175{{Infoicon Workforce Obreros}}",
+      "Size": "7x7"
+    },
+    {
+      "Name": "[[Zoo]]",
+      "Icon": "[[File:Zoo.png|40px]]",
+      "Description": "The finest selection of animals will make your city far more attractive.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "10000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />30{{Infoicon Bricks}}<br />10{{Infoicon Steel Beams}}<br />5{{Infoicon Windows}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}",
+      "Size": "4x7\r\n(c:4x6)"
+    },
+    {
+      "Name": "[[Cocoa Plantation]]",
+      "Icon": "[[File:Cocoa.png|40px]]",
+      "Description": "\r\nProduces 1t of cocoa in 01:00.\r\nRequires cocoa [[Fertilities_and_resources|fertility]].",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "7600{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-5{{Infoicon Balance}}<br />-10{{Infoicon Workforce Jornaleros}}",
+      "Size": "4x5\r\n(f:128)"
+    },
+    {
+      "Name": "[[Sugar Refinery]]",
+      "Icon": "[[File:Sugar.png|40px]]",
+      "Description": "Produces 1t of sugar in 00:30.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-10{{Infoicon Balance}}<br />-50{{Infoicon Workforce Obreros}}",
+      "Size": "4x6"
+    },
+    {
+      "Name": "[[Chocolate Factory]]",
+      "Icon": "[[File:Chocolate.png|40px]]",
+      "Description": "Produces 1t of chocolate in 00:30.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "24000{{Infoicon Credits}}<br />6{{Infoicon Timber}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-100{{Infoicon Workforce Obreros}}",
+      "Size": "5x7"
+    },
+    {
+      "Name": "[[Museum]]",
+      "Icon": "[[File:Museum.png|40px]]",
+      "Description": "Artefacts from the past can be exposed here to attract curious travellers.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "10000{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />30{{Infoicon Bricks}}<br />10{{Infoicon Steel Beams}}<br />5{{Infoicon Windows}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}",
+      "Size": "5x8\r\n(e:4x5)"
+    },
+    {
+      "Name": "Straight Fence",
+      "Icon": "[[File:StraightFenceNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Fence End",
+      "Icon": "[[File:FenceEnd.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Fence Angle",
+      "Icon": "[[File:FenceAngle.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Fence Crossing",
+      "Icon": "[[File:FenceCrossingNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Fence Wall",
+      "Icon": "[[File:FenceWallNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Archway",
+      "Icon": "[[File:Archway.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Garden Benches",
+      "Icon": "[[File:Garden_benches.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Memorial Statue",
+      "Icon": "[[File:Memorial_statue.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "150{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Newsstand",
+      "Icon": "[[File:Newsstand.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Tropical Forest",
+      "Icon": "[[File:TropicalForest.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "60{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Flowering Shrub",
+      "Icon": "[[File:FloweringShrub.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "25{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Equestrian Statue Garden",
+      "Icon": "[[File:EquestrianStatueGarden.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "250{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "Watering Hole",
+      "Icon": "[[File:WateringHole.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "50{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Memorial Garden",
+      "Icon": "[[File:Garden.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "200{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "Fountain Garden",
+      "Icon": "[[File:Fountain_garden.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "150{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "Garden",
+      "Icon": "[[File:GardenNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "125{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "Gazebo Garden",
+      "Icon": "[[File:Gazebo_garden.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "250{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "2x2"
+    },
+    {
+      "Name": "Fountain Plaza",
+      "Icon": "[[File:FountainPlazaNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "400{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "3x3"
+    },
+    {
+      "Name": "Gazebo Plaza",
+      "Icon": "[[File:GazeboPlazaNW.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "500{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "3x3"
+    },
+    {
+      "Name": "Wide Entrance",
+      "Icon": "[[File:WideEntranceHedge.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "100{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Fence",
+      "Icon": "[[File:StraightFence.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "100{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "Piazza Benches",
+      "Icon": "[[File:Piazza_benches.png|40px]]",
+      "Description": "Ornaments generate a small amount of attractiveness for the city.",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "ConstructionCost": "75{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": "1x1"
+    },
+    {
+      "Name": "[[Roads|Road]]",
+      "Icon": "[[File:Road Arctic.png|40px]]",
+      "Description": "Connects buildings and allows for transportation of goods.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "5{{Infoicon Credits}}",
+      "MaintenanceCost": "",
+      "Size": ""
+    },
+    {
+      "Name": "[[Canteen]]",
+      "Icon": "[[File:Canteen.png|40px]]",
+      "Description": "\r\nProvides a public service for your residents.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "1000{{Infoicon Credits}}<br />5{{Infoicon Timber}}",
+      "MaintenanceCost": "-100{{Infoicon Balance}}",
+      "Size": "5x6"
+    },
+    {
+      "Name": "[[Explorer Residence|Explorer Shelter]]",
+      "Icon": "[[File:Residence.png|40px]]",
+      "Description": "Your residents live here. Residents provide income and workforce.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "2{{Infoicon Timber}}",
+      "MaintenanceCost": "",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Small Warehouse]]",
+      "Icon": "[[File:Warehouse.png|40px]]",
+      "Description": "Accepts and distributes goods from, and to your production buildings.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />5{{Infoicon Timber}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}",
+      "Size": "5x5"
+    },
+    {
+      "Name": "[[Charcoal Kiln]]",
+      "Icon": "[[File:Charcoal_kiln.png|40px]]",
+      "Description": "\r\nProduces 1t of coal in 00:30.\r\nRequires forest [[Fertilities_and_resources|fertility]].",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "500{{Infoicon Credits}}<br />2{{Infoicon Timber}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}<br />-10{{Infoicon Workforce Explorers}}",
+      "Size": "5x5\r\n(r:9)"
+    },
+    {
+      "Name": "[[Heater]]",
+      "Icon": "[[File:Heater.png|40px]]",
+      "Description": "Burns coal (1t every 30 seconds) to provide heating to other buildings in its influence radius.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "1000{{Infoicon Credits}}<br />5{{Infoicon Timber}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}",
+      "Size": "3x4"
+    },
+    {
+      "Name": "[[Lumberjack's Hut]]",
+      "Icon": "[[File:Wood.png|40px]]",
+      "Description": "Produces 1t of wood in 00:15.\r\nRequires undeveloped tiles within its radius.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "100{{Infoicon Credits}}",
+      "MaintenanceCost": "-20[[File:Balance.png|20px]]<br />-10{{Infoicon Workforce Explorers}}",
+      "Size": "4x4\r\n(r:7)"
+    },
+    {
+      "Name": "[[Sawmill]]",
+      "Icon": "[[File:Timber.png|40px]]",
+      "Description": "\r\nProduces 1t of timber in 00:15.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "100{{Infoicon Credits}}",
+      "MaintenanceCost": "-20{{Infoicon Balance}}<br />-10{{Infoicon Workforce Explorers}}",
+      "Size": "3x4"
+    },
+    {
+      "Name": "[[Whaling Station]]",
+      "Icon": "[[File:Whaling_Station.png|40px]]",
+      "Description": "Produces 1t of whale oil in 01:00.\r\nRequires whale fertility.\r\nRequires free coastline.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "200{{Infoicon Credits}}<br />5{{Infoicon Timber}}",
+      "MaintenanceCost": "-40{{Infoicon Balance}}<br />-30{{Infoicon Workforce Explorers}}",
+      "Size": "6x17"
+    },
+    {
+      "Name": "[[Caribou Hunting Cabin]]",
+      "Icon": "[[File:Caribou Hunting Cabin.png|40px]]",
+      "Description": "Produces 1t of caribou meat in 01:00.\r\nRequires undeveloped tiles within its radius.\r\nRequires caribou fertility.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "200{{Infoicon Credits}}<br />2{{Infoicon Timber}}",
+      "MaintenanceCost": "-40{{Infoicon Balance}}<br />-25{{Infoicon Workforce Explorers}}",
+      "Size": "5x5\r\n(r:9)"
+    },
+    {
+      "Name": "[[Pemmican Cookhouse]]",
+      "Icon": "[[File:Pemmican Cookhouse.png|40px]]",
+      "Description": "Produces 1t of pemmican in 01:00.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "1000{{Infoicon Credits}}<br />5{{Infoicon Timber}}",
+      "MaintenanceCost": "-60{{Infoicon Balance}}<br />-30{{Infoicon Workforce Explorers}}",
+      "Size": "4x5"
+    },
+    {
+      "Name": "[[Ranger Station]]",
+      "Icon": "[[File:Ranger Station.png|40px]]",
+      "Description": "Fights fire and arctic flu in its influence radius.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-75{{Infoicon Balance}}",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Seal Hunting Docks]]",
+      "Icon": "[[File:Seal Hunting Docks.png|40px]]",
+      "Description": "Produces 1t of seal skin in 00:30.\r\nRequires seal fertility.\r\nRequires free coastline.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "200{{Infoicon Credits}}<br />5{{Infoicon Timber}}",
+      "MaintenanceCost": "-50{{Infoicon Balance}}<br />-20{{Infoicon Workforce Explorers}}",
+      "Size": "5x7"
+    },
+    {
+      "Name": "[[Goose Farm]]",
+      "Icon": "[[File:Goose Farm.png|40px]]",
+      "Description": "Produces 1t of goose feathers in 02:00.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "200{{Infoicon Credits}}<br />10{{Infoicon Timber}}",
+      "MaintenanceCost": "-70{{Infoicon Balance}}<br />-35{{Infoicon Workforce Explorers}}",
+      "Size": "3x3\r\n(f:5 of 2x3)"
+    },
+    {
+      "Name": "[[Sleeping Bag Factory]]",
+      "Icon": "[[File:Sleeping Bag Factory.png|40px]]",
+      "Description": "Produces 1t of sleeping bags in 01:00.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "1500{{Infoicon Credits}}<br />15{{Infoicon Timber}}",
+      "MaintenanceCost": "-120{{Infoicon Balance}}<br />-50{{Infoicon Workforce Explorers}}",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Oil Lamp Factory]]",
+      "Icon": "[[File:Oil Lamp Factory.png|40px]]",
+      "Description": "Produces 1t of oil lamps in 01:00.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Explorers",
+      "ConstructionCost": "2000{{Infoicon Credits}}<br />15{{Infoicon Timber}}",
+      "MaintenanceCost": "-200{{Infoicon Balance}}<br />-70{{Infoicon Workforce Explorers}}",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Airship Hangar|Airship Hangar: Foundations]]",
+      "Icon": "[[File:Airship Hangar.png|40px]]",
+      "Description": "",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "?{{Infoicon Credits}}<br />30{{Infoicon Timber}}<br />10{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-150{{Infoicon Workforce Explorers}}",
+      "Size": "12x16"
+    },
+    {
+      "Name": "[[Depot]]",
+      "Icon": "[[File:Depot.png|40px]]",
+      "Description": "\r\nIncreases overall storage capacity by 50 tons.\r\nRequires free harbour area.",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-?{{Infoicon Balance}}",
+      "Size": "?x?"
+    },
+    {
+      "Name": "[[Cannon Tower]]",
+      "Icon": "[[File:Cannon Tower.png|40px]]",
+      "Description": "Does solid damage to enemies at long range, with good all-round defense.\r\nRequires free harbour area.",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />10{{Infoicon Bricks}}<br />8{{Infoicon Steel Beams}}<br />10{{Infoicon Weapons}}",
+      "MaintenanceCost": "-30[[File:Balance.png|20px]]<br />-7[[File:Influence.png|22px]]",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Pier]]",
+      "Icon": "[[File:Pier.png|40px]]",
+      "Description": "Provides additional space for ships to load and unload goods.\r\nRequires free harbour area.",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-?{{Infoicon Balance}}",
+      "Size": "6x7"
+    },
+    {
+      "Name": "[[Post Office]]",
+      "Icon": "[[File:Post Office.png|40px]]",
+      "Description": "\r\nProvides a public service for your residents.",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-?{{Infoicon Balance}}",
+      "Size": "3x4"
+    },
+    {
+      "Name": "[[Arctic Lodge]]",
+      "Icon": "[[File:Arctic Lodge.png|40px]]",
+      "Description": "Only useful if equipped with items. Attach items here to provide bonuses to production and residences.",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-30[[File:Balance.png|20px]]<br />-20[[File:Influence.png|22px]]",
+      "Size": "4x4\r\n(r:?)"
+    },
+    {
+      "Name": "[[Bear Hunting Cabin]]",
+      "Icon": "[[File:Bear Hunting Cabin.png|40px]]",
+      "Description": "Produces 1t of bear furs in 01:30.\r\nRequires undeveloped tiles within its radius.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-20[[File:Balance.png|20px]]<br />-10{{Infoicon Workforce Explorers}}",
+      "Size": "5x5\r\n(r:9)"
+    },
+    {
+      "Name": "[[Parka Factory]]",
+      "Icon": "[[File:Parka Factory.png|40px]]",
+      "Description": "\r\nProduces 1t of parkas in 01:30.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-70{{Infoicon Balance}}<br />-35{{Infoicon Workforce Technicians}}",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Hunting Cabin|Pristine Hunting Cabin]]",
+      "Icon": "[[File:Prime Hunting Cabin.png|40px]]",
+      "Description": "Produces 1t of furs in 00:15.\r\nRequires furs fertility.\r\nRequires undeveloped tiles within radius.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-40{{Infoicon Balance}}<br />-30{{Infoicon Workforce Explorers}}",
+      "Size": "5x5\r\n(r:9)"
+    },
+    {
+      "Name": "[[Husky Farm]]",
+      "Icon": "[[File:Husky Farm.png|40px]]",
+      "Description": "Produces 1t of huskies in 02:00.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-70{{Infoicon Balance}}<br />-35{{Infoicon Workforce Technicians}}",
+      "Size": "3x3\r\n(f:5 of 2x3)"
+    },
+    {
+      "Name": "[[Sled Frame Factory]]",
+      "Icon": "[[File:Sled Frame Factory.png|40px]]",
+      "Description": "Produces 1t of sleds in 01:00.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-70{{Infoicon Balance}}<br />-35{{Infoicon Workforce Technicians}}",
+      "Size": "4x5"
+    },
+    {
+      "Name": "[[Husky Sled Factory]]",
+      "Icon": "[[File:Husky Sled Factory.png|40px]]",
+      "Description": "Produces 1t of husky sleds in 01:00.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "4000{{Infoicon Credits}}<br />10{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-70{{Infoicon Balance}}<br />-35{{Infoicon Workforce Technicians}}",
+      "Size": "4x4"
+    },
+    {
+      "Name": "[[Gold Mine|Deep Gold Mine]]",
+      "Icon": "[[File:Deep Gold Mine.png|40px]]",
+      "Description": "Produces 1t of gold ore in 01:00.\r\nRequires gold deposits.\r\nRequires heating.",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "5000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-400{{Infoicon Balance}}<br />-100{{Infoicon Workforce Technicians}}",
+      "Size": "3x3"
+    },
+    {
+      "Name": "[[Gas Mine]]",
+      "Icon": "[[File:Gas Mine.png|40px]]",
+      "Description": "Produces 1t of gas in 04:30.\r\nRequires gas deposits in its influence radius.\r\nRequires heating.\r\n[[Category:Gameplay]]\r\n[[Category:Buildings]]",
+      "Region": "Unknown",
+      "Tier": "Technicians",
+      "ConstructionCost": "8000{{Infoicon Credits}}<br />20{{Infoicon Timber}}<br />5{{Infoicon Steel Beams}}",
+      "MaintenanceCost": "-1000{{Infoicon Balance}}<br />-250{{Infoicon Workforce Technicians}}",
+      "Size": "4x4\r\n(r:8)"
+    }
+  ]
+}

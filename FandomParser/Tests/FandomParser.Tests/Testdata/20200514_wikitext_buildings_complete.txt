@@ -1485,8 +1485,7 @@ Can be improved by[[File:Electricity.png|20px|link=Electricity]][[electricity]].
 The World's Fair is an exhibition space. Constructed in multiple phases, it can host sumptuous events that reward good organisation with unique items.
 
 Limited to one per island.
-| style="text-align:center;" |
-300000{{Infoicon Credits}}<br />100{{Infoicon Timber}}<br />200{{Infoicon Bricks}}<br />160{{Infoicon Steel Beams}}<br />150{{Infoicon Windows}}<br />150{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |300000{{Infoicon Credits}}<br />100{{Infoicon Timber}}<br />200{{Infoicon Bricks}}<br />160{{Infoicon Steel Beams}}<br />150{{Infoicon Windows}}<br />150{{Infoicon Reinforced Concrete}}
 | style="text-align:center;" |−500{{Infoicon Workforce Farmers}}
 |18x22
 |-
@@ -1498,8 +1497,7 @@ The palace is not only a unique symbol of your empire's grandeur, but a place to
 Limited to one per savegame.
 
 Seat of Power DLC is required.
-| style="text-align:center;" |
-1000000{{Infoicon Credits}}<br />100{{Infoicon Timber}}<br />150{{Infoicon Bricks}}<br />150{{Infoicon Steel Beams}}<br />120{{Infoicon Windows}}<br />200{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |1000000{{Infoicon Credits}}<br />100{{Infoicon Timber}}<br />150{{Infoicon Bricks}}<br />150{{Infoicon Steel Beams}}<br />120{{Infoicon Windows}}<br />200{{Infoicon Reinforced Concrete}}
 | style="text-align:center;" |−5000{{Infoicon Balance}}+150{{Infoicon Attractiveness}}
 |9x9
 |-
@@ -1511,8 +1509,7 @@ Local departments allow you to issue the policies and effects of the palace in y
 Limited to one per island.
 
 Seat of Power DLC is required.
-| style="text-align:center;" |
-150000{{Infoicon Credits}}<br />40{{Infoicon Timber}}<br />60{{Infoicon Bricks}}<br />40{{Infoicon Steel Beams}}<br />35{{Infoicon Windows}}<br />60{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |150000{{Infoicon Credits}}<br />40{{Infoicon Timber}}<br />60{{Infoicon Bricks}}<br />40{{Infoicon Steel Beams}}<br />35{{Infoicon Windows}}<br />60{{Infoicon Reinforced Concrete}}
 | style="text-align:center;" |−1000{{Infoicon Balance}}
 |5x8
 |-
@@ -1522,8 +1519,7 @@ Seat of Power DLC is required.
 Burns gas to provide electricity to surrounding buildings. Requires 1t of gas every 45 seconds.
 
 The Passage DLC is required.
-| style="text-align:center;" |
-75000{{Infoicon Credits}}<br />40{{Infoicon Timber}}<br />60{{Infoicon Bricks}}<br />60{{Infoicon Steel Beams}}<br />40{{Infoicon Windows}}<br />40{{Infoicon Reinforced Concrete}}
+| style="text-align:center;" |75000{{Infoicon Credits}}<br />40{{Infoicon Timber}}<br />60{{Infoicon Bricks}}<br />60{{Infoicon Steel Beams}}<br />40{{Infoicon Windows}}<br />40{{Infoicon Reinforced Concrete}}
 | style="text-align:center;" |−1200{{Infoicon Balance}}<br />−250{{Infoicon Workforce Engineers}}
 |5x6
 |-
@@ -2957,5 +2953,3 @@ Requires heating.
 | style="text-align:center;" |4x4
 (r:8)
 |}
-[[Category:Gameplay]]
-[[Category:Buildings]]

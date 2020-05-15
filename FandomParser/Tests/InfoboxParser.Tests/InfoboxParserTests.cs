@@ -10,16 +10,26 @@ using System.IO;
 using System.Reflection;
 using FandomParser.Core.Presets.Models;
 using InfoboxParser.Tests.Attributes;
+using InfoboxParser.Models;
 
 namespace InfoboxParser.Tests
 {
     public class InfoboxParserTests
     {
-        private static readonly ICommons mockedCommons;
+        private static readonly ICommons _mockedCommons;
+        private static readonly ISpecialBuildingNameHelper _mockedSpecialBuildingNameHelper;
 
         static InfoboxParserTests()
         {
-            mockedCommons = Commons.Instance;
+            _mockedCommons = Commons.Instance;
+            _mockedSpecialBuildingNameHelper = new SpecialBuildingNameHelper();
+        }
+
+        private InfoboxParser GetParser(ICommons commonsToUse = null,
+            ISpecialBuildingNameHelper specialBuildingNameHelperToUse = null)
+        {
+            return new InfoboxParser(commonsToUse ?? _mockedCommons,
+                specialBuildingNameHelperToUse ?? _mockedSpecialBuildingNameHelper);
         }
 
         [Theory]
@@ -29,7 +39,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextIsNullOrWhiteSpace_ShouldReturnNull(string input)
         {
             // Arrange
-            var parser = new InfoboxParser(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -44,7 +54,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "{{Infobox Buildings";
 
-            var parser = new InfoboxParser(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -59,7 +69,22 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "{{Infobox Buildings Old and New World";
 
-            var parser = new InfoboxParser(mockedCommons);
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
+        public void GetInfobox_WikiTextContainsInfoboxFor2Regions_ShouldReturnMultipleResults()
+        {
+            // Arrange
+            var input = "{{Infobox Buildings 2 Regions";
+
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);

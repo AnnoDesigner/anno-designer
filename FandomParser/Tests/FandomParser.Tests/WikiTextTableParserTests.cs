@@ -47,7 +47,7 @@ namespace FandomParser.Tests
 
         [Theory]
         [MemberData(nameof(BuildingsCompleteTestData))]
-        public void GetTables_IsCalledWithTestdata_ShouldReturnExpectedResult(string testdata)
+        public void GetTables_IsCalledWithTestdata_ShouldReturnExpectedResultCount(string testdata)
         {
             // Act
             var result = _parser.GetTables(testdata);

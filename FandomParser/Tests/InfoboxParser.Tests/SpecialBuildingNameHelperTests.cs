@@ -14,6 +14,8 @@ namespace InfoboxParser.Tests
         [InlineData("Caoutchouc", "Caoutchouc Plantation")]
         [InlineData("Fried Plaintain Kitchen", "Fried Plantain Kitchen")]
         [InlineData("World's Fair: Foundations", "World's Fair|World's Fair: Foundations")]
+        [InlineData("Airship Hangar", "Airship Hangar|Airship Hangar: Foundations")]
+        [InlineData("Explorer Residence", "Explorer Residence|Explorer Shelter")]
         public void CheckSpecialBuildingName_BuildingNameIsSet_ShouldReturnCorrectValue(string buildingName, string expectedValue)
         {
             // Arrange

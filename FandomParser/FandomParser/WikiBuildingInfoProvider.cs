@@ -65,17 +65,15 @@ namespace FandomParser
                 else if (!string.IsNullOrWhiteSpace(table.Size))
                 {
                     var splittedSize = table.Size.Split('x');
-                    if (!int.TryParse(splittedSize[0], out int x))
-                    {
 
+                    var couldParseX = int.TryParse(splittedSize[0], out int x);
+                    var couldParseY = int.TryParse(splittedSize[1], out int y);
+                    if (!couldParseX || !couldParseY)
+                    {
+                        logger.Warn($"could not parse Size for \"{result.Name}\": \"{table.Size}\"");
                     }
 
-                    if (!int.TryParse(splittedSize[1], out int y))
-                    {
-
-                    }
-
-                    result.BuildingSize = new Size(int.Parse(splittedSize[0]), int.Parse(splittedSize[1]));
+                    result.BuildingSize = new Size(x, y);
                 }
 
                 if (table.ConstructionCost.Contains("<br />"))
@@ -149,12 +147,12 @@ namespace FandomParser
         {
             ConstructionInfo result = null;
 
-            if (!double.TryParse(constructionCost.Split(new[] { "{{" }, StringSplitOptions.RemoveEmptyEntries)[0], out double value))
-            {
-
-            }
-
             var splittedInfo = constructionCost.Split(new[] { "{{" }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (!double.TryParse(splittedInfo[0], out double parsedValue))
+            {
+                logger.Warn($"could not parse construction cost: \"{constructionCost}\"");
+            }
 
             var unit = new CostUnit();
 
@@ -171,7 +169,7 @@ namespace FandomParser
 
             result = new ConstructionInfo
             {
-                Value = double.Parse(splittedInfo[0]),
+                Value = parsedValue,
                 Unit = unit,
             };
 
@@ -230,13 +228,12 @@ namespace FandomParser
         {
             MaintenanceInfo result = null;
 
-            if (!double.TryParse(maintenanceCost.Split(new[] { "{{" }, StringSplitOptions.RemoveEmptyEntries)[0], out double value))
-            {
-                //−20
-                //-20
-            }
-
             var splittedInfo = maintenanceCost.Split(new[] { "{{" }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (!double.TryParse(splittedInfo[0], out double parsedValue))
+            {
+                logger.Warn($"could not parse maintenance cost: \"{maintenanceCost}\"");
+            }
 
             var unit = new CostUnit();
 
@@ -253,7 +250,7 @@ namespace FandomParser
 
             result = new MaintenanceInfo
             {
-                Value = double.Parse(splittedInfo[0]),
+                Value = parsedValue,
                 Unit = unit,
             };
 

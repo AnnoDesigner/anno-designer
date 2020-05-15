@@ -13,6 +13,7 @@ namespace FandomParser.WikiText
         private static Dictionary<WorldRegion, Dictionary<string, string>> RegionTables { get; set; }
 
         private static readonly Regex regexNormalizeLineEndings = new Regex(@"\r\n|\n|\r", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexSize = new Regex("^[0-9]+x[0-9]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public WikiTextTableContainer GetTables(string wikiText)
         {
@@ -103,6 +104,10 @@ namespace FandomParser.WikiText
             else if (parsedRegionHeader.Equals("New World buildings", StringComparison.OrdinalIgnoreCase))
             {
                 result = WorldRegion.NewWorld;
+            }
+            else if (parsedRegionHeader.Equals("The Arctic Buildings", StringComparison.OrdinalIgnoreCase))
+            {
+                result = WorldRegion.Arctic;
             }
 
             return result;
@@ -243,6 +248,13 @@ namespace FandomParser.WikiText
                     continue;
                 }
 
+                //line has no useful information
+                if (curLine.Equals("| style=\"text-align:center;\" |", StringComparison.OrdinalIgnoreCase) &&
+                    entryCounter != 4)//there are buildings without maintenance cost
+                {
+                    continue;
+                }
+
                 //line is end of table
                 if (curLine.Equals("=", StringComparison.OrdinalIgnoreCase))
                 {
@@ -250,7 +262,9 @@ namespace FandomParser.WikiText
                 }
 
                 //line contains description
-                if (!curLine.StartsWith("|", StringComparison.OrdinalIgnoreCase) && !curLine.StartsWith("(", StringComparison.OrdinalIgnoreCase))
+                if (!curLine.StartsWith("|", StringComparison.OrdinalIgnoreCase) &&
+                    !curLine.StartsWith("(", StringComparison.OrdinalIgnoreCase) &&
+                    !regexSize.IsMatch(curLine))
                 {
                     curEntry.Description += $"{Environment.NewLine}{curLine}";
                     continue;
@@ -319,9 +333,18 @@ namespace FandomParser.WikiText
                         }
                     case 5:
                         {
-                            curEntry.Size = curLine.Remove(0, 1)
-                                .Replace(" style=\"text-align:center;\" |", string.Empty)
-                                .Replace(" style=\"text-align: center;\" |", string.Empty);
+                            if (curLine.StartsWith("|", StringComparison.OrdinalIgnoreCase))
+                            {
+                                curEntry.Size = curLine.Remove(0, 1)
+                                 .Replace(" style=\"text-align:center;\" |", string.Empty)
+                                 .Replace(" style=\"text-align: center;\" |", string.Empty);
+                            }
+                            else
+                            {
+                                curEntry.Size = curLine.Replace(" style=\"text-align:center;\" |", string.Empty)
+                                    .Replace(" style=\"text-align: center;\" |", string.Empty);
+                            }
+
                             entryCounter++;
                             break;
                         }

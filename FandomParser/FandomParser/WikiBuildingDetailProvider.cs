@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using FandomParser.Core;
 using FandomParser.Core.Presets.Models;
 using FandomParser.WikiText;
+using InfoboxParser;
 using NLog;
 
 namespace FandomParser
@@ -197,7 +198,8 @@ namespace FandomParser
 
             try
             {
-                var infoboxParser = new InfoboxParser.InfoboxParser(_commons);
+                var specialBuildingNameHelper = new SpecialBuildingNameHelper();
+                var infoboxParser = new InfoboxParser.InfoboxParser(_commons, specialBuildingNameHelper);
 
                 foreach (var curFile in Directory.EnumerateFiles(PathToExtractedInfoboxesFolder, $"*{FILE_ENDING_INFOBOX}", SearchOption.TopDirectoryOnly))
                 {
