@@ -1,66 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{809FDE16-4864-4CD2-83A5-75315E970BFD}</ProjectGuid>
+    <TargetFramework>net472</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AnnoDesigner.Tests</RootNamespace>
-    <AssemblyName>AnnoDesigner.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase">
+    <Reference Update="WindowsBase">
       <HintPath>..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\WindowsBase.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutViewModelTests.cs" />
-    <Compile Include="BuildingSettingsViewModelTests.cs" />
-    <Compile Include="CoordinateHelperTests.cs" />
-    <Compile Include="MainViewModelTests.cs" />
-    <Compile Include="RoadSearchHelperTests.cs" />
-    <Compile Include="PolygonBoundaryFinderHelperTests.cs" />
-    <Compile Include="PresetsTreeSearchViewModelTests.cs" />
-    <Compile Include="PresetsTreeViewModelTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WelcomeViewModelTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Moq">
-      <Version>4.13.0</Version>
+      <Version>4.14.1</Version>
     </PackageReference>
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="xunit">
       <Version>2.4.1</Version>
     </PackageReference>
@@ -79,29 +34,21 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AnnoDesigner.Core\AnnoDesigner.Core.csproj">
-      <Project>{C73FBFF0-1A11-40FC-8F1F-29637699419A}</Project>
-      <Name>AnnoDesigner.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\AnnoDesigner\AnnoDesigner.csproj">
-      <Project>{3AF4C58B-FEF0-485F-8DBF-CC61F9AF6FAD}</Project>
-      <Name>AnnoDesigner</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\AnnoDesigner.Core\AnnoDesigner.Core.csproj" />
+    <ProjectReference Include="..\..\AnnoDesigner\AnnoDesigner.csproj" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <None Include="TestData\RoadSearchHelper\BreadthFirstSearch_FindBuildingInfluenceRange.ad">
+    <None Update="TestData\RoadSearchHelper\BreadthFirstSearch_FindBuildingInfluenceRange.ad">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestData\RoadSearchHelper\BreadthFirstSearch_FindObjectsInInfluenceRange.ad">
+    <None Update="TestData\RoadSearchHelper\BreadthFirstSearch_FindObjectsInInfluenceRange.ad">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestData\RoadSearchHelper\PrepareGridDictionary_MultipleObjects.ad">
+    <None Update="TestData\RoadSearchHelper\PrepareGridDictionary_MultipleObjects.ad">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestData\RoadSearchHelper\PrepareGridDictionary_SingleObject.ad">
+    <None Update="TestData\RoadSearchHelper\PrepareGridDictionary_SingleObject.ad">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

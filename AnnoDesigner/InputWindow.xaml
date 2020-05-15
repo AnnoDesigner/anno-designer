@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:l="clr-namespace:AnnoDesigner.Localization"
         xmlns:local="clr-namespace:AnnoDesigner"
-        xmlns:viewModel="clr-namespace:AnnoDesigner.viewmodel"
+        xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewModel:MainViewModel, IsDesignTimeCreatable=False}"
         d:DesignHeight="135"

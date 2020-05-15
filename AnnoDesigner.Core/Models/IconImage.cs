@@ -42,6 +42,10 @@ namespace AnnoDesigner.Core.Models
                 if (_icon == null && !string.IsNullOrWhiteSpace(IconPath))
                 {
                     _icon = new BitmapImage(new Uri(IconPath));
+                    if (_icon.CanFreeze)
+                    {
+                        _icon.Freeze();
+                    }
                 }
 
                 return _icon;

@@ -20,7 +20,7 @@ using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
-using AnnoDesigner.model;
+using AnnoDesigner.Models;
 using Microsoft.Win32;
 using NLog;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
@@ -30,7 +30,7 @@ namespace AnnoDesigner
     /// <summary>
     /// Interaction logic for AnnoCanvas.xaml
     /// </summary>
-    public partial class AnnoCanvas : UserControl
+    public partial class AnnoCanvas : UserControl, IAnnoCanvas
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -100,6 +100,30 @@ namespace AnnoDesigner
                     InvalidateVisual();
                 }
                 _renderGrid = value;
+            }
+        }
+
+        /// <summary>
+        /// Backing field of the RenderInfluences property.
+        /// </summary>
+        private bool _renderInfluences;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the influences should be rendered.
+        /// </summary>
+        public bool RenderInfluences
+        {
+            get
+            {
+                return _renderInfluences;
+            }
+            set
+            {
+                if (_renderInfluences != value)
+                {
+                    InvalidateVisual();
+                }
+                _renderInfluences = value;
             }
         }
 
@@ -210,22 +234,22 @@ namespace AnnoDesigner
         /// <summary>
         /// backing field of the ObjectClipboard property
         /// </summary>
-        private List<LayoutObject> _objectClipboard = new List<LayoutObject>();
+        private List<LayoutObject> _clipboardObjects = new List<LayoutObject>();
 
         /// <summary>
         /// Holds a list of objects that are currently on the clipboard.
         /// </summary>
-        public List<LayoutObject> ObjectClipboard
+        public List<LayoutObject> ClipboardObjects
         {
             get
             {
-                return _objectClipboard;
+                return _clipboardObjects;
             }
             private set
             {
                 if (value != null)
                 {
-                    _objectClipboard = value;
+                    _clipboardObjects = value;
                     StatusMessage = value.Count + " items copied";
                     OnClipboardChanged?.Invoke(value);
                 }
@@ -301,6 +325,8 @@ namespace AnnoDesigner
 
         private readonly ILayoutLoader _layoutLoader;
         private readonly ICoordinateHelper _coordinateHelper;
+        private readonly IBrushCache _brushCache;
+        private readonly IPenCache _penCache;
 
         /// <summary>
         /// States the mode of mouse interaction.
@@ -365,23 +391,13 @@ namespace AnnoDesigner
         /// <summary>
         /// List of all currently placed objects.
         /// </summary>
-        private List<LayoutObject> _placedObjects;
-        public List<LayoutObject> PlacedObjects
-        {
-            get { return _placedObjects; }
-            set { _placedObjects = value; }
-        }
+        public List<LayoutObject> PlacedObjects { get; set; }
 
         /// <summary>
         /// List of all currently selected objects.
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
-        private List<LayoutObject> _selectedObjects;
-        public List<LayoutObject> SelectedObjects
-        {
-            get { return _selectedObjects; }
-            set { _selectedObjects = value; }
-        }
+        public List<LayoutObject> SelectedObjects { get; set; }
 
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
 
@@ -431,29 +447,41 @@ namespace AnnoDesigner
         {
         }
 
-        public AnnoCanvas(BuildingPresets presetsToUse, Dictionary<string, IconImage> iconsToUse, ICoordinateHelper coordinateHelperToUse = null)
+        public AnnoCanvas(BuildingPresets presetsToUse,
+            Dictionary<string, IconImage> iconsToUse,
+            ICoordinateHelper coordinateHelperToUse = null,
+            IBrushCache brushCacheToUse = null,
+            IPenCache penCacheToUse = null)
         {
             InitializeComponent();
 
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
+            _brushCache = brushCacheToUse ?? new BrushCache();
+            _penCache = penCacheToUse ?? new PenCache();
+
+            _layoutLoader = new LayoutLoader();
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
             // initialize
             CurrentMode = MouseMode.Standard;
-            _placedObjects = new List<LayoutObject>();
-            _selectedObjects = new List<LayoutObject>();
-            _linePen = new Pen(Brushes.Black, 1);
-            _highlightPen = new Pen(Brushes.Yellow, 1);
-            _radiusPen = new Pen(Brushes.Black, 1);
-            _influencedPen = new Pen(Brushes.LawnGreen, 1);
+
+            PlacedObjects = new List<LayoutObject>();
+            SelectedObjects = new List<LayoutObject>();
+
+            const int dpiFactor = 1;
+            _linePen = _penCache.GetPen(Brushes.Black, dpiFactor * 1);
+            _highlightPen = _penCache.GetPen(Brushes.Yellow, dpiFactor * 2);
+            _radiusPen = _penCache.GetPen(Brushes.Black, dpiFactor * 2);
+            _influencedPen = _penCache.GetPen(Brushes.LawnGreen, dpiFactor * 2);
+
             var color = Colors.LightYellow;
             color.A = 32;
-            _lightBrush = new SolidColorBrush(color);
+            _lightBrush = _brushCache.GetSolidBrush(color);
             color = Colors.LawnGreen;
             color.A = 32;
-            _influencedBrush = new SolidColorBrush(color);
+            _influencedBrush = _brushCache.GetSolidBrush(color);
 
             sw.Stop();
             logger.Trace($"init variables took: {sw.ElapsedMilliseconds}ms");
@@ -522,22 +550,7 @@ namespace AnnoDesigner
                 }
             }
 
-            const int dpiFactor = 1;
-            _linePen.Thickness = dpiFactor * 1;
-            _highlightPen.Thickness = dpiFactor * 2;
-            _radiusPen.Thickness = dpiFactor * 2;
-            _influencedPen.Thickness = dpiFactor * 2;
-
-            _linePen.Freeze();
-            _highlightPen.Freeze();
-            _radiusPen.Freeze();
-            _influencedPen.Freeze();
-            _lightBrush.Freeze();
-            _influencedBrush.Freeze();
-
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-
-            _layoutLoader = new LayoutLoader();
         }
 
         #endregion
@@ -586,10 +599,19 @@ namespace AnnoDesigner
             //drawingContext.DrawRectangle(_lightBrush, _highlightPen, new Rect(GridToScreen(ScreenToGrid(_mousePosition)), new Size(_gridStep, _gridStep)));
 
             // draw placed objects            
-            RenderObjectList(drawingContext, _placedObjects, useTransparency: false);
-            RenderObjectSelection(drawingContext, _selectedObjects);
-            RenderObjectInfluenceRadius(drawingContext, _selectedObjects);
-            RenderObjectInfluenceRange(drawingContext, _selectedObjects);
+            RenderObjectList(drawingContext, PlacedObjects, useTransparency: false);
+            RenderObjectSelection(drawingContext, SelectedObjects);
+
+            if (!RenderInfluences)
+            {
+                RenderObjectInfluenceRadius(drawingContext, SelectedObjects);
+                RenderObjectInfluenceRange(drawingContext, SelectedObjects);
+            }
+            else
+            {
+                RenderObjectInfluenceRadius(drawingContext, PlacedObjects);
+                RenderObjectInfluenceRange(drawingContext, PlacedObjects);
+            }
 
             if (CurrentObjects.Count == 0)
             {
@@ -609,7 +631,7 @@ namespace AnnoDesigner
                     // draw influence radius
                     RenderObjectInfluenceRadius(drawingContext, CurrentObjects);
                     // draw influence range
-                    RenderObjectInfluenceRange(drawingContext, _currentObjects);
+                    RenderObjectInfluenceRange(drawingContext, CurrentObjects);
                     // draw with transparency
                     RenderObjectList(drawingContext, CurrentObjects, useTransparency: true);
                 }
@@ -691,19 +713,39 @@ namespace AnnoDesigner
                 var iconRendered = false;
                 if (RenderIcon && !string.IsNullOrEmpty(obj.Icon))
                 {
-                    var iconName = curLayoutObject.IconNameWithoutExtension; // for backwards compatibility to older layouts
-                    if (iconName != null && Icons.TryGetValue(iconName, out var iconImage))
-                    {
-                        var iconRect = curLayoutObject.GetIconRect(GridSize);
+                    var iconFound = false;
 
-                        drawingContext.DrawImage(iconImage.Icon, iconRect);
-                        iconRendered = true;
+                    if (curLayoutObject.Icon is null)
+                    {
+                        var iconName = curLayoutObject.IconNameWithoutExtension; // for backwards compatibility to older layouts
+
+                        //a null check is not needed here, as IconNameWithoutExtension uses obj.Icon, and we already check if that 
+                        //is null or empty, meaning the value that we feed into Path.GetFileNameWithoutExtension cannot be null, and
+                        //Path.GetFileNameWithoutExtension will either throw (representing an invalid path) or return a string 
+                        //(representing the file name)
+                        if (Icons.TryGetValue(iconName, out var iconImage))
+                        {
+                            curLayoutObject.Icon = iconImage;
+                            iconFound = true;
+                        }
+                        else
+                        {
+                            var message = $"Icon file missing ({iconName}).";
+                            logger.Warn(message);
+                            StatusMessage = message;
+                        }
                     }
                     else
                     {
-                        var message = $"Icon file missing ({iconName}).";
-                        logger.Warn(message);
-                        StatusMessage = message;
+                        iconFound = true;
+                    }
+
+                    if (iconFound)
+                    {
+                        var iconRect = curLayoutObject.GetIconRect(GridSize);
+
+                        drawingContext.DrawImage(curLayoutObject.Icon.Icon, iconRect);
+                        iconRendered = true;
                     }
                 }
 
@@ -731,6 +773,7 @@ namespace AnnoDesigner
                 }
             }
         }
+
 
         /// <summary>
         /// Renders a selection highlight on the specified object.
@@ -764,7 +807,7 @@ namespace AnnoDesigner
                     var circleCenterX = circle.Center.X;
                     var circleCenterY = circle.Center.Y;
 
-                    foreach (var curPlacedObject in _placedObjects)
+                    foreach (var curPlacedObject in PlacedObjects)
                     {
                         var distance = curPlacedObject.GetScreenRectCenterPoint(GridSize);
                         distance.X -= circleCenterX;
@@ -1001,7 +1044,7 @@ namespace AnnoDesigner
         private List<LayoutObject> CloneList(List<LayoutObject> list)
         {
             var newList = new List<LayoutObject>(list.Capacity);
-            list.ForEach(_ => newList.Add(new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper)));
+            list.ForEach(_ => newList.Add(new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)));
             return newList;
         }
 
@@ -1096,7 +1139,7 @@ namespace AnnoDesigner
                 if (obj != null)
                 {
                     CurrentObjects.Clear();
-                    CurrentObjects.Add(new LayoutObject(new AnnoObject(obj.WrappedAnnoObject), _coordinateHelper));
+                    CurrentObjects.Add(new LayoutObject(new AnnoObject(obj.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache));
                     OnCurrentObjectChanged(obj);
                 }
                 return;
@@ -1124,7 +1167,7 @@ namespace AnnoDesigner
                 }
                 else if (!(IsControlPressed() || IsShiftPressed()))
                 {
-                    CurrentMode = _selectedObjects.Contains(obj) ? MouseMode.DragSelectionStart : MouseMode.DragSingleStart;
+                    CurrentMode = SelectedObjects.Contains(obj) ? MouseMode.DragSelectionStart : MouseMode.DragSingleStart;
                     _unselectedObjects = null;
                 }
             }
@@ -1154,8 +1197,8 @@ namespace AnnoDesigner
                         CurrentMode = MouseMode.DragSelection;
                         break;
                     case MouseMode.DragSingleStart:
-                        _selectedObjects.Clear();
-                        _selectedObjects.Add(GetObjectAt(_mouseDragStart));
+                        SelectedObjects.Clear();
+                        SelectedObjects.Add(GetObjectAt(_mouseDragStart));
                         CurrentMode = MouseMode.DragSelection;
                         break;
                     case MouseMode.DragAllStart:
@@ -1172,7 +1215,7 @@ namespace AnnoDesigner
                 // check if the mouse has moved at least one grid cell in any direction
                 if (dx != 0 || dy != 0)
                 {
-                    foreach (var curLayoutObject in _placedObjects)
+                    foreach (var curLayoutObject in PlacedObjects)
                     {
                         curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
                     }
@@ -1201,17 +1244,17 @@ namespace AnnoDesigner
                                 if (IsControlPressed() || IsShiftPressed())
                                 {
                                     // remove previously selected by the selection rect
-                                    _selectedObjects.RemoveAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
+                                    SelectedObjects.RemoveAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
                                 }
                                 else
                                 {
-                                    _selectedObjects.Clear();
+                                    SelectedObjects.Clear();
                                 }
 
                                 // adjust rect
                                 _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                                 // select intersecting objects
-                                _selectedObjects.AddRange(_placedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)));
+                                SelectedObjects.AddRange(PlacedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)));
 
                                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                                 break;
@@ -1230,12 +1273,12 @@ namespace AnnoDesigner
 
                                 if (_unselectedObjects == null)
                                 {
-                                    _unselectedObjects = _placedObjects.FindAll(_ => !_selectedObjects.Contains(_));
+                                    _unselectedObjects = PlacedObjects.FindAll(_ => !SelectedObjects.Contains(_));
                                 }
 
                                 var collisionsExist = false;
                                 // temporarily move each object and check if collisions with unselected objects exist
-                                foreach (var curLayoutObject in _selectedObjects)
+                                foreach (var curLayoutObject in SelectedObjects)
                                 {
                                     var originalPosition = curLayoutObject.Position;
                                     // move object                                
@@ -1253,7 +1296,7 @@ namespace AnnoDesigner
                                 // if no collisions were found, permanently move all selected objects
                                 if (!collisionsExist)
                                 {
-                                    foreach (var curLayoutObject in _selectedObjects)
+                                    foreach (var curLayoutObject in SelectedObjects)
                                     {
                                         curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
                                     }
@@ -1300,20 +1343,20 @@ namespace AnnoDesigner
                             // clear selection if no key is pressed
                             if (!(IsControlPressed() || IsShiftPressed()))
                             {
-                                _selectedObjects.Clear();
+                                SelectedObjects.Clear();
                             }
 
                             var obj = GetObjectAt(_mousePosition);
                             if (obj != null)
                             {
                                 // user clicked an object: select or deselect it
-                                if (_selectedObjects.Contains(obj))
+                                if (SelectedObjects.Contains(obj))
                                 {
-                                    _selectedObjects.Remove(obj);
+                                    SelectedObjects.Remove(obj);
                                 }
                                 else
                                 {
-                                    _selectedObjects.Add(obj);
+                                    SelectedObjects.Add(obj);
                                 }
                             }
 
@@ -1346,14 +1389,14 @@ namespace AnnoDesigner
                                     if (!(IsControlPressed() || IsShiftPressed()))
                                     {
                                         // clear selection
-                                        _selectedObjects.Clear();
+                                        SelectedObjects.Clear();
                                     }
                                 }
                                 else
                                 {
                                     // remove selected object
-                                    _placedObjects.Remove(obj);
-                                    _selectedObjects.Remove(obj);
+                                    PlacedObjects.Remove(obj);
+                                    SelectedObjects.Remove(obj);
                                 }
                             }
                             else
@@ -1368,7 +1411,7 @@ namespace AnnoDesigner
                     case MouseMode.DragSelection:
                         {
                             //clear selection
-                            _selectedObjects.Clear();
+                            SelectedObjects.Clear();
 
                             if (CurrentObjects.Count != 0)
                             {
@@ -1384,9 +1427,9 @@ namespace AnnoDesigner
             // rotate current object
             else if (e.ChangedButton == MouseButton.Middle)
             {
-                if (CurrentObjects.Count == 0 && _selectedObjects.Count != 0)
+                if (CurrentObjects.Count == 0 && SelectedObjects.Count != 0)
                 {
-                    CurrentObjects = CloneList(_selectedObjects);
+                    CurrentObjects = CloneList(SelectedObjects);
                 }
 
                 Rotate(CurrentObjects);
@@ -1409,25 +1452,25 @@ namespace AnnoDesigner
             {
                 case Key.Delete:
                     // remove all currently selected objects from the grid and clear selection
-                    _selectedObjects.ForEach(_ => _placedObjects.Remove(_));
-                    _selectedObjects.Clear();
+                    SelectedObjects.ForEach(_ => PlacedObjects.Remove(_));
+                    SelectedObjects.Clear();
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                     break;
                 case Key.C:
                     if (IsControlPressed())
                     {
-                        if (_selectedObjects.Count != 0)
+                        if (SelectedObjects.Count != 0)
                         {
-                            ObjectClipboard = CloneList(_selectedObjects);
+                            ClipboardObjects = CloneList(SelectedObjects);
                         }
                     }
                     break;
                 case Key.V:
                     if (IsControlPressed())
                     {
-                        if (ObjectClipboard.Count != 0)
+                        if (ClipboardObjects.Count != 0)
                         {
-                            CurrentObjects = CloneList(ObjectClipboard);
+                            CurrentObjects = CloneList(ClipboardObjects);
                             MoveCurrentObjectsToMouse();
                         }
                     }
@@ -1445,7 +1488,7 @@ namespace AnnoDesigner
                     {
                         //Count == 0;
                         //Rotate from selected objects
-                        CurrentObjects = CloneList(_selectedObjects);
+                        CurrentObjects = CloneList(SelectedObjects);
                         Rotate(CurrentObjects);
                     }
                     break;
@@ -1509,11 +1552,11 @@ namespace AnnoDesigner
         /// <returns>true if placement succeeded, otherwise false</returns>
         private bool TryPlaceCurrentObject(bool isContinuousDrawing)
         {
-            if (CurrentObjects.Count != 0 && !_placedObjects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
+            if (CurrentObjects.Count != 0 && !PlacedObjects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
             {
-                _placedObjects.AddRange(CloneList(CurrentObjects));
+                PlacedObjects.AddRange(CloneList(CurrentObjects));
                 // sort the objects because borderless objects should be drawn first
-                _placedObjects.Sort((a, b) => b.WrappedAnnoObject.Borderless.CompareTo(a.WrappedAnnoObject.Borderless));
+                PlacedObjects.Sort((a, b) => b.WrappedAnnoObject.Borderless.CompareTo(a.WrappedAnnoObject.Borderless));
 
                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                 //no need to update colors if drawing the same object(s)
@@ -1535,7 +1578,8 @@ namespace AnnoDesigner
         /// <returns>object at the position, if there is no object null</returns>
         private LayoutObject GetObjectAt(Point position)
         {
-            return _placedObjects.FindLast(_ => _.CalculateScreenRect(GridSize).Contains(position));
+            var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
+            return PlacedObjects.Find(_ => _.CollisionRect.Contains(gridPosition));
         }
 
         #endregion
@@ -1578,14 +1622,14 @@ namespace AnnoDesigner
         /// <param name="border"></param>
         public void Normalize(int border)
         {
-            if (_placedObjects.Count == 0)
+            if (PlacedObjects.Count == 0)
             {
                 return;
             }
 
-            var dx = _placedObjects.Min(_ => _.Position.X) - border;
-            var dy = _placedObjects.Min(_ => _.Position.Y) - border;
-            _placedObjects.ForEach(_ => _.Position = new Point(_.Position.X - dx, _.Position.Y - dy));
+            var dx = PlacedObjects.Min(_ => _.Position.X) - border;
+            var dy = PlacedObjects.Min(_ => _.Position.Y) - border;
+            PlacedObjects.ForEach(_ => _.Position = new Point(_.Position.X - dx, _.Position.Y - dy));
 
             InvalidateVisual();
         }
@@ -1599,8 +1643,8 @@ namespace AnnoDesigner
         /// </summary>
         public void NewFile()
         {
-            _placedObjects.Clear();
-            _selectedObjects.Clear();
+            PlacedObjects.Clear();
+            SelectedObjects.Clear();
             LoadedFile = "";
             InvalidateVisual();
 
@@ -1616,7 +1660,7 @@ namespace AnnoDesigner
             try
             {
                 Normalize(1);
-                _layoutLoader.SaveLayout(_placedObjects.Select(x => x.WrappedAnnoObject).ToList(), LoadedFile);
+                _layoutLoader.SaveLayout(PlacedObjects.Select(x => x.WrappedAnnoObject).ToList(), LoadedFile);
             }
             catch (Exception e)
             {
@@ -1683,15 +1727,15 @@ namespace AnnoDesigner
                 var layout = _layoutLoader.LoadLayout(filename, forceLoad);
                 if (layout != null)
                 {
-                    _selectedObjects.Clear();
+                    SelectedObjects.Clear();
 
                     var layoutObjects = new List<LayoutObject>(layout.Count);
                     foreach (var curObj in layout)
                     {
-                        layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper));
+                        layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
                     }
 
-                    _placedObjects = layoutObjects;
+                    PlacedObjects = layoutObjects;
                     LoadedFile = filename;
                     Normalize(1);
 

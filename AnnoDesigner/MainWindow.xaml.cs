@@ -15,7 +15,7 @@ using AnnoDesigner.Core;
 using System.Text;
 using System.Configuration;
 using AnnoDesigner.Core.Helper;
-using AnnoDesigner.viewmodel;
+using AnnoDesigner.ViewModels;
 using System.Windows.Threading;
 using NLog;
 
