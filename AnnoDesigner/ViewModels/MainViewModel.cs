@@ -44,11 +44,12 @@ namespace AnnoDesigner.ViewModels
 
         public event EventHandler<EventArgs> ShowStatisticsChanged;
 
-        private AnnoCanvas _annoCanvas;
+        private IAnnoCanvas _annoCanvas;
         private Dictionary<int, bool> _treeViewState;
         private bool _canvasShowGrid;
         private bool _canvasShowIcons;
         private bool _canvasShowLabels;
+        private bool _canvasShowInfluences;
         private bool _automaticUpdateCheck;
         private string _versionValue;
         private string _fileVersionValue;
@@ -182,7 +183,7 @@ namespace AnnoDesigner.ViewModels
                 //Force a language update on the clipboard status item.
                 if (!string.IsNullOrWhiteSpace(StatusMessageClipboard))
                 {
-                    AnnoCanvas_ClipboardChanged(AnnoCanvas.ObjectClipboard);
+                    AnnoCanvas_ClipboardChanged(AnnoCanvas.ClipboardObjects);
                 }
 
                 //update settings
@@ -643,6 +644,7 @@ namespace AnnoDesigner.ViewModels
             CanvasShowGrid = _appSettings.ShowGrid;
             CanvasShowIcons = _appSettings.ShowIcons;
             CanvasShowLabels = _appSettings.ShowLabels;
+            CanvasShowInfluences = _appSettings.ShowInfluences;
 
             BuildingSettingsViewModel.IsPavedStreet = _appSettings.IsPavedStreet;
 
@@ -660,6 +662,7 @@ namespace AnnoDesigner.ViewModels
             _appSettings.ShowGrid = CanvasShowGrid;
             _appSettings.ShowIcons = CanvasShowIcons;
             _appSettings.ShowLabels = CanvasShowLabels;
+            _appSettings.ShowInfluences = CanvasShowInfluences;
 
             _appSettings.StatsShowStats = StatisticsViewModel.IsVisible;
             _appSettings.StatsShowBuildingCount = StatisticsViewModel.ShowStatisticsBuildingCount;
@@ -771,7 +774,7 @@ namespace AnnoDesigner.ViewModels
 
         #region properties
 
-        public AnnoCanvas AnnoCanvas
+        public IAnnoCanvas AnnoCanvas
         {
             get { return _annoCanvas; }
             set
@@ -826,6 +829,19 @@ namespace AnnoDesigner.ViewModels
                 if (AnnoCanvas != null)
                 {
                     AnnoCanvas.RenderLabel = _canvasShowLabels;
+                }
+            }
+        }
+
+        public bool CanvasShowInfluences
+        {
+            get { return _canvasShowInfluences; }
+            set
+            {
+                UpdateProperty(ref _canvasShowInfluences, value);
+                if (AnnoCanvas != null)
+                {
+                    AnnoCanvas.RenderInfluences = _canvasShowInfluences;
                 }
             }
         }
@@ -1490,6 +1506,7 @@ namespace AnnoDesigner.ViewModels
             ShowGrid = Localization.Localization.Translations[language]["ShowGrid"];
             ShowLabels = Localization.Localization.Translations[language]["ShowLabels"];
             ShowIcons = Localization.Localization.Translations[language]["ShowIcons"];
+            ShowInfluences = Localization.Localization.Translations[language]["ShowInfluences"];
 
             //DockPanel
             BuildingSettingsViewModel.TextHeader = Localization.Localization.Translations[language]["BuildingSettings"];
@@ -1887,6 +1904,7 @@ namespace AnnoDesigner.ViewModels
                 UpdateProperty(ref _showGrid, value);
             }
         }
+
         private string _showLabels;
         public string ShowLabels
         {
@@ -1896,6 +1914,7 @@ namespace AnnoDesigner.ViewModels
                 UpdateProperty(ref _showLabels, value);
             }
         }
+
         private string _showIcons;
         public string ShowIcons
         {
@@ -1903,6 +1922,16 @@ namespace AnnoDesigner.ViewModels
             set
             {
                 UpdateProperty(ref _showIcons, value);
+            }
+        }
+
+        private string _showInfluences;
+        public string ShowInfluences
+        {
+            get { return _showInfluences; }
+            set
+            {
+                UpdateProperty(ref _showInfluences, value);
             }
         }
 

@@ -355,5 +355,17 @@ namespace AnnoDesigner.Properties {
                 this["UpdateSupportsPrerelease"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowInfluences {
+            get {
+                return ((bool)(this["ShowInfluences"]));
+            }
+            set {
+                this["ShowInfluences"] = value;
+            }
+        }
     }
 }

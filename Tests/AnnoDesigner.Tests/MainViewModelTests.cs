@@ -17,6 +17,7 @@ namespace AnnoDesigner.Tests
     {
         private readonly ICommons _mockedCommons;
         private readonly IAppSettings _mockedAppSettings;
+        private readonly IAnnoCanvas _mockedAnnoCanvas;
 
         public MainViewModelTests()
         {
@@ -25,11 +26,20 @@ namespace AnnoDesigner.Tests
             _mockedCommons = commonsMock.Object;
 
             _mockedAppSettings = new Mock<IAppSettings>().Object;
+
+            var annoCanvasMock = new Mock<IAnnoCanvas>();
+            annoCanvasMock.SetupAllProperties();
+            _mockedAnnoCanvas = annoCanvasMock.Object;
         }
 
-        private MainViewModel GetViewModel(ICommons commonsToUse = null, IAppSettings appSettingsToUse = null)
+        private MainViewModel GetViewModel(ICommons commonsToUse = null,
+            IAppSettings appSettingsToUse = null,
+            IAnnoCanvas annoCanvasToUse = null)
         {
-            return new MainViewModel(commonsToUse ?? _mockedCommons, appSettingsToUse ?? _mockedAppSettings);
+            return new MainViewModel(commonsToUse ?? _mockedCommons, appSettingsToUse ?? _mockedAppSettings)
+            {
+                AnnoCanvas = annoCanvasToUse ?? _mockedAnnoCanvas
+            };
         }
 
         #region ctor tests
@@ -137,7 +147,7 @@ namespace AnnoDesigner.Tests
         #region SearchText tests
 
         [Fact]
-        public void PresetsTreeSearchViewModelPropertyChanged_SeachTextChanged_ShouldSetFilterTextOnPresetsTreeViewModel()
+        public void PresetsTreeSearchViewModelPropertyChanged_SearchTextChanged_ShouldSetFilterTextOnPresetsTreeViewModel()
         {
             // Arrange
             var viewModel = GetViewModel();
@@ -336,6 +346,26 @@ namespace AnnoDesigner.Tests
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveShowInfluences(bool expectedShowInfluences)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.CanvasShowInfluences = expectedShowInfluences;
+
+            // Act
+            viewModel.SaveSettings();
+
+            // Assert
+            Assert.Equal(expectedShowInfluences, appSettings.Object.ShowInfluences);
+            appSettings.Verify(x => x.Save(), Times.Once);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
         public void SaveSettings_IsCalled_ShouldSaveEnableAutomaticUpdateCheck(bool expectedEnableAutomaticUpdateCheck)
         {
             // Arrange            
@@ -499,6 +529,245 @@ namespace AnnoDesigner.Tests
             // Assert
             Assert.Equal(expectedPresetsTreeGameVersionFilter.ToString(), appSettings.Object.PresetsTreeGameVersionFilter);
             appSettings.Verify(x => x.Save(), Times.Once);
+        }
+
+        #endregion
+
+        #region LoadSettings tests
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void LoadSettings_IsCalled_ShouldLoadShowInfluences(bool expectedShowInfluences)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.ShowInfluences).Returns(() => expectedShowInfluences);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.CanvasShowInfluences = !expectedShowInfluences;
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedShowInfluences, viewModel.CanvasShowInfluences);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void LoadSettings_IsCalled_ShouldLoadShowGrid(bool expectedShowGrid)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.ShowGrid).Returns(() => expectedShowGrid);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.CanvasShowGrid = !expectedShowGrid;
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedShowGrid, viewModel.CanvasShowGrid);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void LoadSettings_IsCalled_ShouldLoadShowIcons(bool expectedShowIcons)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.ShowIcons).Returns(() => expectedShowIcons);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.CanvasShowIcons = !expectedShowIcons;
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedShowIcons, viewModel.CanvasShowIcons);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void LoadSettings_IsCalled_ShouldLoadShowLabels(bool expectedShowLabels)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.ShowLabels).Returns(() => expectedShowLabels);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.CanvasShowLabels = !expectedShowLabels;
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedShowLabels, viewModel.CanvasShowLabels);
+        }
+
+        [Fact]
+        public void LoadSettings_IsCalled_ShouldLoadMainWindowHeight()
+        {
+            // Arrange            
+            var expectedMainWindowHeight = 42.4;
+
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.MainWindowHeight).Returns(() => expectedMainWindowHeight);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedMainWindowHeight, viewModel.MainWindowHeight);
+        }
+
+        [Fact]
+        public void LoadSettings_IsCalled_ShouldLoadMainWindowWidth()
+        {
+            // Arrange            
+            var expectedMainWindowWidth = 42.4;
+
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.MainWindowWidth).Returns(() => expectedMainWindowWidth);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedMainWindowWidth, viewModel.MainWindowWidth);
+        }
+
+        [Fact]
+        public void LoadSettings_IsCalled_ShouldLoadMainWindowLeft()
+        {
+            // Arrange            
+            var expectedMainWindowLeft = 42.4;
+
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.MainWindowLeft).Returns(() => expectedMainWindowLeft);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedMainWindowLeft, viewModel.MainWindowLeft);
+        }
+
+        [Fact]
+        public void LoadSettings_IsCalled_ShouldLoadMainWindowTop()
+        {
+            // Arrange            
+            var expectedMainWindowTop = 42.4;
+
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.MainWindowTop).Returns(() => expectedMainWindowTop);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedMainWindowTop, viewModel.MainWindowTop);
+        }
+
+        [Theory]
+        [InlineData(System.Windows.WindowState.Maximized)]
+        [InlineData(System.Windows.WindowState.Normal)]
+        public void LoadSettings_IsCalled_ShouldLoadMainWindowWindowState(System.Windows.WindowState expectedMainMainWindowWindowState)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.MainWindowWindowState).Returns(() => expectedMainMainWindowWindowState);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedMainMainWindowWindowState, viewModel.MainWindowWindowState);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void LoadSettings_IsCalled_ShouldLoadEnableAutomaticUpdateCheck(bool expectedEnableAutomaticUpdateCheck)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.EnableAutomaticUpdateCheck).Returns(() => expectedEnableAutomaticUpdateCheck);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.AutomaticUpdateCheck = !expectedEnableAutomaticUpdateCheck;
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedEnableAutomaticUpdateCheck, viewModel.AutomaticUpdateCheck);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void LoadSettings_IsCalled_ShouldLoadUseCurrentZoomOnExportedImageValue(bool expectedUseCurrentZoomOnExportedImageValue)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.UseCurrentZoomOnExportedImageValue).Returns(() => expectedUseCurrentZoomOnExportedImageValue);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.UseCurrentZoomOnExportedImageValue = !expectedUseCurrentZoomOnExportedImageValue;
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedUseCurrentZoomOnExportedImageValue, viewModel.UseCurrentZoomOnExportedImageValue);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void LoadSettings_IsCalled_ShouldLoadRenderSelectionHighlightsOnExportedImageValue(bool expectedRenderSelectionHighlightsOnExportedImageValue)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.RenderSelectionHighlightsOnExportedImageValue).Returns(() => expectedRenderSelectionHighlightsOnExportedImageValue);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.RenderSelectionHighlightsOnExportedImageValue = !expectedRenderSelectionHighlightsOnExportedImageValue;
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedRenderSelectionHighlightsOnExportedImageValue, viewModel.RenderSelectionHighlightsOnExportedImageValue);
         }
 
         #endregion
