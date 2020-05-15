@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
-using AnnoDesigner.viewmodel;
+using AnnoDesigner.ViewModels;
 using Moq;
 using Xunit;
 

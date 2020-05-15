@@ -12,7 +12,7 @@ using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 using static AnnoDesigner.Core.CoreConstants;
 
-namespace AnnoDesigner.viewmodel
+namespace AnnoDesigner.ViewModels
 {
     public class PresetsTreeSearchViewModel : Notify
     {

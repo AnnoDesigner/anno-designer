@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Models;
-using AnnoDesigner.viewmodel;
+using AnnoDesigner.ViewModels;
 using Xunit;
 
 namespace AnnoDesigner.Tests

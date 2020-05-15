@@ -8,7 +8,7 @@ using System.Windows.Input;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 
-namespace AnnoDesigner.viewmodel
+namespace AnnoDesigner.ViewModels
 {
     public class AboutViewModel : Notify
     {

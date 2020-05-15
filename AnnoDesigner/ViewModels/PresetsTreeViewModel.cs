@@ -16,7 +16,7 @@ using AnnoDesigner.Models;
 using AnnoDesigner.Models.PresetsTree;
 using NLog;
 
-namespace AnnoDesigner.viewmodel
+namespace AnnoDesigner.ViewModels
 {
     public class PresetsTreeViewModel : Notify
     {

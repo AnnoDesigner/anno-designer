@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Xceed.Wpf.Toolkit;
 
-namespace AnnoDesigner.viewmodel
+namespace AnnoDesigner.ViewModels
 {
     public class BuildingSettingsViewModel : Notify
     {

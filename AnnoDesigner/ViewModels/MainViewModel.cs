@@ -29,7 +29,7 @@ using Microsoft.Win32;
 using NLog;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
-namespace AnnoDesigner.viewmodel
+namespace AnnoDesigner.ViewModels
 {
     public class MainViewModel : Notify
     {

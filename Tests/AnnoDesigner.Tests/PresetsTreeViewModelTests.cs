@@ -9,7 +9,7 @@ using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Models;
 using AnnoDesigner.Models.PresetsTree;
-using AnnoDesigner.viewmodel;
+using AnnoDesigner.ViewModels;
 using Moq;
 using Xunit;
 using Xunit.Sdk;

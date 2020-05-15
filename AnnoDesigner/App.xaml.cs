@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using AnnoDesigner.Models;
-using AnnoDesigner.viewmodel;
+using AnnoDesigner.ViewModels;
 using NLog;
 using NLog.Targets;
 

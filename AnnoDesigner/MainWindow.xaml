@@ -11,7 +11,7 @@
         xmlns:converter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
         xmlns:modelPresetsTree="clr-namespace:AnnoDesigner.Models.PresetsTree"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
-        xmlns:viewModel="clr-namespace:AnnoDesigner.viewmodel"
+        xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
         xmlns:myBehaviors="clr-namespace:AnnoDesigner.Behaviors"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewModel:MainViewModel, IsDesignTimeCreatable=False}"
