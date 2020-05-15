@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using AnnoDesigner.model;
+using AnnoDesigner.Models;
 using NLog;
 
 namespace AnnoDesigner.Localization

@@ -6,8 +6,8 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using AnnoDesigner.model;
-using AnnoDesigner.viewmodel;
+using AnnoDesigner.Models;
+using AnnoDesigner.ViewModels;
 using NLog;
 using NLog.Targets;
 
@@ -123,7 +123,7 @@ namespace AnnoDesigner
                             Environment.Exit(-1);
                         }
                     }
-                    catch (AbandonedMutexException ex)
+                    catch (AbandonedMutexException)
                     {
                         //mutex was killed
                         createdNewMutex = true;

@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AnnoDesigner"
-        xmlns:viewModel="clr-namespace:AnnoDesigner.viewmodel"
+        xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewModel:WelcomeViewModel, IsDesignTimeCreatable=False}"
@@ -33,7 +33,7 @@
                    VerticalAlignment="Top"
                    HorizontalAlignment="Left"
                    Width="433" />
-        <Image Source="Stuff/icon64.png"
+        <Image Source="Images/Icons/icon64.png"
                Stretch="Fill"
                VerticalAlignment="Top"
                HorizontalAlignment="Left"
