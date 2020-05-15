@@ -98,6 +98,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon.ico" />
+    <Content Include="Images\Icons\icon64.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Flags\*.png" />
@@ -109,6 +112,9 @@
     <EmbeddedResource Remove="Stuff\**" />
     <None Remove="Presetsv8\**" />
     <None Remove="Stuff\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Images\Icons\icon64.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnnoDesigner.Core\AnnoDesigner.Core.csproj" />
