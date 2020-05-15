@@ -3,13 +3,12 @@
     <TargetFramework>net472</TargetFramework>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWindowsForms>true</UseWindowsForms>
+    <UseWpf>true</UseWpf>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AnnoDesigner.Core">
       <HintPath>..\..\AnnoDesigner.Core\bin\$(Configuration)\net472\AnnoDesigner.Core.dll</HintPath>
     </Reference>
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CXuesong.MW.WikiClientLibrary">
