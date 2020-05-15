@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ColorPresetsDesigner"
         xmlns:views="clr-namespace:ColorPresetsDesigner.Views"
         xmlns:viewModels="clr-namespace:ColorPresetsDesigner.ViewModels"
-        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
@@ -19,11 +19,11 @@
         MinHeight="720"
         MinWidth="1280"
         Title="{Binding Title}">
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Closing">
-            <i:InvokeCommandAction Command="{Binding ClosingWindowCommand}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Closing">
+            <b:InvokeCommandAction Command="{Binding ClosingWindowCommand}" />
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
     <Window.Resources>
         <xctk:ColorToSolidColorBrushConverter x:Key="converterColorToSolidColorBrush" />
         <converter:BoolToVisibilityConverter x:Key="converterBoolToVisibility"

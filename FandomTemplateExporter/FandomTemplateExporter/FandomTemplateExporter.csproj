@@ -7,10 +7,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AnnoDesigner.Core">
-      <HintPath>..\..\AnnoDesigner\bin\Debug\AnnoDesigner.Core.dll</HintPath>
+      <HintPath>..\..\AnnoDesigner\bin\$(Configuration)\net472\AnnoDesigner.Core.dll</HintPath>
     </Reference>
     <Reference Include="FandomParser.Core">
-      <HintPath>..\..\FandomParser\FandomParser\bin\Debug\FandomParser.Core.dll</HintPath>
+      <HintPath>..\..\FandomParser\FandomParser\bin\$(Configuration)\net472\FandomParser.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
   </ItemGroup>
@@ -30,10 +30,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
-      <Version>1.0.1</Version>
+      <Version>1.1.19</Version>
     </PackageReference>
     <PackageReference Include="NLog">
-      <Version>4.6.7</Version>
+      <Version>4.7.1</Version>
     </PackageReference>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="WindowsAPICodePack-Core">

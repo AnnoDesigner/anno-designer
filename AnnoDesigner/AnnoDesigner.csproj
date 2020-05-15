@@ -83,7 +83,7 @@
       <Version>1.1.19</Version>
     </PackageReference>
     <PackageReference Include="NLog">
-      <Version>4.7.0</Version>
+      <Version>4.7.1</Version>
     </PackageReference>
     <PackageReference Include="Octokit">
       <Version>0.47.0</Version>
