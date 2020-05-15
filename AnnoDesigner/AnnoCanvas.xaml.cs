@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -826,12 +828,17 @@ namespace AnnoDesigner
             }
         }
 
+        /// <summary>
+        /// Renders influence range of the given objects.
+        /// If RenderTrueInfluenceRange is set to true, true influence range will be rendered and objects inside will be highlighted.
+        /// Else maximum influence range will be rendered.
+        /// </summary>
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
-            Dictionary<double, Dictionary<double, AnnoObject>> gridDictionary = null;
-            if (RenderTrueInfluenceRange)
+            AnnoObject[][] gridDictionary = null;
+            if (RenderTrueInfluenceRange && PlacedObjects.Count > 0)
             {
-                var placedAnnoObjects = PlacedObjects.Select(o => o.WrappedAnnoObject).ToList();
+                var placedAnnoObjects = PlacedObjects.Concat(objects).Select(o => o.WrappedAnnoObject).ToList();
                 var placedObjectDictionary = PlacedObjects.ToDictionary(o => o.WrappedAnnoObject);
 
                 void Highlight(AnnoObject objectInRange)
@@ -843,18 +850,19 @@ namespace AnnoDesigner
                 RoadSearchHelper.BreadthFirstSearch(
                     placedAnnoObjects,
                     objects.Select(o => o.WrappedAnnoObject).Where(o => o.InfluenceRange > 0.5),
-                    o => o.InfluenceRange + 1,// increase distance to get objects that are touching even the last road cell in influence range
-                    Highlight,
-                    gridDictionary);
+                    o => (int)o.InfluenceRange + 1,// increase distance to get objects that are touching even the last road cell in influence range
+                    gridDictionary,
+                    Highlight);
             }
 
-            foreach (var curLayoutObject in objects)
+            var geometries = new ConcurrentDictionary<LayoutObject, StreamGeometry>();
+            Parallel.ForEach(objects, curLayoutObject =>
             {
                 if (curLayoutObject.WrappedAnnoObject.InfluenceRange > 0.5)
                 {
                     var sg = new StreamGeometry();
 
-                    using (StreamGeometryContext sgc = sg.Open())
+                    using (var sgc = sg.Open())
                     {
                         if (RenderTrueInfluenceRange)
                         {
@@ -870,12 +878,16 @@ namespace AnnoDesigner
                     {
                         sg.Freeze();
                     }
-                    drawingContext.DrawGeometry(_lightBrush, _radiusPen, sg);
+                    geometries[curLayoutObject] = sg;
                 }
+            });
+            foreach (var geometry in geometries)
+            {
+                drawingContext.DrawGeometry(_lightBrush, _radiusPen, geometry.Value);
             }
         }
 
-        private void DrawTrueInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc, Dictionary<double, Dictionary<double, AnnoObject>> gridDictionary)
+        private void DrawTrueInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc, AnnoObject[][] gridDictionary)
         {
             var stroked = true;
             var smoothJoin = true;
@@ -883,18 +895,23 @@ namespace AnnoDesigner
             var geometryFill = true;
             var geometryStroke = true;
 
+            var startObjects = new AnnoObject[1]
+            {
+                curLayoutObject.WrappedAnnoObject
+            };
+
             var cellsInInfluenceRange = RoadSearchHelper.BreadthFirstSearch(
                 PlacedObjects.Select(o => o.WrappedAnnoObject),
-                Enumerable.Repeat(curLayoutObject.WrappedAnnoObject, 1),
-                o => o.InfluenceRange,
-                gridDictionary: gridDictionary);
+                startObjects,
+                o => (int)o.InfluenceRange,
+                gridDictionary);
 
             var points = PolygonBoundaryFinderHelper.GetBoundaryPoints(cellsInInfluenceRange);
 
-            sgc.BeginFigure(_coordinateHelper.GridToScreen(points[0], GridSize), geometryFill, geometryStroke);
+            sgc.BeginFigure(_coordinateHelper.GridToScreen(new Point(points[0].x, points[0].y), GridSize), geometryFill, geometryStroke);
             for (var i = 1; i < points.Count; i++)
             {
-                sgc.LineTo(_coordinateHelper.GridToScreen(points[i], GridSize), stroked, smoothJoin);
+                sgc.LineTo(_coordinateHelper.GridToScreen(new Point(points[i].x, points[i].y), GridSize), stroked, smoothJoin);
             }
         }
 

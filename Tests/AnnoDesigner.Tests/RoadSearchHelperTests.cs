@@ -14,25 +14,7 @@ namespace AnnoDesigner.Tests
     {
         private string GetTestDataFile(string testCase)
         {
-            string basePath = AppDomain.CurrentDomain.BaseDirectory;
-
-            return Path.Combine(basePath, "TestData", "RoadSearchHelper", $"{testCase}.ad");
-        }
-
-        private void AssertGridDictionary(Dictionary<double, Dictionary<double, AnnoObject>> gridDictionary, IDictionary<double, IDictionary<double, AnnoObject>> expected)
-        {
-            Assert.Equal(gridDictionary.Count, expected.Count);
-            foreach (var column in gridDictionary)
-            {
-                Assert.Contains(column.Key, expected);
-                Assert.Equal(column.Value.Count, expected[column.Key].Count);
-
-                foreach (var item in column.Value)
-                {
-                    Assert.Contains(item.Key, expected[column.Key]);
-                    Assert.Equal(item.Value, expected[column.Key][item.Key]);
-                }
-            }
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestData", "RoadSearchHelper", $"{testCase}.ad");
         }
 
         [Fact]
@@ -40,27 +22,33 @@ namespace AnnoDesigner.Tests
         {
             // Arrange
             var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("PrepareGridDictionary_SingleObject"), true);
-            var expectedResult = new Dictionary<double, IDictionary<double, AnnoObject>>()
+            var expectedResult = new AnnoObject[][]
             {
-                [1] = new Dictionary<double, AnnoObject>()
+                new AnnoObject[5],
+                new AnnoObject[]
                 {
-                    [1] = placedObjects[0],
-                    [2] = placedObjects[0],
-                    [3] = placedObjects[0]
+                    null,
+                    placedObjects[0],
+                    placedObjects[0],
+                    placedObjects[0],
+                    null
                 },
-                [2] = new Dictionary<double, AnnoObject>()
+                new AnnoObject[]
                 {
-                    [1] = placedObjects[0],
-                    [2] = placedObjects[0],
-                    [3] = placedObjects[0]
-                }
+                    null,
+                    placedObjects[0],
+                    placedObjects[0],
+                    placedObjects[0],
+                    null
+                },
+                new AnnoObject[5]
             };
 
             // Act
             var gridDictionary = RoadSearchHelper.PrepareGridDictionary(placedObjects);
 
             // Assert
-            AssertGridDictionary(gridDictionary, expectedResult);
+            Assert.Equal(expectedResult, gridDictionary);
         }
 
         [Fact]
@@ -68,34 +56,45 @@ namespace AnnoDesigner.Tests
         {
             // Arrange
             var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("PrepareGridDictionary_MultipleObjects"), true);
-            var placedObject1 = placedObjects.FirstOrDefault(o => o.Position == new Point(1, 1));
-            var placedObject2 = placedObjects.FirstOrDefault(o => o.Position == new Point(5, 2));
-            var expectedResult = new Dictionary<double, IDictionary<double, AnnoObject>>()
+            var placedObject1 = placedObjects.FirstOrDefault(o => o.Label == "Object1");
+            var placedObject2 = placedObjects.FirstOrDefault(o => o.Label == "Object2");
+            var expectedResult = new AnnoObject[][]
             {
-                [1] = new Dictionary<double, AnnoObject>()
+                new AnnoObject[5],
+                new AnnoObject[]
                 {
-                    [1] = placedObject1,
-                    [2] = placedObject1,
-                    [3] = placedObject1
+                    null,
+                    placedObject1,
+                    placedObject1,
+                    placedObject1,
+                    null
                 },
-                [2] = new Dictionary<double, AnnoObject>()
+                new AnnoObject[]
                 {
-                    [1] = placedObject1,
-                    [2] = placedObject1,
-                    [3] = placedObject1
+                    null,
+                    placedObject1,
+                    placedObject1,
+                    placedObject1,
+                    null
                 },
-                [5] = new Dictionary<double, AnnoObject>()
+                new AnnoObject[5],
+                new AnnoObject[5],
+                new AnnoObject[]
                 {
-                    [2] = placedObject2,
-                    [3] = placedObject2
-                }
+                    null,
+                    null,
+                    placedObject2,
+                    placedObject2,
+                    null
+                },
+                new AnnoObject[5]
             };
 
             // Act
             var gridDictionary = RoadSearchHelper.PrepareGridDictionary(placedObjects);
 
             // Assert
-            AssertGridDictionary(gridDictionary, expectedResult);
+            Assert.Equal(expectedResult, gridDictionary);
         }
 
         [Fact]
@@ -107,10 +106,10 @@ namespace AnnoDesigner.Tests
 
             // Act
             var objectsInInfluence = new List<AnnoObject>();
-            RoadSearchHelper.BreadthFirstSearch(placedObjects, startObjects, o => o.InfluenceRange + 1, o => objectsInInfluence.Add(o));
+            RoadSearchHelper.BreadthFirstSearch(placedObjects, startObjects, o => (int)o.InfluenceRange + 1, inRangeAction: o => objectsInInfluence.Add(o));
 
             // Assert
-            Assert.Equal(objectsInInfluence, placedObjects.Where(o => o.Label == "TargetIn"));
+            Assert.Equal(placedObjects.Where(o => o.Label == "TargetIn").ToHashSet(), objectsInInfluence.ToHashSet());
             Assert.True(placedObjects.Where(o => o.Label == "TargetOut").All(o => !objectsInInfluence.Contains(o)));
         }
 
@@ -125,10 +124,10 @@ namespace AnnoDesigner.Tests
                 var expectedCount = 4 * Enumerable.Range(1, (int)startObject.InfluenceRange).Sum() + 1;
 
                 // Act
-                var visitedCells = RoadSearchHelper.BreadthFirstSearch(placedObjects, new[] { startObject }, o => o.InfluenceRange);
+                var visitedCells = RoadSearchHelper.BreadthFirstSearch(placedObjects, new[] { startObject }, o => (int)o.InfluenceRange);
 
                 // Assert
-                Assert.Equal(expectedCount, visitedCells.Count);
+                Assert.Equal(expectedCount, visitedCells.Sum(c => c.Count(visited => visited)));
             }
         }
     }

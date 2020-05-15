@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 
 namespace AnnoDesigner.Helper
 {
@@ -14,49 +13,64 @@ namespace AnnoDesigner.Helper
             Right
         }
 
-        private static Point GetLeftCell(Point point, Direction direction)
+        private static (int x, int y) GetLeftCell((int X, int Y) point, Direction direction)
         {
             switch (direction)
             {
                 case Direction.Up:
-                    return new Point(point.X - 1, point.Y - 1);
+                    return (point.X - 1, point.Y - 1);
                 case Direction.Left:
-                    return new Point(point.X - 1, point.Y);
+                    return (point.X - 1, point.Y);
                 case Direction.Down:
                     return point;
                 default:
-                    return new Point(point.X, point.Y - 1);
+                    return (point.X, point.Y - 1);
             }
         }
 
-        private static Point GetRightCell(Point point, Direction direction)
+        private static (int x, int y) GetRightCell((int X, int Y) point, Direction direction)
         {
             switch (direction)
             {
                 case Direction.Up:
-                    return new Point(point.X, point.Y - 1);
+                    return (point.X, point.Y - 1);
                 case Direction.Left:
-                    return new Point(point.X - 1, point.Y - 1);
+                    return (point.X - 1, point.Y - 1);
                 case Direction.Down:
-                    return new Point(point.X - 1, point.Y);
+                    return (point.X - 1, point.Y);
                 default:
                     return point;
             }
         }
 
-        private static Point MoveForward(Point point, Direction direction)
+        private static (int x, int y) MoveForward((int X, int Y) point, Direction direction)
         {
             switch (direction)
             {
                 case Direction.Up:
-                    return new Point(point.X, point.Y - 1);
+                    return (point.X, point.Y - 1);
                 case Direction.Left:
-                    return new Point(point.X - 1, point.Y);
+                    return (point.X - 1, point.Y);
                 case Direction.Down:
-                    return new Point(point.X, point.Y + 1);
+                    return (point.X, point.Y + 1);
                 default:
-                    return new Point(point.X + 1, point.Y);
+                    return (point.X + 1, point.Y);
             }
+        }
+
+        private static (int x, int y) FindMin(bool[][] insidePoints)
+        {
+            for (int i = 0; i < insidePoints.Length; i++)
+            {
+                for (int j = 0; j < insidePoints[i].Length; j++)
+                {
+                    if (insidePoints[i][j])
+                    {
+                        return (i, j);
+                    }
+                }
+            }
+            return (-1, -1);
         }
 
         /// <summary>
@@ -79,27 +93,28 @@ namespace AnnoDesigner.Helper
         /// In order to draw holes inside, the map of boundary edges would have to be constructed and then cleared during the traversal.
         /// Then traversal would restart from any remaining boundary edge until there are non left. Returning list of list of points.
         /// </summary>
-        public static IList<Point> GetBoundaryPoints(ISet<Point> insidePoints)
+        public static IList<(int x, int y)> GetBoundaryPoints(bool[][] insidePoints)
         {
-            var result = new List<Point>();
+            var result = new List<(int, int)>();
 
-            if (insidePoints.Count == 0)
+            if (insidePoints.Sum(column => column.Count()) == 0)
                 return result;
 
-            var minPoint = insidePoints.Min(p => (p.X, p.Y));
-            var startPoint = new Point(minPoint.X, minPoint.Y);
+            var maxX = insidePoints.Length;
+            var maxY = insidePoints[0].Length;
+            var startPoint = FindMin(insidePoints);
             var point = startPoint;
             var direction = Direction.Down;
             result.Add(point);
 
             do
             {
-                var left = GetLeftCell(point, direction);
-                var right = GetRightCell(point, direction);
+                var (leftX, leftY) = GetLeftCell(point, direction);
+                var (rightX, rightY) = GetRightCell(point, direction);
 
-                if (insidePoints.Contains(left))
+                if (leftX >= 0 && leftX < maxX && leftY >= 0 && leftY < maxY && insidePoints[leftX][leftY])
                 {
-                    if (insidePoints.Contains(right))// turn right
+                    if (rightX >= 0 && rightX < maxX && rightY >= 0 && rightY < maxY && insidePoints[rightX][rightY])// turn right
                     {
                         result.Add(point);
 

@@ -11,21 +11,22 @@ namespace AnnoDesigner.Tests
         public void GetBoundaryPoints_SimpleShape()
         {
             // Arrange
-            var insidePoints = new HashSet<Point>()
+            var insidePoints = new bool[][]
             {
-                new Point(1, 1)
+                new bool[2],
+                new bool[2] { false, true }
             };
 
             // Act
             var boundary = PolygonBoundaryFinderHelper.GetBoundaryPoints(insidePoints);
 
             // Assert
-            Assert.Equal(boundary, new Point[]
+            Assert.Equal(boundary, new (int, int)[]
             {
-                new Point(1, 1),
-                new Point(1, 2),
-                new Point(2, 2),
-                new Point(2, 1)
+                (1, 1),
+                (1, 2),
+                (2, 2),
+                (2, 1)
             });
         }
 
@@ -33,33 +34,32 @@ namespace AnnoDesigner.Tests
         public void GetBoundaryPoints_ComplexShape()
         {
             // Arrange
-            var insidePoints = new HashSet<Point>()
+            var insidePoints = new bool[][]
             {
-                new Point(2, 1),
-                new Point(1, 2),
-                new Point(2, 2),
-                new Point(3, 2),
-                new Point(2, 3)
+                new bool[4],
+                new bool[4] { false, false, true, false },
+                new bool[4] { false, true, true, true },
+                new bool[4] { false, false, true, false }
             };
 
             // Act
             var boundary = PolygonBoundaryFinderHelper.GetBoundaryPoints(insidePoints);
 
             // Assert
-            Assert.Equal(boundary, new Point[]
+            Assert.Equal(boundary, new (int, int)[]
             {
-                new Point(1, 2),
-                new Point(1, 3),
-                new Point(2, 3),
-                new Point(2, 4),
-                new Point(3, 4),
-                new Point(3, 3),
-                new Point(4, 3),
-                new Point(4, 2),
-                new Point(3, 2),
-                new Point(3, 1),
-                new Point(2, 1),
-                new Point(2, 2)
+                (1, 2),
+                (1, 3),
+                (2, 3),
+                (2, 4),
+                (3, 4),
+                (3, 3),
+                (4, 3),
+                (4, 2),
+                (3, 2),
+                (3, 1),
+                (2, 1),
+                (2, 2)
             });
         }
 
@@ -67,24 +67,23 @@ namespace AnnoDesigner.Tests
         public void GetBoundaryPoints_ContinuousSidesAreMerged()
         {
             // Arrange
-            var insidePoints = new HashSet<Point>()
+            var insidePoints = new bool[][]
             {
-                new Point(1, 1),
-                new Point(2, 1),
-                new Point(1, 2),
-                new Point(2, 2)
+                new bool[3],
+                new bool[3] { false, true, true },
+                new bool[3] { false, true, true }
             };
 
             // Act
             var boundary = PolygonBoundaryFinderHelper.GetBoundaryPoints(insidePoints);
 
             // Assert
-            Assert.Equal(boundary, new Point[]
+            Assert.Equal(boundary, new (int, int)[]
             {
-                new Point(1, 1),
-                new Point(1, 3),
-                new Point(3, 3),
-                new Point(3, 1)
+                (1, 1),
+                (1, 3),
+                (3, 3),
+                (3, 1)
             });
         }
     }
