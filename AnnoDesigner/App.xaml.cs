@@ -123,7 +123,7 @@ namespace AnnoDesigner
                             Environment.Exit(-1);
                         }
                     }
-                    catch (AbandonedMutexException ex)
+                    catch (AbandonedMutexException)
                     {
                         //mutex was killed
                         createdNewMutex = true;

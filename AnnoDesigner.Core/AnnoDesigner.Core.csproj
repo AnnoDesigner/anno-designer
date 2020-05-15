@@ -3,7 +3,7 @@
     <TargetFramework>net472</TargetFramework>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-	<RootNamespace>AnnoDesigner.Core</RootNamespace>
+    <RootNamespace>AnnoDesigner.Core</RootNamespace>
     <AssemblyName>AnnoDesigner.Core</AssemblyName>
     <UseWPF>true</UseWPF>
   </PropertyGroup>

@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-     <RootNamespace>AnnoDesigner</RootNamespace>
+    <RootNamespace>AnnoDesigner</RootNamespace>
     <AssemblyName>AnnoDesigner</AssemblyName>
     <TargetFramework>net472</TargetFramework>
     <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -11,10 +12,6 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
     <Compile Update="About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
@@ -35,37 +32,6 @@
     <Compile Update="Welcome.xaml.cs">
       <DependentUpon>Welcome.xaml</DependentUpon>
     </Compile>
-    <Page Include="About.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="AnnoCanvas.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="InputWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Update="AnnoCanvas.xaml.cs">
-      <DependentUpon>AnnoCanvas.xaml</DependentUpon>
-    </Compile>
-    <Page Include="UpdateWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="StatisticsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Welcome.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <AppDesigner Include="Properties\" />
