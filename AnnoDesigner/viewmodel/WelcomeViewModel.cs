@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AnnoDesigner.Core.Models;
-using AnnoDesigner.model;
+using AnnoDesigner.Models;
 
 namespace AnnoDesigner.viewmodel
 {

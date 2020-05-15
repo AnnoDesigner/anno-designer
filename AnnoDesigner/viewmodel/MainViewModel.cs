@@ -24,7 +24,7 @@ using AnnoDesigner.Core.Presets.Helper;
 using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Localization;
-using AnnoDesigner.model;
+using AnnoDesigner.Models;
 using Microsoft.Win32;
 using NLog;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;

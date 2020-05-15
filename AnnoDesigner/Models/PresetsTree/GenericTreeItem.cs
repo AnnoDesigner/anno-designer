@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Models;
 
-namespace AnnoDesigner.model.PresetsTree
+namespace AnnoDesigner.Models.PresetsTree
 {
     [DebuggerDisplay("{" + nameof(Header) + ",nq}")]
     public class GenericTreeItem : Notify

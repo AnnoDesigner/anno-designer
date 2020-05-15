@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
-using AnnoDesigner.model;
+using AnnoDesigner.Models;
 
 namespace AnnoDesigner.viewmodel
 {

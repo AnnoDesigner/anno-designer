@@ -7,7 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using AnnoDesigner.Core.Models;
 
-namespace AnnoDesigner.model
+namespace AnnoDesigner.Models
 {
     [DebuggerDisplay("{" + nameof(Name) + ",nq} ({" + nameof(IsSelected) + "})")]
     public class SupportedLanguage : Notify

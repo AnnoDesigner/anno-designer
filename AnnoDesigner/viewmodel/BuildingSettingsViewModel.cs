@@ -1,7 +1,7 @@
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Helper;
 using AnnoDesigner.Core.Presets.Models;
-using AnnoDesigner.model;
+using AnnoDesigner.Models;
 using AnnoDesigner.Properties;
 using NLog;
 using System;

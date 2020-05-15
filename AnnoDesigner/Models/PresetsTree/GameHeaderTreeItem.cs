@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static AnnoDesigner.Core.CoreConstants;
 
-namespace AnnoDesigner.model.PresetsTree
+namespace AnnoDesigner.Models.PresetsTree
 {
     [DebuggerDisplay("{" + nameof(Header) + ",nq}")]
     public class GameHeaderTreeItem : GenericTreeItem

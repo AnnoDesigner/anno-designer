@@ -9,7 +9,7 @@
         xmlns:coreModels="clr-namespace:AnnoDesigner.Core.Models;assembly=AnnoDesigner.Core"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:converter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
-        xmlns:modelPresetsTree="clr-namespace:AnnoDesigner.model.PresetsTree"
+        xmlns:modelPresetsTree="clr-namespace:AnnoDesigner.Models.PresetsTree"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         xmlns:viewModel="clr-namespace:AnnoDesigner.viewmodel"
         xmlns:myBehaviors="clr-namespace:AnnoDesigner.Behaviors"

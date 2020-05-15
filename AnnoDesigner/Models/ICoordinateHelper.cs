@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace AnnoDesigner.model
+namespace AnnoDesigner.Models
 {
     public interface ICoordinateHelper
     {

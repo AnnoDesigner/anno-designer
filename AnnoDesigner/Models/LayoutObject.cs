@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Media;
 using AnnoDesigner.Core.Models;
 
-namespace AnnoDesigner.model
+namespace AnnoDesigner.Models
 {
     /// <summary>
     /// This class is mainly for performance and a wrapper for <see cref="AnnoObject"/>.

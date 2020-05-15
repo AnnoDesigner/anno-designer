@@ -7,7 +7,7 @@ using AnnoDesigner.viewmodel;
 using Xunit;
 using Moq;
 using AnnoDesigner.Core.Models;
-using AnnoDesigner.model;
+using AnnoDesigner.Models;
 using AnnoDesigner.Core;
 using System.Globalization;
 

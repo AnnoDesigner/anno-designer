@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Models;
 
-namespace AnnoDesigner.model
+namespace AnnoDesigner.Models
 {
     [DebuggerDisplay("{" + nameof(Count) + ",nq} x {" + nameof(Name) + "}")]
     public class StatisticsBuilding : Notify

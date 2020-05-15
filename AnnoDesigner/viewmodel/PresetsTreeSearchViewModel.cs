@@ -9,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AnnoDesigner.Core.Models;
-using AnnoDesigner.model;
+using AnnoDesigner.Models;
 using static AnnoDesigner.Core.CoreConstants;
 
 namespace AnnoDesigner.viewmodel

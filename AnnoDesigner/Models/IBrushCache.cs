@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace AnnoDesigner.model
+namespace AnnoDesigner.Models
 {
     public interface IBrushCache
     {

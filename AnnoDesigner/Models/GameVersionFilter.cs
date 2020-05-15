@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using AnnoDesigner.Core.Models;
 using static AnnoDesigner.Core.CoreConstants;
 
-namespace AnnoDesigner.model
+namespace AnnoDesigner.Models
 {
     [DebuggerDisplay("{" + nameof(Name) + ",nq} ({" + nameof(IsSelected) + "})")]
     public class GameVersionFilter : Notify

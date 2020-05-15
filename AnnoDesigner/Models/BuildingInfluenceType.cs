@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnnoDesigner.model
+namespace AnnoDesigner.Models
 {
     /// <summary>
     /// Holds the influence type of a building - not stored in the buildingInfo object itself, this is used in MainWindow.

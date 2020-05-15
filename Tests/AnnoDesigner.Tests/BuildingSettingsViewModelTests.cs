@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using AnnoDesigner.model;
+using AnnoDesigner.Models;
 using AnnoDesigner.viewmodel;
 using System.Windows.Media;
 using Xunit;

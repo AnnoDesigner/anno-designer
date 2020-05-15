@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using AnnoDesigner.Properties;
 
-namespace AnnoDesigner.model
+namespace AnnoDesigner.Models
 {
     public class AppSettings : IAppSettings
     {
