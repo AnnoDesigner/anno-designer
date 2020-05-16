@@ -130,5 +130,22 @@ namespace AnnoDesigner.Tests
                 Assert.Equal(expectedCount, visitedCells.Sum(c => c.Count(visited => visited)));
             }
         }
+
+        [Fact]
+        public void BreadthFirstSearch_StartObjectCountIsZero_ShouldReturnEMptyResult()
+        {
+            // Arrange
+            var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("BreadthFirstSearch_FindBuildingInfluenceRange"), true);
+            var startObjects = Enumerable.Empty<AnnoObject>();
+
+            var expectedResult = new bool[0][];
+
+            // Act
+            var visitedCells = RoadSearchHelper.BreadthFirstSearch(placedObjects, startObjects, o => (int)o.InfluenceRange);
+
+            // Assert
+            Assert.Equal(expectedResult, visitedCells);
+
+        }
     }
 }
