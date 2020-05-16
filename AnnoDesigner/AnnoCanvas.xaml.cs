@@ -855,8 +855,8 @@ namespace AnnoDesigner
                     Highlight);
             }
 
-            var geometries = new ConcurrentDictionary<LayoutObject, StreamGeometry>();
-            Parallel.ForEach(objects, curLayoutObject =>
+            var geometries = new ConcurrentBag<(long index, StreamGeometry geometry)>();
+            Parallel.ForEach(objects, (curLayoutObject, _, index) =>
             {
                 if (curLayoutObject.WrappedAnnoObject.InfluenceRange > 0.5)
                 {
@@ -878,12 +878,12 @@ namespace AnnoDesigner
                     {
                         sg.Freeze();
                     }
-                    geometries[curLayoutObject] = sg;
+                    geometries.Add((index, sg));
                 }
             });
-            foreach (var geometry in geometries)
+            foreach (var (_, geometry) in geometries.OrderBy(p => p.index))
             {
-                drawingContext.DrawGeometry(_lightBrush, _radiusPen, geometry.Value);
+                drawingContext.DrawGeometry(_lightBrush, _radiusPen, geometry);
             }
         }
 
