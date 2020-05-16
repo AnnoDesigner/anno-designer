@@ -106,7 +106,21 @@ namespace AnnoDesigner.Localization
                         { "Roads(x3)" , "Roads (x3)" },
                         { "Roads(x4)" , "Roads (x4)" },
                         { "Roads(x5)" , "Roads (x5)" },
-                        { "OtherRoads" , "Other Roads" }
+                        { "OtherRoads" , "Other Roads" },
+                        { "01ParkPaths", "01 Park Paths" },
+                        { "02ParkFences", "02 Park Fences" },
+                        { "03ParkVegetation", "03 Park Vegetation" },
+                        { "04ParkFountains", "04 Park Fountains" },
+                        { "05ParkStatues", "05 Park Statues" },
+                        { "06ParkDecorations", "06 Park Decorations" },
+                        { "07CityPaths", "07 City Paths" },
+                        { "08CityFences", "08 City Fences" },
+                        { "09CityStatues", "09 City Statues" },
+                        { "10CityDecorations", "10 City Decorations" },
+                        { "11SpecialOrnaments", "11 Special Ornaments" },
+                        { "12ChristmasDecorations", "12 Christmas Decorations" },
+                        { "13World'sFairRewards", "13 World's Fair Rewards" },
+                        { "14Gardens", "14 Gardens" }
                     }
                     },
                 {
@@ -188,7 +202,21 @@ namespace AnnoDesigner.Localization
                         { "Roads(x3)" , "Straßen (x3)" },
                         { "Roads(x4)" , "Straßen (x4)" },
                         { "Roads(x5)" , "Straßen (x5)" },
-                        { "OtherRoads" , "Andere Straßen" }
+                        { "OtherRoads" , "Andere Straßen" },
+                        { "01ParkPaths", "01 Park-Pfade" },
+                        { "02ParkFences", "02 Park-Zäune" },
+                        { "03ParkVegetation", "03 Park-Vegetation" },
+                        { "04ParkFountains", "04 Park-Brunnen" },
+                        { "05ParkStatues", "05 Park-Statuen" },
+                        { "06ParkDecorations", "06 Park-Dekorationen" },
+                        { "07CityPaths", "07 Stadt-Pfade" },
+                        { "08CityFences", "08 Stadt-Zäune" },
+                        { "09CityStatues", "09 Stadt-Statuen" },
+                        { "10CityDecorations", "10 Stadt-Dekorationen" },
+                        { "11SpecialOrnaments", "11 Besondere Verzierungen" },
+                        { "12ChristmasDecorations", "12 Weihnachts Dekorationen" },
+                        { "13World'sFairRewards", "13 Belohnungen der Weltausstellung" },
+                        { "14Gardens", "14 Gärten" }
                     }
                     },
                  {
@@ -270,7 +298,21 @@ namespace AnnoDesigner.Localization
                         { "Roads(x3)" , "Routes (x3)" },
                         { "Roads(x4)" , "Routes (x4)" },
                         { "Roads(x5)" , "Routes (x5)" },
-                        { "OtherRoads" , "Autres Routes" }
+                        { "OtherRoads" , "Autres Routes" },
+                        { "01ParkPaths", "01 Sentiers du parc" },
+                        { "02ParkFences", "02 Clôtures de parc" },
+                        { "03ParkVegetation", "03 Végétation du parc" },
+                        { "04ParkFountains", "04 Fontaines du parc" },
+                        { "05ParkStatues", "05 Statues de parc" },
+                        { "06ParkDecorations", "06 Décorations de parcs" },
+                        { "07CityPaths", "07 Chemins de ville" },
+                        { "08CityFences", "08 Clôtures de ville" },
+                        { "09CityStatues", "09 Statues de ville" },
+                        { "10CityDecorations", "10 Décorations de ville" },
+                        { "11SpecialOrnaments", "11 Ornements spéciaux" },
+                        { "12ChristmasDecorations", "12 Décorations de Noël" },
+                        { "13World'sFairRewards", "13 Récompenses de l'exposition" },
+                        { "14Gardens", "14 Jardins" }
                     }
                     },
                 {
@@ -352,7 +394,21 @@ namespace AnnoDesigner.Localization
                         { "Roads(x3)" , "Drogi (x3)" },
                         { "Roads(x4)" , "Drogi (x4)" },
                         { "Roads(x5)" , "Drogi (x5)" },
-                        { "OtherRoads" , "Inne Drogi" }
+                        { "OtherRoads" , "Inne Drogi" },
+                        { "01ParkPaths", "01 Ścieżki Parku" },
+                        { "02ParkFences", "02 Ogrodzenia Parku" },
+                        { "03ParkVegetation", "03 Roślinność Parku" },
+                        { "04ParkFountains", "04 Fontanny Parku" },
+                        { "05ParkStatues", "05 Pomniki w Parku" },
+                        { "06ParkDecorations", "06 Dekoracje Parku" },
+                        { "07CityPaths", "07 Ścieżki Miejskie" },
+                        { "08CityFences", "08 Ogrodzenia Miejskie" },
+                        { "09CityStatues", "09 Pomniki Miejskie" },
+                        { "10CityDecorations", "10 Dekoracje Miejskie" },
+                        { "11SpecialOrnaments", "11 Ornamenty specjalne" },
+                        { "12ChristmasDecorations", "12 Dekoracje świąteczne" },
+                        { "13World'sFairRewards", "13 Nagrody Wystawy Światowej" },
+                        { "14Gardens", "14 Ogrody" }
                     }
                     },
                 {
@@ -434,7 +490,21 @@ namespace AnnoDesigner.Localization
                         { "Roads(x3)" , "Дороги (x3)" },
                         { "Roads(x4)" , "Дороги (x4)" },
                         { "Roads(x5)" , "Дороги (x5)" },
-                        { "OtherRoads" , "Другая дорога" }
+                        { "OtherRoads" , "Другая дорога" },
+                        { "01ParkPaths", "01 Пути парка" },
+                        { "02ParkFences", "02 Заборы для парка" },
+                        { "03ParkVegetation", "03 Растительность парка" },
+                        { "04ParkFountains", "04 Фонтаны парка" },
+                        { "05ParkStatues", "05 Статуя парка" },
+                        { "06ParkDecorations", "06 Украшения для парка" },
+                        { "07CityPaths", "07 Пути города" },
+                        { "08CityFences", "08 Заборы города" },
+                        { "09CityStatues", "09 Статуя города" },
+                        { "10CityDecorations", "10 Украшения города" },
+                        { "11SpecialOrnaments", "11 Специальные украшения" },
+                        { "12ChristmasDecorations", "12 рождественские украшения" },
+                        { "13World'sFairRewards", "13 Награды Всемирной выставки" },
+                        { "14Gardens", "14 Сады" }
                     }
                     },
             };
