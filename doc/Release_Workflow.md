@@ -7,6 +7,13 @@
 - A preset is a file containing useful extra information for the main app.
 - All preset files contain a field `Version` in the format `x.x.x.x`.
 
+## How to create a new release
+
+1. Adjust version number in file `version.txt`
+2. Run build script (`StartCakeBuild.bat`) in directory `build` with mode `Release`.
+3. The version numbers in `AssemblyInfo.cs` and `Constants.cs` will be adjusted automatically.
+4. Final asset will be in directory `build\out` with the name `Anno.Designer.vx.x.zip` where x.x will be the version number from step 1.
+
 ## Known preset files
 
 ### `presets.json`
