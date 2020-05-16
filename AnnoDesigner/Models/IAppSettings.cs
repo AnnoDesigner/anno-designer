@@ -26,6 +26,7 @@ namespace AnnoDesigner.Models
         bool ShowLabels { get; set; }
         bool ShowIcons { get; set; }
         bool ShowGrid { get; set; }
+        bool ShowTrueInfluenceRange { get; set; }
         bool ShowInfluences { get; set; }
         bool IsPavedStreet { get; set; }
         string TreeViewSearchText { get; set; }

@@ -49,6 +49,7 @@ namespace AnnoDesigner.ViewModels
         private bool _canvasShowGrid;
         private bool _canvasShowIcons;
         private bool _canvasShowLabels;
+        private bool _canvasShowTrueInfluenceRange;
         private bool _canvasShowInfluences;
         private bool _automaticUpdateCheck;
         private string _versionValue;
@@ -644,6 +645,7 @@ namespace AnnoDesigner.ViewModels
             CanvasShowGrid = _appSettings.ShowGrid;
             CanvasShowIcons = _appSettings.ShowIcons;
             CanvasShowLabels = _appSettings.ShowLabels;
+            CanvasShowTrueInfluenceRange = _appSettings.ShowTrueInfluenceRange;
             CanvasShowInfluences = _appSettings.ShowInfluences;
 
             BuildingSettingsViewModel.IsPavedStreet = _appSettings.IsPavedStreet;
@@ -662,6 +664,7 @@ namespace AnnoDesigner.ViewModels
             _appSettings.ShowGrid = CanvasShowGrid;
             _appSettings.ShowIcons = CanvasShowIcons;
             _appSettings.ShowLabels = CanvasShowLabels;
+            _appSettings.ShowTrueInfluenceRange = CanvasShowTrueInfluenceRange;
             _appSettings.ShowInfluences = CanvasShowInfluences;
 
             _appSettings.StatsShowStats = StatisticsViewModel.IsVisible;
@@ -829,6 +832,19 @@ namespace AnnoDesigner.ViewModels
                 if (AnnoCanvas != null)
                 {
                     AnnoCanvas.RenderLabel = _canvasShowLabels;
+                }
+            }
+        }
+
+        public bool CanvasShowTrueInfluenceRange
+        {
+            get { return _canvasShowTrueInfluenceRange; }
+            set
+            {
+                UpdateProperty(ref _canvasShowTrueInfluenceRange, value);
+                if (AnnoCanvas != null)
+                {
+                    AnnoCanvas.RenderTrueInfluenceRange = _canvasShowTrueInfluenceRange;
                 }
             }
         }
@@ -1506,6 +1522,7 @@ namespace AnnoDesigner.ViewModels
             ShowGrid = Localization.Localization.Translations[language]["ShowGrid"];
             ShowLabels = Localization.Localization.Translations[language]["ShowLabels"];
             ShowIcons = Localization.Localization.Translations[language]["ShowIcons"];
+            ShowTrueInfluenceRange = Localization.Localization.Translations[language]["ShowTrueInfluenceRange"];
             ShowInfluences = Localization.Localization.Translations[language]["ShowInfluences"];
 
             //DockPanel
@@ -1922,6 +1939,15 @@ namespace AnnoDesigner.ViewModels
             set
             {
                 UpdateProperty(ref _showIcons, value);
+            }
+        }
+        private string _showTrueInfluenceRange;
+        public string ShowTrueInfluenceRange
+        {
+            get { return _showTrueInfluenceRange; }
+            set
+            {
+                UpdateProperty(ref _showTrueInfluenceRange, value);
             }
         }
 

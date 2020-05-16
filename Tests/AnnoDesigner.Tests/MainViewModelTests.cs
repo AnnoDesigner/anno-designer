@@ -366,6 +366,26 @@ namespace AnnoDesigner.Tests
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveShowTrueInfluenceRange(bool expectedShowTrueInfluenceRange)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.CanvasShowTrueInfluenceRange = expectedShowTrueInfluenceRange;
+
+            // Act
+            viewModel.SaveSettings();
+
+            // Assert
+            Assert.Equal(expectedShowTrueInfluenceRange, appSettings.Object.ShowTrueInfluenceRange);
+            appSettings.Verify(x => x.Save(), Times.Once);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
         public void SaveSettings_IsCalled_ShouldSaveEnableAutomaticUpdateCheck(bool expectedEnableAutomaticUpdateCheck)
         {
             // Arrange            
