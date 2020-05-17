@@ -37,4 +37,18 @@
     <ProjectReference Include="..\..\AnnoDesigner.Core\AnnoDesigner.Core.csproj" />
     <ProjectReference Include="..\..\AnnoDesigner\AnnoDesigner.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="TestData\RoadSearchHelper\BreadthFirstSearch_FindBuildingInfluenceRange.ad">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\RoadSearchHelper\BreadthFirstSearch_FindObjectsInInfluenceRange.ad">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\RoadSearchHelper\PrepareGridDictionary_MultipleObjects.ad">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\RoadSearchHelper\PrepareGridDictionary_SingleObject.ad">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

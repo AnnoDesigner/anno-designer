@@ -102,6 +102,12 @@ namespace AnnoDesigner.Models
             set { Settings.Default.ShowGrid = value; }
         }
 
+        public bool ShowTrueInfluenceRange
+        {
+            get { return Settings.Default.ShowTrueInfluenceRange; }
+            set { Settings.Default.ShowTrueInfluenceRange = value; }
+        }
+
         public bool ShowInfluences
         {
             get { return Settings.Default.ShowInfluences; }

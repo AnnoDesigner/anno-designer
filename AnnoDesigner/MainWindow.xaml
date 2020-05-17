@@ -219,10 +219,14 @@
                           IsCheckable="True"
                           IsChecked="{Binding CanvasShowIcons}"
                           TabIndex="28" />
+                <MenuItem Header="{Binding ShowTrueInfluenceRange}"
+                          IsCheckable="True"
+                          IsChecked="{Binding CanvasShowTrueInfluenceRange}"
+                          TabIndex="29" />
                 <MenuItem Header="{Binding ShowInfluences}"
                           IsCheckable="True"
                           IsChecked="{Binding CanvasShowInfluences}"
-                          TabIndex="29" />
+                          TabIndex="30" />
             </Menu>
 
             <Grid x:Name="gridMain"

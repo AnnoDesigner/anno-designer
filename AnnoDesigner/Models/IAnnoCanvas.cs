@@ -25,6 +25,8 @@ namespace AnnoDesigner.Models
         Dictionary<string, IconImage> Icons { get; }
         bool RenderGrid { get; set; }
         bool RenderInfluences { get; set; }
+        bool RenderTrueInfluenceRange { get; set; }
+
         bool RenderLabel { get; set; }
         bool RenderIcon { get; set; }
         string LoadedFile { get; set; }

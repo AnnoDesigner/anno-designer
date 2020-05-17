@@ -359,6 +359,18 @@ namespace AnnoDesigner.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowTrueInfluenceRange {
+            get {
+                return ((bool)(this["ShowTrueInfluenceRange"]));
+            }
+            set {
+                this["ShowTrueInfluenceRange"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ShowInfluences {
             get {
                 return ((bool)(this["ShowInfluences"]));
