@@ -9,15 +9,19 @@ using FandomParser.Core;
 using FandomParser.Core.Models;
 using FandomParser.Core.Presets.Models;
 using InfoboxParser.Models;
+using NLog;
 
-namespace InfoboxParser
+namespace InfoboxParser.Parser
 {
-    internal class Parser2Regions : IParser
+    internal class ParserMultipleRegions : IParserMultipleRegions
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly ICommons _commons;
         private readonly ISpecialBuildingNameHelper _specialBuildingNameHelper;
+        private readonly IRegionHelper _regionHelper;
 
-        //TODO support edge cases in regex like "|Input 1 Amount Electricity (OW) = 1.79769313486232E+308"
+        //TODO support edge cases in regex like "|Input 1 Amount Electricity A = 1.79769313486232E+308"
 
         //|Title A      = Building
         private static readonly Regex regexBuildingName = new Regex(@"(?<begin>\|Title)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<buildingName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -25,48 +29,43 @@ namespace InfoboxParser
         //|Tab A               = Old World
         private static readonly Regex regexRegionName = new Regex(@"(?<begin>\|Tab)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<regionName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        //|Building Type A     = Institution
+        private static readonly Regex regexBuildingType = new Regex(@"(?<begin>\|Building Type)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        //|Building Type (OW)     = Institution
-        //|Building Type (NW)     = Institution
-        private static readonly Regex regexBuildingType = new Regex(@"(?<begin>\|Building Type)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Produces Amount A   = 1
+        private static readonly Regex regexProducesAmount = new Regex(@"(?<begin>\|Produces Amount)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Produces Amount Electricity A   = 1
+        private static readonly Regex regexProducesAmountElectricity = new Regex(@"(?<begin>\|Produces Amount Electricity)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Produces Icon A     = Bricks.png
+        private static readonly Regex regexProducesIcon = new Regex(@"(?<begin>\|Produces Icon)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<fileName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        //|Produces Amount (OW)   = 1
-        private static readonly Regex regexProducesAmount = new Regex(@"(?<begin>\|Produces Amount)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        //|Produces Amount Electricity (OW)   = 1
-        private static readonly Regex regexProducesAmountElectricity = new Regex(@"(?<begin>\|Produces Amount Electricity)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        //|Produces Icon (OW)     = Bricks.png
-        private static readonly Regex regexProducesIcon = new Regex(@"(?<begin>\|Produces Icon)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<fileName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Input 1 Amount A = 2
+        private static readonly Regex regexInputAmount = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Input 1 Amount Electricity A = 4
+        private static readonly Regex regexInputAmountElectricity = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Input 1 Icon A = Potato.png
+        private static readonly Regex regexInputIcon = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Icon)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<fileName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        //|Input 1 Amount (OW) = 2
-        private static readonly Regex regexInputAmount = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        //|Input 1 Amount Electricity (OW) = 4
-        private static readonly Regex regexInputAmountElectricity = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        //|Input 1 Icon (OW) = Potato.png
-        private static readonly Regex regexInputIcon = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Icon)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<fileName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Supplies 1 Type A = Farmers
+        private static readonly Regex regexSupplyType = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Supplies 1 Amount A = 2
+        private static readonly Regex regexSupplyAmount = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Supplies 1 Amount Electricity A = 4
+        private static readonly Regex regexSupplyAmountElectricity = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        //|Supplies 1 Type (OW) = Farmers
-        private static readonly Regex regexSupplyType = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        //|Supplies 1 Amount (OW) = 2
-        private static readonly Regex regexSupplyAmount = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        //|Supplies 1 Amount Electricity (OW) = 4
-        private static readonly Regex regexSupplyAmountElectricity = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Unlock Condition 1 Type A = Farmers
+        private static readonly Regex regexUnlockConditionType = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Unlock Condition 1 Amount A = 100
+        private static readonly Regex regexUnlockConditionAmount = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<region>\w{1})\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        //|Unlock Condition 1 Type (OW) = Farmers
-        private static readonly Regex regexUnlockConditionType = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        //|Unlock Condition 1 Amount (OW) = 100
-        private static readonly Regex regexUnlockConditionAmount = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-        private List<string> possibleRegions;
-
-        public Parser2Regions(ICommons commons, ISpecialBuildingNameHelper specialBuildingNameHelper)
+        public ParserMultipleRegions(ICommons commonsToUse, ISpecialBuildingNameHelper specialBuildingNameHelperToUse, IRegionHelper regionHelperToUse)
         {
-            _commons = commons;
-            _specialBuildingNameHelper = specialBuildingNameHelper;
-
-            possibleRegions = new List<string> { "A", "B" };
+            _commons = commonsToUse;
+            _specialBuildingNameHelper = specialBuildingNameHelperToUse;
+            _regionHelper = regionHelperToUse;
         }
 
-        public List<IInfobox> GetInfobox(string wikiText)
+        public List<IInfobox> GetInfobox(string wikiText, List<string> possibleRegions)
         {
             if (string.IsNullOrWhiteSpace(wikiText))
             {
@@ -75,7 +74,7 @@ namespace InfoboxParser
 
             var result = new List<IInfobox>();
 
-            //parse wikitext 2 times. first time with parameter "OW", second time with parameter "NW"
+            //Parse wikitext multiple times. Once for every possible region.
             foreach (var curRegion in possibleRegions)
             {
                 var buildingName = getBuildingName(wikiText, curRegion);
@@ -101,21 +100,7 @@ namespace InfoboxParser
                 buildingName = _specialBuildingNameHelper.CheckSpecialBuildingName(buildingName);
 
                 var parsedRegion = getRegionName(wikiText, curRegion);
-                var region = WorldRegion.Unknown;
-                switch (parsedRegion)
-                {
-                    case "Old World":
-                        region = WorldRegion.OldWorld;
-                        break;
-                    case "New World":
-                        region = WorldRegion.NewWorld;
-                        break;
-                    case "The Arctic":
-                        region = WorldRegion.Arctic;
-                        break;
-                    default:
-                        break;
-                }
+                var region = _regionHelper.GetRegion(parsedRegion);
 
                 var parsedInfobox = new Infobox
                 {
@@ -317,7 +302,7 @@ namespace InfoboxParser
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double parsedProductionAmount))
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedProductionAmount))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -353,7 +338,7 @@ namespace InfoboxParser
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double parsedProductionAmountElectricity))
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedProductionAmountElectricity))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -416,7 +401,7 @@ namespace InfoboxParser
                             }
 
                             var matchedCounter = matchAmount.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -428,7 +413,7 @@ namespace InfoboxParser
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double inputValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var inputValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -464,7 +449,7 @@ namespace InfoboxParser
                             }
 
                             var matchedCounter = matchAmountElectricity.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -476,7 +461,7 @@ namespace InfoboxParser
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double inputValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var inputValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -512,7 +497,7 @@ namespace InfoboxParser
                             }
 
                             var matchedCounter = matchIcon.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -586,7 +571,7 @@ namespace InfoboxParser
                             }
 
                             var matchedCounter = matchAmount.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -598,7 +583,7 @@ namespace InfoboxParser
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double supplyValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var supplyValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -634,7 +619,7 @@ namespace InfoboxParser
                             }
 
                             var matchedCounter = matchAmountElectricity.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -646,7 +631,7 @@ namespace InfoboxParser
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double supplyValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var supplyValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -682,7 +667,7 @@ namespace InfoboxParser
                             }
 
                             var matchedCounter = matchType.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -756,7 +741,7 @@ namespace InfoboxParser
                             }
 
                             var matchedCounter = matchAmount.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -768,7 +753,7 @@ namespace InfoboxParser
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double conditionValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var conditionValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -804,7 +789,7 @@ namespace InfoboxParser
                             }
 
                             var matchedCounter = matchType.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }

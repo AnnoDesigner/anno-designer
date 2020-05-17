@@ -27,7 +27,14 @@ namespace InfoboxParser
                     buildingName = "Airship Hangar|Airship Hangar: Foundations";
                     break;
                 case "Explorer Residence":
+                case "Explorer Shelter":
                     buildingName = "Explorer Residence|Explorer Shelter";
+                    break;
+                case "Deep Gold Mine":
+                    buildingName = "Gold Mine|Deep Gold Mine";
+                    break;
+                case "Pristine Hunting Cabin":
+                    buildingName = "Hunting_Cabin_Pristine_Hunting_Cabin";
                     break;
                 default:
                     break;

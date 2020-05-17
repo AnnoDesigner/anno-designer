@@ -10,41 +10,54 @@ using FandomParser.Core.Models;
 using FandomParser.Core.Presets.Models;
 using InfoboxParser.Models;
 
-namespace InfoboxParser
+namespace InfoboxParser.Parser
 {
-    internal class Parser : IParser
+    internal class ParserOldAndNewWorld : IParser
     {
         private readonly ICommons _commons;
+        private readonly ISpecialBuildingNameHelper _specialBuildingNameHelper;
+        private readonly IRegionHelper _regionHelper;
+        private readonly List<string> possibleRegions;
 
-        //TODO support edge cases in regex like "|Input 1 Amount Electricity = 1.79769313486232E+308"
+        //TODO support edge cases in regex like "|Input 1 Amount Electricity (OW) = 1.79769313486232E+308"
 
-        //|Input 1 Amount = 2
-        private static readonly Regex regexInputAmount = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        //|Input 1 Amount Electricity = 4        
-        private static readonly Regex regexInputAmountElectricity = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        //|Input 1 Icon = Potato.png
-        private static readonly Regex regexInputIcon = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Icon)\s*(?<equalSign>[=])\s*(?<fileName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Building Type (OW)     = Institution
+        //|Building Type (NW)     = Institution
+        private static readonly Regex regexBuildingType = new Regex(@"(?<begin>\|Building Type)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        //|Supplies 1 Type = Farmers
-        private static readonly Regex regexSupplyType = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        //|Supplies 1 Amount = 2
-        private static readonly Regex regexSupplyAmount = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        //|Supplies 1 Amount Electricity = 4
-        private static readonly Regex regexSupplyAmountElectricity = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Produces Amount (OW)   = 1
+        private static readonly Regex regexProducesAmount = new Regex(@"(?<begin>\|Produces Amount)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Produces Amount Electricity (OW)   = 1
+        private static readonly Regex regexProducesAmountElectricity = new Regex(@"(?<begin>\|Produces Amount Electricity)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Produces Icon (OW)     = Bricks.png
+        private static readonly Regex regexProducesIcon = new Regex(@"(?<begin>\|Produces Icon)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<fileName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        //|Unlock Condition 1 Type = Farmers
-        private static readonly Regex regexUnlockConditionType = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        //|Unlock Condition 1 Amount = 100
-        private static readonly Regex regexUnlockConditionAmount = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Input 1 Amount (OW) = 2
+        private static readonly Regex regexInputAmount = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Input 1 Amount Electricity (OW) = 4
+        private static readonly Regex regexInputAmountElectricity = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Input 1 Icon (OW) = Potato.png
+        private static readonly Regex regexInputIcon = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Icon)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<fileName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        //var culture = CultureInfo.InvariantCulture;
-        private CultureInfo cultureForParsing;
+        //|Supplies 1 Type (OW) = Farmers
+        private static readonly Regex regexSupplyType = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Supplies 1 Amount (OW) = 2
+        private static readonly Regex regexSupplyAmount = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Supplies 1 Amount Electricity (OW) = 4
+        private static readonly Regex regexSupplyAmountElectricity = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public Parser(ICommons commons)
+        //|Unlock Condition 1 Type (OW) = Farmers
+        private static readonly Regex regexUnlockConditionType = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Unlock Condition 1 Amount (OW) = 100
+        private static readonly Regex regexUnlockConditionAmount = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        public ParserOldAndNewWorld(ICommons commons, ISpecialBuildingNameHelper specialBuildingNameHelperToUse, IRegionHelper regionHelperToUse)
         {
             _commons = commons;
-            //all numbers in the wiki are entered with "," e.g. "42,21", so we need to use a specific culture
-            cultureForParsing = new CultureInfo("de-DE");
+            _specialBuildingNameHelper = specialBuildingNameHelperToUse;
+            _regionHelper = regionHelperToUse;
+
+            possibleRegions = new List<string> { "OW", "NW" };
         }
 
         public List<IInfobox> GetInfobox(string wikiText)
@@ -56,78 +69,45 @@ namespace InfoboxParser
 
             var result = new List<IInfobox>();
 
+            //same for both
             var buildingName = getBuildingName(wikiText);
             if (string.IsNullOrWhiteSpace(buildingName))
             {
             }
 
-            var buildingType = getBuildingType(wikiText);
-            if (buildingType == BuildingType.Unknown)
+            //parse wikitext 2 times. first time with parameter "OW", second time with parameter "NW"
+            foreach (var curRegion in possibleRegions)
             {
-
-            }
-
-            var productionInfo = getProductionInfo(wikiText);
-            if (productionInfo == null && buildingType == BuildingType.Production)
-            {
-
-            }
-
-            var supplyInfo = getSupplyInfo(wikiText);
-            var unlockInfo = getUnlockInfo(wikiText);
-
-            var specialBuildingNameHelper = new SpecialBuildingNameHelper();
-            buildingName = specialBuildingNameHelper.CheckSpecialBuildingName(buildingName);
-
-            var parsedInfobox = new Infobox
-            {
-                Name = buildingName,
-                Type = buildingType,
-                ProductionInfos = productionInfo,
-                SupplyInfos = supplyInfo,
-                UnlockInfos = unlockInfo,
-                //Region
-            };
-
-            result.Add(parsedInfobox);
-
-            return result;
-        }
-
-        private BuildingType getBuildingType(string infobox)
-        {
-            var result = BuildingType.Unknown;
-
-            //short circuit infoboxes without building type info
-            if (!infobox.Contains("|Building Type"))
-            {
-                return result;
-            }
-
-            using (var reader = new StringReader(infobox))
-            {
-                string curLine;
-                while ((curLine = reader.ReadLine()) != null)
+                var buildingType = getBuildingType(wikiText, curRegion);
+                if (buildingType == BuildingType.Unknown)
                 {
-                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
 
-                    if (curLine.StartsWith("|Building Type", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var buildingType = curLine.Replace("|Building Type (OW)", string.Empty)
-                            .Replace("|Building Type (NW)", string.Empty)
-                            .Replace("|Building Type", string.Empty)
-                            .Replace("=", string.Empty)
-                            .Replace(" ", string.Empty)
-                            .Trim();
-
-                        if (Enum.TryParse(buildingType, ignoreCase: true, out BuildingType parsedBuildingType))
-                        {
-                            result = parsedBuildingType;
-                        }
-
-                        break;
-                    }
                 }
+
+                var productionInfo = getProductionInfo(wikiText, curRegion);
+                if (productionInfo == null && buildingType == BuildingType.Production)
+                {
+
+                }
+
+                var supplyInfo = getSupplyInfo(wikiText, curRegion);
+                var unlockInfo = getUnlockInfo(wikiText, curRegion);
+
+                buildingName = _specialBuildingNameHelper.CheckSpecialBuildingName(buildingName);
+
+                var region = _regionHelper.GetRegion(curRegion);
+
+                var parsedInfobox = new Infobox
+                {
+                    Name = buildingName,
+                    Type = buildingType,
+                    ProductionInfos = productionInfo,
+                    SupplyInfos = supplyInfo,
+                    UnlockInfos = unlockInfo,
+                    Region = region
+                };
+
+                result.Add(parsedInfobox);
             }
 
             return result;
@@ -162,7 +142,60 @@ namespace InfoboxParser
             return result;
         }
 
-        private ProductionInfo getProductionInfo(string infobox)
+        private BuildingType getBuildingType(string infobox, string regionToParse)
+        {
+            var result = BuildingType.Unknown;
+
+            //short circuit infoboxes without building type info
+            if (!infobox.Contains("|Building Type"))
+            {
+                return result;
+            }
+
+            using (var reader = new StringReader(infobox))
+            {
+                string curLine;
+                while ((curLine = reader.ReadLine()) != null)
+                {
+                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
+
+                    if (curLine.StartsWith("|Building Type", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var matchBuildingType = regexBuildingType.Match(curLine);
+                        if (matchBuildingType.Success)
+                        {
+                            var matchedRegion = matchBuildingType.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
+                            {
+                                continue;
+                            }
+
+                            //handle entry with no value e.g. "|Building Type (OW)     = "
+                            var matchedTypeName = matchBuildingType.Groups["typeName"].Value;
+                            if (string.IsNullOrWhiteSpace(matchedTypeName))
+                            {
+                                continue;
+                            }
+
+                            matchedTypeName = matchedTypeName.Replace(" ", string.Empty).Trim();
+
+                            if (Enum.TryParse(matchedTypeName, ignoreCase: true, out BuildingType parsedBuildingType))
+                            {
+                                result = parsedBuildingType;
+                            }
+
+                            break;
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private ProductionInfo getProductionInfo(string infobox, string regionToParse)
         {
             ProductionInfo result = null;
 
@@ -179,35 +212,29 @@ namespace InfoboxParser
                 {
                     curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
 
-                    if (curLine.StartsWith("|Produces Amount Electricity", StringComparison.OrdinalIgnoreCase))
+                    if (curLine.StartsWith("|Produces", StringComparison.OrdinalIgnoreCase))
                     {
-                        var productionAmountElectricity = curLine.Replace("|Produces Amount Electricity", string.Empty)
-                            .Replace("=", string.Empty)
-                            .Trim();
-
-                        if (double.TryParse(productionAmountElectricity, NumberStyles.Number, cultureForParsing, out double parsedProductionAmountElectricity))
+                        var matchAmount = regexProducesAmount.Match(curLine);
+                        if (matchAmount.Success)
                         {
-                            if (result == null)
+                            var matchedRegion = matchAmount.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
                             {
-                                result = new ProductionInfo();
+                                continue;
                             }
 
-                            if (result.EndProduct == null)
+                            //handle entry with no value e.g. "|Input 2 Amount     = "
+                            var matchedValue = matchAmount.Groups["value"].Value.Replace(",", ".");
+                            if (string.IsNullOrWhiteSpace(matchedValue))
                             {
-                                result.EndProduct = new EndProduct();
+                                continue;
                             }
 
-                            result.EndProduct.AmountElectricity = parsedProductionAmountElectricity;
-                        }
-                    }
-                    else if (curLine.StartsWith("|Produces Amount", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var productionAmount = curLine.Replace("|Produces Amount", string.Empty)
-                            .Replace("=", string.Empty)
-                            .Trim();
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedProductionAmount))
+                            {
+                                throw new Exception("could not find value for input");
+                            }
 
-                        if (double.TryParse(productionAmount, NumberStyles.Number, cultureForParsing, out double parsedProductionAmount))
-                        {
                             if (result == null)
                             {
                                 result = new ProductionInfo();
@@ -219,50 +246,102 @@ namespace InfoboxParser
                             }
 
                             result.EndProduct.Amount = parsedProductionAmount;
-                        }
-                    }
-                    else if (curLine.StartsWith("|Produces Icon", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var icon = curLine.Replace("|Produces Icon", string.Empty)
-                            .Replace("=", string.Empty)
-                            .Trim();
 
-                        if (string.IsNullOrWhiteSpace(icon))
-                        {
                             continue;
                         }
 
-                        if (result == null)
+                        var matchAmountElectricity = regexProducesAmountElectricity.Match(curLine);
+                        if (matchAmountElectricity.Success)
                         {
-                            result = new ProductionInfo();
+                            var matchedRegion = matchAmountElectricity.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
+                            {
+                                continue;
+                            }
+
+                            //handle entry with no value e.g. "|Input 1 Amount Electricity    = "
+                            var matchedValue = matchAmountElectricity.Groups["value"].Value.Replace(",", ".");
+                            if (string.IsNullOrWhiteSpace(matchedValue))
+                            {
+                                continue;
+                            }
+
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedProductionAmountElectricity))
+                            {
+                                throw new Exception("could not find value for input");
+                            }
+
+                            if (result == null)
+                            {
+                                result = new ProductionInfo();
+                            }
+
+                            if (result.EndProduct == null)
+                            {
+                                result.EndProduct = new EndProduct();
+                            }
+
+                            result.EndProduct.AmountElectricity = parsedProductionAmountElectricity;
+
+                            continue;
                         }
 
-                        if (result.EndProduct == null)
+                        var matchIcon = regexProducesIcon.Match(curLine);
+                        if (matchIcon.Success)
                         {
-                            result.EndProduct = new EndProduct();
-                        }
+                            var matchedRegion = matchIcon.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
+                            {
+                                continue;
+                            }
 
-                        result.EndProduct.Icon = icon;
+                            //handle entry with no value e.g. "|Input 1 Icon = "
+                            var matchedFileName = matchIcon.Groups["fileName"].Value;
+                            if (string.IsNullOrWhiteSpace(matchedFileName))
+                            {
+                                continue;
+                            }
+
+                            if (result == null)
+                            {
+                                result = new ProductionInfo();
+                            }
+
+                            if (result.EndProduct == null)
+                            {
+                                result.EndProduct = new EndProduct();
+                            }
+
+                            result.EndProduct.Icon = matchedFileName;
+
+                            continue;
+                        }
                     }
                     else if (curLine.StartsWith("|Input ", StringComparison.OrdinalIgnoreCase))
                     {
                         var matchAmount = regexInputAmount.Match(curLine);
                         if (matchAmount.Success)
                         {
+                            var matchedRegion = matchAmount.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
+                            {
+                                continue;
+                            }
+
                             var matchedCounter = matchAmount.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
 
                             //handle entry with no value e.g. "|Input 2 Amount     = "
-                            var matchedValue = matchAmount.Groups["value"].Value;
+                            var matchedValue = matchAmount.Groups["value"].Value.Replace(",", ".");
                             if (string.IsNullOrWhiteSpace(matchedValue))
                             {
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double inputValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var inputValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -291,20 +370,26 @@ namespace InfoboxParser
                         var matchAmountElectricity = regexInputAmountElectricity.Match(curLine);
                         if (matchAmountElectricity.Success)
                         {
+                            var matchedRegion = matchAmountElectricity.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
+                            {
+                                continue;
+                            }
+
                             var matchedCounter = matchAmountElectricity.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
 
                             //handle entry with no value e.g. "|Input 1 Amount Electricity    = "
-                            var matchedValue = matchAmountElectricity.Groups["value"].Value;
+                            var matchedValue = matchAmountElectricity.Groups["value"].Value.Replace(",", ".");
                             if (string.IsNullOrWhiteSpace(matchedValue))
                             {
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double inputValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var inputValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -333,8 +418,14 @@ namespace InfoboxParser
                         var matchIcon = regexInputIcon.Match(curLine);
                         if (matchIcon.Success)
                         {
+                            var matchedRegion = matchIcon.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
+                            {
+                                continue;
+                            }
+
                             var matchedCounter = matchIcon.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -379,7 +470,7 @@ namespace InfoboxParser
             return result;
         }
 
-        private SupplyInfo getSupplyInfo(string infobox)
+        private SupplyInfo getSupplyInfo(string infobox, string regionToParse)
         {
             SupplyInfo result = null;
 
@@ -401,20 +492,26 @@ namespace InfoboxParser
                         var matchAmount = regexSupplyAmount.Match(curLine);
                         if (matchAmount.Success)
                         {
+                            var matchedRegion = matchAmount.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
+                            {
+                                continue;
+                            }
+
                             var matchedCounter = matchAmount.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
 
                             //handle entry with no value e.g. "|Supplies 2 Amount     = "
-                            var matchedValue = matchAmount.Groups["value"].Value;
+                            var matchedValue = matchAmount.Groups["value"].Value.Replace(",", ".");
                             if (string.IsNullOrWhiteSpace(matchedValue))
                             {
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double supplyValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var supplyValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -443,20 +540,26 @@ namespace InfoboxParser
                         var matchAmountElectricity = regexSupplyAmountElectricity.Match(curLine);
                         if (matchAmountElectricity.Success)
                         {
+                            var matchedRegion = matchAmountElectricity.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
+                            {
+                                continue;
+                            }
+
                             var matchedCounter = matchAmountElectricity.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
 
                             //handle entry with no value e.g. "|Supplies 1 Amount Electricity    = "
-                            var matchedValue = matchAmountElectricity.Groups["value"].Value;
+                            var matchedValue = matchAmountElectricity.Groups["value"].Value.Replace(",", ".");
                             if (string.IsNullOrWhiteSpace(matchedValue))
                             {
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double supplyValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var supplyValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -485,8 +588,14 @@ namespace InfoboxParser
                         var matchType = regexSupplyType.Match(curLine);
                         if (matchType.Success)
                         {
+                            var matchedRegion = matchType.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
+                            {
+                                continue;
+                            }
+
                             var matchedCounter = matchType.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -531,7 +640,7 @@ namespace InfoboxParser
             return result;
         }
 
-        private UnlockInfo getUnlockInfo(string infobox)
+        private UnlockInfo getUnlockInfo(string infobox, string regionToParse)
         {
             UnlockInfo result = null;
 
@@ -553,20 +662,26 @@ namespace InfoboxParser
                         var matchAmount = regexUnlockConditionAmount.Match(curLine);
                         if (matchAmount.Success)
                         {
+                            var matchedRegion = matchAmount.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
+                            {
+                                continue;
+                            }
+
                             var matchedCounter = matchAmount.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
 
                             //handle entry with no value e.g. "|Unlock Condition 1 Amount = "
-                            var matchedValue = matchAmount.Groups["value"].Value;
+                            var matchedValue = matchAmount.Groups["value"].Value.Replace(",", ".");
                             if (string.IsNullOrWhiteSpace(matchedValue))
                             {
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double conditionValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var conditionValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -595,8 +710,14 @@ namespace InfoboxParser
                         var matchType = regexUnlockConditionType.Match(curLine);
                         if (matchType.Success)
                         {
+                            var matchedRegion = matchType.Groups["region"].Value;
+                            if (!regionToParse.Equals(matchedRegion))
+                            {
+                                continue;
+                            }
+
                             var matchedCounter = matchType.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }

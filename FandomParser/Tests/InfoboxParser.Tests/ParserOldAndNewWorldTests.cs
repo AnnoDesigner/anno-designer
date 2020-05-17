@@ -6,14 +6,19 @@ using System.Text;
 using System.Threading.Tasks;
 using FandomParser.Core;
 using FandomParser.Core.Presets.Models;
+using InfoboxParser.Models;
+using InfoboxParser.Parser;
 using InfoboxParser.Tests.Attributes;
 using Xunit;
 
 namespace InfoboxParser.Tests
 {
-    public class ParserBothWorldsTests
+    public class ParserOldAndNewWorldTests
     {
-        private static readonly ICommons mockedCommons;
+        private static readonly ICommons _mockedCommons;
+        private static readonly ISpecialBuildingNameHelper _mockedSpecialBuildingNameHelper;
+        private static readonly IRegionHelper _mockedRegionHelper;
+
         private static readonly string testDataPoliceStation;
         private static readonly string testDataBrickFactory;
         private static readonly string testDataHospital;
@@ -21,9 +26,11 @@ namespace InfoboxParser.Tests
         private static readonly string testDataSmallWareHouse;
         private static readonly string testDataEmpty_BothWorlds;
 
-        static ParserBothWorldsTests()
+        static ParserOldAndNewWorldTests()
         {
-            mockedCommons = Commons.Instance;
+            _mockedCommons = Commons.Instance;
+            _mockedSpecialBuildingNameHelper = new SpecialBuildingNameHelper();
+            _mockedRegionHelper = new RegionHelper();
 
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
 
@@ -33,6 +40,15 @@ namespace InfoboxParser.Tests
             testDataMarketplace = File.ReadAllText(Path.Combine(basePath, "Testdata", "Marketplace.infobox"));
             testDataSmallWareHouse = File.ReadAllText(Path.Combine(basePath, "Testdata", "Small_Warehouse.infobox"));
             testDataEmpty_BothWorlds = File.ReadAllText(Path.Combine(basePath, "Testdata", "empty_BothWorlds.infobox"));
+        }
+
+        private ParserOldAndNewWorld GetParser(ICommons commonsToUse = null,
+           ISpecialBuildingNameHelper specialBuildingNameHelperToUse = null,
+           IRegionHelper regionHelperToUse = null)
+        {
+            return new ParserOldAndNewWorld(commonsToUse ?? _mockedCommons,
+                specialBuildingNameHelperToUse ?? _mockedSpecialBuildingNameHelper,
+                regionHelperToUse ?? _mockedRegionHelper);
         }
 
         #region test data
@@ -61,7 +77,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextIsNullOrWhiteSpace_ShouldReturnNull(string input)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -76,7 +92,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsNoBuildingType_ShouldReturnUnknown()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox("dummy");
@@ -93,7 +109,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsUnknownBuildingType_ShouldReturnUnknown(string input)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -109,7 +125,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsBuildingTypeSpecificBuildings_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -135,7 +151,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsBuildingTypeOldWorld_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -161,7 +177,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsBuildingTypeNewWorld_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -178,7 +194,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsBuildingTypeAndWhiteSpace_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -195,7 +211,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsBuildingTypeAndTemplateEnd_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -212,7 +228,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsBuildingTypeDifferentCasing_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -231,7 +247,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsNoTitle_ShouldReturnEmpty()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox("dummy");
@@ -254,7 +270,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsTitle_ShouldReturnCorrectValue(string input, string expectedName)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -277,7 +293,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsTitleAndWhiteSpace_ShouldReturnCorrectValue(string input, string expectedName)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -298,7 +314,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsTitleAndTemplateEnd_ShouldReturnCorrectValue(string input, string expectedName)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -314,7 +330,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsSpecialTitle_ShouldReturnCorrectValue(string input, string expectedName)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -333,7 +349,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsNoProductionInfo_ShouldReturnNull()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(testDataEmpty_BothWorlds);
@@ -350,7 +366,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount Electricity (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -367,7 +383,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount Electricity  (OW)   =    42    ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -385,7 +401,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount Electricity (OW) = 42,21";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -402,7 +418,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount Electricity (OW) = no_number" + Environment.NewLine + "|Produces Amount (OW) = 1";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -420,7 +436,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -437,7 +453,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount   (OW)   =    42    ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -455,7 +471,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount (OW) = 42,21";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -472,7 +488,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount (OW) = no_number" + Environment.NewLine + "|Produces Amount Electricity (OW) = 1";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -490,7 +506,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount (OW) {Environment.NewLine}|Produces Icon (OW) = dummy.png";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -507,7 +523,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Icon  (OW)  =     dummy.png  {Environment.NewLine}|Produces Amount (OW)";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -524,7 +540,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount (OW) = 1{Environment.NewLine}|Input {int.MaxValue + 1L} Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -536,7 +552,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount (OW) = 1{Environment.NewLine}|Input {int.MaxValue + 1L} Amount Electricity (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -548,7 +564,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount (OW) = 1{Environment.NewLine}|Input {int.MaxValue + 1L} Icon (OW) = dummy.png";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -560,7 +576,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount{Environment.NewLine}|Input 1 Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -578,7 +594,7 @@ namespace InfoboxParser.Tests
             // Arrange            
             var input = $"|Produces Amount{Environment.NewLine}|Input 1 Amount  (OW)   =     42    ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -596,7 +612,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount{Environment.NewLine}|Input 1 Amount Electricity (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -614,7 +630,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount{Environment.NewLine}|Input 1 Amount Electricity   (OW)     =     42      ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -632,7 +648,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount{Environment.NewLine}|Input 1 Icon (OW) = dummy.png";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -650,7 +666,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount{Environment.NewLine}|Input 1 Icon  (OW)   =     dummy.png        ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -668,7 +684,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount{Environment.NewLine}|Input 2 Amount (OW) = 21{Environment.NewLine}|Input 1 Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -689,7 +705,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsNoSupplyInfo_ShouldReturnCorrectValue()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(testDataEmpty_BothWorlds);
@@ -706,7 +722,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Supplies 1 Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -724,7 +740,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Supplies 1 Amount (OW)     =  42      ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -742,7 +758,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Supplies 1 Amount Electricity (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -760,7 +776,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Supplies 1 Amount Electricity (OW)        =    42     ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -778,7 +794,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Supplies 1 Type (OW) = Workers";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -796,7 +812,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Supplies 1 Type (OW)  =    Workers         ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -814,7 +830,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Supplies 2 Amount (OW) = 21{Environment.NewLine}|Supplies 1 Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -833,7 +849,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Supplies {int.MaxValue + 1L} Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -845,7 +861,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Supplies 1 Amount (OW) = {double.MaxValue.ToString()}";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -857,7 +873,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Supplies {int.MaxValue + 1L} Amount Electricity (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -869,7 +885,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Supplies 1 Amount Electricity (OW) = {double.MaxValue.ToString()}";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -881,7 +897,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Supplies {int.MaxValue + 1L} Type (OW) = Farmer";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -895,7 +911,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsNoUnlockInfo_ShouldReturnCorrectValue()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(testDataEmpty_BothWorlds);
@@ -912,7 +928,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Unlock Condition 1 Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -930,7 +946,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Unlock Condition 1 Amount (OW)   =    42          ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -948,7 +964,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Unlock Condition 1 Type (OW) = Workers";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -966,7 +982,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Unlock Condition 1 Type (OW)  =   Workers     ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -984,7 +1000,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Unlock Condition 2 Amount (OW) = 21{Environment.NewLine}|Unlock Condition 1 Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -1003,7 +1019,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Unlock Condition {int.MaxValue + 1L} Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -1015,7 +1031,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Unlock Condition 1 Amount (OW) = {double.MaxValue.ToString()}";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -1027,7 +1043,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Unlock Condition {int.MaxValue + 1L} Type (OW) = Farmers";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -1042,7 +1058,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextIsPoliceStation_ShouldReturnCorrectResult()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(testDataPoliceStation);
@@ -1076,7 +1092,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextIsBrickFactory_ShouldReturnCorrectResult()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(testDataBrickFactory);

@@ -31,10 +31,13 @@ namespace FandomParser
         private string _pathToDetailsFolder;
         private string _pathToExtractedInfoboxesFolder;
         private readonly ICommons _commons;
+        private readonly IInfoboxExtractor _infoboxExtractor;
 
         public WikiBuildingDetailProvider(ICommons commons)
         {
             _commons = commons;
+
+            _infoboxExtractor = new InfoboxExtractor(_commons);
         }
 
         public string PathToDetailsFolder
@@ -154,29 +157,13 @@ namespace FandomParser
                     //Note: Don't handle files with multiple infoboxes  -> should be separate page in wiki
                     var fileContent = File.ReadAllText(curFile, Encoding.UTF8);
 
-                    var indexInfoboxBothWorldsStart = fileContent.IndexOf(_commons.InfoboxTemplateStartBothWorlds, StringComparison.OrdinalIgnoreCase);
-                    var indexInfoboxStart = fileContent.IndexOf(_commons.InfoboxTemplateStart, StringComparison.OrdinalIgnoreCase);
-
-                    var startIndex = indexInfoboxBothWorldsStart == -1 ? indexInfoboxStart : indexInfoboxBothWorldsStart;
-
-                    //handle files with no infobox
-                    if (startIndex == -1)
+                    var extractedInfobox = _infoboxExtractor.ExtractInfobox(fileContent);
+                    if (string.IsNullOrWhiteSpace(extractedInfobox))
                     {
                         continue;
                     }
 
-                    var endIndex = fileContent.IndexOf(_commons.InfoboxTemplateEnd, startIndex, StringComparison.OrdinalIgnoreCase);
-                    int length = endIndex - startIndex + _commons.InfoboxTemplateEnd.Length;
-
-                    var infoBox = fileContent.Substring(startIndex, length);
-                    if (!string.IsNullOrWhiteSpace(infoBox))
-                    {
-                        //format infobox with new entries on separate lines for later parsing
-                        var splittedInfobox = infoBox.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
-                        var infoboxWithLineBreaks = string.Join(Environment.NewLine + "|", splittedInfobox);
-
-                        File.WriteAllText(destinationFilePath, infoboxWithLineBreaks, Encoding.UTF8);
-                    }
+                    File.WriteAllText(destinationFilePath, extractedInfobox, Encoding.UTF8);
                 }
                 catch (Exception ex)
                 {
@@ -199,7 +186,8 @@ namespace FandomParser
             try
             {
                 var specialBuildingNameHelper = new SpecialBuildingNameHelper();
-                var infoboxParser = new InfoboxParser.InfoboxParser(_commons, specialBuildingNameHelper);
+                var regionHelper = new RegionHelper();
+                var infoboxParser = new InfoboxParser.InfoboxParser(_commons, specialBuildingNameHelper, regionHelper);
 
                 foreach (var curFile in Directory.EnumerateFiles(PathToExtractedInfoboxesFolder, $"*{FILE_ENDING_INFOBOX}", SearchOption.TopDirectoryOnly))
                 {
@@ -222,7 +210,11 @@ namespace FandomParser
 
                         if (foundWikiBuildingInfo == null)
                         {
-                            throw new Exception("no WikiBuildingInfo found!");
+                            var exception = new Exception("No WikiBuildingInfo found!");
+                            exception.Data.Add(nameof(curFile), curFile);
+                            exception.Data.Add($"{nameof(parsedInfobox)}.{nameof(parsedInfobox.Name)}", parsedInfobox.Name);
+
+                            throw exception;
                         }
 
                         var buildingNameForUrl = foundWikiBuildingInfo.Name.Replace(" ", "_");
@@ -258,7 +250,11 @@ namespace FandomParser
                             var foundWikiBuildingInfo = wikiBuildingInfoList.Infos.FirstOrDefault(x => x.Name.Equals(curInfobox.Name, StringComparison.OrdinalIgnoreCase) && x.Region == curInfobox.Region);
                             if (foundWikiBuildingInfo == null)
                             {
-                                throw new Exception("no WikiBuildingInfo found!");
+                                var exception = new Exception("No WikiBuildingInfo found!");
+                                exception.Data.Add(nameof(curFile), curFile);
+                                exception.Data.Add($"{nameof(curInfobox)}.{nameof(curInfobox.Name)}", curInfobox.Name);
+
+                                throw exception;
                             }
 
                             var buildingNameForUrl = foundWikiBuildingInfo.Name.Replace(" ", "_");

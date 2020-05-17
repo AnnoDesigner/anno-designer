@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using FandomParser.Core.Presets.Models;
 
 namespace InfoboxParser.Models
 {
+    [DebuggerDisplay("{" + nameof(Name) + "} ({" + nameof(Region) + "})")]
     public class Infobox : IInfobox
     {
         public Infobox()

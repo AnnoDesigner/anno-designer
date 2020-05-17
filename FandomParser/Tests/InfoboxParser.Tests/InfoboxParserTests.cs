@@ -18,18 +18,22 @@ namespace InfoboxParser.Tests
     {
         private static readonly ICommons _mockedCommons;
         private static readonly ISpecialBuildingNameHelper _mockedSpecialBuildingNameHelper;
+        private static readonly IRegionHelper _mockedRegionHelper;
 
         static InfoboxParserTests()
         {
             _mockedCommons = Commons.Instance;
             _mockedSpecialBuildingNameHelper = new SpecialBuildingNameHelper();
+            _mockedRegionHelper = new RegionHelper();
         }
 
         private InfoboxParser GetParser(ICommons commonsToUse = null,
-            ISpecialBuildingNameHelper specialBuildingNameHelperToUse = null)
+            ISpecialBuildingNameHelper specialBuildingNameHelperToUse = null,
+            IRegionHelper regionHelperToUse = null)
         {
             return new InfoboxParser(commonsToUse ?? _mockedCommons,
-                specialBuildingNameHelperToUse ?? _mockedSpecialBuildingNameHelper);
+                specialBuildingNameHelperToUse ?? _mockedSpecialBuildingNameHelper,
+                regionHelperToUse ?? _mockedRegionHelper);
         }
 
         [Theory]

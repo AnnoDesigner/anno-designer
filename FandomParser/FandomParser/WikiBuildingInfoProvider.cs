@@ -34,6 +34,8 @@ namespace FandomParser
 
             try
             {
+                logger.Trace($"parse building info: {table.Name}");
+
                 result.Region = table.Region;
                 result.Tier = table.Tier;
                 result.Name = table.Name.Replace("[[", string.Empty).Replace("]]", string.Empty);
