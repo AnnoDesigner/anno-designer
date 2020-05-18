@@ -34,7 +34,10 @@ namespace InfoboxParser
                     buildingName = "Gold Mine|Deep Gold Mine";
                     break;
                 case "Pristine Hunting Cabin":
-                    buildingName = "Hunting_Cabin_Pristine_Hunting_Cabin";
+                    buildingName = "Hunting Cabin|Pristine Hunting Cabin";
+                    break;
+                case "Lumberjack":
+                    buildingName = "Lumberjack's Hut";
                     break;
                 default:
                     break;

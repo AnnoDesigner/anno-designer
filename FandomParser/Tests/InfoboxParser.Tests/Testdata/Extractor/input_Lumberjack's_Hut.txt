@@ -1,0 +1,242 @@
+﻿{{Infobox Buildings 3 Regions
+|Building Icon       = Wood.png
+|Tab A               = Old World
+|Title A             = Lumberjack's Hut
+|Image A             = LumberjacksHutOW.png
+|Caption A           = 
+|Credits A           = -100
+|Maintenance A       = -10
+|Workforce Type A    = Farmers
+|Workforce Amount A  = -5
+|Attractiveness A    = 
+|Influence A         = 
+|Timber A            = 
+|Bricks A            = 
+|Steel Beams A       = 
+|Windows A           = 
+|Concrete A          = 
+|Weapons A           = 
+|Advanced Weapons A  = 
+
+|Input 1 Amount A    = 
+|Input 1 Amount Electricity A    =
+|Input 1 Icon A      = 
+|Input 2 Amount A    = 
+|Input 2 Amount Electricity A    =
+|Input 2 Icon A      = 
+|Produces Amount A   = 4
+|Produces Amount Electricity A   =
+|Produces Icon A     = wood.png
+|Supplies 1 Amount A = 
+|Supplies 1 Amount Electricity A = 
+|Supplies 1 Type A   = 
+|Supplies 2 Amount A = 
+|Supplies 2 Amount Electricity A = 
+|Supplies 2 Type A   = 
+|Supplies 3 Amount A = 
+|Supplies 3 Amount Electricity A = 
+|Supplies 3 Type A   = 
+|Supplies 4 Amount A = 
+|Supplies 4 Amount Electricity A = 
+|Supplies 4 Type A   = 
+
+|Building Type A     = Production
+|Building Size A     = 4x4
+|Building Range A    = Radius: 7
+|Hitpoints A         =
+|DPS (damage per second) A  =
+|Max. Damage per shot A     =
+|Attack cooldown A          =
+|Requires A          = Undeveloped tiles within radius
+|Modules Amount A    = 
+|Modules Size A      = 
+|Cost Per Module A   = 
+|Unlock Condition 1 Amount A   = none
+|Unlock Condition 1 Type A     = 
+|Unlock Condition 2 Amount A   = 
+|Unlock Condition 2 Type A     =
+
+|Tab B               = New World
+|Title B             = Lumberjack's Hut
+|Image B             = LumberjacksHutNWScreenshot.jpg
+|Caption B           = 
+|Credits B           = -500
+|Maintenance B       = -10
+|Workforce Type B    = Jornaleros
+|Workforce Amount B  = -10
+|Attractiveness B    = 
+|Influence B         = 
+|Timber B            = 
+|Bricks B            = 
+|Steel Beams B       = 
+|Windows B           = 
+|Concrete B          = 
+|Weapons B           = 
+|Advanced Weapons B  = 
+
+|Input 1 Amount B    = 
+|Input 1 Amount Electricity B    =
+|Input 1 Icon B      = 
+|Input 2 Amount B    = 
+|Input 2 Amount Electricity B    =
+|Input 2 Icon B      = 
+|Produces Amount B   = 4
+|Produces Amount Electricity B   =
+|Produces Icon B     = wood.png
+|Supplies 1 Amount B = 
+|Supplies 1 Amount Electricity B = 
+|Supplies 1 Type B   = 
+|Supplies 2 Amount B = 
+|Supplies 2 Amount Electricity B = 
+|Supplies 2 Type B   = 
+|Supplies 3 Amount B = 
+|Supplies 3 Amount Electricity B = 
+|Supplies 3 Type B   = 
+|Supplies 4 Amount B = 
+|Supplies 4 Amount Electricity B = 
+|Supplies 4 Type B   = 
+
+|Building Type B     = Production
+|Building Size B     = 4x4
+|Building Range B    = Radius: 7
+|Hitpoints B         =
+|DPS (damage per second) B  =
+|Max. Damage per shot B     =
+|Attack cooldown B          =
+|Requires B          = Undeveloped tiles within radius
+|Modules Amount B    = 
+|Modules Size B      = 
+|Cost Per Module B   = 
+|Unlock Condition 1 Amount B   = none
+|Unlock Condition 1 Type B     = 
+|Unlock Condition 2 Amount B   = 
+|Unlock Condition 2 Type B     =
+
+|Tab C               = The Arctic
+|Title C             = Lumberjack's Hut
+|Image C             = LumberjackshutArctic.png
+|Caption C           = 
+|Credits C           = -100
+|Maintenance C       = -20
+|Workforce Type C    = Explorers
+|Workforce Amount C  = -10
+|Attractiveness C    = 
+|Influence C         = 
+|Timber C            = 
+|Bricks C            = 
+|Steel Beams C       = 
+|Windows C           = 
+|Concrete C          = 
+|Weapons C           = 
+|Advanced Weapons C  = 
+
+|Input 1 Amount C    = 
+|Input 1 Amount Electricity C    =
+|Input 1 Icon C      = 
+|Input 2 Amount C    = 
+|Input 2 Amount Electricity C    =
+|Input 2 Icon C      = 
+|Produces Amount C   = 4
+|Produces Amount Electricity C   =
+|Produces Icon C     = wood.png
+|Supplies 1 Amount C = 
+|Supplies 1 Amount Electricity C = 
+|Supplies 1 Type C   = 
+|Supplies 2 Amount C = 
+|Supplies 2 Amount Electricity C = 
+|Supplies 2 Type C   = 
+|Supplies 3 Amount C = 
+|Supplies 3 Amount Electricity C = 
+|Supplies 3 Type C   = 
+|Supplies 4 Amount C = 
+|Supplies 4 Amount Electricity C = 
+|Supplies 4 Type C   = 
+
+|Building Type C     = Production
+|Building Size C     = 4x4
+|Building Range C    = Radius: 7
+|Hitpoints C         =
+|DPS (damage per second) C  =
+|Max. Damage per shot C     =
+|Attack cooldown C          =
+|Requires C          = 
+{{Goodsicon|Forest}} Forest [[Fertilities and resources|Fertility]]
+
+[[File:Heater.png|20px|link=Heater]] [[Heater|Heating]]
+
+Undeveloped tiles within radius
+|Modules Amount C    = 
+|Modules Size C      = 
+|Cost Per Module C   = 
+|Unlock Condition 1 Amount C   = none
+|Unlock Condition 1 Type C     = 
+|Unlock Condition 2 Amount C   = 
+|Unlock Condition 2 Type C     =
+}} 
+A '''Lumberjack's Hut''' produces [[File:Wood.png|20px]] wood from undeveloped tiles within a small radius of influence around itself. The building requires these tiles to be wooded, but the Lumberjack's Hut will seed its own trees if there are none. It is the most common production building in the game and is present in all of Anno 1800's regions.
+
+When lumberjack's huts are placed in a lush forest they can start operating immediately. Otherwise trees have to be planted first, which can take from 15 seconds up to 5 minutes based on how many trees are in the influence radius. The exact waiting time is shown when placing the building, after which time the hut will begin to produce wood while planting new trees at the same time - thus never running out of trees (if no new buildings or roads are built in the influence radius).
+
+== Productivity ==
+Regardless of region, it takes the Lumberjack's Hut 15 seconds to produce 1 ton of wood, so its the production rate is 4 tons of wood per minute. Productivity can always be changed using [[items]], while those in Old World and New World can have their working conditions altered to improve production. [[Electricity]] has no effect on lumberjack's huts.
+
+Lumberjack's huts don't need their whole influence radius to be free of other buildings and roads, only 204 tiles (out of 240 in the whole radius) have to be free to achieve 100% productivity. If less number of tiles is free, the productivity drops according to the amount of occupied space.
+
+{{clear}}
+== Wood usage and production chains ==
+'''Wood''' is the first resource a player can obtain. In the beginning it is used only to produce [[Sawmill|timber]] - the first and most important construction material. Later it is also used in many production chains, either as wood or after being processed into [[Marquetry Workshop|wood veneers]].
+
+Wood can be used during [[expeditions]], it grants 10 bonus points to crafting skill per 50 tons. It can also be sold for 2 coins, or purchased for 6 coins per ton (by [[Trade|passive trading]]).
+
+All [[production chains]] which utilize wood are listed below.
+
+=== Old World ===
+==== Timber ====
+{{PCList|Timber (Farmers)}}
+
+==== Windows ====
+{{PCList|Windows}}
+
+==== Sewing Machines ====
+{{PCList|Sewing Machines}}
+
+==== Gramophones ====
+{{PCList|Gramophones}}
+
+==== Steam Carriages ====
+{{PCList|Steam Carriages}}
+
+=== New World ===
+==== Timber ====
+{{PCList|Timber (Jornaleros)}}
+
+==== Rum ====
+{{PCList|Rum}}
+
+==== Cigars ====
+{{PCList|Cigars}}
+
+== Items ==
+Some items when equipped in [[Trade Union|trade unions]] can have an impact on lumberjack's huts. Below you can find two lists of such items. The first part of the list contains items affecting only particular buildings including lumberjack's huts, the list is divided by rarity. The second list contains items affecting every production building in the game.
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+=== Specific items ===
+<div class="mw-collapsible-content">{{Trade Union items sets|Lumberjack's Hut}}
+</div>
+</div>
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+=== Items for all production buildings ===
+<div class="mw-collapsible-content">{{Items for all production buildings|common}}
+{{Items for all production buildings|uncommon}}
+{{Items for all production buildings|rare}}
+{{Items for all production buildings|epic}}
+{{Items for all production buildings|legendary}}
+</div>
+</div>
+
+{{Navbox Buildings}}
+[[Category:Buildings]]
+
+RevisionId=13479
+LastEdit=2020-04-10T13:47:31.0000000+02:00

@@ -33,7 +33,7 @@ namespace FandomParser.Core
 
         public string InfoboxTemplateStart3Regions => INFOBOX_TEMPLATE_START_3_REGIONS;
 
-        public string InfoboxTemplateStartBothWorlds => INFOBOX_TEMPLATE_BOTH_WORLDS_START;
+        public string InfoboxTemplateStartOldAndNewWorld => INFOBOX_TEMPLATE_BOTH_WORLDS_START;
 
         public string InfoboxTemplateEnd => INFOBOX_TEMPLATE_END;
 

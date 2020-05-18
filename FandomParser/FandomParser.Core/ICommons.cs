@@ -12,7 +12,7 @@ namespace FandomParser.Core
 
         string InfoboxTemplateStart3Regions { get; }
 
-        string InfoboxTemplateStartBothWorlds { get; }
+        string InfoboxTemplateStartOldAndNewWorld { get; }
 
         string InfoboxTemplateEnd { get; }
 

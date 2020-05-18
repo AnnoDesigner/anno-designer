@@ -1,0 +1,333 @@
+﻿{{Infobox Buildings 3 Regions
+
+|Building Icon       = Timber.png
+
+|Tab A               = Old World
+
+|Title A             = Sawmill
+
+|Image A             = Sawmillver2.png
+
+|Caption A           = 
+
+|Credits A           = -100
+
+|Maintenance A       = -10
+
+|Workforce Type A    = Farmers
+
+|Workforce Amount A  = -10
+
+|Attractiveness A    = 
+
+|Influence A         = 
+
+|Timber A            = 
+
+|Bricks A            = 
+
+|Steel Beams A       = 
+
+|Windows A           = 
+
+|Concrete A          = 
+
+|Weapons A           = 
+
+|Advanced Weapons A  = 
+
+
+|Input 1 Amount A    = 4
+
+|Input 1 Amount Electricity A    = 8
+
+|Input 1 Icon A      = Wood.png
+
+|Input 2 Amount A    = 
+
+|Input 2 Amount Electricity A    =
+
+|Input 2 Icon A      = 
+
+|Produces Amount A   = 4
+
+|Produces Amount Electricity A   = 8
+
+|Produces Icon A     = Timber.png
+
+|Supplies 1 Amount A = 
+
+|Supplies 1 Amount Electricity A = 
+
+|Supplies 1 Type A   = 
+
+|Supplies 2 Amount A = 
+
+|Supplies 2 Amount Electricity A = 
+
+|Supplies 2 Type A   = 
+
+|Supplies 3 Amount A = 
+
+|Supplies 3 Amount Electricity A = 
+
+|Supplies 3 Type A   = 
+
+|Supplies 4 Amount A = 
+
+|Supplies 4 Amount Electricity A = 
+
+|Supplies 4 Type A   = 
+
+
+|Building Type A     = Production
+
+|Building Size A     = 3x4
+
+|Building Range A    = 
+
+|Hitpoints A         =
+
+|DPS (damage per second) A  =
+
+|Max. Damage per shot A     =
+
+|Attack cooldown A          =
+
+|Requires A          = 
+
+|Modules Amount A    = 
+
+|Modules Size A      = 
+
+|Cost Per Module A   = 
+
+|Unlock Condition 1 Amount A   = none
+
+|Unlock Condition 1 Type A     = 
+
+|Unlock Condition 2 Amount A   = 
+
+|Unlock Condition 2 Type A     =
+
+
+|Tab B               = New World
+
+|Title B             = Sawmill
+
+|Image B             = SawmillNWScreenshot.jpg
+
+|Caption B           = 
+
+|Credits B           = -500
+
+|Maintenance B       = -10
+
+|Workforce Type B    = Jornaleros
+
+|Workforce Amount B  = -20
+
+|Attractiveness B    = 
+
+|Influence B         = 
+
+|Timber B            = 
+
+|Bricks B            = 
+
+|Steel Beams B       = 
+
+|Windows B           = 
+
+|Concrete B          = 
+
+|Weapons B           = 
+
+|Advanced Weapons B  = 
+
+
+|Input 1 Amount B    = 4
+
+|Input 1 Amount Electricity B    = 
+
+|Input 1 Icon B      = Wood.png
+
+|Input 2 Amount B    = 
+
+|Input 2 Amount Electricity B    =
+
+|Input 2 Icon B      = 
+
+|Produces Amount B   = 4
+
+|Produces Amount Electricity B   =
+
+|Produces Icon B     = Timber.png
+
+|Supplies 1 Amount B = 
+
+|Supplies 1 Amount Electricity B = 
+
+|Supplies 1 Type B   = 
+
+|Supplies 2 Amount B = 
+
+|Supplies 2 Amount Electricity B = 
+
+|Supplies 2 Type B   = 
+
+|Supplies 3 Amount B = 
+
+|Supplies 3 Amount Electricity B = 
+
+|Supplies 3 Type B   = 
+
+|Supplies 4 Amount B = 
+
+|Supplies 4 Amount Electricity B = 
+
+|Supplies 4 Type B   = 
+
+
+|Building Type B     = Production
+
+|Building Size B     = 3x4
+
+|Building Range B    = 
+
+|Hitpoints B         =
+
+|DPS (damage per second) B  =
+
+|Max. Damage per shot B     =
+
+|Attack cooldown B          =
+
+|Requires B          = 
+
+|Modules Amount B    = 
+
+|Modules Size B      = 
+
+|Cost Per Module B   = 
+
+|Unlock Condition 1 Amount B   = none
+
+|Unlock Condition 1 Type B     = 
+
+|Unlock Condition 2 Amount B   = 
+
+|Unlock Condition 2 Type B     =
+
+
+|Tab C               = The Arctic
+
+|Title C             = Sawmill
+
+|Image C             = SawmillArctic.png
+
+|Caption C           = 
+
+|Credits C           = -100
+
+|Maintenance C       = -20
+
+|Workforce Type C    = Explorers
+
+|Workforce Amount C  = -10
+
+|Attractiveness C    = 
+
+|Influence C         = 
+
+|Timber C            = 
+
+|Bricks C            = 
+
+|Steel Beams C       = 
+
+|Windows C           = 
+
+|Concrete C          = 
+
+|Weapons C           = 
+
+|Advanced Weapons C  = 
+
+
+|Input 1 Amount C    = 4
+
+|Input 1 Amount Electricity C    =
+
+|Input 1 Icon C      = Wood.png
+
+|Input 2 Amount C    = 
+
+|Input 2 Amount Electricity C    =
+
+|Input 2 Icon C      = 
+
+|Produces Amount C   = 4
+
+|Produces Amount Electricity C   =
+
+|Produces Icon C     = Timber.png
+
+|Supplies 1 Amount C = 
+
+|Supplies 1 Amount Electricity C = 
+
+|Supplies 1 Type C   = 
+
+|Supplies 2 Amount C = 
+
+|Supplies 2 Amount Electricity C = 
+
+|Supplies 2 Type C   = 
+
+|Supplies 3 Amount C = 
+
+|Supplies 3 Amount Electricity C = 
+
+|Supplies 3 Type C   = 
+
+|Supplies 4 Amount C = 
+
+|Supplies 4 Amount Electricity C = 
+
+|Supplies 4 Type C   = 
+
+
+|Building Type C     = Production
+
+|Building Size C     = 3x4
+
+|Building Range C    = 
+
+|Hitpoints C         =
+
+|DPS (damage per second) C  =
+
+|Max. Damage per shot C     =
+
+|Attack cooldown C          =
+
+|Requires C          = [[File:Heater.png
+|20px
+|link=Heater]] [[Heater
+|Heating]]
+
+|Modules Amount C    = 
+
+|Modules Size C      = 
+
+|Cost Per Module C   = 
+
+|Unlock Condition 1 Amount C   = none
+
+|Unlock Condition 1 Type C     = 
+
+|Unlock Condition 2 Amount C   = 
+
+|Unlock Condition 2 Type C     =
+}}

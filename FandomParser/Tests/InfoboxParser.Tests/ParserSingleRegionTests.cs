@@ -39,7 +39,7 @@ namespace InfoboxParser.Tests
             testDataEmpty = File.ReadAllText(Path.Combine(basePath, "Testdata", "empty.infobox"));
         }
 
-        private ParserSingleRegion GetParser(ICommons commonsToUse = null,
+        private IParser GetParser(ICommons commonsToUse = null,
             ISpecialBuildingNameHelper specialBuildingNameHelperToUse = null)
         {
             return new ParserSingleRegion(commonsToUse ?? _mockedCommons,

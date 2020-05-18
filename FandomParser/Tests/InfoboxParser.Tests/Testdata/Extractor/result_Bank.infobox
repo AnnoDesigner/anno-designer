@@ -1,0 +1,17 @@
+﻿{{Infobox Buildings
+|Title = Bank
+|Building Icon = Bank.png
+|Image = BankScreenshot.jpg
+|Credits = 100000
+|Timber = 40
+|Bricks = 75
+|Steel Beams = 60
+|Windows = 60
+|Concrete = 50
+|Maintenance = -1000
+|Building Type = Public service
+|Building Size = 10x12
+|Building Range = Dirt Road Full 43 / Max 88
+Paved Street Full 64 / Max 131
+|Unlock Condition 1 Amount = 3000
+|Unlock Condition 1 Type = Engineers}}

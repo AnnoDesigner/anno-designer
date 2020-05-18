@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 
 namespace FandomParser.Core.Presets.Models
 {
-    [DebuggerDisplay("{" + nameof(Name) + "}")]
+    [DebuggerDisplay("{" + nameof(Name) + "} ({" + nameof(Region) + "})")]
     [DataContract]
     public class WikiBuildingInfo
     {

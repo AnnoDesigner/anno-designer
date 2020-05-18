@@ -1,0 +1,21 @@
+﻿{{Infobox Buildings
+|Title = Fishery
+|Building Icon = Fish.png
+|Image = FisheryScreenshot.jpg
+|Credits = 100
+|Timber = 2
+|Maintenance = -40
+|Workforce Type = Farmers
+|Workforce Amount = -25
+|Produces Amount = 2
+|Produces Icon = Fish.png
+|Supplies 1 Type = Farmers
+|Supplies 1 Amount = 80
+|Supplies 2 Type = Workers
+|Supplies 2 Amount = 40
+|Building Type = Production
+|Building Size = 5x11 (5x16 in water)
+|Hitpoints = 2000
+|Requires = Free coastline
+|Unlock Condition 1 Amount = 50
+|Unlock Condition 1 Type = Farmers}}

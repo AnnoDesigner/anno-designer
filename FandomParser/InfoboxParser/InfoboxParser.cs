@@ -51,7 +51,7 @@ namespace InfoboxParser
             var result = new List<IInfobox>();
 
 
-            if (wikiText.StartsWith(_commons.InfoboxTemplateStartBothWorlds))
+            if (wikiText.StartsWith(_commons.InfoboxTemplateStartOldAndNewWorld))
             {
                 var infoboxes = parserOldAndNewWorld.GetInfobox(wikiText);
 

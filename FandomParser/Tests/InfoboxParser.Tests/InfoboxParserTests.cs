@@ -96,5 +96,20 @@ namespace InfoboxParser.Tests
             // Assert
             Assert.Equal(2, result.Count);
         }
+
+        [Fact]
+        public void GetInfobox_WikiTextContainsInfoboxFor3Regions_ShouldReturnMultipleResults()
+        {
+            // Arrange
+            var input = "{{Infobox Buildings 3 Regions";
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(3, result.Count);
+        }
     }
 }

@@ -42,7 +42,7 @@ namespace InfoboxParser.Tests
             testDataEmpty_BothWorlds = File.ReadAllText(Path.Combine(basePath, "Testdata", "empty_BothWorlds.infobox"));
         }
 
-        private ParserOldAndNewWorld GetParser(ICommons commonsToUse = null,
+        private IParser GetParser(ICommons commonsToUse = null,
            ISpecialBuildingNameHelper specialBuildingNameHelperToUse = null,
            IRegionHelper regionHelperToUse = null)
         {
