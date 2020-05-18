@@ -210,6 +210,12 @@ namespace FandomParser
 
                         if (foundWikiBuildingInfo == null)
                         {
+                            if (parsedInfobox?.Name.Contains("Road") == true)
+                            {
+                                //is page with multiple infoboxes -> not supported yet
+                                continue;
+                            }
+
                             var exception = new Exception("No WikiBuildingInfo found!");
                             exception.Data.Add(nameof(curFile), curFile);
                             exception.Data.Add($"{nameof(parsedInfobox)}.{nameof(parsedInfobox.Name)}", parsedInfobox.Name);
@@ -250,6 +256,12 @@ namespace FandomParser
                             var foundWikiBuildingInfo = wikiBuildingInfoList.Infos.FirstOrDefault(x => x.Name.Equals(curInfobox.Name, StringComparison.OrdinalIgnoreCase) && x.Region == curInfobox.Region);
                             if (foundWikiBuildingInfo == null)
                             {
+                                if (curInfobox?.Name.Contains("Road") == true)
+                                {
+                                    //is page with multiple infoboxes -> not supported yet
+                                    continue;
+                                }
+
                                 var exception = new Exception("No WikiBuildingInfo found!");
                                 exception.Data.Add(nameof(curFile), curFile);
                                 exception.Data.Add($"{nameof(curInfobox)}.{nameof(curInfobox.Name)}", curInfobox.Name);

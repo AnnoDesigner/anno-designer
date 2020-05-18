@@ -20,6 +20,7 @@ namespace InfoboxParser
                 case "Fried Plaintain Kitchen":
                     buildingName = "Fried Plantain Kitchen";
                     break;
+                case "World's Fair":
                 case "World's Fair: Foundations":
                     buildingName = "World's Fair|World's Fair: Foundations";
                     break;
@@ -38,6 +39,9 @@ namespace InfoboxParser
                     break;
                 case "Lumberjack":
                     buildingName = "Lumberjack's Hut";
+                    break;
+                case "Saltpetre Works":
+                    buildingName = "Saltpeter Works";
                     break;
                 default:
                     break;
