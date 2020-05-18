@@ -32,7 +32,7 @@ namespace FandomParser
 
         public static bool UsePrettyPrint { get; set; }
 
-        public static Version PresetVersion { get; set; } = new Version(2, 1, 0, 0);
+        public static Version PresetVersion { get; set; } = new Version(2, 2, 0, 0);
 
         static Program()
         {
@@ -43,7 +43,7 @@ namespace FandomParser
         {
             try
             {
-                OutputDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "..", "..", "..", "..", "Presets");
+                OutputDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "..", "..", "..", "..", "..", "Presets");
 
                 ParseArguments(args);
 

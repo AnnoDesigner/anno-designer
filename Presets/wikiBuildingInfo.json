@@ -1,6 +1,6 @@
 ﻿{
-  "Version": "2.1.0.0",
-  "DateGenerated": "2019-06-27T11:26:22.5083289Z",
+  "Version": "2.2.0.0",
+  "DateGenerated": "2020-05-18T11:20:37.6303429Z",
   "Infos": [
     {
       "Name": "1602 Memorial",
@@ -53,6 +53,60 @@
       "UnlockInfos": null
     },
     {
+      "Name": "Airship Hangar|Airship Hangar: Foundations",
+      "Icon": "Airship Hangar.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
+      "Type": "Monument",
+      "BuildingSize": "12, 16",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Airship_Hangar|Airship_Hangar:_Foundations",
+      "RevisionId": 13851,
+      "RevisionDate": "2020-04-19T09:05:48.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 0.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 30.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -150.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Explorers"
+          }
+        }
+      ],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 1.0,
+            "Type": "Technicians"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Alpaca Farm",
       "Icon": "Alpaca wool.png",
       "Region": "NewWorld",
@@ -61,8 +115,8 @@
       "BuildingSize": "3, 3",
       "Radius": "f:4 of 3x3",
       "Url": "https://anno1800.fandom.com/wiki/Alpaca_Farm",
-      "RevisionId": 8401,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11063,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -107,7 +161,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 200.0,
             "Type": "Jornaleros"
           }
         ]
@@ -122,8 +176,8 @@
       "BuildingSize": "1, 1",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Apple_Tree",
-      "RevisionId": 9262,
-      "RevisionDate": "2019-06-07T06:24:51.0000000Z",
+      "RevisionId": 13426,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 75.0,
@@ -196,6 +250,67 @@
       "UnlockInfos": null
     },
     {
+      "Name": "Arctic Lodge",
+      "Icon": "Arctic Lodge.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
+      "Type": "Administration",
+      "BuildingSize": "4, 4",
+      "Radius": "r:?",
+      "Url": "https://anno1800.fandom.com/wiki/Arctic_Lodge",
+      "RevisionId": 12676,
+      "RevisionDate": "2020-01-28T11:32:03.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 4000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -30.0,
+          "Unit": {
+            "Type": "File",
+            "Name": "Balance.png"
+          }
+        },
+        {
+          "Value": -20.0,
+          "Unit": {
+            "Type": "File",
+            "Name": "Influence.png"
+          }
+        }
+      ],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 0.0,
+            "Type": "Technicians"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Artisanal Kitchen",
       "Icon": "Goulash.png",
       "Region": "OldWorld",
@@ -204,8 +319,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Artisanal_Kitchen",
-      "RevisionId": 8543,
-      "RevisionDate": "2019-05-19T13:35:46.0000000Z",
+      "RevisionId": 10972,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 7000.0,
@@ -297,8 +412,8 @@
       "BuildingSize": "3, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Bakery",
-      "RevisionId": 8524,
-      "RevisionDate": "2019-05-19T11:57:16.0000000Z",
+      "RevisionId": 13882,
+      "RevisionDate": "2020-04-24T15:30:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 1000.0,
@@ -384,8 +499,8 @@
       "BuildingSize": "12, 10",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Bank",
-      "RevisionId": 8580,
-      "RevisionDate": "2019-05-19T19:30:31.0000000Z",
+      "RevisionId": 12814,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 100000.0,
@@ -451,6 +566,74 @@
       }
     },
     {
+      "Name": "Bear Hunting Cabin",
+      "Icon": "Bear Hunting Cabin.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
+      "Type": "Production",
+      "BuildingSize": "5, 5",
+      "Radius": "r:9",
+      "Url": "https://anno1800.fandom.com/wiki/Bear_Hunting_Cabin",
+      "RevisionId": 12682,
+      "RevisionDate": "2020-01-28T11:32:03.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 4000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -20.0,
+          "Unit": {
+            "Type": "File",
+            "Name": "Balance.png"
+          }
+        },
+        {
+          "Value": -10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Explorers"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 0.66,
+          "AmountElectricity": 0.0,
+          "Icon": "Bear Fur.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 300.0,
+            "Type": "Technicians"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Bicycle Factory",
       "Icon": "High_wheeler.png",
       "Region": "OldWorld",
@@ -459,8 +642,8 @@
       "BuildingSize": "6, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Bicycle_Factory",
-      "RevisionId": 8571,
-      "RevisionDate": "2019-05-19T19:05:20.0000000Z",
+      "RevisionId": 13891,
+      "RevisionDate": "2020-04-24T15:34:02.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 42000.0,
@@ -572,8 +755,8 @@
       "BuildingSize": "4, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Big_Betty",
-      "RevisionId": 8601,
-      "RevisionDate": "2019-05-20T00:59:20.0000000Z",
+      "RevisionId": 9874,
+      "RevisionDate": "2020-03-28T14:11:52.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 22000.0,
@@ -661,8 +844,8 @@
       "BuildingSize": "4, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Bombín_Weaver",
-      "RevisionId": 9233,
-      "RevisionDate": "2019-06-06T13:11:36.0000000Z",
+      "RevisionId": 13900,
+      "RevisionDate": "2020-04-24T15:36:56.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 9000.0,
@@ -712,19 +895,19 @@
           {
             "Amount": 2.0,
             "AmountElectricity": 0.0,
-            "Icon": "Felt.png"
+            "Icon": "Cotton_fabric.png"
           },
           {
             "Amount": 2.0,
             "AmountElectricity": 0.0,
-            "Icon": "Cotton_fabric.png"
+            "Icon": "Felt.png"
           }
         ]
       },
       "SupplyInfos": {
         "SupplyEntries": [
           {
-            "Amount": 1500.0,
+            "Amount": 75.0,
             "AmountElectricity": 0.0,
             "Type": "Obreros"
           }
@@ -748,8 +931,8 @@
       "BuildingSize": "5, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Boxing_Arena",
-      "RevisionId": 8441,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 12817,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -787,7 +970,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 300.0,
             "Type": "Obreros"
           }
         ]
@@ -802,8 +985,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Brass_Smeltery",
-      "RevisionId": 8564,
-      "RevisionDate": "2019-05-19T18:41:31.0000000Z",
+      "RevisionId": 11015,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 17000.0,
@@ -909,8 +1092,8 @@
       "BuildingSize": "4, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Brewery",
-      "RevisionId": 8536,
-      "RevisionDate": "2019-05-19T13:15:43.0000000Z",
+      "RevisionId": 13885,
+      "RevisionDate": "2020-04-24T15:31:50.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 1600.0,
@@ -1013,8 +1196,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Brick_Factory",
-      "RevisionId": 8434,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 10917,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -1080,8 +1263,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Brick_Factory",
-      "RevisionId": 8434,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 10917,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -1222,8 +1405,8 @@
       "BuildingSize": "8, 12",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Cab_Assembly_Line",
-      "RevisionId": 8685,
-      "RevisionDate": "2019-05-20T20:06:04.0000000Z",
+      "RevisionId": 13894,
+      "RevisionDate": "2020-04-24T15:35:21.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 115000.0,
@@ -1337,8 +1520,8 @@
       "BuildingSize": "6, 7",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Cannery",
-      "RevisionId": 8544,
-      "RevisionDate": "2019-05-19T13:38:56.0000000Z",
+      "RevisionId": 13884,
+      "RevisionDate": "2020-04-24T15:31:24.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 15000.0,
@@ -1443,8 +1626,8 @@
       "BuildingSize": "4, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Cannon_Tower",
-      "RevisionId": 8702,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11181,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 4000.0,
@@ -1518,8 +1701,8 @@
       "BuildingSize": "4, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Cannon_Tower",
-      "RevisionId": 8702,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11181,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 10000.0,
@@ -1564,11 +1747,119 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 300.0,
             "Type": "Obreros"
           }
         ]
       }
+    },
+    {
+      "Name": "Cannon Tower",
+      "Icon": "Cannon Tower.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
+      "Type": "Unknown",
+      "BuildingSize": "4, 4",
+      "Radius": null,
+      "Url": null,
+      "RevisionId": -1,
+      "RevisionDate": "0001-01-01T00:00:00.0000000",
+      "ConstructionInfos": [
+        {
+          "Value": 4000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Bricks"
+          }
+        },
+        {
+          "Value": 8.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Weapons"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -30.0,
+          "Unit": {
+            "Type": "File",
+            "Name": "Balance.png"
+          }
+        },
+        {
+          "Value": -7.0,
+          "Unit": {
+            "Type": "File",
+            "Name": "Influence.png"
+          }
+        }
+      ],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
+    },
+    {
+      "Name": "Canteen",
+      "Icon": "Canteen.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "PublicService",
+      "BuildingSize": "5, 6",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Canteen",
+      "RevisionId": 12867,
+      "RevisionDate": "2020-01-28T11:32:03.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 1000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -100.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        }
+      ],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
     },
     {
       "Name": "Caoutchouc Plantation",
@@ -1579,8 +1870,8 @@
       "BuildingSize": "3, 3",
       "Radius": "fields: 144",
       "Url": "https://anno1800.fandom.com/wiki/Caoutchouc_Plantation",
-      "RevisionId": 9231,
-      "RevisionDate": "2019-06-06T13:02:46.0000000Z",
+      "RevisionId": 11175,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -1625,7 +1916,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 200.0,
             "Type": "Jornaleros"
           }
         ]
@@ -1679,6 +1970,67 @@
       "UnlockInfos": null
     },
     {
+      "Name": "Caribou Hunting Cabin",
+      "Icon": "Caribou Hunting Cabin.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Production",
+      "BuildingSize": "5, 5",
+      "Radius": "r:9",
+      "Url": "https://anno1800.fandom.com/wiki/Caribou_Hunting_Cabin",
+      "RevisionId": 12571,
+      "RevisionDate": "2020-01-28T11:32:03.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 200.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 2.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -40.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -25.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Explorers"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 1.0,
+          "AmountElectricity": 0.0,
+          "Icon": "Caribou Meat.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 100.0,
+            "Type": "Explorers"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Cattle Farm",
       "Icon": "Beef.png",
       "Region": "OldWorld",
@@ -1687,8 +2039,8 @@
       "BuildingSize": "4, 5",
       "Radius": "f:4 of 3x4",
       "Url": "https://anno1800.fandom.com/wiki/Cattle_Farm",
-      "RevisionId": 8435,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 10954,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2000.0,
@@ -1748,8 +2100,8 @@
       "BuildingSize": "4, 5",
       "Radius": "f:6 of 3x4",
       "Url": "https://anno1800.fandom.com/wiki/Cattle_Farm",
-      "RevisionId": 8435,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 10954,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -1809,8 +2161,8 @@
       "BuildingSize": "5, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Champagne_Cellar",
-      "RevisionId": 8679,
-      "RevisionDate": "2019-05-20T19:55:51.0000000Z",
+      "RevisionId": 13888,
+      "RevisionDate": "2020-04-24T15:33:51.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 35000.0,
@@ -1917,8 +2269,8 @@
       "BuildingSize": "3, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Chapel",
-      "RevisionId": 8405,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 12816,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -1949,7 +2301,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 300.0,
             "Type": "Jornaleros"
           }
         ]
@@ -1964,8 +2316,8 @@
       "BuildingSize": "5, 5",
       "Radius": "r:9",
       "Url": "https://anno1800.fandom.com/wiki/Charcoal_Kiln",
-      "RevisionId": 8528,
-      "RevisionDate": "2019-05-19T12:49:49.0000000Z",
+      "RevisionId": 12968,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -2031,6 +2383,60 @@
       }
     },
     {
+      "Name": "Charcoal Kiln",
+      "Icon": "Charcoal_kiln.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Production",
+      "BuildingSize": "5, 5",
+      "Radius": "r:9",
+      "Url": "https://anno1800.fandom.com/wiki/Charcoal_Kiln",
+      "RevisionId": 12968,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 500.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 2.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -20.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Explorers"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 2.0,
+          "AmountElectricity": 0.0,
+          "Icon": "Coal.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": null
+    },
+    {
       "Name": "Chess Tables",
       "Icon": "ChessTables.png",
       "Region": "OldWorld",
@@ -2089,8 +2495,8 @@
       "BuildingSize": "5, 7",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Chocolate_Factory",
-      "RevisionId": 8455,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 13902,
+      "RevisionDate": "2020-04-24T15:36:59.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 24000.0,
@@ -2133,19 +2539,19 @@
           {
             "Amount": 2.0,
             "AmountElectricity": 0.0,
-            "Icon": "Cocoa_0.png"
+            "Icon": "Sugar.png"
           },
           {
             "Amount": 2.0,
             "AmountElectricity": 0.0,
-            "Icon": "Sugar.png"
+            "Icon": "Cocoa.png"
           }
         ]
       },
       "SupplyInfos": {
         "SupplyEntries": [
           {
-            "Amount": 1875.0,
+            "Amount": 37.5,
             "AmountElectricity": 0.0,
             "Type": "Investors"
           }
@@ -2173,8 +2579,8 @@
       "BuildingSize": "6, 8",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Church",
-      "RevisionId": 8526,
-      "RevisionDate": "2019-05-19T12:01:38.0000000Z",
+      "RevisionId": 12810,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -2227,8 +2633,8 @@
       "BuildingSize": "7, 7",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Cigar_Factory",
-      "RevisionId": 8584,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 13901,
+      "RevisionDate": "2020-04-24T15:36:57.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -2373,8 +2779,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Clay_Pit",
-      "RevisionId": 8433,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 10916,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -2434,8 +2840,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Clay_Pit",
-      "RevisionId": 8433,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 10916,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -2495,8 +2901,8 @@
       "BuildingSize": "5, 7",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Clockmakers",
-      "RevisionId": 8577,
-      "RevisionDate": "2019-05-19T19:21:38.0000000Z",
+      "RevisionId": 13890,
+      "RevisionDate": "2020-04-24T15:33:59.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 48000.0,
@@ -2608,8 +3014,8 @@
       "BuildingSize": "6, 9",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Coachmakers",
-      "RevisionId": 8684,
-      "RevisionDate": "2019-05-20T20:05:33.0000000Z",
+      "RevisionId": 11055,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 55000.0,
@@ -2708,8 +3114,8 @@
       "BuildingSize": "3, 3",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Coal_Mine",
-      "RevisionId": 8545,
-      "RevisionDate": "2019-05-19T13:41:04.0000000Z",
+      "RevisionId": 10974,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 600.0,
@@ -2776,8 +3182,8 @@
       "BuildingSize": "4, 5",
       "Radius": "f:128",
       "Url": "https://anno1800.fandom.com/wiki/Cocoa_Plantation",
-      "RevisionId": 8453,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11076,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 7600.0,
@@ -2841,8 +3247,8 @@
       "BuildingSize": "3, 4",
       "Radius": "f:168",
       "Url": "https://anno1800.fandom.com/wiki/Coffee_Plantation",
-      "RevisionId": 8573,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11069,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -2949,8 +3355,8 @@
       "BuildingSize": "5, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Coffee_Roaster",
-      "RevisionId": 8574,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 13899,
+      "RevisionDate": "2020-04-24T15:36:51.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 9000.0,
@@ -3095,8 +3501,8 @@
       "BuildingSize": "5, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Commuter_Pier",
-      "RevisionId": 8494,
-      "RevisionDate": "2019-05-18T21:53:36.0000000Z",
+      "RevisionId": 13734,
+      "RevisionDate": "2020-04-01T13:22:14.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 25000.0,
@@ -3129,7 +3535,7 @@
       ],
       "MaintenanceInfos": [
         {
-          "Value": -200.0,
+          "Value": -1000.0,
           "Unit": {
             "Type": "File",
             "Name": "Balance.png"
@@ -3163,8 +3569,8 @@
       "BuildingSize": "5, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Concrete_Factory",
-      "RevisionId": 8561,
-      "RevisionDate": "2019-05-19T18:30:01.0000000Z",
+      "RevisionId": 10999,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 15000.0,
@@ -3256,8 +3662,8 @@
       "BuildingSize": "3, 3",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Copper_Mine",
-      "RevisionId": 8563,
-      "RevisionDate": "2019-05-19T18:40:01.0000000Z",
+      "RevisionId": 11008,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 5000.0,
@@ -3345,8 +3751,8 @@
       "BuildingSize": "3, 3",
       "Radius": "f:168",
       "Url": "https://anno1800.fandom.com/wiki/Corn_Farm",
-      "RevisionId": 8436,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11067,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -3406,8 +3812,8 @@
       "BuildingSize": "4, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Cotton_Mill",
-      "RevisionId": 8924,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11062,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -3520,8 +3926,8 @@
       "BuildingSize": "4, 4",
       "Radius": "f:144",
       "Url": "https://anno1800.fandom.com/wiki/Cotton_Plantation",
-      "RevisionId": 8556,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11061,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -3566,7 +3972,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 100.0,
             "Type": "Jornaleros"
           }
         ]
@@ -3653,8 +4059,8 @@
       "BuildingSize": "4, 10",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Depot",
-      "RevisionId": 8393,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11171,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -3707,8 +4113,8 @@
       "BuildingSize": "4, 10",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Depot",
-      "RevisionId": 8393,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11171,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -3746,42 +4152,17 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 100.0,
             "Type": "Jornaleros"
           }
         ]
       }
     },
     {
-      "Name": "Dirt Road",
-      "Icon": "Dirt_road.png",
-      "Region": "OldWorld",
-      "Tier": "Farmers",
-      "Type": "Street",
-      "BuildingSize": "0, 0",
-      "Radius": null,
-      "Url": "https://anno1800.fandom.com/wiki/Dirt_Road",
-      "RevisionId": 3870,
-      "RevisionDate": "2019-05-18T21:53:36.0000000Z",
-      "ConstructionInfos": [
-        {
-          "Value": 3.0,
-          "Unit": {
-            "Type": "InfoIcon",
-            "Name": "Credits"
-          }
-        }
-      ],
-      "MaintenanceInfos": [],
-      "ProductionInfos": null,
-      "SupplyInfos": null,
-      "UnlockInfos": null
-    },
-    {
-      "Name": "Dirt Road",
-      "Icon": "Dirt_road.png",
-      "Region": "NewWorld",
-      "Tier": "Jornaleros",
+      "Name": "Depot",
+      "Icon": "Depot.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
       "Type": "Unknown",
       "BuildingSize": "0, 0",
       "Radius": null,
@@ -3790,14 +4171,36 @@
       "RevisionDate": "0001-01-01T00:00:00.0000000",
       "ConstructionInfos": [
         {
-          "Value": 3.0,
+          "Value": 4000.0,
           "Unit": {
             "Type": "InfoIcon",
             "Name": "Credits"
           }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
         }
       ],
-      "MaintenanceInfos": [],
+      "MaintenanceInfos": [
+        {
+          "Value": 0.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        }
+      ],
       "ProductionInfos": null,
       "SupplyInfos": null,
       "UnlockInfos": null
@@ -3811,8 +4214,8 @@
       "BuildingSize": "5, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Dynamite_Factory",
-      "RevisionId": 8568,
-      "RevisionDate": "2019-05-19T18:56:39.0000000Z",
+      "RevisionId": 11040,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 54000.0,
@@ -4028,6 +4431,31 @@
       "UnlockInfos": null
     },
     {
+      "Name": "Explorer Residence|Explorer Shelter",
+      "Icon": "Residence.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Residence",
+      "BuildingSize": "3, 3",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Explorer_Residence|Explorer_Shelter",
+      "RevisionId": 13979,
+      "RevisionDate": "2020-05-17T19:54:35.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 2.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        }
+      ],
+      "MaintenanceInfos": [],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
+    },
+    {
       "Name": "Farmer Residence",
       "Icon": "Residence.png",
       "Region": "OldWorld",
@@ -4036,8 +4464,8 @@
       "BuildingSize": "3, 3",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Farmer_Residence",
-      "RevisionId": 8095,
-      "RevisionDate": "2019-05-18T21:53:36.0000000Z",
+      "RevisionId": 12792,
+      "RevisionDate": "2020-04-24T23:18:43.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2.0,
@@ -4061,8 +4489,8 @@
       "BuildingSize": "4, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Felt_Producer",
-      "RevisionId": 8447,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11072,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -4120,7 +4548,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 600.0,
             "Type": "Obreros"
           }
         ]
@@ -4385,8 +4813,8 @@
       "BuildingSize": "6, 7",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Filament_Factory",
-      "RevisionId": 8578,
-      "RevisionDate": "2019-05-19T19:24:02.0000000Z",
+      "RevisionId": 11048,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 30000.0,
@@ -4480,8 +4908,8 @@
       "BuildingSize": "3, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Fire_Station",
-      "RevisionId": 8404,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 12800,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -4527,8 +4955,8 @@
       "BuildingSize": "3, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Fire_Station",
-      "RevisionId": 8404,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 12800,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -4559,7 +4987,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 200.0,
             "Type": "Jornaleros"
           }
         ]
@@ -4572,10 +5000,10 @@
       "Tier": "Jornaleros",
       "Type": "Production",
       "BuildingSize": "5, 8",
-      "Radius": "5x13",
+      "Radius": "5x16",
       "Url": "https://anno1800.fandom.com/wiki/Fish_Oil_Factory",
-      "RevisionId": 8384,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11087,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -4627,7 +5055,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 50.0,
             "Type": "Jornaleros"
           }
         ]
@@ -4639,11 +5067,11 @@
       "Region": "OldWorld",
       "Tier": "Farmers",
       "Type": "Production",
-      "BuildingSize": "5, 6",
+      "BuildingSize": "5, 11",
       "Radius": "5x16",
       "Url": "https://anno1800.fandom.com/wiki/Fishery",
-      "RevisionId": 9325,
-      "RevisionDate": "2019-06-16T10:03:53.0000000Z",
+      "RevisionId": 13877,
+      "RevisionDate": "2020-04-24T15:27:53.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 100.0,
@@ -4716,8 +5144,8 @@
       "BuildingSize": "3, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Flour_Mill",
-      "RevisionId": 8522,
-      "RevisionDate": "2019-05-19T11:46:55.0000000Z",
+      "RevisionId": 10921,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -4990,8 +5418,8 @@
       "BuildingSize": "4, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Framework_Knitters",
-      "RevisionId": 8517,
-      "RevisionDate": "2019-05-19T11:15:54.0000000Z",
+      "RevisionId": 13879,
+      "RevisionDate": "2020-04-24T15:29:01.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 400.0,
@@ -5055,7 +5483,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 150.0,
+            "Amount": 100.0,
             "Type": "Farmers"
           }
         ]
@@ -5070,8 +5498,8 @@
       "BuildingSize": "3, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Fried_Plantain_Kitchen",
-      "RevisionId": 9232,
-      "RevisionDate": "2019-06-06T13:04:04.0000000Z",
+      "RevisionId": 13895,
+      "RevisionDate": "2020-04-24T15:35:25.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -5126,12 +5554,12 @@
       "SupplyInfos": {
         "SupplyEntries": [
           {
-            "Amount": 700.0,
+            "Amount": 70.0,
             "AmountElectricity": 0.0,
             "Type": "Jornaleros"
           },
           {
-            "Amount": 700.0,
+            "Amount": 35.0,
             "AmountElectricity": 0.0,
             "Type": "Obreros"
           }
@@ -5155,8 +5583,8 @@
       "BuildingSize": "4, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Fur_Dealer",
-      "RevisionId": 8558,
-      "RevisionDate": "2019-05-19T17:49:24.0000000Z",
+      "RevisionId": 13887,
+      "RevisionDate": "2020-04-24T15:32:41.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2000.0,
@@ -5261,8 +5689,8 @@
       "BuildingSize": "4, 7",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Furnace",
-      "RevisionId": 8529,
-      "RevisionDate": "2019-05-19T12:53:03.0000000Z",
+      "RevisionId": 10927,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -5439,6 +5867,169 @@
       "UnlockInfos": null
     },
     {
+      "Name": "Gas Mine",
+      "Icon": "Gas Mine.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
+      "Type": "Production",
+      "BuildingSize": "4, 4",
+      "Radius": "r:8",
+      "Url": "https://anno1800.fandom.com/wiki/Gas_Mine",
+      "RevisionId": 13872,
+      "RevisionDate": "2020-04-22T15:13:54.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 8000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 20.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -1000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -250.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Technicians"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 0.0,
+          "AmountElectricity": 0.0,
+          "Icon": "gas.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 1.0,
+            "Type": "Technicians"
+          }
+        ]
+      }
+    },
+    {
+      "Name": "Gas Power Plant",
+      "Icon": "Icon electric works gas 0.png",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "Type": "Unknown",
+      "BuildingSize": "5, 6",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Gas_Power_Plant",
+      "RevisionId": 13639,
+      "RevisionDate": "2020-03-27T21:42:51.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 75000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 40.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 60.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Bricks"
+          }
+        },
+        {
+          "Value": 60.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        },
+        {
+          "Value": 40.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Windows"
+          }
+        },
+        {
+          "Value": 40.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Reinforced Concrete"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -1200.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -250.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Engineers"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 0.0,
+          "AmountElectricity": 0.0,
+          "Icon": "Electricity.png"
+        },
+        "InputProducts": [
+          {
+            "Amount": 1.33,
+            "AmountElectricity": 0.0,
+            "Icon": "Gas.png"
+          }
+        ]
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 1.0,
+            "Type": "Investors"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Gazebo Garden",
       "Icon": "Gazebo garden.png",
       "Region": "OldWorld",
@@ -5547,8 +6138,8 @@
       "BuildingSize": "4, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Glassmakers",
-      "RevisionId": 8539,
-      "RevisionDate": "2019-05-19T13:29:09.0000000Z",
+      "RevisionId": 10945,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 5400.0,
@@ -5624,74 +6215,6 @@
       "Icon": "Gold Ore.png",
       "Region": "OldWorld",
       "Tier": "Engineers",
-      "Type": "Production",
-      "BuildingSize": "3, 3",
-      "Radius": null,
-      "Url": "https://anno1800.fandom.com/wiki/Gold_Mine",
-      "RevisionId": 8575,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
-      "ConstructionInfos": [
-        {
-          "Value": 2500.0,
-          "Unit": {
-            "Type": "InfoIcon",
-            "Name": "Credits"
-          }
-        },
-        {
-          "Value": 8.0,
-          "Unit": {
-            "Type": "InfoIcon",
-            "Name": "Timber"
-          }
-        },
-        {
-          "Value": 15.0,
-          "Unit": {
-            "Type": "InfoIcon",
-            "Name": "Bricks"
-          }
-        }
-      ],
-      "MaintenanceInfos": [
-        {
-          "Value": -250.0,
-          "Unit": {
-            "Type": "InfoIcon",
-            "Name": "Balance"
-          }
-        },
-        {
-          "Value": -100.0,
-          "Unit": {
-            "Type": "InfoIcon",
-            "Name": "Workforce Obreros"
-          }
-        }
-      ],
-      "ProductionInfos": {
-        "EndProduct": {
-          "Amount": 4.0,
-          "AmountElectricity": 0.0,
-          "Icon": "Gold_Ore.png"
-        },
-        "InputProducts": []
-      },
-      "SupplyInfos": null,
-      "UnlockInfos": {
-        "UnlockConditions": [
-          {
-            "Amount": 600.0,
-            "Type": "Obreros"
-          }
-        ]
-      }
-    },
-    {
-      "Name": "Gold Mine",
-      "Icon": "Gold Ore.png",
-      "Region": "NewWorld",
-      "Tier": "Obreros",
       "Type": "Unknown",
       "BuildingSize": "3, 3",
       "Radius": null,
@@ -5742,6 +6265,142 @@
       "UnlockInfos": null
     },
     {
+      "Name": "Gold Mine",
+      "Icon": "Gold Ore.png",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "Type": "Production",
+      "BuildingSize": "3, 3",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Gold_Mine",
+      "RevisionId": 12469,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 2500.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 8.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 15.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Bricks"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -250.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -100.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Obreros"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 0.4,
+          "AmountElectricity": 0.0,
+          "Icon": "Gold_Ore.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 300.0,
+            "Type": "Obreros"
+          }
+        ]
+      }
+    },
+    {
+      "Name": "Gold Mine|Deep Gold Mine",
+      "Icon": "Deep Gold Mine.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
+      "Type": "Production",
+      "BuildingSize": "3, 3",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Gold_Mine|Deep_Gold_Mine",
+      "RevisionId": 12469,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 5000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 20.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -400.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -100.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Technicians"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 1.0,
+          "AmountElectricity": 0.0,
+          "Icon": "Gold_Ore.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 750.0,
+            "Type": "Technicians"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Goldsmiths",
       "Icon": "Gold.png",
       "Region": "OldWorld",
@@ -5750,8 +6409,8 @@
       "BuildingSize": "4, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Goldsmiths",
-      "RevisionId": 8576,
-      "RevisionDate": "2019-05-19T19:18:12.0000000Z",
+      "RevisionId": 11046,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 27000.0,
@@ -5842,6 +6501,67 @@
       }
     },
     {
+      "Name": "Goose Farm",
+      "Icon": "Goose Farm.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Production",
+      "BuildingSize": "3, 3",
+      "Radius": "f:5 of 2x3",
+      "Url": "https://anno1800.fandom.com/wiki/Goose_Farm",
+      "RevisionId": 12726,
+      "RevisionDate": "2020-01-28T11:32:03.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 200.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -70.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -35.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Explorers"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 0.5,
+          "AmountElectricity": 0.0,
+          "Icon": "Goose Feathers.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 250.0,
+            "Type": "Explorers"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Grain Farm",
       "Icon": "Grain.png",
       "Region": "OldWorld",
@@ -5850,8 +6570,8 @@
       "BuildingSize": "3, 4",
       "Radius": "f:144",
       "Url": "https://anno1800.fandom.com/wiki/Grain_Farm",
-      "RevisionId": 8521,
-      "RevisionDate": "2019-05-19T11:44:55.0000000Z",
+      "RevisionId": 10933,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -5911,8 +6631,8 @@
       "BuildingSize": "7, 7",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Gramophone_Factory",
-      "RevisionId": 8683,
-      "RevisionDate": "2019-05-20T20:04:48.0000000Z",
+      "RevisionId": 13893,
+      "RevisionDate": "2020-04-24T15:35:18.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 60000.0,
@@ -6020,7 +6740,7 @@
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Grass",
       "RevisionId": 3894,
-      "RevisionDate": "2019-05-18T21:53:36.0000000Z",
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 15.0,
@@ -6074,10 +6794,10 @@
       "Tier": "Workers",
       "Type": "Harbour",
       "BuildingSize": "4, 4",
-      "Radius": null,
+      "Radius": "r: 18",
       "Url": "https://anno1800.fandom.com/wiki/Harbourmaster's_Office",
-      "RevisionId": 8395,
-      "RevisionDate": "2019-06-05T21:55:33.0000000Z",
+      "RevisionId": 11172,
+      "RevisionDate": "2020-04-24T23:18:43.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -6137,8 +6857,8 @@
       "BuildingSize": "4, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Harbourmaster's_Office",
-      "RevisionId": 8395,
-      "RevisionDate": "2019-06-05T21:55:33.0000000Z",
+      "RevisionId": 11172,
+      "RevisionDate": "2020-04-24T23:18:43.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -6183,11 +6903,64 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 100.0,
             "Type": "Jornaleros"
           }
         ]
       }
+    },
+    {
+      "Name": "Heater",
+      "Icon": "Heater.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "PublicService",
+      "BuildingSize": "3, 4",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Heater",
+      "RevisionId": 12903,
+      "RevisionDate": "2020-02-09T18:18:48.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 1000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -50.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 32.0,
+          "AmountElectricity": 0.0,
+          "Icon": "heater.png"
+        },
+        "InputProducts": [
+          {
+            "Amount": 2.0,
+            "AmountElectricity": 0.0,
+            "Icon": "coal.png"
+          }
+        ]
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": null
     },
     {
       "Name": "Heavy Weapons Factory",
@@ -6198,8 +6971,8 @@
       "BuildingSize": "9, 10",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Heavy_Weapons_Factory",
-      "RevisionId": 8569,
-      "RevisionDate": "2019-05-19T19:00:14.0000000Z",
+      "RevisionId": 11043,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 85000.0,
@@ -6505,8 +7278,8 @@
       "BuildingSize": "3, 4",
       "Radius": "f:96",
       "Url": "https://anno1800.fandom.com/wiki/Hop_Farm",
-      "RevisionId": 8535,
-      "RevisionDate": "2019-05-19T13:13:47.0000000Z",
+      "RevisionId": 10935,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -6566,8 +7339,8 @@
       "BuildingSize": "6, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Hospital",
-      "RevisionId": 8449,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 12802,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 10000.0,
@@ -6634,8 +7407,8 @@
       "BuildingSize": "5, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Hospital",
-      "RevisionId": 8449,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 12802,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 10000.0,
@@ -6688,8 +7461,8 @@
       "BuildingSize": "5, 5",
       "Radius": "r:9",
       "Url": "https://anno1800.fandom.com/wiki/Hunting_Cabin",
-      "RevisionId": 8555,
-      "RevisionDate": "2019-05-19T17:33:50.0000000Z",
+      "RevisionId": 12923,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2000.0,
@@ -6741,6 +7514,210 @@
       }
     },
     {
+      "Name": "Hunting Cabin|Pristine Hunting Cabin",
+      "Icon": "Prime Hunting Cabin.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
+      "Type": "Production",
+      "BuildingSize": "5, 5",
+      "Radius": "r:9",
+      "Url": "https://anno1800.fandom.com/wiki/Hunting_Cabin|Pristine_Hunting_Cabin",
+      "RevisionId": 12923,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 4000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -40.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -30.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Explorers"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 4.0,
+          "AmountElectricity": 0.0,
+          "Icon": "Furs.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 300.0,
+            "Type": "Technicians"
+          }
+        ]
+      }
+    },
+    {
+      "Name": "Husky Farm",
+      "Icon": "Husky Farm.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
+      "Type": "Production",
+      "BuildingSize": "3, 3",
+      "Radius": "f:5 of 2x3",
+      "Url": "https://anno1800.fandom.com/wiki/Husky_Farm",
+      "RevisionId": 13966,
+      "RevisionDate": "2020-05-14T02:18:30.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 4000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -70.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -35.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Technicians"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 0.5,
+          "AmountElectricity": 0.0,
+          "Icon": "Huskies.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 750.0,
+            "Type": "Technicians"
+          }
+        ]
+      }
+    },
+    {
+      "Name": "Husky Sled Factory",
+      "Icon": "Husky Sled Factory.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
+      "Type": "Production",
+      "BuildingSize": "4, 4",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Husky_Sled_Factory",
+      "RevisionId": 12699,
+      "RevisionDate": "2020-01-28T11:32:03.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 4000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -70.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -35.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Technicians"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 1.0,
+          "AmountElectricity": 0.0,
+          "Icon": "Husky Sleds.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 750.0,
+            "Type": "Technicians"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Iron Mine",
       "Icon": "Iron.png",
       "Region": "OldWorld",
@@ -6749,8 +7726,8 @@
       "BuildingSize": "3, 3",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Iron_Mine",
-      "RevisionId": 8527,
-      "RevisionDate": "2019-05-19T12:47:14.0000000Z",
+      "RevisionId": 10924,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 800.0,
@@ -6817,8 +7794,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Jewellers",
-      "RevisionId": 8682,
-      "RevisionDate": "2019-05-20T20:03:04.0000000Z",
+      "RevisionId": 13892,
+      "RevisionDate": "2020-04-24T15:34:06.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 33000.0,
@@ -6925,8 +7902,8 @@
       "BuildingSize": "3, 3",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Jornalero_Residence",
-      "RevisionId": 8380,
-      "RevisionDate": "2019-05-18T19:58:39.0000000Z",
+      "RevisionId": 12796,
+      "RevisionDate": "2020-04-24T23:18:43.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 1.0,
@@ -6950,8 +7927,8 @@
       "BuildingSize": "6, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Light_Bulb_Factory",
-      "RevisionId": 8579,
-      "RevisionDate": "2019-05-19T19:27:49.0000000Z",
+      "RevisionId": 13889,
+      "RevisionDate": "2020-04-24T15:33:55.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 45000.0,
@@ -7063,8 +8040,8 @@
       "BuildingSize": "3, 3",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Limestone_Quarry",
-      "RevisionId": 8560,
-      "RevisionDate": "2019-05-19T18:28:18.0000000Z",
+      "RevisionId": 10998,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 6000.0,
@@ -7137,6 +8114,81 @@
       }
     },
     {
+      "Name": "Local Department",
+      "Icon": "Icon local department.png",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "Type": "Administration",
+      "BuildingSize": "5, 8",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Local_Department",
+      "RevisionId": 13676,
+      "RevisionDate": "2020-03-28T13:56:54.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 150000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 40.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 60.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Bricks"
+          }
+        },
+        {
+          "Value": 40.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        },
+        {
+          "Value": 35.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Windows"
+          }
+        },
+        {
+          "Value": 60.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Reinforced Concrete"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -1000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        }
+      ],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 1.0,
+            "Type": "Investors"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Lumberjack's Hut",
       "Icon": "Wood.png",
       "Region": "OldWorld",
@@ -7145,8 +8197,8 @@
       "BuildingSize": "4, 4",
       "Radius": "r:7",
       "Url": "https://anno1800.fandom.com/wiki/Lumberjack's_Hut",
-      "RevisionId": 8512,
-      "RevisionDate": "2019-05-19T10:47:38.0000000Z",
+      "RevisionId": 13479,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 100.0,
@@ -7176,7 +8228,7 @@
         "EndProduct": {
           "Amount": 4.0,
           "AmountElectricity": 0.0,
-          "Icon": "Wood.png"
+          "Icon": "wood.png"
         },
         "InputProducts": []
       },
@@ -7192,8 +8244,8 @@
       "BuildingSize": "4, 4",
       "Radius": "r:7",
       "Url": "https://anno1800.fandom.com/wiki/Lumberjack's_Hut",
-      "RevisionId": 8512,
-      "RevisionDate": "2019-05-19T10:47:38.0000000Z",
+      "RevisionId": 13479,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -7223,7 +8275,54 @@
         "EndProduct": {
           "Amount": 4.0,
           "AmountElectricity": 0.0,
-          "Icon": "Wood.png"
+          "Icon": "wood.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": null
+    },
+    {
+      "Name": "Lumberjack's Hut",
+      "Icon": "Wood.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Production",
+      "BuildingSize": "4, 4",
+      "Radius": "r:7",
+      "Url": "https://anno1800.fandom.com/wiki/Lumberjack's_Hut",
+      "RevisionId": 13479,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 100.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -20.0,
+          "Unit": {
+            "Type": "File",
+            "Name": "Balance.png"
+          }
+        },
+        {
+          "Value": -10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Explorers"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 4.0,
+          "AmountElectricity": 0.0,
+          "Icon": "wood.png"
         },
         "InputProducts": []
       },
@@ -7239,8 +8338,8 @@
       "BuildingSize": "4, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Malthouse",
-      "RevisionId": 8534,
-      "RevisionDate": "2019-05-19T13:12:30.0000000Z",
+      "RevisionId": 10932,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -7320,8 +8419,8 @@
       "BuildingSize": "5, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Marketplace",
-      "RevisionId": 8379,
-      "RevisionDate": "2019-05-18T21:53:36.0000000Z",
+      "RevisionId": 12808,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -7360,8 +8459,8 @@
       "BuildingSize": "5, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Marketplace",
-      "RevisionId": 8379,
-      "RevisionDate": "2019-05-18T21:53:36.0000000Z",
+      "RevisionId": 12808,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -7400,8 +8499,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Marquetry_Workshop",
-      "RevisionId": 8680,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11052,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 22000.0,
@@ -7495,8 +8594,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Marquetry_Workshop",
-      "RevisionId": 8680,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11052,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -7570,7 +8669,7 @@
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Mature_Shrubbery",
       "RevisionId": 9256,
-      "RevisionDate": "2019-06-06T20:03:33.0000000Z",
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 25.0,
@@ -7602,7 +8701,7 @@
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Mature_Tree",
       "RevisionId": 9257,
-      "RevisionDate": "2019-06-06T20:13:29.0000000Z",
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 75.0,
@@ -7633,8 +8732,8 @@
       "BuildingSize": "6, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Members_Club",
-      "RevisionId": 8681,
-      "RevisionDate": "2019-05-20T20:00:14.0000000Z",
+      "RevisionId": 12815,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 50000.0,
@@ -7808,8 +8907,8 @@
       "BuildingSize": "6, 9",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Motor_Assembly_Line",
-      "RevisionId": 8572,
-      "RevisionDate": "2019-05-19T19:08:06.0000000Z",
+      "RevisionId": 11045,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 75000.0,
@@ -7915,8 +9014,8 @@
       "BuildingSize": "4, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Mounted_Guns",
-      "RevisionId": 8704,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11174,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 2000.0,
@@ -7983,8 +9082,8 @@
       "BuildingSize": "4, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Mounted_Guns",
-      "RevisionId": 8704,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11174,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 5000.0,
@@ -8036,7 +9135,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 200.0,
             "Type": "Jornaleros"
           }
         ]
@@ -8051,8 +9150,8 @@
       "BuildingSize": "5, 8",
       "Radius": "e:4x5",
       "Url": "https://anno1800.fandom.com/wiki/Museum",
-      "RevisionId": 8724,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 12920,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 10000.0,
@@ -8119,8 +9218,8 @@
       "BuildingSize": "5, 8",
       "Radius": "e:4x5",
       "Url": "https://anno1800.fandom.com/wiki/Museum",
-      "RevisionId": 8724,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 12920,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 10000.0,
@@ -8229,6 +9328,78 @@
       "UnlockInfos": null
     },
     {
+      "Name": "Oil Lamp Factory",
+      "Icon": "Oil Lamp Factory.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Production",
+      "BuildingSize": "4, 4",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Oil_Lamp_Factory",
+      "RevisionId": 12620,
+      "RevisionDate": "2020-01-28T11:32:03.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 2000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 15.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -200.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -70.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Explorers"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 1.0,
+          "AmountElectricity": 0.0,
+          "Icon": "Oil Lamps.png"
+        },
+        "InputProducts": [
+          {
+            "Amount": 1.0,
+            "AmountElectricity": 0.0,
+            "Icon": "Whale Oil.png"
+          },
+          {
+            "Amount": 1.0,
+            "AmountElectricity": 0.0,
+            "Icon": "Brass.png"
+          }
+        ]
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 250.0,
+            "Type": "Explorers"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Oil Power Plant",
       "Icon": "",
       "Region": "OldWorld",
@@ -8237,8 +9408,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Oil_Power_Plant",
-      "RevisionId": 8489,
-      "RevisionDate": "2019-05-18T21:48:01.0000000Z",
+      "RevisionId": 13332,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 25000.0,
@@ -8339,8 +9510,8 @@
       "BuildingSize": "5, 5",
       "Radius": "r:?",
       "Url": "https://anno1800.fandom.com/wiki/Oil_Refinery",
-      "RevisionId": 9264,
-      "RevisionDate": "2019-06-07T06:39:16.0000000Z",
+      "RevisionId": 11191,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 25000.0,
@@ -8435,8 +9606,8 @@
       "BuildingSize": "5, 5",
       "Radius": "r:9",
       "Url": "https://anno1800.fandom.com/wiki/Oil_Refinery",
-      "RevisionId": 9264,
-      "RevisionDate": "2019-06-07T06:39:16.0000000Z",
+      "RevisionId": 11191,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -8518,6 +9689,10 @@
           {
             "Amount": 600.0,
             "Type": "Obreros"
+          },
+          {
+            "Amount": 1.0,
+            "Type": "Engineers"
           }
         ]
       }
@@ -8531,8 +9706,8 @@
       "BuildingSize": "4, 8",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Oil_Storage",
-      "RevisionId": 8488,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11183,
+      "RevisionDate": "2020-03-28T14:11:52.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 8000.0,
@@ -8606,8 +9781,8 @@
       "BuildingSize": "4, 8",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Oil_Storage",
-      "RevisionId": 8488,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11183,
+      "RevisionDate": "2020-03-28T14:11:52.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 8000.0,
@@ -8647,6 +9822,10 @@
           {
             "Amount": 600.0,
             "Type": "Obreros"
+          },
+          {
+            "Amount": 1.0,
+            "Type": "Engineers"
           }
         ]
       }
@@ -8661,7 +9840,7 @@
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Oil_Well",
       "RevisionId": 9265,
-      "RevisionDate": "2019-06-07T06:39:22.0000000Z",
+      "RevisionDate": "2020-03-28T14:11:52.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 4000.0,
@@ -8721,7 +9900,7 @@
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Oil_Well",
       "RevisionId": 9265,
-      "RevisionDate": "2019-06-07T06:39:22.0000000Z",
+      "RevisionDate": "2020-03-28T14:11:52.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 4000.0,
@@ -8772,6 +9951,81 @@
       }
     },
     {
+      "Name": "Palace",
+      "Icon": "Icon palace.png",
+      "Region": "OldWorld",
+      "Tier": "Investors",
+      "Type": "Administration",
+      "BuildingSize": "9, 9",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Palace",
+      "RevisionId": 13753,
+      "RevisionDate": "2020-04-04T03:34:25.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 1000000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 100.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 150.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Bricks"
+          }
+        },
+        {
+          "Value": 150.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        },
+        {
+          "Value": 120.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Windows"
+          }
+        },
+        {
+          "Value": 200.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Reinforced Concrete"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -5000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance+150"
+          }
+        }
+      ],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 1.0,
+            "Type": "Investors"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Palm Tree",
       "Icon": "PalmTree.png",
       "Region": "NewWorld",
@@ -8795,6 +10049,85 @@
       "ProductionInfos": null,
       "SupplyInfos": null,
       "UnlockInfos": null
+    },
+    {
+      "Name": "Parka Factory",
+      "Icon": "Parka Factory.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
+      "Type": "Production",
+      "BuildingSize": "4, 4",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Parka_Factory",
+      "RevisionId": 12685,
+      "RevisionDate": "2020-01-28T11:32:03.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 4000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -70.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -35.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Technicians"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 0.66,
+          "AmountElectricity": 0.0,
+          "Icon": "Parkas.png"
+        },
+        "InputProducts": [
+          {
+            "Amount": 0.66,
+            "AmountElectricity": 0.0,
+            "Icon": "Bear Fur.png"
+          },
+          {
+            "Amount": 0.66,
+            "AmountElectricity": 0.0,
+            "Icon": "Seal Skin.png"
+          }
+        ]
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 300.0,
+            "Type": "Technicians"
+          }
+        ]
+      }
     },
     {
       "Name": "Path Angle",
@@ -8997,80 +10330,16 @@
       "UnlockInfos": null
     },
     {
-      "Name": "Paved Street",
-      "Icon": "Paved street.png",
-      "Region": "OldWorld",
-      "Tier": "Workers",
-      "Type": "Unknown",
-      "BuildingSize": "0, 0",
-      "Radius": null,
-      "Url": null,
-      "RevisionId": -1,
-      "RevisionDate": "0001-01-01T00:00:00.0000000",
-      "ConstructionInfos": [
-        {
-          "Value": 13.0,
-          "Unit": {
-            "Type": "InfoIcon",
-            "Name": "Credits"
-          }
-        },
-        {
-          "Value": 1.0,
-          "Unit": {
-            "Type": "InfoIcon",
-            "Name": "Bricks"
-          }
-        }
-      ],
-      "MaintenanceInfos": [],
-      "ProductionInfos": null,
-      "SupplyInfos": null,
-      "UnlockInfos": null
-    },
-    {
-      "Name": "Paved Street",
-      "Icon": "Paved street.png",
-      "Region": "NewWorld",
-      "Tier": "Obreros",
-      "Type": "Unknown",
-      "BuildingSize": "0, 0",
-      "Radius": null,
-      "Url": null,
-      "RevisionId": -1,
-      "RevisionDate": "0001-01-01T00:00:00.0000000",
-      "ConstructionInfos": [
-        {
-          "Value": 13.0,
-          "Unit": {
-            "Type": "InfoIcon",
-            "Name": "Credits"
-          }
-        },
-        {
-          "Value": 1.0,
-          "Unit": {
-            "Type": "InfoIcon",
-            "Name": "Bricks"
-          }
-        }
-      ],
-      "MaintenanceInfos": [],
-      "ProductionInfos": null,
-      "SupplyInfos": null,
-      "UnlockInfos": null
-    },
-    {
       "Name": "Pearl Farm",
       "Icon": "Pearls.png",
       "Region": "OldWorld",
       "Tier": "Investors",
       "Type": "Production",
-      "BuildingSize": "4, 6",
+      "BuildingSize": "6, 14",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Pearl_Farm",
-      "RevisionId": 8586,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11088,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 8500.0,
@@ -9169,6 +10438,78 @@
       "UnlockInfos": null
     },
     {
+      "Name": "Pemmican Cookhouse",
+      "Icon": "Pemmican Cookhouse.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Production",
+      "BuildingSize": "4, 5",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Pemmican_Cookhouse",
+      "RevisionId": 13875,
+      "RevisionDate": "2020-04-22T15:19:07.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 1000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -60.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -30.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Explorers"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 1.0,
+          "AmountElectricity": 0.0,
+          "Icon": "Pemmican.png"
+        },
+        "InputProducts": [
+          {
+            "Amount": 1.0,
+            "AmountElectricity": 0.0,
+            "Icon": "Whale_Oil.png"
+          },
+          {
+            "Amount": 1.0,
+            "AmountElectricity": 0.0,
+            "Icon": "Caribou_Meat.png"
+          }
+        ]
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 100.0,
+            "Type": "Explorers"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Philodendron",
       "Icon": "Philodendron.png",
       "Region": "NewWorld",
@@ -9252,8 +10593,8 @@
       "BuildingSize": "7, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Pier",
-      "RevisionId": 8615,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 13846,
+      "RevisionDate": "2020-04-16T20:24:41.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -9320,8 +10661,8 @@
       "BuildingSize": "6, 7",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Pier",
-      "RevisionId": 8615,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 13846,
+      "RevisionDate": "2020-04-16T20:24:41.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -9359,11 +10700,58 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 300.0,
             "Type": "Obreros"
           }
         ]
       }
+    },
+    {
+      "Name": "Pier",
+      "Icon": "Pier.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
+      "Type": "Unknown",
+      "BuildingSize": "6, 7",
+      "Radius": null,
+      "Url": null,
+      "RevisionId": -1,
+      "RevisionDate": "0001-01-01T00:00:00.0000000",
+      "ConstructionInfos": [
+        {
+          "Value": 4000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": 0.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        }
+      ],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
     },
     {
       "Name": "Pig Farm",
@@ -9374,8 +10762,8 @@
       "BuildingSize": "3, 4",
       "Radius": "f:5 of 2x3",
       "Url": "https://anno1800.fandom.com/wiki/Pig_Farm",
-      "RevisionId": 8519,
-      "RevisionDate": "2019-05-19T11:38:06.0000000Z",
+      "RevisionId": 10918,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -9442,8 +10830,8 @@
       "BuildingSize": "3, 3",
       "Radius": "f:128",
       "Url": "https://anno1800.fandom.com/wiki/Plantain_Plantation",
-      "RevisionId": 8385,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11057,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -9488,7 +10876,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 50.0,
             "Type": "Jornaleros"
           }
         ]
@@ -9503,8 +10891,8 @@
       "BuildingSize": "4, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Police_Station",
-      "RevisionId": 8406,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 12801,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -9557,8 +10945,8 @@
       "BuildingSize": "4, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Police_Station",
-      "RevisionId": 8406,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 12801,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -9589,7 +10977,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 300.0,
             "Type": "Jornaleros"
           }
         ]
@@ -9604,8 +10992,8 @@
       "BuildingSize": "4, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Poncho_Darner",
-      "RevisionId": 8402,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 13897,
+      "RevisionDate": "2020-04-24T15:35:30.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -9655,12 +11043,12 @@
       "SupplyInfos": {
         "SupplyEntries": [
           {
-            "Amount": 800.0,
+            "Amount": 80.0,
             "AmountElectricity": 0.0,
             "Type": "Jornaleros"
           },
           {
-            "Amount": 800.0,
+            "Amount": 40.0,
             "AmountElectricity": 0.0,
             "Type": "Obreros"
           }
@@ -9726,6 +11114,60 @@
       "UnlockInfos": null
     },
     {
+      "Name": "Post Office",
+      "Icon": "Post Office.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
+      "Type": "Unknown",
+      "BuildingSize": "3, 4",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Post_Office",
+      "RevisionId": 12668,
+      "RevisionDate": "2020-01-28T11:32:03.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 4000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": 0.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        }
+      ],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 100.0,
+            "Type": "Technicians"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Potato Farm",
       "Icon": "Potato.png",
       "Region": "OldWorld",
@@ -9734,8 +11176,8 @@
       "BuildingSize": "3, 3",
       "Radius": "f:72",
       "Url": "https://anno1800.fandom.com/wiki/Potato_Farm",
-      "RevisionId": 8514,
-      "RevisionDate": "2019-05-19T11:03:00.0000000Z",
+      "RevisionId": 13916,
+      "RevisionDate": "2020-04-30T08:59:57.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 100.0,
@@ -9795,8 +11237,8 @@
       "BuildingSize": "4, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Pub",
-      "RevisionId": 8525,
-      "RevisionDate": "2019-05-19T11:59:43.0000000Z",
+      "RevisionId": 12809,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -9842,8 +11284,8 @@
       "BuildingSize": "8, 25",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Public_Mooring",
-      "RevisionId": 8443,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11179,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 25000.0,
@@ -9910,8 +11352,8 @@
       "BuildingSize": "8, 25",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Public_Mooring",
-      "RevisionId": 8443,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11179,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -9949,7 +11391,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 300.0,
             "Type": "Obreros"
           }
         ]
@@ -10020,9 +11462,9 @@
       "Type": "Unknown",
       "BuildingSize": "0, 0",
       "Radius": null,
-      "Url": null,
-      "RevisionId": -1,
-      "RevisionDate": "0001-01-01T00:00:00.0000000",
+      "Url": "https://anno1800.fandom.com/wiki/Railway",
+      "RevisionId": 11186,
+      "RevisionDate": "2020-03-28T14:11:52.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 50.0,
@@ -10049,7 +11491,14 @@
       "MaintenanceInfos": [],
       "ProductionInfos": null,
       "SupplyInfos": null,
-      "UnlockInfos": null
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 1.0,
+            "Type": "Engineers"
+          }
+        ]
+      }
     },
     {
       "Name": "Railway",
@@ -10059,9 +11508,9 @@
       "Type": "Unknown",
       "BuildingSize": "0, 0",
       "Radius": null,
-      "Url": null,
-      "RevisionId": -1,
-      "RevisionDate": "0001-01-01T00:00:00.0000000",
+      "Url": "https://anno1800.fandom.com/wiki/Railway",
+      "RevisionId": 11186,
+      "RevisionDate": "2020-03-28T14:11:52.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 50.0,
@@ -10088,7 +11537,72 @@
       "MaintenanceInfos": [],
       "ProductionInfos": null,
       "SupplyInfos": null,
-      "UnlockInfos": null
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 1.0,
+            "Type": "Obreros"
+          },
+          {
+            "Amount": 1.0,
+            "Type": "Engineers"
+          }
+        ]
+      }
+    },
+    {
+      "Name": "Ranger Station",
+      "Icon": "Ranger Station.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Unknown",
+      "BuildingSize": "4, 4",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Ranger_Station",
+      "RevisionId": 12305,
+      "RevisionDate": "2020-01-28T11:32:03.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 4000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -75.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        }
+      ],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 250.0,
+            "Type": "Explorers"
+          }
+        ]
+      }
     },
     {
       "Name": "Red Pepper Farm",
@@ -10099,8 +11613,8 @@
       "BuildingSize": "3, 3",
       "Radius": "f:108",
       "Url": "https://anno1800.fandom.com/wiki/Red_Pepper_Farm",
-      "RevisionId": 8542,
-      "RevisionDate": "2019-05-19T13:34:34.0000000Z",
+      "RevisionId": 10971,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2000.0,
@@ -10160,8 +11674,8 @@
       "BuildingSize": "3, 3",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Rendering_Works",
-      "RevisionId": 8531,
-      "RevisionDate": "2019-05-19T12:59:25.0000000Z",
+      "RevisionId": 10929,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -10248,8 +11762,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Repair_Crane",
-      "RevisionId": 8397,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11173,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -10316,8 +11830,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Repair_Crane",
-      "RevisionId": 8397,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11173,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -10362,11 +11876,150 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 200.0,
             "Type": "Jornaleros"
           }
         ]
       }
+    },
+    {
+      "Name": "Roads|Dirt Road",
+      "Icon": "Dirt_road.png",
+      "Region": "OldWorld",
+      "Tier": "Farmers",
+      "Type": "Unknown",
+      "BuildingSize": "0, 0",
+      "Radius": null,
+      "Url": null,
+      "RevisionId": -1,
+      "RevisionDate": "0001-01-01T00:00:00.0000000",
+      "ConstructionInfos": [
+        {
+          "Value": 3.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        }
+      ],
+      "MaintenanceInfos": [],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
+    },
+    {
+      "Name": "Roads|Dirt Road",
+      "Icon": "Dirt_road.png",
+      "Region": "NewWorld",
+      "Tier": "Jornaleros",
+      "Type": "Unknown",
+      "BuildingSize": "0, 0",
+      "Radius": null,
+      "Url": null,
+      "RevisionId": -1,
+      "RevisionDate": "0001-01-01T00:00:00.0000000",
+      "ConstructionInfos": [
+        {
+          "Value": 3.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        }
+      ],
+      "MaintenanceInfos": [],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
+    },
+    {
+      "Name": "Roads|Paved Street",
+      "Icon": "Paved street.png",
+      "Region": "OldWorld",
+      "Tier": "Workers",
+      "Type": "Unknown",
+      "BuildingSize": "0, 0",
+      "Radius": null,
+      "Url": null,
+      "RevisionId": -1,
+      "RevisionDate": "0001-01-01T00:00:00.0000000",
+      "ConstructionInfos": [
+        {
+          "Value": 13.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 1.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Bricks"
+          }
+        }
+      ],
+      "MaintenanceInfos": [],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
+    },
+    {
+      "Name": "Roads|Paved Street",
+      "Icon": "Paved street.png",
+      "Region": "NewWorld",
+      "Tier": "Obreros",
+      "Type": "Unknown",
+      "BuildingSize": "0, 0",
+      "Radius": null,
+      "Url": null,
+      "RevisionId": -1,
+      "RevisionDate": "0001-01-01T00:00:00.0000000",
+      "ConstructionInfos": [
+        {
+          "Value": 13.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 1.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Bricks"
+          }
+        }
+      ],
+      "MaintenanceInfos": [],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
+    },
+    {
+      "Name": "Roads|Road",
+      "Icon": "Road Arctic.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Unknown",
+      "BuildingSize": "0, 0",
+      "Radius": null,
+      "Url": null,
+      "RevisionId": -1,
+      "RevisionDate": "0001-01-01T00:00:00.0000000",
+      "ConstructionInfos": [
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        }
+      ],
+      "MaintenanceInfos": [],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
     },
     {
       "Name": "Rum Distillery",
@@ -10377,8 +12030,8 @@
       "BuildingSize": "6, 7",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Rum_Distillery",
-      "RevisionId": 8554,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 13896,
+      "RevisionDate": "2020-04-24T15:35:28.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -10516,11 +12169,11 @@
       "Region": "OldWorld",
       "Tier": "Workers",
       "Type": "Harbour",
-      "BuildingSize": "6, 15",
+      "BuildingSize": "6, 17",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Sailing_Shipyard",
-      "RevisionId": 8392,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11170,
+      "RevisionDate": "2020-01-15T19:40:24.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 10000.0,
@@ -10577,11 +12230,11 @@
       "Region": "NewWorld",
       "Tier": "Jornaleros",
       "Type": "Harbour",
-      "BuildingSize": "6, 15",
+      "BuildingSize": "6, 17",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Sailing_Shipyard",
-      "RevisionId": 8392,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11170,
+      "RevisionDate": "2020-01-15T19:40:24.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 10000.0,
@@ -10619,7 +12272,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 100.0,
             "Type": "Jornaleros"
           }
         ]
@@ -10634,8 +12287,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Sailmakers",
-      "RevisionId": 8391,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11169,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -10708,8 +12361,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Sailmakers",
-      "RevisionId": 8391,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11169,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -10760,7 +12413,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 100.0,
             "Type": "Jornaleros"
           }
         ]
@@ -10775,8 +12428,8 @@
       "BuildingSize": "4, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Saltpeter_Works",
-      "RevisionId": 8567,
-      "RevisionDate": "2019-05-19T18:54:18.0000000Z",
+      "RevisionId": 11086,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 12500.0,
@@ -10848,10 +12501,10 @@
       "Tier": "Artisans",
       "Type": "Production",
       "BuildingSize": "6, 7",
-      "Radius": null,
+      "Radius": "6x17",
       "Url": "https://anno1800.fandom.com/wiki/Sand_Mine",
-      "RevisionId": 8538,
-      "RevisionDate": "2019-05-19T13:28:06.0000000Z",
+      "RevisionId": 11085,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2000.0,
@@ -10918,8 +12571,8 @@
       "BuildingSize": "3, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Sawmill",
-      "RevisionId": 8383,
-      "RevisionDate": "2019-05-18T21:53:36.0000000Z",
+      "RevisionId": 13974,
+      "RevisionDate": "2020-05-15T09:13:09.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 100.0,
@@ -10971,8 +12624,8 @@
       "BuildingSize": "3, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Sawmill",
-      "RevisionId": 8383,
-      "RevisionDate": "2019-05-18T21:53:36.0000000Z",
+      "RevisionId": 13974,
+      "RevisionDate": "2020-05-15T09:13:09.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -11016,6 +12669,59 @@
       "UnlockInfos": null
     },
     {
+      "Name": "Sawmill",
+      "Icon": "Timber.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Production",
+      "BuildingSize": "3, 4",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Sawmill",
+      "RevisionId": 13974,
+      "RevisionDate": "2020-05-15T09:13:09.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 100.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -20.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Explorers"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 4.0,
+          "AmountElectricity": 0.0,
+          "Icon": "Timber.png"
+        },
+        "InputProducts": [
+          {
+            "Amount": 4.0,
+            "AmountElectricity": 0.0,
+            "Icon": "Wood.png"
+          }
+        ]
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": null
+    },
+    {
       "Name": "Schnapps Distillery",
       "Icon": "Schnapps.png",
       "Region": "OldWorld",
@@ -11024,8 +12730,8 @@
       "BuildingSize": "3, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Schnapps_Distillery",
-      "RevisionId": 8515,
-      "RevisionDate": "2019-05-19T11:08:02.0000000Z",
+      "RevisionId": 13878,
+      "RevisionDate": "2020-04-24T15:28:29.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 100.0,
@@ -11104,8 +12810,8 @@
       "BuildingSize": "5, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/School",
-      "RevisionId": 8537,
-      "RevisionDate": "2019-05-19T13:22:33.0000000Z",
+      "RevisionId": 12811,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -11157,6 +12863,67 @@
       }
     },
     {
+      "Name": "Seal Hunting Docks",
+      "Icon": "Seal Hunting Docks.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Production",
+      "BuildingSize": "5, 7",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Seal_Hunting_Docks",
+      "RevisionId": 12585,
+      "RevisionDate": "2020-01-28T11:32:03.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 200.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -50.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -20.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Explorers"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 2.0,
+          "AmountElectricity": 0.0,
+          "Icon": "Seal_Skin.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 250.0,
+            "Type": "Explorers"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Sewing Machine Factory",
       "Icon": "Sewing machines.png",
       "Region": "OldWorld",
@@ -11165,8 +12932,8 @@
       "BuildingSize": "6, 9",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Sewing_Machine_Factory",
-      "RevisionId": 8546,
-      "RevisionDate": "2019-05-19T13:43:13.0000000Z",
+      "RevisionId": 13883,
+      "RevisionDate": "2020-04-24T15:31:19.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 12000.0,
@@ -11276,8 +13043,8 @@
       "BuildingSize": "3, 3",
       "Radius": "f:3 of 3x3",
       "Url": "https://anno1800.fandom.com/wiki/Sheep_Farm",
-      "RevisionId": 8516,
-      "RevisionDate": "2019-05-19T11:13:02.0000000Z",
+      "RevisionId": 12829,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 100.0,
@@ -11322,7 +13089,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 150.0,
+            "Amount": 100.0,
             "Type": "Farmers"
           }
         ]
@@ -11363,7 +13130,7 @@
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Shrubbery",
       "RevisionId": 9253,
-      "RevisionDate": "2019-06-06T19:58:19.0000000Z",
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 25.0,
@@ -11394,8 +13161,8 @@
       "BuildingSize": "3, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Slaughterhouse",
-      "RevisionId": 8520,
-      "RevisionDate": "2019-05-19T11:42:42.0000000Z",
+      "RevisionId": 13880,
+      "RevisionDate": "2020-04-24T15:29:41.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -11480,6 +13247,146 @@
       }
     },
     {
+      "Name": "Sled Frame Factory",
+      "Icon": "Sled Frame Factory.png",
+      "Region": "Arctic",
+      "Tier": "Technicians",
+      "Type": "Production",
+      "BuildingSize": "4, 5",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Sled_Frame_Factory",
+      "RevisionId": 12696,
+      "RevisionDate": "2020-01-28T11:32:03.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 4000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 10.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -70.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -35.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Technicians"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 1.0,
+          "AmountElectricity": 0.0,
+          "Icon": "Sleds.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 750.0,
+            "Type": "Technicians"
+          }
+        ]
+      }
+    },
+    {
+      "Name": "Sleeping Bag Factory",
+      "Icon": "Sleeping Bag Factory.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Production",
+      "BuildingSize": "4, 4",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Sleeping_Bag_Factory",
+      "RevisionId": 12580,
+      "RevisionDate": "2020-01-28T11:32:03.0000000+01:00",
+      "ConstructionInfos": [
+        {
+          "Value": 1500.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 15.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -120.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -50.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Explorers"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 1.0,
+          "AmountElectricity": 0.0,
+          "Icon": "Sleeping_Bags.png"
+        },
+        "InputProducts": [
+          {
+            "Amount": 1.0,
+            "AmountElectricity": 0.0,
+            "Icon": "Seal_Skin.png"
+          },
+          {
+            "Amount": 1.0,
+            "AmountElectricity": 0.0,
+            "Icon": "Goose_Feathers.png"
+          }
+        ]
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 250.0,
+            "Type": "Explorers"
+          }
+        ]
+      }
+    },
+    {
       "Name": "Small Oil Harbour",
       "Icon": "Oil_Harbour.png",
       "Region": "OldWorld",
@@ -11488,8 +13395,8 @@
       "BuildingSize": "7, 8",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Small_Oil_Harbour",
-      "RevisionId": 8619,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11182,
+      "RevisionDate": "2020-03-28T14:11:52.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 10000.0,
@@ -11563,8 +13470,8 @@
       "BuildingSize": "7, 8",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Small_Oil_Harbour",
-      "RevisionId": 8619,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11182,
+      "RevisionDate": "2020-03-28T14:11:52.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 10000.0,
@@ -11604,6 +13511,10 @@
           {
             "Amount": 600.0,
             "Type": "Obreros"
+          },
+          {
+            "Amount": 1.0,
+            "Type": "Engineers"
           }
         ]
       }
@@ -11692,8 +13603,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Small_Warehouse",
-      "RevisionId": 8381,
-      "RevisionDate": "2019-05-18T21:53:36.0000000Z",
+      "RevisionId": 12482,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -11732,8 +13643,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Small_Warehouse",
-      "RevisionId": 8381,
-      "RevisionDate": "2019-05-18T21:53:36.0000000Z",
+      "RevisionId": 12482,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -11764,6 +13675,46 @@
       "UnlockInfos": null
     },
     {
+      "Name": "Small Warehouse",
+      "Icon": "Warehouse.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Unknown",
+      "BuildingSize": "5, 5",
+      "Radius": null,
+      "Url": null,
+      "RevisionId": -1,
+      "RevisionDate": "0001-01-01T00:00:00.0000000",
+      "ConstructionInfos": [
+        {
+          "Value": 500.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -20.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        }
+      ],
+      "ProductionInfos": null,
+      "SupplyInfos": null,
+      "UnlockInfos": null
+    },
+    {
       "Name": "Soap Factory",
       "Icon": "Soap.png",
       "Region": "OldWorld",
@@ -11772,8 +13723,8 @@
       "BuildingSize": "4, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Soap_Factory",
-      "RevisionId": 8532,
-      "RevisionDate": "2019-05-19T13:02:03.0000000Z",
+      "RevisionId": 13881,
+      "RevisionDate": "2020-04-24T15:30:26.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -11873,8 +13824,8 @@
       "BuildingSize": "4, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Spectacle_Factory",
-      "RevisionId": 8565,
-      "RevisionDate": "2019-05-19T18:46:25.0000000Z",
+      "RevisionId": 13886,
+      "RevisionDate": "2020-04-24T15:32:24.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 17000.0,
@@ -11986,8 +13937,8 @@
       "BuildingSize": "7, 17",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Steam_Shipyard",
-      "RevisionId": 8566,
-      "RevisionDate": "2019-05-19T18:51:21.0000000Z",
+      "RevisionId": 9875,
+      "RevisionDate": "2020-03-28T14:11:52.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 90000.0,
@@ -12068,8 +14019,8 @@
       "BuildingSize": "5, 10",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Steelworks",
-      "RevisionId": 8530,
-      "RevisionDate": "2019-05-19T12:57:35.0000000Z",
+      "RevisionId": 10928,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 1000.0,
@@ -12299,8 +14250,8 @@
       "BuildingSize": "3, 4",
       "Radius": "f:128",
       "Url": "https://anno1800.fandom.com/wiki/Sugar_Cane_Plantation",
-      "RevisionId": 8553,
-      "RevisionDate": "2019-06-05T17:47:53.0000000Z",
+      "RevisionId": 11059,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -12407,8 +14358,8 @@
       "BuildingSize": "4, 6",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Sugar_Refinery",
-      "RevisionId": 8454,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11077,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 500.0,
@@ -12528,8 +14479,8 @@
       "BuildingSize": "3, 4",
       "Radius": "f:192",
       "Url": "https://anno1800.fandom.com/wiki/Tobacco_Plantation",
-      "RevisionId": 8583,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 11074,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -12636,8 +14587,8 @@
       "BuildingSize": "3, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Tortilla_Maker",
-      "RevisionId": 8437,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 13898,
+      "RevisionDate": "2020-04-24T15:36:48.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 4500.0,
@@ -12687,19 +14638,19 @@
           {
             "Amount": 2.0,
             "AmountElectricity": 0.0,
-            "Icon": "Beef.png"
+            "Icon": "Corn.png"
           },
           {
             "Amount": 2.0,
             "AmountElectricity": 0.0,
-            "Icon": "Corn.png"
+            "Icon": "Beef.png"
           }
         ]
       },
       "SupplyInfos": {
         "SupplyEntries": [
           {
-            "Amount": 1400.0,
+            "Amount": 70.0,
             "AmountElectricity": 0.0,
             "Type": "Obreros"
           }
@@ -12723,8 +14674,8 @@
       "BuildingSize": "4, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Town_Hall",
-      "RevisionId": 8438,
-      "RevisionDate": "2019-06-05T21:55:06.0000000Z",
+      "RevisionId": 11165,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -12798,8 +14749,8 @@
       "BuildingSize": "4, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Town_Hall",
-      "RevisionId": 8438,
-      "RevisionDate": "2019-06-05T21:55:06.0000000Z",
+      "RevisionId": 11165,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -12857,10 +14808,10 @@
       "Tier": "Workers",
       "Type": "Administration",
       "BuildingSize": "4, 4",
-      "Radius": null,
+      "Radius": "r: 13",
       "Url": "https://anno1800.fandom.com/wiki/Trade_Union",
-      "RevisionId": 8616,
-      "RevisionDate": "2019-06-05T21:55:30.0000000Z",
+      "RevisionId": 11418,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -12920,8 +14871,8 @@
       "BuildingSize": "4, 4",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Trade_Union",
-      "RevisionId": 8616,
-      "RevisionDate": "2019-06-05T21:55:30.0000000Z",
+      "RevisionId": 11418,
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 2500.0,
@@ -12966,7 +14917,7 @@
       "UnlockInfos": {
         "UnlockConditions": [
           {
-            "Amount": 0.0,
+            "Amount": 50.0,
             "Type": "Jornaleros"
           }
         ]
@@ -13031,8 +14982,8 @@
       "BuildingSize": "6, 9",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/University",
-      "RevisionId": 8559,
-      "RevisionDate": "2019-05-19T17:52:05.0000000Z",
+      "RevisionId": 12813,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 15000.0,
@@ -13099,8 +15050,8 @@
       "BuildingSize": "4, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Variety_Theatre",
-      "RevisionId": 8547,
-      "RevisionDate": "2019-05-19T13:44:08.0000000Z",
+      "RevisionId": 12812,
+      "RevisionDate": "2020-04-24T22:53:37.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 10000.0,
@@ -13167,8 +15118,8 @@
       "BuildingSize": "3, 4",
       "Radius": "f:128",
       "Url": "https://anno1800.fandom.com/wiki/Vineyard",
-      "RevisionId": 8678,
-      "RevisionDate": "2019-05-20T19:54:42.0000000Z",
+      "RevisionId": 11050,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 8000.0,
@@ -13278,8 +15229,8 @@
       "BuildingSize": "5, 7",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Weapon_Factory",
-      "RevisionId": 8533,
-      "RevisionDate": "2019-05-19T13:04:07.0000000Z",
+      "RevisionId": 10931,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 700.0,
@@ -13367,7 +15318,7 @@
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Well",
       "RevisionId": 3909,
-      "RevisionDate": "2019-05-18T21:53:36.0000000Z",
+      "RevisionDate": "2020-03-27T22:24:15.0000000+01:00",
       "ConstructionInfos": [
         {
           "Value": 50.0,
@@ -13413,6 +15364,67 @@
       "ProductionInfos": null,
       "SupplyInfos": null,
       "UnlockInfos": null
+    },
+    {
+      "Name": "Whaling Station",
+      "Icon": "Whaling_Station.png",
+      "Region": "Arctic",
+      "Tier": "Explorers",
+      "Type": "Production",
+      "BuildingSize": "6, 17",
+      "Radius": null,
+      "Url": "https://anno1800.fandom.com/wiki/Whaling_Station",
+      "RevisionId": 13855,
+      "RevisionDate": "2020-04-19T09:22:29.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 200.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 5.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        }
+      ],
+      "MaintenanceInfos": [
+        {
+          "Value": -40.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Balance"
+          }
+        },
+        {
+          "Value": -30.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Workforce Explorers"
+          }
+        }
+      ],
+      "ProductionInfos": {
+        "EndProduct": {
+          "Amount": 1.0,
+          "AmountElectricity": 0.0,
+          "Icon": "Whale Oil.png"
+        },
+        "InputProducts": []
+      },
+      "SupplyInfos": null,
+      "UnlockInfos": {
+        "UnlockConditions": [
+          {
+            "Amount": 100.0,
+            "Type": "Explorers"
+          }
+        ]
+      }
     },
     {
       "Name": "Wide Entrance",
@@ -13473,8 +15485,8 @@
       "BuildingSize": "5, 5",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Window_Makers",
-      "RevisionId": 8540,
-      "RevisionDate": "2019-05-19T13:32:35.0000000Z",
+      "RevisionId": 10950,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 6500.0,
@@ -13559,9 +15571,52 @@
       "BuildingSize": "18, 22",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/World%27s_Fair",
-      "RevisionId": 9133,
-      "RevisionDate": "2019-06-08T10:20:22.0000000Z",
-      "ConstructionInfos": [],
+      "RevisionId": 13908,
+      "RevisionDate": "2020-04-26T13:45:39.0000000+02:00",
+      "ConstructionInfos": [
+        {
+          "Value": 300000.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Credits"
+          }
+        },
+        {
+          "Value": 100.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Timber"
+          }
+        },
+        {
+          "Value": 200.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Bricks"
+          }
+        },
+        {
+          "Value": 160.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Steel Beams"
+          }
+        },
+        {
+          "Value": 150.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Windows"
+          }
+        },
+        {
+          "Value": 150.0,
+          "Unit": {
+            "Type": "InfoIcon",
+            "Name": "Reinforced Concrete"
+          }
+        }
+      ],
       "MaintenanceInfos": [
         {
           "Value": -500.0,
@@ -13591,8 +15646,8 @@
       "BuildingSize": "3, 3",
       "Radius": null,
       "Url": "https://anno1800.fandom.com/wiki/Zinc_Mine",
-      "RevisionId": 8562,
-      "RevisionDate": "2019-05-19T18:38:41.0000000Z",
+      "RevisionId": 11006,
+      "RevisionDate": "2020-04-10T13:47:31.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 5000.0,
@@ -13680,8 +15735,8 @@
       "BuildingSize": "4, 7",
       "Radius": "c:4x6",
       "Url": "https://anno1800.fandom.com/wiki/Zoo",
-      "RevisionId": 8712,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 13864,
+      "RevisionDate": "2020-04-22T14:46:20.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 10000.0,
@@ -13748,8 +15803,8 @@
       "BuildingSize": "4, 7",
       "Radius": "c:4x6",
       "Url": "https://anno1800.fandom.com/wiki/Zoo",
-      "RevisionId": 8712,
-      "RevisionDate": "2019-06-05T17:48:16.0000000Z",
+      "RevisionId": 13864,
+      "RevisionDate": "2020-04-22T14:46:20.0000000+02:00",
       "ConstructionInfos": [
         {
           "Value": 10000.0,
