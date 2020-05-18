@@ -17,7 +17,6 @@ namespace AnnoDesigner.ViewModels
         public AboutViewModel(ICommons commonsToUse)
         {
             _commons = commonsToUse;
-
             OpenOriginalHomepageCommand = new RelayCommand(OpenOriginalHomepage);
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             OpenWikiHomepageCommand = new RelayCommand(OpenWikiHomepage);

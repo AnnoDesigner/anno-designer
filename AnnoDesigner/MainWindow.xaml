@@ -206,6 +206,10 @@
                     <MenuItem Header="{Binding AboutAnnoDesigner}"
                               Command="{Binding ShowAboutWindowCommand}" />
                 </MenuItem>
+                <MenuItem Header="Tools">
+                    <MenuItem Header="Preferences..."
+                              Command="{Binding ShowPreferencesWindowCommand}"/>
+                </MenuItem>
                 <Separator />
                 <MenuItem Header="{Binding ShowGrid}"
                           IsCheckable="True"

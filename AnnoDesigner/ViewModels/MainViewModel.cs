@@ -108,6 +108,7 @@ namespace AnnoDesigner.ViewModels
             _welcomeViewModel = new WelcomeViewModel(_commons, _appSettings);
 
             _aboutViewModel = new AboutViewModel(_commons);
+            PreferencesViewModel = new PreferencesViewModel(_commons, _appSettings);
 
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
@@ -125,6 +126,7 @@ namespace AnnoDesigner.ViewModels
             ShowStatisticsCommand = new RelayCommand(ExecuteShowStatistics);
             ShowStatisticsBuildingCountCommand = new RelayCommand(ExecuteShowStatisticsBuildingCount);
             PlaceBuildingCommand = new RelayCommand(ExecutePlaceBuilding);
+            ShowPreferencesWindowCommand = new RelayCommand(ExecuteShowPreferencesWindow);
 
             AvailableIcons = new ObservableCollection<IconImage>();
             _noIconItem = new IconImage("None");
@@ -1408,6 +1410,17 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
+        public ICommand ShowPreferencesWindowCommand { get; private set; }
+        private void ExecuteShowPreferencesWindow(object param)
+        {
+            var preferencesWindow = new Preferences()
+            {
+               // Owner = Application.Current.MainWindow
+            };
+            preferencesWindow.DataContext = PreferencesViewModel;
+            preferencesWindow.Show();
+        }
+
         #endregion
 
         #region view models
@@ -1454,7 +1467,9 @@ namespace AnnoDesigner.ViewModels
             set { _aboutViewModel = value; }
         }
 
-        #endregion
+        public PreferencesViewModel PreferencesViewModel { get; set; }
+
+       #endregion
 
         #region localization
 

@@ -1,0 +1,108 @@
+﻿<Window x:Class="AnnoDesigner.Preferences"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AnnoDesigner"
+        xmlns:models="clr-namespace:AnnoDesigner.Models"
+        xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        Title="Preferences" Height="450" Width="800"
+        d:DataContext="{d:DesignInstance Type=viewModel:PreferencesViewModel, IsDesignTimeCreatable=False}">
+    <Window.Resources>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#111"/>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="#CCC"/>
+        <Style TargetType="{x:Type ToggleButton}">
+
+            <Setter Property="Padding" Value="5,5,5,5" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Height" Value="45" />
+            <!--<Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Grid x:Name="toggleButtonGrid">
+                            <Grid.Background>
+                                <SolidColorBrush x:Name="ButtonBrush" Color="#CCC" />
+                            </Grid.Background>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="VisualStateGroup">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition To="MouseOver" />
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="Color" Storyboard.TargetName="ButtonBrush" Duration="0:0:0.1">
+                                                <EasingColorKeyFrame KeyTime="0:0:0.1" Value="#AAA"/>
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter x:Name="contentPresenter" 
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                          Content="{TemplateBinding Content}" 
+                                          ContentStringFormat="{TemplateBinding ContentStringFormat}" 
+                                          Focusable="False" 
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                          Margin="{TemplateBinding Padding}" 
+                                          RecognizesAccessKey="True" 
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          >
+                            </ContentPresenter>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>-->
+        </Style>
+        
+    </Window.Resources>
+
+    <Grid>
+        <Grid.InputBindings>
+            <models:PolyBinding Command="{Binding ChangeBindingCommand}">
+                <models:PolyBinding.Gesture>
+                    <models:PolyGesture Key="A" ModifierKeys="Ctrl" />
+                </models:PolyBinding.Gesture>
+            </models:PolyBinding>
+        </Grid.InputBindings>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1" MinWidth="200"/>
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <StackPanel>
+                <StackPanel.Resources>
+                    <Style TargetType="RadioButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                        <Setter Property="Padding" Value="5,5,5,5" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="Height" Value="45" />
+                    </Style>
+                </StackPanel.Resources>
+                <RadioButton Content="Update Settings" />
+                <RadioButton Content="Manage Keybindings" Command="{Binding ShowKeybindingView}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"/>
+            </StackPanel>
+        </ScrollViewer>
+        <GridSplitter Grid.Column="1" 
+                      Grid.Row="1" 
+                      Width="5"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Stretch"/>
+
+        <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <Frame Name="CurrentPage">
+            </Frame>
+        </ScrollViewer>
+    </Grid>
+</Window>
