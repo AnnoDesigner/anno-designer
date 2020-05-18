@@ -25,18 +25,20 @@ namespace PresetParser
         private static string BASE_PATH_1800 { get; set; }
 
         public static bool isExcludedName = false;
+        public static bool isExcludeIconName = false; /*Only for Anno 1800*/
         public static bool isExcludedTemplate = false;
-        public static bool isExcludedGUID = false; /*only for anno 1800 */
+        public static bool isExcludedGUID = false; /*only for Anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-
-        private const string BUILDING_PRESETS_VERSION = "3.2.10";
+        private const string BUILDING_PRESETS_VERSION = "3.3";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
         private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "french", "polish", "russian" };
-        // Internal Program Buildings List to skipp double buildings
+        // Internal Program Buildings Lists to skipp double buildings
         public static List<string> annoBuildingLists = new List<string>();
+        public static List<string> anno1800IconNameLists = new List<string>();
+        public static List<string> TempExcludeOrnamentsFromPreset_1800 = new List<string>();
         public static int annoBuildingsListCount = 0, printTestText = 0;
         public static bool testVersion = false;
         // The internal Building list for the Preset writing 
@@ -97,7 +99,13 @@ namespace PresetParser
             "Harbor_colony01_09 (tourism_pier_01)", "Ai_", "AarhantLighthouseFake", "CO_Tunnel_Entrance01_Fake","Park_1x1_fence", "Electricity_01", "AI Version No Unlock",
             "Entertainment_musicpavillion_1701", "Entertainment_musicpavillion_1404", "Entertainment_musicpavillion_2070", "Entertainment_musicpavillion_2205", "Entertainment_musicpavillion_1800",
             "Culture_01_module_06_empty","Culture_02_module_06_empty", "AnarchyBanner", "Culture_props_system_all_nohedge", "Monument_arctic_01_01", "Monument_arctic_01_02", "Monument_arctic_01_03",
-            "Active fertility","- Decree","Ministry of Public Services","Ministry of Productivity","Arctic Shepherd","fertility","Arctic Cook","Arctic Builder","Arctic Hunter","Arctic Sewer"," Buff"," Seeds"};
+            "Active fertility","- Decree","Ministry of Public Services","Ministry of Productivity","Arctic Shepherd","fertility","Arctic Cook","Arctic Builder","Arctic Hunter","Arctic Sewer"," Buff"," Seeds",
+            "PropagandaTower Merciers Version"};
+        //Skip the following icons to put in the presets for anno 1800, to avoid double Ornamentalbuildings
+        public static List<string> ExcludeOrnamentsIcons_1800 = new List<string> { "A7_bush03.png", "A7_park_props_1x1_07.png", "A7_bush01.png", "A7_col_props_1x1_13_back.png", "A7_bush05.png", "A7_park_props_1x1_08.png",
+            "A7_bush02.png", "A7_bush04.png", "A7_col_props_1x1_11_bac.pngk", "A7_col_props_1x1_07_back.png","A7_park_1x1_06.png","A7_park_1x1_02.png","A7_park_1x1_03.png","A7_col_park_props_system_1x1_21_back.png",
+            "A7_park_3x3_02.png", "A7_park_2x2_05.png","A7_park_2x2_02.png"};
+
         /// <summary>
         /// in NewFactionAndGroup1800.cs are made the following lists
         /// ChangeBuildingTo<1>_<2>_1800 
@@ -1218,9 +1226,32 @@ namespace PresetParser
             {
                 factionName = "Not Placed Yet -" + factionName;
                 // Because the Culture_03 (BotanicalGarden) is in the xPath that i normaly skipp, i must skipp this group here now.
-                if (groupName == "OrnamentalBuilding") { return; }
                 if (groupName == "CultureModule") { return; }
             }
+
+            #region Sorting the Ornaments for the new Ornaments Menu (11/05/2020)
+
+            //Sorting to the new menu
+            var newOrnamentsGroupName = NewOrnamentsGroup1800.GetNewOrnamentsGroup1800(identifierName, factionName, groupName);
+            factionName = newOrnamentsGroupName[0];
+            groupName = newOrnamentsGroupName[1];
+
+            #endregion
+
+            #region Temperary exclude the following OrnamentalBuildings from Presets.json
+            /// The following process is to eliminate ornaments that not belong in he preset, till it is made into the game
+            /// i do it here, so, when it is in game, i can remove it here, so it will appear in the preset
+            /// Behind the add line, i comment the English name, what it should have in game.
+            TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_all"); // Cityscape 
+            TempExcludeOrnamentsFromPreset_1800.Add("City_prop_system_1x1_01"); // Small Square
+            TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_1x1_global"); // Small City Ornaments
+            TempExcludeOrnamentsFromPreset_1800.Add("City_prop_system_2x2_01"); // Piazza
+            TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_2x2_global"); // Medium City Ornaments
+            TempExcludeOrnamentsFromPreset_1800.Add("City_prop_system_3x3_01"); // Large Square
+            TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_3x3_global"); //Large City Ornaments
+
+            if (identifierName.IsPartOf(TempExcludeOrnamentsFromPreset_1800)) { return; };
+            #endregion
 
             #endregion
 
@@ -1325,6 +1356,43 @@ namespace PresetParser
                     case "Agriculture_colony01_09_field (Cattle Pasture)": { b.IconFileName = replaceName + "general_module_01.png"; break; }
                 }
             }
+
+            /// New process for OrnamentalBuildings only.
+            /// Step 1 : Check if Ornament Name and IconFileName are both used, then skipp 
+            ///          double Ornaments.
+            /// Step 2 : if iconfilename is not used, and name is, rename the Identifier of the 
+            ///          double Ornament, remane the identifier and place it to the right preset
+            ///          menu (Faction & Group) or switch the icons if need.
+            /// Setp 3 : Exclude the OrnamentalBuildings with the iconfilenames that are in the
+            ///          list ExcludeOrnamentsIcons_1800
+            #region See comment above
+            if (b.Template == "OrnamentalBuilding")
+            {
+                isExcludedName = identifierName.IsPartOf(annoBuildingLists);
+                isExcludeIconName = b.IconFileName.IsPartOf(anno1800IconNameLists);
+                if (isExcludedName && isExcludeIconName)
+                {
+                    Console.WriteLine("-----> Ornament Skipped, Already in preset (A)");
+                    return;
+                }
+                //Those Identifier changes will not harm any users, as they where never in the presets before....
+                //This will be done irectly to the building info structure (b)
+                //Also switch wrong icons beween two objects (see issue #178)
+                switch (b.IconFileName)
+                {
+                    case "A7_park_props_1x1_14.png": b.Identifier = "Park_1x1_statue_grass"; b.Faction = "Ornaments"; b.Group = "05 Park Statues"; break;
+                    case "A7_city_2x2_03.png": b.IconFileName = "A7_city_2x2_02.png"; break; // Switch to right icon
+                    case "A7_city_2x2_02.png": b.IconFileName = "A7_city_2x2_03.png"; break; // Switch to right icon
+                }
+                //Skip the following icons into the presett
+                if (b.IconFileName.IsPartOf(ExcludeOrnamentsIcons_1800))
+                {
+                    Console.WriteLine("-----> Ornament Skipped, Already in preset (B)");
+                    return;
+                }
+            }
+
+            #endregion
 
             #endregion
 
@@ -1589,6 +1657,7 @@ namespace PresetParser
             // add building to the list
             annoBuildingsListCount++;
             annoBuildingLists.Add(values["Standard"]["Name"].InnerText);
+            anno1800IconNameLists.Add(b.IconFileName);
             buildings.Add(b);
         }
 
