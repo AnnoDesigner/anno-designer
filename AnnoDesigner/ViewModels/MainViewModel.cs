@@ -71,6 +71,7 @@ namespace AnnoDesigner.ViewModels
         private double _mainWindowLeft;
         private double _mainWindowTop;
         private WindowState _minWindowWindowState;
+        private ManageKeybindingsViewModel _keybindingsViewModel;
 
         //for identifier checking process
         private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
@@ -127,6 +128,8 @@ namespace AnnoDesigner.ViewModels
             ShowStatisticsBuildingCountCommand = new RelayCommand(ExecuteShowStatisticsBuildingCount);
             PlaceBuildingCommand = new RelayCommand(ExecutePlaceBuilding);
             ShowPreferencesWindowCommand = new RelayCommand(ExecuteShowPreferencesWindow);
+            
+            
 
             AvailableIcons = new ObservableCollection<IconImage>();
             _noIconItem = new IconImage("None");
@@ -992,6 +995,14 @@ namespace AnnoDesigner.ViewModels
             get { return _minWindowWindowState; }
             set { UpdateProperty(ref _minWindowWindowState, value); }
         }
+
+        public ManageKeybindingsViewModel KeybindingsViewModel
+        {
+            get { return _keybindingsViewModel; } 
+            set { UpdateProperty(ref _keybindingsViewModel, value); }
+        }
+
+        public HotkeyCommandManager<PolyBinding<PolyGesture>> HotkeyCommandManager { get; set; }
 
         #endregion
 

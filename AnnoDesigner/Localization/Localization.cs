@@ -128,6 +128,7 @@ namespace AnnoDesigner.Localization
                         { "OK" , "OK" },
                         { "Cancel" , "Cancel" },
                         { "SelectAll" , "Select All" },
+                        { AnnoCanvas.ROTATE_COMMAND_KEY, "Rotate" }
                     }
                 },
                 {

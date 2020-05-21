@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using AnnoDesigner.Core.Models;
 using System.Collections.ObjectModel;
 using AnnoDesigner.ViewModels;
+using AnnoDesigner.PreferencesPages;
 
 namespace AnnoDesigner
 {
@@ -26,6 +27,13 @@ namespace AnnoDesigner
         public Preferences()
         {
             InitializeComponent();
+            preferencesViewModel = DataContext as PreferencesViewModel;
+
+            //For testing only
+            //TODO: Remove this before full PR
+            this.CurrentPage.Navigate(new ManageKeybindings());
         }
+
+        private PreferencesViewModel preferencesViewModel;
     }
 }

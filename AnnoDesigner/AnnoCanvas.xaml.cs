@@ -32,9 +32,16 @@ namespace AnnoDesigner
     /// <summary>
     /// Interaction logic for AnnoCanvas.xaml
     /// </summary>
-    public partial class AnnoCanvas : UserControl, IAnnoCanvas
+    public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource<PolyBinding<PolyGesture>>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        public const string ROTATE_COMMAND_KEY = "Rotate";
+        public const string COPY_COMMAND_KEY = "Copy";
+        public const string PASTE_COMMAND_KEY = "Paste";
+        //not implmented yet
+        public const string UNDO_COMMAND_KEY = "Undo";
+        public const string ROTATE_ALL_COMMAND_KEY = "RotateAll";
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
@@ -471,6 +478,12 @@ namespace AnnoDesigner
 
             PlacedObjects = new List<LayoutObject>();
             SelectedObjects = new List<LayoutObject>();
+
+            //Commands
+            RotateCommand = new RelayCommand(ExecuteRotate);
+            //Set up default keybindings
+            string language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
+            RotateBinding = new PolyBinding<PolyGesture>(RotateCommand, new PolyGesture(Key.R), Localization.Localization.Translations[language][ROTATE_COMMAND_KEY]);
 
             const int dpiFactor = 1;
             _linePen = _penCache.GetPen(Brushes.Black, dpiFactor * 1);
@@ -1465,6 +1478,12 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
+            HotkeyCommandManager.HandleCommand(e);
+            if (e.Handled)
+            {
+                InvalidateVisual();
+                return;
+            }
             switch (e.Key)
             {
                 case Key.Delete:
@@ -1829,6 +1848,36 @@ namespace AnnoDesigner
                 CommandExecuteMappings[e.Command].Invoke(canvas);
                 e.Handled = true;
             }
+        }
+
+        public IHotkeyCommandManager<PolyBinding<PolyGesture>>  HotkeyCommandManager { get; set; }
+
+
+        private PolyBinding<PolyGesture> RotateBinding { get; set; }
+        private ICommand RotateCommand;
+        private void ExecuteRotate(object param)
+        {
+            if (CurrentObjects.Count == 1)
+            {
+                CurrentObjects[0].Size = _coordinateHelper.Rotate(CurrentObjects[0].Size);
+            }
+            else if (CurrentObjects.Count > 1)
+            {
+                Rotate(CurrentObjects);
+            }
+            else
+            {
+                //Count == 0;
+                //Rotate from selected objects
+                CurrentObjects = CloneList(SelectedObjects);
+                Rotate(CurrentObjects);
+            }
+        }
+
+        public void RegisterBindings(IHotkeyCommandManager<PolyBinding<PolyGesture>> manager)
+        {
+            HotkeyCommandManager = manager;
+            manager.AddBinding(ROTATE_COMMAND_KEY, RotateBinding);
         }
 
         #endregion

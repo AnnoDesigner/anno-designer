@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
@@ -41,7 +42,8 @@ namespace AnnoDesigner.ViewModels
         public ICommand ShowKeybindingView { get; set; }
         private void ExecuteShowKeybindingView (bool IsSelected)
         {
-            Debug.WriteLine($"Is Selected: {IsSelected}");
+            //For testing
+            Debug.WriteLine($"Is Selected: {IsSelected}");            
         }
     }
 

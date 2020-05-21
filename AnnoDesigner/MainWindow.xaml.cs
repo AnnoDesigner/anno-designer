@@ -18,6 +18,8 @@ using AnnoDesigner.Core.Helper;
 using AnnoDesigner.ViewModels;
 using System.Windows.Threading;
 using NLog;
+using AnnoDesigner.Models;
+using System.Diagnostics;
 
 namespace AnnoDesigner
 {
@@ -41,6 +43,9 @@ namespace AnnoDesigner
         {
             _mainViewModel = DataContext as MainViewModel;
             _mainViewModel.AnnoCanvas = annoCanvas;
+            _mainViewModel.HotkeyCommandManager = new HotkeyCommandManager<PolyBinding<PolyGesture>>();
+            _mainViewModel.AnnoCanvas.RegisterBindings(_mainViewModel.HotkeyCommandManager);
+
             _mainViewModel.ShowStatisticsChanged += MainViewModel_ShowStatisticsChanged;
 
             App.DpiScale = VisualTreeHelper.GetDpi(this);
@@ -82,6 +87,8 @@ namespace AnnoDesigner
             {
                 annoCanvas.OpenFile(App.FilenameArgument);
             }
+            
+            //For testing only
             //TODO: remove this before PR
             _mainViewModel.ShowPreferencesWindowCommand.Execute(null);
         }
