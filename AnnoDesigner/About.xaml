@@ -29,7 +29,7 @@
             <RowDefinition Height="240*" />
             <RowDefinition Height="110*" />
         </Grid.RowDefinitions>
-        <Image Source="Images/Icons/icon64.png"
+        <Image Source="pack://application:,,,/Images/Icons/icon64.png"
                Stretch="Uniform"
                HorizontalAlignment="Left"
                VerticalAlignment="Top"
