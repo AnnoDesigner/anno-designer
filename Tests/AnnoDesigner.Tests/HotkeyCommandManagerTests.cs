@@ -93,18 +93,6 @@ namespace AnnoDesigner.Tests
             };
         }
 
-        /// <summary>
-        /// This has to be done via reflection, as we can't access the Modifier property any other way.
-        /// We don't need to do this in the main application, as we can just create a new Gesture and pass in the value via the ctor.
-        /// </summary>
-        /// <param name="mouseBinding"></param>
-        /// <returns></returns>
-        private static ModifierKeys GetMouseBindingModifiers(MouseBinding mouseBinding)
-        {
-            var modifiers =  (ModifierKeys)mouseBinding.GetType().GetProperty("Modifiers", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(mouseBinding);
-            return modifiers;
-        }
-        
         [Fact]
         public void Ctor_ShouldSetDefaultValues()
         {
@@ -147,12 +135,12 @@ namespace AnnoDesigner.Tests
             hotkeyCommandManager.AddBinding(id + "a", expectedBinding);
             hotkeyCommandManager.AddBinding(id + "b", expectedBinding);
 
-            var actualBinding = hotkeyCommandManager.ObservableCollection.First();
+            var hotkey = hotkeyCommandManager.ObservableCollection.First();
 
             //Assert
             Assert.Equal(3, hotkeyCommandManager.ObservableCollection.Count);
-            Assert.Same(expectedBinding, actualBinding);
-            if (actualBinding is KeyBinding actualKeyBinding)
+            Assert.Same(expectedBinding, hotkey.Binding);
+            if (hotkey.Binding is KeyBinding actualKeyBinding)
             {
                 var expectedKeyBinding = expectedBinding as KeyBinding;
                 Assert.Equal(expectedKeyBinding.Key , actualKeyBinding.Key);
@@ -161,10 +149,10 @@ namespace AnnoDesigner.Tests
             }
             else
             {
-                var actualMouseBinding = actualBinding as MouseBinding;
+                var actualMouseBinding = hotkey.Binding as MouseBinding;
                 var expectedMouseBinding = expectedBinding as MouseBinding;
                 Assert.Equal(expectedMouseBinding.MouseAction, actualMouseBinding.MouseAction);
-                Assert.Equal(GetMouseBindingModifiers(expectedMouseBinding), GetMouseBindingModifiers(actualMouseBinding));
+                Assert.Equal((expectedMouseBinding.Gesture as MouseGesture).Modifiers, (actualMouseBinding.Gesture as MouseGesture).Modifiers);
             }
 
         }
@@ -181,7 +169,7 @@ namespace AnnoDesigner.Tests
                         GetInputBinding(Key.A), 
                         Key.B,
                         ModifierKeys.None, 
-                        default(MouseButton) 
+                        default(MouseAction) 
                     },
                     new object[] 
                     { 
@@ -189,7 +177,7 @@ namespace AnnoDesigner.Tests
                         GetInputBinding(Key.C, ModifierKeys.Control | ModifierKeys.Alt), 
                         Key.D, 
                         ModifierKeys.Control, 
-                        default(MouseButton)
+                        default(MouseAction)
                     },
                     new object[] 
                     { 
@@ -197,8 +185,7 @@ namespace AnnoDesigner.Tests
                         GetInputBinding(MouseAction.LeftDoubleClick), 
                         default(Key), 
                         ModifierKeys.Alt, 
-                        MouseButton.XButton2,
-                        "Updated Description"
+                        MouseAction.MiddleDoubleClick
                     },
                     new object[]
                     {
@@ -206,7 +193,7 @@ namespace AnnoDesigner.Tests
                         GetInputBinding(MouseAction.RightClick, ModifierKeys.Shift),
                         Key.F,
                         ModifierKeys.Control | ModifierKeys.Alt,
-                        default(MouseButton)
+                        default(MouseAction)
                     },
                 };
             }
@@ -224,9 +211,12 @@ namespace AnnoDesigner.Tests
 
             if (expectedBinding is KeyBinding keyBinding)
             {
+                //change binding from a KeyBinding to a MouseBinding
                 if (expectedMouseAction != default)
                 {
-                    expectedBinding = new MouseBinding(emptyCommand,   new MouseGesture(expectedMouseAction, expectedModifierKeys));
+                    var hotkey = hotkeyCommandManager.GetBinding(id);
+                    hotkey.Binding = new MouseBinding(emptyCommand, new MouseGesture(expectedMouseAction, expectedModifierKeys));
+                    expectedBinding = hotkey.Binding;
                 }
                 else
                 {
@@ -237,14 +227,18 @@ namespace AnnoDesigner.Tests
             else
             {
                 var mouseBinding = expectedBinding as MouseBinding;
+
+                //Change binding from a MouseBinding to a KeyBinding
                 if (expectedKey != default)
                 {
-                    expectedBinding = new KeyBinding
+                    var hotkey = hotkeyCommandManager.GetBinding(id);
+                    hotkey.Binding = new KeyBinding
                     {
                         Command = emptyCommand,
                         Key = expectedKey,
                         Modifiers = expectedModifierKeys
                     };
+                    expectedBinding = hotkey.Binding;
                 }
                 else
                 {
@@ -253,7 +247,7 @@ namespace AnnoDesigner.Tests
                 }
             }
 
-            var actualBinding = hotkeyCommandManager.ObservableCollection.First();
+            var actualBinding = hotkeyCommandManager.ObservableCollection.First().Binding;
 
             //Assert
 
@@ -269,7 +263,7 @@ namespace AnnoDesigner.Tests
                 var actualMouseBinding = actualBinding as MouseBinding;
                 var expectedMouseBinding = expectedBinding as MouseBinding;
                 Assert.Equal(expectedMouseBinding.MouseAction, actualMouseBinding.MouseAction);
-                Assert.Equal(GetMouseBindingModifiers(expectedMouseBinding), GetMouseBindingModifiers(actualMouseBinding));
+                Assert.Equal((expectedMouseBinding.Gesture as MouseGesture).Modifiers, (actualMouseBinding.Gesture as MouseGesture).Modifiers);
             }
         }
 
@@ -287,30 +281,30 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void AddBinding_Duplicate_ShouldThrowException()
+        public void AddBinding_Duplicate_ShouldThrowArgumentException()
         {
             //Arrange
             var (hotkeyCommandManager, id, binding) = GetDefaultSetup(true);
             //Act and assert
-            Assert.Throws<Exception>(() => hotkeyCommandManager.AddBinding(id, binding));
+            Assert.Throws<ArgumentException>(() => hotkeyCommandManager.AddBinding(id, binding));
         }
 
         [Fact]
-        public void RemoveBinding_AlreadyEmpty_ShouldThrowException()
-        {
-            //Arrange
-            var hotkeyCommandManager = new HotkeyCommandManager();
-            //Act and assert
-            Assert.Throws<Exception>(() => hotkeyCommandManager.RemoveBinding(""));
-        }
-
-        [Fact]
-        public void RemoveBinding_NonExistentBindingId_ShouldThrowException()
+        public void RemoveBinding_NonExistentBindingId_ShouldThrowKeyNotFoundException()
         {
             //Arrange
             var (hotkeyCommandManager, id, binding) = GetDefaultSetup(true);
             //Act and assert
-            Assert.Throws<Exception>(() => hotkeyCommandManager.RemoveBinding(""));
+            Assert.Throws<KeyNotFoundException>(() => hotkeyCommandManager.RemoveBinding(""));
+        }
+
+        [Fact]
+        public void GetBinding_NonExistentBindingId_ShouldThrowKeyNotFoundException()
+        {
+            //Arrange
+            var (hotkeyCommandManager, id, binding) = GetDefaultSetup(false);
+            //Act and assert
+            Assert.Throws<KeyNotFoundException>(() => hotkeyCommandManager.GetBinding(id));
         }
     }
 }

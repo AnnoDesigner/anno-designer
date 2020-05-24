@@ -1856,7 +1856,7 @@ namespace AnnoDesigner
             }
         }
 
-        public IHotkeyCommandManager HotkeyCommandManager { get; set; }
+        public HotkeyCommandManager HotkeyCommandManager { get; set; }
 
 
         private KeyBinding RotateBinding { get; set; }
@@ -1880,7 +1880,7 @@ namespace AnnoDesigner
             }
         }
 
-        public void RegisterBindings(IHotkeyCommandManager manager)
+        public void RegisterBindings(HotkeyCommandManager manager)
         {
             HotkeyCommandManager = manager;
             manager.AddBinding(ROTATE_COMMAND_KEY, RotateBinding);

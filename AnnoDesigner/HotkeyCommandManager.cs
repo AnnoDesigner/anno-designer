@@ -1,39 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AnnoDesigner.Models;
+using Octokit;
 
 namespace AnnoDesigner
 {
-    public class HotkeyCommandManager : IHotkeyCommandManager
+    public class HotkeyCommandManager
     {
-        private readonly Dictionary<string, InputBinding> hotkeyBindings;
+        private readonly Dictionary<string, Hotkey> bindings;
 
         /// <summary>
-        /// Represents a data-bindable collection of hotkey bindings.
+        /// Represents a read-only data-bindable collection of hotkeys.
         /// </summary>
-        public ObservableCollection<InputBinding> ObservableCollection { get; private set; }
+        public ReadOnlyObservableCollection<Hotkey> ObservableCollection { get; }
+        /// <summary>
+        /// Backing collection for the ObservableCollection property.
+        /// </summary>
+        private readonly ObservableCollection<Hotkey> _observableCollection;
 
         public HotkeyCommandManager()
         {
-            hotkeyBindings = new Dictionary<string, InputBinding>();
-            ObservableCollection = new ObservableCollection<InputBinding>();
+            bindings = new Dictionary<string, Hotkey>();
+            _observableCollection = new ObservableCollection<Hotkey>();
+            ObservableCollection = new ReadOnlyObservableCollection<Hotkey>(_observableCollection);
         }
 
         public void HandleCommand(InputEventArgs e)
         {
-            IEnumerable<InputBinding> hotkeys = hotkeyBindings.Values;
+            IEnumerable<Hotkey> hotkeys = bindings.Values;
             foreach (var item in hotkeys)
             {
-                if (item.Command.CanExecute(item.CommandParameter))
+                if (item.Binding.Command.CanExecute(item.Binding.CommandParameter))
                 {
-                    if (item.Gesture.Matches(e.Source, e))
+                    if (item.Binding.Gesture.Matches(e.Source, e))
                     {
-                        item.Command.Execute(item.CommandParameter);
+                        item.Binding.Command.Execute(item.Binding.CommandParameter);
                         e.Handled = true;
                     }
                 }
@@ -41,49 +48,68 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Registers a binding with the hotkey manager
+        /// Registers a binding with the hotkey manager. Creates a <see cref="Hotkey"/> and adds it to the <see cref="HotkeyCommandManager"/>.
         /// </summary>
         /// <param name="bindingId">A unique identifier for the hotkey. Also acts as the key for managing localization if adding an IDescriptiveHotkeyBinding</param>
         /// <param name="binding"></param>
         public void AddBinding(string bindingId, InputBinding binding)
         {
-            if (!hotkeyBindings.ContainsKey(bindingId))
+            AddBinding(new Hotkey(bindingId, binding));
+        }
+
+        /// <summary>
+        /// Registers a binding with the hotkey manager.
+        /// </summary>
+        /// <param name="bindingId">A unique identifier for the hotkey. Also acts as the key for managing localization if adding an IDescriptiveHotkeyBinding</param>
+        /// <param name="binding"></param>
+        public void AddBinding(Hotkey hotkey)
+        {
+            if (!bindings.ContainsKey(hotkey.Name))
             {
-                hotkeyBindings.Add(bindingId, binding);
+                bindings.Add(hotkey.Name, hotkey);
+                _observableCollection.Add(hotkey);
             }
             else
             {
-                hotkeyBindings[bindingId] = binding;
+                throw new ArgumentException($"Key {hotkey.Name} already exists in collection.", "bindingId");
             }
         }
 
-        public void RemoveBinding(string hotkeyId)
+        public void RemoveBinding(string bindingId)
         {
-            throw new NotImplementedException();
+            if (bindings.ContainsKey(bindingId))
+            {
+                _observableCollection.Remove(bindings[bindingId]);
+                bindings.Remove(bindingId);
+            }
+            else
+            {
+                throw new KeyNotFoundException($"Key {bindingId} does not exist");
+            }
         }
 
-        public IEnumerable<InputBinding> GetBindings()
+        public IEnumerable<Hotkey> GetBindings()
         {
-            return hotkeyBindings.Values;
+            return bindings.Values;
         }
 
         /// <summary>
         /// Returns true if the specified binding exists in this <see cref="HotkeyCommandManager{T}"/>
         /// </summary>
-        /// <param name="bindingId"></param>
+        /// <param name="bindingId">A unique identifier for the hotkey</param>
         /// <returns></returns>
         public bool ContainsBinding(string bindingId)
         {
-            return hotkeyBindings.ContainsKey(bindingId);
+            return bindings.ContainsKey(bindingId);
         }
 
-        public InputBinding GetBinding(string bindingId)
+        public Hotkey GetBinding(string bindingId)
         {
-            if (!hotkeyBindings.ContainsKey(bindingId))
+            if (!bindings.ContainsKey(bindingId))
             {
-                throw new ArgumentException($"Specified binding {bindingId} does not exist.", nameof(bindingId));
+                throw new KeyNotFoundException($"Key {bindingId} does not exist");
             }
-            return hotkeyBindings[bindingId];
+            return bindings[bindingId];
         }
     }
 }

@@ -14,7 +14,7 @@ namespace AnnoDesigner.ViewModels
     {
         public HotkeyCommandManager HotkeyCommandManager { get; set; }
 
-        public ManageKeybindingsViewModel(IHotkeyCommandManager hotkeyCommandManager)
+        public ManageKeybindingsViewModel(HotkeyCommandManager hotkeyCommandManager)
         {
 
         }
