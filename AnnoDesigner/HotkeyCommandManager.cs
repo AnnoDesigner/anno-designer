@@ -9,23 +9,24 @@ using AnnoDesigner.Models;
 
 namespace AnnoDesigner
 {
-    public class HotkeyCommandManager<T> : IHotkeyCommandManager<T> where T: InputBinding
+    public class HotkeyCommandManager : IHotkeyCommandManager
     {
-        private readonly Dictionary<string, T> hotkeyBindings;
+        private readonly Dictionary<string, InputBinding> hotkeyBindings;
 
         /// <summary>
         /// Represents a data-bindable collection of hotkey bindings.
         /// </summary>
-        public ObservableCollection<T> ObservableCollection { get; private set; }
+        public ObservableCollection<InputBinding> ObservableCollection { get; private set; }
 
         public HotkeyCommandManager()
         {
-            hotkeyBindings = new Dictionary<string, T>();
+            hotkeyBindings = new Dictionary<string, InputBinding>();
+            ObservableCollection = new ObservableCollection<InputBinding>();
         }
 
-        public void HandleCommand(KeyEventArgs e)
+        public void HandleCommand(InputEventArgs e)
         {
-            IEnumerable<T> hotkeys = hotkeyBindings.Values;
+            IEnumerable<InputBinding> hotkeys = hotkeyBindings.Values;
             foreach (var item in hotkeys)
             {
                 if (item.Command.CanExecute(item.CommandParameter))
@@ -39,18 +40,12 @@ namespace AnnoDesigner
             }
         }
 
-        public void HandleCommand(MouseButtonEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-
         /// <summary>
         /// Registers a binding with the hotkey manager
         /// </summary>
         /// <param name="bindingId">A unique identifier for the hotkey. Also acts as the key for managing localization if adding an IDescriptiveHotkeyBinding</param>
         /// <param name="binding"></param>
-        public void AddBinding(string bindingId, T binding)
+        public void AddBinding(string bindingId, InputBinding binding)
         {
             if (!hotkeyBindings.ContainsKey(bindingId))
             {
@@ -67,7 +62,7 @@ namespace AnnoDesigner
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> GetBindings()
+        public IEnumerable<InputBinding> GetBindings()
         {
             return hotkeyBindings.Values;
         }
@@ -82,7 +77,7 @@ namespace AnnoDesigner
             return hotkeyBindings.ContainsKey(bindingId);
         }
 
-        public T GetBinding(string bindingId)
+        public InputBinding GetBinding(string bindingId)
         {
             if (!hotkeyBindings.ContainsKey(bindingId))
             {
@@ -90,11 +85,5 @@ namespace AnnoDesigner
             }
             return hotkeyBindings[bindingId];
         }
-
-    }
-
-    public class HotkeyCommandManager : HotkeyCommandManager<InputBinding>, IHotkeyCommandManager<InputBinding>
-    {
-
     }
 }

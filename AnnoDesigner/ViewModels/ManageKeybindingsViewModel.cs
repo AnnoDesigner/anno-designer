@@ -12,9 +12,9 @@ namespace AnnoDesigner.ViewModels
 {
     public class ManageKeybindingsViewModel : Notify
     {
-        public HotkeyCommandManager<PolyBinding<PolyGesture>> HotkeyCommandManager { get; set; }
+        public HotkeyCommandManager HotkeyCommandManager { get; set; }
 
-        public ManageKeybindingsViewModel(IHotkeyCommandManager<PolyBinding<PolyGesture>> hotkeyCommandManager)
+        public ManageKeybindingsViewModel(IHotkeyCommandManager hotkeyCommandManager)
         {
 
         }
@@ -22,8 +22,8 @@ namespace AnnoDesigner.ViewModels
         /// <summary>
         /// This is here for testing only - hotkeys will be bound via an ItemsSource eventually
         /// </summary>
-        private PolyBinding<PolyGesture> _rotateKeybinding;
-        public PolyBinding<PolyGesture> RotateKeybinding
+        private KeyBinding _rotateKeybinding;
+        public KeyBinding RotateKeybinding
         {
             get { return _rotateKeybinding; }
             set { UpdateProperty(ref _rotateKeybinding, value);  }

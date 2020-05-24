@@ -9,7 +9,7 @@ using AnnoDesigner.CustomEventArgs;
 
 namespace AnnoDesigner.Models
 {
-    public interface IAnnoCanvas : IHotkeySource<PolyBinding<PolyGesture>>
+    public interface IAnnoCanvas : IHotkeySource
     {
         event EventHandler<EventArgs> ColorsInLayoutUpdated;
         event Action<List<LayoutObject>> OnClipboardChanged;

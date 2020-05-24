@@ -43,7 +43,7 @@ namespace AnnoDesigner
         {
             _mainViewModel = DataContext as MainViewModel;
             _mainViewModel.AnnoCanvas = annoCanvas;
-            _mainViewModel.HotkeyCommandManager = new HotkeyCommandManager<PolyBinding<PolyGesture>>();
+            _mainViewModel.HotkeyCommandManager = new HotkeyCommandManager();
             _mainViewModel.AnnoCanvas.RegisterBindings(_mainViewModel.HotkeyCommandManager);
 
             _mainViewModel.ShowStatisticsChanged += MainViewModel_ShowStatisticsChanged;

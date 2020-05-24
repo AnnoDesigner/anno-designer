@@ -17,8 +17,7 @@ namespace AnnoDesigner.ViewModels
         public PreferencesViewModel(ICommons commons, IAppSettings appSettings)
         {
             this.commons = commons;
-            KeyBindings = new ObservableCollection<PolyGesture>();
-            KeyBindings.Add(new PolyGesture(Key.A, ModifierKeys.Control));
+            KeyBindings = new ObservableCollection<KeyBinding>();
             ChangeBindingCommand = new RelayCommand(ExecuteChangeBinding);
             ShowKeybindingView = new RelayCommand<bool>(ExecuteShowKeybindingView);
 
@@ -26,8 +25,8 @@ namespace AnnoDesigner.ViewModels
 
         private ICommons commons;
 
-        private ObservableCollection<PolyGesture> _keyBindings;
-        public ObservableCollection<PolyGesture> KeyBindings
+        private ObservableCollection<KeyBinding> _keyBindings;
+        public ObservableCollection<KeyBinding> KeyBindings
         {
             get { return _keyBindings; }
             set { UpdateProperty(ref _keyBindings, value); }
@@ -36,7 +35,7 @@ namespace AnnoDesigner.ViewModels
         public ICommand ChangeBindingCommand { get; set; }
         private void ExecuteChangeBinding(object param)
         {
-            KeyBindings[0] = new PolyGesture(Key.V, ModifierKeys.Shift);
+            
         }
 
         public ICommand ShowKeybindingView { get; set; }

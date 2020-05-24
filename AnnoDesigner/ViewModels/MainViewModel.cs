@@ -128,8 +128,8 @@ namespace AnnoDesigner.ViewModels
             ShowStatisticsBuildingCountCommand = new RelayCommand(ExecuteShowStatisticsBuildingCount);
             PlaceBuildingCommand = new RelayCommand(ExecutePlaceBuilding);
             ShowPreferencesWindowCommand = new RelayCommand(ExecuteShowPreferencesWindow);
-            
-            
+
+
 
             AvailableIcons = new ObservableCollection<IconImage>();
             _noIconItem = new IconImage("None");
@@ -998,11 +998,11 @@ namespace AnnoDesigner.ViewModels
 
         public ManageKeybindingsViewModel KeybindingsViewModel
         {
-            get { return _keybindingsViewModel; } 
+            get { return _keybindingsViewModel; }
             set { UpdateProperty(ref _keybindingsViewModel, value); }
         }
 
-        public HotkeyCommandManager<PolyBinding<PolyGesture>> HotkeyCommandManager { get; set; }
+        public HotkeyCommandManager HotkeyCommandManager { get; set; }
 
         #endregion
 
@@ -1426,7 +1426,7 @@ namespace AnnoDesigner.ViewModels
         {
             var preferencesWindow = new Preferences()
             {
-               // Owner = Application.Current.MainWindow
+                // Owner = Application.Current.MainWindow
             };
             preferencesWindow.DataContext = PreferencesViewModel;
             preferencesWindow.Show();
@@ -1480,7 +1480,7 @@ namespace AnnoDesigner.ViewModels
 
         public PreferencesViewModel PreferencesViewModel { get; set; }
 
-       #endregion
+        #endregion
 
         #region localization
 
@@ -2038,6 +2038,8 @@ namespace AnnoDesigner.ViewModels
         #endregion
 
         #endregion      
+
+
     }
 }
 

@@ -32,7 +32,7 @@ namespace AnnoDesigner
     /// <summary>
     /// Interaction logic for AnnoCanvas.xaml
     /// </summary>
-    public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource<PolyBinding<PolyGesture>>
+    public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -464,6 +464,7 @@ namespace AnnoDesigner
         {
             InitializeComponent();
 
+
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
@@ -482,8 +483,13 @@ namespace AnnoDesigner
             //Commands
             RotateCommand = new RelayCommand(ExecuteRotate);
             //Set up default keybindings
-            string language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
-            RotateBinding = new PolyBinding<PolyGesture>(RotateCommand, new PolyGesture(Key.R), Localization.Localization.Translations[language][ROTATE_COMMAND_KEY]);
+            //We have tr
+            RotateBinding = new KeyBinding
+            {
+                Command = RotateCommand,
+                Key = Key.R,
+                Modifiers = ModifierKeys.None
+            };
 
             const int dpiFactor = 1;
             _linePen = _penCache.GetPen(Brushes.Black, dpiFactor * 1);
@@ -1850,10 +1856,10 @@ namespace AnnoDesigner
             }
         }
 
-        public IHotkeyCommandManager<PolyBinding<PolyGesture>>  HotkeyCommandManager { get; set; }
+        public IHotkeyCommandManager HotkeyCommandManager { get; set; }
 
 
-        private PolyBinding<PolyGesture> RotateBinding { get; set; }
+        private KeyBinding RotateBinding { get; set; }
         private ICommand RotateCommand;
         private void ExecuteRotate(object param)
         {
@@ -1874,7 +1880,7 @@ namespace AnnoDesigner
             }
         }
 
-        public void RegisterBindings(IHotkeyCommandManager<PolyBinding<PolyGesture>> manager)
+        public void RegisterBindings(IHotkeyCommandManager manager)
         {
             HotkeyCommandManager = manager;
             manager.AddBinding(ROTATE_COMMAND_KEY, RotateBinding);

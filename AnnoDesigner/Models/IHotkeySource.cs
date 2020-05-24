@@ -7,9 +7,9 @@ using System.Windows.Input;
 
 namespace AnnoDesigner.Models
 {
-    public interface IHotkeySource<T> where T : InputBinding
+    public interface IHotkeySource
     {
-        void RegisterBindings(IHotkeyCommandManager<T> manager);
-        IHotkeyCommandManager<T> HotkeyCommandManager { get; set; }
+        void RegisterBindings(IHotkeyCommandManager manager);
+        IHotkeyCommandManager HotkeyCommandManager { get; set; }
     }
 }
