@@ -71,7 +71,8 @@ namespace AnnoDesigner.ViewModels
         private double _mainWindowLeft;
         private double _mainWindowTop;
         private WindowState _minWindowWindowState;
-        private ManageKeybindingsViewModel _keybindingsViewModel;
+        private ManageKeybindingsViewModel _manageKeybindingsViewModel;
+        private HotkeyCommandManager _hotkeyCommandManager;
 
         //for identifier checking process
         private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
@@ -94,6 +95,8 @@ namespace AnnoDesigner.ViewModels
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
 
+            HotkeyCommandManager = new HotkeyCommandManager();
+
             _statisticsViewModel = new StatisticsViewModel(_commons);
             _statisticsViewModel.IsVisible = _appSettings.StatsShowStats;
             _statisticsViewModel.ShowStatisticsBuildingCount = _appSettings.StatsShowBuildingCount;
@@ -109,7 +112,8 @@ namespace AnnoDesigner.ViewModels
             _welcomeViewModel = new WelcomeViewModel(_commons, _appSettings);
 
             _aboutViewModel = new AboutViewModel(_commons);
-            PreferencesViewModel = new PreferencesViewModel(_commons, _appSettings);
+
+            //PreferencesViewModel = new PreferencesViewModel(_commons, _appSettings, HotkeyCommandManager);
 
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
@@ -998,11 +1002,15 @@ namespace AnnoDesigner.ViewModels
 
         public ManageKeybindingsViewModel KeybindingsViewModel
         {
-            get { return _keybindingsViewModel; }
-            set { UpdateProperty(ref _keybindingsViewModel, value); }
+            get { return _manageKeybindingsViewModel; }
+            set { UpdateProperty(ref _manageKeybindingsViewModel, value); }
         }
 
-        public HotkeyCommandManager HotkeyCommandManager { get; set; }
+        public HotkeyCommandManager HotkeyCommandManager
+        {
+            get { return _hotkeyCommandManager; }
+            set { UpdateProperty(ref _hotkeyCommandManager, value); }
+        }
 
         #endregion
 
@@ -1424,11 +1432,11 @@ namespace AnnoDesigner.ViewModels
         public ICommand ShowPreferencesWindowCommand { get; private set; }
         private void ExecuteShowPreferencesWindow(object param)
         {
-            var preferencesWindow = new Preferences()
+            var preferencesWindow = new Preferences(_commons, _appSettings, HotkeyCommandManager)
             {
-                // Owner = Application.Current.MainWindow
+                Owner = Application.Current.MainWindow
             };
-            preferencesWindow.DataContext = PreferencesViewModel;
+            //TODO: Resolve before PR is merged. Do we want this to be ShowDialog() or just Show()?
             preferencesWindow.Show();
         }
 

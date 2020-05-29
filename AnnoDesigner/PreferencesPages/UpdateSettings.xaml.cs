@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,20 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using AnnoDesigner.Models;
-using AnnoDesigner.ViewModels;
 
 namespace AnnoDesigner.PreferencesPages
 {
     /// <summary>
-    /// Interaction logic for ManageKeybindings.xaml
+    /// Interaction logic for UpdateSettings.xaml
     /// </summary>
-    public partial class ManageKeybindings : Page, INavigatedTo
+    public partial class UpdateSettings : Page
     {
-        public void NavigatedTo(object parameter)
+        public UpdateSettings()
         {
-            DataContext = new ManageKeybindingsViewModel((HotkeyCommandManager)parameter);
+            InitializeComponent();
         }
-        public ViewModels.ManageKeybindingsViewModel ViewModel;
     }
 }

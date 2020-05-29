@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reflection;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,36 +16,39 @@ namespace AnnoDesigner.ViewModels
 {
     public class PreferencesViewModel : Notify
     {
-        public PreferencesViewModel(ICommons commons, IAppSettings appSettings)
+        public PreferencesViewModel(ICommons commons, IAppSettings appSettings, HotkeyCommandManager manager, Frame navigator)
         {
             this.commons = commons;
-            KeyBindings = new ObservableCollection<KeyBinding>();
-            ChangeBindingCommand = new RelayCommand(ExecuteChangeBinding);
-            ShowKeybindingView = new RelayCommand<bool>(ExecuteShowKeybindingView);
-
+            this.appSettings = appSettings;
+            Manager = manager;
+            this.navigator = navigator;
         }
 
+        private HotkeyCommandManager _manager;
+        public HotkeyCommandManager Manager
+        {
+            get { return _manager; }
+            set { UpdateProperty(ref _manager, value); }
+        }
+        private Frame navigator;
         private ICommons commons;
+        private IAppSettings appSettings;
 
-        private ObservableCollection<KeyBinding> _keyBindings;
-        public ObservableCollection<KeyBinding> KeyBindings
+        private ListViewItem _selectedItem;
+        public ListViewItem SelectedItem
         {
-            get { return _keyBindings; }
-            set { UpdateProperty(ref _keyBindings, value); }
+            get { return _selectedItem; }
+            set 
+            { 
+                UpdateProperty(ref _selectedItem, value);
+                //var t = Type.GetType($"AnnoDesigner.PreferencesPages.{value.Name}");
+                //var page = Activator.CreateInstance(t, manager);
+                //navigator.Navigate(page);
+                navigator.Navigate(new Uri($@"pack://application:,,,/PreferencesPages\{value.Name}.xaml", UriKind.RelativeOrAbsolute), value.DataContext);
+            }
         }
 
-        public ICommand ChangeBindingCommand { get; set; }
-        private void ExecuteChangeBinding(object param)
-        {
-            
-        }
-
-        public ICommand ShowKeybindingView { get; set; }
-        private void ExecuteShowKeybindingView (bool IsSelected)
-        {
-            //For testing
-            Debug.WriteLine($"Is Selected: {IsSelected}");            
-        }
+        
     }
 
 

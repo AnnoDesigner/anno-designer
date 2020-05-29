@@ -27,10 +27,10 @@
                         <Setter Property="Padding" Value="10" />
                     </Style>
                 </StackPanel.Resources>
-                <ListView BorderBrush="Transparent">
+                <ListView BorderBrush="Transparent" SelectedItem="{Binding SelectedItem}">
                     <!--TODO: Localize these -->
-                    <ListViewItem  Content="Update Settings" DataContext="UpdateSettings"/>
-                    <ListViewItem  Content="Manage Keybindings" DataContext="ManageKeybindings"/>
+                    <ListViewItem Name="UpdateSettings"  Content="Update Settings" DataContext="UpdateSettings" />
+                    <ListViewItem Name="ManageKeybindings"  Content="Manage Keybindings" DataContext="{Binding Manager}"/>
                 </ListView>
             </StackPanel>
         </ScrollViewer>

@@ -5,14 +5,85 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:AnnoDesigner.PreferencesPages"
       xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
+      xmlns:models="clr-namespace:AnnoDesigner.Models"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       d:DataContext="{d:DesignInstance Type=viewModel:ManageKeybindingsViewModel, IsDesignTimeCreatable=False}"
-      Title="ManageKeybindings">
+      Title="ManageKeybindings"
+      Name="ManageKeybindingsWindow">
+    <Page.Resources>
+        <models:ManageKeybindingsHotkeyDataTemplateSelector x:Key="dataTemplateSelector"/>
+        <DataTemplate x:Key="KeyBinding">
+            <DockPanel Name="DockPanel" LastChildFill="True" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type Label}">
+                            <!--<Setter Property="Padding" Value="20" />-->
+                            <Setter Property="Height" Value="50" />
+                            <Setter Property="MinWidth" Value="40" />
+                            <Setter Property="Padding" Value="10,0" />
+                            <Setter Property="BorderBrush" Value="#888" />
+                            <Setter Property="BorderThickness" Value="4" />
+                            <Setter Property="Background" Value="#DDD" />
+                            <Setter Property="FontSize" Value="30" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="Margin" Value="3,0"/>
+                            <Setter Property="FontFamily" Value="Calibri" />
+                            <Setter Property="Foreground" Value="#000" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Label">
+                                        <Grid>
+                                            <Border CornerRadius="6,6,6,6"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                Background="Transparent"
+                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                Padding="{TemplateBinding Padding}"
+                                                Margin="0,0,0,0">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="5" ShadowDepth="1" Color="#111"/>
+                                                </Border.Effect>
+                                            </Border>
+                                            <Border CornerRadius="10,10,10,10"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                Background="{TemplateBinding Background}"
+                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                Padding="{TemplateBinding Padding}"
+                                                Margin="{TemplateBinding Margin}">
+                                                <ContentPresenter  Margin="0"  
+                                                               HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                                               VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                                               Content="{TemplateBinding Content}" />
+                                            </Border>
+
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBlock Text="This is a key binding" />
+                    <TextBlock Text="{Binding Description}" />
+                    <Label Content="{Binding Path=Binding.Key}"/>
+                    <TextBlock HorizontalAlignment="Center"  VerticalAlignment="Center" FontSize="30" Text="+"/>
+                    <Label Content="Ctrl"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <Button Content="Rebind" HorizontalAlignment="Right" Command="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindCommand }" CommandParameter="{Binding}"/>
+                </StackPanel>
+            </DockPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="MouseBinding">
+            
+        </DataTemplate>
+    </Page.Resources>
     <Grid>
-        <ItemsControl ItemsSource="{Binding }">
-            <DataTemplate>
-            </DataTemplate>
+        <ItemsControl ItemsSource="{Binding Manager.ObservableCollection}" ItemTemplateSelector="{StaticResource dataTemplateSelector}">
         </ItemsControl>
     </Grid>
 </Page>

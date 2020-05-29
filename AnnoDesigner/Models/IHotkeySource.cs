@@ -9,7 +9,7 @@ namespace AnnoDesigner.Models
 {
     public interface IHotkeySource
     {
-        void RegisterBindings(HotkeyCommandManager manager);
+        void RegisterHotkeys(HotkeyCommandManager manager);
         HotkeyCommandManager HotkeyCommandManager { get; set; }
     }
 }

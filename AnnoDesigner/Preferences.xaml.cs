@@ -16,6 +16,7 @@ using AnnoDesigner.Core.Models;
 using System.Collections.ObjectModel;
 using AnnoDesigner.ViewModels;
 using AnnoDesigner.PreferencesPages;
+using AnnoDesigner.Models;
 
 namespace AnnoDesigner
 {
@@ -24,16 +25,25 @@ namespace AnnoDesigner
     /// </summary>
     public partial class Preferences : Window
     {
-        public Preferences()
+        public Preferences(ICommons commons, IAppSettings appSettings, HotkeyCommandManager commandManager)
         {
             InitializeComponent();
-            preferencesViewModel = DataContext as PreferencesViewModel;
-
-            //For testing only
-            //TODO: Remove this before full PR
-            this.CurrentPage.Navigate(new ManageKeybindings());
+            DataContext = new PreferencesViewModel(commons, appSettings, commandManager, CurrentPage);
+            this.Loaded += Preferences_Loaded;
         }
 
-        private PreferencesViewModel preferencesViewModel;
+        private void Preferences_Loaded(object sender, RoutedEventArgs e)
+        {
+            CurrentPage.Navigated += CurrentPage_Navigated;
+        }
+
+        private void CurrentPage_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+            INavigatedTo page = e.Content as INavigatedTo;
+            if (page != null)
+            {
+                page.NavigatedTo(e.ExtraData);
+            }
+        }
     }
 }

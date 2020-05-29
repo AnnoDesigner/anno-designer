@@ -484,12 +484,12 @@ namespace AnnoDesigner
             RotateCommand = new RelayCommand(ExecuteRotate);
             //Set up default keybindings
             //We have tr
-            RotateBinding = new KeyBinding
+            RotateHotkey = new Hotkey(ROTATE_COMMAND_KEY, new KeyBinding()
             {
                 Command = RotateCommand,
                 Key = Key.R,
                 Modifiers = ModifierKeys.None
-            };
+            }, "Rotate");
 
             const int dpiFactor = 1;
             _linePen = _penCache.GetPen(Brushes.Black, dpiFactor * 1);
@@ -1859,7 +1859,7 @@ namespace AnnoDesigner
         public HotkeyCommandManager HotkeyCommandManager { get; set; }
 
 
-        private KeyBinding RotateBinding { get; set; }
+        private Hotkey RotateHotkey { get; set; }
         private ICommand RotateCommand;
         private void ExecuteRotate(object param)
         {
@@ -1880,10 +1880,15 @@ namespace AnnoDesigner
             }
         }
 
-        public void RegisterBindings(HotkeyCommandManager manager)
+        public void RegisterHotkeys(HotkeyCommandManager manager)
         {
             HotkeyCommandManager = manager;
-            manager.AddBinding(ROTATE_COMMAND_KEY, RotateBinding);
+            manager.AddBinding(RotateHotkey);
+            manager.AddBinding(new Hotkey("AA", new MouseBinding()
+            {
+                MouseAction = MouseAction.LeftDoubleClick,
+                Gesture = new MouseGesture(MouseAction.LeftDoubleClick, ModifierKeys.Control)
+            }, "MouseAction Test"));
         }
 
         #endregion

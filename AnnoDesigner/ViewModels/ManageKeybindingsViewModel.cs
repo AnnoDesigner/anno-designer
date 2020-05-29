@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,21 +15,34 @@ namespace AnnoDesigner.ViewModels
     {
         public HotkeyCommandManager HotkeyCommandManager { get; set; }
 
+        public ManageKeybindingsViewModel()
+        {
+
+        }
+
         public ManageKeybindingsViewModel(HotkeyCommandManager hotkeyCommandManager)
         {
-
+            Manager = hotkeyCommandManager;
+            RebindCommand = new RelayCommand<Hotkey>(ExecuteRebind);
         }
 
-        /// <summary>
-        /// This is here for testing only - hotkeys will be bound via an ItemsSource eventually
-        /// </summary>
-        private KeyBinding _rotateKeybinding;
-        public KeyBinding RotateKeybinding
+        private HotkeyCommandManager _manager;
+        public HotkeyCommandManager Manager
         {
-            get { return _rotateKeybinding; }
-            set { UpdateProperty(ref _rotateKeybinding, value);  }
+            get { return _manager; }
+            set { UpdateProperty(ref _manager, value); }
         }
 
-        public ICommand RotateCommand { get; set; }
+        private ICommand _rebindCommand;
+        public ICommand RebindCommand
+        {
+            get { return _rebindCommand; }
+            set { UpdateProperty(ref _rebindCommand, value); }
+        }
+
+        private void ExecuteRebind(Hotkey hotkey)
+        {
+
+        }
     }
 }

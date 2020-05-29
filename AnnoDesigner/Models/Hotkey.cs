@@ -13,11 +13,13 @@ namespace AnnoDesigner.Models
     /// </summary>
     public class Hotkey : Notify
     {
-        public Hotkey() { }
-        public Hotkey(string hotkeyName, InputBinding binding)
+        private Hotkey() { }
+        public Hotkey(string hotkeyName, InputBinding binding):this(hotkeyName, binding, null) { }
+        public Hotkey(string hotkeyName, InputBinding binding, string description)
         {
             Name = hotkeyName;
             Binding = binding;
+            Description = description;
         }
 
         private InputBinding _binding;
