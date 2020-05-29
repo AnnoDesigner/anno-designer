@@ -1884,6 +1884,7 @@ namespace AnnoDesigner
         {
             HotkeyCommandManager = manager;
             manager.AddBinding(RotateHotkey);
+            //TODO: For testing only, remove before PR
             manager.AddBinding(new Hotkey("AA", new MouseBinding()
             {
                 MouseAction = MouseAction.LeftDoubleClick,
