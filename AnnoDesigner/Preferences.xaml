@@ -40,8 +40,8 @@
                       HorizontalAlignment="Center"
                       VerticalAlignment="Stretch"/>
 
-        <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <Frame Name="CurrentPage" NavigationUIVisibility="Hidden"> 
+        <ScrollViewer Grid.Row="0" Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <Frame Name="CurrentPage" NavigationUIVisibility="Hidden" >
             </Frame>
         </ScrollViewer>
     </Grid>

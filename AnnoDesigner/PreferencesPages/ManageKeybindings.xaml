@@ -16,8 +16,8 @@
         <DataTemplate x:Key="KeyBinding">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition SharedSizeGroup="HotkeySizeGroup" Width="*"/>
-                    <ColumnDefinition SharedSizeGroup="HotkeySizeGroup" Width="*" />
+                    <ColumnDefinition SharedSizeGroup="HotkeySizeGroupCol0" Width="Auto"/>
+                    <ColumnDefinition SharedSizeGroup="HotkeySizeGroupCol1" Width="*" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="0">
                     <StackPanel.Resources>
