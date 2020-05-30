@@ -1,0 +1,26 @@
+﻿<Window x:Class="AnnoDesigner.HotkeyRecordingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AnnoDesigner"
+        mc:Ignorable="d"
+        Title="Record a new keybinding" 
+        Height="150" 
+        Width="600"
+        WindowStartupLocation="CenterOwner">
+    <!--TODO: Localize title, close and cancel buttons, before PR is accepted -->
+    <Grid Margin="5" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0" Name="RecordedInput" FontSize="40" VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" Grid.ColumnSpan="2" />
+        <Button Grid.Row="1" Grid.Column="0" Content="Set Binding" Click="SetBindingClick" Margin="5"/>
+        <Button Grid.Row="1" Grid.Column="1" Content="Cancel" Click="CancelClick"  Margin="5"/>
+    </Grid>
+</Window>

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 
@@ -24,6 +25,7 @@ namespace AnnoDesigner.ViewModels
         {
             Manager = hotkeyCommandManager;
             RebindCommand = new RelayCommand<Hotkey>(ExecuteRebind);
+            RebindButtonText = "Rebind";
         }
 
         private HotkeyCommandManager _manager;
@@ -40,9 +42,26 @@ namespace AnnoDesigner.ViewModels
             set { UpdateProperty(ref _rebindCommand, value); }
         }
 
+        private string _rebindButtonText;
+        public string RebindButtonText
+        {
+            get { return _rebindButtonText; }
+            set { UpdateProperty(ref _rebindButtonText, value); }
+        }
+
         private void ExecuteRebind(Hotkey hotkey)
         {
-
+            //TODO: Localize this before PR
+            RebindButtonText = "Recording";
+            (Key key, ModifierKeys modifiers, bool cancelled) = HotkeyRecordingWindow.RecordNewBinding();
+            if (cancelled)
+            {
+                Debug.WriteLine($"Recieved the following binding: {modifiers} + {key}");
+                var keybinding = hotkey.Binding as KeyBinding;
+                keybinding.Key = key;
+                keybinding.Modifiers = modifiers;
+            }
+            RebindButtonText = "Rebind";
         }
     }
 }

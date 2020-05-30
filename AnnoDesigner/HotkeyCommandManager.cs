@@ -36,7 +36,8 @@ namespace AnnoDesigner
             IEnumerable<Hotkey> hotkeys = bindings.Values;
             foreach (var item in hotkeys)
             {
-                if (item.Binding.Command.CanExecute(item.Binding.CommandParameter))
+                
+                if (item?.Binding?.Command?.CanExecute(item.Binding.CommandParameter) ?? false)
                 {
                     if (item.Binding.Gesture.Matches(e.Source, e))
                     {

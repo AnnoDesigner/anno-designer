@@ -1885,11 +1885,11 @@ namespace AnnoDesigner
             HotkeyCommandManager = manager;
             manager.AddBinding(RotateHotkey);
             //TODO: For testing only, remove before PR
-            manager.AddBinding(new Hotkey("AA", new MouseBinding()
+            manager.AddBinding(new Hotkey("TestBinding", new KeyBinding()
             {
-                MouseAction = MouseAction.LeftDoubleClick,
-                Gesture = new MouseGesture(MouseAction.LeftDoubleClick, ModifierKeys.Control)
-            }, "MouseAction Test"));
+                Key = Key.A,
+                Modifiers = ModifierKeys.Control
+            }, "SecondBinding Test"));
         }
 
         #endregion

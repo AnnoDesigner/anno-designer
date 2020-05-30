@@ -14,15 +14,19 @@
     <Page.Resources>
         <models:ManageKeybindingsHotkeyDataTemplateSelector x:Key="dataTemplateSelector"/>
         <DataTemplate x:Key="KeyBinding">
-            <DockPanel Name="DockPanel" LastChildFill="True" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="HotkeySizeGroup" Width="*"/>
+                    <ColumnDefinition SharedSizeGroup="HotkeySizeGroup" Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="0">
                     <StackPanel.Resources>
                         <Style TargetType="{x:Type Label}">
                             <!--<Setter Property="Padding" Value="20" />-->
                             <Setter Property="Height" Value="50" />
                             <Setter Property="MinWidth" Value="40" />
                             <Setter Property="Padding" Value="10,0" />
-                            <Setter Property="BorderBrush" Value="#888" />
+                            <Setter Property="BorderBrush" Value="#AAA" />
                             <Setter Property="BorderThickness" Value="4" />
                             <Setter Property="Background" Value="#DDD" />
                             <Setter Property="FontSize" Value="30" />
@@ -70,19 +74,20 @@
                     <TextBlock Text="This is a key binding" />
                     <TextBlock Text="{Binding Description}" />
                     <Label Content="{Binding Path=Binding.Key}"/>
-                    <TextBlock HorizontalAlignment="Center"  VerticalAlignment="Center" FontSize="30" Text="+"/>
-                    <Label Content="Ctrl"/>
+                    <Label Content="{Binding Path=Binding.Modifiers}" />
+                    <!--<TextBlock HorizontalAlignment="Center"  VerticalAlignment="Center" FontSize="30" Text="+"/>
+                    <Label Content="Ctrl"/>-->
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <Button Content="Rebind" HorizontalAlignment="Right" Command="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindCommand }" CommandParameter="{Binding}"/>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="1" FlowDirection="LeftToRight" Margin="20, 0, 0, 0">
+                    <Button Content="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindButtonText}" Command="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindCommand }" CommandParameter="{Binding}" Height="20" Width="100"/>
                 </StackPanel>
-            </DockPanel>
+            </Grid>
         </DataTemplate>
         <DataTemplate x:Key="MouseBinding">
-            
+
         </DataTemplate>
     </Page.Resources>
-    <Grid>
+    <Grid Grid.IsSharedSizeScope="True">
         <ItemsControl ItemsSource="{Binding Manager.ObservableCollection}" ItemTemplateSelector="{StaticResource dataTemplateSelector}">
         </ItemsControl>
     </Grid>
