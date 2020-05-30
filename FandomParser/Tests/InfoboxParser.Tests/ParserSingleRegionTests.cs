@@ -18,6 +18,7 @@ namespace InfoboxParser.Tests
     {
         private static readonly ICommons _mockedCommons;
         private static readonly ISpecialBuildingNameHelper _mockedSpecialBuildingNameHelper;
+        private static readonly ITitleParserSingle _mockedTitleParserSingle;
 
         private static readonly string testDataSchnapps_Distillery;
         private static readonly string testDataBakery;
@@ -29,6 +30,7 @@ namespace InfoboxParser.Tests
         {
             _mockedCommons = Commons.Instance;
             _mockedSpecialBuildingNameHelper = new SpecialBuildingNameHelper();
+            _mockedTitleParserSingle = new TitleParserSingle(_mockedCommons, _mockedSpecialBuildingNameHelper);
 
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
 
@@ -40,10 +42,10 @@ namespace InfoboxParser.Tests
         }
 
         private IParser GetParser(ICommons commonsToUse = null,
-            ISpecialBuildingNameHelper specialBuildingNameHelperToUse = null)
+            ITitleParserSingle titleParserSingleToUse = null)
         {
             return new ParserSingleRegion(commonsToUse ?? _mockedCommons,
-                specialBuildingNameHelperToUse ?? _mockedSpecialBuildingNameHelper);
+                titleParserSingleToUse ?? _mockedTitleParserSingle);
         }
 
         #region test data

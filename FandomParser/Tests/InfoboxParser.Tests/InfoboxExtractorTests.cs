@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FandomParser.Core;
+using InfoboxParser.Models;
+using InfoboxParser.Parser;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -13,6 +15,7 @@ namespace InfoboxParser.Tests
     public class InfoboxExtractorTests
     {
         private static readonly ICommons _mockedCommons;
+        private static readonly ITitleParserSingle _mockedTitleParserSingle;
         private readonly ITestOutputHelper _output;
 
         private static readonly string input_Bakery;
@@ -31,6 +34,7 @@ namespace InfoboxParser.Tests
         static InfoboxExtractorTests()
         {
             _mockedCommons = Commons.Instance;
+            _mockedTitleParserSingle = new TitleParserSingle(_mockedCommons, new SpecialBuildingNameHelper());
 
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
 
@@ -58,25 +62,27 @@ namespace InfoboxParser.Tests
             _output = testOutputHelperToUse;
         }
 
-        private IInfoboxExtractor GetExtractor(ICommons commonsToUse = null)
+        private IInfoboxExtractor GetExtractor(ICommons commonsToUse = null,
+            ITitleParserSingle titleParserSingleToUse = null)
         {
-            return new InfoboxExtractor(commonsToUse ?? _mockedCommons);
+            return new InfoboxExtractor(commonsToUse ?? _mockedCommons,
+                titleParserSingleToUse ?? _mockedTitleParserSingle);
         }
 
         #region test data
 
-        public static TheoryData<string, string> ExtractorTestData
+        public static TheoryData<string, (string, string)> ExtractorTestData
         {
             get
             {
-                return new TheoryData<string, string>
+                return new TheoryData<string, (string, string)>
                 {
-                    { input_Bakery, result_Bakery },
-                    { input_Bank, result_Bank },
-                    { input_Fishery, result_Fishery },
-                    { input_Hospital, result_Hospital },
-                    { input_Lumberjack, result_Lumberjack },
-                    { input_Sawmill, result_Sawmill },
+                    { input_Bakery, (null, result_Bakery) },
+                    { input_Bank, (null, result_Bank) },
+                    { input_Fishery, (null, result_Fishery) },
+                    { input_Hospital, (null, result_Hospital) },
+                    { input_Lumberjack, (null, result_Lumberjack) },
+                    { input_Sawmill, (null, result_Sawmill) },
                 };
             }
         }
@@ -115,7 +121,7 @@ namespace InfoboxParser.Tests
 
         [Theory]
         [MemberData(nameof(ExtractorTestData))]
-        public void ExtractInfobox_ContentIsKnown_ShouldReturnExpectedResult(string content, string expectedResult)
+        public void ExtractInfobox_ContentIsKnown_ShouldReturnExpectedResult(string content, (string, string) expectedResult)
         {
             // Arrange
             _output.WriteLine($"{nameof(content)}: {content}");
@@ -127,7 +133,8 @@ namespace InfoboxParser.Tests
             var result = extractor.ExtractInfobox(content);
 
             // Assert
-            Assert.Equal(expectedResult, result);
+            Assert.Single(result);
+            Assert.Equal(expectedResult, result[0]);
         }
 
     }

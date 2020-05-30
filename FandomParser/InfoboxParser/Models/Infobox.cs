@@ -20,6 +20,8 @@ namespace InfoboxParser.Models
 
         public string Name { get; set; }
 
+        public string Icon { get; set; }
+
         public BuildingType Type { get; set; }
 
         public WorldRegion Region { get; set; }

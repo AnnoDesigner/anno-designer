@@ -15,9 +15,12 @@ namespace InfoboxParser.Parser
     internal class ParserSingleRegion : IParser
     {
         private readonly ICommons _commons;
-        private readonly ISpecialBuildingNameHelper _specialBuildingNameHelper;
+        private readonly ITitleParserSingle _titleParserSingle;
 
         //TODO support edge cases in regex like "|Input 1 Amount Electricity = 1.79769313486232E+308"
+
+        //|Building Icon      = Icon palace module.png
+        private static readonly Regex regexBuildingIcon = new Regex(@"(?<begin>\|Building Icon)\s*(?<equalSign>[=])\s*(?<icon>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         //|Input 1 Amount = 2
         private static readonly Regex regexInputAmount = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -41,10 +44,10 @@ namespace InfoboxParser.Parser
         //var culture = CultureInfo.InvariantCulture;
         private CultureInfo cultureForParsing;
 
-        public ParserSingleRegion(ICommons commons, ISpecialBuildingNameHelper specialBuildingNameHelperToUse)
+        public ParserSingleRegion(ICommons commons, ITitleParserSingle titleParserSingleToUse)
         {
             _commons = commons;
-            _specialBuildingNameHelper = specialBuildingNameHelperToUse;
+            _titleParserSingle = titleParserSingleToUse;
 
             //all numbers in the wiki are entered with "," e.g. "42,21", so we need to use a specific culture
             cultureForParsing = new CultureInfo("de-DE");
@@ -59,8 +62,13 @@ namespace InfoboxParser.Parser
 
             var result = new List<IInfobox>();
 
-            var buildingName = getBuildingName(wikiText);
+            var buildingName = _titleParserSingle.GetBuildingTitle(wikiText);
             if (string.IsNullOrWhiteSpace(buildingName))
+            {
+            }
+
+            var buildingIcon = getBuildingIcon(wikiText);
+            if (string.IsNullOrWhiteSpace(buildingIcon))
             {
             }
 
@@ -79,11 +87,10 @@ namespace InfoboxParser.Parser
             var supplyInfo = getSupplyInfo(wikiText);
             var unlockInfo = getUnlockInfo(wikiText);
 
-            buildingName = _specialBuildingNameHelper.CheckSpecialBuildingName(buildingName);
-
             var parsedInfobox = new Infobox
             {
                 Name = buildingName,
+                Icon = buildingIcon,
                 Type = buildingType,
                 ProductionInfos = productionInfo,
                 SupplyInfos = supplyInfo,
@@ -92,6 +99,34 @@ namespace InfoboxParser.Parser
             };
 
             result.Add(parsedInfobox);
+
+            return result;
+        }
+
+        private string getBuildingIcon(string infobox)
+        {
+            var result = string.Empty;
+
+            //short circuit infoboxes without building icon info
+            if (!infobox.Contains("|Building Icon"))
+            {
+                return result;
+            }
+
+            using (var reader = new StringReader(infobox))
+            {
+                string curLine;
+                while ((curLine = reader.ReadLine()) != null)
+                {
+                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
+
+                    var matchAmount = regexBuildingIcon.Match(curLine);
+                    if (matchAmount.Success)
+                    {
+                        result = matchAmount.Groups["icon"].Value;
+                    }
+                }
+            }
 
             return result;
         }
@@ -127,35 +162,6 @@ namespace InfoboxParser.Parser
                             result = parsedBuildingType;
                         }
 
-                        break;
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        private string getBuildingName(string infobox)
-        {
-            var result = string.Empty;
-
-            if (!infobox.Contains("|Title"))
-            {
-                return result;
-            }
-
-            using (var reader = new StringReader(infobox))
-            {
-                string curLine;
-                while ((curLine = reader.ReadLine()) != null)
-                {
-                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
-
-                    if (curLine.StartsWith("|Title", StringComparison.OrdinalIgnoreCase))
-                    {
-                        result = curLine.Replace("|Title", string.Empty)
-                            .Replace("=", string.Empty)
-                            .Trim();
                         break;
                     }
                 }

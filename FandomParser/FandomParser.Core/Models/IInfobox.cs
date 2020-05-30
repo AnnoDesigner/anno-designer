@@ -9,6 +9,8 @@ namespace FandomParser.Core.Models
     {
         string Name { get; set; }
 
+        string Icon { get; set; }
+
         BuildingType Type { get; set; }
 
         WorldRegion Region { get; set; }

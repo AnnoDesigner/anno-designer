@@ -11,6 +11,7 @@ using System.Reflection;
 using FandomParser.Core.Presets.Models;
 using InfoboxParser.Tests.Attributes;
 using InfoboxParser.Models;
+using InfoboxParser.Parser;
 
 namespace InfoboxParser.Tests
 {
@@ -18,20 +19,24 @@ namespace InfoboxParser.Tests
     {
         private static readonly ICommons _mockedCommons;
         private static readonly ISpecialBuildingNameHelper _mockedSpecialBuildingNameHelper;
+        private static readonly ITitleParserSingle _mockedTitleParserSingle;
         private static readonly IRegionHelper _mockedRegionHelper;
 
         static InfoboxParserTests()
         {
             _mockedCommons = Commons.Instance;
             _mockedSpecialBuildingNameHelper = new SpecialBuildingNameHelper();
+            _mockedTitleParserSingle = new TitleParserSingle(_mockedCommons, _mockedSpecialBuildingNameHelper);
             _mockedRegionHelper = new RegionHelper();
         }
 
         private InfoboxParser GetParser(ICommons commonsToUse = null,
+            ITitleParserSingle titleParserSingleToUse = null,
             ISpecialBuildingNameHelper specialBuildingNameHelperToUse = null,
             IRegionHelper regionHelperToUse = null)
         {
             return new InfoboxParser(commonsToUse ?? _mockedCommons,
+                titleParserSingleToUse ?? _mockedTitleParserSingle,
                 specialBuildingNameHelperToUse ?? _mockedSpecialBuildingNameHelper,
                 regionHelperToUse ?? _mockedRegionHelper);
         }

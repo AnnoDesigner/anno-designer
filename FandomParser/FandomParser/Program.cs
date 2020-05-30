@@ -5,11 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AnnoDesigner.Core;
 using FandomParser.Core;
 using FandomParser.Core.Helper;
 using FandomParser.WikiText;
+using InfoboxParser;
+using InfoboxParser.Parser;
 using NLog;
 
 namespace FandomParser
@@ -17,6 +20,7 @@ namespace FandomParser
     public static class Program
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly ICommons _commons;
 
         private const string ARG_NO_WAIT = "--noWait";
         private const string ARG_FORCE_DOWNLOAD = "--forceDownload";
@@ -37,12 +41,16 @@ namespace FandomParser
         static Program()
         {
             logger.Info($"program version: {Assembly.GetExecutingAssembly().GetName().Version}");
+
+            _commons = Commons.Instance;
         }
 
         public static async Task Main(string[] args)
         {
             try
             {
+                Regex.CacheSize = 40;
+
                 OutputDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "..", "..", "..", "..", "..", "Presets");
 
                 ParseArguments(args);
@@ -87,7 +95,13 @@ namespace FandomParser
                 var wikiBuildingInfoPreset = wikiBuildingInfoProvider.GetWikiBuildingInfos(tableContainer);
 
                 //get detail info of all buildings
-                var wikiDetailProvider = new WikiBuildingDetailProvider(Commons.Instance);
+                var specialBuildingNameHelper = new SpecialBuildingNameHelper();
+                var regionHelper = new RegionHelper();
+                var titleParserSingle = new TitleParserSingle(_commons, specialBuildingNameHelper);
+                var infoboxParser = new InfoboxParser.InfoboxParser(_commons, titleParserSingle, specialBuildingNameHelper, regionHelper);
+                var infoboxExtractor = new InfoboxExtractor(_commons, titleParserSingle);
+
+                var wikiDetailProvider = new WikiBuildingDetailProvider(_commons, infoboxParser, infoboxExtractor);
                 wikiBuildingInfoPreset = wikiDetailProvider.FetchBuildingDetails(wikiBuildingInfoPreset);
                 wikiBuildingInfoPreset.Version = PresetVersion;
                 wikiBuildingInfoPreset.DateGenerated = DateTime.UtcNow;

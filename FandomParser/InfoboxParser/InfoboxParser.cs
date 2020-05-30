@@ -19,6 +19,7 @@ namespace InfoboxParser
     public class InfoboxParser
     {
         private readonly ICommons _commons;
+        private readonly ITitleParserSingle _titleParserSingle;
         private readonly ISpecialBuildingNameHelper _specialBuildingNameHelper;
         private readonly IRegionHelper _regionHelper;
 
@@ -28,13 +29,14 @@ namespace InfoboxParser
         private readonly List<string> possibleRegions_2Regions;
         private readonly List<string> possibleRegions_3Regions;
 
-        public InfoboxParser(ICommons commonsToUse, ISpecialBuildingNameHelper specialBuildingNameHelperToUse, IRegionHelper regionHelperToUse)
+        public InfoboxParser(ICommons commonsToUse, ITitleParserSingle titleParserSingleToUse, ISpecialBuildingNameHelper specialBuildingNameHelperToUse, IRegionHelper regionHelperToUse)
         {
             _commons = commonsToUse;
+            _titleParserSingle = titleParserSingleToUse;
             _specialBuildingNameHelper = specialBuildingNameHelperToUse;
             _regionHelper = regionHelperToUse;
 
-            parserSingleRegion = new ParserSingleRegion(_commons, _specialBuildingNameHelper);
+            parserSingleRegion = new ParserSingleRegion(_commons, _titleParserSingle);
             parserOldAndNewWorld = new ParserOldAndNewWorld(_commons, _specialBuildingNameHelper, _regionHelper);
             parserMultipleRegions = new ParserMultipleRegions(_commons, _specialBuildingNameHelper, _regionHelper);
             possibleRegions_2Regions = new List<string> { "A", "B" };

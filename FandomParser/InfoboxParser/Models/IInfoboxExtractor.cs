@@ -6,6 +6,6 @@ namespace InfoboxParser
 {
     public interface IInfoboxExtractor
     {
-        string ExtractInfobox(string content);
+        List<(string title, string infobox)> ExtractInfobox(string content);
     }
 }
