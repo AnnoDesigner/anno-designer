@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace InfoboxParser.Models
         public string Name { get; set; }
 
         public string Icon { get; set; }
+
+        public Size BuildingSize { get; set; }
 
         public BuildingType Type { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -9,11 +10,14 @@ using FandomParser.Core;
 using FandomParser.Core.Models;
 using FandomParser.Core.Presets.Models;
 using InfoboxParser.Models;
+using NLog;
 
 namespace InfoboxParser.Parser
 {
     internal class ParserSingleRegion : IParser
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly ICommons _commons;
         private readonly ITitleParserSingle _titleParserSingle;
 
@@ -21,6 +25,9 @@ namespace InfoboxParser.Parser
 
         //|Building Icon      = Icon palace module.png
         private static readonly Regex regexBuildingIcon = new Regex(@"(?<begin>\|Building Icon)\s*(?<equalSign>[=])\s*(?<icon>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        //|Building Size = 3x13
+        private static readonly Regex regexBuildingSize = new Regex(@"(?<begin>\|Building Size)\s*(?<equalSign>[=])\s*(?<value>\d*\s*(?:[x]\s*\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         //|Input 1 Amount = 2
         private static readonly Regex regexInputAmount = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -75,17 +82,16 @@ namespace InfoboxParser.Parser
             var buildingType = getBuildingType(wikiText);
             if (buildingType == BuildingType.Unknown)
             {
-
             }
 
             var productionInfo = getProductionInfo(wikiText);
             if (productionInfo == null && buildingType == BuildingType.Production)
             {
-
             }
 
             var supplyInfo = getSupplyInfo(wikiText);
             var unlockInfo = getUnlockInfo(wikiText);
+            var buildingSize = getBuildingSize(wikiText);
 
             var parsedInfobox = new Infobox
             {
@@ -95,6 +101,7 @@ namespace InfoboxParser.Parser
                 ProductionInfos = productionInfo,
                 SupplyInfos = supplyInfo,
                 UnlockInfos = unlockInfo,
+                BuildingSize = buildingSize
                 //Region
             };
 
@@ -124,6 +131,50 @@ namespace InfoboxParser.Parser
                     if (matchAmount.Success)
                     {
                         result = matchAmount.Groups["icon"].Value;
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private Size getBuildingSize(string infobox)
+        {
+            var result = Size.Empty;
+
+            //short circuit infoboxes without building size info
+            if (!infobox.Contains("|Building Size"))
+            {
+                return result;
+            }
+
+            using (var reader = new StringReader(infobox))
+            {
+                string curLine;
+                while ((curLine = reader.ReadLine()) != null)
+                {
+                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
+
+                    var matchAmount = regexBuildingSize.Match(curLine);
+                    if (matchAmount.Success)
+                    {
+                        var foundValue = matchAmount.Groups["value"].Value;
+                        var splittedSize = foundValue.Split('x');
+                        if (splittedSize.Length != 2)
+                        {
+                            return result;
+                        }
+
+                        var couldParseX = int.TryParse(splittedSize[0], out int x);
+                        var couldParseY = int.TryParse(splittedSize[1], out int y);
+                        if (!couldParseX || !couldParseY)
+                        {
+                            logger.Warn($"could not parse Size: \"{foundValue}\"");
+                        }
+
+                        result = new Size(x, y);
+                        break;
                     }
                 }
             }

@@ -403,6 +403,7 @@ namespace FandomParser
 
             result.Name = infobox.Name;
             result.Icon = infobox.Icon;
+            result.BuildingSize = infobox.BuildingSize;
 
             result.Type = infobox.Type;
             result.ProductionInfos = infobox.ProductionInfos;

@@ -21,6 +21,9 @@ namespace InfoboxParser.Parser
 
         //TODO support edge cases in regex like "|Input 1 Amount Electricity (OW) = 1.79769313486232E+308"
 
+        //|Building Icon      = Icon palace module.png
+        private static readonly Regex regexBuildingIcon = new Regex(@"(?<begin>\|Building Icon)\s*(?<equalSign>[=])\s*(?<icon>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         //|Building Type (OW)     = Institution
         //|Building Type (NW)     = Institution
         private static readonly Regex regexBuildingType = new Regex(@"(?<begin>\|Building Type)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -90,6 +93,11 @@ namespace InfoboxParser.Parser
 
                 }
 
+                var buildingIcon = getBuildingIcon(wikiText);
+                if (string.IsNullOrWhiteSpace(buildingIcon))
+                {
+                }
+
                 var supplyInfo = getSupplyInfo(wikiText, curRegion);
                 var unlockInfo = getUnlockInfo(wikiText, curRegion);
 
@@ -100,6 +108,7 @@ namespace InfoboxParser.Parser
                 var parsedInfobox = new Infobox
                 {
                     Name = buildingName,
+                    Icon = buildingIcon,
                     Type = buildingType,
                     ProductionInfos = productionInfo,
                     SupplyInfos = supplyInfo,
@@ -757,6 +766,34 @@ namespace InfoboxParser.Parser
             {
                 //order by number from infobox
                 result.UnlockConditions = result.UnlockConditions.OrderBy(x => x.Order).ToList();
+            }
+
+            return result;
+        }
+
+        private string getBuildingIcon(string infobox)
+        {
+            var result = string.Empty;
+
+            //short circuit infoboxes without building icon info
+            if (!infobox.Contains("|Building Icon"))
+            {
+                return result;
+            }
+
+            using (var reader = new StringReader(infobox))
+            {
+                string curLine;
+                while ((curLine = reader.ReadLine()) != null)
+                {
+                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
+
+                    var matchAmount = regexBuildingIcon.Match(curLine);
+                    if (matchAmount.Success)
+                    {
+                        result = matchAmount.Groups["icon"].Value;
+                    }
+                }
             }
 
             return result;

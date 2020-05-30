@@ -72,7 +72,7 @@ namespace FandomParser
                     var couldParseY = int.TryParse(splittedSize[1], out int y);
                     if (!couldParseX || !couldParseY)
                     {
-                        logger.Warn($"could not parse Size for \"{result.Name}\": \"{table.Size}\"");
+                        logger.Warn($"could not parse Size for \"{result.Name} ({result.Region})\": \"{table.Size}\"");
                     }
 
                     result.BuildingSize = new Size(x, y);
