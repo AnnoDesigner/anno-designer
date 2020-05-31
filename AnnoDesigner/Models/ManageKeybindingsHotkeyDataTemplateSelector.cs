@@ -13,9 +13,7 @@ namespace AnnoDesigner.Models
     {
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            var hotkey = item as Hotkey;
-            FrameworkElement element = container as FrameworkElement;
-            if (element != null && hotkey != null && hotkey.Binding is InputBinding)
+            if (container is FrameworkElement element && item is Hotkey hotkey && hotkey.Binding is InputBinding)
             {
                 if (hotkey.Binding is MouseBinding)
                 {

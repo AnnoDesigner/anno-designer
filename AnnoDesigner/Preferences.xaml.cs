@@ -28,7 +28,7 @@ namespace AnnoDesigner
         public Preferences(ICommons commons, IAppSettings appSettings, HotkeyCommandManager commandManager)
         {
             InitializeComponent();
-            DataContext = new PreferencesViewModel(commons, appSettings, commandManager, CurrentPage);
+            DataContext = new PreferencesViewModel(commons, appSettings, commandManager, CurrentPage.NavigationService);
             this.Loaded += Preferences_Loaded;
         }
 

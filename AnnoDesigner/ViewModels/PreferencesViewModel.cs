@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reflection;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 using NLog;
@@ -16,25 +18,52 @@ namespace AnnoDesigner.ViewModels
 {
     public class PreferencesViewModel : Notify
     {
-        public PreferencesViewModel(ICommons commons, IAppSettings appSettings, HotkeyCommandManager manager, Frame navigator)
+        public PreferencesViewModel(ICommons commons, IAppSettings appSettings, HotkeyCommandManager manager, NavigationService navigationService)
         {
             this.commons = commons;
+            this.commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
             this.appSettings = appSettings;
+            this.navigationService = navigationService;
             Manager = manager;
-            this.navigator = navigator;
+
+            PageViewModels = new Dictionary<string, object>()
+            {
+                { "ManageKeybindings", new ManageKeybindingsViewModel(manager) },
+                { "UpdateSettings", null }
+            };
+
+            UpdateLanguage();
         }
 
+        private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
+        {
+            UpdateLanguage();
+        }
+
+        private void UpdateLanguage()
+        {
+            string language = Localization.Localization.GetLanguageCodeFromName(commons.SelectedLanguage);
+            Preferences = Localization.Localization.Translations[language]["Preferences"];
+            UpdateSettings = Localization.Localization.Translations[language]["UpdateSettings"];
+            ManageKeybindings = Localization.Localization.Translations[language]["ManageKeybindings"];
+        }
+
+        private NavigationService navigationService;
+        private readonly ICommons commons;
+        private readonly IAppSettings appSettings;
         private HotkeyCommandManager _manager;
+        private ListViewItem _selectedItem;
+        private string _updateSettings;
+        private string _manageKeybindings;
+        private string _preferences;
+        private Dictionary<string, object> _pageViewModels;
+
         public HotkeyCommandManager Manager
         {
             get { return _manager; }
             set { UpdateProperty(ref _manager, value); }
         }
-        private Frame navigator;
-        private ICommons commons;
-        private IAppSettings appSettings;
 
-        private ListViewItem _selectedItem;
         public ListViewItem SelectedItem
         {
             get { return _selectedItem; }
@@ -44,8 +73,32 @@ namespace AnnoDesigner.ViewModels
                 //var t = Type.GetType($"AnnoDesigner.PreferencesPages.{value.Name}");
                 //var page = Activator.CreateInstance(t, manager);
                 //navigator.Navigate(page);
-                navigator.Navigate(new Uri($@"pack://application:,,,/PreferencesPages\{value.Name}.xaml", UriKind.RelativeOrAbsolute), value.DataContext);
+                navigationService.Navigate(new Uri($@"pack://application:,,,/PreferencesPages\{value.Name}.xaml", UriKind.RelativeOrAbsolute), value.DataContext);
             }
+        }
+        
+        public string UpdateSettings
+        {
+            get => _updateSettings;
+            set => UpdateProperty(ref _updateSettings, value);
+        }
+        
+        public string ManageKeybindings
+        {
+            get => _manageKeybindings;
+            set => UpdateProperty(ref _manageKeybindings, value);
+        }
+
+        public string Preferences
+        {
+            get => _preferences;
+            set => UpdateProperty(ref _preferences, value);
+        }
+
+        public Dictionary<string, object> PageViewModels
+        {
+            get => _pageViewModels;
+            set => UpdateProperty(ref _pageViewModels, value);
         }
 
         

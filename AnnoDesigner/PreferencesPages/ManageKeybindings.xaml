@@ -26,9 +26,23 @@
                             <Setter Property="Height" Value="50" />
                             <Setter Property="MinWidth" Value="40" />
                             <Setter Property="Padding" Value="10,0" />
-                            <Setter Property="BorderBrush" Value="#AAA" />
+                            <Setter Property="BorderBrush">
+                                <Setter.Value>
+                                    <LinearGradientBrush>
+                                        <GradientStop Color="#888" Offset="0.8"/>
+                                        <GradientStop Color="#AAA" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
                             <Setter Property="BorderThickness" Value="4" />
-                            <Setter Property="Background" Value="#DDD" />
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush>
+                                        <GradientStop Color="#BBB" Offset="0.2"/>
+                                        <GradientStop Color="#DDD" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
                             <Setter Property="FontSize" Value="30" />
                             <Setter Property="VerticalAlignment" Value="Center" />
                             <Setter Property="VerticalContentAlignment" Value="Center" />

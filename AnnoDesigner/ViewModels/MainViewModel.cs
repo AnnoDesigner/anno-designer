@@ -1436,7 +1436,6 @@ namespace AnnoDesigner.ViewModels
             {
                 Owner = Application.Current.MainWindow
             };
-            //TODO: Resolve before PR is merged. Do we want this to be ShowDialog() or just Show()?
             preferencesWindow.Show();
         }
 

@@ -116,11 +116,11 @@ namespace AnnoDesigner
             }
         }
 
-        public static (Key Key, ModifierKeys Modifiers, bool cancelled) RecordNewBinding()
+        public static (Key Key, ModifierKeys Modifiers, bool userCancelled) RecordNewBinding()
         {
             var window = new HotkeyRecordingWindow();
             window.ShowDialog();
-            return (window.Key, window.Modifiers, window.DialogResult.Value);
+            return (window.Key, window.Modifiers, !window.DialogResult.Value);
         }
 
         private void HotkeyRecordingWindow_KeyDown(object sender, KeyEventArgs e)
