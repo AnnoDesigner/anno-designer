@@ -76,7 +76,7 @@ namespace InfoboxParser.Tests
             }
         }
 
-        public static TheoryData<string, Size> BuildingsizeTestData
+        public static TheoryData<string, Size> BuildingSizeTestData
         {
             get
             {
@@ -115,6 +115,24 @@ namespace InfoboxParser.Tests
                     { "|Building Icon = Harbourmaster's Office.png", "Harbourmaster's Office.png" },
                     { "|Building Icon = Harbourmaster´s Office.png", "Harbourmaster´s Office.png" },
                     { "|Building Icon = Harbourmaster`s Office.png", "Harbourmaster`s Office.png" },
+                };
+            }
+        }
+
+        public static TheoryData<string, double> ConstructionInfoCreditsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double>
+                {
+                    { "|Credits = 15000", 15000d },
+                    { "|Credits = 150", 150d },
+                    { "|Credits = 42,21", 42.21 },
+                    { "|Credits = -42,21", -42.21 },
+                    //{ "|Credits = 42.21", 42.21 },
+                    //{ "|Credits = -42.21", -42.21 },
+                    { "|Credits = -100", -100d },
+                    { "|Credits    =    150   ", 150d }
                 };
             }
         }
@@ -1106,7 +1124,7 @@ namespace InfoboxParser.Tests
         }
 
         [Theory]
-        [MemberData(nameof(BuildingsizeTestData))]
+        [MemberData(nameof(BuildingSizeTestData))]
         public void GetInfobox_WikiTextContainsBuildingSize_ShouldReturnCorrectValue(string input, Size expectedSize)
         {
             // Arrange
@@ -1154,6 +1172,41 @@ namespace InfoboxParser.Tests
 
             // Assert
             Assert.Equal(expectedIcon, result[0].Icon);
+        }
+
+        #endregion
+
+        #region ConstructionInfo tests
+
+        [Theory]
+        [InlineData("dummy")]
+        [InlineData("|Credits = ")]
+        public void GetInfobox_WikiTextContainsNoConstructionInfoCredits_ShouldReturnEmptyList(string input)
+        {
+            // Arrange
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Empty(result[0].ConstructionInfos);
+        }
+
+        [Theory]
+        [MemberData(nameof(ConstructionInfoCreditsTestData))]
+        public void GetInfobox_WikiTextContainsConstructionInfoCredits_ShouldReturnCorrectValue(string input, double expectedValue)
+        {
+            // Arrange
+            _output.WriteLine($"{nameof(input)}: {input}");
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(expectedValue, result[0].ConstructionInfos[0].Value);
         }
 
         #endregion

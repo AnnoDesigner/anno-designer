@@ -365,25 +365,29 @@ namespace FandomParser
             return Path.Combine(PathToExtractedInfoboxesFolder, $"{title}{FILE_ENDING_INFOBOX}");
         }
 
-        private WikiBuildingInfo CopyInfoboxToBuildingInfo(IInfobox infobox, WikiBuildingInfo buildingInfo)
+        private Uri GetUriForBuilding(string buildingName)
         {
-            var buildingNameForUrl = buildingInfo.Name.Replace(" ", "_");
-
-            buildingInfo.Type = infobox.Type;
-            buildingInfo.ProductionInfos = infobox.ProductionInfos;
-            buildingInfo.SupplyInfos = infobox.SupplyInfos;
-            buildingInfo.UnlockInfos = infobox.UnlockInfos;
+            var buildingNameForUrl = buildingName.Replace(" ", "_");
 
             //check Url for "World's Fair" | correct: https://anno1800.fandom.com/wiki/World%27s_Fair
             if (buildingNameForUrl.Contains("World's_Fair"))
             {
                 buildingNameForUrl = "World%27s_Fair";
             }
-
             //(maybe) TODO check Url for "Bombín Weaver" | correct: https://anno1800.fandom.com/wiki/Bomb%C2%AD%C3%ADn_Weaver
             //contains unicode char (https://www.utf8-chartable.de/unicode-utf8-table.pl):  U+00AD	­	c2 ad	SOFT HYPHEN
 
-            buildingInfo.Url = new Uri("https://anno1800.fandom.com/wiki/" + buildingNameForUrl);
+            return new Uri("https://anno1800.fandom.com/wiki/" + buildingNameForUrl);
+        }
+
+        private WikiBuildingInfo CopyInfoboxToBuildingInfo(IInfobox infobox, WikiBuildingInfo buildingInfo)
+        {
+            buildingInfo.Type = infobox.Type;
+            buildingInfo.ProductionInfos = infobox.ProductionInfos;
+            buildingInfo.SupplyInfos = infobox.SupplyInfos;
+            buildingInfo.UnlockInfos = infobox.UnlockInfos;
+            buildingInfo.Url = GetUriForBuilding(buildingInfo.Name);
+            buildingInfo.ConstructionInfos = infobox.ConstructionInfos;
 
             var revisionInfo = GetRevisionInfo(buildingInfo);
             if (revisionInfo != null)
@@ -399,26 +403,15 @@ namespace FandomParser
         {
             var result = new WikiBuildingInfo();
 
-            var buildingNameForUrl = infobox.Name.Replace(" ", "_");
-
             result.Name = infobox.Name;
             result.Icon = infobox.Icon;
             result.BuildingSize = infobox.BuildingSize;
-
             result.Type = infobox.Type;
             result.ProductionInfos = infobox.ProductionInfos;
             result.SupplyInfos = infobox.SupplyInfos;
             result.UnlockInfos = infobox.UnlockInfos;
-
-            //check Url for "World's Fair" | correct: https://anno1800.fandom.com/wiki/World%27s_Fair
-            if (buildingNameForUrl.Contains("World's_Fair"))
-            {
-                buildingNameForUrl = "World%27s_Fair";
-            }
-            //(maybe) TODO check Url for "Bombín Weaver" | correct: https://anno1800.fandom.com/wiki/Bomb%C2%AD%C3%ADn_Weaver
-            //contains unicode char (https://www.utf8-chartable.de/unicode-utf8-table.pl):  U+00AD	­	c2 ad	SOFT HYPHEN
-
-            result.Url = new Uri("https://anno1800.fandom.com/wiki/" + buildingNameForUrl);
+            result.Url = GetUriForBuilding(infobox.Name);
+            result.ConstructionInfos = infobox.ConstructionInfos;
             result.RevisionId = -1;
             result.RevisionDate = DateTime.MinValue;
 

@@ -23,5 +23,7 @@ namespace FandomParser.Core.Models
         SupplyInfo SupplyInfos { get; set; }
 
         UnlockInfo UnlockInfos { get; set; }
+
+        List<ConstructionInfo> ConstructionInfos { get; set; }
     }
 }

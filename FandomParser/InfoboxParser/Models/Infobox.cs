@@ -34,5 +34,7 @@ namespace InfoboxParser.Models
         public SupplyInfo SupplyInfos { get; set; }
 
         public UnlockInfo UnlockInfos { get; set; }
+
+        public List<ConstructionInfo> ConstructionInfos { get; set; }
     }
 }

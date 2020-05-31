@@ -9,11 +9,14 @@ using FandomParser.Core;
 using FandomParser.Core.Models;
 using FandomParser.Core.Presets.Models;
 using InfoboxParser.Models;
+using NLog;
 
 namespace InfoboxParser.Parser
 {
     internal class ParserOldAndNewWorld : IParser
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly ICommons _commons;
         private readonly ISpecialBuildingNameHelper _specialBuildingNameHelper;
         private readonly IRegionHelper _regionHelper;
@@ -54,6 +57,25 @@ namespace InfoboxParser.Parser
         //|Unlock Condition 1 Amount (OW) = 100
         private static readonly Regex regexUnlockConditionAmount = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        //|Credits (OW) = 15000
+        private static readonly Regex regexConstructionCredits = new Regex(@"(?<begin>\|Credits)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Timber (OW) = 12
+        private static readonly Regex regexConstructionTimber = new Regex(@"(?<begin>\|Timber)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Bricks (OW) = 3
+        private static readonly Regex regexConstructionBricks = new Regex(@"(?<begin>\|Bricks)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Steel Beams (OW) = 8
+        private static readonly Regex regexConstructionSteelBeams = new Regex(@"(?<begin>\|Steel Beams)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Windows (OW) = 2
+        private static readonly Regex regexConstructionWindows = new Regex(@"(?<begin>\|Windows)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Concrete (OW) = 15
+        private static readonly Regex regexConstructionConcrete = new Regex(@"(?<begin>\|Concrete)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Weapons (OW) = 20
+        private static readonly Regex regexConstructionWeapons = new Regex(@"(?<begin>\|Weapons)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //|Advanced Weapons (OW) = 25
+        private static readonly Regex regexConstructionAdvancedWeapons = new Regex(@"(?<begin>\|Advanced Weapons)\s*(?:\()(?<region>\w{2})\s*(?:\))\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private CultureInfo cultureForParsing;
+
         public ParserOldAndNewWorld(ICommons commons, ISpecialBuildingNameHelper specialBuildingNameHelperToUse, IRegionHelper regionHelperToUse)
         {
             _commons = commons;
@@ -61,6 +83,9 @@ namespace InfoboxParser.Parser
             _regionHelper = regionHelperToUse;
 
             possibleRegions = new List<string> { "OW", "NW" };
+
+            //all numbers in the wiki are entered with comma (,) e.g. "42,21", so we need to use a specific culture for parsing (https://anno1800.fandom.com/wiki/Cannery)
+            cultureForParsing = new CultureInfo("de-DE");
         }
 
         public List<IInfobox> GetInfobox(string wikiText)
@@ -100,6 +125,7 @@ namespace InfoboxParser.Parser
 
                 var supplyInfo = getSupplyInfo(wikiText, curRegion);
                 var unlockInfo = getUnlockInfo(wikiText, curRegion);
+                var constructionInfo = getConstructionInfo(wikiText, curRegion);
 
                 buildingName = _specialBuildingNameHelper.CheckSpecialBuildingName(buildingName);
 
@@ -113,7 +139,8 @@ namespace InfoboxParser.Parser
                     ProductionInfos = productionInfo,
                     SupplyInfos = supplyInfo,
                     UnlockInfos = unlockInfo,
-                    Region = region
+                    Region = region,
+                    ConstructionInfos = constructionInfo
                 };
 
                 result.Add(parsedInfobox);
@@ -792,6 +819,294 @@ namespace InfoboxParser.Parser
                     if (matchAmount.Success)
                     {
                         result = matchAmount.Groups["icon"].Value;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private List<ConstructionInfo> getConstructionInfo(string infobox, string regionToParse)
+        {
+            List<ConstructionInfo> result = new List<ConstructionInfo>();
+
+            using (var reader = new StringReader(infobox))
+            {
+                string curLine;
+                while ((curLine = reader.ReadLine()) != null)
+                {
+                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
+
+                    var matchCredits = regexConstructionCredits.Match(curLine);
+                    if (matchCredits.Success)
+                    {
+                        var matchedRegion = matchCredits.Groups["region"].Value;
+                        if (!regionToParse.Equals(matchedRegion))
+                        {
+                            continue;
+                        }
+
+                        var foundValue = matchCredits.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Credits: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Credits"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchTimber = regexConstructionTimber.Match(curLine);
+                    if (matchTimber.Success)
+                    {
+                        var matchedRegion = matchTimber.Groups["region"].Value;
+                        if (!regionToParse.Equals(matchedRegion))
+                        {
+                            continue;
+                        }
+
+                        var foundValue = matchTimber.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Timber: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Timber"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchBricks = regexConstructionBricks.Match(curLine);
+                    if (matchBricks.Success)
+                    {
+                        var matchedRegion = matchBricks.Groups["region"].Value;
+                        if (!regionToParse.Equals(matchedRegion))
+                        {
+                            continue;
+                        }
+
+                        var foundValue = matchBricks.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Bricks: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Bricks"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchSteelBeams = regexConstructionSteelBeams.Match(curLine);
+                    if (matchSteelBeams.Success)
+                    {
+                        var matchedRegion = matchSteelBeams.Groups["region"].Value;
+                        if (!regionToParse.Equals(matchedRegion))
+                        {
+                            continue;
+                        }
+
+                        var foundValue = matchSteelBeams.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Steel Beams: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Steel Beams"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchWindows = regexConstructionWindows.Match(curLine);
+                    if (matchWindows.Success)
+                    {
+                        var matchedRegion = matchWindows.Groups["region"].Value;
+                        if (!regionToParse.Equals(matchedRegion))
+                        {
+                            continue;
+                        }
+
+                        var foundValue = matchWindows.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Windows: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Windows"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchConcrete = regexConstructionConcrete.Match(curLine);
+                    if (matchConcrete.Success)
+                    {
+                        var matchedRegion = matchConcrete.Groups["region"].Value;
+                        if (!regionToParse.Equals(matchedRegion))
+                        {
+                            continue;
+                        }
+
+                        var foundValue = matchConcrete.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Concrete: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Reinforced Concrete"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchWeapons = regexConstructionWeapons.Match(curLine);
+                    if (matchWeapons.Success)
+                    {
+                        var matchedRegion = matchWeapons.Groups["region"].Value;
+                        if (!regionToParse.Equals(matchedRegion))
+                        {
+                            continue;
+                        }
+
+                        var foundValue = matchWeapons.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Weapons: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Weapons"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchAdvancedWeapons = regexConstructionAdvancedWeapons.Match(curLine);
+                    if (matchAdvancedWeapons.Success)
+                    {
+                        var matchedRegion = matchAdvancedWeapons.Groups["region"].Value;
+                        if (!regionToParse.Equals(matchedRegion))
+                        {
+                            continue;
+                        }
+
+                        var foundValue = matchAdvancedWeapons.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Advanced Weapons: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Advanced Weapons"
+                            }
+                        });
+                        continue;
                     }
                 }
             }
