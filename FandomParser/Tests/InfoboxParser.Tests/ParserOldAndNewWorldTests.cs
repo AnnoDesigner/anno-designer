@@ -10,12 +10,14 @@ using InfoboxParser.Models;
 using InfoboxParser.Parser;
 using InfoboxParser.Tests.Attributes;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace InfoboxParser.Tests
 {
     public class ParserOldAndNewWorldTests
     {
         private static readonly ICommons _mockedCommons;
+        private readonly ITestOutputHelper _output;
         private static readonly ISpecialBuildingNameHelper _mockedSpecialBuildingNameHelper;
         private static readonly IRegionHelper _mockedRegionHelper;
 
@@ -25,6 +27,8 @@ namespace InfoboxParser.Tests
         private static readonly string testDataMarketplace;
         private static readonly string testDataSmallWareHouse;
         private static readonly string testDataEmpty_BothWorlds;
+
+        #region ctor
 
         static ParserOldAndNewWorldTests()
         {
@@ -41,6 +45,13 @@ namespace InfoboxParser.Tests
             testDataSmallWareHouse = File.ReadAllText(Path.Combine(basePath, "Testdata", "Small_Warehouse.infobox"));
             testDataEmpty_BothWorlds = File.ReadAllText(Path.Combine(basePath, "Testdata", "empty_BothWorlds.infobox"));
         }
+
+        public ParserOldAndNewWorldTests(ITestOutputHelper testOutputHelperToUse)
+        {
+            _output = testOutputHelperToUse;
+        }
+
+        #endregion
 
         private IParser GetParser(ICommons commonsToUse = null,
            ISpecialBuildingNameHelper specialBuildingNameHelperToUse = null,
@@ -64,6 +75,27 @@ namespace InfoboxParser.Tests
                     { testDataHospital, BuildingType.Institution },
                     { testDataMarketplace, BuildingType.PublicService },
                     { testDataSmallWareHouse, BuildingType.Infrastructure }
+                };
+            }
+        }
+
+        public static TheoryData<string, string> BuildingIconTestData
+        {
+            get
+            {
+                return new TheoryData<string, string>
+                {
+                    { "|Building Icon = Charcoal_kiln.png", "Charcoal_kiln.png" },
+                    { "|Building Icon = Furs.png", "Furs.png" },
+                    { "|Building Icon      =    Furs.png   ", "Furs.png" },
+                    { "|Building Icon = Furs.jpeg", "Furs.jpeg" },
+                    { "|Building Icon = Arctic Lodge.png", "Arctic Lodge.png" },
+                    { "|Building Icon = Bear Hunting Cabin.png", "Bear Hunting Cabin.png" },
+                    { "|Building Icon = Cocoa_0.png", "Cocoa_0.png" },
+                    { "|Building Icon = Icon electric works gas 0.png ", "Icon electric works gas 0.png" },
+                    { "|Building Icon = Harbourmaster's Office.png", "Harbourmaster's Office.png" },
+                    { "|Building Icon = Harbourmaster´s Office.png", "Harbourmaster´s Office.png" },
+                    { "|Building Icon = Harbourmaster`s Office.png", "Harbourmaster`s Office.png" },
                 };
             }
         }
@@ -1133,6 +1165,41 @@ namespace InfoboxParser.Tests
             Assert.Single(result[1].UnlockInfos.UnlockConditions);
             Assert.Equal(1, result[1].UnlockInfos.UnlockConditions[0].Amount);
             Assert.Equal("Obreros", result[1].UnlockInfos.UnlockConditions[0].Type);
+        }
+
+        #endregion
+
+        #region BuildingIcon tests
+
+        [Theory]
+        [InlineData("dummy")]
+        [InlineData("|Building Icon = ")]
+        public void GetInfobox_WikiTextContainsNoBuildingIcon_ShouldReturnEmpty(string input)
+        {
+            // Arrange
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(string.Empty, result[0].Icon);
+        }
+
+        [Theory]
+        [MemberData(nameof(BuildingIconTestData))]
+        public void GetInfobox_WikiTextContainsBuildingIcon_ShouldReturnCorrectValue(string input, string expectedIcon)
+        {
+            // Arrange
+            _output.WriteLine($"{nameof(input)}: {input}");
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(expectedIcon, result[0].Icon);
         }
 
         #endregion

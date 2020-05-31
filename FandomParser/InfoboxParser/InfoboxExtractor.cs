@@ -72,6 +72,12 @@ namespace InfoboxParser
                 startIndex = indexInfoboxStart;
             }
 
+            var containsNoknownTemplateStart = startIndex == -1;
+            if (containsNoknownTemplateStart)
+            {
+                return result;
+            }
+
             var infobox = GetInfobox(content, startIndex);
             string title = null;
             if (isInfoboxMultiple)

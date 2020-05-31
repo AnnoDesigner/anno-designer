@@ -93,7 +93,7 @@ namespace InfoboxParser.Tests
         [InlineData(null)]
         [InlineData(" ")]
         [InlineData("")]
-        public void ExtractInfobox_ContentIsNullOrWhiteSpace_ShouldReturnNull(string content)
+        public void ExtractInfobox_ContentIsNullOrWhiteSpace_ShouldReturnEmptyList(string content)
         {
             // Arrange
             var extractor = GetExtractor();
@@ -102,11 +102,11 @@ namespace InfoboxParser.Tests
             var result = extractor.ExtractInfobox(content);
 
             // Assert
-            Assert.Null(result);
+            Assert.Empty(result);
         }
 
         [Fact]
-        public void ExtractInfobox_ContentContainsNoInfoboxTemplateStart_ShouldReturnNull()
+        public void ExtractInfobox_ContentContainsNoInfoboxTemplateStart_ShouldReturnEmptyList()
         {
             // Arrange
             var content = "{{Some other template";
@@ -116,7 +116,7 @@ namespace InfoboxParser.Tests
             var result = extractor.ExtractInfobox(content);
 
             // Assert
-            Assert.Null(result);
+            Assert.Empty(result);
         }
 
         [Theory]

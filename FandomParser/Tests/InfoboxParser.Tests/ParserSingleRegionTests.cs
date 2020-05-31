@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,12 +12,14 @@ using InfoboxParser.Models;
 using InfoboxParser.Parser;
 using InfoboxParser.Tests.Attributes;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace InfoboxParser.Tests
 {
     public class ParserSingleRegionTests
     {
         private static readonly ICommons _mockedCommons;
+        private readonly ITestOutputHelper _output;
         private static readonly ISpecialBuildingNameHelper _mockedSpecialBuildingNameHelper;
         private static readonly ITitleParserSingle _mockedTitleParserSingle;
 
@@ -25,6 +28,8 @@ namespace InfoboxParser.Tests
         private static readonly string testDataCannery;
         private static readonly string testDataChapel;
         private static readonly string testDataEmpty;
+
+        #region ctor
 
         static ParserSingleRegionTests()
         {
@@ -40,6 +45,13 @@ namespace InfoboxParser.Tests
             testDataChapel = File.ReadAllText(Path.Combine(basePath, "Testdata", "Chapel.infobox"));
             testDataEmpty = File.ReadAllText(Path.Combine(basePath, "Testdata", "empty.infobox"));
         }
+
+        public ParserSingleRegionTests(ITestOutputHelper testOutputHelperToUse)
+        {
+            _output = testOutputHelperToUse;
+        }
+
+        #endregion
 
         private IParser GetParser(ICommons commonsToUse = null,
             ITitleParserSingle titleParserSingleToUse = null)
@@ -60,6 +72,49 @@ namespace InfoboxParser.Tests
                     { testDataBakery, BuildingType.Production },
                     { testDataCannery, BuildingType.Production },
                     { testDataChapel, BuildingType.PublicService },
+                };
+            }
+        }
+
+        public static TheoryData<string, Size> BuildingsizeTestData
+        {
+            get
+            {
+                return new TheoryData<string, Size>
+                {
+                    { "|Building Size = 3x3", new Size(3, 3) },
+                    { "|Building Size = 1x3", new Size(1, 3) },
+                    { "|Building Size = 1x10", new Size(1, 10) },
+                    { "|Building Size = 10x1", new Size(10, 1) },
+                    { "|Building Size = 18x22", new Size(18, 22) },
+                    { "|Building Size      =      1   x   10  ", new Size(1, 10) },
+                    { "|Building Size = 4 x 5", new Size(4, 5) },
+                    { "|Building Size = 4x5}}", new Size(4, 5) },
+                    { "|Building Size = 4x5   }}", new Size(4, 5) },
+                    { "|Building Size = 5x11 (5x16 in water)", new Size(5, 11) },
+                    { "|Building Size = 5x8 (5x13)", new Size(5, 8) },
+                    { "|Building Size   = 5x7 (partially submerged)", new Size(5, 7) },
+                };
+            }
+        }
+
+        public static TheoryData<string, string> BuildingIconTestData
+        {
+            get
+            {
+                return new TheoryData<string, string>
+                {
+                    { "|Building Icon = Charcoal_kiln.png", "Charcoal_kiln.png" },
+                    { "|Building Icon = Furs.png", "Furs.png" },
+                    { "|Building Icon      =    Furs.png   ", "Furs.png" },
+                    { "|Building Icon = Furs.jpeg", "Furs.jpeg" },
+                    { "|Building Icon = Arctic Lodge.png", "Arctic Lodge.png" },
+                    { "|Building Icon = Bear Hunting Cabin.png", "Bear Hunting Cabin.png" },
+                    { "|Building Icon = Cocoa_0.png", "Cocoa_0.png" },
+                    { "|Building Icon = Icon electric works gas 0.png ", "Icon electric works gas 0.png" },
+                    { "|Building Icon = Harbourmaster's Office.png", "Harbourmaster's Office.png" },
+                    { "|Building Icon = Harbourmaster´s Office.png", "Harbourmaster´s Office.png" },
+                    { "|Building Icon = Harbourmaster`s Office.png", "Harbourmaster`s Office.png" },
                 };
             }
         }
@@ -126,6 +181,8 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsBuildingType_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
+            _output.WriteLine($"{nameof(input)}: {input}");
+
             var parser = GetParser();
 
             // Act
@@ -1009,6 +1066,94 @@ namespace InfoboxParser.Tests
             Assert.Single(result[0].UnlockInfos.UnlockConditions);
             Assert.Equal(150, result[0].UnlockInfos.UnlockConditions[0].Amount);
             Assert.Equal("Workers", result[0].UnlockInfos.UnlockConditions[0].Type);
+        }
+
+        #endregion
+
+        #region BuildingSize tests
+
+        [Theory]
+        [InlineData("dummy")]
+        [InlineData("|Building Size = ")]
+        public void GetInfobox_WikiTextContainsNoBuildingSize_ShouldReturnEmptySize(string input)
+        {
+            // Arrange
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(Size.Empty, result[0].BuildingSize);
+        }
+
+        [Theory]
+        [InlineData("|Building Size = ?x?")]
+        [InlineData("|Building Size = ? x ?")]
+        [InlineData("|Building Size = ? x?")]
+        [InlineData("|Building Size = ?x ?")]
+        [InlineData("|Building Size = dummyxdummy")]
+        public void GetInfobox_WikiTextContainsUnknownBuildingSize_ShouldReturnEmptySize(string input)
+        {
+            // Arrange
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(Size.Empty, result[0].BuildingSize);
+        }
+
+        [Theory]
+        [MemberData(nameof(BuildingsizeTestData))]
+        public void GetInfobox_WikiTextContainsBuildingSize_ShouldReturnCorrectValue(string input, Size expectedSize)
+        {
+            // Arrange
+            _output.WriteLine($"{nameof(input)}: {input}");
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(expectedSize, result[0].BuildingSize);
+        }
+
+        #endregion
+
+        #region BuildingIcon tests
+
+        [Theory]
+        [InlineData("dummy")]
+        [InlineData("|Building Icon = ")]
+        public void GetInfobox_WikiTextContainsNoBuildingIcon_ShouldReturnEmpty(string input)
+        {
+            // Arrange
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(string.Empty, result[0].Icon);
+        }
+
+        [Theory]
+        [MemberData(nameof(BuildingIconTestData))]
+        public void GetInfobox_WikiTextContainsBuildingIcon_ShouldReturnCorrectValue(string input, string expectedIcon)
+        {
+            // Arrange
+            _output.WriteLine($"{nameof(input)}: {input}");
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(expectedIcon, result[0].Icon);
         }
 
         #endregion

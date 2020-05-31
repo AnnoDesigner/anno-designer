@@ -24,7 +24,7 @@ namespace InfoboxParser.Parser
         //TODO support edge cases in regex like "|Input 1 Amount Electricity = 1.79769313486232E+308"
 
         //|Building Icon      = Icon palace module.png
-        private static readonly Regex regexBuildingIcon = new Regex(@"(?<begin>\|Building Icon)\s*(?<equalSign>[=])\s*(?<icon>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexBuildingIcon = new Regex(@"(?<begin>\|Building Icon)\s*(?<equalSign>[=])\s*(?<icon>(?:\w*\s*['`´]*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         //|Building Size = 3x13
         private static readonly Regex regexBuildingSize = new Regex(@"(?<begin>\|Building Size)\s*(?<equalSign>[=])\s*(?<value>\d*\s*(?:[x]\s*\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -56,7 +56,7 @@ namespace InfoboxParser.Parser
             _commons = commons;
             _titleParserSingle = titleParserSingleToUse;
 
-            //all numbers in the wiki are entered with "," e.g. "42,21", so we need to use a specific culture
+            //all numbers in the wiki are entered with comma (,) e.g. "42,21", so we need to use a specific culture for parsing (https://anno1800.fandom.com/wiki/Cannery)
             cultureForParsing = new CultureInfo("de-DE");
         }
 
