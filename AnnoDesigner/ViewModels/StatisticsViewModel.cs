@@ -237,7 +237,7 @@ namespace AnnoDesigner.ViewModels
 
             if (mode != UpdateMode.NoBuildingList && ShowBuildingList)
             {
-                var groupedBuildings = placedObjects.GroupBy(_ => _.Identifier).ToList();
+                var groupedPlacedBuildings = placedObjects.GroupBy(_ => _.Identifier).ToList();
 
                 IEnumerable<IGrouping<string, LayoutObject>> groupedSelectedBuildings = null;
                 if (selectedObjects != null && selectedObjects.Count > 0)
@@ -245,7 +245,7 @@ namespace AnnoDesigner.ViewModels
                     groupedSelectedBuildings = selectedObjects.Where(_ => _ != null).GroupBy(_ => _.Identifier).ToList();
                 }
 
-                var buildingsTask = Task.Run(() => GetStatisticBuildings(groupedBuildings, buildingPresets));
+                var buildingsTask = Task.Run(() => GetStatisticBuildings(groupedPlacedBuildings, buildingPresets));
                 var selectedBuildingsTask = Task.Run(() => GetStatisticBuildings(groupedSelectedBuildings, buildingPresets));
                 SelectedBuildings = await selectedBuildingsTask;
                 Buildings = await buildingsTask;
