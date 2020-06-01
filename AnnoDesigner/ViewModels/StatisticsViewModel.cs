@@ -237,8 +237,13 @@ namespace AnnoDesigner.ViewModels
 
             if (mode != UpdateMode.NoBuildingList && ShowBuildingList)
             {
-                var groupedBuildings = placedObjects.GroupBy(_ => _.Identifier);
-                var groupedSelectedBuildings = selectedObjects.Count > 0 ? selectedObjects.GroupBy(_ => _.Identifier) : null;
+                var groupedBuildings = placedObjects.GroupBy(_ => _.Identifier).ToList();
+
+                IEnumerable<IGrouping<string, LayoutObject>> groupedSelectedBuildings = null;
+                if (selectedObjects != null && selectedObjects.Count > 0)
+                {
+                    groupedSelectedBuildings = selectedObjects.Where(_ => _ != null).GroupBy(_ => _.Identifier).ToList();
+                }
 
                 var buildingsTask = Task.Run(() => GetStatisticBuildings(groupedBuildings, buildingPresets));
                 var selectedBuildingsTask = Task.Run(() => GetStatisticBuildings(groupedSelectedBuildings, buildingPresets));
@@ -256,7 +261,7 @@ namespace AnnoDesigner.ViewModels
 
         private ObservableCollection<StatisticsBuilding> GetStatisticBuildings(IEnumerable<IGrouping<string, LayoutObject>> groupedBuildingsByIdentifier, BuildingPresets buildingPresets)
         {
-            if (groupedBuildingsByIdentifier == null)
+            if (groupedBuildingsByIdentifier is null || !groupedBuildingsByIdentifier.Any())
             {
                 return new ObservableCollection<StatisticsBuilding>();
             }
