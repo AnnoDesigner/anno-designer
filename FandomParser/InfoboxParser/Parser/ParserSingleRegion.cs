@@ -24,46 +24,46 @@ namespace InfoboxParser.Parser
         //TODO support edge cases in regex like "|Input 1 Amount Electricity = 1.79769313486232E+308"
 
         //|Building Icon      = Icon palace module.png
-        private static readonly Regex regexBuildingIcon = new Regex(@"(?<begin>\|Building Icon)\s*(?<equalSign>[=])\s*(?<icon>(?:\w*\s*['`´]*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexBuildingIcon = new Regex(@"\|Building Icon\s*=\s*(?<icon>(\w*\s*['`´]*)+([\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         //|Building Size = 3x13
-        private static readonly Regex regexBuildingSize = new Regex(@"(?<begin>\|Building Size)\s*(?<equalSign>[=])\s*(?<value>\d*\s*(?:[x]\s*\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexBuildingSize = new Regex(@"\|Building Size\s*=\s*(?<value>[0-9]*\s*(x\s*[0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         //|Input 1 Amount = 2
-        private static readonly Regex regexInputAmount = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexInputAmount = new Regex(@"\|Input\s*(?<counter>[1-9]+)\s*Amount\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Input 1 Amount Electricity = 4        
-        private static readonly Regex regexInputAmountElectricity = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexInputAmountElectricity = new Regex(@"\|Input\s*(?<counter>[1-9]+)\s*Amount Electricity\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Input 1 Icon = Potato.png
-        private static readonly Regex regexInputIcon = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Icon)\s*(?<equalSign>[=])\s*(?<fileName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexInputIcon = new Regex(@"\|Input\s*(?<counter>[1-9]+)\s*Icon\s*=\s*(?<fileName>(\w*\s*)+([.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         //|Supplies 1 Type = Farmers
-        private static readonly Regex regexSupplyType = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexSupplyType = new Regex(@"\|Supplies\s*(?<counter>[1-9]+)\s*Type\s*=\s*(?<typeName>(\w*\s*)+([.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Supplies 1 Amount = 2
-        private static readonly Regex regexSupplyAmount = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexSupplyAmount = new Regex(@"\|Supplies\s*(?<counter>[1-9]+)\s*Amount\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Supplies 1 Amount Electricity = 4
-        private static readonly Regex regexSupplyAmountElectricity = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexSupplyAmountElectricity = new Regex(@"\|Supplies\s*(?<counter>[1-9]+)\s*Amount Electricity\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         //|Unlock Condition 1 Type = Farmers
-        private static readonly Regex regexUnlockConditionType = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexUnlockConditionType = new Regex(@"\|Unlock Condition\s*(?<counter>[1-9]+)\s*Type\s*=\s*(?<typeName>(\w*\s*)+([.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Unlock Condition 1 Amount = 100
-        private static readonly Regex regexUnlockConditionAmount = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexUnlockConditionAmount = new Regex(@"\|Unlock Condition\s*(?<counter>[1-9]+)\s*Amount\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         //|Credits = 15000
-        private static readonly Regex regexConstructionCredits = new Regex(@"(?<begin>\|Credits)\s*(?<equalSign>[=])\s*(?<value>[-+]*\d*(?:[.,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexConstructionCredits = new Regex(@"\|Credits\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Timber = 12
-        private static readonly Regex regexConstructionTimber = new Regex(@"(?<begin>\|Timber)\s*(?<equalSign>[=])\s*(?<value>[-+]*\d*(?:[.,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexConstructionTimber = new Regex(@"\|Timber\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Bricks = 3
-        private static readonly Regex regexConstructionBricks = new Regex(@"(?<begin>\|Bricks)\s*(?<equalSign>[=])\s*(?<value>[-+]*\d*(?:[.,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexConstructionBricks = new Regex(@"\|Bricks\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Steel Beams = 8
-        private static readonly Regex regexConstructionSteelBeams = new Regex(@"(?<begin>\|Steel Beams)\s*(?<equalSign>[=])\s*(?<value>[-+]*\d*(?:[.,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexConstructionSteelBeams = new Regex(@"\|Steel Beams\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Windows = 2
-        private static readonly Regex regexConstructionWindows = new Regex(@"(?<begin>\|Windows)\s*(?<equalSign>[=])\s*(?<value>[-+]*\d*(?:[.,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexConstructionWindows = new Regex(@"\|Windows\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Concrete = 15
-        private static readonly Regex regexConstructionConcrete = new Regex(@"(?<begin>\|Concrete)\s*(?<equalSign>[=])\s*(?<value>[-+]*\d*(?:[.,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexConstructionConcrete = new Regex(@"\|Concrete\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Weapons = 20
-        private static readonly Regex regexConstructionWeapons = new Regex(@"(?<begin>\|Weapons)\s*(?<equalSign>[=])\s*(?<value>[-+]*\d*(?:[.,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexConstructionWeapons = new Regex(@"\|Weapons\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Advanced Weapons = 25
-        private static readonly Regex regexConstructionAdvancedWeapons = new Regex(@"(?<begin>\|Advanced Weapons)\s*(?<equalSign>[=])\s*(?<value>[-+]*\d*(?:[.,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexConstructionAdvancedWeapons = new Regex(@"\|Advanced Weapons\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         private CultureInfo cultureForParsing;
 
@@ -178,7 +178,7 @@ namespace InfoboxParser.Parser
                     if (matchAmount.Success)
                     {
                         var foundValue = matchAmount.Groups["value"].Value;
-                        var splittedSize = foundValue.Split('x');
+                        var splittedSize = foundValue.Split(new[] { 'x' }, StringSplitOptions.RemoveEmptyEntries);
                         if (splittedSize.Length != 2)
                         {
                             return result;

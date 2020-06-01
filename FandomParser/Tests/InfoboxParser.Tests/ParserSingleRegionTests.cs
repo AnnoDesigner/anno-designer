@@ -132,7 +132,9 @@ namespace InfoboxParser.Tests
                     //{ "|Credits = 42.21", 42.21 },
                     //{ "|Credits = -42.21", -42.21 },
                     { "|Credits = -100", -100d },
-                    { "|Credits    =    150   ", 150d }
+                    { "|Credits    =    150   ", 150d },
+                    { "|Credits = 150}}", 150d },
+                    { "|Credits = 42,21   }}", 42.21 },
                 };
             }
         }
@@ -1110,6 +1112,7 @@ namespace InfoboxParser.Tests
         [InlineData("|Building Size = ? x ?")]
         [InlineData("|Building Size = ? x?")]
         [InlineData("|Building Size = ?x ?")]
+        [InlineData("|Building Size = 3x")]
         [InlineData("|Building Size = dummyxdummy")]
         public void GetInfobox_WikiTextContainsUnknownBuildingSize_ShouldReturnEmptySize(string input)
         {
