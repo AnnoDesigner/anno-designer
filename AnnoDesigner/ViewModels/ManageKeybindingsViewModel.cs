@@ -65,8 +65,8 @@ namespace AnnoDesigner.ViewModels
 #pragma warning disable IDE0007 // Use implicit type //Intent is much clearer
             (Key key, ModifierKeys modifiers, bool userCancelled) = HotkeyRecordingWindow.RecordNewBinding();
 #pragma warning restore IDE0007 // Use implicit type
-            //Only set new hotkeys if the user didn't click cancel, and they didn't close the window without pressing anything
-            if (!userCancelled && !(key == Key.None && modifiers == ModifierKeys.None))
+            //Only set new hotkeys if the user didn't click cancel, and they didn't close the window without a key bound
+            if (!userCancelled && key != Key.None)
             {
                 Debug.WriteLine($"Recieved the following binding: {modifiers} + {key}");
                 var keybinding = hotkey.Binding as KeyBinding;
@@ -79,7 +79,6 @@ namespace AnnoDesigner.ViewModels
 
         private void UpdateLanguage()
         {
-
             UpdateRebindButtonText();
         }
 
