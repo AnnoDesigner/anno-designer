@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,6 +66,7 @@ namespace AnnoDesigner
         /// <param name="binding"></param>
         public void AddBinding(Hotkey hotkey)
         {
+            hotkey.PropertyChanged += Hotkey_PropertyChanged;
             if (!bindings.ContainsKey(hotkey.Name))
             {
                 bindings.Add(hotkey.Name, hotkey);
@@ -74,6 +76,11 @@ namespace AnnoDesigner
             {
                 throw new ArgumentException($"Key {hotkey.Name} already exists in collection.", "bindingId");
             }
+        }
+
+        private void Hotkey_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Debug.WriteLine($"Changed {sender}, Property Name: {e.PropertyName}");
         }
 
         public void RemoveBinding(string bindingId)

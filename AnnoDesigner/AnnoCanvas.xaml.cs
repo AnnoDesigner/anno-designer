@@ -1890,7 +1890,12 @@ namespace AnnoDesigner
                 Key = Key.A,
                 Modifiers = ModifierKeys.Control
             }, "SecondBinding Test"));
+            manager.AddBinding(new Hotkey("TestBinding2", new MouseBinding()
+            {
+                Gesture = new MouseGesture(MouseAction.LeftDoubleClick, ModifierKeys.Control)
+            }, "Third Test"));
         }
+
 
         #endregion
     }

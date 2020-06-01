@@ -7,9 +7,8 @@
         mc:Ignorable="d"
         Title="Record a new keybinding" 
         Height="150" 
-        Width="600"
+        Width="670"
         WindowStartupLocation="CenterOwner">
-    <!--TODO: Localize title, close and cancel buttons, before PR is accepted -->
     <Grid Margin="5" >
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
@@ -20,7 +19,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Name="RecordedInput" FontSize="40" VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" Grid.ColumnSpan="2" />
-        <Button Grid.Row="1" Grid.Column="0" Content="Set Binding" Click="SetBindingClick" Margin="5"/>
-        <Button Grid.Row="1" Grid.Column="1" Content="Cancel" Click="CancelClick"  Margin="5"/>
+        <Button Grid.Row="1" Grid.Column="0" Content="Save" Click="SaveRecordingClick" Margin="5" />
+        <Button Grid.Row="1" Grid.Column="1" Content="Cancel" Click="CancelClick"  Margin="5" />
     </Grid>
 </Window>

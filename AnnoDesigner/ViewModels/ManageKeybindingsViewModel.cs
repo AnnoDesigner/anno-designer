@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Xml;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 
@@ -62,19 +63,79 @@ namespace AnnoDesigner.ViewModels
         {
             RebindButtonCurrentTextKey = RECORDING_KEY;
             UpdateRebindButtonText();
+
 #pragma warning disable IDE0007 // Use implicit type //Intent is much clearer
-            (Key key, ModifierKeys modifiers, bool userCancelled) = HotkeyRecordingWindow.RecordNewBinding();
+            (Key key, ModifierKeys modifiers, MouseAction action, HotkeyRecordingWindow.HotkeyRecordingWindowResult result, bool userCancelled) = HotkeyRecordingWindow.RecordNewBinding();
 #pragma warning restore IDE0007 // Use implicit type
+
             //Only set new hotkeys if the user didn't click cancel, and they didn't close the window without a key bound
-            if (!userCancelled && key != Key.None)
+            if (!userCancelled)
             {
-                Debug.WriteLine($"Recieved the following binding: {modifiers} + {key}");
-                var keybinding = hotkey.Binding as KeyBinding;
-                keybinding.Key = key;
-                keybinding.Modifiers = modifiers;
+                if (result == HotkeyRecordingWindow.HotkeyRecordingWindowResult.KeyAction)
+                {
+                    Debug.WriteLine($"Recieved the following binding: {modifiers} + {key}");
+                    if (hotkey.Binding is KeyBinding keyBinding)
+                    {
+                        keyBinding.Key = key;
+                        keyBinding.Modifiers = modifiers;
+                    }
+                    else
+                    {
+                        hotkey.Binding = GetKeyBinding(hotkey.Binding as MouseBinding, key, modifiers);
+                    }
+                }
+                else
+                {
+                    if (hotkey.Binding is MouseBinding mouseBinding)
+                    {
+                        hotkey.Binding = GetMouseBinding(mouseBinding, action, modifiers);
+                    }
+                    else
+                    {
+                        hotkey.Binding = GetMouseBinding(hotkey.Binding as KeyBinding, action, modifiers);
+                    }
+                }
             }
             RebindButtonCurrentTextKey = REBIND_KEY;
             UpdateRebindButtonText();
+        }
+
+        private KeyBinding GetKeyBinding(MouseBinding mouseBinding, Key key, ModifierKeys modifierKeys)
+        {
+            //This is not an exact copy, hence why this method is private. It should only be used internally.
+            //Properties such as IsFrozen, IsSealed are not copied, and could lead to inconsistencies if used
+            //in a wider scope.
+            var keyBinding = new KeyBinding();
+            keyBinding.Command = mouseBinding.Command;
+            keyBinding.CommandParameter = mouseBinding.CommandParameter;
+            keyBinding.CommandTarget = mouseBinding.CommandTarget;
+            keyBinding.Key = key;
+            keyBinding.Modifiers = modifierKeys;
+            return keyBinding;
+        }
+
+        private MouseBinding GetMouseBinding(KeyBinding keyBinding, MouseAction action, ModifierKeys modifierKeys)
+        {
+            //This is not an exact copy, hence why this method is private. It should only be used internally.
+            //Properties such as IsFrozen, IsSealed are not copied, and could lead to inconsistencies if used
+            //in a wider scope.
+            var mouseBinding = new MouseBinding();
+            mouseBinding.Command = keyBinding.Command;
+            mouseBinding.CommandParameter = keyBinding.CommandParameter;
+            mouseBinding.CommandTarget = keyBinding.CommandTarget;
+            var mouseGesture = new MouseGesture(action, modifierKeys);
+            mouseBinding.Gesture = mouseGesture;
+            return mouseBinding;
+        }
+
+        private MouseBinding GetMouseBinding(MouseBinding mouseBinding, MouseAction action, ModifierKeys modifierKeys)
+        {
+            //This is not an exact copy, hence why this method is private. It should only be used internally.
+            //Properties such as IsFrozen, IsSealed are not copied, and could lead to inconsistencies if used
+            //in a wider scope.
+            var mouseGesture = new MouseGesture(action, modifierKeys);
+            mouseBinding.Gesture = mouseGesture;
+            return mouseBinding;
         }
 
         private void UpdateLanguage()

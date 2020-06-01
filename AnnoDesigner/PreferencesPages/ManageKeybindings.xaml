@@ -15,7 +15,7 @@
     <Page.Resources>
         <models:ManageKeybindingsHotkeyDataTemplateSelector x:Key="dataTemplateSelector"/>
         <Style x:Key="HotkeyRebindButton" TargetType="Button">
-            
+
         </Style>
         <Style x:Key="HotkeyDescription" TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize" Value="15" />
@@ -98,12 +98,15 @@
                         </Style>
                     </StackPanel.Resources>
                     <!--<TextBlock Text="This is a key binding" />-->
-                    <Label Content="{Binding Path=Binding.Modifiers}" Visibility="{Binding Path=Binding.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}"/>
-                    <TextBlock Text="+" Style="{StaticResource HotkeyPlus}" Visibility="{Binding Path=Binding.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
+                    <Label Content="{Binding Path=Binding.Modifiers}" 
+                           Visibility="{Binding Path=Binding.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}"/>
+                    <TextBlock Text="+" 
+                               Style="{StaticResource HotkeyPlus}" 
+                               Visibility="{Binding Path=Binding.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
                     <Label Content="{Binding Path=Binding.Key}"/>
                 </StackPanel>
                 <!--<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="1" FlowDirection="LeftToRight" Margin="20, 0, 0, 0">-->
-                    <Button Content="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindButtonText}" 
+                <Button Content="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindButtonText}" 
                             Command="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindCommand }" 
                             CommandParameter="{Binding}" 
                             VerticalContentAlignment="Center"
@@ -115,11 +118,23 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="MouseBinding">
-
+            <StackPanel>
+                <TextBlock Text="This a mouse binding" />
+                <Button Content="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindButtonText}" 
+                            Command="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindCommand }" 
+                            CommandParameter="{Binding}" 
+                            VerticalContentAlignment="Center"
+                            Width="100"
+                            Grid.Column="2"
+                            Margin="20,12,0,12"
+                            />
+            </StackPanel>
         </DataTemplate>
     </Page.Resources>
     <Grid Grid.IsSharedSizeScope="True">
-        <ItemsControl ItemsSource="{Binding Manager.ObservableCollection}" ItemTemplateSelector="{StaticResource dataTemplateSelector}">
+        <ItemsControl ItemsSource="{Binding Manager.ObservableCollection}" 
+                      ItemTemplateSelector="{StaticResource dataTemplateSelector}"
+                      HorizontalAlignment="Stretch">
         </ItemsControl>
     </Grid>
 </Page>
