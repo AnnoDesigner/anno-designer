@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -96,6 +97,40 @@ namespace InfoboxParser.Tests
                     { "|Building Icon = Harbourmaster's Office.png", "Harbourmaster's Office.png" },
                     { "|Building Icon = Harbourmaster´s Office.png", "Harbourmaster´s Office.png" },
                     { "|Building Icon = Harbourmaster`s Office.png", "Harbourmaster`s Office.png" },
+                };
+            }
+        }
+
+        public static TheoryData<string, Size, WorldRegion> BuildingSizeTestData
+        {
+            get
+            {
+                return new TheoryData<string, Size, WorldRegion>
+                {
+                    { "|Building Size (OW) = 3x3", new Size(3, 3), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 1x3", new Size(1, 3), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 1x10", new Size(1, 10), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 10x1", new Size(10, 1), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 18x22", new Size(18, 22), WorldRegion.OldWorld },
+                    { "|Building Size (OW)      =      1   x   10  ", new Size(1, 10), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 4 x 5", new Size(4, 5), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 4x5}}", new Size(4, 5), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 4x5   }}", new Size(4, 5), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 5x11 (5x16 in water)", new Size(5, 11), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 5x8 (5x13)", new Size(5, 8), WorldRegion.OldWorld },
+                    { "|Building Size (OW)   = 5x7 (partially submerged)", new Size(5, 7), WorldRegion.OldWorld },
+                    { "|Building Size (NW) = 3x3", new Size(3, 3), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 1x3", new Size(1, 3), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 1x10", new Size(1, 10), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 10x1", new Size(10, 1), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 18x22", new Size(18, 22), WorldRegion.NewWorld },
+                    { "|Building Size (NW)      =      1   x   10  ", new Size(1, 10), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 4 x 5", new Size(4, 5), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 4x5}}", new Size(4, 5), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 4x5   }}", new Size(4, 5), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 5x11 (5x16 in water)", new Size(5, 11), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 5x8 (5x13)", new Size(5, 8), WorldRegion.NewWorld },
+                    { "|Building Size (NW)   = 5x7 (partially submerged)", new Size(5, 7), WorldRegion.NewWorld },
                 };
             }
         }
@@ -1200,6 +1235,89 @@ namespace InfoboxParser.Tests
 
             // Assert
             Assert.Equal(expectedIcon, result[0].Icon);
+        }
+
+        #endregion
+
+        #region BuildingSize tests
+
+        [Theory]
+        [InlineData("dummy", WorldRegion.OldWorld)]
+        [InlineData("dummy", WorldRegion.NewWorld)]
+        [InlineData("|Building Size (OW) = ", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (NW) = ", WorldRegion.NewWorld)]
+        public void GetInfobox_WikiTextContainsNoBuildingSize_ShouldReturnEmptySize(string input, WorldRegion regionToTest)
+        {
+            // Arrange
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            if (regionToTest == WorldRegion.OldWorld)
+            {
+                Assert.Equal(Size.Empty, result[0].BuildingSize);
+            }
+            else
+            {
+                Assert.Equal(Size.Empty, result[1].BuildingSize);
+            }
+        }
+
+        [Theory]
+        [InlineData("|Building Size (OW) = ?x?", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (OW) = ? x ?", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (OW) = ? x?", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (OW) = ?x ?", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (OW) = 3x", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (OW) = dummyxdummy", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (NW) = ?x?", WorldRegion.NewWorld)]
+        [InlineData("|Building Size (NW) = ? x ?", WorldRegion.NewWorld)]
+        [InlineData("|Building Size (NW) = ? x?", WorldRegion.NewWorld)]
+        [InlineData("|Building Size (NW) = ?x ?", WorldRegion.NewWorld)]
+        [InlineData("|Building Size (NW) = 3x", WorldRegion.NewWorld)]
+        [InlineData("|Building Size (NW) = dummyxdummy", WorldRegion.NewWorld)]
+        public void GetInfobox_WikiTextContainsUnknownBuildingSize_ShouldReturnEmptySize(string input, WorldRegion regionToTest)
+        {
+            // Arrange
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            if (regionToTest == WorldRegion.OldWorld)
+            {
+                Assert.Equal(Size.Empty, result[0].BuildingSize);
+            }
+            else
+            {
+                Assert.Equal(Size.Empty, result[1].BuildingSize);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(BuildingSizeTestData))]
+        public void GetInfobox_WikiTextContainsBuildingSize_ShouldReturnCorrectValue(string input, Size expectedSize, WorldRegion regionToTest)
+        {
+            // Arrange
+            _output.WriteLine($"{nameof(input)}: {input}");
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            if (regionToTest == WorldRegion.OldWorld)
+            {
+                Assert.Equal(expectedSize, result[0].BuildingSize);
+            }
+            else
+            {
+                Assert.Equal(expectedSize, result[1].BuildingSize);
+            }
         }
 
         #endregion

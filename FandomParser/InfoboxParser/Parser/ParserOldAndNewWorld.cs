@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -26,6 +27,9 @@ namespace InfoboxParser.Parser
 
         //|Building Icon      = Icon palace module.png        
         private static readonly Regex regexBuildingIcon = new Regex(@"\|Building Icon\s*=\s*(?<icon>(\w*\s*['`´]*)+([.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+
+        //|Building Size (OW) = 3x13
+        private static readonly Regex regexBuildingSize = new Regex(@"\|Building Size\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[0-9]*\s*(x\s*[0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         //|Building Type (OW)     = Institution
         //|Building Type (NW)     = Institution
@@ -126,6 +130,7 @@ namespace InfoboxParser.Parser
                 var supplyInfo = getSupplyInfo(wikiText, curRegion);
                 var unlockInfo = getUnlockInfo(wikiText, curRegion);
                 var constructionInfo = getConstructionInfo(wikiText, curRegion);
+                var buildingSize = getBuildingSize(wikiText, curRegion);
 
                 buildingName = _specialBuildingNameHelper.CheckSpecialBuildingName(buildingName);
 
@@ -140,7 +145,8 @@ namespace InfoboxParser.Parser
                     SupplyInfos = supplyInfo,
                     UnlockInfos = unlockInfo,
                     Region = region,
-                    ConstructionInfos = constructionInfo
+                    ConstructionInfos = constructionInfo,
+                    BuildingSize = buildingSize
                 };
 
                 result.Add(parsedInfobox);
@@ -1107,6 +1113,55 @@ namespace InfoboxParser.Parser
                             }
                         });
                         continue;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private Size getBuildingSize(string infobox, string regionToParse)
+        {
+            var result = Size.Empty;
+
+            //short circuit infoboxes without building size info
+            if (!infobox.Contains("|Building Size"))
+            {
+                return result;
+            }
+
+            using (var reader = new StringReader(infobox))
+            {
+                string curLine;
+                while ((curLine = reader.ReadLine()) != null)
+                {
+                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
+
+                    var matchAmount = regexBuildingSize.Match(curLine);
+                    if (matchAmount.Success)
+                    {
+                        var matchedRegion = matchAmount.Groups["region"].Value;
+                        if (!regionToParse.Equals(matchedRegion))
+                        {
+                            continue;
+                        }
+
+                        var foundValue = matchAmount.Groups["value"].Value;
+                        var splittedSize = foundValue.Split(new[] { 'x' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (splittedSize.Length != 2)
+                        {
+                            return result;
+                        }
+
+                        var couldParseX = int.TryParse(splittedSize[0], out int x);
+                        var couldParseY = int.TryParse(splittedSize[1], out int y);
+                        if (!couldParseX || !couldParseY)
+                        {
+                            logger.Warn($"could not parse Size: \"{foundValue}\"");
+                        }
+
+                        result = new Size(x, y);
+                        break;
                     }
                 }
             }

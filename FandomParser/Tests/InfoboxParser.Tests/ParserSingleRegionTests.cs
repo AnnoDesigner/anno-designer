@@ -129,12 +129,154 @@ namespace InfoboxParser.Tests
                     { "|Credits = 150", 150d },
                     { "|Credits = 42,21", 42.21 },
                     { "|Credits = -42,21", -42.21 },
-                    //{ "|Credits = 42.21", 42.21 },
-                    //{ "|Credits = -42.21", -42.21 },
+                    //{ "|Credits = 2,500", 2500 },//incorrect numberstyle on wiki
+                    //{ "|Credits = 4,000", 4000 },//incorrect numberstyle on wiki
+                    //{ "|Credits = 42.21", 42.21 },//incorrect numberstyle on wiki
+                    //{ "|Credits = -42.21", -42.21 },//incorrect numberstyle on wiki
                     { "|Credits = -100", -100d },
                     { "|Credits    =    150   ", 150d },
                     { "|Credits = 150}}", 150d },
                     { "|Credits = 42,21   }}", 42.21 },
+                };
+            }
+        }
+
+        public static TheoryData<string, double> ConstructionInfoTimberTestData
+        {
+            get
+            {
+                return new TheoryData<string, double>
+                {
+                    { "|Timber = 15000", 15000d },
+                    { "|Timber = 150", 150d },
+                    { "|Timber = 42,21", 42.21 },
+                    { "|Timber = -42,21", -42.21 },
+                    //{ "|Timber = 42.21", 42.21 },//incorrect numberstyle on wiki
+                    //{ "|Timber = -42.21", -42.21 },//incorrect numberstyle on wiki
+                    { "|Timber = -100", -100d },
+                    { "|Timber    =    150   ", 150d },
+                    { "|Timber = 150}}", 150d },
+                    { "|Timber = 42,21   }}", 42.21 },
+                };
+            }
+        }
+
+        public static TheoryData<string, double> ConstructionInfoBricksTestData
+        {
+            get
+            {
+                return new TheoryData<string, double>
+                {
+                    { "|Bricks = 15000", 15000d },
+                    { "|Bricks = 150", 150d },
+                    { "|Bricks = 42,21", 42.21 },
+                    { "|Bricks = -42,21", -42.21 },
+                    //{ "|Bricks = 42.21", 42.21 },//incorrect numberstyle on wiki
+                    //{ "|Bricks = -42.21", -42.21 },//incorrect numberstyle on wiki
+                    { "|Bricks = -100", -100d },
+                    { "|Bricks    =    150   ", 150d },
+                    { "|Bricks = 150}}", 150d },
+                    { "|Bricks = 42,21   }}", 42.21 },
+                };
+            }
+        }
+
+        public static TheoryData<string, double> ConstructionInfoSteelBeamsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double>
+                {
+                    { "|Steel Beams = 15000", 15000d },
+                    { "|Steel Beams = 150", 150d },
+                    { "|Steel Beams = 42,21", 42.21 },
+                    { "|Steel Beams = -42,21", -42.21 },
+                    //{ "|Steel Beams = 42.21", 42.21 },//incorrect numberstyle on wiki
+                    //{ "|Steel Beams = -42.21", -42.21 },//incorrect numberstyle on wiki
+                    { "|Steel Beams = -100", -100d },
+                    { "|Steel Beams    =    150   ", 150d },
+                    { "|Steel Beams = 150}}", 150d },
+                    { "|Steel Beams = 42,21   }}", 42.21 },
+                };
+            }
+        }
+
+        public static TheoryData<string, double> ConstructionInfoWindowsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double>
+                {
+                    { "|Windows = 15000", 15000d },
+                    { "|Windows = 150", 150d },
+                    { "|Windows = 42,21", 42.21 },
+                    { "|Windows = -42,21", -42.21 },
+                    //{ "|Windows = 42.21", 42.21 },//incorrect numberstyle on wiki
+                    //{ "|Windows = -42.21", -42.21 },//incorrect numberstyle on wiki
+                    { "|Windows = -100", -100d },
+                    { "|Windows    =    150   ", 150d },
+                    { "|Windows = 150}}", 150d },
+                    { "|Windows = 42,21   }}", 42.21 },
+                };
+            }
+        }
+
+        public static TheoryData<string, double> ConstructionInfoConcreteTestData
+        {
+            get
+            {
+                return new TheoryData<string, double>
+                {
+                    { "|Concrete = 15000", 15000d },
+                    { "|Concrete = 150", 150d },
+                    { "|Concrete = 42,21", 42.21 },
+                    { "|Concrete = -42,21", -42.21 },
+                    //{ "|Concrete = 42.21", 42.21 },//incorrect numberstyle on wiki
+                    //{ "|Concrete = -42.21", -42.21 },//incorrect numberstyle on wiki
+                    { "|Concrete = -100", -100d },
+                    { "|Concrete    =    150   ", 150d },
+                    { "|Concrete = 150}}", 150d },
+                    { "|Concrete = 42,21   }}", 42.21 },
+                };
+            }
+        }
+
+        public static TheoryData<string, double> ConstructionInfoWeaponsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double>
+                {
+                    { "|Weapons = 15000", 15000d },
+                    { "|Weapons = 150", 150d },
+                    { "|Weapons = 42,21", 42.21 },
+                    { "|Weapons = -42,21", -42.21 },
+                    //{ "|Weapons = 42.21", 42.21 },//incorrect numberstyle on wiki
+                    //{ "|Weapons = -42.21", -42.21 },//incorrect numberstyle on wiki
+                    { "|Weapons = -100", -100d },
+                    { "|Weapons    =    150   ", 150d },
+                    { "|Weapons = 150}}", 150d },
+                    { "|Weapons = 42,21   }}", 42.21 },
+                };
+            }
+        }
+
+        public static TheoryData<string, double> ConstructionInfoAdvancedWeaponsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double>
+                {
+                    { "|Advanced Weapons = 15000", 15000d },
+                    { "|Advanced Weapons = 150", 150d },
+                    { "|Advanced Weapons = 42,21", 42.21 },
+                    { "|Advanced Weapons = -42,21", -42.21 },
+                    //{ "|Advanced Weapons = 42.21", 42.21 },//incorrect numberstyle on wiki
+                    //{ "|Advanced Weapons = -42.21", -42.21 },//incorrect numberstyle on wiki
+                    { "|Advanced Weapons = -100", -100d },
+                    { "|Advanced Weapons    =    150   ", 150d },
+                    { "|Advanced Weapons = 150}}", 150d },
+                    { "|Advanced Weapons = 42,21   }}", 42.21 },
                 };
             }
         }
@@ -1184,7 +1326,14 @@ namespace InfoboxParser.Tests
         [Theory]
         [InlineData("dummy")]
         [InlineData("|Credits = ")]
-        public void GetInfobox_WikiTextContainsNoConstructionInfoCredits_ShouldReturnEmptyList(string input)
+        [InlineData("|Timber = ")]
+        [InlineData("|Bricks = ")]
+        [InlineData("|Steel Beams = ")]
+        [InlineData("|Windows = ")]
+        [InlineData("|Concrete = ")]
+        [InlineData("|Weapons = ")]
+        [InlineData("|Advanced Weapons = ")]
+        public void GetInfobox_WikiTextContainsNoConstructionInfo_ShouldReturnEmptyList(string input)
         {
             // Arrange
             var parser = GetParser();
@@ -1198,7 +1347,14 @@ namespace InfoboxParser.Tests
 
         [Theory]
         [MemberData(nameof(ConstructionInfoCreditsTestData))]
-        public void GetInfobox_WikiTextContainsConstructionInfoCredits_ShouldReturnCorrectValue(string input, double expectedValue)
+        [MemberData(nameof(ConstructionInfoTimberTestData))]
+        [MemberData(nameof(ConstructionInfoBricksTestData))]
+        [MemberData(nameof(ConstructionInfoSteelBeamsTestData))]
+        [MemberData(nameof(ConstructionInfoWindowsTestData))]
+        [MemberData(nameof(ConstructionInfoConcreteTestData))]
+        [MemberData(nameof(ConstructionInfoWeaponsTestData))]
+        [MemberData(nameof(ConstructionInfoAdvancedWeaponsTestData))]
+        public void GetInfobox_WikiTextContainsConstructionInfo_ShouldReturnCorrectValue(string input, double expectedValue)
         {
             // Arrange
             _output.WriteLine($"{nameof(input)}: {input}");
@@ -1210,6 +1366,22 @@ namespace InfoboxParser.Tests
 
             // Assert
             Assert.Equal(expectedValue, result[0].ConstructionInfos[0].Value);
+        }
+
+        [Fact]
+        public void GetInfobox_ConstructionInfoContainsConcrete_ShouldReturnAdjustedValue()
+        {
+            // Arrange
+            var input = ConstructionInfoConcreteTestData.First();
+            var expectedUnitName = "Reinforced Concrete";
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox((string)input[0]);
+
+            // Assert
+            Assert.Equal(expectedUnitName, result[0].ConstructionInfos[0].Unit.Name);
         }
 
         #endregion
