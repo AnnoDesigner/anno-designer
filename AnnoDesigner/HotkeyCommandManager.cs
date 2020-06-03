@@ -1,35 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 using Octokit;
 
 namespace AnnoDesigner
 {
-    public class HotkeyCommandManager
+    public class HotkeyCommandManager : Notify, INotifyCollectionChanged
     {
         private readonly Dictionary<string, Hotkey> bindings;
 
         /// <summary>
         /// Represents a read-only data-bindable collection of hotkeys.
         /// </summary>
-        public ReadOnlyObservableCollection<Hotkey> ObservableCollection { get; }
+        //public ReadOnlyObservableCollection<Hotkey> ObservableCollection { get; }
+        public ObservableCollection<Hotkey> ObservableCollection { get; }
         /// <summary>
         /// Backing collection for the ObservableCollection property.
         /// </summary>
         private readonly ObservableCollection<Hotkey> _observableCollection;
 
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
         public HotkeyCommandManager()
         {
             bindings = new Dictionary<string, Hotkey>();
             _observableCollection = new ObservableCollection<Hotkey>();
-            ObservableCollection = new ReadOnlyObservableCollection<Hotkey>(_observableCollection);
+            //ObservableCollection = new ReadOnlyObservableCollection<Hotkey>(_observableCollection);
+            ObservableCollection = _observableCollection;
+
         }
 
         public void HandleCommand(InputEventArgs e)
@@ -66,9 +73,9 @@ namespace AnnoDesigner
         /// <param name="binding"></param>
         public void AddBinding(Hotkey hotkey)
         {
-            hotkey.PropertyChanged += Hotkey_PropertyChanged;
             if (!bindings.ContainsKey(hotkey.Name))
             {
+                hotkey.PropertyChanged += Hotkey_PropertyChanged;
                 bindings.Add(hotkey.Name, hotkey);
                 _observableCollection.Add(hotkey);
             }
@@ -80,13 +87,15 @@ namespace AnnoDesigner
 
         private void Hotkey_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Debug.WriteLine($"Changed {sender}, Property Name: {e.PropertyName}");
+            Debug.WriteLine($"Changed {sender}, Property Name: {e.PropertyName}. Updating Collection");
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         public void RemoveBinding(string bindingId)
         {
             if (bindings.ContainsKey(bindingId))
             {
+                bindings[bindingId].PropertyChanged -= Hotkey_PropertyChanged;
                 _observableCollection.Remove(bindings[bindingId]);
                 bindings.Remove(bindingId);
             }

@@ -20,7 +20,7 @@ namespace AnnoDesigner.ViewModels
 
         public ManageKeybindingsViewModel(HotkeyCommandManager hotkeyCommandManager)
         {
-            Manager = hotkeyCommandManager;
+            HotkeyCommandManager = hotkeyCommandManager;
             RebindCommand = new RelayCommand<Hotkey>(ExecuteRebind);
             Commons.Instance.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
             currentLanguage = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
@@ -39,7 +39,7 @@ namespace AnnoDesigner.ViewModels
         private string _rebindButtonText;
         private string currentLanguage;
 
-        public HotkeyCommandManager Manager
+        public HotkeyCommandManager HotkeyCommandManager
         {
             get { return _manager; }
             set { UpdateProperty(ref _manager, value); }
@@ -73,7 +73,7 @@ namespace AnnoDesigner.ViewModels
             {
                 if (result == HotkeyRecordingWindow.HotkeyRecordingWindowResult.KeyAction)
                 {
-                    Debug.WriteLine($"Recieved the following binding: {modifiers} + {key}");
+                    Debug.WriteLine($"Recieved the following binding: {modifiers} + {key} + {action}");
                     if (hotkey.Binding is KeyBinding keyBinding)
                     {
                         keyBinding.Key = key;

@@ -26,8 +26,17 @@ namespace AnnoDesigner.PreferencesPages
     {
         public void NavigatedTo(object parameter)
         {
-            DataContext = new ManageKeybindingsViewModel((HotkeyCommandManager)parameter);
+            ViewModel = new ManageKeybindingsViewModel((HotkeyCommandManager)parameter);
+            DataContext = ViewModel;
+            ViewModel.HotkeyCommandManager.CollectionChanged += Manager_CollectionChanged;
         }
+
+        private void Manager_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            //Manually refresh the entire item source
+            CollectionViewSource.GetDefaultView(HotkeyActions.ItemsSource).Refresh();
+        }
+
         public ViewModels.ManageKeybindingsViewModel ViewModel;
     }
 }

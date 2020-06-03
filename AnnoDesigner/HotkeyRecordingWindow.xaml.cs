@@ -231,6 +231,7 @@ namespace AnnoDesigner
             {
                 resetKeysOnNextRecording = false;
                 Key = Key.None;
+                Modifiers = ModifierKeys.None;
                 MouseAction = MouseAction.None;
             }
 

@@ -68,12 +68,20 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon.ico" />
+    <Resource Include="Images\Icons\left-click.png" />
+    <Resource Include="Images\Icons\middle-click.png" />
+    <Resource Include="Images\Icons\right-click.png" />
     <Content Include="Images\Icons\icon64.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Flags\*.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Images\Icons\left-click.png" />
+    <None Remove="Images\Icons\middle-click.png" />
+    <None Remove="Images\Icons\right-click.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnnoDesigner.Core\AnnoDesigner.Core.csproj" />

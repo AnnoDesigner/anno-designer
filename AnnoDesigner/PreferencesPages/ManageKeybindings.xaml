@@ -6,7 +6,9 @@
       xmlns:local="clr-namespace:AnnoDesigner.PreferencesPages"
       xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
       xmlns:models="clr-namespace:AnnoDesigner.Models"
-      xmlns:converter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
+      xmlns:coreConverter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
+      xmlns:converter="clr-namespace:AnnoDesigner.Converters"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib" 
     mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       d:DataContext="{d:DesignInstance Type=viewModel:ManageKeybindingsViewModel, IsDesignTimeCreatable=False}"
@@ -14,20 +16,81 @@
       Name="ManageKeybindingsWindow">
     <Page.Resources>
         <models:ManageKeybindingsHotkeyDataTemplateSelector x:Key="dataTemplateSelector"/>
-        <Style x:Key="HotkeyRebindButton" TargetType="Button">
-
+        <Style x:Key="HotkeyRebindButton" TargetType="{x:Type Button}">
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Margin" Value="20,12,0,12" />
         </Style>
         <Style x:Key="HotkeyDescription" TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize" Value="15" />
             <Setter Property="Padding" Value="10,0,10,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
-        <Style x:Key="HotkeyPlus" TargetType="TextBlock">
+        <Style x:Key="HotkeyDelimiter" TargetType="{x:Type TextBlock}">
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="FontSize" Value="30" />
+            <!-- We can change the delimeter for all hotkeys by changing the value below -->
+            <Setter Property="Text" Value="+" />
         </Style>
-        <converter:ModifierKeysToVisibilityConverter x:Key="ModifierKeysToVisibilityConverter" />
+        <Style x:Key="HotkeyImage" TargetType="{x:Type Image}">
+            <Setter Property="Width" Value="50" />
+            <!--<Setter Property="Height" Value="Auto" />-->
+        </Style>
+        <Style x:Key="HotkeyKey" TargetType="{x:Type Label}">
+            <Setter Property="Height" Value="40" />
+            <Setter Property="MinWidth" Value="30" />
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="BorderBrush" Value="#111" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="#444" />
+            <Setter Property="FontSize" Value="25" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="Margin" Value="3,0"/>
+            <Setter Property="FontFamily" Value="Calibri" />
+            <Setter Property="Foreground" Value="#EEE" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Label}">
+                        <Grid>
+                            <!--<Border CornerRadius="6,6,6,6"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    Background="Transparent"
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                    Padding="{TemplateBinding Padding}"
+                                    Margin="0,0,0,0">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="5" ShadowDepth="1" Color="#111"/>
+                                </Border.Effect>
+                            </Border>-->
+                            <Border CornerRadius="10,10,10,10"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    Background="{TemplateBinding Background}"
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                    Padding="{TemplateBinding Padding}"
+                                    Margin="{TemplateBinding Margin}">
+                                <ContentPresenter  Margin="0"  
+                                                   HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                                   VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                                   Content="{TemplateBinding Content}" />
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <coreConverter:ModifierKeysToVisibilityConverter x:Key="ModifierKeysToVisibilityConverter" />
+        <converter:MouseActionToImageSourceConverter x:Key="MouseActionToImageSourceConverter" />
+        <converter:MouseActionToVisibilityConverter x:Key="MouseActionToVisibilityConverter" />
+        <sys:Int32 x:Key="0">0</sys:Int32>
+        <sys:Int32 x:Key="1">1</sys:Int32>
+        <sys:Int32 x:Key="2">2</sys:Int32>
         <DataTemplate x:Key="KeyBinding">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -39,101 +102,63 @@
                            Style="{StaticResource HotkeyDescription}"
                            Grid.Column="0" />
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="1" Margin="3,5,3,5">
-                    <StackPanel.Resources>
-                        <Style TargetType="{x:Type Label}">
-                            <!--<Setter Property="Padding" Value="20" />-->
-                            <Setter Property="Height" Value="40" />
-                            <Setter Property="MinWidth" Value="30" />
-                            <Setter Property="Padding" Value="10,0" />
-                            <Setter Property="BorderBrush" Value="#888" />
-                            <Setter Property="BorderThickness" Value="4" />
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <LinearGradientBrush>
-                                        <GradientStop Color="#CCC" Offset="0.2"/>
-                                        <GradientStop Color="#DDD" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="FontSize" Value="25" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="VerticalContentAlignment" Value="Center" />
-                            <Setter Property="HorizontalAlignment" Value="Center" />
-                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                            <Setter Property="Margin" Value="3,0"/>
-                            <Setter Property="FontFamily" Value="Calibri" />
-                            <Setter Property="Foreground" Value="#000" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Label">
-                                        <Grid>
-                                            <Border CornerRadius="6,6,6,6"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                Background="Transparent"
-                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                Padding="{TemplateBinding Padding}"
-                                                Margin="0,0,0,0">
-                                                <Border.Effect>
-                                                    <DropShadowEffect BlurRadius="5" ShadowDepth="1" Color="#111"/>
-                                                </Border.Effect>
-                                            </Border>
-                                            <Border CornerRadius="10,10,10,10"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                Background="{TemplateBinding Background}"
-                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                Padding="{TemplateBinding Padding}"
-                                                Margin="{TemplateBinding Margin}">
-                                                <ContentPresenter  Margin="0"  
-                                                               HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                                                               VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                                                               Content="{TemplateBinding Content}" />
-                                            </Border>
-
-                                        </Grid>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </StackPanel.Resources>
-                    <!--<TextBlock Text="This is a key binding" />-->
                     <Label Content="{Binding Path=Binding.Modifiers}" 
+                           Style="{StaticResource HotkeyKey}"
                            Visibility="{Binding Path=Binding.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}"/>
-                    <TextBlock Text="+" 
-                               Style="{StaticResource HotkeyPlus}" 
+                    <TextBlock Style="{StaticResource HotkeyDelimiter}" 
                                Visibility="{Binding Path=Binding.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
-                    <Label Content="{Binding Path=Binding.Key}"/>
+                    <Label Content="{Binding Path=Binding.Key}"
+                           Style="{StaticResource HotkeyKey}"/>
                 </StackPanel>
-                <!--<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="1" FlowDirection="LeftToRight" Margin="20, 0, 0, 0">-->
                 <Button Content="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindButtonText}" 
                             Command="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindCommand }" 
                             CommandParameter="{Binding}" 
-                            VerticalContentAlignment="Center"
-                            Width="100"
                             Grid.Column="2"
-                            Margin="20,12,0,12"
+                            Style="{StaticResource HotkeyRebindButton}"
                             />
-                <!--</StackPanel>-->
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="MouseBinding">
-            <StackPanel>
-                <TextBlock Text="This a mouse binding" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="HotkeyDescriptionSizeGroupCol0" Width="Auto"/>
+                    <ColumnDefinition SharedSizeGroup="HotkeyKeySizeGroupCol1" Width="Auto"/>
+                    <ColumnDefinition SharedSizeGroup="HotkeyRebindButtonSizeGroupCol2" Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Description}" 
+                           Style="{StaticResource HotkeyDescription}"
+                           Grid.Column="0" />
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="1" Margin="3,5,3,5">
+                    <Label Content="{Binding Path=Binding.Gesture.Modifiers}" 
+                           Style="{StaticResource HotkeyKey}"
+                           Visibility="{Binding Path=Binding.Gesture.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}"/>
+                    <TextBlock Style="{StaticResource HotkeyDelimiter}" 
+                               Visibility="{Binding Path=Binding.Gesture.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
+                    <!-- First image will always be visible -->
+                    <Image Source="{Binding Path=Binding.MouseAction, Converter={StaticResource MouseActionToImageSourceConverter}}"
+                           Style="{StaticResource HotkeyImage}" 
+                           />
+                    <TextBlock Style="{StaticResource HotkeyDelimiter}" 
+                               Visibility="{Binding Path=Binding.MouseAction, Converter={StaticResource MouseActionToVisibilityConverter}, ConverterParameter={StaticResource 1}}"
+                               />
+                    <Image Source="{Binding Path=Binding.MouseAction, Converter={StaticResource MouseActionToImageSourceConverter}}"
+                           Style="{StaticResource HotkeyImage}"
+                           Visibility="{Binding Path=Binding.MouseAction, Converter={StaticResource MouseActionToVisibilityConverter}, ConverterParameter={StaticResource 2}}"
+                           />
+                </StackPanel>
                 <Button Content="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindButtonText}" 
                             Command="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindCommand }" 
                             CommandParameter="{Binding}" 
-                            VerticalContentAlignment="Center"
-                            Width="100"
                             Grid.Column="2"
-                            Margin="20,12,0,12"
+                            Style="{StaticResource HotkeyRebindButton}"
                             />
-            </StackPanel>
+            </Grid>
         </DataTemplate>
     </Page.Resources>
     <Grid Grid.IsSharedSizeScope="True">
-        <ItemsControl ItemsSource="{Binding Manager.ObservableCollection}" 
+        <ItemsControl ItemsSource="{Binding HotkeyCommandManager.ObservableCollection}" 
                       ItemTemplateSelector="{StaticResource dataTemplateSelector}"
+                      Name="HotkeyActions"
                       HorizontalAlignment="Stretch">
         </ItemsControl>
     </Grid>
