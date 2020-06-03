@@ -12,6 +12,9 @@ using System.Windows.Media;
 
 namespace AnnoDesigner.Converters
 {
+    /// <summary>
+    /// A converter used in the ManageKeybindings page to retrieve the correct image source based on the mouse action given.
+    /// </summary>
     [ValueConversion(typeof(MouseAction), typeof(ImageSource))]
     public class MouseActionToImageSourceConverter : IValueConverter
     {

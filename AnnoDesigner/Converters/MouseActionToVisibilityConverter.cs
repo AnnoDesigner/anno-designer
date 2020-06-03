@@ -20,9 +20,6 @@ namespace AnnoDesigner.Converters
         {
         }
 
-        //see https://docs.microsoft.com/en-us/dotnet/framework/wpf/app-development/pack-uris-in-wpf
-        private const string RESOURCE_ROOT_PATH = "pack://application:,,,Images/Icons";
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (!(value is MouseAction mouseAction)) {
@@ -34,7 +31,7 @@ namespace AnnoDesigner.Converters
                 Debug.Assert(false); //error here when running in debug mode.
                 return null;
             }
-            List<int> validPositions = new List<int>() { 0, 1, 2 };
+            var validPositions = new List<int>() { 0, 1, 2 };
             if (!validPositions.Contains(position))
             {
                 Debug.Fail($"Specified position {position} is not valid in MouseActionToVisibilityConverter.");
