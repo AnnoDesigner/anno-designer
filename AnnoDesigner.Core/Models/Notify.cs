@@ -32,11 +32,6 @@ namespace AnnoDesigner.Core.Models
             OnPropertyChanged(name);
             return true;
         }
-
-        protected void InvokePropertyChanged(string propertyName)
-        {
-            OnPropertyChanged(propertyName);
-        }
     }
 }
 
