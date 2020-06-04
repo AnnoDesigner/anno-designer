@@ -79,11 +79,6 @@
     <Resource Include="Flags\*.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Images\Icons\left-click.png" />
-    <None Remove="Images\Icons\middle-click.png" />
-    <None Remove="Images\Icons\right-click.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\AnnoDesigner.Core\AnnoDesigner.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
