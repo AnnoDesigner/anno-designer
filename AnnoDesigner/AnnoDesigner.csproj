@@ -6,7 +6,6 @@
     <OutputType>WinExe</OutputType>
     <UseWPF>true</UseWPF>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
@@ -71,9 +70,7 @@
     <Resource Include="Images\Icons\left-click.png" />
     <Resource Include="Images\Icons\middle-click.png" />
     <Resource Include="Images\Icons\right-click.png" />
-    <Content Include="Images\Icons\icon64.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="Images\Icons\icon64.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Flags\*.png" />

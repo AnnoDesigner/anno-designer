@@ -12,9 +12,39 @@ namespace AnnoDesigner.Tests
 {
     public class RoadSearchHelperTests
     {
+        private static readonly List<AnnoObject> defaultObjectList;
+
+        static RoadSearchHelperTests()
+        {
+            defaultObjectList = new LayoutLoader().LoadLayout(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestData", "RoadSearchHelper", "BreadthFirstSearch_FindBuildingInfluenceRange.ad"), true);
+        }
+
         private string GetTestDataFile(string testCase)
         {
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestData", "RoadSearchHelper", $"{testCase}.ad");
+        }
+
+        [Fact]
+        public void PrepareGridDictionary_SequenceIsNull_ShouldReturnNull_Issue197()
+        {
+            // Arrange/Act
+            var gridDictionary = RoadSearchHelper.PrepareGridDictionary(null);
+
+            // Assert
+            Assert.Null(gridDictionary);
+        }
+
+        [Fact]
+        public void PrepareGridDictionary_SequenceIsEmpty_ShouldReturnNull_Issue197()
+        {
+            // Arrange
+            var inputSequence = Enumerable.Empty<AnnoObject>();
+
+            // Act
+            var gridDictionary = RoadSearchHelper.PrepareGridDictionary(inputSequence);
+
+            // Assert
+            Assert.Null(gridDictionary);
         }
 
         [Fact]
@@ -117,7 +147,7 @@ namespace AnnoDesigner.Tests
         public void BreadthFirstSearch_FindBuildingInfluenceRange()
         {
             // Arrange
-            var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("BreadthFirstSearch_FindBuildingInfluenceRange"), true);
+            var placedObjects = defaultObjectList;
             var startObjects = placedObjects.Where(o => o.Label == "Start").ToList();
             foreach (var startObject in startObjects)
             {
@@ -132,11 +162,45 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void BreadthFirstSearch_StartObjectCountIsZero_ShouldReturnEMptyResult()
+        public void BreadthFirstSearch_StartObjectCountIsZero_ShouldReturnEmptyResult()
         {
             // Arrange
-            var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("BreadthFirstSearch_FindBuildingInfluenceRange"), true);
+            var placedObjects = defaultObjectList;
             var startObjects = Enumerable.Empty<AnnoObject>();
+
+            var expectedResult = new bool[0][];
+
+            // Act
+            var visitedCells = RoadSearchHelper.BreadthFirstSearch(placedObjects, startObjects, o => (int)o.InfluenceRange);
+
+            // Assert
+            Assert.Equal(expectedResult, visitedCells);
+
+        }
+
+        [Fact]
+        public void BreadthFirstSearch_PlacedObjectsEmpty_ShouldReturnEmptyResult_Issue197()
+        {
+            // Arrange
+            var placedObjects = Enumerable.Empty<AnnoObject>();
+            var startObjects = defaultObjectList;
+
+            var expectedResult = new bool[0][];
+
+            // Act
+            var visitedCells = RoadSearchHelper.BreadthFirstSearch(placedObjects, startObjects, o => (int)o.InfluenceRange);
+
+            // Assert
+            Assert.Equal(expectedResult, visitedCells);
+
+        }
+
+        [Fact]
+        public void BreadthFirstSearch_PlacedObjectsNull_ShouldReturnEmptyResult_Issue197()
+        {
+            // Arrange
+            IEnumerable<AnnoObject> placedObjects = null;
+            var startObjects = defaultObjectList;
 
             var expectedResult = new bool[0][];
 
