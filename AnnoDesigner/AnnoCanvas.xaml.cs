@@ -483,13 +483,20 @@ namespace AnnoDesigner
             //Commands
             RotateCommand = new RelayCommand(ExecuteRotate);
             //Set up default keybindings
-            //We have tr
-            RotateHotkey = new Hotkey(ROTATE_COMMAND_KEY, new KeyBinding()
+            var rotateBinding = new KeyBinding()
             {
                 Command = RotateCommand,
                 Key = Key.R,
                 Modifiers = ModifierKeys.None
-            }, "Rotate");
+            };
+            RotateHotkey = new Hotkey(ROTATE_COMMAND_KEY, rotateBinding, "Rotate");
+
+            //TODO: Find a solution for this before PR. When the binding type switches from a KeyBinding to a MouseBinding
+            //this does not update (which is correct, as the orignal object is dereferenced). Maybe we pass around a reference
+            //to the InputBindingCollection stored with the Hotkey itself, so that when the Hotkey.Binding reference changes,
+            //the hotkey can update the InputBindingCollection
+            //InputBindings.Add(rotateBinding);
+
 
             const int dpiFactor = 1;
             _linePen = _penCache.GetPen(Brushes.Black, dpiFactor * 1);
@@ -1484,6 +1491,8 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
+            //Still needed until we find a solution to the problem caused when a KeyBinding switches to a MouseBinding
+            //and vice versa in the InputBindingCollection.
             HotkeyCommandManager.HandleCommand(e);
             if (e.Handled)
             {
@@ -1517,23 +1526,23 @@ namespace AnnoDesigner
                         }
                     }
                     break;
-                case Key.R:
-                    if (CurrentObjects.Count == 1)
-                    {
-                        CurrentObjects[0].Size = _coordinateHelper.Rotate(CurrentObjects[0].Size);
-                    }
-                    else if (CurrentObjects.Count > 1)
-                    {
-                        Rotate(CurrentObjects);
-                    }
-                    else
-                    {
-                        //Count == 0;
-                        //Rotate from selected objects
-                        CurrentObjects = CloneList(SelectedObjects);
-                        Rotate(CurrentObjects);
-                    }
-                    break;
+                //case Key.R:
+                //    if (CurrentObjects.Count == 1)
+                //    {
+                //        CurrentObjects[0].Size = _coordinateHelper.Rotate(CurrentObjects[0].Size);
+                //    }
+                //    else if (CurrentObjects.Count > 1)
+                //    {
+                //        Rotate(CurrentObjects);
+                //    }
+                //    else
+                //    {
+                //        //Count == 0;
+                //        //Rotate from selected objects
+                //        CurrentObjects = CloneList(SelectedObjects);
+                //        Rotate(CurrentObjects);
+                //    }
+                //    break;
 
             }
 
@@ -1878,6 +1887,7 @@ namespace AnnoDesigner
                 CurrentObjects = CloneList(SelectedObjects);
                 Rotate(CurrentObjects);
             }
+            InvalidateVisual();
         }
 
         public void RegisterHotkeys(HotkeyCommandManager manager)

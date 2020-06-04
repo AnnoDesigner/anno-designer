@@ -3,19 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.ServiceModel.Configuration;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Markup;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Microsoft.Win32.SafeHandles;
+using AnnoDesigner.Core.Helper;
 
 namespace AnnoDesigner
 {
@@ -118,7 +108,11 @@ namespace AnnoDesigner
         private void UpdateDisplay()
         {
             var modifiers = Modifiers == ModifierKeys.None ? "" : Modifiers.ToString();
-            var key = Key == Key.None ? "" : Key.ToString();
+            var key = Key == Key.None ? "" : KeyboardInteropHelper.GetDisplayString(Key) ?? Key.ToString();
+            if (Key != Key.None)
+            {
+                Debug.Print($"{Key}:{key}");
+            }
             var mouse = MouseAction == MouseAction.None ? "" : MouseAction.ToString();
 
             string display;
@@ -217,12 +211,6 @@ namespace AnnoDesigner
             {
                 EndCurrentRecording();
             }
-            //else
-            //{
-            //    Debug.WriteLine("Reset modifiers");
-            //    //We must still have a modifier key pressed.
-            //    Modifiers = Keyboard.Modifiers;
-            //}
         }
 
         private void HotkeyRecordingWindow_KeyDown(object sender, KeyEventArgs e)
@@ -241,14 +229,9 @@ namespace AnnoDesigner
                 return;
             }
 
-            //TODO: Remove this debug comment before PR
-            //Debug.WriteLine($"SystemKey: {e.SystemKey}, Key: {e.Key}, ImeProcessedKey: {e.ImeProcessedKey}");
-
             if (MODIFIER_KEYS.Contains(e.Key))
             {
                 Modifiers = Keyboard.Modifiers;
-                //TODO: Remove this debug comment before PR
-                //Debug.WriteLine($"Set Modifiers: {Modifiers}");
                 return;
             }
 

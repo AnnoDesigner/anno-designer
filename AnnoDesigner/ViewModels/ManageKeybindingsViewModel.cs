@@ -102,7 +102,7 @@ namespace AnnoDesigner.ViewModels
 
         private KeyBinding GetKeyBinding(MouseBinding mouseBinding, Key key, ModifierKeys modifierKeys)
         {
-            //This is not an exact copy, hence why this method is private. It should only be used internally.
+            //This is not an exact copy, hence why this method is private and should only be used internally by the class.
             //Properties such as IsFrozen, IsSealed are not copied, and could lead to inconsistencies if used
             //in a wider scope.
             var keyBinding = new KeyBinding();
