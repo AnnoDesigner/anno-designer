@@ -71,7 +71,6 @@ namespace AnnoDesigner.ViewModels
         private double _mainWindowLeft;
         private double _mainWindowTop;
         private WindowState _minWindowWindowState;
-        private ManageKeybindingsViewModel _manageKeybindingsViewModel;
         private HotkeyCommandManager _hotkeyCommandManager;
 
         //for identifier checking process
@@ -998,12 +997,6 @@ namespace AnnoDesigner.ViewModels
         {
             get { return _minWindowWindowState; }
             set { UpdateProperty(ref _minWindowWindowState, value); }
-        }
-
-        public ManageKeybindingsViewModel KeybindingsViewModel
-        {
-            get { return _manageKeybindingsViewModel; }
-            set { UpdateProperty(ref _manageKeybindingsViewModel, value); }
         }
 
         public HotkeyCommandManager HotkeyCommandManager
