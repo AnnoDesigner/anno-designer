@@ -61,7 +61,7 @@ namespace AnnoDesigner.Core.Controls
 
         // Using a DependencyProperty as the backing store for IsDisplayFrozen.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsDisplayFrozenProperty =
-            DependencyProperty.Register("IsDisplayFrozen", typeof(bool), typeof(ActionRecorder), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+            DependencyProperty.Register("IsDisplayFrozen", typeof(bool), typeof(ActionRecorder), new FrameworkPropertyMetadata(false));
 
         // Using a DependencyProperty as the backing store for Result.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ResultTypeProperty =
@@ -71,7 +71,7 @@ namespace AnnoDesigner.Core.Controls
         public ActionType ResultType
         {
             get { return (ActionType)GetValue(ResultTypeProperty); }
-            set { SetValue(ResultTypeProperty, value); Debug.WriteLine($"Set ActionType to {value}"); }
+            set { SetValue(ResultTypeProperty, value); }
         }
 
         public bool IsDisplayFrozen
@@ -86,7 +86,6 @@ namespace AnnoDesigner.Core.Controls
             set
             {
                 SetValue(KeyProperty, value);
-                Debug.WriteLine($"Set Key to {value}");
                 if (!IsDisplayFrozen)
                 {
                     UpdateDisplay();
@@ -298,9 +297,7 @@ namespace AnnoDesigner.Core.Controls
                     ResultType = ActionType.None;
                 }
 
-                Debug.WriteLine("Set recordingKeyCombination to false.");
                 recordingKeyCombination = false;
-                Debug.WriteLine("Set recordingMouseCombination to false.");
                 recordingMouseCombination = false;
                 startNewRecording = true; //Save the current state, but if we start recording again, remove the current saved Modifiers
                 RecordingFinished?.Invoke(this, new ActionRecorderEventArgs(Key, MouseAction, Modifiers, ResultType));
@@ -313,24 +310,5 @@ namespace AnnoDesigner.Core.Controls
             Reset();
             RecordingStarted?.Invoke(this, ActionRecorderEventArgs.Empty);
         }
-
-        protected override void OnGotFocus(RoutedEventArgs e)
-        {
-            Debug.WriteLine("GotFocus");
-            base.OnGotFocus(e);
-        }
-
-        protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
-        {
-            Debug.WriteLine("GotKeyboardFocus");
-            base.OnGotKeyboardFocus(e);
-        }
-
-        protected override void OnLostFocus(RoutedEventArgs e)
-        {
-            Debug.WriteLine("LostFocus");
-            base.OnLostFocus(e);
-        }
-
     }
 }

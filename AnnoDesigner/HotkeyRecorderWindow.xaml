@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AnnoDesigner" xmlns:controls="clr-namespace:AnnoDesigner.Core.Controls;assembly=AnnoDesigner.Core"
         xmlns:viewModels="clr-namespace:AnnoDesigner.ViewModels"
         mc:Ignorable="d"
-        Title="Record a new keybinding" 
+        Title="{Binding WindowTitle}" 
         Height="175" 
         Width="670"
         d:DataContext="{d:DesignInstance Type=viewModels:HotkeyRecorderViewModel, IsDesignTimeCreatable=True}"

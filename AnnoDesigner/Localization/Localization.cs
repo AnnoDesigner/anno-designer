@@ -131,6 +131,7 @@ namespace AnnoDesigner.Localization
                         { "ManageKeybindings" , "Manage Keybindings" },
                         { "Rebind" , "Rebind" },
                         { "Recording" , "Recording" },
+                        { "RecordANewAction" , "Record a new action" },
                         { AnnoCanvas.ROTATE_COMMAND_KEY , "Rotate" }
                     }
                 },
@@ -251,6 +252,7 @@ namespace AnnoDesigner.Localization
                         { "ManageKeybindings" , "Schlüsselbindungen verwalten" },
                         { "Rebind" , "Neu binden" },
                         { "Recording" , "Aufzeichnung" },
+                        { "RecordANewAction" , "Eine neue Aktion aufzeichnen" },
                         { AnnoCanvas.ROTATE_COMMAND_KEY , "Rotieren" }
                     }
                 },
@@ -371,6 +373,7 @@ namespace AnnoDesigner.Localization
                         { "ManageKeybindings" , "Gérer les porte-clés" },
                         { "Rebind" , "Relier" },
                         { "Recording" , "Enregistrement" },
+                        { "RecordANewAction" , "Enregistrer une nouvelle action" },
                         { AnnoCanvas.ROTATE_COMMAND_KEY , "Faire tourner" }
                     }
                 },
@@ -491,6 +494,7 @@ namespace AnnoDesigner.Localization
                         { "ManageKeybindings" , "Zarządzanie klawiaturami" },
                         { "Rebind" , "Powiąż ponownie" },
                         { "Recording" , "Nagranie" },
+                        { "RecordANewAction" , "Zapisać nową akcję" },
                         { AnnoCanvas.ROTATE_COMMAND_KEY , "Obróć" }
                     }
                 },
@@ -611,11 +615,11 @@ namespace AnnoDesigner.Localization
                         { "ManageKeybindings" , "Управление привязками к ключам" },
                         { "Rebind" , "Перезаписать" },
                         { "Recording" , "Запись" },
+                        { "RecordANewAction" , "Записать новое действие" },
                         { AnnoCanvas.ROTATE_COMMAND_KEY , "Повернуть" }
                     }
                 },
             };
-
 
         }
 

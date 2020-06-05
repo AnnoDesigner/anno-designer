@@ -106,6 +106,7 @@ namespace AnnoDesigner.ViewModels
         #region Localization
         private string _save;
         private string _cancel;
+        private string _windowTitle;
 
         public string Save
         {
@@ -119,11 +120,19 @@ namespace AnnoDesigner.ViewModels
             set => UpdateProperty(ref _cancel, value);
         }
 
+        public string WindowTitle
+        {
+            get => _windowTitle;
+            set => UpdateProperty(ref _windowTitle, value);
+        }
+
+
         private void UpdateLanguage()
         {
             var language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
             Save = Localization.Localization.Translations[language]["Save"];
             Cancel = Localization.Localization.Translations[language]["Cancel"];
+            WindowTitle = Localization.Localization.Translations[language]["RecordANewAction"];
         }
         #endregion
     }
