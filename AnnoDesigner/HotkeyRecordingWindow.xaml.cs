@@ -35,7 +35,7 @@ namespace AnnoDesigner
             e.Handled = false;
         }
 
-        public (Key key, ModifierKeys modifiers, MouseAction action, ActionRecorder.ActionRecorderResult result, bool userCancelled) RecordNewAction()
+        public (Key key, ModifierKeys modifiers, MouseAction action, ActionRecorder.ActionType result, bool userCancelled) RecordNewAction()
         {
             ViewModel.Reset();
             ShowDialog();

@@ -22,12 +22,12 @@ namespace AnnoDesigner.ViewModels
             UpdateLanguage();
         }
 
-        private ActionRecorder.ActionRecorderResult _result;
+        private ActionRecorder.ActionType _result;
         private Key _key;
         private MouseAction _mouseAction;
         private ModifierKeys _modifiers;
 
-        public ActionRecorder.ActionRecorderResult Result
+        public ActionRecorder.ActionType Result
         {
             get => _result;
             set => UpdateProperty(ref _result, value);

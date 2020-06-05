@@ -31,11 +31,6 @@ namespace AnnoDesigner.Core.Controls
             MouseAction = MouseAction.None;
         }
 
-        private void ActionRecorder_KeyDown(object sender, KeyEventArgs e)
-        {
-            OnKeyDown(e);
-        }
-
         public event EventHandler<ActionRecorderEventArgs> RecordingStarted;
         public event EventHandler<ActionRecorderEventArgs> RecordingFinished;
 
@@ -44,29 +39,40 @@ namespace AnnoDesigner.Core.Controls
             Modifiers = ModifierKeys.None;
             Key = Key.None;
             MouseAction = MouseAction.None;
-            result = ActionRecorderResult.None;
+            Result = ActionType.None;
         }
 
-        public enum ActionRecorderResult
+        public enum ActionType
         {
             None, KeyAction, MouseAction
         }
 
         // Using a DependencyProperty as the backing store for Key.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty KeyProperty =
-            DependencyProperty.Register("Key", typeof(Key), typeof(ActionRecorder), new PropertyMetadata(Key.None));
+            DependencyProperty.Register("Key", typeof(Key), typeof(ActionRecorder), new FrameworkPropertyMetadata(Key.None, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         // Using a DependencyProperty as the backing store for Modifiers.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ModifiersProperty =
-            DependencyProperty.Register("Modifiers", typeof(ModifierKeys), typeof(ActionRecorder), new PropertyMetadata(ModifierKeys.None));
+            DependencyProperty.Register("Modifiers", typeof(ModifierKeys), typeof(ActionRecorder), new FrameworkPropertyMetadata(ModifierKeys.None, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         // Using a DependencyProperty as the backing store for MouseAction.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MouseActionProperty =
-            DependencyProperty.Register("MouseAction", typeof(MouseAction), typeof(ActionRecorder), new PropertyMetadata(MouseAction.None));
+            DependencyProperty.Register("MouseAction", typeof(MouseAction), typeof(ActionRecorder), new FrameworkPropertyMetadata(MouseAction.None, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         // Using a DependencyProperty as the backing store for IsDisplayFrozen.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsDisplayFrozenProperty =
-            DependencyProperty.Register("IsDisplayFrozen", typeof(bool), typeof(ActionRecorder), new PropertyMetadata(false));
+            DependencyProperty.Register("IsDisplayFrozen", typeof(bool), typeof(ActionRecorder), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        // Using a DependencyProperty as the backing store for Result.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ResultProperty =
+            DependencyProperty.Register("Result", typeof(ActionType), typeof(ActionRecorder), new FrameworkPropertyMetadata(ActionType.None, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public ActionType Result
+        {
+            get { return (ActionType)GetValue(ResultProperty); }
+            set { SetValue(ResultProperty, value); }
+        }
 
         public bool IsDisplayFrozen
         {
@@ -138,18 +144,10 @@ namespace AnnoDesigner.Core.Controls
         /// </summary>
         private bool startNewRecording = false;
 
-#pragma warning disable
-        private ActionRecorderResult result = ActionRecorderResult.None;
-#pragma warning enable
-
         private void UpdateDisplay()
         {
             var modifiers = Modifiers == ModifierKeys.None ? "" : Modifiers.ToString();
             var key = Key == Key.None ? "" : KeyboardInteropHelper.GetDisplayString(Key) ?? Key.ToString();
-            if (Key != Key.None)
-            {
-                Debug.Print($"{Key}:{key}");
-            }
             var mouse = MouseAction == MouseAction.None ? "" : MouseAction.ToString();
 
             string display;
@@ -182,6 +180,7 @@ namespace AnnoDesigner.Core.Controls
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
+            Focus();
             if (startNewRecording)
             {
                 StartNewRecording();
@@ -241,7 +240,8 @@ namespace AnnoDesigner.Core.Controls
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
-            base.OnPreviewKeyDown(e);
+            //OnKeyDown(e);
+            //base.OnPreviewKeyDown(e);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -282,10 +282,23 @@ namespace AnnoDesigner.Core.Controls
 
         private void EndCurrentRecording()
         {
+            if (recordingKeyCombination)
+            {
+                Result = ActionType.KeyAction;
+            }
+            else if (recordingMouseCombination)
+            {
+                Result = ActionType.MouseAction;
+            }
+            else
+            {
+                Result = ActionType.None;
+            }
+
             recordingKeyCombination = false;
             recordingMouseCombination = false;
             startNewRecording = true; //Save the current state, but if we start recording again, remove the current saved Modifiers
-            RecordingFinished?.Invoke(this, new ActionRecorderEventArgs(Key, MouseAction, Modifiers, result));
+            RecordingFinished?.Invoke(this, new ActionRecorderEventArgs(Key, MouseAction, Modifiers, Result));
         }
 
         private void StartNewRecording()
@@ -293,6 +306,24 @@ namespace AnnoDesigner.Core.Controls
             startNewRecording = false;
             Reset();
             RecordingStarted?.Invoke(this, ActionRecorderEventArgs.Empty);
+        }
+
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            Debug.WriteLine("GotFocus");
+            base.OnGotFocus(e);
+        }
+
+        protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
+        {
+            Debug.WriteLine("GotKeyboardFocus");
+            base.OnGotKeyboardFocus(e);
+        }
+
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
+            Debug.WriteLine("LostFocus");
+            base.OnLostFocus(e);
         }
 
     }

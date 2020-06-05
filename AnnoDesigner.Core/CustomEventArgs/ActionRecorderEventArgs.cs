@@ -10,15 +10,15 @@ namespace AnnoDesigner.Core.CustomEventArgs
 {
     public class ActionRecorderEventArgs : EventArgs
     {
-        public static readonly new ActionRecorderEventArgs Empty = new ActionRecorderEventArgs(Key.None, MouseAction.None, ModifierKeys.None, ActionRecorder.ActionRecorderResult.None);
+        public static readonly new ActionRecorderEventArgs Empty = new ActionRecorderEventArgs(Key.None, MouseAction.None, ModifierKeys.None, ActionRecorder.ActionType.None);
 
         public Key Key { get; }
         public MouseAction Action { get; }
         public ModifierKeys Modifiers { get; }
-        public ActionRecorder.ActionRecorderResult Result { get; }
+        public ActionRecorder.ActionType Result { get; }
 
         private ActionRecorderEventArgs() { }
-        public ActionRecorderEventArgs(Key key, MouseAction action, ModifierKeys modifiers, ActionRecorder.ActionRecorderResult result)
+        public ActionRecorderEventArgs(Key key, MouseAction action, ModifierKeys modifiers, ActionRecorder.ActionType result)
         {
             Key = key;
             Action = action;
