@@ -39,7 +39,7 @@ namespace AnnoDesigner.Core.Controls
             Modifiers = ModifierKeys.None;
             Key = Key.None;
             MouseAction = MouseAction.None;
-            Result = ActionType.None;
+            ResultType = ActionType.None;
         }
 
         public enum ActionType
@@ -64,14 +64,14 @@ namespace AnnoDesigner.Core.Controls
             DependencyProperty.Register("IsDisplayFrozen", typeof(bool), typeof(ActionRecorder), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         // Using a DependencyProperty as the backing store for Result.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ResultProperty =
-            DependencyProperty.Register("Result", typeof(ActionType), typeof(ActionRecorder), new FrameworkPropertyMetadata(ActionType.None, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        public static readonly DependencyProperty ResultTypeProperty =
+            DependencyProperty.Register("ResultType", typeof(ActionType), typeof(ActionRecorder), new FrameworkPropertyMetadata(ActionType.None, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
-        public ActionType Result
+        public ActionType ResultType
         {
-            get { return (ActionType)GetValue(ResultProperty); }
-            set { SetValue(ResultProperty, value); }
+            get { return (ActionType)GetValue(ResultTypeProperty); }
+            set { SetValue(ResultTypeProperty, value); Debug.WriteLine($"Set ActionType to {value}"); }
         }
 
         public bool IsDisplayFrozen
@@ -86,6 +86,7 @@ namespace AnnoDesigner.Core.Controls
             set
             {
                 SetValue(KeyProperty, value);
+                Debug.WriteLine($"Set Key to {value}");
                 if (!IsDisplayFrozen)
                 {
                     UpdateDisplay();
@@ -96,8 +97,8 @@ namespace AnnoDesigner.Core.Controls
         public ModifierKeys Modifiers
         {
             get { return (ModifierKeys)GetValue(ModifiersProperty); }
-            set 
-            { 
+            set
+            {
                 SetValue(ModifiersProperty, value);
                 if (!IsDisplayFrozen)
                 {
@@ -109,8 +110,8 @@ namespace AnnoDesigner.Core.Controls
         public MouseAction MouseAction
         {
             get { return (MouseAction)GetValue(MouseActionProperty); }
-            set 
-            { 
+            set
+            {
                 SetValue(MouseActionProperty, value);
                 if (!IsDisplayFrozen)
                 {
@@ -282,23 +283,28 @@ namespace AnnoDesigner.Core.Controls
 
         private void EndCurrentRecording()
         {
-            if (recordingKeyCombination)
+            if (!startNewRecording)
             {
-                Result = ActionType.KeyAction;
-            }
-            else if (recordingMouseCombination)
-            {
-                Result = ActionType.MouseAction;
-            }
-            else
-            {
-                Result = ActionType.None;
-            }
+                if (recordingKeyCombination)
+                {
+                    ResultType = ActionType.KeyAction;
+                }
+                else if (recordingMouseCombination)
+                {
+                    ResultType = ActionType.MouseAction;
+                }
+                else
+                {
+                    ResultType = ActionType.None;
+                }
 
-            recordingKeyCombination = false;
-            recordingMouseCombination = false;
-            startNewRecording = true; //Save the current state, but if we start recording again, remove the current saved Modifiers
-            RecordingFinished?.Invoke(this, new ActionRecorderEventArgs(Key, MouseAction, Modifiers, Result));
+                Debug.WriteLine("Set recordingKeyCombination to false.");
+                recordingKeyCombination = false;
+                Debug.WriteLine("Set recordingMouseCombination to false.");
+                recordingMouseCombination = false;
+                startNewRecording = true; //Save the current state, but if we start recording again, remove the current saved Modifiers
+                RecordingFinished?.Invoke(this, new ActionRecorderEventArgs(Key, MouseAction, Modifiers, ResultType));
+            }
         }
 
         private void StartNewRecording()

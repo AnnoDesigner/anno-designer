@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using AnnoDesigner.Core.Controls;
 using AnnoDesigner.Core.Models;
@@ -15,6 +16,10 @@ namespace AnnoDesigner.ViewModels
         public HotkeyRecorderViewModel() 
         {
             Commons.Instance.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
+            SaveCommand = new RelayCommand<Window>(ExecuteSave);
+            CancelCommand = new RelayCommand<Window>(ExecuteCancel);
+
+            UpdateLanguage();
         }
 
         private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
@@ -48,8 +53,19 @@ namespace AnnoDesigner.ViewModels
             set => UpdateProperty(ref _modifiers, value);
         }
 
-        public ICommand CancelCommand;
-        public ICommand SaveCommand;
+        public ICommand CancelCommand { get; private set; }
+        private void ExecuteCancel(Window w)
+        {
+            w.DialogResult = false;
+            w.Close();
+        }
+
+        public ICommand SaveCommand { get; private set; }
+        private void ExecuteSave(Window w)
+        {
+            w.DialogResult = true;
+            w.Close();
+        }
 
         private ActionRecorder _actionRecorder;
         public ActionRecorder ActionRecorder

@@ -68,15 +68,15 @@ namespace AnnoDesigner.ViewModels
             HotkeyRecorderWindow window = new HotkeyRecorderWindow();
 
 #pragma warning disable IDE0007 // Use implicit type //Intent is much clearer
-            (Key key, ModifierKeys modifiers, MouseAction action, ActionRecorder.ActionType result, bool userCancelled) = window.RecordNewAction(); 
+            (Key key, ModifierKeys modifiers, MouseAction action, ActionRecorder.ActionType actionType, bool userCancelled) = window.RecordNewAction(); 
 #pragma warning restore IDE0007 // Use implicit type
 
             //Only set new hotkeys if the user didn't click cancel, and they didn't close the window without a key bound
             if (!userCancelled)
             {
-                if (result == ActionRecorder.ActionType.KeyAction)
+                Debug.WriteLine($"Recieved the following binding: {modifiers} + {key} + {action} + {actionType}");
+                if (actionType == ActionRecorder.ActionType.KeyAction)
                 {
-                    Debug.WriteLine($"Recieved the following binding: {modifiers} + {key} + {action}");
                     if (hotkey.Binding is KeyBinding keyBinding)
                     {
                         keyBinding.Key = key;

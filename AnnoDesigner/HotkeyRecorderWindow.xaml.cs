@@ -27,12 +27,17 @@ namespace AnnoDesigner
                 ActionRecorder = ActionRecorder
             };
             DataContext = ViewModel;
-            KeyDown += HotkeyRecorderWindow_KeyDown;
+            ActionRecorder.Focus();
+            Closing += HotkeyRecorderWindow_Closing;
         }
 
-        private void HotkeyRecorderWindow_KeyDown(object sender, KeyEventArgs e)
+        private void HotkeyRecorderWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Handled = false;
+            //handle when the user just clicks the "X"
+            if (!DialogResult.HasValue)
+            {
+                DialogResult = false;
+            }
         }
 
         public (Key key, ModifierKeys modifiers, MouseAction action, ActionRecorder.ActionType result, bool userCancelled) RecordNewAction()
@@ -43,19 +48,5 @@ namespace AnnoDesigner
         }
 
         private HotkeyRecorderViewModel ViewModel { get; set; }
-
-        private void SaveRecordingClick(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
-            e.Handled = true; //prevent click from bubbling up to window.
-            Close();
-        }
-
-        private void CancelClick(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
-            e.Handled = true; //prevent click from bubbling up to window.
-            Close();
-        }
     }
 }

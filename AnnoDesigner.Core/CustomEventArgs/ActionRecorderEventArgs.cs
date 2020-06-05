@@ -15,15 +15,15 @@ namespace AnnoDesigner.Core.CustomEventArgs
         public Key Key { get; }
         public MouseAction Action { get; }
         public ModifierKeys Modifiers { get; }
-        public ActionRecorder.ActionType Result { get; }
+        public ActionRecorder.ActionType ResultType { get; }
 
         private ActionRecorderEventArgs() { }
-        public ActionRecorderEventArgs(Key key, MouseAction action, ModifierKeys modifiers, ActionRecorder.ActionType result)
+        public ActionRecorderEventArgs(Key key, MouseAction action, ModifierKeys modifiers, ActionRecorder.ActionType resultType)
         {
             Key = key;
             Action = action;
             Modifiers = modifiers;
-            Result = result;
+            ResultType = resultType;
         }
     }
 }
