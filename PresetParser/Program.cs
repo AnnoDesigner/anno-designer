@@ -89,7 +89,7 @@ namespace PresetParser
         private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding",
             "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding",
-            "CultureModule","Palace"};
+            "CultureModule","Palace","BuffFactory"};
         private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358", "1010462",
             "1010463", "1010464", "1010275", "1010271","1010516"};
         //private static readonly List<string> ExcludeBuildingsGUID1800 = new List<string> { "102139", "102140", "102141", "102142", "102143", "102828" };
@@ -100,11 +100,11 @@ namespace PresetParser
             "Entertainment_musicpavillion_1701", "Entertainment_musicpavillion_1404", "Entertainment_musicpavillion_2070", "Entertainment_musicpavillion_2205", "Entertainment_musicpavillion_1800",
             "Culture_01_module_06_empty","Culture_02_module_06_empty", "AnarchyBanner", "Culture_props_system_all_nohedge", "Monument_arctic_01_01", "Monument_arctic_01_02", "Monument_arctic_01_03",
             "Active fertility","- Decree","Ministry of Public Services","Ministry of Productivity","Arctic Shepherd","fertility","Arctic Cook","Arctic Builder","Arctic Hunter","Arctic Sewer"," Buff"," Seeds",
-            "PropagandaTower Merciers Version"};
+            "PropagandaTower Merciers Version","tractor_module_02 (Harvester)"};
         //Skip the following icons to put in the presets for anno 1800, to avoid double Ornamentalbuildings
         public static List<string> ExcludeOrnamentsIcons_1800 = new List<string> { "A7_bush03.png", "A7_park_props_1x1_07.png", "A7_bush01.png", "A7_col_props_1x1_13_back.png", "A7_bush05.png", "A7_park_props_1x1_08.png",
             "A7_bush02.png", "A7_bush04.png", "A7_col_props_1x1_11_bac.pngk", "A7_col_props_1x1_07_back.png","A7_park_1x1_06.png","A7_park_1x1_02.png","A7_park_1x1_03.png","A7_col_park_props_system_1x1_21_back.png",
-            "A7_park_3x3_02.png", "A7_park_2x2_05.png","A7_park_2x2_02.png"};
+            "A7_park_3x3_02.png", "A7_park_2x2_05.png","A7_park_2x2_02.png", "A7_benches.png"};
 
         /// <summary>
         /// in NewFactionAndGroup1800.cs are made the following lists
@@ -115,9 +115,9 @@ namespace PresetParser
         ///              AT1 (Arctic - Explorers) - AT2 (Arctic - Technicians)
         /// <2> wil be the Group under <1>, like Production, Public, etc
         /// </summary>
-        #endregion
+            #endregion
 
-        #endregion
+            #endregion
 
         static Program()
         {
