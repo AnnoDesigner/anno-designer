@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 
 namespace PresetParser
@@ -100,10 +101,10 @@ namespace PresetParser
             "Entertainment_musicpavillion_1701", "Entertainment_musicpavillion_1404", "Entertainment_musicpavillion_2070", "Entertainment_musicpavillion_2205", "Entertainment_musicpavillion_1800",
             "Culture_01_module_06_empty","Culture_02_module_06_empty", "AnarchyBanner", "Culture_props_system_all_nohedge", "Monument_arctic_01_01", "Monument_arctic_01_02", "Monument_arctic_01_03",
             "Active fertility","- Decree","Ministry of Public Services","Ministry of Productivity","Arctic Shepherd","fertility","Arctic Cook","Arctic Builder","Arctic Hunter","Arctic Sewer"," Buff"," Seeds",
-            "PropagandaTower Merciers Version","tractor_module_02 (Harvester)"};
+            "PropagandaTower Merciers Version","tractor_module_02 (Harvester)", "Culture_1x1_statue", "Culture_prop_system_1x1_10"};
         //Skip the following icons to put in the presets for anno 1800, to avoid double Ornamentalbuildings
-        public static List<string> ExcludeOrnamentsIcons_1800 = new List<string> { "A7_bush03.png", "A7_park_props_1x1_07.png", "A7_bush01.png", "A7_col_props_1x1_13_back.png", "A7_bush05.png", "A7_park_props_1x1_08.png",
-            "A7_bush02.png", "A7_bush04.png", "A7_col_props_1x1_11_bac.pngk", "A7_col_props_1x1_07_back.png","A7_park_1x1_06.png","A7_park_1x1_02.png","A7_park_1x1_03.png","A7_col_park_props_system_1x1_21_back.png",
+        public static List<string> ExcludeOrnamentsIcons_1800 = new List<string> { "A7_bush03.png", "A7_park_props_1x1_01.png", "A7_park_props_1x1_07.png", "A7_bush01.png", "A7_col_props_1x1_13_back.png", "A7_bush05.png", "A7_park_props_1x1_08.png",
+            "A7_bush02.png", "A7_bush04.png", "A7_col_props_1x1_11_bac.pngk", "A7_col_props_1x1_01_back.png", "A7_col_props_1x1_07_back.png","A7_park_1x1_06.png","A7_park_1x1_02.png","A7_park_1x1_03.png","A7_col_park_props_system_1x1_21_back.png",
             "A7_park_3x3_02.png", "A7_park_2x2_05.png","A7_park_2x2_02.png", "A7_benches.png"};
 
         /// <summary>
@@ -1199,8 +1200,15 @@ namespace PresetParser
                 if (factionName == "Arctic") { factionName = "(12) Arctic Farm Fields"; groupName = null; }
             }
 
+            //Renaming the Fuel Station for Moderate (OW) site, to avoid double listsed on Obreros tree
+            if ( factionName == "Moderate" && identifierName == "Fuel_station_01 (FuelStation)") { identifierName = "Moderate_fuel_station_01 (FuelStation)"; }
+
             switch (identifierName)
             {
+                case "Silo (Grain)": { factionName = "(06) Old World Fields"; groupName = null; break; }
+                case "Tractor_module_01 (Tractor)": { factionName = "(06) Old World Fields"; groupName = null; break; }
+                case "Silo (Corn)": { factionName = "(09) New World Fields"; groupName = null; break; }
+                case "Colony01_tractor_module_01 (Tractor)": { factionName = "(09) New World Fields"; groupName = null; break; }
                 case "Entertainment_musicpavillion_empty": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Culture_01 (Zoo)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Culture_02 (Museum)": { factionName = "Attractiveness"; groupName = null; break; }
@@ -1390,7 +1398,7 @@ namespace PresetParser
                     Console.WriteLine("-----> Ornament Skipped, Already in preset (B)");
                     return;
                 }
-            }
+             }
 
             #endregion
 
@@ -1653,6 +1661,9 @@ namespace PresetParser
             #endregion
 
             #endregion
+            // Remove the Not Placed yet Ornamental Buildings from the list
+            /// commentout the line below if you make a new preset after update of the game, or when a new game DLC is released 
+            //if ((b.Faction== "Not Placed Yet -Moderate" || b.Faction== "Not Placed Yet -Colony01") && b.Template == "OrnamentalBuilding") { return; }
 
             // add building to the list
             annoBuildingsListCount++;

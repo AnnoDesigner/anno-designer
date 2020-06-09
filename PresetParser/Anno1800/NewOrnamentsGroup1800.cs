@@ -28,6 +28,7 @@ namespace PresetParser.Anno1800
     ///              AgriculturalFences
     ///              IndustrialOnrnaments
     ///              IndustrialFences
+    ///              AmusementPark
     /// </summary>
     public static class NewOrnamentsGroup1800
     {
@@ -36,15 +37,15 @@ namespace PresetParser.Anno1800
         private static readonly List<string> ChangeOrnamentToParkFences_1800 = new List<string> { "Park_1x1_hedgestraight", "Park_1x1_hedgeend", "Park_1x1_hedgeangle", "Park_1x1_hedgecrossing", "Park_1x1_hedgewall", "Culture_1x1_fencestraight", "Culture_1x1_fenceend",
             "Culture_1x1_fenceangle", "Culture_1x1_fencecrossing", "Culture_1x1_fencewall", "Park_1x1_hedgegate", "Culture_1x1_fencegate" };
         private static readonly List<string> ChangeOrnamentToParkVegetation_1800 = new List<string> { "Park_1x1_grass", "Park_1x1_bush", "Park_1x1_smalltree", "Park_1x1_pine", "Park_1x1_poplar" , "Park_1x1_bigtree", "Park_1x1_poplarforest", "Park_1x1_tropicalforest",
-            "Park_1x1_philodendron", "Park_1x1_ferns", "Park_1x1_floweringshrub", "Park_1x1_smallpalmtree", "Park_1x1_palmtree"};
+            "Park_1x1_philodendron", "Park_1x1_ferns", "Park_1x1_floweringshrub", "Park_1x1_smallpalmtree", "Park_1x1_palmtree", "Park_1x1_shrub", "Park_1x1_growncypress"};
         private static readonly List<string> ChangeOrnamentToParkFountains_1800 = new List<string> { "Uplay_ornament_3x2_large_fountain", "Park_2x2_fountain", "Park_3x3_fountain" };
         private static readonly List<string> ChangeOrnamentToParkStatues_1800 = new List<string> {  "Sunken Treasure Ornament 01", "Sunken Treasure Ornament 02", "Sunken Treasure Ornament 03", "Uplay_ornament_2x1_lion_statue", "Culture_preorder_statue", "Park_2x2_statue", "Park_2x2_horsestatue" };
         private static readonly List<string> ChangeOrnamentToParkDecorations_1800 = new List<string> { "Park_1x1_benches", "Uplay_ornament_2x2_pillar_chess_park", "Park_2x2_garden", "Park_1x1_stand", "Park_2x2_gazebo", "Park_3x3_gazebo" };
         private static readonly List<string> ChangeOrnamentToCityPaths_1800 = new List<string> { "" };
         private static readonly List<string> ChangeOrnamentToCityFences_1800 = new List<string> { "Culture_prop_system_1x1_03", "Culture_prop_system_1x1_04", "Culture_prop_system_1x1_05", "Culture_prop_system_1x1_06", "Culture_prop_system_1x1_07", "Culture_prop_system_1x1_08",
-            "Culture_prop_system_1x1_09", "Culture_prop_system_1x1_11", "Culture_prop_system_1x1_12", "Culture_prop_system_1x1_13", "Culture_prop_system_1x1_14" };
+            "Culture_prop_system_1x1_09", "Culture_prop_system_1x1_11", "Culture_prop_system_1x1_12", "Culture_prop_system_1x1_13", "Culture_prop_system_1x1_14", "Culture_1x1_hedgegate", "Culture_1x1_hedgestraight" };
         private static readonly List<string> ChangeOrnamentToCityStatues_1800 = new List<string> { "Park_1x1_statue", "City_prop_system_2x2_03", "Culture_prop_system_1x1_10" };
-        private static readonly List<string> ChangeOrnamentToCityDecorations_1800 = new List<string> { "PropagandaTower Players Version", "PropagandaFlag Players Version", "Botanica Ornament 01", "Botanica Ornament 02", "Botanica Ornament 03", "Culture_1x1_benches"  };
+        private static readonly List<string> ChangeOrnamentToCityDecorations_1800 = new List<string> { "PropagandaTower Players Version", "PropagandaFlag Players Version", "Botanica Ornament 01", "Botanica Ornament 02", "Botanica Ornament 03", "Culture_1x1_benches", "Culture_1x1_stand" };
         private static readonly List<string> ChangeOrnamentToSpecialOrnaments_1800 = new List<string> { "Event_ornament_halloween_2019", "Event_ornament_christmas_2019", "Event_ornament_onemio", "Twitchdrops_ornament_billboard_annoholic", "Twitchdrops_ornament_billboard_anno_union",
             "Twitchdrops_ornament_billboard_anarchy","Twitchdrops_ornament_billboard_sunken_treasures","Twitchdrops_ornament_botanical_garden","Twitchdrops_ornament_flag_banner_annoholic","Twitchdrops_ornament_flag_banner_anno_union","Twitchdrops_ornament_billboard_the_passage",
             "Twitchdrops_ornament_morris_column_annoholic","Twitchdrops_ornament_flag_seat_of_power","Twitchdrops_ornament_billboard_seat_of_power","Twitchdrops_ornament_flag_bright_harvest","Twitchdrops_ornament_billboard_bright_harvest","Twitchdrops_ornament_flag_land_of_lions",
@@ -61,6 +62,7 @@ namespace PresetParser.Anno1800
             "BH Ornament17 Shed", "BH Ornament18 Pile Iron Bars", "BH Ornament19 Pile Boxes and Barrels", "BH Ornament20 Heap", "BH Ornament21 Large Boxes", "BH Ornament22 Gangway" };
         private static readonly List<string> ChangeOrnamentToIndustrialFences_1800 = new List<string> { "BH Ornament01 Wall Straight", "BH Ornament01 Wall End", "BH Ornament01 Wall Cross", "BH Ornament01 Wall T-Cross", "BH Ornament01 Wall Corner", "BH Ornament01 Wall Gate",
             "BH Ornament01 Wall Gate 02", "BH Ornament02 Wall Straight Large", "BH Ornament02 Wall End Large", "BH Ornament02 Wall Cross Large", "BH Ornament02 Wall T-Cross Large", "BH Ornament02 Wall Corner Large", "BH Ornament02 Wall Gate Large" };
+        private static readonly List<string> ChangeOrnamentToAmusementPark_1800 = new List<string> { "" };
         /// <summary>
         /// Retuns the faction and group for an identifier.
         /// </summary>
@@ -94,6 +96,7 @@ namespace PresetParser.Anno1800
             if (identifierName.IsPartOf(ChangeOrnamentToAgriculturalFences_1800)) { factionName = "Ornaments"; groupName = "16 Agricultural Fences"; }
             if (identifierName.IsPartOf(ChangeOrnamentToIndustrialOrnaments_1800)) { factionName = "Ornaments"; groupName = "17 Industrial Ornaments"; }
             if (identifierName.IsPartOf(ChangeOrnamentToIndustrialFences_1800)) { factionName = "Ornaments"; groupName = "18 IndustrialFences"; }
+            if (identifierName.IsPartOf(ChangeOrnamentToAmusementPark_1800)) { factionName = "Ornaments"; groupName = "19 Amusement Park"; }
 
             return new string[] { factionName, groupName };
         }
