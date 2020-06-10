@@ -62,7 +62,7 @@ namespace PresetParser.Anno1800
         private static readonly List<string> ChangeBuildingsToAW_SpecialBuilding_1800 = new List<string> { "Guild_house", "Town hall" };
 
         //Ornamentals 
-        private static readonly List<string> ChangeBuildingsToAW_Ornamentals_1800 = new List<string> { "Culture_preorder_statue", "Uplay_ornament_2x1_lion_statue", "Uplay_ornament_2x2_pillar_chess_park", "Uplay_ornament_3x2_large_fountain" };
+        //private static readonly List<string> ChangeBuildingsToAW_Ornamentals_1800 = new List<string> { "Culture_preorder_statue", "Uplay_ornament_2x1_lion_statue", "Uplay_ornament_2x2_pillar_chess_park", "Uplay_ornament_3x2_large_fountain" };
 
         /// <summary>
         /// Retuns the faction and group for an identifier.
@@ -118,7 +118,7 @@ namespace PresetParser.Anno1800
             //Special Buildings
             if (identifierName.IsPartOf(ChangeBuildingsToAW_SpecialBuilding_1800)) { factionName = "All Worlds"; groupName = "Special Buildings"; }
             //Ornamentals 
-            if (identifierName.IsPartOf(ChangeBuildingsToAW_Ornamentals_1800)) { factionName = "All Worlds"; }
+            //if (identifierName.IsPartOf(ChangeBuildingsToAW_Ornamentals_1800)) { factionName = "All Worlds"; }
 
             return new string[] { factionName, groupName, templateName };
         }
