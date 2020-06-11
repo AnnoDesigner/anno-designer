@@ -72,7 +72,7 @@ namespace PresetParser.Anno1800
         /// <param name="groupName">If Buildingmane is in one of the lists, groupName will be changed</param>
         /// <param name="templateName">if buildingname is in ToAT1 or ToAT2 and is a Production Building, the Templatename will be changed</param>
         /// <returns></returns>
-        public static string[] GetNewFactionAndGroup1800(string identifierName, string factionName, string groupName, string templateName = "")
+        public static (string Faction, string Group, string Template) GetNewFactionAndGroup1800(string identifierName, string factionName, string groupName, string templateName = "")
         {
             if (string.IsNullOrWhiteSpace(identifierName))
             {
@@ -120,7 +120,7 @@ namespace PresetParser.Anno1800
             //Ornamentals 
             //if (identifierName.IsPartOf(ChangeBuildingsToAW_Ornamentals_1800)) { factionName = "All Worlds"; }
 
-            return new string[] { factionName, groupName, templateName };
+            return (factionName, groupName, templateName);
         }
     }
 }

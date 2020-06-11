@@ -1227,10 +1227,10 @@ namespace PresetParser
             // Place the rest of the buildings in the right Faction > Group menu
             #region Order the Buildings to the right tiers and factions as in the game
 
-            var newFactionGroupName = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName, templateName);
-            factionName = newFactionGroupName[0];
-            groupName = newFactionGroupName[1];
-            templateName = newFactionGroupName[2];
+            var groupInfo = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName, templateName);
+            factionName = groupInfo.Faction;
+            groupName = groupInfo.Group;
+            templateName = groupInfo.Template;
 
             #endregion
 
@@ -1244,7 +1244,7 @@ namespace PresetParser
             #region Sorting the Ornaments for the new Ornaments Menu (11/05/2020)
 
             //Sorting to the new menu
-            var groupInfo = NewOrnamentsGroup1800.GetNewOrnamentsGroup1800(identifierName, factionName, groupName, templateName);
+            groupInfo = NewOrnamentsGroup1800.GetNewOrnamentsGroup1800(identifierName, factionName, groupName, templateName);
             factionName = groupInfo.Faction;
             groupName = groupInfo.Group;
             templateName = groupInfo.Template;

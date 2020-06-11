@@ -450,7 +450,7 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("(01) Farmers", result[0]);
+            Assert.Equal("(01) Farmers", result.Faction);
         }
 
         [Theory]
@@ -461,8 +461,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Public Buildings", result[1]);
-            Assert.Contains("(01) Farmers", result[0]);
+            Assert.Equal("Public Buildings", result.Group);
+            Assert.Equal("(01) Farmers", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -473,8 +474,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Production Buildings", result[1]);
-            Assert.Contains("(01) Farmers", result[0]);
+            Assert.Equal("Production Buildings", result.Group);
+            Assert.Equal("(01) Farmers", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -485,8 +487,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Farm Buildings", result[1]);
-            Assert.Contains("(01) Farmers", result[0]);
+            Assert.Equal("Farm Buildings", result.Group);
+            Assert.Equal("(01) Farmers", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         #endregion
@@ -503,7 +506,7 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("(02) Workers", result[0]);
+            Assert.Equal("(02) Workers", result.Faction);
         }
 
         [Theory]
@@ -514,8 +517,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Public Buildings", result[1]);
-            Assert.Contains("(02) Workers", result[0]);
+            Assert.Equal("Public Buildings", result.Group);
+            Assert.Equal("(02) Workers", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -526,8 +530,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Production Buildings", result[1]);
-            Assert.Contains("(02) Workers", result[0]);
+            Assert.Equal("Production Buildings", result.Group);
+            Assert.Equal("(02) Workers", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -538,8 +543,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Farm Buildings", result[1]);
-            Assert.Contains("(02) Workers", result[0]);
+            Assert.Equal("Farm Buildings", result.Group);
+            Assert.Equal("(02) Workers", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         #endregion
@@ -556,7 +562,7 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("(03) Artisans", result[0]);
+            Assert.Equal("(03) Artisans", result.Faction);
         }
 
         [Theory]
@@ -567,8 +573,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Public Buildings", result[1]);
-            Assert.Contains("(03) Artisans", result[0]);
+            Assert.Equal("Public Buildings", result.Group);
+            Assert.Equal("(03) Artisans", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -579,8 +586,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Production Buildings", result[1]);
-            Assert.Contains("(03) Artisans", result[0]);
+            Assert.Equal("Production Buildings", result.Group);
+            Assert.Equal("(03) Artisans", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -591,8 +599,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Farm Buildings", result[1]);
-            Assert.Contains("(03) Artisans", result[0]);
+            Assert.Equal("Farm Buildings", result.Group);
+            Assert.Equal("(03) Artisans", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         #endregion
@@ -608,7 +617,7 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("(04) Engineers", result[0]);
+            Assert.Equal("(04) Engineers", result.Faction);
         }
 
         [Theory]
@@ -619,8 +628,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Public Buildings", result[1]);
-            Assert.Contains("(04) Engineers", result[0]);
+            Assert.Equal("Public Buildings", result.Group);
+            Assert.Equal("(04) Engineers", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -631,8 +641,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Production Buildings", result[1]);
-            Assert.Contains("(04) Engineers", result[0]);
+            Assert.Equal("Production Buildings", result.Group);
+            Assert.Equal("(04) Engineers", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         #endregion
@@ -649,7 +660,7 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("(05) Investors", result[0]);
+            Assert.Equal("(05) Investors", result.Faction);
         }
 
         [Theory]
@@ -660,8 +671,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Public Buildings", result[1]);
-            Assert.Contains("(05) Investors", result[0]);
+            Assert.Equal("Public Buildings", result.Group);
+            Assert.Equal("(05) Investors", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -672,8 +684,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Production Buildings", result[1]);
-            Assert.Contains("(05) Investors", result[0]);
+            Assert.Equal("Production Buildings", result.Group);
+            Assert.Equal("(05) Investors", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -684,8 +697,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Farm Buildings", result[1]);
-            Assert.Contains("(05) Investors", result[0]);
+            Assert.Equal("Farm Buildings", result.Group);
+            Assert.Equal("(05) Investors", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         #endregion
@@ -702,7 +716,7 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("(07) Jornaleros", result[0]);
+            Assert.Equal("(07) Jornaleros", result.Faction);
         }
 
         [Theory]
@@ -713,8 +727,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Public Buildings", result[1]);
-            Assert.Contains("(07) Jornaleros", result[0]);
+            Assert.Equal("Public Buildings", result.Group);
+            Assert.Equal("(07) Jornaleros", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -725,8 +740,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Production Buildings", result[1]);
-            Assert.Contains("(07) Jornaleros", result[0]);
+            Assert.Equal("Production Buildings", result.Group);
+            Assert.Equal("(07) Jornaleros", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -737,8 +753,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Farm Buildings", result[1]);
-            Assert.Contains("(07) Jornaleros", result[0]);
+            Assert.Equal("Farm Buildings", result.Group);
+            Assert.Equal("(07) Jornaleros", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         #endregion
@@ -755,7 +772,7 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("(08) Obreros", result[0]);
+            Assert.Equal("(08) Obreros", result.Faction);
         }
 
         [Theory]
@@ -766,8 +783,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Public Buildings", result[1]);
-            Assert.Contains("(08) Obreros", result[0]);
+            Assert.Equal("Public Buildings", result.Group);
+            Assert.Equal("(08) Obreros", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -778,8 +796,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Production Buildings", result[1]);
-            Assert.Contains("(08) Obreros", result[0]);
+            Assert.Equal("Production Buildings", result.Group);
+            Assert.Equal("(08) Obreros", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -790,8 +809,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Farm Buildings", result[1]);
-            Assert.Contains("(08) Obreros", result[0]);
+            Assert.Equal("Farm Buildings", result.Group);
+            Assert.Equal("(08) Obreros", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         #endregion
@@ -806,7 +826,7 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("All Worlds", result[0]);
+            Assert.Equal("All Worlds", result.Faction);
         }
 
         [Theory]
@@ -817,8 +837,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Special Buildings", result[1]);
-            Assert.Contains("All Worlds", result[0]);
+            Assert.Equal("Special Buildings", result.Group);
+            Assert.Equal("All Worlds", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         #endregion
@@ -833,7 +854,7 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Null(result[0]);
+            Assert.Null(result.Faction);
         }
 
         [Theory]
@@ -844,8 +865,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Null(result[1]);
-            Assert.Null(result[0]);
+            Assert.Null(result.Group);
+            Assert.Null(result.Faction);
+            Assert.Empty(result.Template);
         }
 
         #endregion
@@ -862,7 +884,7 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("(10) Explorers", result[0]);
+            Assert.Equal("(10) Explorers", result.Faction);
         }
 
         [Theory]
@@ -873,8 +895,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Public Buildings", result[1]);
-            Assert.Contains("(10) Explorers", result[0]);
+            Assert.Equal("Public Buildings", result.Group);
+            Assert.Equal("(10) Explorers", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -885,8 +908,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Production Buildings", result[1]);
-            Assert.Contains("(10) Explorers", result[0]);
+            Assert.Equal("Production Buildings", result.Group);
+            Assert.Equal("(10) Explorers", result.Faction);
+            Assert.Equal("FactoryBuilding7", result.Template);
         }
 
         [Theory]
@@ -897,8 +921,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Farm Buildings", result[1]);
-            Assert.Contains("(10) Explorers", result[0]);
+            Assert.Equal("Farm Buildings", result.Group);
+            Assert.Equal("(10) Explorers", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         #endregion
@@ -915,7 +940,7 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("(11) Technicians", result[0]);
+            Assert.Equal("(11) Technicians", result.Faction);
         }
 
         [Theory]
@@ -926,8 +951,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Public Buildings", result[1]);
-            Assert.Contains("(11) Technicians", result[0]);
+            Assert.Equal("Public Buildings", result.Group);
+            Assert.Equal("(11) Technicians", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         [Theory]
@@ -938,8 +964,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Production Buildings", result[1]);
-            Assert.Contains("(11) Technicians", result[0]);
+            Assert.Equal("Production Buildings", result.Group);
+            Assert.Equal("(11) Technicians", result.Faction);
+            Assert.Equal("FactoryBuilding7", result.Template);
         }
 
         [Theory]
@@ -950,8 +977,9 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("Farm Buildings", result[1]);
-            Assert.Contains("(11) Technicians", result[0]);
+            Assert.Equal("Farm Buildings", result.Group);
+            Assert.Equal("(11) Technicians", result.Faction);
+            Assert.Empty(result.Template);
         }
 
         #endregion
