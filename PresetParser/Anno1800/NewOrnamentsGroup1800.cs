@@ -102,7 +102,7 @@ namespace PresetParser.Anno1800
             if (identifierName.IsPartOf(ChangeOrnamentToIndustrialFences_1800)) { factionName = "Ornaments"; groupName = "18 IndustrialFences"; templateName = "OrnamentalBuilding_Industrial"; }
             if (identifierName.IsPartOf(ChangeOrnamentToAmusementPark_1800)) { factionName = "Ornaments"; groupName = "19 Amusement Park"; }
 
-            return (templateName, groupName, factionName);
+            return (factionName, groupName, templateName);
         }
     }
 }

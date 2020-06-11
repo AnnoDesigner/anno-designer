@@ -83,7 +83,7 @@ namespace PresetParser
 
         #region anno 1800
         /// <summary>
-        /// i need the IncludeBuildingsTemplateNames to get Building informaton from, as it is also the Presets Template String or Template GUID
+        /// I need the IncludeBuildingsTemplateNames to get Building informaton from, as it is also the Presets Template String or Template GUID
         /// </summary>
         public static IList<FarmField> farmFieldList1800 = new List<FarmField>();
         // Removed IncludeBuildingsTemplate "CultureModule" (to must to handle and thus are replaced with the Zoo Module and Museum Module
@@ -1644,18 +1644,18 @@ namespace PresetParser
 
                     if (fieldAmountValue != null)
                     {
-                        bool getFieldGuidBool = false;
-                        foreach (var getFieldGuid in farmFieldList1800)
+                        var isFieldInfoFound = false;
+                        foreach (var curFieldInfo in farmFieldList1800)
                         {
-                            if (getFieldGuid.FieldGuid == fieldGuidValue)
+                            if (string.Equals(curFieldInfo.FieldGuid, fieldGuidValue, StringComparison.OrdinalIgnoreCase))
                             {
-                                getFieldGuidBool = true;
-                                fieldAmountValue = getFieldGuid.FieldAmount;
+                                isFieldInfoFound = true;
+                                fieldAmountValue = curFieldInfo.FieldAmount;
                                 break;
                             }
                         }
 
-                        if (!getFieldGuidBool)
+                        if (!isFieldInfoFound)
                         {
                             farmFieldList1800.Add(new FarmField() { FieldGuid = fieldGuidValue, FieldAmount = fieldAmountValue });
                         }

@@ -45,9 +45,10 @@ namespace PresetParser
             try
             {
                 XmlNode node = ifoDocument.FirstChild?[BUILDBLOCKER].FirstChild;
-                
+
                 //check of the node contains data
-                if (string.IsNullOrEmpty(node?.InnerText)) {
+                if (string.IsNullOrEmpty(node?.InnerText))
+                {
                     Console.WriteLine("-'X' and 'Z' are both 'Null' - Building will be skipped!");
                     return false;
                 }

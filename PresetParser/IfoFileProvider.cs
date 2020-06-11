@@ -14,14 +14,16 @@ namespace PresetParser
         {
             var result = new XmlDocument();
 
-            var filePath = Path.Combine(Path.GetDirectoryName(variationFilename), Path.GetFileNameWithoutExtension(variationFilename));
+            var pathToFileDirectory = Path.Combine(Path.GetDirectoryName(variationFilename), Path.GetFileNameWithoutExtension(variationFilename));
+            var pathToFile = Path.Combine(basePath + "/", string.Format("{0}.ifo", pathToFileDirectory));
 
-            if (File.Exists(Path.Combine(basePath + "/", string.Format("{0}.ifo", filePath)))) { 
-                result.Load(Path.Combine(basePath + "/", string.Format("{0}.ifo", filePath)));
+            if (File.Exists(pathToFile))
+            {
+                result.Load(pathToFile);
                 return result;
             }
 
-            return (result);
+            return result;
         }
     }
 }
