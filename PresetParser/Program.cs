@@ -117,9 +117,9 @@ namespace PresetParser
         ///              AT1 (Arctic - Explorers) - AT2 (Arctic - Technicians)
         /// <2> wil be the Group under <1>, like Production, Public, etc
         /// </summary>
-            #endregion
+        #endregion
 
-            #endregion
+        #endregion
 
         static Program()
         {
@@ -1159,7 +1159,7 @@ namespace PresetParser
 
             switch (templateName)
             {
-                case "BuildPermitBuilding" : { factionName = "Ornaments"; groupName = "13 World's Fair Rewards"; break; }
+                case "BuildPermitBuilding": { factionName = "Ornaments"; groupName = "13 World's Fair Rewards"; break; }
                 case "Farmfield": { groupName = "Farm Fields"; break; }
                 case "SlotFactoryBuilding7": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
                 case "Warehouse": { factionName = "(01) Farmers"; groupName = null; break; }
@@ -1204,7 +1204,7 @@ namespace PresetParser
             }
 
             //Renaming the Fuel Station for Moderate (OW) site, to avoid double listsed on Obreros tree
-            if ( factionName == "Moderate" && identifierName == "Fuel_station_01 (FuelStation)") { identifierName = "Moderate_fuel_station_01 (FuelStation)"; }
+            if (factionName == "Moderate" && identifierName == "Fuel_station_01 (FuelStation)") { identifierName = "Moderate_fuel_station_01 (FuelStation)"; }
 
             switch (identifierName)
             {
@@ -1244,24 +1244,27 @@ namespace PresetParser
             #region Sorting the Ornaments for the new Ornaments Menu (11/05/2020)
 
             //Sorting to the new menu
-            var newOrnamentsGroupName = NewOrnamentsGroup1800.GetNewOrnamentsGroup1800(identifierName, factionName, groupName, templateName);
-            factionName = newOrnamentsGroupName[0];
-            groupName = newOrnamentsGroupName[1];
-            templateName = newOrnamentsGroupName[2];
+            var groupInfo = NewOrnamentsGroup1800.GetNewOrnamentsGroup1800(identifierName, factionName, groupName, templateName);
+            factionName = groupInfo.Faction;
+            groupName = groupInfo.Group;
+            templateName = groupInfo.Template;
 
             #endregion
 
             #region Temperary exclude the following OrnamentalBuildings from Presets.json
-            /// The following process is to eliminate ornaments that not belong in he preset, till it is made into the game
-            /// i do it here, so, when it is in game, i can remove it here, so it will appear in the preset
-            /// Behind the add line, i comment the English name, what it should have in game.
-            TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_all"); // Cityscape 
-            TempExcludeOrnamentsFromPreset_1800.Add("City_prop_system_1x1_01"); // Small Square
-            TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_1x1_global"); // Small City Ornaments
-            TempExcludeOrnamentsFromPreset_1800.Add("City_prop_system_2x2_01"); // Piazza
-            TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_2x2_global"); // Medium City Ornaments
-            TempExcludeOrnamentsFromPreset_1800.Add("City_prop_system_3x3_01"); // Large Square
-            TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_3x3_global"); //Large City Ornaments
+            /// The following process is to eliminate ornaments that not belong in the preset, till it is made into the game
+            /// I do it here, so when it is in game, I can remove it here, so it will appear in the preset
+            /// Behind the add line, I comment the English name, what it should have in game.
+            if (!TempExcludeOrnamentsFromPreset_1800.Any())
+            {
+                TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_all"); // Cityscape 
+                TempExcludeOrnamentsFromPreset_1800.Add("City_prop_system_1x1_01"); // Small Square
+                TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_1x1_global"); // Small City Ornaments
+                TempExcludeOrnamentsFromPreset_1800.Add("City_prop_system_2x2_01"); // Piazza
+                TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_2x2_global"); // Medium City Ornaments
+                TempExcludeOrnamentsFromPreset_1800.Add("City_prop_system_3x3_01"); // Large Square
+                TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_3x3_global"); //Large City Ornaments
+            }
 
             if (identifierName.IsPartOf(TempExcludeOrnamentsFromPreset_1800)) { return; };
             #endregion
@@ -1405,7 +1408,7 @@ namespace PresetParser
                     Console.WriteLine("-----> Ornament Skipped, Already in preset (B)");
                     return;
                 }
-             }
+            }
 
             #endregion
 
@@ -1670,7 +1673,7 @@ namespace PresetParser
             #endregion
             // Remove the Not Placed yet Ornamental Buildings from the list
             /// commentout the line below if you make a new preset after update of the game 'ANNO 1800', or when a new 'ANNO 1800 DLC' is released 
-            if ((b.Faction== "Not Placed Yet -Moderate" || b.Faction== "Not Placed Yet -Colony01") && b.Template == "OrnamentalBuilding") { return; }
+            if ((b.Faction == "Not Placed Yet -Moderate" || b.Faction == "Not Placed Yet -Colony01") && b.Template == "OrnamentalBuilding") { return; }
 
             // add building to the list
             annoBuildingsListCount++;//countup amount of buildings

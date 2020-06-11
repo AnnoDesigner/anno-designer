@@ -39,7 +39,7 @@ namespace PresetParser.Anno1800
         private static readonly List<string> ChangeOrnamentToParkVegetation_1800 = new List<string> { "Park_1x1_grass", "Park_1x1_bush", "Park_1x1_smalltree", "Park_1x1_pine", "Park_1x1_poplar" , "Park_1x1_bigtree", "Park_1x1_poplarforest", "Park_1x1_tropicalforest",
             "Park_1x1_philodendron", "Park_1x1_ferns", "Park_1x1_floweringshrub", "Park_1x1_smallpalmtree", "Park_1x1_palmtree", "Park_1x1_shrub", "Park_1x1_growncypress"};
         private static readonly List<string> ChangeOrnamentToParkFountains_1800 = new List<string> { "Uplay_ornament_3x2_large_fountain", "Park_2x2_fountain", "Park_3x3_fountain" };
-        private static readonly List<string> ChangeOrnamentToParkStatues_1800 = new List<string> {  "Sunken Treasure Ornament 01", "Sunken Treasure Ornament 02", "Sunken Treasure Ornament 03", "Uplay_ornament_2x1_lion_statue", "Culture_preorder_statue", "Park_2x2_statue", "Park_2x2_horsestatue" };
+        private static readonly List<string> ChangeOrnamentToParkStatues_1800 = new List<string> { "Sunken Treasure Ornament 01", "Sunken Treasure Ornament 02", "Sunken Treasure Ornament 03", "Uplay_ornament_2x1_lion_statue", "Culture_preorder_statue", "Park_2x2_statue", "Park_2x2_horsestatue" };
         private static readonly List<string> ChangeOrnamentToParkDecorations_1800 = new List<string> { "Park_1x1_benches", "Uplay_ornament_2x2_pillar_chess_park", "Park_2x2_garden", "Park_1x1_stand", "Park_2x2_gazebo", "Park_3x3_gazebo" };
         private static readonly List<string> ChangeOrnamentToCityPaths_1800 = new List<string> { "Palace Ornament02 Set01 hedge pointy", "Palace Ornament01 Set01 banner", "Palace Ornament03 Set01 hedge round", "Palace Ornament05 Set01 fountain big", "Palace Ornament04 Set01 fountain small",
             "Palace Ornament03 Set02 angle", "Palace Ornament04 Set02 crossing", "Palace Ornament02 Set02 end", "Palace Ornament05 Set02 junction", "Palace Ornament01 Set02 straight", "Palace Ornament06 Set02 straight variation",};
@@ -74,7 +74,7 @@ namespace PresetParser.Anno1800
         /// <param name="groupName">If objectname is in one of the lists, groupName will be changed</param>
         /// <param name="templateName">Objects Color Assignement for color.json</param>
         /// <returns></returns>
-        public static string[] GetNewOrnamentsGroup1800(string identifierName, string factionName, string groupName, string templateName)
+        public static (string Faction, string Group, string Template) GetNewOrnamentsGroup1800(string identifierName, string factionName, string groupName, string templateName)
         {
             if (string.IsNullOrWhiteSpace(identifierName))
             {
@@ -102,7 +102,7 @@ namespace PresetParser.Anno1800
             if (identifierName.IsPartOf(ChangeOrnamentToIndustrialFences_1800)) { factionName = "Ornaments"; groupName = "18 IndustrialFences"; templateName = "OrnamentalBuilding_Industrial"; }
             if (identifierName.IsPartOf(ChangeOrnamentToAmusementPark_1800)) { factionName = "Ornaments"; groupName = "19 Amusement Park"; }
 
-            return new string[] { factionName, groupName, templateName };
+            return (templateName, groupName, factionName);
         }
     }
 }
