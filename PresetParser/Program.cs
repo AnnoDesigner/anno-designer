@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 
 namespace PresetParser
@@ -25,18 +26,20 @@ namespace PresetParser
         private static string BASE_PATH_1800 { get; set; }
 
         public static bool isExcludedName = false;
+        public static bool isExcludeIconName = false; /*Only for Anno 1800*/
         public static bool isExcludedTemplate = false;
-        public static bool isExcludedGUID = false; /*only for anno 1800 */
+        public static bool isExcludedGUID = false; /*only for Anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-
-        private const string BUILDING_PRESETS_VERSION = "3.2.10";
+        private const string BUILDING_PRESETS_VERSION = "3.3";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
         private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "french", "polish", "russian" };
-        // Internal Program Buildings List to skipp double buildings
+        // Internal Program Buildings Lists to skipp double buildings
         public static List<string> annoBuildingLists = new List<string>();
+        public static List<string> anno1800IconNameLists = new List<string>();
+        public static List<string> TempExcludeOrnamentsFromPreset_1800 = new List<string>();
         public static int annoBuildingsListCount = 0, printTestText = 0;
         public static bool testVersion = false;
         // The internal Building list for the Preset writing 
@@ -80,24 +83,31 @@ namespace PresetParser
 
         #region anno 1800
         /// <summary>
-        /// i need the IncludeBuildingsTemplateNames to get Building informaton from, as it is also the Presets Template String or Template GUID
+        /// I need the IncludeBuildingsTemplateNames to get Building informaton from, as it is also the Presets Template String or Template GUID
         /// </summary>
         public static IList<FarmField> farmFieldList1800 = new List<FarmField>();
         // Removed IncludeBuildingsTemplate "CultureModule" (to must to handle and thus are replaced with the Zoo Module and Museum Module
         private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding",
             "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding",
-            "CultureModule","Palace"};
+            "CultureModule","Palace","BuffFactory", "BuildPermitBuilding", "BuildPermitModules", "OrnamentalModule"};
         private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358", "1010462",
             "1010463", "1010464", "1010275", "1010271","1010516"};
-        //private static readonly List<string> ExcludeBuildingsGUID1800 = new List<string> { "102139", "102140", "102141", "102142", "102143", "102828" };
+        private static readonly List<string> ExcludeBuildingsGUID1800 = new List<string> { "269850", "269851" };
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System",
             "module_01_birds", "module_02_peacock", "(Warehouse II)", "(Warehouse III)", "logistic_colony01_01 (Warehouse I)", "Kontor_main_02", "Kontor_main_03", "kontor_main_colony01",
             "Fake Ornament [test 2nd party]", "Kontor_imperial_02", "Kontor_imperial_03","(Oil Harbor II)","(Oil Harbor III)", "Third_party_", "CQO_", "Kontor_imperial_01", "- Pirates",
             "Harbor_colony01_09 (tourism_pier_01)", "Ai_", "AarhantLighthouseFake", "CO_Tunnel_Entrance01_Fake","Park_1x1_fence", "Electricity_01", "AI Version No Unlock",
             "Entertainment_musicpavillion_1701", "Entertainment_musicpavillion_1404", "Entertainment_musicpavillion_2070", "Entertainment_musicpavillion_2205", "Entertainment_musicpavillion_1800",
             "Culture_01_module_06_empty","Culture_02_module_06_empty", "AnarchyBanner", "Culture_props_system_all_nohedge", "Monument_arctic_01_01", "Monument_arctic_01_02", "Monument_arctic_01_03",
-            "Active fertility","- Decree","Ministry of Public Services","Ministry of Productivity","Arctic Shepherd","fertility","Arctic Cook","Arctic Builder","Arctic Hunter","Arctic Sewer"," Buff"," Seeds"};
+            "Active fertility","- Decree","Ministry of Public Services","Ministry of Productivity","Arctic Shepherd","fertility","Arctic Cook","Arctic Builder","Arctic Hunter","Arctic Sewer"," Buff"," Seeds",
+            "PropagandaTower Merciers Version","tractor_module_02 (Harvester)", "Culture_1x1_statue", "Culture_prop_system_1x1_10", "Culture_prop_system_1x1_01", "Logistic_05 (Warehouse IV)", "Park_1x1_hedgeentrance",
+            "Harbour Slot (Ghost) Arctic", "Tractor_module_01 (GASOLINE TEST)", "Fuel_station_01 (GASOLINE TEST)", "Kontor_main_04", "Kontor_imperial_04", "Culture_1x1_plaza" };
+        //Skip the following icons to put in the presets for anno 1800, to avoid double Ornamentalbuildings
+        public static List<string> ExcludeOrnamentsIcons_1800 = new List<string> { "A7_bush03.png", "A7_park_props_1x1_01.png", "A7_park_props_1x1_07.png", "A7_bush01.png", "A7_col_props_1x1_13_back.png", "A7_bush05.png", "A7_park_props_1x1_08.png",
+            "A7_bush02.png", "A7_bush04.png", "A7_col_props_1x1_11_bac.pngk", "A7_col_props_1x1_01_back.png", "A7_col_props_1x1_07_back.png","A7_park_1x1_06.png","A7_park_1x1_02.png","A7_park_1x1_03.png","A7_col_park_props_system_1x1_21_back.png",
+            "A7_park_3x3_02.png", "A7_park_2x2_05.png","A7_park_2x2_02.png", "A7_col_props_1x1_11_back.png", "A7_benches.png", "A7_park_2x2_04.png"};
+
         /// <summary>
         /// in NewFactionAndGroup1800.cs are made the following lists
         /// ChangeBuildingTo<1>_<2>_1800 
@@ -293,6 +303,7 @@ namespace PresetParser
                 /// only the 'Values' will skip the <template> tag that i still need
                 VersionSpecificPaths[Constants.ANNO_VERSION_1800].Add("assets", new PathRef[]
                 {
+                    new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
@@ -1111,7 +1122,7 @@ namespace PresetParser
             }
 
             string guidName = values["Standard"]["GUID"].InnerText;
-            //isExcludedGUID = guidName.Contains(ExcludeBuildingsGUID1800);
+            isExcludedGUID = guidName.Contains(ExcludeBuildingsGUID1800);
 
             identifierName = values["Standard"]["Name"].InnerText.FirstCharToUpper();
             isExcludedName = identifierName.Contains(ExcludeNameList1800);
@@ -1148,6 +1159,7 @@ namespace PresetParser
 
             switch (templateName)
             {
+                case "BuildPermitBuilding": { factionName = "Ornaments"; groupName = "13 World's Fair Rewards"; break; }
                 case "Farmfield": { groupName = "Farm Fields"; break; }
                 case "SlotFactoryBuilding7": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
                 case "Warehouse": { factionName = "(01) Farmers"; groupName = null; break; }
@@ -1191,8 +1203,15 @@ namespace PresetParser
                 if (factionName == "Arctic") { factionName = "(12) Arctic Farm Fields"; groupName = null; }
             }
 
+            //Renaming the Fuel Station for Moderate (OW) site, to avoid double listsed on Obreros tree
+            if (factionName == "Moderate" && identifierName == "Fuel_station_01 (FuelStation)") { identifierName = "Moderate_fuel_station_01 (FuelStation)"; }
+
             switch (identifierName)
             {
+                case "Silo (Grain)": { factionName = "(06) Old World Fields"; groupName = null; break; }
+                case "Tractor_module_01 (Tractor)": { factionName = "(06) Old World Fields"; groupName = null; break; }
+                case "Silo (Corn)": { factionName = "(09) New World Fields"; groupName = null; break; }
+                case "Colony01_tractor_module_01 (Tractor)": { factionName = "(09) New World Fields"; groupName = null; break; }
                 case "Entertainment_musicpavillion_empty": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Culture_01 (Zoo)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Culture_02 (Museum)": { factionName = "Attractiveness"; groupName = null; break; }
@@ -1202,15 +1221,16 @@ namespace PresetParser
                 case "Residence_arctic_tier01": { factionName = "(10) Explorers"; identifierName = "Residence_Arctic_World"; groupName = "Residence"; break; }
                 case "Coastal_03 (Quartz Sand Coast Building)": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
                 case "Electricity_03 (Gas Power Plant)": { factionName = "(11) Technicians"; groupName = "Public Buildings"; break; }
+                case "Event_ornament_historyedition": { factionName = "Ornaments"; groupName = "11 Special Ornaments"; break; }
             }
 
             // Place the rest of the buildings in the right Faction > Group menu
             #region Order the Buildings to the right tiers and factions as in the game
 
-            var newFactionGroupName = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName, templateName);
-            factionName = newFactionGroupName[0];
-            groupName = newFactionGroupName[1];
-            templateName = newFactionGroupName[2];
+            var groupInfo = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName, templateName);
+            factionName = groupInfo.Faction;
+            groupName = groupInfo.Group;
+            templateName = groupInfo.Template;
 
             #endregion
 
@@ -1218,9 +1238,36 @@ namespace PresetParser
             {
                 factionName = "Not Placed Yet -" + factionName;
                 // Because the Culture_03 (BotanicalGarden) is in the xPath that i normaly skipp, i must skipp this group here now.
-                if (groupName == "OrnamentalBuilding") { return; }
                 if (groupName == "CultureModule") { return; }
             }
+
+            #region Sorting the Ornaments for the new Ornaments Menu (11/05/2020)
+
+            //Sorting to the new menu
+            groupInfo = NewOrnamentsGroup1800.GetNewOrnamentsGroup1800(identifierName, factionName, groupName, templateName);
+            factionName = groupInfo.Faction;
+            groupName = groupInfo.Group;
+            templateName = groupInfo.Template;
+
+            #endregion
+
+            #region Temperary exclude the following OrnamentalBuildings from Presets.json
+            /// The following process is to eliminate ornaments that not belong in the preset, till it is made into the game
+            /// I do it here, so when it is in game, I can remove it here, so it will appear in the preset
+            /// Behind the add line, I comment the English name, what it should have in game.
+            if (!TempExcludeOrnamentsFromPreset_1800.Any())
+            {
+                TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_all"); // Cityscape 
+                TempExcludeOrnamentsFromPreset_1800.Add("City_prop_system_1x1_01"); // Small Square
+                TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_1x1_global"); // Small City Ornaments
+                TempExcludeOrnamentsFromPreset_1800.Add("City_prop_system_2x2_01"); // Piazza
+                TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_2x2_global"); // Medium City Ornaments
+                TempExcludeOrnamentsFromPreset_1800.Add("City_prop_system_3x3_01"); // Large Square
+                TempExcludeOrnamentsFromPreset_1800.Add("City_props_system_3x3_global"); //Large City Ornaments
+            }
+
+            if (identifierName.IsPartOf(TempExcludeOrnamentsFromPreset_1800)) { return; };
+            #endregion
 
             #endregion
 
@@ -1325,6 +1372,45 @@ namespace PresetParser
                     case "Agriculture_colony01_09_field (Cattle Pasture)": { b.IconFileName = replaceName + "general_module_01.png"; break; }
                 }
             }
+
+            /// New process for OrnamentalBuildings(_*) only.
+            /// Step 1 : Check if Ornament Name and IconFileName are both used, then skipp 
+            ///          double Ornaments.
+            /// Step 2 : if iconfilename is not used, and name is, rename the Identifier of the 
+            ///          double Ornament, remane the identifier and place it to the right preset
+            ///          menu (Faction & Group) or switch the icons if need.
+            /// Setp 3 : Exclude the OrnamentalBuildings with the iconfilenames that are in the
+            ///          list ExcludeOrnamentsIcons_1800
+            ///          
+            /// (_*) means all Ornamentalbuildings + _extraname for the Color Assignments  
+            #region See comment above
+            if (b.Template == "OrnamentalBuilding" || b.Template == "OrnamentalBuilding_Park" || b.Template == "OrnamentalBuilding_Industrial")
+            {
+                isExcludedName = identifierName.IsPartOf(annoBuildingLists);
+                isExcludeIconName = b.IconFileName.IsPartOf(anno1800IconNameLists);
+                if (isExcludedName && isExcludeIconName)
+                {
+                    Console.WriteLine("-----> Ornament Skipped, Already in preset (A)");
+                    return;
+                }
+                //Those Identifier changes will not harm any users, as they where never in the presets before....
+                //This will be done irectly to the building info structure (b)
+                //Also switch wrong icons beween two objects (see issue #178)
+                switch (b.IconFileName)
+                {
+                    case "A7_park_props_1x1_14.png": b.Identifier = "Park_1x1_statue_grass"; b.Faction = "Ornaments"; b.Group = "05 Park Statues"; break;
+                    case "A7_city_2x2_03.png": b.IconFileName = "A7_city_2x2_02.png"; break; // Switch to right icon
+                    case "A7_city_2x2_02.png": b.IconFileName = "A7_city_2x2_03.png"; break; // Switch to right icon
+                }
+                //Skip the following icons into the presett
+                if (b.IconFileName.IsPartOf(ExcludeOrnamentsIcons_1800))
+                {
+                    Console.WriteLine("-----> Ornament Skipped, Already in preset (B)");
+                    return;
+                }
+            }
+
+            #endregion
 
             #endregion
 
@@ -1558,18 +1644,18 @@ namespace PresetParser
 
                     if (fieldAmountValue != null)
                     {
-                        bool getFieldGuidBool = false;
-                        foreach (var getFieldGuid in farmFieldList1800)
+                        var isFieldInfoFound = false;
+                        foreach (var curFieldInfo in farmFieldList1800)
                         {
-                            if (getFieldGuid.FieldGuid == fieldGuidValue)
+                            if (string.Equals(curFieldInfo.FieldGuid, fieldGuidValue, StringComparison.OrdinalIgnoreCase))
                             {
-                                getFieldGuidBool = true;
-                                fieldAmountValue = getFieldGuid.FieldAmount;
+                                isFieldInfoFound = true;
+                                fieldAmountValue = curFieldInfo.FieldAmount;
                                 break;
                             }
                         }
 
-                        if (!getFieldGuidBool)
+                        if (!isFieldInfoFound)
                         {
                             farmFieldList1800.Add(new FarmField() { FieldGuid = fieldGuidValue, FieldAmount = fieldAmountValue });
                         }
@@ -1585,11 +1671,15 @@ namespace PresetParser
             #endregion
 
             #endregion
+            // Remove the Not Placed yet Ornamental Buildings from the list
+            /// commentout the line below if you make a new preset after update of the game 'ANNO 1800', or when a new 'ANNO 1800 DLC' is released 
+            if ((b.Faction == "Not Placed Yet -Moderate" || b.Faction == "Not Placed Yet -Colony01") && b.Template == "OrnamentalBuilding") { return; }
 
             // add building to the list
-            annoBuildingsListCount++;
-            annoBuildingLists.Add(values["Standard"]["Name"].InnerText);
-            buildings.Add(b);
+            annoBuildingsListCount++;//countup amount of buildings
+            annoBuildingLists.Add(values["Standard"]["Name"].InnerText);//add building name to the list, for checking double building names usage
+            anno1800IconNameLists.Add(b.IconFileName);//add Icon file to the list, for checking double icon file usage 
+            buildings.Add(b); // add building data to file data
         }
 
         #endregion
