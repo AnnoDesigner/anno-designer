@@ -833,7 +833,7 @@ namespace PresetParser.Tests
             var result = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifier, null, null);
 
             // Assert
-            Assert.Contains("All Worlds", result[0]);
+            Assert.Null(result[0]);
         }
 
         [Theory]
@@ -845,7 +845,7 @@ namespace PresetParser.Tests
 
             // Assert
             Assert.Null(result[1]);
-            Assert.Contains("All Worlds", result[0]);
+            Assert.Null(result[0]);
         }
 
         #endregion
