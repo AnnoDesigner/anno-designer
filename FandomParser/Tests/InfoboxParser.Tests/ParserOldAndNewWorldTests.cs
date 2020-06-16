@@ -88,6 +88,8 @@ namespace InfoboxParser.Tests
                 {
                     { "|Building Icon = Charcoal_kiln.png", "Charcoal_kiln.png" },
                     { "|Building Icon = Furs.png", "Furs.png" },
+                    { "|Building Icon = Furs.png}}", "Furs.png" },
+                    { "|Building Icon = Furs.png    }}", "Furs.png" },
                     { "|Building Icon      =    Furs.png   ", "Furs.png" },
                     { "|Building Icon = Furs.jpeg", "Furs.jpeg" },
                     { "|Building Icon = Arctic Lodge.png", "Arctic Lodge.png" },
@@ -131,6 +133,250 @@ namespace InfoboxParser.Tests
                     { "|Building Size (NW) = 5x11 (5x16 in water)", new Size(5, 11), WorldRegion.NewWorld },
                     { "|Building Size (NW) = 5x8 (5x13)", new Size(5, 8), WorldRegion.NewWorld },
                     { "|Building Size (NW)   = 5x7 (partially submerged)", new Size(5, 7), WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoCreditsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Credits (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Credits (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Credits (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Credits (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Credits (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Credits (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Credits (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Credits (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Credits (OW) = 2,500", 2500, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (NW) = 2,500", 2500, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (OW) = 4,000", 4000, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (NW) = 4,000", 4000, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Credits (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Credits (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Credits (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Credits (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Credits (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Credits (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Credits (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Credits (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoTimberTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Timber (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Timber (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Timber (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Timber (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Timber (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Timber (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Timber (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Timber (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Timber (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Timber (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Timber (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Timber (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Timber (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Timber (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Timber (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Timber (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Timber (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Timber (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Timber (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Timber (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoBricksTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Bricks (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Bricks (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Bricks (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Bricks (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Bricks (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Bricks (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Bricks (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Bricks (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Bricks (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Bricks (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Bricks (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Bricks (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Bricks (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoSteelBeamsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Steel Beams (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Steel Beams (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Steel Beams (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Steel Beams (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Steel Beams (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Steel Beams (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Steel Beams (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Steel Beams (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Steel Beams (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Steel Beams (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Steel Beams (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Steel Beams (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoWindowsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Windows (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Windows (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Windows (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Windows (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Windows (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Windows (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Windows (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Windows (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Windows (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Windows (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Windows (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Windows (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Windows (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Windows (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Windows (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Windows (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Windows (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Windows (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Windows (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Windows (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoConcreteTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Concrete (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Concrete (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Concrete (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Concrete (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Concrete (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Concrete (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Concrete (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Concrete (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Concrete (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Concrete (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Concrete (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Concrete (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Concrete (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoWeaponsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Weapons (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Weapons (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Weapons (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Weapons (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Weapons (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Weapons (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Weapons (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Weapons (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Weapons (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Weapons (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Weapons (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Weapons (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Weapons (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoAdvancedWeaponsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Advanced Weapons (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Advanced Weapons (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Advanced Weapons (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Advanced Weapons (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Advanced Weapons (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Advanced Weapons (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Advanced Weapons (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Advanced Weapons (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Advanced Weapons (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Advanced Weapons (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Advanced Weapons (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Advanced Weapons (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
                 };
             }
         }
@@ -1317,6 +1563,64 @@ namespace InfoboxParser.Tests
             else
             {
                 Assert.Equal(expectedSize, result[1].BuildingSize);
+            }
+        }
+
+        #endregion
+
+        #region ConstructionInfo tests
+
+        [Theory]
+        [MemberData(nameof(ConstructionInfoCreditsTestData))]
+        [MemberData(nameof(ConstructionInfoTimberTestData))]
+        [MemberData(nameof(ConstructionInfoBricksTestData))]
+        [MemberData(nameof(ConstructionInfoSteelBeamsTestData))]
+        [MemberData(nameof(ConstructionInfoWindowsTestData))]
+        [MemberData(nameof(ConstructionInfoConcreteTestData))]
+        [MemberData(nameof(ConstructionInfoWeaponsTestData))]
+        [MemberData(nameof(ConstructionInfoAdvancedWeaponsTestData))]
+        public void GetInfobox_WikiTextContainsConstructionInfo_ShouldReturnCorrectValue(string input, double expectedValue, WorldRegion regionToTest)
+        {
+            // Arrange
+            _output.WriteLine($"{nameof(input)}: {input}");
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            if (regionToTest == WorldRegion.OldWorld)
+            {
+                Assert.Equal(expectedValue, result[0].ConstructionInfos[0].Value);
+            }
+            else
+            {
+                Assert.Equal(expectedValue, result[1].ConstructionInfos[0].Value);
+            }
+
+        }
+
+        [Fact]
+        public void GetInfobox_ConstructionInfoContainsConcrete_ShouldReturnAdjustedValue()
+        {
+            // Arrange
+            var input = ConstructionInfoConcreteTestData.First();
+            var expectedUnitName = "Reinforced Concrete";
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox((string)input[0]);
+
+            // Assert
+            if ((WorldRegion)input[2] == WorldRegion.OldWorld)
+            {
+                Assert.Equal(expectedUnitName, result[0].ConstructionInfos[0].Unit.Name);
+            }
+            else
+            {
+                Assert.Equal(expectedUnitName, result[1].ConstructionInfos[0].Unit.Name);
             }
         }
 

@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InfoboxParser.Models;
 using Xunit;
 
 namespace InfoboxParser.Tests
 {
     public class SpecialBuildingNameHelperTests
     {
+        private ISpecialBuildingNameHelper GetHelper()
+        {
+            return new SpecialBuildingNameHelper();
+        }
+
         [Theory]
         [InlineData("no special name", "no special name")]
         [InlineData("Bombin Weaver", "Bomb­ín Weaver")]
@@ -26,7 +32,7 @@ namespace InfoboxParser.Tests
         public void CheckSpecialBuildingName_BuildingNameIsSet_ShouldReturnCorrectValue(string buildingName, string expectedValue)
         {
             // Arrange
-            var helper = new SpecialBuildingNameHelper();
+            var helper = GetHelper();
 
             // Act
             var result = helper.CheckSpecialBuildingName(buildingName);
@@ -42,7 +48,21 @@ namespace InfoboxParser.Tests
         public void CheckSpecialBuildingName_BuildingNameIsNullOrWhitespace_ShouldReturnInput(string buildingName)
         {
             // Arrange
-            var helper = new SpecialBuildingNameHelper();
+            var helper = GetHelper();
+
+            // Act
+            var result = helper.CheckSpecialBuildingName(buildingName);
+
+            // Assert
+            Assert.Equal(buildingName, result);
+        }
+
+        [Fact]
+        public void CheckSpecialBuildingName_BuildingNameIsUnknown_ShouldReturnInput()
+        {
+            // Arrange
+            var buildingName = "dummy";
+            var helper = GetHelper();
 
             // Act
             var result = helper.CheckSpecialBuildingName(buildingName);

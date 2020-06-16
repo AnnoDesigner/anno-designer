@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FandomParser.Core;
+using FandomParser.Core.Presets.Models;
 using InfoboxParser.Models;
 using InfoboxParser.Parser;
 using Xunit;
@@ -13,6 +15,7 @@ namespace InfoboxParser.Tests
 {
     public class ParserMultipleRegionsTests
     {
+        private const string PLACEHOLDER_REGION = "~Region~";
         private static readonly ICommons _mockedCommons;
         private readonly ITestOutputHelper _output;
         private static readonly ISpecialBuildingNameHelper _mockedSpecialBuildingNameHelper;
@@ -48,7 +51,131 @@ namespace InfoboxParser.Tests
                 regionHelperToUse ?? _mockedRegionHelper);
         }
 
-        #region test data       
+        #region test data
+
+        public static TheoryData<string, string, List<string>> BuildingNameTestData
+        {
+            get
+            {
+                return new TheoryData<string, string, List<string>>
+                {
+                    { $"|Title {PLACEHOLDER_REGION} = Marketplace", "Marketplace", _regionList2Regions },
+                    { $"|Title {PLACEHOLDER_REGION} = Marketplace", "Marketplace", _regionList3Regions },
+                    { $"|Title {PLACEHOLDER_REGION} = Police Station", "Police Station", _regionList2Regions},
+                    { $"|Title {PLACEHOLDER_REGION} = Police Station", "Police Station", _regionList3Regions},
+                    { $"|Title {PLACEHOLDER_REGION} = Small Palm Tree", "Small Palm Tree", _regionList2Regions},
+                    { $"|Title {PLACEHOLDER_REGION} = Small Palm Tree", "Small Palm Tree", _regionList3Regions},
+                    //{ $"|Title {PLACEHOLDER_REGION} = Bomb­ín Weaver", "Bomb­ín Weaver", _regionList2Regions},
+                    //{ $"|Title {PLACEHOLDER_REGION} = Bomb­ín Weaver", "Bomb­ín Weaver", _regionList3Regions},
+                    { $"|Title {PLACEHOLDER_REGION}     = Marketplace", "Marketplace", _regionList2Regions},
+                    { $"|Title {PLACEHOLDER_REGION}     = Marketplace", "Marketplace", _regionList3Regions},
+                    { $"|Title {PLACEHOLDER_REGION}     =     Marketplace    ", "Marketplace", _regionList2Regions},
+                    { $"|Title {PLACEHOLDER_REGION}     =     Marketplace    ", "Marketplace", _regionList3Regions},
+                    { $"|Title {PLACEHOLDER_REGION}     = Marketplace}}", "Marketplace", _regionList2Regions},
+                    { $"|Title {PLACEHOLDER_REGION}     = Marketplace}}", "Marketplace", _regionList3Regions},
+                    { $"|Title {PLACEHOLDER_REGION}     =     Marketplace    }}", "Marketplace", _regionList2Regions},
+                    { $"|Title {PLACEHOLDER_REGION}     =     Marketplace    }}", "Marketplace", _regionList3Regions},
+                    { $"|Title {PLACEHOLDER_REGION} = ", string.Empty, _regionList2Regions },
+                    { $"|Title {PLACEHOLDER_REGION} = ", string.Empty, _regionList3Regions },
+                };
+            }
+        }
+
+        public static TheoryData<string, WorldRegion, List<string>> RegionNameTestData
+        {
+            get
+            {
+                return new TheoryData<string, WorldRegion, List<string>>
+                {
+                    { $"|Tab {PLACEHOLDER_REGION} = Arctic", WorldRegion.Arctic, _regionList2Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = Arctic", WorldRegion.Arctic, _regionList3Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = The Arctic", WorldRegion.Arctic, _regionList2Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = The Arctic", WorldRegion.Arctic, _regionList3Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = New World", WorldRegion.NewWorld, _regionList2Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = New World", WorldRegion.NewWorld, _regionList3Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = Old World", WorldRegion.OldWorld, _regionList2Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = Old World", WorldRegion.OldWorld, _regionList3Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = The New World", WorldRegion.NewWorld, _regionList2Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = The New World", WorldRegion.NewWorld, _regionList3Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = The Old World", WorldRegion.OldWorld, _regionList2Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = The Old World", WorldRegion.OldWorld, _regionList3Regions },
+                    { $"|Tab {PLACEHOLDER_REGION}     =     Arctic   ", WorldRegion.Arctic, _regionList2Regions },
+                    { $"|Tab {PLACEHOLDER_REGION}     =     Arctic   ", WorldRegion.Arctic, _regionList3Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = Arctic}}", WorldRegion.Arctic, _regionList2Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = Arctic}}", WorldRegion.Arctic, _regionList3Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} =   Arctic    }}", WorldRegion.Arctic, _regionList2Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} =   Arctic    }}", WorldRegion.Arctic, _regionList3Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = ", WorldRegion.Unknown, _regionList2Regions },
+                    { $"|Tab {PLACEHOLDER_REGION} = ", WorldRegion.Unknown, _regionList3Regions },
+                };
+            }
+        }
+
+        public static TheoryData<string, BuildingType, List<string>> BuildingTypeTestData
+        {
+            get
+            {
+                return new TheoryData<string, BuildingType, List<string>>
+                {
+                    { $"|Building Type {PLACEHOLDER_REGION} = Administration", BuildingType.Administration, _regionList2Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Administration", BuildingType.Administration, _regionList3Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Harbour", BuildingType.Harbour, _regionList2Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Harbour", BuildingType.Harbour, _regionList3Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Infrastructure", BuildingType.Infrastructure, _regionList2Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Infrastructure", BuildingType.Infrastructure, _regionList3Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Institution", BuildingType.Institution, _regionList2Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Institution", BuildingType.Institution, _regionList3Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Monument", BuildingType.Monument, _regionList2Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Monument", BuildingType.Monument, _regionList3Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Ornament", BuildingType.Ornament, _regionList2Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Ornament", BuildingType.Ornament, _regionList3Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Production", BuildingType.Production, _regionList2Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Production", BuildingType.Production, _regionList3Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = PublicService", BuildingType.PublicService, _regionList2Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = PublicService", BuildingType.PublicService, _regionList3Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Residence", BuildingType.Residence, _regionList2Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Residence", BuildingType.Residence, _regionList3Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Street", BuildingType.Street, _regionList2Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = Street", BuildingType.Street, _regionList3Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = dummy", BuildingType.Unknown, _regionList2Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = dummy", BuildingType.Unknown, _regionList3Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = ", BuildingType.Unknown, _regionList2Regions },
+                    { $"|Building Type {PLACEHOLDER_REGION} = ", BuildingType.Unknown, _regionList3Regions },
+                };
+            }
+        }
+
+        public static TheoryData<string, MemberDataSerializer<Size>, List<string>> BuildingSizeTestData
+        {
+            get
+            {
+                return new TheoryData<string, MemberDataSerializer<Size>, List<string>>
+                {
+                    { $"|Building Size {PLACEHOLDER_REGION} = 3x3", new MemberDataSerializer<Size>(new Size(3, 3)), _regionList2Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 3x3", new MemberDataSerializer<Size>(new Size(3, 3)), _regionList3Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 1x3", new MemberDataSerializer<Size>(new Size(1, 3)), _regionList2Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 1x3", new MemberDataSerializer<Size>(new Size(1, 3)), _regionList3Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 1x10", new MemberDataSerializer<Size>(new Size(1, 10)), _regionList2Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 1x10", new MemberDataSerializer<Size>(new Size(1, 10)), _regionList3Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 10x1", new MemberDataSerializer<Size>(new Size(10, 1)), _regionList2Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 10x1", new MemberDataSerializer<Size>(new Size(10, 1)), _regionList3Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 18x22", new MemberDataSerializer<Size>(new Size(18, 22)), _regionList2Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 18x22", new MemberDataSerializer<Size>(new Size(18, 22)), _regionList3Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION}     =      1   x   10  ", new MemberDataSerializer<Size>(new Size(1, 10)), _regionList2Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION}     =      1   x   10  ", new MemberDataSerializer<Size>(new Size(1, 10)), _regionList3Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 4x5}}}}", new MemberDataSerializer<Size>(new Size(4, 5)), _regionList2Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 4x5}}}}", new MemberDataSerializer<Size>(new Size(4, 5)), _regionList3Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 4x5    }}}}", new MemberDataSerializer<Size>(new Size(4, 5)), _regionList2Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 4x5    }}}}", new MemberDataSerializer<Size>(new Size(4, 5)), _regionList3Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 5x11 (5x16 in water)", new MemberDataSerializer<Size>(new Size(5, 11)), _regionList2Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 5x11 (5x16 in water)", new MemberDataSerializer<Size>(new Size(5, 11)), _regionList3Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 5x8 (5x13)", new MemberDataSerializer<Size>(new Size(5, 8)), _regionList2Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION} = 5x8 (5x13)", new MemberDataSerializer<Size>(new Size(5, 8)), _regionList3Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION}  = 5x7 (partially submerged)", new MemberDataSerializer<Size>(new Size(5, 7)), _regionList2Regions },
+                    { $"|Building Size {PLACEHOLDER_REGION}  = 5x7 (partially submerged)", new MemberDataSerializer<Size>(new Size(5, 7)), _regionList3Regions },
+                };
+            }
+        }
 
         public static TheoryData<string, string, List<string>> BuildingIconTestData
         {
@@ -60,6 +187,10 @@ namespace InfoboxParser.Tests
                     { "|Building Icon = Charcoal_kiln.png", "Charcoal_kiln.png", _regionList3Regions },
                     { "|Building Icon = Furs.png", "Furs.png", _regionList2Regions },
                     { "|Building Icon = Furs.png", "Furs.png", _regionList3Regions },
+                    { "|Building Icon = Furs.png}}", "Furs.png", _regionList2Regions },
+                    { "|Building Icon = Furs.png}}", "Furs.png", _regionList3Regions},
+                    { "|Building Icon = Furs.png    }}", "Furs.png", _regionList2Regions},
+                    { "|Building Icon = Furs.png    }}", "Furs.png", _regionList3Regions },
                     { "|Building Icon      =    Furs.png   ", "Furs.png", _regionList2Regions },
                     { "|Building Icon      =    Furs.png   ", "Furs.png", _regionList3Regions },
                     { "|Building Icon = Furs.jpeg", "Furs.jpeg", _regionList2Regions },
@@ -79,6 +210,125 @@ namespace InfoboxParser.Tests
                     { "|Building Icon = Harbourmaster`s Office.png", "Harbourmaster`s Office.png", _regionList2Regions },
                     { "|Building Icon = Harbourmaster`s Office.png", "Harbourmaster`s Office.png", _regionList3Regions },
                 };
+            }
+        }
+
+        #endregion
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(" ")]
+        [InlineData("")]
+        public void GetInfobox_2Regions_WikiTextIsNullOrWhiteSpace_ShouldReturnNull(string input)
+        {
+            // Arrange
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input, _regionList2Regions);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(" ")]
+        [InlineData("")]
+        public void GetInfobox_3Regions_WikiTextIsNullOrWhiteSpace_ShouldReturnNull(string input)
+        {
+            // Arrange
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input, _regionList3Regions);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        #region BuildingName tests        
+
+        [Theory]
+        [MemberData(nameof(BuildingNameTestData))]
+        public void GetInfobox_WikiTextContainsTitle_ShouldReturnCorrectValue(string input, string expectedName, List<string> possibleRegions)
+        {
+            // Arrange
+            //_output.WriteLine($"{nameof(input)}: {input}");
+
+            var parser = GetParser();
+            var inputToParse = new StringBuilder();
+            foreach (var curRegion in possibleRegions)
+            {
+                inputToParse.AppendLine(input.Replace(PLACEHOLDER_REGION, curRegion));
+            }
+
+            // Act
+            var result = parser.GetInfobox(inputToParse.ToString(), possibleRegions);
+
+            // Assert
+            Assert.Equal(possibleRegions.Count, result.Count);
+            foreach (var curResult in result)
+            {
+                Assert.Equal(expectedName, curResult.Name);
+            }
+        }
+
+        #endregion
+
+        #region RegionName tests
+
+        [Theory]
+        [MemberData(nameof(RegionNameTestData))]
+        public void GetInfobox_WikiTextContainsRegion_ShouldReturnCorrectValue(string input, WorldRegion expectedRegion, List<string> possibleRegions)
+        {
+            // Arrange
+            //_output.WriteLine($"{nameof(input)}: {input}");
+
+            var parser = GetParser();
+            var inputToParse = new StringBuilder();
+            foreach (var curRegion in possibleRegions)
+            {
+                inputToParse.AppendLine(input.Replace(PLACEHOLDER_REGION, curRegion));
+            }
+
+            // Act
+            var result = parser.GetInfobox(inputToParse.ToString(), possibleRegions);
+
+            // Assert
+            Assert.Equal(possibleRegions.Count, result.Count);
+            foreach (var curResult in result)
+            {
+                Assert.Equal(expectedRegion, curResult.Region);
+            }
+        }
+
+        #endregion
+
+        #region BuildingType tests
+
+        [Theory]
+        [MemberData(nameof(BuildingTypeTestData))]
+        public void GetInfobox_WikiTextContainsBuildingType_ShouldReturnCorrectValue(string input, BuildingType expectedType, List<string> possibleRegions)
+        {
+            // Arrange
+            //_output.WriteLine($"{nameof(input)}: {input}");
+
+            var parser = GetParser();
+            var inputToParse = new StringBuilder();
+            foreach (var curRegion in possibleRegions)
+            {
+                inputToParse.AppendLine(input.Replace(PLACEHOLDER_REGION, curRegion));
+            }
+
+            // Act
+            var result = parser.GetInfobox(inputToParse.ToString(), possibleRegions);
+
+            // Assert
+            Assert.Equal(possibleRegions.Count, result.Count);
+            foreach (var curResult in result)
+            {
+                Assert.Equal(expectedType, curResult.Type);
             }
         }
 
@@ -130,6 +380,69 @@ namespace InfoboxParser.Tests
 
             // Assert
             Assert.Equal(expectedIcon, result[0].Icon);
+        }
+
+        #endregion
+
+        #region BuildingSize tests
+
+        //[Theory]
+        //[InlineData("dummy")]
+        //[InlineData("|Building Size = ")]
+        //public void GetInfobox_WikiTextContainsNoBuildingSize_ShouldReturnEmptySize(string input, List<string> possibleRegions)
+        //{
+        //    // Arrange
+        //    var parser = GetParser();
+
+        //    // Act
+        //    var result = parser.GetInfobox(input);
+
+        //    // Assert
+        //    Assert.Equal(Size.Empty, result[0].BuildingSize);
+        //}
+
+        //[Theory]
+        //[InlineData("|Building Size = ?x?")]
+        //[InlineData("|Building Size = ? x ?")]
+        //[InlineData("|Building Size = ? x?")]
+        //[InlineData("|Building Size = ?x ?")]
+        //[InlineData("|Building Size = 3x")]
+        //[InlineData("|Building Size = dummyxdummy")]
+        //public void GetInfobox_WikiTextContainsUnknownBuildingSize_ShouldReturnEmptySize(string input, List<string> possibleRegions)
+        //{
+        //    // Arrange
+        //    var parser = GetParser();
+
+        //    // Act
+        //    var result = parser.GetInfobox(input);
+
+        //    // Assert
+        //    Assert.Equal(Size.Empty, result[0].BuildingSize);
+        //}
+
+        [Theory]
+        [MemberData(nameof(BuildingSizeTestData))]
+        public void GetInfobox_WikiTextContainsBuildingSize_ShouldReturnCorrectValue(string input, MemberDataSerializer<Size> expectedSize, List<string> possibleRegions)
+        {
+            // Arrange
+            //_output.WriteLine($"{nameof(input)}: {input}");
+
+            var parser = GetParser();
+            var inputToParse = new StringBuilder();
+            foreach (var curRegion in possibleRegions)
+            {
+                inputToParse.AppendLine(input.Replace(PLACEHOLDER_REGION, curRegion));
+            }
+
+            // Act
+            var result = parser.GetInfobox(inputToParse.ToString(), possibleRegions);
+
+            // Assert
+            Assert.Equal(possibleRegions.Count, result.Count);
+            foreach (var curResult in result)
+            {
+                Assert.Equal(expectedSize.Object, curResult.BuildingSize);
+            }
         }
 
         #endregion

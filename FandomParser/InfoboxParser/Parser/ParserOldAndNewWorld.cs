@@ -62,21 +62,21 @@ namespace InfoboxParser.Parser
         private static readonly Regex regexUnlockConditionAmount = new Regex(@"\|Unlock Condition\s*(?<counter>[1-9]+)\s*Amount\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         //|Credits (OW) = 15000
-        private static readonly Regex regexConstructionCredits = new Regex(@"\|Credits\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        private static readonly Regex regexConstructionCredits = new Regex(@"\|Credits\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Timber (OW) = 12
-        private static readonly Regex regexConstructionTimber = new Regex(@"\|Timber\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        private static readonly Regex regexConstructionTimber = new Regex(@"\|Timber\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Bricks (OW) = 3
-        private static readonly Regex regexConstructionBricks = new Regex(@"\|Bricks\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        private static readonly Regex regexConstructionBricks = new Regex(@"\|Bricks\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Steel Beams (OW) = 8
-        private static readonly Regex regexConstructionSteelBeams = new Regex(@"\|Steel Beams\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        private static readonly Regex regexConstructionSteelBeams = new Regex(@"\|Steel Beams\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Windows (OW) = 2
-        private static readonly Regex regexConstructionWindows = new Regex(@"\|Windows\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        private static readonly Regex regexConstructionWindows = new Regex(@"\|Windows\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Concrete (OW) = 15
-        private static readonly Regex regexConstructionConcrete = new Regex(@"\|Concrete\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        private static readonly Regex regexConstructionConcrete = new Regex(@"\|Concrete\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Weapons (OW) = 20
-        private static readonly Regex regexConstructionWeapons = new Regex(@"\|Weapons\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        private static readonly Regex regexConstructionWeapons = new Regex(@"\|Weapons\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Advanced Weapons (OW) = 25
-        private static readonly Regex regexConstructionAdvancedWeapons = new Regex(@"\|Advanced Weapons\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        private static readonly Regex regexConstructionAdvancedWeapons = new Regex(@"\|Advanced Weapons\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         private CultureInfo cultureForParsing;
 

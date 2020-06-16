@@ -76,6 +76,24 @@ namespace InfoboxParser.Tests
             }
         }
 
+        public static TheoryData<string, string> BuildingNameTestData
+        {
+            get
+            {
+                return new TheoryData<string, string>
+                {
+                    { "|Title = Marketplace", "Marketplace"},
+                    { "|Title = Police Station", "Police Station"},
+                    { "|Title = Small Palm Tree", "Small Palm Tree"},
+                    { "|Title = Bomb­ín Weaver", "Bomb­ín Weaver"},
+                    { "|Title     = Marketplace", "Marketplace"},
+                    { "|Title     =     Marketplace    ", "Marketplace"},
+                    { "|Title     = Marketplace}}", "Marketplace"},
+                    { "|Title     =     Marketplace    }}", "Marketplace"},
+                };
+            }
+        }
+
         public static TheoryData<string, Size> BuildingSizeTestData
         {
             get
@@ -106,6 +124,8 @@ namespace InfoboxParser.Tests
                 {
                     { "|Building Icon = Charcoal_kiln.png", "Charcoal_kiln.png" },
                     { "|Building Icon = Furs.png", "Furs.png" },
+                    { "|Building Icon = Furs.png}}", "Furs.png" },
+                    { "|Building Icon = Furs.png    }}", "Furs.png" },
                     { "|Building Icon      =    Furs.png   ", "Furs.png" },
                     { "|Building Icon = Furs.jpeg", "Furs.jpeg" },
                     { "|Building Icon = Arctic Lodge.png", "Arctic Lodge.png" },
@@ -417,55 +437,8 @@ namespace InfoboxParser.Tests
         }
 
         [Theory]
-        [InlineData("|Title = Marketplace", "Marketplace")]
-        [InlineData("|Title = Chapel", "Chapel")]
-        [InlineData("|Title = Cannery", "Cannery")]
-        [InlineData("|Title = Police Station", "Police Station")]
-        [InlineData("|Title = Straight Path", "Straight Path")]
-        [InlineData("|Title = Small Palm Tree", "Small Palm Tree")]
-        [InlineData("|Title = Coffee Plantation", "Coffee Plantation")]
-        [InlineData("|Title = Bomb­ín Weaver", "Bomb­ín Weaver")]
+        [MemberData(nameof(BuildingNameTestData))]
         public void GetInfobox_WikiTextContainsTitle_ShouldReturnCorrectValue(string input, string expectedName)
-        {
-            // Arrange
-            var parser = GetParser();
-
-            // Act
-            var result = parser.GetInfobox(input);
-
-            // Assert
-            Assert.Equal(expectedName, result[0].Name);
-        }
-
-        [Theory]
-        [InlineData("|Title     = Marketplace", "Marketplace")]
-        [InlineData("|Title =    Chapel", "Chapel")]
-        [InlineData("|Title     =   Cannery", "Cannery")]
-        [InlineData("|Title  =  Police Station  ", "Police Station")]
-        [InlineData("|Title =   Straight Path   ", "Straight Path")]
-        [InlineData("|Title     = Small Palm Tree   ", "Small Palm Tree")]
-        [InlineData("|Title     =   Coffee Plantation   ", "Coffee Plantation")]
-        [InlineData("|Title = Bomb­ín Weaver", "Bomb­ín Weaver")]
-        public void GetInfobox_WikiTextContainsTitleAndWhiteSpace_ShouldReturnCorrectValue(string input, string expectedName)
-        {
-            // Arrange
-            var parser = GetParser();
-
-            // Act
-            var result = parser.GetInfobox(input);
-
-            // Assert
-            Assert.Equal(expectedName, result[0].Name);
-        }
-
-        [Theory]
-        [InlineData("|Title  =   Cannery   }}  ", "Cannery")]
-        [InlineData("|Title = Police Station}}  ", "Police Station")]
-        [InlineData("|Title = Straight Path }}", "Straight Path")]
-        [InlineData("|Title = Small Palm Tree}} ", "Small Palm Tree")]
-        [InlineData("|Title = Coffee Plantation}}", "Coffee Plantation")]
-        [InlineData("|Title = Bomb­ín Weaver    }}", "Bomb­ín Weaver")]
-        public void GetInfobox_WikiTextContainsTitleAndTemplateEnd_ShouldReturnCorrectValue(string input, string expectedName)
         {
             // Arrange
             var parser = GetParser();
