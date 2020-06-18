@@ -18,8 +18,6 @@ using AnnoDesigner.Core.Helper;
 using AnnoDesigner.ViewModels;
 using System.Windows.Threading;
 using NLog;
-using AnnoDesigner.Models;
-using System.Diagnostics;
 
 namespace AnnoDesigner
 {

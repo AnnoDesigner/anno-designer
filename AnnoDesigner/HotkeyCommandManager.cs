@@ -4,13 +4,9 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
-using Octokit;
 
 namespace AnnoDesigner
 {
@@ -127,6 +123,18 @@ namespace AnnoDesigner
                 throw new KeyNotFoundException($"Key {bindingId} does not exist");
             }
             return bindings[bindingId];
+        }
+
+        public void UpdateLanguage()
+        {
+            var language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
+            foreach (var kvp in bindings)
+            {
+                if (Localization.Localization.Translations[language].ContainsKey(kvp.Key))
+                {
+                    kvp.Value.Description = Localization.Localization.Translations[language][kvp.Key];
+                }
+            }
         }
     }
 }

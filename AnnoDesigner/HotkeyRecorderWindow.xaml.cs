@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using AnnoDesigner.Core.Controls;
 using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 using AnnoDesigner.ViewModels;
 
@@ -15,7 +16,7 @@ namespace AnnoDesigner
     /// <summary>
     /// Interaction logic for KeyRecorderWindow.xaml
     /// </summary>
-    public partial class HotkeyRecorderWindow : Window
+    public partial class HotkeyRecorderWindow : Window, ICloseable
     {
         //TODO: localize title and buttons. 
         public  HotkeyRecorderWindow()

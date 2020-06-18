@@ -39,6 +39,7 @@ namespace AnnoDesigner
         public const string ROTATE_COMMAND_KEY = "Rotate";
         public const string COPY_COMMAND_KEY = "Copy";
         public const string PASTE_COMMAND_KEY = "Paste";
+        public const string DELETE_COMMAND_KEY = "Delete";
         //not implmented yet
         public const string UNDO_COMMAND_KEY = "Undo";
         public const string ROTATE_ALL_COMMAND_KEY = "RotateAll";
@@ -471,7 +472,7 @@ namespace AnnoDesigner
 
             _layoutLoader = new LayoutLoader();
 
-            Stopwatch sw = new Stopwatch();
+            var sw = new Stopwatch();
             sw.Start();
 
             // initialize
@@ -489,12 +490,21 @@ namespace AnnoDesigner
                 Key = Key.R,
                 Modifiers = ModifierKeys.None
             };
-            RotateHotkey = new Hotkey(ROTATE_COMMAND_KEY, rotateBinding, "Rotate");
+            RotateHotkey = new Hotkey(ROTATE_COMMAND_KEY, rotateBinding);
+
+            //var copyBinding = new KeyBinding()
+            //{
+            //    Command = CopyCommand,
+            //    Key = Key.C,
+            //    Modifiers = ModifierKeys.Control
+            //};
+            //CopyHotkey = new Hotkey(COPY_COMMAND_KEY, copyBinding);
 
             //TODO: Find a solution for this before PR. When the binding type switches from a KeyBinding to a MouseBinding
             //this does not update (which is correct, as the orignal object is dereferenced). Maybe we pass around a reference
             //to the InputBindingCollection stored with the Hotkey itself, so that when the Hotkey.Binding reference changes,
             //the hotkey can update the InputBindingCollection
+
             //InputBindings.Add(rotateBinding);
 
 
@@ -547,7 +557,7 @@ namespace AnnoDesigner
                     IconMappingPresets iconNameMapping = null;
                     try
                     {
-                        IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
+                        var loader = new IconMappingPresetsLoader();
                         iconNameMapping = loader.Load(Path.Combine(App.ApplicationPath, CoreConstants.PresetsFiles.IconNameFile));
                     }
                     catch (Exception ex)
@@ -1530,23 +1540,6 @@ namespace AnnoDesigner
                         }
                     }
                     break;
-                //case Key.R:
-                //    if (CurrentObjects.Count == 1)
-                //    {
-                //        CurrentObjects[0].Size = _coordinateHelper.Rotate(CurrentObjects[0].Size);
-                //    }
-                //    else if (CurrentObjects.Count > 1)
-                //    {
-                //        Rotate(CurrentObjects);
-                //    }
-                //    else
-                //    {
-                //        //Count == 0;
-                //        //Rotate from selected objects
-                //        CurrentObjects = CloneList(SelectedObjects);
-                //        Rotate(CurrentObjects);
-                //    }
-                //    break;
 
             }
 
@@ -1873,7 +1866,7 @@ namespace AnnoDesigner
 
 
         private Hotkey RotateHotkey { get; set; }
-        private ICommand RotateCommand;
+        private readonly ICommand RotateCommand;
         private void ExecuteRotate(object param)
         {
             if (CurrentObjects.Count == 1)
@@ -1898,6 +1891,7 @@ namespace AnnoDesigner
         {
             HotkeyCommandManager = manager;
             manager.AddBinding(RotateHotkey);
+
             //TODO: For testing only, remove before PR
             manager.AddBinding(new Hotkey("TestBinding", new KeyBinding()
             {

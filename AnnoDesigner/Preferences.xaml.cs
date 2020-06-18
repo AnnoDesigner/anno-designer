@@ -25,11 +25,11 @@ namespace AnnoDesigner
     /// </summary>
     public partial class Preferences : Window
     {
-        public Preferences(ICommons commons, IAppSettings appSettings, HotkeyCommandManager commandManager)
+        public Preferences(IAppSettings appSettings, HotkeyCommandManager commandManager)
         {
             InitializeComponent();
-            DataContext = new PreferencesViewModel(commons, appSettings, commandManager, CurrentPage.NavigationService);
-            this.Loaded += Preferences_Loaded;
+            DataContext = new PreferencesViewModel(appSettings, commandManager, CurrentPage.NavigationService);
+            Loaded += Preferences_Loaded;
         }
 
         private void Preferences_Loaded(object sender, RoutedEventArgs e)
@@ -39,8 +39,7 @@ namespace AnnoDesigner
 
         private void CurrentPage_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            INavigatedTo page = e.Content as INavigatedTo;
-            if (page != null)
+            if (e.Content is INavigatedTo page)
             {
                 page.NavigatedTo(e.ExtraData);
             }

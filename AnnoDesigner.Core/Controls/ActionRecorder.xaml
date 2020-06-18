@@ -9,5 +9,4 @@
              Focusable="True"
              >
     <Label Name="RecordedInput" FontSize="40" VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-    <!--<TextBlock Name="RecordedInput" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />-->
 </UserControl>

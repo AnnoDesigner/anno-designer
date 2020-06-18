@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -20,6 +21,18 @@ namespace AnnoDesigner.Models
             Name = hotkeyName;
             Binding = binding;
             Description = description;
+
+            if (binding is KeyBinding keyBinding)
+            {
+                defaultKey = keyBinding.Key;
+                defaultModifiers = keyBinding.Modifiers;
+            }
+            else
+            {
+                var mouseBinding = binding as MouseBinding;
+                defaultMouseAction = mouseBinding.MouseAction;
+                defaultModifiers = (mouseBinding.Gesture as MouseGesture).Modifiers;
+            }
         }
 
         private InputBinding _binding;
@@ -46,5 +59,51 @@ namespace AnnoDesigner.Models
             set { UpdateProperty(ref _description, value); }
         }
 
+        /// <summary>
+        /// Resets a hotkey to its defaults.
+        /// </summary>
+        public void Reset()
+        {
+            var isKeyBinding = Binding is KeyBinding;
+            var isCorrectType = Binding.GetType() == defaultType;
+            if (isKeyBinding && isCorrectType)
+            {
+                var keyBinding = Binding as KeyBinding;
+                keyBinding.Key = defaultKey;
+                keyBinding.Modifiers = defaultModifiers;
+            }
+            else if (!isKeyBinding && isCorrectType)
+            {
+                var mouseBinding = Binding as MouseBinding;
+                mouseBinding.MouseAction = defaultMouseAction;
+                (mouseBinding.Gesture as MouseGesture).Modifiers = defaultModifiers;
+            }
+            else if (defaultType == typeof(KeyBinding))
+            {
+                //we currently have a MouseBinding and need a KeyBinding
+                Binding = new KeyBinding()
+                {
+                    Key = defaultKey,
+                    Modifiers = defaultModifiers,
+                    Command = Binding.Command,
+                    CommandParameter = Binding.CommandParameter
+                };
+            }
+            else
+            {
+                //we currently have a KeyBinding and need a MouseBinding
+                Binding = new MouseBinding()
+                {
+                    Gesture = new MouseGesture(defaultMouseAction, defaultModifiers),
+                    Command = Binding.Command,
+                    CommandParameter = Binding.CommandParameter
+                };
+            }
+        }
+
+        private readonly Key defaultKey = default;
+        private readonly MouseAction defaultMouseAction = default;
+        private readonly ModifierKeys defaultModifiers = default;
+        private readonly Type defaultType = default;
     }
 }

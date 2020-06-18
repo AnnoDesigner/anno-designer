@@ -18,10 +18,9 @@ namespace AnnoDesigner.ViewModels
 {
     public class PreferencesViewModel : Notify
     {
-        public PreferencesViewModel(ICommons commons, IAppSettings appSettings, HotkeyCommandManager manager, NavigationService navigationService)
+        public PreferencesViewModel(IAppSettings appSettings, HotkeyCommandManager manager, NavigationService navigationService)
         {
-            this.commons = commons;
-            this.commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
+            Commons.Instance.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
             this.appSettings = appSettings;
             this.navigationService = navigationService;
             Manager = manager;
@@ -42,14 +41,13 @@ namespace AnnoDesigner.ViewModels
 
         private void UpdateLanguage()
         {
-            string language = Localization.Localization.GetLanguageCodeFromName(commons.SelectedLanguage);
+            var language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
             Preferences = Localization.Localization.Translations[language]["Preferences"];
             UpdateSettings = Localization.Localization.Translations[language]["UpdateSettings"];
             ManageKeybindings = Localization.Localization.Translations[language]["ManageKeybindings"];
         }
 
-        private NavigationService navigationService;
-        private readonly ICommons commons;
+        private readonly NavigationService navigationService;
         private readonly IAppSettings appSettings;
         private HotkeyCommandManager _manager;
         private ListViewItem _selectedItem;

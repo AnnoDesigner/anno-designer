@@ -65,7 +65,7 @@ namespace AnnoDesigner.ViewModels
             RebindButtonCurrentTextKey = RECORDING_KEY;
             UpdateRebindButtonText();
 
-            HotkeyRecorderWindow window = new HotkeyRecorderWindow();
+            var window = new HotkeyRecorderWindow();
 
 #pragma warning disable IDE0007 // Use implicit type //Intent is much clearer
             (Key key, ModifierKeys modifiers, MouseAction action, ActionRecorder.ActionType actionType, bool userCancelled) = window.RecordNewAction(); 
@@ -108,14 +108,14 @@ namespace AnnoDesigner.ViewModels
             //This is not an exact copy, hence why this method is private and should only be used internally by the class.
             //Properties such as IsFrozen, IsSealed are not copied, and could lead to inconsistencies if used
             //in a wider scope.
-#pragma warning disable IDE0017 // Simplify object initialization
-            var keyBinding = new KeyBinding();
-#pragma warning restore IDE0017 // Simplify object initialization
-            keyBinding.Command = mouseBinding.Command;
-            keyBinding.CommandParameter = mouseBinding.CommandParameter;
-            keyBinding.CommandTarget = mouseBinding.CommandTarget;
-            keyBinding.Key = key;
-            keyBinding.Modifiers = modifierKeys;
+            var keyBinding = new KeyBinding
+            {
+                Command = mouseBinding.Command,
+                CommandParameter = mouseBinding.CommandParameter,
+                CommandTarget = mouseBinding.CommandTarget,
+                Key = key,
+                Modifiers = modifierKeys
+            };
             return keyBinding;
         }
 
@@ -124,14 +124,15 @@ namespace AnnoDesigner.ViewModels
             //This is not an exact copy, hence why this method is private. It should only be used internally.
             //Properties such as IsFrozen, IsSealed are not copied, and could lead to inconsistencies if used
             //in a wider scope.
-#pragma warning disable IDE0017 // Simplify object initialization
-            var mouseBinding = new MouseBinding();
-#pragma warning restore IDE0017 // Simplify object initialization
-            mouseBinding.Command = keyBinding.Command;
-            mouseBinding.CommandParameter = keyBinding.CommandParameter;
-            mouseBinding.CommandTarget = keyBinding.CommandTarget;
+            //We have to create the MouseGesture separately, as we can't access the modifiers property from the MouseBinding
             var mouseGesture = new MouseGesture(action, modifierKeys);
-            mouseBinding.Gesture = mouseGesture;
+            var mouseBinding = new MouseBinding
+            {
+                Command = keyBinding.Command,
+                CommandParameter = keyBinding.CommandParameter,
+                CommandTarget = keyBinding.CommandTarget,
+                Gesture = mouseGesture 
+            };
             return mouseBinding;
         }
 

@@ -201,6 +201,7 @@ namespace AnnoDesigner.ViewModels
                 _ = UpdateStatisticsAsync(UpdateMode.All);
 
                 PresetsTreeSearchViewModel.SearchText = string.Empty;
+                HotkeyCommandManager.UpdateLanguage();
             }
             catch (Exception ex)
             {
@@ -1425,7 +1426,7 @@ namespace AnnoDesigner.ViewModels
         public ICommand ShowPreferencesWindowCommand { get; private set; }
         private void ExecuteShowPreferencesWindow(object param)
         {
-            var preferencesWindow = new Preferences(_commons, _appSettings, HotkeyCommandManager)
+            var preferencesWindow = new Preferences(_appSettings, HotkeyCommandManager)
             {
                 Owner = Application.Current.MainWindow
             };
