@@ -275,12 +275,12 @@
                        Grid.Column="2"
                        Grid.Row="1"
                        LastChildFill="True">
-                <GroupBox Header="{Binding BuildingSettingsViewModel.TextHeader}"
+                <GroupBox Header="{l:Translate BuildingSettings}"
                           DockPanel.Dock="Top">
                     <StackPanel>
                         <DockPanel LastChildFill="False"
                                    Height="26">
-                            <Label Content="{Binding BuildingSettingsViewModel.TextSize}" />
+                            <Label Content="{l:Translate Size}" />
                             <xctk:IntegerUpDown DockPanel.Dock="Right"
                                                 Height="23"
                                                 IsEnabled="True"
@@ -306,7 +306,7 @@
                         </DockPanel>
                         <DockPanel LastChildFill="False"
                                    Height="26">
-                            <Label Content="{Binding BuildingSettingsViewModel.TextColor}" />
+                            <Label Content="{l:Translate Color}" />
                             <xctk:ColorPicker x:Name="colorPicker"
                                               DockPanel.Dock="Right"
                                               Width="140"
@@ -317,11 +317,11 @@
                                               ShowAvailableColors="True"
                                               ShowRecentColors="True"
                                               AvailableColorsSortingMode="HueSaturationBrightness"
-                                              StandardTabHeader="{Binding BuildingSettingsViewModel.TextStandard}"
-                                              AdvancedTabHeader="{Binding BuildingSettingsViewModel.TextAdvanced}"
-                                              AvailableColorsHeader="{Binding BuildingSettingsViewModel.TextAvailableColors}"
-                                              StandardColorsHeader="{Binding BuildingSettingsViewModel.TextStandardColors}"
-                                              RecentColorsHeader="{Binding BuildingSettingsViewModel.TextRecentColors}"
+                                              StandardTabHeader="{l:Translate Standard}"
+                                              AdvancedTabHeader="{l:Translate Advanced}"
+                                              AvailableColorsHeader="{l:Translate AvailableColors}"
+                                              StandardColorsHeader="{l:Translate StandardColors}"
+                                              RecentColorsHeader="{l:Translate RecentColors}"
                                               SelectedColor="{Binding BuildingSettingsViewModel.SelectedColor}" />
                         </DockPanel>
                         <DockPanel LastChildFill="False"
@@ -375,7 +375,7 @@
                             <xctk:SplitButton Width="48"
                                               DockPanel.Dock="Right"
                                               Command="{Binding BuildingSettingsViewModel.ApplyColorToSelectionCommand}"
-                                              ToolTip="{Binding BuildingSettingsViewModel.TextApplyColorToSelectionToolTip}">
+                                              ToolTip="{l:Translate ApplyColorToSelectionToolTip}">
                                 <xctk:SplitButton.Resources>
                                     <Style x:Key="stylePath"
                                            TargetType="{x:Type Path}">
@@ -418,8 +418,8 @@
                                 </xctk:SplitButton.Content>
                                 <xctk:SplitButton.DropDownContent>
                                     <Button Command="{Binding BuildingSettingsViewModel.ApplyPredefinedColorToSelectionCommand}"
-                                            Content="{Binding BuildingSettingsViewModel.TextApplyPredefinedColorToSelection}"
-                                            ToolTip="{Binding BuildingSettingsViewModel.TextApplyPredefinedColorToSelectionToolTip}" />
+                                            Content="{l:Translate ApplyPredefinedColorToSelection}"
+                                            ToolTip="{l:Translate ApplyPredefinedColorToSelectionToolTip}" />
                                 </xctk:SplitButton.DropDownContent>
                             </xctk:SplitButton>
                         </DockPanel>
@@ -431,12 +431,12 @@
                                             Value="2" />
                                 </Style>
                             </DockPanel.Resources>
-                            <Expander Header="{Binding BuildingSettingsViewModel.TextColorsInLayout}"
+                            <Expander Header="{l:Translate ColorsInLayout}"
                                       MaxWidth="{Binding ElementName=BuildingsPanel, Path=ActualWidth, Mode=OneWay}"
                                       MaxHeight="90"
                                       IsExpanded="False"
                                       Visibility="{Binding BuildingSettingsViewModel.ShowColorsInLayout, Converter={StaticResource converterBoolToVisibility}}"
-                                      ToolTip="{Binding BuildingSettingsViewModel.TextColorsInLayoutToolTip}">
+                                      ToolTip="{l:Translate ColorsInLayoutToolTip}">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                                     <ItemsControl ItemsSource="{Binding BuildingSettingsViewModel.ColorsInLayout}">
                                         <ItemsControl.ItemTemplate>
@@ -469,7 +469,7 @@
                         </DockPanel>
                         <DockPanel LastChildFill="False"
                                    Height="26">
-                            <Label Content="{Binding BuildingSettingsViewModel.TextBuildingName}" />
+                            <Label Content="{l:Translate Label}" />
                             <TextBox DockPanel.Dock="Right"
                                      Height="23"
                                      IsEnabled="True"
@@ -485,7 +485,7 @@
                         </DockPanel>
                         <DockPanel LastChildFill="False"
                                    Height="46">
-                            <Label Content="{Binding BuildingSettingsViewModel.TextIcon}"
+                            <Label Content="{l:Translate Icon}"
                                    VerticalAlignment="Center" />
                             <ComboBox x:Name="comboBoxIcon"
                                       DockPanel.Dock="Right"
@@ -531,7 +531,7 @@
                         </DockPanel>
                         <DockPanel LastChildFill="False"
                                    Height="26">
-                            <Label Content="{Binding BuildingSettingsViewModel.TextInfluenceType}" />
+                            <Label Content="{l:Translate InfluenceType}" />
                             <ComboBox DockPanel.Dock="Right"
                                       Width="140"
                                       Height="22"
@@ -544,7 +544,7 @@
                         <DockPanel LastChildFill="False"
                                    Height="26"
                                    Visibility="{Binding BuildingSettingsViewModel.IsBuildingInfluenceInputRadiusVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}">
-                            <Label Content="{Binding BuildingSettingsViewModel.TextRadius}" />
+                            <Label Content="{l:Translate Radius}" />
                             <xctk:DoubleUpDown DockPanel.Dock="Right"
                                                Height="23"
                                                Width="140"
@@ -559,7 +559,7 @@
                         <DockPanel LastChildFill="False"
                                    Height="26"
                                    Visibility="{Binding BuildingSettingsViewModel.IsBuildingInfluenceInputRangeVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}">
-                            <Label Content="{Binding BuildingSettingsViewModel.TextDistance}" />
+                            <Label Content="{l:Translate Distance}" />
                             <xctk:DoubleUpDown DockPanel.Dock="Right"
                                                Height="23"
                                                Width="140"
@@ -578,9 +578,9 @@
                             <CheckBox DockPanel.Dock="Right"
                                       Margin="0,3,0,5"
                                       IsThreeState="False"
-                                      Content="{Binding BuildingSettingsViewModel.TextPavedStreet}"
+                                      Content="{l:Translate PavedStreet}"
                                       IsChecked="{Binding BuildingSettingsViewModel.IsPavedStreet}"
-                                      ToolTip="{Binding BuildingSettingsViewModel.TextPavedStreetToolTip}">
+                                      ToolTip="{l:Translate PavedStreetToolTip}">
                                 <CheckBox.Style>
                                     <Style TargetType="{x:Type CheckBox}">
                                         <Setter Property="Background"
@@ -597,22 +597,22 @@
                             </CheckBox>
                         </DockPanel>
                         <DockPanel LastChildFill="False">
-                            <Label Content="{Binding BuildingSettingsViewModel.TextOptions}" />
+                            <Label Content="{l:Translate Options}" />
                             <StackPanel Orientation="Vertical"
                                         DockPanel.Dock="Right">
-                                <CheckBox Content="{Binding BuildingSettingsViewModel.TextEnableLabel}"
+                                <CheckBox Content="{l:Translate EnableLabel}"
                                           Margin="0,5,0,5"
                                           VerticalAlignment="Center"
                                           TabIndex="9"
                                           IsThreeState="False"
                                           IsChecked="{Binding BuildingSettingsViewModel.IsEnableLabelChecked}" />
-                                <CheckBox Content="{Binding BuildingSettingsViewModel.TextBorderless}"
+                                <CheckBox Content="{l:Translate Borderless}"
                                           Margin="0,0,0,5"
                                           VerticalAlignment="Center"
                                           TabIndex="10"
                                           IsThreeState="False"
                                           IsChecked="{Binding BuildingSettingsViewModel.IsBorderlessChecked}" />
-                                <CheckBox Content="{Binding BuildingSettingsViewModel.TextRoad}"
+                                <CheckBox Content="{l:Translate Road}"
                                           Margin="0,0,0,5"
                                           VerticalAlignment="Center"
                                           TabIndex="11"
@@ -620,7 +620,7 @@
                                           IsChecked="{Binding BuildingSettingsViewModel.IsRoadChecked}" />
                             </StackPanel>
                         </DockPanel>
-                        <Button Content="{Binding BuildingSettingsViewModel.TextPlaceBuilding}"
+                        <Button Content="{l:Translate PlaceBuilding}"
                                 Command="{Binding PlaceBuildingCommand}"
                                 Height="23"
                                 TabIndex="12" />
