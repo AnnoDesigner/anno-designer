@@ -482,23 +482,42 @@ namespace AnnoDesigner
             SelectedObjects = new List<LayoutObject>();
 
             //Commands
-            RotateCommand = new RelayCommand(ExecuteRotate);
+            rotateCommand = new RelayCommand(ExecuteRotate);
+            copyCommand = new RelayCommand(ExecuteCopy);
+            pasteCommand = new RelayCommand(ExecutePaste);
+            deleteCommand = new RelayCommand(ExecuteDelete);
             //Set up default keybindings
             var rotateBinding = new KeyBinding()
             {
-                Command = RotateCommand,
+                Command = rotateCommand,
                 Key = Key.R,
                 Modifiers = ModifierKeys.None
             };
-            RotateHotkey = new Hotkey(ROTATE_COMMAND_KEY, rotateBinding);
+            rotateHotkey = new Hotkey(ROTATE_COMMAND_KEY, rotateBinding);
 
-            //var copyBinding = new KeyBinding()
-            //{
-            //    Command = CopyCommand,
-            //    Key = Key.C,
-            //    Modifiers = ModifierKeys.Control
-            //};
-            //CopyHotkey = new Hotkey(COPY_COMMAND_KEY, copyBinding);
+            var copyBinding = new KeyBinding()
+            {
+                Command = copyCommand,
+                Key = Key.C,
+                Modifiers = ModifierKeys.Control
+            };
+            copyHotkey = new Hotkey(COPY_COMMAND_KEY, copyBinding);
+            
+            var pasteBinding = new KeyBinding()
+            {
+                Command = pasteCommand,
+                Key = Key.V,
+                Modifiers = ModifierKeys.Control
+            };
+            pasteHotkey = new Hotkey(PASTE_COMMAND_KEY, pasteBinding);
+            
+            var deleteBinding = new KeyBinding()
+            {
+                Command = deleteCommand,
+                Key = Key.Delete,
+                Modifiers = ModifierKeys.None
+            };
+            deleteHotkey = new Hotkey(DELETE_COMMAND_KEY, deleteBinding);
 
             //TODO: Find a solution for this before PR. When the binding type switches from a KeyBinding to a MouseBinding
             //this does not update (which is correct, as the orignal object is dereferenced). Maybe we pass around a reference
@@ -506,7 +525,9 @@ namespace AnnoDesigner
             //the hotkey can update the InputBindingCollection
 
             //InputBindings.Add(rotateBinding);
-
+            //InputBindings.Add(copyBinding);
+            //InputBindings.Add(pasteBinding);
+            //InputBindings.Add(deleteBinding);
 
             const int dpiFactor = 1;
             _linePen = _penCache.GetPen(Brushes.Black, dpiFactor * 1);
@@ -1511,39 +1532,7 @@ namespace AnnoDesigner
             if (e.Handled)
             {
                 InvalidateVisual();
-                return;
             }
-            switch (e.Key)
-            {
-                case Key.Delete:
-                    // remove all currently selected objects from the grid and clear selection
-                    SelectedObjects.ForEach(_ => PlacedObjects.Remove(_));
-                    SelectedObjects.Clear();
-                    StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-                    break;
-                case Key.C:
-                    if (IsControlPressed())
-                    {
-                        if (SelectedObjects.Count != 0)
-                        {
-                            ClipboardObjects = CloneList(SelectedObjects);
-                        }
-                    }
-                    break;
-                case Key.V:
-                    if (IsControlPressed())
-                    {
-                        if (ClipboardObjects.Count != 0)
-                        {
-                            CurrentObjects = CloneList(ClipboardObjects);
-                            MoveCurrentObjectsToMouse();
-                        }
-                    }
-                    break;
-
-            }
-
-            InvalidateVisual();
         }
 
         /// <summary>
@@ -1828,6 +1817,8 @@ namespace AnnoDesigner
         /// </summary>
         private static readonly Dictionary<ICommand, Action<AnnoCanvas>> CommandExecuteMappings;
 
+        public HotkeyCommandManager HotkeyCommandManager { get; set; }
+
         /// <summary>
         /// Creates event handlers for command executions and registers them at the CommandManager.
         /// </summary>
@@ -1862,11 +1853,10 @@ namespace AnnoDesigner
             }
         }
 
-        public HotkeyCommandManager HotkeyCommandManager { get; set; }
 
 
-        private Hotkey RotateHotkey { get; set; }
-        private readonly ICommand RotateCommand;
+        private readonly Hotkey rotateHotkey;
+        private readonly ICommand rotateCommand;
         private void ExecuteRotate(object param)
         {
             if (CurrentObjects.Count == 1)
@@ -1887,11 +1877,45 @@ namespace AnnoDesigner
             InvalidateVisual();
         }
 
-        public void RegisterHotkeys(HotkeyCommandManager manager)
+        private readonly Hotkey copyHotkey;
+        private readonly ICommand copyCommand;
+        private void ExecuteCopy(object param)
+        {
+            if (SelectedObjects.Count != 0)
+            {
+                ClipboardObjects = CloneList(SelectedObjects);
+            }
+        }
+      
+        private readonly Hotkey pasteHotkey;
+        private readonly ICommand pasteCommand;
+        private void ExecutePaste(object param)
+        {
+            if (ClipboardObjects.Count != 0)
+            {
+                CurrentObjects = CloneList(ClipboardObjects);
+                MoveCurrentObjectsToMouse();
+            }
+        }
+      
+        private readonly Hotkey deleteHotkey;
+        private readonly ICommand deleteCommand;
+        private void ExecuteDelete(object param)
+        {
+            // remove all currently selected objects from the grid and clear selection
+            SelectedObjects.ForEach(_ => PlacedObjects.Remove(_));
+            SelectedObjects.Clear();
+            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+        }
+      
+
+    public void RegisterHotkeys(HotkeyCommandManager manager)
         {
             HotkeyCommandManager = manager;
-            manager.AddBinding(RotateHotkey);
-
+            manager.AddBinding(rotateHotkey);
+            manager.AddBinding(copyHotkey);
+            manager.AddBinding(pasteHotkey);
+            manager.AddBinding(deleteHotkey);
             //TODO: For testing only, remove before PR
             manager.AddBinding(new Hotkey("TestBinding", new KeyBinding()
             {
