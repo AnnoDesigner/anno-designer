@@ -13,6 +13,7 @@
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
         xmlns:myBehaviors="clr-namespace:AnnoDesigner.Behaviors"
+        xmlns:l="clr-namespace:AnnoDesigner.Localization"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewModel:MainViewModel, IsDesignTimeCreatable=False}"
         d:DesignHeight="480"
@@ -72,57 +73,57 @@
                         </Style.Triggers>
                     </Style>
                 </Menu.Resources>
-                <MenuItem Header="{Binding File}"
+                <MenuItem Header="{l:Translate File}"
                           TabIndex="20">
-                    <MenuItem Header="{Binding NewCanvas}"
+                    <MenuItem Header="{l:Translate NewCanvas}"
                               Command="ApplicationCommands.New"
                               CommandTarget="{Binding ElementName=annoCanvas}" />
-                    <MenuItem Header="{Binding Open}"
+                    <MenuItem Header="{l:Translate Open}"
                               Command="ApplicationCommands.Open"
                               CommandTarget="{Binding ElementName=annoCanvas}" />
-                    <MenuItem Header="{Binding Save}"
+                    <MenuItem Header="{l:Translate Save}"
                               Command="ApplicationCommands.Save"
                               CommandTarget="{Binding ElementName=annoCanvas}" />
-                    <MenuItem Header="{Binding SaveAs}"
+                    <MenuItem Header="{l:Translate SaveAs}"
                               Command="ApplicationCommands.SaveAs"
                               CommandTarget="{Binding ElementName=annoCanvas}" />
                     <Separator />
-                    <MenuItem Header="{Binding CopyLayoutToClipboard}"
+                    <MenuItem Header="{l:Translate CopyLayoutToClipboard}"
                               Command="{Binding CopyLayoutToClipboardCommand}" />
-                    <MenuItem Header="{Binding LoadLayoutFromJson}"
+                    <MenuItem Header="{l:Translate LoadLayoutFromJson}"
                               Command="{Binding LoadLayoutFromJsonCommand}" />
                     <Separator />
-                    <MenuItem Header="{Binding Exit}"
+                    <MenuItem Header="{l:Translate Exit}"
                               Command="{Binding CloseWindowCommand}"
                               CommandParameter="{Binding ElementName=mainWindow}" />
                 </MenuItem>
-                <MenuItem Header="{Binding Extras}"
+                <MenuItem Header="{l:Translate Extras}"
                           TabIndex="21">
                     <!--<MenuItem Header="Prefer local presets" IsCheckable="True" IsEnabled="False" />
                 <MenuItem Header="Apply automatic color scheme" IsEnabled="False" />-->
-                    <MenuItem Header="{Binding Normalize}"
+                    <MenuItem Header="{l:Translate Normalize}"
                               Command="{Binding CanvasNormalizeCommand}" />
-                    <MenuItem Header="{Binding ResetZoom}"
+                    <MenuItem Header="{l:Translate ResetZoom}"
                               Command="{Binding CanvasResetZoomCommand}" />
                     <Separator />
-                    <MenuItem Header="{Binding RegisterFileExtension}"
+                    <MenuItem Header="{l:Translate RegisterFileExtension}"
                               Command="{Binding RegisterExtensionCommand}" />
-                    <MenuItem Header="{Binding UnregisterFileExtension}"
+                    <MenuItem Header="{l:Translate UnregisterFileExtension}"
                               Command="{Binding UnregisterExtensionCommand}" />
                 </MenuItem>
-                <MenuItem Header="{Binding Export}"
+                <MenuItem Header="{l:Translate Export}"
                           TabIndex="22">
-                    <MenuItem Header="{Binding ExportImage}"
+                    <MenuItem Header="{l:Translate ExportImage}"
                               Command="{Binding ExportImageCommand}" />
                     <Separator />
-                    <MenuItem Header="{Binding UseCurrentZoomOnExportedImage}"
+                    <MenuItem Header="{l:Translate UseCurrentZoomOnExportedImage}"
                               IsCheckable="True"
                               IsChecked="{Binding UseCurrentZoomOnExportedImageValue}" />
-                    <MenuItem Header="{Binding RenderSelectionHighlightsOnExportedImage}"
+                    <MenuItem Header="{l:Translate RenderSelectionHighlightsOnExportedImage}"
                               IsCheckable="True"
                               IsChecked="{Binding RenderSelectionHighlightsOnExportedImageValue}" />
                 </MenuItem>
-                <MenuItem Header="{Binding Language}"
+                <MenuItem Header="{l:Translate Language}"
                           TabIndex="23"
                           ItemsSource="{Binding Languages}">
                     <MenuItem.ItemContainerStyle>
@@ -140,21 +141,21 @@
                         </Style>
                     </MenuItem.ItemContainerStyle>
                 </MenuItem>
-                <MenuItem Header="{Binding ManageStats}"
+                <MenuItem Header="{l:Translate ManageStats}"
                           TabIndex="24"
                           HorizontalAlignment="Right">
-                    <MenuItem Header="{Binding ShowStats}"
+                    <MenuItem Header="{l:Translate ShowStats}"
                               IsCheckable="True"
                               IsChecked="{Binding StatisticsViewModel.IsVisible}"
                               Command="{Binding ShowStatisticsCommand}" />
                     <Separator></Separator>
-                    <MenuItem Header="{Binding BuildingCount}"
+                    <MenuItem Header="{l:Translate BuildingCount}"
                               IsCheckable="True"
                               IsChecked="{Binding StatisticsViewModel.ShowStatisticsBuildingCount}"
                               IsEnabled="{Binding StatisticsViewModel.IsVisible, Mode=OneWay}"
                               Command="{Binding ShowStatisticsBuildingCountCommand}" />
                 </MenuItem>
-                <MenuItem Header="{Binding Help}"
+                <MenuItem Header="{l:Translate Help}"
                           TabIndex="25"
                           HorizontalAlignment="Right">
                     <MenuItem IsEnabled="False">
@@ -162,7 +163,7 @@
                             <TextBlock>
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0}: {1}">
-                                        <Binding Path="Version" />
+                                        <l:TranslateKeyBinding Key="Version" />
                                         <Binding Path="VersionValue" />
                                     </MultiBinding>
                                 </TextBlock.Text>
@@ -174,7 +175,7 @@
                             <TextBlock>
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0}: {1}">
-                                        <Binding Path="FileVersion" />
+                                        <l:TranslateKeyBinding Key="FileVersion" />
                                         <Binding Path="FileVersionValue" />
                                     </MultiBinding>
                                 </TextBlock.Text>
@@ -186,44 +187,44 @@
                             <TextBlock>
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0}: {1}">
-                                        <Binding Path="PresetsVersion" />
+                                        <l:TranslateKeyBinding Key="PresetsVersion" />
                                         <Binding Path="PresetsVersionValue" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
                         </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Header="{Binding CheckForUpdates}"
+                    <MenuItem Header="{l:Translate CheckForUpdates}"
                               Command="{Binding CheckForUpdatesCommand}" />
-                    <MenuItem Header="{Binding EnableAutomaticUpdateCheck}"
+                    <MenuItem Header="{l:Translate EnableAutomaticUpdateCheck}"
                               IsCheckable="True"
                               IsChecked="{Binding AutomaticUpdateCheck}" />
                     <Separator />
-                    <MenuItem Header="{Binding GoToProjectHomepage}"
+                    <MenuItem Header="{l:Translate GoToProjectHomepage}"
                               Command="{Binding OpenProjectHomepageCommand}" />
-                    <MenuItem Header="{Binding OpenWelcomePage}"
+                    <MenuItem Header="{l:Translate OpenWelcomePage}"
                               Command="{Binding ShowWelcomeWindowCommand}" />
-                    <MenuItem Header="{Binding AboutAnnoDesigner}"
+                    <MenuItem Header="{l:Translate AboutAnnoDesigner}"
                               Command="{Binding ShowAboutWindowCommand}" />
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="{Binding ShowGrid}"
+                <MenuItem Header="{l:Translate ShowGrid}"
                           IsCheckable="True"
                           IsChecked="{Binding CanvasShowGrid}"
                           TabIndex="26" />
-                <MenuItem Header="{Binding ShowLabels}"
+                <MenuItem Header="{l:Translate ShowLabels}"
                           IsCheckable="True"
                           IsChecked="{Binding CanvasShowLabels}"
                           TabIndex="27" />
-                <MenuItem Header="{Binding ShowIcons}"
+                <MenuItem Header="{l:Translate ShowIcons}"
                           IsCheckable="True"
                           IsChecked="{Binding CanvasShowIcons}"
                           TabIndex="28" />
-                <MenuItem Header="{Binding ShowTrueInfluenceRange}"
+                <MenuItem Header="{l:Translate ShowTrueInfluenceRange}"
                           IsCheckable="True"
                           IsChecked="{Binding CanvasShowTrueInfluenceRange}"
                           TabIndex="29" />
-                <MenuItem Header="{Binding ShowInfluences}"
+                <MenuItem Header="{l:Translate ShowInfluences}"
                           IsCheckable="True"
                           IsChecked="{Binding CanvasShowInfluences}"
                           TabIndex="30" />
@@ -627,7 +628,7 @@
                 </GroupBox>
 
                 <GroupBox x:Name="GroupBoxSearchPresets"
-                          Header="{Binding PresetsTreeSearchViewModel.TextSearch}"
+                          Header="{l:Translate Search}"
                           HeaderStringFormat=" {0}:"
                           IsEnabled="True"
                           Height="Auto"
@@ -643,7 +644,7 @@
                                  Grid.Row="0"
                                  Height="23"
                                  VerticalContentAlignment="Center"
-                                 ToolTip="{Binding PresetsTreeSearchViewModel.TextSearchToolTip}"
+                                 ToolTip="{l:Translate SearchToolTip}"
                                  Text="{Binding PresetsTreeSearchViewModel.SearchText, UpdateSourceTrigger=PropertyChanged}"
                                  KeyUp="TextBoxSearchPresetsKeyUp">
                             <b:Interaction.Triggers>
@@ -683,7 +684,7 @@
                                             Delimiter=", "
                                             Command="{Binding PresetsTreeSearchViewModel.GameVersionFilterChangedCommand}"
                                             IsSelectAllActive="True"
-                                            SelectAllContent="{Binding PresetsTreeSearchViewModel.TextSelectAll}" />
+                                            SelectAllContent="{l:Translate SelectAll}" />
                     </Grid>
                 </GroupBox>
 

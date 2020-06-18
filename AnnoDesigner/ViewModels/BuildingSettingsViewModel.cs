@@ -18,7 +18,6 @@ namespace AnnoDesigner.ViewModels
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly ICommons _commons;
         private readonly IAppSettings _appSettings;
 
         private string _textHeader;
@@ -72,9 +71,8 @@ namespace AnnoDesigner.ViewModels
         /// <summary>
         /// only used for databinding
         /// </summary>
-        public BuildingSettingsViewModel(ICommons commonsToUse, IAppSettings appSettingsToUse)
+        public BuildingSettingsViewModel(IAppSettings appSettingsToUse)
         {
-            _commons = commonsToUse;
             _appSettings = appSettingsToUse;
 
             ApplyColorToSelectionCommand = new RelayCommand(ApplyColorToSelection, CanApplyColorToSelection);
@@ -130,13 +128,11 @@ namespace AnnoDesigner.ViewModels
 
         private void InitBuildingInfluences()
         {
-            string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
-
             foreach (BuildingInfluenceType curInfluenceType in Enum.GetValues(typeof(BuildingInfluenceType)))
             {
                 BuildingInfluences.Add(new BuildingInfluence
                 {
-                    Name = Localization.Localization.Translations[language][curInfluenceType.ToString()],
+                    Name = Localization.Localization.Translations[curInfluenceType.ToString()],
                     Type = curInfluenceType
                 });
             }
@@ -146,11 +142,9 @@ namespace AnnoDesigner.ViewModels
 
         public void UpdateLanguageBuildingInfluenceType()
         {
-            string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
-
             foreach (var curBuildingInfluence in BuildingInfluences)
             {
-                curBuildingInfluence.Name = Localization.Localization.Translations[language][curBuildingInfluence.Type.ToString()];
+                curBuildingInfluence.Name = Localization.Localization.Translations[curBuildingInfluence.Type.ToString()];
             }
         }
 

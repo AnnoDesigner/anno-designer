@@ -16,10 +16,6 @@ namespace AnnoDesigner.ViewModels
 {
     public class PresetsTreeSearchViewModel : Notify
     {
-        private string _textSearch;
-        private string _textSearchToolTip;
-        private string _textSelectAll;
-
         private string _searchText;
         private bool _hasFocus;
         private ObservableCollection<GameVersionFilter> _gameVersionFilters;
@@ -170,28 +166,6 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
-        #endregion
-
-        #region localization
-
-        public string TextSearch
-        {
-            get { return _textSearch; }
-            set { UpdateProperty(ref _textSearch, value); }
-        }
-
-        public string TextSearchToolTip
-        {
-            get { return _textSearchToolTip; }
-            set { UpdateProperty(ref _textSearchToolTip, value); }
-        }
-
-        public string TextSelectAll
-        {
-            get { return _textSelectAll; }
-            set { UpdateProperty(ref _textSelectAll, value); }
-        }
-
-        #endregion       
+        #endregion      
     }
 }

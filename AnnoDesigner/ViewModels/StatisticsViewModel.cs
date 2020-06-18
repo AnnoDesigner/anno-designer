@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
@@ -14,17 +12,6 @@ namespace AnnoDesigner.ViewModels
 {
     public class StatisticsViewModel : Notify
     {
-        private readonly ICommons _commons;
-
-        private string _textNothingPlaced;
-        private string _textBoundingBox;
-        private string _textMinimumArea;
-        private string _textSpaceEfficiency;
-        private string _textBuildings;
-        private string _textBuildingsSelected;
-        private string _textTiles;
-        private string _textNameNotFound;
-
         private bool _isVisible;
         private string _usedArea;
         private double _usedTiles;
@@ -39,19 +26,8 @@ namespace AnnoDesigner.ViewModels
         private StatisticsCalculationHelper _statisticsCalculationHelper;
         private readonly Dictionary<string, BuildingInfo> _cachedPresetsBuilding;
 
-        public StatisticsViewModel(ICommons commonsToUse)
+        public StatisticsViewModel()
         {
-            _commons = commonsToUse;
-
-            TextNothingPlaced = "Nothing Placed";
-            TextBoundingBox = "Bounding Box";
-            TextMinimumArea = "Minimum Area";
-            TextSpaceEfficiency = "Space Efficiency";
-            TextBuildings = "Buildings";
-            TextBuildingsSelected = "Buildings Selected";
-            TextTiles = "Tiles";
-            TextNameNotFound = "Building name not found";
-
             UsedArea = "12x4";
             UsedTiles = 308;
             MinTiles = 48;
@@ -64,79 +40,6 @@ namespace AnnoDesigner.ViewModels
             _statisticsCalculationHelper = new StatisticsCalculationHelper();
             _cachedPresetsBuilding = new Dictionary<string, BuildingInfo>(50);
         }
-
-        #region localization
-
-        public string TextNothingPlaced
-        {
-            get { return _textNothingPlaced; }
-            set { UpdateProperty(ref _textNothingPlaced, value); }
-        }
-
-        public string TextBoundingBox
-        {
-            get { return _textBoundingBox; }
-            set
-            {
-                UpdateProperty(ref _textBoundingBox, value);
-            }
-        }
-
-        public string TextMinimumArea
-        {
-            get { return _textMinimumArea; }
-            set
-            {
-                UpdateProperty(ref _textMinimumArea, value);
-            }
-        }
-
-        public string TextSpaceEfficiency
-        {
-            get { return _textSpaceEfficiency; }
-            set
-            {
-                UpdateProperty(ref _textSpaceEfficiency, value);
-            }
-        }
-
-        public string TextBuildings
-        {
-            get { return _textBuildings; }
-            set
-            {
-                UpdateProperty(ref _textBuildings, value);
-            }
-        }
-
-        public string TextBuildingsSelected
-        {
-            get { return _textBuildingsSelected; }
-            set
-            {
-                UpdateProperty(ref _textBuildingsSelected, value);
-            }
-        }
-
-        public string TextTiles
-        {
-            get { return _textTiles; }
-            set
-            {
-                UpdateProperty(ref _textTiles, value);
-            }
-        }
-
-        public string TextNameNotFound
-        {
-            get { return _textNameNotFound; }
-            set
-            {
-                UpdateProperty(ref _textNameNotFound, value);
-            }
-        }
-
-        #endregion
 
         public bool IsVisible
         {
@@ -266,7 +169,6 @@ namespace AnnoDesigner.ViewModels
                 return new ObservableCollection<StatisticsBuilding>();
             }
 
-            var language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
             var tempList = new List<StatisticsBuilding>();
 
             var validBuildingsGrouped = groupedBuildingsByIdentifier
@@ -290,38 +192,26 @@ namespace AnnoDesigner.ViewModels
                     if (building != null || isUnknownObject)
                     {
                         statisticBuilding.Count = item.Count();
-                        statisticBuilding.Name = isUnknownObject ? Localization.Localization.Translations[language]["UnknownObject"] : building.Localization[language];
+                        statisticBuilding.Name = isUnknownObject ? Localization.Localization.Translations["UnknownObject"] : building.Localization[Localization.Localization.Instance.SelectedLanguage];
                     }
                     else
                     {
                         item.ElementAt(0).Identifier = "";
 
                         statisticBuilding.Count = item.Count();
-                        statisticBuilding.Name = TextNameNotFound;
+                        statisticBuilding.Name = Localization.Localization.Translations["StatNameNotFound"];
                     }
                 }
                 else
                 {
                     statisticBuilding.Count = item.Count();
-                    statisticBuilding.Name = TextNameNotFound;
+                    statisticBuilding.Name = Localization.Localization.Translations["StatNameNotFound"];
                 }
 
                 tempList.Add(statisticBuilding);
             }
 
             return new ObservableCollection<StatisticsBuilding>(tempList.OrderByDescending(x => x.Count).ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase));
-        }
-
-        public void CopyLocalization(StatisticsViewModel other)
-        {
-            TextNothingPlaced = other.TextNothingPlaced;
-            TextBoundingBox = other.TextBoundingBox;
-            TextMinimumArea = other.TextMinimumArea;
-            TextSpaceEfficiency = other.TextSpaceEfficiency;
-            TextBuildings = other.TextBuildings;
-            TextBuildingsSelected = other.TextBuildingsSelected;
-            TextTiles = other.TextTiles;
-            TextNameNotFound = other.TextNameNotFound;
         }
     }
 }

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:AnnoDesigner"
+             xmlns:l="clr-namespace:AnnoDesigner.Localization"
              xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
              xmlns:converter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
              mc:Ignorable="d"
@@ -36,13 +36,13 @@
                   HorizontalScrollBarVisibility="Auto">
         <StackPanel>
             <TextBlock x:Name="tblNothingPlaced"
-                       Text="{Binding TextNothingPlaced}"
+                       Text="{l:Translate StatNothingPlaced}"
                        Margin="5"
                        Visibility="{Binding AreStatisticsAvailable, Converter={StaticResource invertedBoolToVisConverter}}" />
 
             <StackPanel Visibility="{Binding AreStatisticsAvailable, Converter={StaticResource boolToVisConverter}}">
                 <GroupBox x:Name="grpBoundingBox"
-                          Header="{Binding TextBoundingBox}"
+                          Header="{l:Translate StatBoundingBox}"
                           Style="{StaticResource styleGroupBox}">
                     <StackPanel>
                         <TextBlock Text="{Binding UsedArea}"
@@ -51,7 +51,7 @@
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}{0} {1}">
                                     <Binding Path="UsedTiles" />
-                                    <Binding Path="TextTiles" />
+                                    <l:TranslateKeyBinding Key="StatTiles"/>
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
@@ -59,14 +59,14 @@
                 </GroupBox>
 
                 <GroupBox x:Name="grpMinArea"
-                          Header="{Binding TextMinimumArea}"
+                          Header="{l:Translate StatMinimumArea}"
                           Style="{StaticResource styleGroupBox}">
                     <StackPanel>
                         <TextBlock Style="{StaticResource styleGroupEntry}">
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}{0} {1}">
                                     <Binding Path="MinTiles" />
-                                    <Binding Path="TextTiles" />
+                                    <l:TranslateKeyBinding Key="StatTiles"/>
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
@@ -74,7 +74,7 @@
                 </GroupBox>
 
                 <GroupBox x:Name="grpEfficiency"
-                          Header="{Binding TextSpaceEfficiency}"
+                          Header="{l:Translate StatSpaceEfficiency}"
                           Style="{StaticResource styleGroupBox}">
                     <StackPanel>
                         <TextBlock Text="{Binding Efficiency}"
@@ -83,7 +83,7 @@
                 </GroupBox>
 
                 <GroupBox x:Name="grpBuildings"
-                          Header="{Binding TextBuildings}"
+                          Header="{l:Translate StatBuildings}"
                           Style="{StaticResource styleGroupBox}"
                           Visibility="{Binding ShowBuildingList , Converter={StaticResource boolToVisConverter}}">
                     <ItemsControl ItemsSource="{Binding Buildings}">
@@ -103,7 +103,7 @@
                 </GroupBox>
 
                 <GroupBox x:Name="grpSelectedBuildings"
-                          Header="{Binding TextBuildingsSelected}"
+                          Header="{l:Translate StatBuildingsSelected}"
                           Style="{StaticResource styleGroupBox}"
                           Visibility="{Binding ShowSelectedBuildingList, Converter={StaticResource boolToVisConverter}}">
                     <ItemsControl ItemsSource="{Binding SelectedBuildings}">
