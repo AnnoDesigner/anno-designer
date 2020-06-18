@@ -132,7 +132,10 @@ namespace AnnoDesigner.Localization
                         { "Rebind" , "Rebind" },
                         { "Recording" , "Recording" },
                         { "RecordANewAction" , "Record a new action" },
-                        { AnnoCanvas.ROTATE_COMMAND_KEY , "Rotate" }
+                        { "Rotate" , "Rotate" },
+                        { "Copy" , "Copy" },
+                        { "Paste" , "Paste" },
+                        { "Delete" , "Delete" }
                     }
                 },
                 {
@@ -253,7 +256,10 @@ namespace AnnoDesigner.Localization
                         { "Rebind" , "Neu binden" },
                         { "Recording" , "Aufzeichnung" },
                         { "RecordANewAction" , "Eine neue Aktion aufzeichnen" },
-                        { AnnoCanvas.ROTATE_COMMAND_KEY , "Rotieren" }
+                        { "Rotate" , "Rotieren" },
+                        { "Copy" , "Kopie" },
+                        { "Paste" , "Einfügen" },
+                        { "Delete" , "löschen" }
                     }
                 },
                 {
@@ -374,7 +380,10 @@ namespace AnnoDesigner.Localization
                         { "Rebind" , "Relier" },
                         { "Recording" , "Enregistrement" },
                         { "RecordANewAction" , "Enregistrer une nouvelle action" },
-                        { AnnoCanvas.ROTATE_COMMAND_KEY , "Faire tourner" }
+                        { "Rotate" , "Faire tourner" },
+                        { "Copy" , "Copie" },
+                        { "Paste" , "Coller" },
+                        { "Delete" , "Supprimer" }
                     }
                 },
                 {
@@ -495,7 +504,10 @@ namespace AnnoDesigner.Localization
                         { "Rebind" , "Powiąż ponownie" },
                         { "Recording" , "Nagranie" },
                         { "RecordANewAction" , "Zapisać nową akcję" },
-                        { AnnoCanvas.ROTATE_COMMAND_KEY , "Obróć" }
+                        { "Rotate" , "Obróć" },
+                        { "Copy" , "Kopia" },
+                        { "Paste" , "Pasta" },
+                        { "Delete" , "Skreślić" }
                     }
                 },
                 {
@@ -616,7 +628,10 @@ namespace AnnoDesigner.Localization
                         { "Rebind" , "Перезаписать" },
                         { "Recording" , "Запись" },
                         { "RecordANewAction" , "Записать новое действие" },
-                        { AnnoCanvas.ROTATE_COMMAND_KEY , "Повернуть" }
+                        { "Rotate" , "Повернуть" },
+                        { "Copy" , "Скопировать" },
+                        { "Paste" , "Вставить" },
+                        { "Delete" , "Удалить" }
                     }
                 },
             };

@@ -67,33 +67,7 @@ namespace AnnoDesigner.ViewModels
             w.Close();
         }
 
-        private ActionRecorder _actionRecorder;
-        public ActionRecorder ActionRecorder
-        {
-            get => _actionRecorder;
-            set
-            {
-                if (_actionRecorder != null)
-                {
-                    //_actionRecorder.RecordingStarted -= ActionRecorder_RecordingStarted;
-                    _actionRecorder.RecordingFinished -= ActionRecorder_RecordingFinished;
-                }
-                _actionRecorder = value;
-                //ActionRecorder.RecordingStarted += ActionRecorder_RecordingStarted;
-                ActionRecorder.RecordingFinished += ActionRecorder_RecordingFinished;
-            }
-        }
-
-        private void ActionRecorder_RecordingFinished(object sender, Core.CustomEventArgs.ActionRecorderEventArgs e)
-        {
-               
-        }
-
-        private void ActionRecorder_RecordingStarted(object sender, Core.CustomEventArgs.ActionRecorderEventArgs e)
-        {
-            //Nothing to do here yet.    
-        }
-
+        public ActionRecorder ActionRecorder { get; set; }
 
         /// <summary>
         /// Resets the ActionRecorder and any recorded actions on the view model.

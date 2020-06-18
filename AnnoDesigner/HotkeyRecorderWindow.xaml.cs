@@ -18,7 +18,6 @@ namespace AnnoDesigner
     /// </summary>
     public partial class HotkeyRecorderWindow : Window, ICloseable
     {
-        //TODO: localize title and buttons. 
         public  HotkeyRecorderWindow()
         {
             WindowStartupLocation = WindowStartupLocation.CenterOwner;

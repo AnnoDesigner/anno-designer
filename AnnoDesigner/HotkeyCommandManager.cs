@@ -32,7 +32,6 @@ namespace AnnoDesigner
             _observableCollection = new ObservableCollection<Hotkey>();
             //ObservableCollection = new ReadOnlyObservableCollection<Hotkey>(_observableCollection);
             ObservableCollection = _observableCollection;
-
         }
 
         public void HandleCommand(InputEventArgs e)
@@ -74,6 +73,12 @@ namespace AnnoDesigner
                 hotkey.PropertyChanged += Hotkey_PropertyChanged;
                 bindings.Add(hotkey.Name, hotkey);
                 _observableCollection.Add(hotkey);
+                //Check for localization
+                var language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
+                if (Localization.Localization.Translations[language].TryGetValue(hotkey.Name, out var description))
+                {
+                    hotkey.Description = description;
+                }
             }
             else
             {
@@ -130,9 +135,9 @@ namespace AnnoDesigner
             var language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
             foreach (var kvp in bindings)
             {
-                if (Localization.Localization.Translations[language].ContainsKey(kvp.Key))
+                if (Localization.Localization.Translations[language].TryGetValue(kvp.Key, out var description))
                 {
-                    kvp.Value.Description = Localization.Localization.Translations[language][kvp.Key];
+                    kvp.Value.Description = description;
                 }
             }
         }

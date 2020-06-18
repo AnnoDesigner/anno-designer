@@ -36,6 +36,7 @@ namespace AnnoDesigner
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        //Important: These match the values in the Localization.Localization.Translations dictionary
         public const string ROTATE_COMMAND_KEY = "Rotate";
         public const string COPY_COMMAND_KEY = "Copy";
         public const string PASTE_COMMAND_KEY = "Paste";
@@ -502,7 +503,7 @@ namespace AnnoDesigner
                 Modifiers = ModifierKeys.Control
             };
             copyHotkey = new Hotkey(COPY_COMMAND_KEY, copyBinding);
-            
+
             var pasteBinding = new KeyBinding()
             {
                 Command = pasteCommand,
@@ -510,7 +511,7 @@ namespace AnnoDesigner
                 Modifiers = ModifierKeys.Control
             };
             pasteHotkey = new Hotkey(PASTE_COMMAND_KEY, pasteBinding);
-            
+
             var deleteBinding = new KeyBinding()
             {
                 Command = deleteCommand,
@@ -1886,7 +1887,7 @@ namespace AnnoDesigner
                 ClipboardObjects = CloneList(SelectedObjects);
             }
         }
-      
+
         private readonly Hotkey pasteHotkey;
         private readonly ICommand pasteCommand;
         private void ExecutePaste(object param)
@@ -1897,7 +1898,7 @@ namespace AnnoDesigner
                 MoveCurrentObjectsToMouse();
             }
         }
-      
+
         private readonly Hotkey deleteHotkey;
         private readonly ICommand deleteCommand;
         private void ExecuteDelete(object param)
@@ -1907,25 +1908,15 @@ namespace AnnoDesigner
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
-      
 
-    public void RegisterHotkeys(HotkeyCommandManager manager)
+
+        public void RegisterHotkeys(HotkeyCommandManager manager)
         {
             HotkeyCommandManager = manager;
             manager.AddBinding(rotateHotkey);
             manager.AddBinding(copyHotkey);
             manager.AddBinding(pasteHotkey);
             manager.AddBinding(deleteHotkey);
-            //TODO: For testing only, remove before PR
-            manager.AddBinding(new Hotkey("TestBinding", new KeyBinding()
-            {
-                Key = Key.A,
-                Modifiers = ModifierKeys.Control
-            }, "SecondBinding Test"));
-            manager.AddBinding(new Hotkey("TestBinding2", new MouseBinding()
-            {
-                Gesture = new MouseGesture(MouseAction.LeftDoubleClick, ModifierKeys.Control)
-            }, "Third Test"));
         }
 
 
