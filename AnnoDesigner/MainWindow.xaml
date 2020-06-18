@@ -163,7 +163,7 @@
                             <TextBlock>
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0}: {1}">
-                                        <l:TranslateKeyBinding Key="Version" />
+                                        <l:Translate Key="Version" />
                                         <Binding Path="VersionValue" />
                                     </MultiBinding>
                                 </TextBlock.Text>
@@ -175,7 +175,7 @@
                             <TextBlock>
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0}: {1}">
-                                        <l:TranslateKeyBinding Key="FileVersion" />
+                                        <l:Translate Key="FileVersion" />
                                         <Binding Path="FileVersionValue" />
                                     </MultiBinding>
                                 </TextBlock.Text>
@@ -187,7 +187,7 @@
                             <TextBlock>
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0}: {1}">
-                                        <l:TranslateKeyBinding Key="PresetsVersion" />
+                                        <l:Translate Key="PresetsVersion" />
                                         <Binding Path="PresetsVersionValue" />
                                     </MultiBinding>
                                 </TextBlock.Text>

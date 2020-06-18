@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Data;
-using System.Windows.Markup;
 
 namespace AnnoDesigner.Localization
 {
@@ -26,7 +25,7 @@ namespace AnnoDesigner.Localization
         }
     }
 
-    public class TranslateKeyBinding : Binding
+    public class Translate : Binding
     {
         private static TranslateKeyConverter TranslateConverter { get; } = new TranslateKeyConverter();
 
@@ -38,41 +37,15 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        public TranslateKeyBinding() : base("InstanceTranslations")
+        public Translate() : base("InstanceTranslations")
         {
             Source = Localization.Instance;
             Converter = TranslateConverter;
         }
 
-        public TranslateKeyBinding(string key) : this()
+        public Translate(string key) : this()
         {
             Key = key;
-        }
-    }
-
-    public class TranslateExtension : MarkupExtension
-    {
-        public string Key { get; set; }
-
-        public string StringFormat { get; set; }
-
-        public TranslateExtension()
-        {
-
-        }
-
-        public TranslateExtension(string key)
-        {
-            Key = key;
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            var binding = new TranslateKeyBinding(Key)
-            {
-                StringFormat = StringFormat
-            };
-            return binding.ProvideValue(serviceProvider);
         }
     }
 }
