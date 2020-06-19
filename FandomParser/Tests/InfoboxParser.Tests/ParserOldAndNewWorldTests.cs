@@ -103,6 +103,64 @@ namespace InfoboxParser.Tests
             }
         }
 
+        public static TheoryData<string, int, double, WorldRegion> UnlockInfoAmountTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, double, WorldRegion>
+                {
+                    { "|Unlock Condition 1 Amount (OW) = 42", 1, 42d, WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Amount (OW) = -42", 1, -42d, WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Amount (OW) = 42,21", 1, 42.21d, WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Amount (OW) = -42,21", 1, -42.21d, WorldRegion.OldWorld },
+                    { "|Unlock Condition   1   Amount (OW)   =   42", 1, 42d, WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Amount (OW) = 42}}", 1, 42d, WorldRegion.OldWorld },
+                    { "|Unlock Condition    1    Amount (OW)    =     42   }}", 1, 42d, WorldRegion.OldWorld },
+                    { "|Unlock Condition 4 Amount (OW) = 42", 4, 42d, WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Amount (NW) = 42", 1, 42d, WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Amount (NW) = -42", 1, -42d, WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Amount (NW) = 42,21", 1, 42.21d, WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Amount (NW) = -42,21", 1, -42.21d, WorldRegion.NewWorld },
+                    { "|Unlock Condition   1   Amount (NW)   =   42", 1, 42d, WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Amount (NW) = 42}}", 1, 42d, WorldRegion.NewWorld },
+                    { "|Unlock Condition    1    Amount (NW)    =     42   }}", 1, 42d, WorldRegion.NewWorld },
+                    { "|Unlock Condition 4 Amount (NW) = 42", 4, 42d, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, int, string, WorldRegion> UnlockInfoTypeTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, string, WorldRegion>
+                {
+                    { "|Unlock Condition 1 Type (OW) = Technicians", 1, "Technicians", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = Engineers", 1, "Engineers", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = Obreros", 1, "Obreros", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = Investors", 1, "Investors", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = Jornaleros", 1, "Jornaleros", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = Workers", 1, "Workers", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = dummy with spaces", 1, "dummy with spaces", WorldRegion.OldWorld },
+                    { "|Unlock Condition 4 Type (OW) = Technicians", 4, "Technicians", WorldRegion.OldWorld },
+                    { "|Unlock Condition    1   Type (OW)    =    Technicians   ", 1, "Technicians", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = Technicians}}", 1, "Technicians", WorldRegion.OldWorld },
+                    { "|Unlock Condition    1    Type (OW)    =    Technicians   }}", 1, "Technicians", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (NW) = Technicians", 1, "Technicians", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = Engineers", 1, "Engineers", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = Obreros", 1, "Obreros", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = Investors", 1, "Investors", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = Jornaleros", 1, "Jornaleros", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = Workers", 1, "Workers", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = dummy with spaces", 1, "dummy with spaces", WorldRegion.NewWorld },
+                    { "|Unlock Condition 4 Type (NW) = Technicians", 4, "Technicians", WorldRegion.NewWorld },
+                    { "|Unlock Condition    1   Type (NW)    =    Technicians   ", 1, "Technicians", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = Technicians}}", 1, "Technicians", WorldRegion.NewWorld },
+                    { "|Unlock Condition    1    Type (NW)    =    Technicians   }}", 1, "Technicians", WorldRegion.NewWorld },
+                };
+            }
+        }
+
         public static TheoryData<string, Size, WorldRegion> BuildingSizeTestData
         {
             get
@@ -1235,12 +1293,11 @@ namespace InfoboxParser.Tests
             Assert.Null(result[1].UnlockInfos);
         }
 
-        [Fact]
-        public void GetInfobox_WikiTextContainsUnlockAmount_ShouldReturnCorrectValue()
+        [Theory]
+        [MemberData(nameof(UnlockInfoAmountTestData))]
+        public void GetInfobox_WikiTextContainsUnlockAmount_ShouldReturnCorrectValue(string input, int expectedOrder, double expectedAmount, WorldRegion regionToTest)
         {
             // Arrange
-            var input = "|Unlock Condition 1 Amount (OW) = 42";
-
             var parser = GetParser();
 
             // Act
@@ -1248,17 +1305,29 @@ namespace InfoboxParser.Tests
 
             // Assert
             Assert.Equal(2, result.Count);
-            Assert.Single(result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions);
-            Assert.Equal(42, result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions[0].Amount);
-            Assert.Null(result.Single(x => x.Region == WorldRegion.NewWorld).UnlockInfos);
+
+            if (regionToTest == WorldRegion.OldWorld)
+            {
+                Assert.Single(result[0].UnlockInfos.UnlockConditions);
+                Assert.Equal(expectedAmount, result[0].UnlockInfos.UnlockConditions[0].Amount);
+                Assert.Equal(expectedOrder, result[0].UnlockInfos.UnlockConditions[0].Order);
+                Assert.Null(result[0].UnlockInfos.UnlockConditions[0].Type);
+            }
+            else
+            {
+                Assert.Single(result[1].UnlockInfos.UnlockConditions);
+                Assert.Equal(expectedAmount, result[1].UnlockInfos.UnlockConditions[0].Amount);
+                Assert.Equal(expectedOrder, result[1].UnlockInfos.UnlockConditions[0].Order);
+                Assert.Null(result[1].UnlockInfos.UnlockConditions[0].Type);
+            }
+
         }
 
-        [Fact]
-        public void GetInfobox_WikiTextContainsUnlockAmountAndWhiteSpace_ShouldReturnCorrectValue()
+        [Theory]
+        [MemberData(nameof(UnlockInfoTypeTestData))]
+        public void GetInfobox_WikiTextContainsUnlockType_ShouldReturnCorrectValue(string input, int expectedOrder, string expectedType, WorldRegion regionToTest)
         {
             // Arrange
-            var input = "|Unlock Condition 1 Amount (OW)   =    42          ";
-
             var parser = GetParser();
 
             // Act
@@ -1266,45 +1335,21 @@ namespace InfoboxParser.Tests
 
             // Assert
             Assert.Equal(2, result.Count);
-            Assert.Single(result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions);
-            Assert.Equal(42, result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions[0].Amount);
-            Assert.Null(result.Single(x => x.Region == WorldRegion.NewWorld).UnlockInfos);
-        }
 
-        [Fact]
-        public void GetInfobox_WikiTextContainsUnlockType_ShouldReturnCorrectValue()
-        {
-            // Arrange
-            var input = "|Unlock Condition 1 Type (OW) = Workers";
-
-            var parser = GetParser();
-
-            // Act
-            var result = parser.GetInfobox(input);
-
-            // Assert
-            Assert.Equal(2, result.Count);
-            Assert.Single(result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions);
-            Assert.Equal("Workers", result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions[0].Type);
-            Assert.Null(result.Single(x => x.Region == WorldRegion.NewWorld).UnlockInfos);
-        }
-
-        [Fact]
-        public void GetInfobox_WikiTextContainsUnlockTypeAndWhiteSpace_ShouldReturnCorrectValue()
-        {
-            // Arrange
-            var input = "|Unlock Condition 1 Type (OW)  =   Workers     ";
-
-            var parser = GetParser();
-
-            // Act
-            var result = parser.GetInfobox(input);
-
-            // Assert
-            Assert.Equal(2, result.Count);
-            Assert.Single(result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions);
-            Assert.Equal("Workers", result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions[0].Type);
-            Assert.Null(result.Single(x => x.Region == WorldRegion.NewWorld).UnlockInfos);
+            if (regionToTest == WorldRegion.OldWorld)
+            {
+                Assert.Single(result[0].UnlockInfos.UnlockConditions);
+                Assert.Equal(0, result[0].UnlockInfos.UnlockConditions[0].Amount);
+                Assert.Equal(expectedOrder, result[0].UnlockInfos.UnlockConditions[0].Order);
+                Assert.Equal(expectedType, result[0].UnlockInfos.UnlockConditions[0].Type);
+            }
+            else
+            {
+                Assert.Single(result[1].UnlockInfos.UnlockConditions);
+                Assert.Equal(0, result[1].UnlockInfos.UnlockConditions[0].Amount);
+                Assert.Equal(expectedOrder, result[1].UnlockInfos.UnlockConditions[0].Order);
+                Assert.Equal(expectedType, result[1].UnlockInfos.UnlockConditions[0].Type);
+            }
         }
 
         [Fact]

@@ -213,6 +213,148 @@ namespace InfoboxParser.Tests
             }
         }
 
+        public static TheoryData<string, int, double, List<string>> UnlockInfoAmountTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, double, List<string>>
+                {
+                    { $"|Unlock Condition 1 Amount {PLACEHOLDER_REGION} = 42", 1, 42d, _regionList2Regions },
+                    { $"|Unlock Condition 1 Amount {PLACEHOLDER_REGION} = 42", 1, 42d, _regionList3Regions },
+                    { $"|Unlock Condition 1 Amount {PLACEHOLDER_REGION} = -42", 1, -42d, _regionList2Regions },
+                    { $"|Unlock Condition 1 Amount {PLACEHOLDER_REGION} = -42", 1, -42d, _regionList3Regions },
+                    { $"|Unlock Condition 1 Amount {PLACEHOLDER_REGION} = 42,21", 1, 42.21d, _regionList2Regions },
+                    { $"|Unlock Condition 1 Amount {PLACEHOLDER_REGION} = 42,21", 1, 42.21d, _regionList3Regions },
+                    { $"|Unlock Condition 1 Amount {PLACEHOLDER_REGION} = -42,21", 1, -42.21d, _regionList2Regions },
+                    { $"|Unlock Condition 1 Amount {PLACEHOLDER_REGION} = -42,21", 1, -42.21d, _regionList3Regions },
+                    { $"|Unlock Condition   1   Amount {PLACEHOLDER_REGION}   =   42", 1, 42d, _regionList2Regions },
+                    { $"|Unlock Condition   1   Amount {PLACEHOLDER_REGION}   =   42", 1, 42d, _regionList3Regions },
+                    { $"|Unlock Condition 1 Amount {PLACEHOLDER_REGION} = 42}}", 1, 42d, _regionList2Regions },
+                    { $"|Unlock Condition 1 Amount {PLACEHOLDER_REGION} = 42}}", 1, 42d, _regionList3Regions },
+                    { $"|Unlock Condition    1    Amount {PLACEHOLDER_REGION}    =     42   }}", 1, 42d, _regionList2Regions },
+                    { $"|Unlock Condition    1    Amount {PLACEHOLDER_REGION}    =     42   }}", 1, 42d, _regionList3Regions },
+                    { $"|Unlock Condition 4 Amount {PLACEHOLDER_REGION} = 42", 4, 42d, _regionList2Regions },
+                    { $"|Unlock Condition 4 Amount {PLACEHOLDER_REGION} = 42", 4, 42d, _regionList3Regions },
+                };
+            }
+        }
+
+        public static TheoryData<string, int, string, List<string>> UnlockInfoTypeTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, string, List<string>>
+                {
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Technicians", 1, "Technicians", _regionList2Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Technicians", 1, "Technicians", _regionList3Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Engineers", 1, "Engineers", _regionList2Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Engineers", 1, "Engineers", _regionList3Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Obreros", 1, "Obreros", _regionList2Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Obreros", 1, "Obreros", _regionList3Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Investors", 1, "Investors", _regionList2Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Investors", 1, "Investors", _regionList3Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Jornaleros", 1, "Jornaleros", _regionList2Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Jornaleros", 1, "Jornaleros", _regionList3Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Workers", 1, "Workers", _regionList2Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Workers", 1, "Workers", _regionList3Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = dummy with spaces", 1, "dummy with spaces", _regionList2Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = dummy with spaces", 1, "dummy with spaces", _regionList3Regions },
+                    { $"|Unlock Condition 4 Type {PLACEHOLDER_REGION} = Technicians", 4, "Technicians", _regionList2Regions },
+                    { $"|Unlock Condition 4 Type {PLACEHOLDER_REGION} = Technicians", 4, "Technicians", _regionList3Regions },
+                    { $"|Unlock Condition    1   Type {PLACEHOLDER_REGION}    =    Technicians   ", 1, "Technicians", _regionList2Regions },
+                    { $"|Unlock Condition    1   Type {PLACEHOLDER_REGION}    =    Technicians   ", 1, "Technicians", _regionList3Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Technicians}}", 1, "Technicians", _regionList2Regions },
+                    { $"|Unlock Condition 1 Type {PLACEHOLDER_REGION} = Technicians}}", 1, "Technicians", _regionList3Regions },
+                    { $"|Unlock Condition    1    Type {PLACEHOLDER_REGION}    =    Technicians   }}", 1, "Technicians", _regionList2Regions },
+                    { $"|Unlock Condition    1    Type {PLACEHOLDER_REGION}    =    Technicians   }}", 1, "Technicians", _regionList3Regions },
+                };
+            }
+        }
+
+        public static TheoryData<string, int, double, List<string>> SupplyInfoAmountTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, double, List<string>>
+                {
+                    { $"|Supplies 1 Amount {PLACEHOLDER_REGION} = 42", 1, 42d, _regionList2Regions },
+                    { $"|Supplies 1 Amount {PLACEHOLDER_REGION} = 42", 1, 42d, _regionList3Regions },
+                    { $"|Supplies 1 Amount {PLACEHOLDER_REGION} = -42", 1, -42d, _regionList2Regions },
+                    { $"|Supplies 1 Amount {PLACEHOLDER_REGION} = -42", 1, -42d, _regionList3Regions },
+                    { $"|Supplies 1 Amount {PLACEHOLDER_REGION} = 42,21", 1, 42.21d, _regionList2Regions },
+                    { $"|Supplies 1 Amount {PLACEHOLDER_REGION} = 42,21", 1, 42.21d, _regionList3Regions },
+                    { $"|Supplies 1 Amount {PLACEHOLDER_REGION} = -42,21", 1, -42.21d, _regionList2Regions },
+                    { $"|Supplies 1 Amount {PLACEHOLDER_REGION} = -42,21", 1, -42.21d, _regionList3Regions },
+                    { $"|Supplies   1   Amount {PLACEHOLDER_REGION}   =   42", 1, 42d, _regionList2Regions },
+                    { $"|Supplies   1   Amount {PLACEHOLDER_REGION}   =   42", 1, 42d, _regionList3Regions },
+                    { $"|Supplies 1 Amount {PLACEHOLDER_REGION} = 42}}", 1, 42d, _regionList2Regions },
+                    { $"|Supplies 1 Amount {PLACEHOLDER_REGION} = 42}}", 1, 42d, _regionList3Regions },
+                    { $"|Supplies    1    Amount {PLACEHOLDER_REGION}    =     42   }}", 1, 42d, _regionList2Regions },
+                    { $"|Supplies    1    Amount {PLACEHOLDER_REGION}    =     42   }}", 1, 42d, _regionList3Regions },
+                    { $"|Supplies 4 Amount {PLACEHOLDER_REGION} = 42", 4, 42d, _regionList2Regions },
+                    { $"|Supplies 4 Amount {PLACEHOLDER_REGION} = 42", 4, 42d, _regionList3Regions },
+                };
+            }
+        }
+
+        public static TheoryData<string, int, double, List<string>> SupplyInfoAmountElectricityTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, double, List<string>>
+                {
+                    { $"|Supplies 1 Amount Electricity {PLACEHOLDER_REGION} = 42", 1, 42d, _regionList2Regions },
+                    { $"|Supplies 1 Amount Electricity {PLACEHOLDER_REGION} = 42", 1, 42d, _regionList3Regions },
+                    { $"|Supplies 1 Amount Electricity {PLACEHOLDER_REGION} = -42", 1, -42d, _regionList2Regions },
+                    { $"|Supplies 1 Amount Electricity {PLACEHOLDER_REGION} = -42", 1, -42d, _regionList3Regions },
+                    { $"|Supplies 1 Amount Electricity {PLACEHOLDER_REGION} = 42,21", 1, 42.21d, _regionList2Regions },
+                    { $"|Supplies 1 Amount Electricity {PLACEHOLDER_REGION} = 42,21", 1, 42.21d, _regionList3Regions },
+                    { $"|Supplies 1 Amount Electricity {PLACEHOLDER_REGION} = -42,21", 1, -42.21d, _regionList2Regions },
+                    { $"|Supplies 1 Amount Electricity {PLACEHOLDER_REGION} = -42,21", 1, -42.21d, _regionList3Regions },
+                    { $"|Supplies   1   Amount Electricity {PLACEHOLDER_REGION}   =   42", 1, 42d, _regionList2Regions },
+                    { $"|Supplies   1   Amount Electricity {PLACEHOLDER_REGION}   =   42", 1, 42d, _regionList3Regions },
+                    { $"|Supplies 1 Amount Electricity {PLACEHOLDER_REGION} = 42}}", 1, 42d, _regionList2Regions },
+                    { $"|Supplies 1 Amount Electricity {PLACEHOLDER_REGION} = 42}}", 1, 42d, _regionList3Regions },
+                    { $"|Supplies    1    Amount Electricity {PLACEHOLDER_REGION}    =     42   }}", 1, 42d, _regionList2Regions },
+                    { $"|Supplies    1    Amount Electricity {PLACEHOLDER_REGION}    =     42   }}", 1, 42d, _regionList3Regions },
+                    { $"|Supplies 4 Amount Electricity {PLACEHOLDER_REGION} = 42", 4, 42d, _regionList2Regions },
+                    { $"|Supplies 4 Amount Electricity {PLACEHOLDER_REGION} = 42", 4, 42d, _regionList3Regions },
+                };
+            }
+        }
+
+        public static TheoryData<string, int, string, List<string>> SupplyInfoTypeTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, string, List<string>>
+                {
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Technicians", 1, "Technicians", _regionList2Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Technicians", 1, "Technicians", _regionList3Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Engineers", 1, "Engineers", _regionList2Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Engineers", 1, "Engineers", _regionList3Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Obreros", 1, "Obreros", _regionList2Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Obreros", 1, "Obreros", _regionList3Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Investors", 1, "Investors", _regionList2Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Investors", 1, "Investors", _regionList3Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Jornaleros", 1, "Jornaleros", _regionList2Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Jornaleros", 1, "Jornaleros", _regionList3Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Workers", 1, "Workers", _regionList2Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Workers", 1, "Workers", _regionList3Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = dummy with spaces", 1, "dummy with spaces", _regionList2Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = dummy with spaces", 1, "dummy with spaces", _regionList3Regions },
+                    { $"|Supplies 4 Type {PLACEHOLDER_REGION} = Technicians", 4, "Technicians", _regionList2Regions },
+                    { $"|Supplies 4 Type {PLACEHOLDER_REGION} = Technicians", 4, "Technicians", _regionList3Regions },
+                    { $"|Supplies    1   Type {PLACEHOLDER_REGION}    =    Technicians   ", 1, "Technicians", _regionList2Regions },
+                    { $"|Supplies    1   Type {PLACEHOLDER_REGION}    =    Technicians   ", 1, "Technicians", _regionList3Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Technicians}}", 1, "Technicians", _regionList2Regions },
+                    { $"|Supplies 1 Type {PLACEHOLDER_REGION} = Technicians}}", 1, "Technicians", _regionList3Regions },
+                    { $"|Supplies    1    Type {PLACEHOLDER_REGION}    =    Technicians   }}", 1, "Technicians", _regionList2Regions },
+                    { $"|Supplies    1    Type {PLACEHOLDER_REGION}    =    Technicians   }}", 1, "Technicians", _regionList3Regions },
+                };
+            }
+        }
+
         #endregion
 
         [Theory]
@@ -442,6 +584,149 @@ namespace InfoboxParser.Tests
             foreach (var curResult in result)
             {
                 Assert.Equal(expectedSize.Object, curResult.BuildingSize);
+            }
+        }
+
+        #endregion
+
+        #region UnlockInfo tests
+
+        [Theory]
+        [MemberData(nameof(UnlockInfoAmountTestData))]
+        public void GetInfobox_WikiTextContainsUnlockAmount_ShouldReturnCorrectValue(string input, int expectedOrder, double expectedAmount, List<string> possibleRegions)
+        {
+            // Arrange
+            var parser = GetParser();
+            var inputToParse = new StringBuilder();
+            foreach (var curRegion in possibleRegions)
+            {
+                inputToParse.AppendLine(input.Replace(PLACEHOLDER_REGION, curRegion));
+            }
+
+            // Act
+            var result = parser.GetInfobox(inputToParse.ToString(), possibleRegions);
+
+            // Assert
+            Assert.Equal(possibleRegions.Count, result.Count);
+            foreach (var curResult in result)
+            {
+                Assert.Single(curResult.UnlockInfos.UnlockConditions);
+                Assert.Equal(expectedAmount, curResult.UnlockInfos.UnlockConditions[0].Amount);
+                Assert.Equal(expectedOrder, curResult.UnlockInfos.UnlockConditions[0].Order);
+                Assert.Null(curResult.UnlockInfos.UnlockConditions[0].Type);
+            }
+
+        }
+
+        [Theory]
+        [MemberData(nameof(UnlockInfoTypeTestData))]
+        public void GetInfobox_WikiTextContainsUnlockType_ShouldReturnCorrectValue(string input, int expectedOrder, string expectedType, List<string> possibleRegions)
+        {
+            // Arrange
+            var parser = GetParser();
+            var inputToParse = new StringBuilder();
+            foreach (var curRegion in possibleRegions)
+            {
+                inputToParse.AppendLine(input.Replace(PLACEHOLDER_REGION, curRegion));
+            }
+
+            // Act
+            var result = parser.GetInfobox(inputToParse.ToString(), possibleRegions);
+
+            // Assert
+            Assert.Equal(possibleRegions.Count, result.Count);
+            foreach (var curResult in result)
+            {
+                Assert.Single(curResult.UnlockInfos.UnlockConditions);
+                Assert.Equal(0, curResult.UnlockInfos.UnlockConditions[0].Amount);
+                Assert.Equal(expectedOrder, curResult.UnlockInfos.UnlockConditions[0].Order);
+                Assert.Equal(expectedType, curResult.UnlockInfos.UnlockConditions[0].Type);
+            }
+
+        }
+
+        #endregion
+
+        #region SupplyInfo tests
+
+        [Theory]
+        [MemberData(nameof(SupplyInfoAmountTestData))]
+        public void GetInfobox_WikiTextContainsSupplyAmount_ShouldReturnCorrectValue(string input, int expectedOrder, double expectedAmount, List<string> possibleRegions)
+        {
+            // Arrange
+            var parser = GetParser();
+            var inputToParse = new StringBuilder();
+            foreach (var curRegion in possibleRegions)
+            {
+                inputToParse.AppendLine(input.Replace(PLACEHOLDER_REGION, curRegion));
+            }
+
+            // Act
+            var result = parser.GetInfobox(inputToParse.ToString(), possibleRegions);
+
+            // Assert
+            Assert.Equal(possibleRegions.Count, result.Count);
+            foreach (var curResult in result)
+            {
+                Assert.Single(curResult.SupplyInfos.SupplyEntries);
+                Assert.Equal(0, curResult.SupplyInfos.SupplyEntries[0].AmountElectricity);
+                Assert.Equal(expectedAmount, curResult.SupplyInfos.SupplyEntries[0].Amount);
+                Assert.Equal(expectedOrder, curResult.SupplyInfos.SupplyEntries[0].Order);
+                Assert.Null(curResult.SupplyInfos.SupplyEntries[0].Type);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(SupplyInfoAmountElectricityTestData))]
+        public void GetInfobox_WikiTextContainsSupplyAmountElectricity_ShouldReturnCorrectValue(string input, int expectedOrder, double expectedAmount, List<string> possibleRegions)
+        {
+            // Arrange
+            var parser = GetParser();
+            var inputToParse = new StringBuilder();
+            foreach (var curRegion in possibleRegions)
+            {
+                inputToParse.AppendLine(input.Replace(PLACEHOLDER_REGION, curRegion));
+            }
+
+            // Act
+            var result = parser.GetInfobox(inputToParse.ToString(), possibleRegions);
+
+            // Assert
+            Assert.Equal(possibleRegions.Count, result.Count);
+            foreach (var curResult in result)
+            {
+                Assert.Single(curResult.SupplyInfos.SupplyEntries);
+                Assert.Equal(0, curResult.SupplyInfos.SupplyEntries[0].Amount);
+                Assert.Equal(expectedAmount, curResult.SupplyInfos.SupplyEntries[0].AmountElectricity);
+                Assert.Equal(expectedOrder, curResult.SupplyInfos.SupplyEntries[0].Order);
+                Assert.Null(curResult.SupplyInfos.SupplyEntries[0].Type);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(SupplyInfoTypeTestData))]
+        public void GetInfobox_WikiTextContainsSupplyType_ShouldReturnCorrectValue(string input, int expectedOrder, string expectedType, List<string> possibleRegions)
+        {
+            // Arrange
+            var parser = GetParser();
+            var inputToParse = new StringBuilder();
+            foreach (var curRegion in possibleRegions)
+            {
+                inputToParse.AppendLine(input.Replace(PLACEHOLDER_REGION, curRegion));
+            }
+
+            // Act
+            var result = parser.GetInfobox(inputToParse.ToString(), possibleRegions);
+
+            // Assert
+            Assert.Equal(possibleRegions.Count, result.Count);
+            foreach (var curResult in result)
+            {
+                Assert.Single(curResult.SupplyInfos.SupplyEntries);
+                Assert.Equal(0, curResult.SupplyInfos.SupplyEntries[0].Amount);
+                Assert.Equal(0, curResult.SupplyInfos.SupplyEntries[0].AmountElectricity);
+                Assert.Equal(expectedType, curResult.SupplyInfos.SupplyEntries[0].Type);
+                Assert.Equal(expectedOrder, curResult.SupplyInfos.SupplyEntries[0].Order);
             }
         }
 

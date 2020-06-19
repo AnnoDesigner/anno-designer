@@ -39,14 +39,14 @@ namespace InfoboxParser.Parser
         //|Supplies 1 Type = Farmers
         private static readonly Regex regexSupplyType = new Regex(@"\|Supplies\s*(?<counter>[1-9]+)\s*Type\s*=\s*(?<typeName>(\w*\s*)+([.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Supplies 1 Amount = 2
-        private static readonly Regex regexSupplyAmount = new Regex(@"\|Supplies\s*(?<counter>[1-9]+)\s*Amount\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        private static readonly Regex regexSupplyAmount = new Regex(@"\|Supplies\s*(?<counter>[1-9]+)\s*Amount\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Supplies 1 Amount Electricity = 4
-        private static readonly Regex regexSupplyAmountElectricity = new Regex(@"\|Supplies\s*(?<counter>[1-9]+)\s*Amount Electricity\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        private static readonly Regex regexSupplyAmountElectricity = new Regex(@"\|Supplies\s*(?<counter>[1-9]+)\s*Amount Electricity\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         //|Unlock Condition 1 Type = Farmers
         private static readonly Regex regexUnlockConditionType = new Regex(@"\|Unlock Condition\s*(?<counter>[1-9]+)\s*Type\s*=\s*(?<typeName>(\w*\s*)+([.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Unlock Condition 1 Amount = 100
-        private static readonly Regex regexUnlockConditionAmount = new Regex(@"\|Unlock Condition\s*(?<counter>[1-9]+)\s*Amount\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        private static readonly Regex regexUnlockConditionAmount = new Regex(@"\|Unlock Condition\s*(?<counter>[1-9]+)\s*Amount\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         //|Credits = 15000
         private static readonly Regex regexConstructionCredits = new Regex(@"\|Credits\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
@@ -640,6 +640,7 @@ namespace InfoboxParser.Parser
                             var matchedValue = matchAmount.Groups["value"].Value;
                             if (string.IsNullOrWhiteSpace(matchedValue))
                             {
+                                logger.Trace($"skip line with no amount{Environment.NewLine}{nameof(curLine)}: {curLine}{Environment.NewLine}{nameof(matchAmount)}: {matchAmount}");
                                 continue;
                             }
 

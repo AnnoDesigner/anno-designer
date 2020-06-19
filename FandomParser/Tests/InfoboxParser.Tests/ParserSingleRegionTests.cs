@@ -139,6 +139,102 @@ namespace InfoboxParser.Tests
             }
         }
 
+        public static TheoryData<string, int, double> UnlockInfoAmountTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, double>
+                {
+                    { "|Unlock Condition 1 Amount = 42", 1, 42d },
+                    { "|Unlock Condition 1 Amount = -42", 1, -42d },
+                    { "|Unlock Condition 1 Amount = 42,21", 1, 42.21d },
+                    { "|Unlock Condition 1 Amount = -42,21", 1, -42.21d },
+                    { "|Unlock Condition   1   Amount   =   42", 1, 42d },
+                    { "|Unlock Condition 1 Amount = 42}}", 1, 42d },
+                    { "|Unlock Condition    1    Amount    =     42   }}", 1, 42d },
+                    { "|Unlock Condition 4 Amount = 42", 4, 42d },
+                };
+            }
+        }
+
+        public static TheoryData<string, int, string> UnlockInfoTypeTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, string>
+                {
+                    { "|Unlock Condition 1 Type = Technicians", 1, "Technicians" },
+                    { "|Unlock Condition 1 Type = Engineers", 1, "Engineers" },
+                    { "|Unlock Condition 1 Type = Obreros", 1, "Obreros" },
+                    { "|Unlock Condition 1 Type = Investors", 1, "Investors" },
+                    { "|Unlock Condition 1 Type = Jornaleros", 1, "Jornaleros" },
+                    { "|Unlock Condition 1 Type = Workers", 1, "Workers" },
+                    { "|Unlock Condition 1 Type = dummy with spaces", 1, "dummy with spaces" },
+                    { "|Unlock Condition 4 Type = Technicians", 4, "Technicians" },
+                    { "|Unlock Condition    1   Type    =    Technicians   ", 1, "Technicians" },
+                    { "|Unlock Condition 1 Type = Technicians}}", 1, "Technicians" },
+                    { "|Unlock Condition    1    Type    =    Technicians   }}", 1, "Technicians" },
+                };
+            }
+        }
+
+        public static TheoryData<string, int, double> SupplyInfoAmountTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, double>
+                {
+                    { "|Supplies 1 Amount = 42", 1, 42d },
+                    { "|Supplies 1 Amount = -42", 1, -42d },
+                    { "|Supplies 1 Amount = 42,21", 1, 42.21d },
+                    { "|Supplies 1 Amount = -42,21", 1, -42.21d },
+                    { "|Supplies   1   Amount   =   42", 1, 42d },
+                    { "|Supplies 1 Amount = 42}}", 1, 42d },
+                    { "|Supplies    1    Amount    =     42   }}", 1, 42d },
+                    { "|Supplies 4 Amount = 42", 4, 42d },
+                };
+            }
+        }
+
+        public static TheoryData<string, int, double> SupplyInfoAmountElectricityTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, double>
+                {
+                    { "|Supplies 1 Amount Electricity = 42", 1, 42d },
+                    { "|Supplies 1 Amount Electricity = -42", 1, -42d },
+                    { "|Supplies 1 Amount Electricity = 42,21", 1, 42.21d },
+                    { "|Supplies 1 Amount Electricity = -42,21", 1, -42.21d },
+                    { "|Supplies   1   Amount Electricity   =   42", 1, 42d },
+                    { "|Supplies 1 Amount Electricity = 42}}", 1, 42d },
+                    { "|Supplies    1    Amount Electricity    =     42   }}", 1, 42d },
+                    { "|Supplies 4 Amount Electricity = 42", 4, 42d },
+                };
+            }
+        }
+
+        public static TheoryData<string, int, string> SupplyInfoTypeTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, string>
+                {
+                    { "|Supplies 1 Type = Technicians", 1, "Technicians" },
+                    { "|Supplies 1 Type = Engineers", 1, "Engineers" },
+                    { "|Supplies 1 Type = Obreros", 1, "Obreros" },
+                    { "|Supplies 1 Type = Investors", 1, "Investors" },
+                    { "|Supplies 1 Type = Jornaleros", 1, "Jornaleros" },
+                    { "|Supplies 1 Type = Workers", 1, "Workers" },
+                    { "|Supplies 1 Type = dummy with spaces", 1, "dummy with spaces" },
+                    { "|Supplies 4 Type = Technicians", 4, "Technicians" },
+                    { "|Supplies    1   Type    =    Technicians   ", 1, "Technicians" },
+                    { "|Supplies 1 Type = Technicians}}", 1, "Technicians" },
+                    { "|Supplies    1    Type    =    Technicians   }}", 1, "Technicians" },
+                };
+            }
+        }
+
         public static TheoryData<string, double> ConstructionInfoCreditsTestData
         {
             get
@@ -808,12 +904,11 @@ namespace InfoboxParser.Tests
             Assert.Null(result[0].SupplyInfos);
         }
 
-        [Fact]
-        public void GetInfobox_WikiTextContainsSupplyAmount_ShouldReturnCorrectValue()
+        [Theory]
+        [MemberData(nameof(SupplyInfoAmountTestData))]
+        public void GetInfobox_WikiTextContainsSupplyAmount_ShouldReturnCorrectValue(string input, int expectedOrder, double expectedAmount)
         {
             // Arrange
-            var input = "|Supplies 1 Amount = 42";
-
             var parser = GetParser();
 
             // Act
@@ -822,15 +917,17 @@ namespace InfoboxParser.Tests
             // Assert
             Assert.Single(result);
             Assert.Single(result[0].SupplyInfos.SupplyEntries);
-            Assert.Equal(42, result[0].SupplyInfos.SupplyEntries[0].Amount);
+            Assert.Equal(0, result[0].SupplyInfos.SupplyEntries[0].AmountElectricity);
+            Assert.Equal(expectedAmount, result[0].SupplyInfos.SupplyEntries[0].Amount);
+            Assert.Equal(expectedOrder, result[0].SupplyInfos.SupplyEntries[0].Order);
+            Assert.Null(result[0].SupplyInfos.SupplyEntries[0].Type);
         }
 
-        [Fact]
-        public void GetInfobox_WikiTextContainsSupplyAmountAndWhiteSpace_ShouldReturnCorrectValue()
+        [Theory]
+        [MemberData(nameof(SupplyInfoAmountElectricityTestData))]
+        public void GetInfobox_WikiTextContainsSupplyAmountElectricity_ShouldReturnCorrectValue(string input, int expectedOrder, double expectedAmount)
         {
             // Arrange
-            var input = "|Supplies 1 Amount   =     42  ";
-
             var parser = GetParser();
 
             // Act
@@ -839,15 +936,17 @@ namespace InfoboxParser.Tests
             // Assert
             Assert.Single(result);
             Assert.Single(result[0].SupplyInfos.SupplyEntries);
-            Assert.Equal(42, result[0].SupplyInfos.SupplyEntries[0].Amount);
+            Assert.Equal(0, result[0].SupplyInfos.SupplyEntries[0].Amount);
+            Assert.Equal(expectedAmount, result[0].SupplyInfos.SupplyEntries[0].AmountElectricity);
+            Assert.Equal(expectedOrder, result[0].SupplyInfos.SupplyEntries[0].Order);
+            Assert.Null(result[0].SupplyInfos.SupplyEntries[0].Type);
         }
 
-        [Fact]
-        public void GetInfobox_WikiTextContainsSupplyAmountElectricity_ShouldReturnCorrectValue()
+        [Theory]
+        [MemberData(nameof(SupplyInfoTypeTestData))]
+        public void GetInfobox_WikiTextContainsSupplyType_ShouldReturnCorrectValue(string input, int expectedOrder, string expectedType)
         {
             // Arrange
-            var input = "|Supplies 1 Amount Electricity = 42";
-
             var parser = GetParser();
 
             // Act
@@ -856,58 +955,10 @@ namespace InfoboxParser.Tests
             // Assert
             Assert.Single(result);
             Assert.Single(result[0].SupplyInfos.SupplyEntries);
-            Assert.Equal(42, result[0].SupplyInfos.SupplyEntries[0].AmountElectricity);
-        }
-
-        [Fact]
-        public void GetInfobox_WikiTextContainsSupplyAmountElectricityAndWhiteSpace_ShouldReturnCorrectValue()
-        {
-            // Arrange
-            var input = "|Supplies 1 Amount Electricity  =   42     ";
-
-            var parser = GetParser();
-
-            // Act
-            var result = parser.GetInfobox(input);
-
-            // Assert
-            Assert.Single(result);
-            Assert.Single(result[0].SupplyInfos.SupplyEntries);
-            Assert.Equal(42, result[0].SupplyInfos.SupplyEntries[0].AmountElectricity);
-        }
-
-        [Fact]
-        public void GetInfobox_WikiTextContainsSupplyType_ShouldReturnCorrectValue()
-        {
-            // Arrange
-            var input = "|Supplies 1 Type = Workers";
-
-            var parser = GetParser();
-
-            // Act
-            var result = parser.GetInfobox(input);
-
-            // Assert
-            Assert.Single(result);
-            Assert.Single(result[0].SupplyInfos.SupplyEntries);
-            Assert.Equal("Workers", result[0].SupplyInfos.SupplyEntries[0].Type);
-        }
-
-        [Fact]
-        public void GetInfobox_WikiTextContainsSupplyTypeAndWhiteSpace_ShouldReturnCorrectValue()
-        {
-            // Arrange
-            var input = "|Supplies 1 Type    =        Workers       ";
-
-            var parser = GetParser();
-
-            // Act
-            var result = parser.GetInfobox(input);
-
-            // Assert
-            Assert.Single(result);
-            Assert.Single(result[0].SupplyInfos.SupplyEntries);
-            Assert.Equal("Workers", result[0].SupplyInfos.SupplyEntries[0].Type);
+            Assert.Equal(0, result[0].SupplyInfos.SupplyEntries[0].Amount);
+            Assert.Equal(0, result[0].SupplyInfos.SupplyEntries[0].AmountElectricity);
+            Assert.Equal(expectedType, result[0].SupplyInfos.SupplyEntries[0].Type);
+            Assert.Equal(expectedOrder, result[0].SupplyInfos.SupplyEntries[0].Order);
         }
 
         [Fact]
@@ -1006,12 +1057,11 @@ namespace InfoboxParser.Tests
             Assert.Null(result[0].UnlockInfos);
         }
 
-        [Fact]
-        public void GetInfobox_WikiTextContainsUnlockAmount_ShouldReturnCorrectValue()
+        [Theory]
+        [MemberData(nameof(UnlockInfoAmountTestData))]
+        public void GetInfobox_WikiTextContainsUnlockAmount_ShouldReturnCorrectValue(string input, int expectedOrder, double expectedAmount)
         {
             // Arrange
-            var input = "|Unlock Condition 1 Amount = 42";
-
             var parser = GetParser();
 
             // Act
@@ -1020,15 +1070,16 @@ namespace InfoboxParser.Tests
             // Assert
             Assert.Single(result);
             Assert.Single(result[0].UnlockInfos.UnlockConditions);
-            Assert.Equal(42, result[0].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal(expectedAmount, result[0].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal(expectedOrder, result[0].UnlockInfos.UnlockConditions[0].Order);
+            Assert.Null(result[0].UnlockInfos.UnlockConditions[0].Type);
         }
 
-        [Fact]
-        public void GetInfobox_WikiTextContainsUnlockAmountAndWhiteSpace_ShouldReturnCorrectValue()
+        [Theory]
+        [MemberData(nameof(UnlockInfoTypeTestData))]
+        public void GetInfobox_WikiTextContainsUnlockType_ShouldReturnCorrectValue(string input, int expectedOrder, string expectedType)
         {
             // Arrange
-            var input = "|Unlock Condition 1 Amount          =    42     ";
-
             var parser = GetParser();
 
             // Act
@@ -1037,45 +1088,13 @@ namespace InfoboxParser.Tests
             // Assert
             Assert.Single(result);
             Assert.Single(result[0].UnlockInfos.UnlockConditions);
-            Assert.Equal(42, result[0].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal(0, result[0].UnlockInfos.UnlockConditions[0].Amount);
+            Assert.Equal(expectedOrder, result[0].UnlockInfos.UnlockConditions[0].Order);
+            Assert.Equal(expectedType, result[0].UnlockInfos.UnlockConditions[0].Type);
         }
 
         [Fact]
-        public void GetInfobox_WikiTextContainsUnlockType_ShouldReturnCorrectValue()
-        {
-            // Arrange
-            var input = "|Unlock Condition 1 Type = Workers";
-
-            var parser = GetParser();
-
-            // Act
-            var result = parser.GetInfobox(input);
-
-            // Assert
-            Assert.Single(result);
-            Assert.Single(result[0].UnlockInfos.UnlockConditions);
-            Assert.Equal("Workers", result[0].UnlockInfos.UnlockConditions[0].Type);
-        }
-
-        [Fact]
-        public void GetInfobox_WikiTextContainsUnlockTypeAndWhiteSpace_ShouldReturnCorrectValue()
-        {
-            // Arrange
-            var input = "|Unlock Condition 1 Type   =       Workers   ";
-
-            var parser = GetParser();
-
-            // Act
-            var result = parser.GetInfobox(input);
-
-            // Assert
-            Assert.Single(result);
-            Assert.Single(result[0].UnlockInfos.UnlockConditions);
-            Assert.Equal("Workers", result[0].UnlockInfos.UnlockConditions[0].Type);
-        }
-
-        [Fact]
-        public void GetInfobox_WikiTextContainsMultipleUnlockInfos_ShouldReturnCorrectOrderedValue()
+        public void GetInfobox_WikiTextContainsMultipleUnlockAmountInfos_ShouldReturnCorrectOrderedValue()
         {
             // Arrange
             var input = $"|Unlock Condition 2 Amount = 21{Environment.NewLine}|Unlock Condition 1 Amount = 42";
@@ -1088,8 +1107,26 @@ namespace InfoboxParser.Tests
             // Assert
             Assert.Single(result);
             Assert.Equal(2, result[0].UnlockInfos.UnlockConditions.Count);
-            Assert.Equal(42, result[0].UnlockInfos.UnlockConditions[0].Amount);
-            Assert.Equal(21, result[0].UnlockInfos.UnlockConditions[1].Amount);
+            Assert.Equal(1, result[0].UnlockInfos.UnlockConditions[0].Order);
+            Assert.Equal(2, result[0].UnlockInfos.UnlockConditions[1].Order);
+        }
+
+        [Fact]
+        public void GetInfobox_WikiTextContainsMultipleUnlockTypeInfos_ShouldReturnCorrectOrderedValue()
+        {
+            // Arrange
+            var input = $"|Unlock Condition 2 Type = Technicians{Environment.NewLine}|Unlock Condition 1 Type = Workers";
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal(2, result[0].UnlockInfos.UnlockConditions.Count);
+            Assert.Equal(1, result[0].UnlockInfos.UnlockConditions[0].Order);
+            Assert.Equal(2, result[0].UnlockInfos.UnlockConditions[1].Order);
         }
 
         [Fact]

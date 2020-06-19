@@ -59,7 +59,7 @@ namespace InfoboxParser.Parser
         //|Unlock Condition 1 Type (OW) = Farmers
         private static readonly Regex regexUnlockConditionType = new Regex(@"\|Unlock Condition\s*(?<counter>[1-9]+)\s*Type\s*\((?<region>\w{2})\s*\)\s*=\s*(?<typeName>(\w*\s*)+([.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Unlock Condition 1 Amount (OW) = 100
-        private static readonly Regex regexUnlockConditionAmount = new Regex(@"\|Unlock Condition\s*(?<counter>[1-9]+)\s*Amount\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        private static readonly Regex regexUnlockConditionAmount = new Regex(@"\|Unlock Condition\s*(?<counter>[1-9]+)\s*Amount\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         //|Credits (OW) = 15000
         private static readonly Regex regexConstructionCredits = new Regex(@"\|Credits\s*\((?<region>\w{2})\s*\)\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
