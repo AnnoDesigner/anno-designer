@@ -206,9 +206,13 @@
                     <MenuItem Header="{Binding AboutAnnoDesigner}"
                               Command="{Binding ShowAboutWindowCommand}" />
                 </MenuItem>
-                <MenuItem Header="Tools">
-                    <MenuItem Header="Preferences..."
-                              Command="{Binding ShowPreferencesWindowCommand}"/>
+                <MenuItem Header="{Binding Tools}">
+                    <MenuItem Command="{Binding ShowPreferencesWindowCommand}">
+                        <MenuItem.Header>
+                            <!-- Header property is an object, so can't just do {Binding Tools, ... } directly in Header attribute -->
+                            <Run Text="{Binding Preferences, StringFormat='\{0\}...'}" />
+                        </MenuItem.Header>
+                    </MenuItem>
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="{Binding ShowGrid}"

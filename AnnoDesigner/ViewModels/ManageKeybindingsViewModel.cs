@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
 using System.Xml;
 using AnnoDesigner.Core.Controls;
 using AnnoDesigner.Core.Models;
@@ -44,6 +41,7 @@ namespace AnnoDesigner.ViewModels
         private ICommand _resetHotkeysCommand;
         private string _rebindButtonText;
         private string _resetAll;
+        private string _resetAllConfirmationMessage;
         private string currentLanguage;
 
         public HotkeyCommandManager HotkeyCommandManager
@@ -74,6 +72,12 @@ namespace AnnoDesigner.ViewModels
         {
             get { return _resetAll; }
             set { UpdateProperty(ref _resetAll, value); }
+        }
+        
+        public string ResetAllConfirmationMessage
+        {
+            get { return _resetAllConfirmationMessage; }
+            set { UpdateProperty(ref _resetAllConfirmationMessage, value); }
         }
 
         public string RebindButtonCurrentTextKey { get; set; } = REBIND_KEY;
@@ -187,13 +191,21 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteResetHotkeys(object param)
         {
-            HotkeyCommandManager.ResetHotkeys();
+            if (Xceed.Wpf.Toolkit.MessageBox.Show(
+                ResetAllConfirmationMessage, 
+                ResetAll, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                HotkeyCommandManager.ResetHotkeys();
+            }
+
+
         }
 
         private void UpdateLanguage()
         {
             UpdateRebindButtonText();
             ResetAll = Localization.Localization.Translations[currentLanguage]["ResetAll"];
+            ResetAllConfirmationMessage = Localization.Localization.Translations[currentLanguage]["ResetAllConfirmationMessage"];
         }
 
         private void UpdateRebindButtonText()

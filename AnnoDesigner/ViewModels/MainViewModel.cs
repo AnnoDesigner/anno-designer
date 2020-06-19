@@ -1489,7 +1489,7 @@ namespace AnnoDesigner.ViewModels
         {
             AboutViewModel.UpdateLanguage();
 
-            string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
+            var language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
 
             StatisticsViewModel.TextNothingPlaced = Localization.Localization.Translations[language]["StatNothingPlaced"];
             StatisticsViewModel.TextBoundingBox = Localization.Localization.Translations[language]["StatBoundingBox"];
@@ -1533,6 +1533,10 @@ namespace AnnoDesigner.ViewModels
 
             //Language Menu
             Language = Localization.Localization.Translations[language]["Language"];
+
+            //Tools Menu
+            Tools = Localization.Localization.Translations[language]["Tools"];
+            Preferences = Localization.Localization.Translations[language]["Preferences"];
 
             //Help Menu
             Help = Localization.Localization.Translations[language]["Help"];
@@ -1839,6 +1843,24 @@ namespace AnnoDesigner.ViewModels
             {
                 UpdateProperty(ref _BuildingCount, value);
             }
+        }
+
+        #endregion
+
+        #region Tools Menu
+
+        private string _tools;
+        public string Tools
+        {
+            get => _tools;
+            set => UpdateProperty(ref _tools, value);
+        }
+
+        private string _preferences;
+        public string Preferences
+        {
+            get => _preferences;
+            set => UpdateProperty(ref _preferences, value);
         }
 
         #endregion
