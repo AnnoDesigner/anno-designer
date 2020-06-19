@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:AnnoDesigner.PreferencesPages"
       xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
       xmlns:models="clr-namespace:AnnoDesigner.Models"
-      xmlns:coreConverter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
+      xmlns:coreConverter="clr-namespace:AnnoDesigner.Core.Converters;assembly=AnnoDesigner.Core"
       xmlns:converter="clr-namespace:AnnoDesigner.Converters"
       xmlns:sys="clr-namespace:System;assembly=mscorlib" 
     mc:Ignorable="d" 
@@ -86,6 +86,7 @@
             </Setter>
         </Style>
         <coreConverter:ModifierKeysToVisibilityConverter x:Key="ModifierKeysToVisibilityConverter" />
+        <coreConverter:KeyToDisplayStringConverter x:Key="KeyToDisplayStringConverter" />
         <converter:MouseActionToImageSourceConverter x:Key="MouseActionToImageSourceConverter" />
         <converter:MouseActionToVisibilityConverter x:Key="MouseActionToVisibilityConverter" />
         <sys:Int32 x:Key="0">0</sys:Int32>
@@ -107,7 +108,7 @@
                            Visibility="{Binding Path=Binding.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}"/>
                     <TextBlock Style="{StaticResource HotkeyDelimiter}" 
                                Visibility="{Binding Path=Binding.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
-                    <Label Content="{Binding Path=Binding.Key}"
+                    <Label Content="{Binding Path=Binding.Key, Converter={StaticResource KeyToDisplayStringConverter}}"
                            Style="{StaticResource HotkeyKey}"/>
                 </StackPanel>
                 <Button Content="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindButtonText}" 
@@ -134,7 +135,7 @@
                            Visibility="{Binding Path=Binding.Gesture.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}"/>
                     <TextBlock Style="{StaticResource HotkeyDelimiter}" 
                                Visibility="{Binding Path=Binding.Gesture.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
-                    <!-- First image will always be visible -->
+                    <!-- First image will always be visible, so does not need the visibility attribute specified -->
                     <Image Source="{Binding Path=Binding.MouseAction, Converter={StaticResource MouseActionToImageSourceConverter}}"
                            Style="{StaticResource HotkeyImage}" 
                            />
@@ -155,11 +156,13 @@
             </Grid>
         </DataTemplate>
     </Page.Resources>
-    <Grid Grid.IsSharedSizeScope="True">
-        <ItemsControl ItemsSource="{Binding HotkeyCommandManager.ObservableCollection}" 
+    <Grid>
+        <Grid Grid.IsSharedSizeScope="True">
+            <ItemsControl ItemsSource="{Binding HotkeyCommandManager.ObservableCollection}" 
                       ItemTemplateSelector="{StaticResource dataTemplateSelector}"
                       Name="HotkeyActions"
                       HorizontalAlignment="Stretch">
-        </ItemsControl>
+            </ItemsControl>
+        </Grid>
     </Grid>
 </Page>

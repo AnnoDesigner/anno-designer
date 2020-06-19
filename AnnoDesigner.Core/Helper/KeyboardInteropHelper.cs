@@ -18,12 +18,13 @@ namespace AnnoDesigner.Core.Helper
     {
         /// <summary>
         /// Returns the character represented by the <see cref="Key"/> given. This could be non-visible characters such
-        /// as control keys. To get a display string, for example "Space" for <see cref="Key.Space"/>, use the 
-        /// <see cref="GetDisplayString(Key)"/> method instead.
+        /// as control keys. To get a display string that handles these, such as "Space" for <see cref="Key.Space"/>, or "Tab" for 
+        /// <see cref="Key.Tab"/>, use the <see cref="GetDisplayString(Key)"/> method instead.
         /// 
         /// <para>
-        /// If <paramref name="useKeyboardState"/> is set to <see langword="true"/>, then the character retrieved is affected by modifier keys. For example, <see cref="Key.L"/> could return either "L" or "l",
-        /// <see cref="Key.OemSemicolon"/> could return ";" or ":" depending on if the shift key is pressed.
+        /// If <paramref name="useKeyboardState"/> is set to <see langword="true"/>, then the character retrieved is affected by modifier keys. 
+        /// For example, <see cref="Key.L"/> could return either "L" or "l", <see cref="Key.OemSemicolon"/> could return ";" or ":" 
+        /// depending on if the shift key is pressed.
         /// </para>
         /// </summary>
         /// <param name="key">The key to retrieve the character for.</param>
@@ -87,7 +88,7 @@ namespace AnnoDesigner.Core.Helper
             var c = GetCharacter(key, false);
             if (c.HasValue)
             {
-                if (IsVisible(c.Value))
+                if (IsVisibleCharacter(c.Value))
                 {
                     var str = char.ToUpper(c.Value).ToString();
                     if (!string.IsNullOrWhiteSpace(str))
@@ -103,7 +104,7 @@ namespace AnnoDesigner.Core.Helper
             }
         }
 
-        private static bool IsVisible(char c)
+        private static bool IsVisibleCharacter(char c)
         {
             return !(char.IsWhiteSpace(c) || char.IsControl(c));
         }
@@ -158,8 +159,8 @@ namespace AnnoDesigner.Core.Helper
         }
 
         /// <summary>
-        /// Special handling for numpad keys, as these produce a number when pressed, but still have a unique key code.
-        /// (Numpad0 - 9)
+        /// Special handling for numpad keys, as these produce a number when pressed (a valid translation), but still have a unique key code,
+        /// (Numpad0 - 9).
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>

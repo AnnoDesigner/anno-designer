@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
-namespace AnnoDesigner.Core.Converter
+namespace AnnoDesigner.Core.Converters
 {
     [ValueConversion(typeof(ModifierKeys), typeof(Visibility))]
     public class ModifierKeysToVisibilityConverter : IValueConverter
