@@ -100,7 +100,7 @@ namespace AnnoDesigner.Tests
             var hotkeyCommandManager = new HotkeyCommandManager();
 
             //Act
-            var bindings = hotkeyCommandManager.GetBindings();
+            var bindings = hotkeyCommandManager.GetHotkeys();
 
             //Assert
             Assert.NotNull(hotkeyCommandManager.ObservableCollection);
@@ -274,7 +274,7 @@ namespace AnnoDesigner.Tests
             var (hotkeyCommandManager, id, _) = GetDefaultSetup(true);
 
             //Act
-            hotkeyCommandManager.RemoveBinding(id);
+            hotkeyCommandManager.RemoveHotkey(id);
 
             //Assert
             Assert.Empty(hotkeyCommandManager.ObservableCollection);
@@ -295,7 +295,7 @@ namespace AnnoDesigner.Tests
             //Arrange
             var (hotkeyCommandManager, id, binding) = GetDefaultSetup(true);
             //Act and assert
-            Assert.Throws<KeyNotFoundException>(() => hotkeyCommandManager.RemoveBinding(""));
+            Assert.Throws<KeyNotFoundException>(() => hotkeyCommandManager.RemoveHotkey(""));
         }
 
         [Fact]

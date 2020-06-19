@@ -21,6 +21,7 @@
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Width" Value="100" />
             <Setter Property="Margin" Value="20,12,0,12" />
+            <Setter Property="Padding" Value="3" />
         </Style>
         <Style x:Key="HotkeyDescription" TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize" Value="15" />
@@ -157,12 +158,19 @@
         </DataTemplate>
     </Page.Resources>
     <Grid>
-        <Grid Grid.IsSharedSizeScope="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.IsSharedSizeScope="True" Grid.Row="0">
             <ItemsControl ItemsSource="{Binding HotkeyCommandManager.ObservableCollection}" 
                       ItemTemplateSelector="{StaticResource dataTemplateSelector}"
                       Name="HotkeyActions"
                       HorizontalAlignment="Stretch">
             </ItemsControl>
         </Grid>
+        <StackPanel Grid.Row="1" FlowDirection="RightToLeft" Orientation="Horizontal" VerticalAlignment="Center" Margin="10">
+            <Button Content="{Binding ResetAll}" Padding="10" Command="{Binding ResetHotkeysCommand}" />
+        </StackPanel>
     </Grid>
 </Page>

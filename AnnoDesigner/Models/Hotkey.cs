@@ -26,12 +26,14 @@ namespace AnnoDesigner.Models
             {
                 defaultKey = keyBinding.Key;
                 defaultModifiers = keyBinding.Modifiers;
+                defaultType = typeof(KeyBinding);
             }
             else
             {
                 var mouseBinding = binding as MouseBinding;
                 defaultMouseAction = mouseBinding.MouseAction;
                 defaultModifiers = (mouseBinding.Gesture as MouseGesture).Modifiers;
+                defaultType = typeof(MouseBinding);
             }
         }
 

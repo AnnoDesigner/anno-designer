@@ -21,14 +21,14 @@ namespace AnnoDesigner.Core.Converters
         {
             if (value is Key key)
             {
-                return KeyboardInteropHelper.GetDisplayString(key);
+                var s = KeyboardInteropHelper.GetDisplayString(key);
+                return string.IsNullOrWhiteSpace(s) ? key.ToString() : s;
             }
 #if DEBUG
             throw new ArgumentException("value is not a `Key`!", "value");
-#endif
-#pragma warning disable CS0162 // Unreachable code detected - will be reachable in release mode. GetDisplayString should always return a value
+#else
             return "";
-#pragma warning restore CS0162 // Unreachable code detected
+#endif
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

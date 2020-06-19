@@ -100,7 +100,7 @@ namespace AnnoDesigner.Core.Helper
             }
             else
             {
-                return null;
+                return key.ToString();
             }
         }
 

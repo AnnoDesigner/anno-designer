@@ -125,8 +125,9 @@ namespace AnnoDesigner.Localization
                         { "OK" , "OK" },
                         { "Cancel" , "Cancel" },
                         { "SelectAll" , "Select All" },
-                        { "Preferences" , "Preferences" },
                         { "Tools" , "Tools" },
+                        { "Preferences" , "Preferences" },
+                        { "ResetAll" , "Reset All" },
                         { "UpdateSettings" , "Update Settings" },
                         { "ManageKeybindings" , "Manage Keybindings" },
                         { "Rebind" , "Rebind" },
@@ -249,8 +250,9 @@ namespace AnnoDesigner.Localization
                         { "OK" , "OK" },
                         { "Cancel" , "Abbrechen" },
                         { "SelectAll" , "Alle auswählen" },
-                        { "Preferences" , "Präferenzen" },
                         { "Tools" , "Werkzeuge" },
+                        { "Preferences" , "Präferenzen" },
+                        { "ResetAll" , "Alle zurücksetzen" },
                         { "UpdateSettings" , "Update-Einstellungen" },
                         { "ManageKeybindings" , "Schlüsselbindungen verwalten" },
                         { "Rebind" , "Neu binden" },
@@ -373,8 +375,9 @@ namespace AnnoDesigner.Localization
                         { "OK" , "OK" },
                         { "Cancel" , "Annuler" },
                         { "SelectAll" , "Sélectionner tout" },
-                        { "Preferences" , "Préférences" },
                         { "Tools" , "Outils" },
+                        { "Preferences" , "Préférences" },
+                        { "ResetAll" , "Réinitialiser tout" },
                         { "UpdateSettings" , "Mise à jour des paramètres" },
                         { "ManageKeybindings" , "Gérer les porte-clés" },
                         { "Rebind" , "Relier" },
@@ -497,8 +500,9 @@ namespace AnnoDesigner.Localization
                         { "OK" , "OK" },
                         { "Cancel" , "Odwołaj" },
                         { "SelectAll" , "Wybierz wszystkie" },
-                        { "Preferences" , "Preferencje" },
                         { "Tools" , "Narzędzia" },
+                        { "Preferences" , "Preferencje" },
+                        { "ResetAll" , "Zresetuj wszystko" },
                         { "UpdateSettings" , "Ustawienia aktualizacji" },
                         { "ManageKeybindings" , "Zarządzanie klawiaturami" },
                         { "Rebind" , "Powiąż ponownie" },
@@ -621,8 +625,9 @@ namespace AnnoDesigner.Localization
                         { "OK" , "OK" },
                         { "Cancel" , "Отмена" },
                         { "SelectAll" , "Выберите все" },
-                        { "Preferences" , "Предпочтения" },
                         { "Tools" , "Инструменты" },
+                        { "Preferences" , "Предпочтения" },
+                        { "ResetAll" , "Сбросить все" },
                         { "UpdateSettings" , "Обновление Настройки" },
                         { "ManageKeybindings" , "Управление привязками к ключам" },
                         { "Rebind" , "Перезаписать" },
@@ -635,7 +640,6 @@ namespace AnnoDesigner.Localization
                     }
                 },
             };
-
         }
 
         public static readonly Dictionary<string, string> LanguageCodeMap = new Dictionary<string, string>()

@@ -12,7 +12,7 @@ namespace AnnoDesigner
 {
     public class HotkeyCommandManager : Notify, INotifyCollectionChanged
     {
-        private readonly Dictionary<string, Hotkey> bindings;
+        private readonly Dictionary<string, Hotkey> hotkeys;
 
         /// <summary>
         /// Represents a read-only data-bindable collection of hotkeys.
@@ -28,16 +28,15 @@ namespace AnnoDesigner
 
         public HotkeyCommandManager()
         {
-            bindings = new Dictionary<string, Hotkey>();
+            hotkeys = new Dictionary<string, Hotkey>();
             _observableCollection = new ObservableCollection<Hotkey>();
-            //ObservableCollection = new ReadOnlyObservableCollection<Hotkey>(_observableCollection);
             ObservableCollection = _observableCollection;
         }
 
         public void HandleCommand(InputEventArgs e)
         {
-            IEnumerable<Hotkey> hotkeys = bindings.Values;
-            foreach (var item in hotkeys)
+            IEnumerable<Hotkey> values = hotkeys.Values;
+            foreach (var item in values)
             {
                 
                 if (item?.Binding?.Command?.CanExecute(item.Binding.CommandParameter) ?? false)
@@ -52,26 +51,26 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Registers a binding with the hotkey manager. Creates a <see cref="Hotkey"/> and adds it to the <see cref="HotkeyCommandManager"/>.
+        /// Registers a hotkey with the hotkey manager. Creates a <see cref="Hotkey"/> from the provided parameters
+        /// and adds it to the <see cref="HotkeyCommandManager"/>.
         /// </summary>
-        /// <param name="bindingId">A unique identifier for the hotkey. Also acts as the key for managing localization if adding an IDescriptiveHotkeyBinding</param>
-        /// <param name="binding"></param>
-        public void AddBinding(string bindingId, InputBinding binding)
+        /// <param name="hotkeyId">A unique identifier for the hotkey. Also acts as the key for localizing the hotkey description.</param>
+        /// <param name="binding">A <see cref="KeyBinding"/> or <see cref="MouseBinding"/></param>
+        public void AddBinding(string hotkeyId, InputBinding binding)
         {
-            AddBinding(new Hotkey(bindingId, binding));
+            AddHotkey(new Hotkey(hotkeyId, binding));
         }
 
         /// <summary>
-        /// Registers a binding with the hotkey manager.
+        /// Registers a <see cref="Hotkey"/> with the hotkey manager.
         /// </summary>
-        /// <param name="bindingId">A unique identifier for the hotkey. Also acts as the key for managing localization if adding an IDescriptiveHotkeyBinding</param>
-        /// <param name="binding"></param>
-        public void AddBinding(Hotkey hotkey)
+        /// <param name="hotkey"></param>
+        public void AddHotkey(Hotkey hotkey)
         {
-            if (!bindings.ContainsKey(hotkey.Name))
+            if (!hotkeys.ContainsKey(hotkey.Name))
             {
                 hotkey.PropertyChanged += Hotkey_PropertyChanged;
-                bindings.Add(hotkey.Name, hotkey);
+                hotkeys.Add(hotkey.Name, hotkey);
                 _observableCollection.Add(hotkey);
                 //Check for localization
                 var language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
@@ -82,7 +81,7 @@ namespace AnnoDesigner
             }
             else
             {
-                throw new ArgumentException($"Key {hotkey.Name} already exists in collection.", "bindingId");
+                throw new ArgumentException($"Key {hotkey.Name} already exists in collection.", "hotkey");
             }
         }
 
@@ -92,48 +91,68 @@ namespace AnnoDesigner
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        public void RemoveBinding(string bindingId)
+        /// <summary>
+        /// Removes the hotkey that matches the specified hotkeyId
+        /// </summary>
+        /// <param name="hotkeyId"></param>
+        public void RemoveHotkey(string hotkeyId)
         {
-            if (bindings.ContainsKey(bindingId))
+            if (hotkeys.ContainsKey(hotkeyId))
             {
-                bindings[bindingId].PropertyChanged -= Hotkey_PropertyChanged;
-                _observableCollection.Remove(bindings[bindingId]);
-                bindings.Remove(bindingId);
+                hotkeys[hotkeyId].PropertyChanged -= Hotkey_PropertyChanged;
+                _observableCollection.Remove(hotkeys[hotkeyId]);
+                hotkeys.Remove(hotkeyId);
             }
             else
             {
-                throw new KeyNotFoundException($"Key {bindingId} does not exist");
+                throw new KeyNotFoundException($"Key {hotkeyId} does not exist");
             }
         }
 
-        public IEnumerable<Hotkey> GetBindings()
+        public IEnumerable<Hotkey> GetHotkeys()
         {
-            return bindings.Values;
+            return hotkeys.Values;
         }
 
         /// <summary>
-        /// Returns true if the specified binding exists in this <see cref="HotkeyCommandManager{T}"/>
+        /// Resets all hotkeys to their defaults
         /// </summary>
-        /// <param name="bindingId">A unique identifier for the hotkey</param>
-        /// <returns></returns>
-        public bool ContainsBinding(string bindingId)
+        public void ResetHotkeys()
         {
-            return bindings.ContainsKey(bindingId);
+            foreach (var hotkey in hotkeys.Values)
+            {
+                hotkey.Reset();
+            }
         }
 
-        public Hotkey GetBinding(string bindingId)
+        /// <summary>
+        /// Returns true if the specified hotkey exists in this <see cref="HotkeyCommandManager"/>
+        /// </summary>
+        /// <param name="hotkeyId">A unique identifier for the hotkey</param>
+        /// <returns></returns>
+        public bool ContainsHotkey(string hotkeyId)
         {
-            if (!bindings.ContainsKey(bindingId))
+            return hotkeys.ContainsKey(hotkeyId);
+        }
+
+        /// <summary>
+        /// Retrieves a <see cref="Hotkey"/>
+        /// </summary>
+        /// <param name="hotkeyId"></param>
+        /// <returns></returns>
+        public Hotkey GetBinding(string hotkeyId)
+        {
+            if (!hotkeys.TryGetValue(hotkeyId, out var hotkey))
             {
-                throw new KeyNotFoundException($"Key {bindingId} does not exist");
+                throw new KeyNotFoundException($"Key {hotkeyId} does not exist");
             }
-            return bindings[bindingId];
+            return hotkey;
         }
 
         public void UpdateLanguage()
         {
             var language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
-            foreach (var kvp in bindings)
+            foreach (var kvp in hotkeys)
             {
                 if (Localization.Localization.Translations[language].TryGetValue(kvp.Key, out var description))
                 {

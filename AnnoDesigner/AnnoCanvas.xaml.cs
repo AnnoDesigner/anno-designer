@@ -1913,10 +1913,10 @@ namespace AnnoDesigner
         public void RegisterHotkeys(HotkeyCommandManager manager)
         {
             HotkeyCommandManager = manager;
-            manager.AddBinding(rotateHotkey);
-            manager.AddBinding(copyHotkey);
-            manager.AddBinding(pasteHotkey);
-            manager.AddBinding(deleteHotkey);
+            manager.AddHotkey(rotateHotkey);
+            manager.AddHotkey(copyHotkey);
+            manager.AddHotkey(pasteHotkey);
+            manager.AddHotkey(deleteHotkey);
         }
 
 
