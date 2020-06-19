@@ -36,13 +36,13 @@
                   HorizontalScrollBarVisibility="Auto">
         <StackPanel>
             <TextBlock x:Name="tblNothingPlaced"
-                       Text="{l:Translate StatNothingPlaced}"
+                       Text="{l:Localize StatNothingPlaced}"
                        Margin="5"
                        Visibility="{Binding AreStatisticsAvailable, Converter={StaticResource invertedBoolToVisConverter}}" />
 
             <StackPanel Visibility="{Binding AreStatisticsAvailable, Converter={StaticResource boolToVisConverter}}">
                 <GroupBox x:Name="grpBoundingBox"
-                          Header="{l:Translate StatBoundingBox}"
+                          Header="{l:Localize StatBoundingBox}"
                           Style="{StaticResource styleGroupBox}">
                     <StackPanel>
                         <TextBlock Text="{Binding UsedArea}"
@@ -51,7 +51,7 @@
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}{0} {1}">
                                     <Binding Path="UsedTiles" />
-                                    <l:Translate Key="StatTiles"/>
+                                    <l:Localize Key="StatTiles"/>
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
@@ -59,14 +59,14 @@
                 </GroupBox>
 
                 <GroupBox x:Name="grpMinArea"
-                          Header="{l:Translate StatMinimumArea}"
+                          Header="{l:Localize StatMinimumArea}"
                           Style="{StaticResource styleGroupBox}">
                     <StackPanel>
                         <TextBlock Style="{StaticResource styleGroupEntry}">
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}{0} {1}">
                                     <Binding Path="MinTiles" />
-                                    <l:Translate Key="StatTiles"/>
+                                    <l:Localize Key="StatTiles"/>
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
@@ -74,7 +74,7 @@
                 </GroupBox>
 
                 <GroupBox x:Name="grpEfficiency"
-                          Header="{l:Translate StatSpaceEfficiency}"
+                          Header="{l:Localize StatSpaceEfficiency}"
                           Style="{StaticResource styleGroupBox}">
                     <StackPanel>
                         <TextBlock Text="{Binding Efficiency}"
@@ -83,7 +83,7 @@
                 </GroupBox>
 
                 <GroupBox x:Name="grpBuildings"
-                          Header="{l:Translate StatBuildings}"
+                          Header="{l:Localize StatBuildings}"
                           Style="{StaticResource styleGroupBox}"
                           Visibility="{Binding ShowBuildingList , Converter={StaticResource boolToVisConverter}}">
                     <ItemsControl ItemsSource="{Binding Buildings}">
@@ -103,7 +103,7 @@
                 </GroupBox>
 
                 <GroupBox x:Name="grpSelectedBuildings"
-                          Header="{l:Translate StatBuildingsSelected}"
+                          Header="{l:Localize StatBuildingsSelected}"
                           Style="{StaticResource styleGroupBox}"
                           Visibility="{Binding ShowSelectedBuildingList, Converter={StaticResource boolToVisConverter}}">
                     <ItemsControl ItemsSource="{Binding SelectedBuildings}">

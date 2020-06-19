@@ -43,51 +43,51 @@
                Content="Anno Designer" />
         <Label Margin="82,48,0,0"
                VerticalAlignment="Top"
-               Content="{l:Translate BuildingLayoutDesigner}" />
+               Content="{l:Localize BuildingLayoutDesigner}" />
         <Label Margin="12,92,0,0"
                VerticalAlignment="Top"
                FontSize="14"
-               Content="{l:Translate Credits}" />
+               Content="{l:Localize Credits}" />
         <!-- Can't use StringFormat with label elements -->
         <TextBlock Margin="24,120,0,0"
                    VerticalAlignment="Top"
-                   Text="{l:Translate OriginalApplicationBy, StringFormat=\{0\} Jan Christoph Bernack (ZackSchneider)}" />
+                   Text="{l:Localize OriginalApplicationBy, StringFormat=\{0\} Jan Christoph Bernack (ZackSchneider)}" />
         <TextBlock Margin="24,153,0,0"
                    VerticalAlignment="Top"
-                   Text="{l:Translate CombinedForAnnoVersions, StringFormat='\{0\} Anno 1404, 2070, 2205 and 1800'}" />
+                   Text="{l:Localize CombinedForAnnoVersions, StringFormat='\{0\} Anno 1404, 2070, 2205 and 1800'}" />
         <TextBlock Margin="24,171,0,0"
                    VerticalAlignment="Top"
-                   Text="{l:Translate BuildingPresets, StringFormat='\{0\} Anno 1404 by &quot;&lt;Unknown&gt;&quot;'}" />
+                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 1404 by &quot;&lt;Unknown&gt;&quot;'}" />
         <TextBlock Margin="24,189,0,0"
                    VerticalAlignment="Top"
-                   Text="{l:Translate BuildingPresets, StringFormat='\{0\} Anno 2207 by Peter Hozak (DeathApril)'}" />
+                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 2207 by Peter Hozak (DeathApril)'}" />
         <TextBlock Margin="24,207,0,0"
                    VerticalAlignment="Top"
-                   Text="{l:Translate BuildingPresets, StringFormat='\{0\} Anno 2205 by PickledWhispers'}" />
+                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 2205 by PickledWhispers'}" />
         <TextBlock Margin="24,225,0,0"
                    VerticalAlignment="Top"
-                   Text="{l:Translate BuildingPresets, StringFormat='\{0\} Anno 1800 by Sting McRay'}" />
+                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 1800 by Sting McRay'}" />
         <Label Margin="24,2,0,0"
                VerticalAlignment="Top"
                HorizontalAlignment="Center"
-               Content="{l:Translate AdditionalChanges}"
+               Content="{l:Localize AdditionalChanges}"
                Grid.Row="1" />
         <Label Margin="0,30,0,0"
                VerticalAlignment="Top"
                HorizontalContentAlignment="Center"
-               Content="{l:Translate ManyThanks}"
+               Content="{l:Localize ManyThanks}"
                Grid.Row="1" />
         <Label Margin="0,57,0,0"
                VerticalAlignment="Top"
                HorizontalContentAlignment="Center"
-               Content="{l:Translate VisitTheFandom}"
+               Content="{l:Localize VisitTheFandom}"
                Grid.Row="1" />
         <Button Width="117"
                 Height="23"
                 Margin="10,0,0,10"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Left"
-                Content="{l:Translate OriginalHomepage}"
+                Content="{l:Localize OriginalHomepage}"
                 Command="{Binding OpenOriginalHomepageCommand}"
                 Grid.Row="1" />
         <Button Width="117"
@@ -95,7 +95,7 @@
                 Margin="145,0,0,10"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Left"
-                Content="{l:Translate ProjectHomepage}"
+                Content="{l:Localize ProjectHomepage}"
                 Command="{Binding OpenProjectHomepageCommand}"
                 Grid.Row="1" />
         <Button Width="118"
@@ -103,7 +103,7 @@
                 Margin="278,0,145,10"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Center"
-                Content="{l:Translate GoToFandom}"
+                Content="{l:Localize GoToFandom}"
                 Command="{Binding OpenWikiHomepageCommand}"
                 Grid.Row="1" />
         <Button Width="117"
@@ -111,7 +111,7 @@
                 Margin="0,0,10,10"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Right"
-                Content="{l:Translate Close}"
+                Content="{l:Localize Close}"
                 Command="{Binding CloseWindowCommand}"
                 CommandParameter="{Binding ElementName=aboutWindow}"
                 Grid.Row="1" />

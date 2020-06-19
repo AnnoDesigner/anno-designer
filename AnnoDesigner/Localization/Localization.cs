@@ -22,7 +22,7 @@ namespace AnnoDesigner.Localization
             get { return selectedLanguage; }
             set
             {
-                if (UpdateProperty(ref selectedLanguage, value, nameof(SelectedLanguage)))
+                if (UpdateProperty(ref selectedLanguage, value))
                 {
                     OnPropertyChanged(nameof(Translations));
                     OnPropertyChanged(nameof(InstanceTranslations));

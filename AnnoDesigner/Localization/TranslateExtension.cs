@@ -10,13 +10,16 @@ namespace AnnoDesigner.Localization
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var translations = value as IDictionary<string, string>;
-            var key = parameter as string;
 
-            if (translations.ContainsKey(key))
+            if (parameter is string key && translations.TryGetValue(key, out var translation))
             {
-                return translations[key];
+                return translation;
             }
-            return $"!{key}";
+#if DEBUG
+            throw new Exception($"Missing translation or not string translation key \"{parameter}\"");
+#else
+            return $"!{parameter}";
+#endif
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -25,7 +28,7 @@ namespace AnnoDesigner.Localization
         }
     }
 
-    public class Translate : Binding
+    public class Localize : Binding
     {
         private static TranslateKeyConverter TranslateConverter { get; } = new TranslateKeyConverter();
 
@@ -37,13 +40,13 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        public Translate() : base("InstanceTranslations")
+        public Localize() : base(nameof(Localization.Instance.InstanceTranslations))
         {
             Source = Localization.Instance;
             Converter = TranslateConverter;
         }
 
-        public Translate(string key) : this()
+        public Localize(string key) : this()
         {
             Key = key;
         }
