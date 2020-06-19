@@ -120,7 +120,12 @@ namespace AnnoDesigner.Localization
                         { "11SpecialOrnaments", "11 Special Ornaments" },
                         { "12ChristmasDecorations", "12 Christmas Decorations" },
                         { "13World'sFairRewards", "13 World's Fair Rewards" },
-                        { "14Gardens", "14 Gardens" }
+                        { "14Gardens", "14 Gardens" },
+                        { "15AgriculturalOrnaments", "15 Agricultural Ornaments" },
+                        { "16AgriculturalFences", "16 Agricultural Fences" },
+                        { "17IndustrialOrnaments", "17 Industrial Ornaments" },
+                        { "18IndustrialFences", "18 Industrial Fences" },
+                        { "19AmusementPark", "19 Amusement Park" }
                     }
                     },
                 {
@@ -216,7 +221,12 @@ namespace AnnoDesigner.Localization
                         { "11SpecialOrnaments", "11 Besondere Verzierungen" },
                         { "12ChristmasDecorations", "12 Weihnachts Dekorationen" },
                         { "13World'sFairRewards", "13 Belohnungen der Weltausstellung" },
-                        { "14Gardens", "14 Gärten" }
+                        { "14Gardens", "14 Gärten" },
+                        { "15AgriculturalOrnaments", "15 Landwirtschaftliche Verzierungen" },
+                        { "16AgriculturalFences", "16 Landwirtschaftszäune" },
+                        { "17IndustrialOrnaments", "17 Industrielle Verzierungen" },
+                        { "18IndustrialFences", "18 Industriezäune" },
+                        { "19AmusementPark", "19 Vergnügungspark" }
                     }
                     },
                  {
@@ -312,7 +322,12 @@ namespace AnnoDesigner.Localization
                         { "11SpecialOrnaments", "11 Ornements spéciaux" },
                         { "12ChristmasDecorations", "12 Décorations de Noël" },
                         { "13World'sFairRewards", "13 Récompenses de l'exposition" },
-                        { "14Gardens", "14 Jardins" }
+                        { "14Gardens", "14 Jardins" },
+                        { "15AgriculturalOrnaments", "15 Ornements Agricoles" },
+                        { "16AgriculturalFences", "16 Clôtures Agricoles" },
+                        { "17IndustrialOrnaments", "17 Ornements Industriels" },                        
+                        { "18IndustrialFences", "18 Clôtures Industrielles" },
+                        { "19AmusementPark", "19 Parc d'attractions" }
                     }
                     },
                 {
@@ -408,7 +423,12 @@ namespace AnnoDesigner.Localization
                         { "11SpecialOrnaments", "11 Ornamenty specjalne" },
                         { "12ChristmasDecorations", "12 Dekoracje świąteczne" },
                         { "13World'sFairRewards", "13 Nagrody Wystawy Światowej" },
-                        { "14Gardens", "14 Ogrody" }
+                        { "14Gardens", "14 Ogrody" },
+                        { "15AgriculturalOrnaments", "15 Ornamenty Rolnicze" },
+                        { "16AgriculturalFences", "16 Ogrodzenia Rolnicze" },
+                        { "17IndustrialOrnaments", "17 Ornamenty Przemysłowe" },
+                        { "18IndustrialFences", "18 Ogrodzenia Przemysłowe" },
+                        { "19AmusementPark", "19 Park Rozrywki" }
                     }
                     },
                 {
@@ -504,7 +524,12 @@ namespace AnnoDesigner.Localization
                         { "11SpecialOrnaments", "11 Специальные украшения" },
                         { "12ChristmasDecorations", "12 рождественские украшения" },
                         { "13World'sFairRewards", "13 Награды Всемирной выставки" },
-                        { "14Gardens", "14 Сады" }
+                        { "14Gardens", "14 Сады" },
+                        { "15AgriculturalOrnaments", "15 Сельскохозяйственные украшения" },
+                        { "16AgriculturalFences", "16 Сельскохозяйственных Заборов" },
+                        { "17IndustrialOrnaments", "17 промышленных украшений" },
+                        { "18IndustrialFences", "18 промышленных заборов" },
+                        { "19AmusementPark", "19 Парк развлечений" }
                     }
                     },
             };

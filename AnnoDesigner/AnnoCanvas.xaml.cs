@@ -1264,7 +1264,7 @@ namespace AnnoDesigner
             HandleMouse(e);
 
             // check if user begins to drag
-            if (Math.Abs(_mouseDragStart.X - _mousePosition.X) > 1 || Math.Abs(_mouseDragStart.Y - _mousePosition.Y) > 1)
+            if (Math.Abs(_mouseDragStart.X - _mousePosition.X) >= 1 || Math.Abs(_mouseDragStart.Y - _mousePosition.Y) >= 1)
             {
                 switch (CurrentMode)
                 {
