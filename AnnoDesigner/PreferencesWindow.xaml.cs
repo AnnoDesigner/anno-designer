@@ -23,9 +23,9 @@ namespace AnnoDesigner
     /// <summary>
     /// Interaction logic for Preferences.xaml
     /// </summary>
-    public partial class Preferences : Window
+    public partial class PreferencesWindow : Window
     {
-        public Preferences(IAppSettings appSettings, HotkeyCommandManager commandManager)
+        public PreferencesWindow(IAppSettings appSettings, HotkeyCommandManager commandManager)
         {
             InitializeComponent();
             DataContext = new PreferencesViewModel(appSettings, commandManager, CurrentPage.NavigationService);

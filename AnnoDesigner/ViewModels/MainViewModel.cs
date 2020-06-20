@@ -112,8 +112,6 @@ namespace AnnoDesigner.ViewModels
 
             _aboutViewModel = new AboutViewModel(_commons);
 
-            //PreferencesViewModel = new PreferencesViewModel(_commons, _appSettings, HotkeyCommandManager);
-
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
             CanvasResetZoomCommand = new RelayCommand(CanvasResetZoom);
@@ -1426,7 +1424,7 @@ namespace AnnoDesigner.ViewModels
         public ICommand ShowPreferencesWindowCommand { get; private set; }
         private void ExecuteShowPreferencesWindow(object param)
         {
-            var preferencesWindow = new Preferences(_appSettings, HotkeyCommandManager)
+            var preferencesWindow = new PreferencesWindow(_appSettings, HotkeyCommandManager)
             {
                 Owner = Application.Current.MainWindow
             };
@@ -1478,9 +1476,6 @@ namespace AnnoDesigner.ViewModels
             get { return _aboutViewModel; }
             set { _aboutViewModel = value; }
         }
-
-        public PreferencesViewModel PreferencesViewModel { get; set; }
-
         #endregion
 
         #region localization

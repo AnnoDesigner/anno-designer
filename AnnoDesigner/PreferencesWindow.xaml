@@ -1,4 +1,4 @@
-﻿<Window x:Class="AnnoDesigner.Preferences"
+﻿<Window x:Class="AnnoDesigner.PreferencesWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,8 +8,8 @@
         xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
+        Name="Preferences"
         Title="{Binding Preferences}" Height="450" Width="800"
-        Name="PreferencesWindow"
         d:DataContext="{d:DesignInstance Type=viewModel:PreferencesViewModel, IsDesignTimeCreatable=False}">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -30,8 +30,8 @@
                 </StackPanel.Resources>
                 <ListView BorderBrush="Transparent" SelectedItem="{Binding SelectedItem}">
                     <!-- //TODO: Localize these -->
-                    <ListViewItem Name="UpdateSettings"  Content="{Binding ElementName=PreferencesWindow, Path=DataContext.UpdateSettings}" DataContext="UpdateSettings"/>
-                    <ListViewItem Name="ManageKeybindings"  Content="{Binding ElementName=PreferencesWindow, Path=DataContext.ManageKeybindings}" DataContext="{Binding Manager}"/>
+                    <ListViewItem Name="UpdateSettings"  Content="{Binding ElementName=Preferences, Path=DataContext.UpdateSettings}" DataContext="UpdateSettings"/>
+                    <ListViewItem Name="ManageKeybindings"  Content="{Binding ElementName=Preferences, Path=DataContext.ManageKeybindings}" DataContext="{Binding Manager}"/>
                 </ListView>
             </StackPanel>
         </ScrollViewer>
