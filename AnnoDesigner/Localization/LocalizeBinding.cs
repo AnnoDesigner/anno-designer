@@ -5,7 +5,7 @@ using System.Windows.Data;
 
 namespace AnnoDesigner.Localization
 {
-    public class TranslateKeyConverter : IValueConverter
+    public class LocalizeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -30,7 +30,7 @@ namespace AnnoDesigner.Localization
 
     public class Localize : Binding
     {
-        private static TranslateKeyConverter TranslateConverter { get; } = new TranslateKeyConverter();
+        private static LocalizeConverter LocalizeConverter { get; } = new LocalizeConverter();
 
         public string Key
         {
@@ -43,7 +43,7 @@ namespace AnnoDesigner.Localization
         public Localize() : base(nameof(Localization.Instance.InstanceTranslations))
         {
             Source = Localization.Instance;
-            Converter = TranslateConverter;
+            Converter = LocalizeConverter;
         }
 
         public Localize(string key) : this()
