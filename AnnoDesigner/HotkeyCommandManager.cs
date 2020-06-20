@@ -140,7 +140,7 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="hotkeyId"></param>
         /// <returns></returns>
-        public Hotkey GetBinding(string hotkeyId)
+        public Hotkey GetHotkey(string hotkeyId)
         {
             if (!hotkeys.TryGetValue(hotkeyId, out var hotkey))
             {

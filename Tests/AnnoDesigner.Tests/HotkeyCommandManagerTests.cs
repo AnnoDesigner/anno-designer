@@ -214,7 +214,7 @@ namespace AnnoDesigner.Tests
                 //change binding from a KeyBinding to a MouseBinding
                 if (expectedMouseAction != default)
                 {
-                    var hotkey = hotkeyCommandManager.GetBinding(id);
+                    var hotkey = hotkeyCommandManager.GetHotkey(id);
                     hotkey.Binding = new MouseBinding(emptyCommand, new MouseGesture(expectedMouseAction, expectedModifierKeys));
                     expectedBinding = hotkey.Binding;
                 }
@@ -231,7 +231,7 @@ namespace AnnoDesigner.Tests
                 //Change binding from a MouseBinding to a KeyBinding
                 if (expectedKey != default)
                 {
-                    var hotkey = hotkeyCommandManager.GetBinding(id);
+                    var hotkey = hotkeyCommandManager.GetHotkey(id);
                     hotkey.Binding = new KeyBinding
                     {
                         Command = emptyCommand,
@@ -304,7 +304,7 @@ namespace AnnoDesigner.Tests
             //Arrange
             var (hotkeyCommandManager, id, binding) = GetDefaultSetup(false);
             //Act and assert
-            Assert.Throws<KeyNotFoundException>(() => hotkeyCommandManager.GetBinding(id));
+            Assert.Throws<KeyNotFoundException>(() => hotkeyCommandManager.GetHotkey(id));
         }
     }
 }
