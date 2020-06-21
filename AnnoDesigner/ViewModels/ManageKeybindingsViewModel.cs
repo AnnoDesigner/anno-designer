@@ -27,7 +27,13 @@ namespace AnnoDesigner.ViewModels
             HotkeyCommandManager = hotkeyCommandManager;
             RebindCommand = new RelayCommand<Hotkey>(ExecuteRebind);
             ResetHotkeysCommand = new RelayCommand(ExecuteResetHotkeys);
+            Commons.Instance.SelectedLanguageChanged += Instance_SelectedLanguageChanged;
 
+            UpdateRebindButtonText();
+        }
+
+        private void Instance_SelectedLanguageChanged(object sender, EventArgs e)
+        {
             UpdateRebindButtonText();
         }
 
