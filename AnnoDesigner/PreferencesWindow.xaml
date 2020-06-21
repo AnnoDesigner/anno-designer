@@ -4,12 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AnnoDesigner"
-        xmlns:models="clr-namespace:AnnoDesigner.Models"
         xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
+        xmlns:l="clr-namespace:AnnoDesigner.Localization"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Name="Preferences"
-        Title="{Binding Preferences}" Height="450" Width="800"
+        Title="{l:Localize Preferences}" Height="450" Width="800"
         d:DataContext="{d:DesignInstance Type=viewModel:PreferencesViewModel, IsDesignTimeCreatable=False}">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -29,9 +29,8 @@
                     </Style>
                 </StackPanel.Resources>
                 <ListView BorderBrush="Transparent" SelectedItem="{Binding SelectedItem}">
-                    <!-- //TODO: Localize these -->
-                    <ListViewItem Name="UpdateSettings"  Content="{Binding ElementName=Preferences, Path=DataContext.UpdateSettings}" DataContext="UpdateSettings"/>
-                    <ListViewItem Name="ManageKeybindings"  Content="{Binding ElementName=Preferences, Path=DataContext.ManageKeybindings}" DataContext="{Binding Manager}"/>
+                    <ListViewItem Name="UpdateSettings"  Content="{l:Localize UpdateSettings}" DataContext="UpdateSettings"/>
+                    <ListViewItem Name="ManageKeybindings"  Content="{l:Localize ManageKeybindings}" DataContext="{Binding Manager}"/>
                 </ListView>
             </StackPanel>
         </ScrollViewer>

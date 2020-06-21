@@ -1,18 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Models;
 
 namespace AnnoDesigner.Localization
 {
-    public static class Localization
+    public class Localization : Notify
     {
-        public static Dictionary<string, Dictionary<string, string>> Translations;
+        private static Dictionary<string, Dictionary<string, string>> translations;
+        private static Localization instance;
 
-        static Localization()
+        public static Localization Instance => instance ??= new Localization();
+
+        public static Dictionary<string, string> Translations => translations[Instance.SelectedLanguage];
+
+        private ICommons commons;
+
+        private string selectedLanguage;
+        public string SelectedLanguage
         {
+            get { return selectedLanguage; }
+            set
+            {
+                if (UpdateProperty(ref selectedLanguage, value))
+                {
+                    OnPropertyChanged(nameof(Translations));
+                    OnPropertyChanged(nameof(InstanceTranslations));
+                }
+            }
+        }
+
+        public Dictionary<string, string> InstanceTranslations => Translations;
+
+        public static void Init(ICommons commons)
+        {
+            if (translations != null)
+            {
+                return;
+            }
+
             //This dictionary initialisation was auto-generated from:
             //https://docs.google.com/spreadsheets/d/1CjECty43mkkm1waO4yhQl1rzZ-ZltrBgj00aq-WJX4w/edit?usp=sharing 
             //See the "Help" sheet for details on how to export the below dictionary.
-            Translations = new Dictionary<string, Dictionary<string, string>>()
+            translations = new Dictionary<string, Dictionary<string, string>>()
             {
                 {
                     "eng", new Dictionary<string, string>() {
@@ -645,6 +675,17 @@ namespace AnnoDesigner.Localization
                     }
                 },
             };
+
+            Instance.commons = commons;
+            Instance.Commons_SelectedLanguageChanged(null, null);
+            commons.SelectedLanguageChanged += Instance.Commons_SelectedLanguageChanged;
+        }
+
+        private Localization() { }
+
+        private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
+        {
+            SelectedLanguage = GetLanguageCodeFromName(commons.SelectedLanguage);
         }
 
         public static readonly Dictionary<string, string> LanguageCodeMap = new Dictionary<string, string>()
@@ -662,11 +703,6 @@ namespace AnnoDesigner.Localization
         public static string GetLanguageCodeFromName(string s)
         {
             return LanguageCodeMap[s];
-        }
-
-        public static void Update()
-        {
-
         }
     }
 }

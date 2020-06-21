@@ -13,21 +13,20 @@ namespace AnnoDesigner.Tests
 {
     public class BuildingSettingsViewModelTests
     {
-        private readonly ICommons _mockedCommons;
         private readonly IAppSettings _mockedAppSettings;
 
         public BuildingSettingsViewModelTests()
         {
             var commonsMock = new Mock<ICommons>();
             commonsMock.SetupGet(x => x.SelectedLanguage).Returns(() => "English");
-            _mockedCommons = commonsMock.Object;
+            Localization.Localization.Init(commonsMock.Object);
 
             _mockedAppSettings = new Mock<IAppSettings>().Object;
         }
 
-        private BuildingSettingsViewModel GetViewModel(ICommons commonsToUse = null, IAppSettings appSettingsToUse = null)
+        private BuildingSettingsViewModel GetViewModel(IAppSettings appSettingsToUse = null)
         {
-            return new BuildingSettingsViewModel(commonsToUse ?? _mockedCommons, appSettingsToUse ?? _mockedAppSettings);
+            return new BuildingSettingsViewModel(appSettingsToUse ?? _mockedAppSettings);
         }
 
         #region ctor tests

@@ -56,7 +56,7 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="hotkeyId">A unique identifier for the hotkey. Also acts as the key for localizing the hotkey description.</param>
         /// <param name="binding">A <see cref="KeyBinding"/> or <see cref="MouseBinding"/></param>
-        public void AddBinding(string hotkeyId, InputBinding binding)
+        public void AddHotkey(string hotkeyId, InputBinding binding)
         {
             AddHotkey(new Hotkey(hotkeyId, binding));
         }
@@ -73,8 +73,9 @@ namespace AnnoDesigner
                 hotkeys.Add(hotkey.Name, hotkey);
                 _observableCollection.Add(hotkey);
                 //Check for localization
+                hotkey.Description = hotkey.Name;
                 var language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
-                if (Localization.Localization.Translations[language].TryGetValue(hotkey.Name, out var description))
+                if (Localization.Localization.Translations.TryGetValue(hotkey.Name, out var description))
                 {
                     hotkey.Description = description;
                 }
@@ -151,10 +152,9 @@ namespace AnnoDesigner
 
         public void UpdateLanguage()
         {
-            var language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
             foreach (var kvp in hotkeys)
             {
-                if (Localization.Localization.Translations[language].TryGetValue(kvp.Key, out var description))
+                if (Localization.Localization.Translations.TryGetValue(kvp.Key, out var description))
                 {
                     kvp.Value.Description = description;
                 }

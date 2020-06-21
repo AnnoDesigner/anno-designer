@@ -35,7 +35,7 @@ namespace AnnoDesigner.Tests
             var binding = GetInputBinding(Key.A);
             if (addBinding)
             {
-                hotkeyCommandManager.AddBinding(id, binding);
+                hotkeyCommandManager.AddHotkey(id, binding);
             }
             return (hotkeyCommandManager, id, binding);
         }
@@ -131,9 +131,9 @@ namespace AnnoDesigner.Tests
             var hotkeyCommandManager = new HotkeyCommandManager();
 
             //Act
-            hotkeyCommandManager.AddBinding(id, expectedBinding);
-            hotkeyCommandManager.AddBinding(id + "a", expectedBinding);
-            hotkeyCommandManager.AddBinding(id + "b", expectedBinding);
+            hotkeyCommandManager.AddHotkey(id, expectedBinding);
+            hotkeyCommandManager.AddHotkey(id + "a", expectedBinding);
+            hotkeyCommandManager.AddHotkey(id + "b", expectedBinding);
 
             var hotkey = hotkeyCommandManager.ObservableCollection.First();
 
@@ -207,7 +207,7 @@ namespace AnnoDesigner.Tests
             var hotkeyCommandManager = new HotkeyCommandManager();
 
             //Act
-            hotkeyCommandManager.AddBinding(id, expectedBinding);
+            hotkeyCommandManager.AddHotkey(id, expectedBinding);
 
             if (expectedBinding is KeyBinding keyBinding)
             {
@@ -286,7 +286,7 @@ namespace AnnoDesigner.Tests
             //Arrange
             var (hotkeyCommandManager, id, binding) = GetDefaultSetup(true);
             //Act and assert
-            Assert.Throws<ArgumentException>(() => hotkeyCommandManager.AddBinding(id, binding));
+            Assert.Throws<ArgumentException>(() => hotkeyCommandManager.AddHotkey(id, binding));
         }
 
         [Fact]

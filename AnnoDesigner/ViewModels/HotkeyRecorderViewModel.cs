@@ -15,16 +15,8 @@ namespace AnnoDesigner.ViewModels
     {
         public HotkeyRecorderViewModel() 
         {
-            Commons.Instance.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
             SaveCommand = new RelayCommand<Window>(ExecuteSave);
             CancelCommand = new RelayCommand<Window>(ExecuteCancel);
-
-            UpdateLanguage();
-        }
-
-        private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
-        {
-            UpdateLanguage();
         }
 
         private ActionRecorder.ActionType _result;
@@ -76,38 +68,5 @@ namespace AnnoDesigner.ViewModels
         {
             ActionRecorder.Reset();
         }
-
-        #region Localization
-        private string _save;
-        private string _cancel;
-        private string _windowTitle;
-
-        public string Save
-        {
-            get => _save;
-            set => UpdateProperty(ref _save, value);
-        }
-
-        public string Cancel
-        {
-            get => _cancel;
-            set => UpdateProperty(ref _cancel, value);
-        }
-
-        public string WindowTitle
-        {
-            get => _windowTitle;
-            set => UpdateProperty(ref _windowTitle, value);
-        }
-
-
-        private void UpdateLanguage()
-        {
-            var language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
-            Save = Localization.Localization.Translations[language]["Save"];
-            Cancel = Localization.Localization.Translations[language]["Cancel"];
-            WindowTitle = Localization.Localization.Translations[language]["RecordANewAction"];
-        }
-        #endregion
     }
 }

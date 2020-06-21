@@ -20,7 +20,6 @@ namespace AnnoDesigner.ViewModels
     {
         public PreferencesViewModel(IAppSettings appSettings, HotkeyCommandManager manager, NavigationService navigationService)
         {
-            Commons.Instance.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
             this.appSettings = appSettings;
             this.navigationService = navigationService;
             Manager = manager;
@@ -30,30 +29,12 @@ namespace AnnoDesigner.ViewModels
                 { "ManageKeybindings", new ManageKeybindingsViewModel(manager) },
                 { "UpdateSettings", null }
             };
-
-            UpdateLanguage();
-        }
-
-        private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
-        {
-            UpdateLanguage();
-        }
-
-        private void UpdateLanguage()
-        {
-            var language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
-            Preferences = Localization.Localization.Translations[language]["Preferences"];
-            UpdateSettings = Localization.Localization.Translations[language]["UpdateSettings"];
-            ManageKeybindings = Localization.Localization.Translations[language]["ManageKeybindings"];
         }
 
         private readonly NavigationService navigationService;
         private readonly IAppSettings appSettings;
         private HotkeyCommandManager _manager;
         private ListViewItem _selectedItem;
-        private string _updateSettings;
-        private string _manageKeybindings;
-        private string _preferences;
         private Dictionary<string, object> _pageViewModels;
 
         public HotkeyCommandManager Manager
@@ -73,24 +54,6 @@ namespace AnnoDesigner.ViewModels
                 //navigator.Navigate(page);
                 navigationService.Navigate(new Uri($@"pack://application:,,,/PreferencesPages\{value.Name}.xaml", UriKind.RelativeOrAbsolute), value.DataContext);
             }
-        }
-        
-        public string UpdateSettings
-        {
-            get => _updateSettings;
-            set => UpdateProperty(ref _updateSettings, value);
-        }
-        
-        public string ManageKeybindings
-        {
-            get => _manageKeybindings;
-            set => UpdateProperty(ref _manageKeybindings, value);
-        }
-
-        public string Preferences
-        {
-            get => _preferences;
-            set => UpdateProperty(ref _preferences, value);
         }
 
         public Dictionary<string, object> PageViewModels

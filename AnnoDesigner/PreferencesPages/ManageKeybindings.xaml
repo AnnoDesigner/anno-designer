@@ -4,15 +4,15 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:AnnoDesigner.PreferencesPages"
+      xmlns:l="clr-namespace:AnnoDesigner.Localization"
       xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
       xmlns:models="clr-namespace:AnnoDesigner.Models"
       xmlns:coreConverter="clr-namespace:AnnoDesigner.Core.Converters;assembly=AnnoDesigner.Core"
       xmlns:converter="clr-namespace:AnnoDesigner.Converters"
       xmlns:sys="clr-namespace:System;assembly=mscorlib" 
-    mc:Ignorable="d" 
+      mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       d:DataContext="{d:DesignInstance Type=viewModel:ManageKeybindingsViewModel, IsDesignTimeCreatable=False}"
-      Title="ManageKeybindings"
       Name="ManageKeybindingsWindow">
     <Page.Resources>
         <models:ManageKeybindingsHotkeyDataTemplateSelector x:Key="dataTemplateSelector"/>
@@ -58,17 +58,6 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Label}">
                         <Grid>
-                            <!--<Border CornerRadius="6,6,6,6"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    Background="Transparent"
-                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                    Padding="{TemplateBinding Padding}"
-                                    Margin="0,0,0,0">
-                                <Border.Effect>
-                                    <DropShadowEffect BlurRadius="5" ShadowDepth="1" Color="#111"/>
-                                </Border.Effect>
-                            </Border>-->
                             <Border CornerRadius="10,10,10,10"
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
@@ -170,7 +159,7 @@
             </ItemsControl>
         </Grid>
         <StackPanel Grid.Row="1" FlowDirection="RightToLeft" Orientation="Horizontal" VerticalAlignment="Center" Margin="10">
-            <Button Content="{Binding ResetAll}" Padding="10" Command="{Binding ResetHotkeysCommand}" />
+            <Button Content="{l:Localize ResetAll}" Padding="10" Command="{Binding ResetHotkeysCommand}" />
         </StackPanel>
     </Grid>
 </Page>

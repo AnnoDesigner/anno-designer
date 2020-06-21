@@ -16,33 +16,25 @@ namespace AnnoDesigner.ViewModels
         /// <summary>
         /// These keys match values in the Localization dictionary
         /// </summary>
-        private const string REBIND_KEY = "Rebind";
-        private const string RECORDING_KEY = "Recording";
+        private const string REBIND = "Rebind";
+        private const string RECORDING = "Recording";
+        private const string RESET_ALL = "ResetAll";
+        private const string RESET_ALL_CONFIRMATION_MESSAGE = "ResetAllConfirmationMessage";
+        
 
         public ManageKeybindingsViewModel(HotkeyCommandManager hotkeyCommandManager)
         {
             HotkeyCommandManager = hotkeyCommandManager;
             RebindCommand = new RelayCommand<Hotkey>(ExecuteRebind);
             ResetHotkeysCommand = new RelayCommand(ExecuteResetHotkeys);
-            Commons.Instance.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
-            currentLanguage = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
 
-            UpdateLanguage();
-        }
-
-        private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
-        {
-            currentLanguage = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
-            UpdateLanguage();
+            UpdateRebindButtonText();
         }
 
         private HotkeyCommandManager _manager;
         private ICommand _rebindCommand;
         private ICommand _resetHotkeysCommand;
         private string _rebindButtonText;
-        private string _resetAll;
-        private string _resetAllConfirmationMessage;
-        private string currentLanguage;
 
         public HotkeyCommandManager HotkeyCommandManager
         {
@@ -68,23 +60,11 @@ namespace AnnoDesigner.ViewModels
             set { UpdateProperty(ref _rebindButtonText, value); }
         }
 
-        public string ResetAll
-        {
-            get { return _resetAll; }
-            set { UpdateProperty(ref _resetAll, value); }
-        }
-        
-        public string ResetAllConfirmationMessage
-        {
-            get { return _resetAllConfirmationMessage; }
-            set { UpdateProperty(ref _resetAllConfirmationMessage, value); }
-        }
-
-        public string RebindButtonCurrentTextKey { get; set; } = REBIND_KEY;
+        public string RebindButtonCurrentTextKey { get; set; } = REBIND;
 
         private void ExecuteRebind(Hotkey hotkey)
         {
-            RebindButtonCurrentTextKey = RECORDING_KEY;
+            RebindButtonCurrentTextKey = RECORDING;
             UpdateRebindButtonText();
 
             var window = new HotkeyRecorderWindow();
@@ -121,7 +101,7 @@ namespace AnnoDesigner.ViewModels
                     }
                 }
             }
-            RebindButtonCurrentTextKey = REBIND_KEY;
+            RebindButtonCurrentTextKey = REBIND;
             UpdateRebindButtonText();
         }
 
@@ -192,25 +172,17 @@ namespace AnnoDesigner.ViewModels
         private void ExecuteResetHotkeys(object param)
         {
             if (Xceed.Wpf.Toolkit.MessageBox.Show(
-                ResetAllConfirmationMessage, 
-                ResetAll, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                Localization.Localization.Translations[RESET_ALL_CONFIRMATION_MESSAGE], 
+                Localization.Localization.Translations[RESET_ALL], 
+                MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
                 HotkeyCommandManager.ResetHotkeys();
             }
-
-
-        }
-
-        private void UpdateLanguage()
-        {
-            UpdateRebindButtonText();
-            ResetAll = Localization.Localization.Translations[currentLanguage]["ResetAll"];
-            ResetAllConfirmationMessage = Localization.Localization.Translations[currentLanguage]["ResetAllConfirmationMessage"];
         }
 
         private void UpdateRebindButtonText()
         {
-            RebindButtonText = Localization.Localization.Translations[currentLanguage][RebindButtonCurrentTextKey];
+            RebindButtonText = Localization.Localization.Translations[RebindButtonCurrentTextKey];
         }
     }
 }
