@@ -16,16 +16,15 @@ namespace AnnoDesigner.Core.Tests
     public class IconMappingPresetsLoaderTests
     {
         [Fact]
-        public void Load_StreamIsNull_ShouldThrow()
+        public void Load_ParameterIsNull_ShouldThrowArgumentNullException()
         {
             // Arrange
-            IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
+            var loader = new IconMappingPresetsLoader();
 
-            // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => loader.Load((Stream)null));
-
-            // Assert
-            Assert.NotNull(ex);
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>(() => loader.Load(null));
+            //// Assert
+            //Assert.NotNull(ex);
         }
 
         [Theory]
@@ -35,13 +34,10 @@ namespace AnnoDesigner.Core.Tests
         public void Load_FilePathIsNullOrWhiteSpace_ShouldThrow(string filePath)
         {
             // Arrange
-            IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
+            var loader = new IconMappingPresetsLoader();
 
-            // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => loader.Load((string)filePath));
-
-            // Assert
-            Assert.NotNull(ex);
+            // Act and Assert
+            var ex = Assert.Throws<ArgumentNullException>(() => loader.LoadFromFile(filePath));
         }
 
         [Fact]
@@ -49,12 +45,10 @@ namespace AnnoDesigner.Core.Tests
         {
             // Arrange
             var loader = new IconMappingPresetsLoader();
-
             var content = "[{\"IconFilename\":\"icon.png\",\"Localizations\":{\"eng\":\"mapped name\"}}]";
-            var streamWithIconMapping = new MemoryStream(Encoding.UTF8.GetBytes(content));
 
             // Act
-            var result = loader.Load(streamWithIconMapping);
+            var result = loader.Load(content);
 
             // Assert
             Assert.Single(result.IconNameMappings);
@@ -66,12 +60,10 @@ namespace AnnoDesigner.Core.Tests
         {
             // Arrange
             var loader = new IconMappingPresetsLoader();
-
             var content = "{\"Version\":\"0.1\",\"IconNameMappings\":[{\"IconFilename\":\"icon.png\",\"Localizations\":{\"eng\":\"mapped name\"}}]}";
-            var streamWithIconMapping = new MemoryStream(Encoding.UTF8.GetBytes(content));
 
             // Act
-            var result = loader.Load(streamWithIconMapping);
+            var result = loader.Load(content);
 
             // Assert
             Assert.Single(result.IconNameMappings);

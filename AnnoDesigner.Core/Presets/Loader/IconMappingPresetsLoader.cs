@@ -18,44 +18,29 @@ namespace AnnoDesigner.Core.Presets.Loader
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public IconMappingPresets Load(string pathToIconNameMappingFile)
+        public IconMappingPresets LoadFromFile(string pathToIconNameMappingFile)
         {
             if (string.IsNullOrWhiteSpace(pathToIconNameMappingFile))
             {
                 throw new ArgumentNullException(nameof(pathToIconNameMappingFile));
             }
-
-            using (var stream = File.Open(pathToIconNameMappingFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Load(stream);
-            }
+            var fileContents = File.ReadAllText(pathToIconNameMappingFile);
+            return Load(fileContents);
         }
 
-        public IconMappingPresets Load(Stream streamWithIconNameMappingFile)
+        public IconMappingPresets Load(string jsonString)
         {
-            if (streamWithIconNameMappingFile == null)
-            {
-                throw new ArgumentNullException(nameof(streamWithIconNameMappingFile));
-            }
-
-            IconMappingPresets result = null;
-
+            var result = new IconMappingPresets();
             try
             {
-                result = SerializationHelper.LoadFromStream<IconMappingPresets>(streamWithIconNameMappingFile);
-                //no mappings = old version of file without version info
-                if (result?.IconNameMappings == null)
-                {
-                    if (streamWithIconNameMappingFile.CanSeek)
-                    {
-                        streamWithIconNameMappingFile.Position = 0;
-                    }
-
-                    var oldIconMapping = SerializationHelper.LoadFromStream<List<IconNameMap>>(streamWithIconNameMappingFile);
-                    result.IconNameMappings = oldIconMapping;
-
-                    result.Version = string.Empty;
-                }
+                result = SerializationHelper.LoadFromJsonString<IconMappingPresets>(jsonString);
+            }
+            catch (Newtonsoft.Json.JsonSerializationException)
+            {
+                //failed deserialization = old version of file without version info
+                var oldIconMapping = SerializationHelper.LoadFromJsonString<List<IconNameMap>>(jsonString);
+                result.IconNameMappings = oldIconMapping;
+                result.Version = string.Empty;
             }
             catch (Exception ex)
             {

@@ -580,7 +580,7 @@ namespace AnnoDesigner
                     try
                     {
                         var loader = new IconMappingPresetsLoader();
-                        iconNameMapping = loader.Load(Path.Combine(App.ApplicationPath, CoreConstants.PresetsFiles.IconNameFile));
+                        iconNameMapping = loader.LoadFromFile(Path.Combine(App.ApplicationPath, CoreConstants.PresetsFiles.IconNameFile));
                     }
                     catch (Exception ex)
                     {

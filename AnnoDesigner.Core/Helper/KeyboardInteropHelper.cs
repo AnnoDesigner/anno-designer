@@ -74,7 +74,8 @@ namespace AnnoDesigner.Core.Helper
         /// <summary>
         /// Returns the a display string for the given <paramref name="key"/>. For example, <see cref="Key.A"/> returns "A", 
         /// <see cref="Key.LeftAlt"/> returns "Alt" and <see cref="Key.Space"/> returns "Space". This method returns
-        /// <see langword="null"/> if the given <see cref="Key"/> could not be translated.
+        /// <paramref name="key"/>.ToString() if the key could not be translated. For example, <see cref="Key.Delete"/> has no 
+        /// valid translation and would return "Delete".
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>

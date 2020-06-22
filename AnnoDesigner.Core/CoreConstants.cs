@@ -12,7 +12,7 @@ namespace AnnoDesigner.Core
         /// Version number of the saved file format.
         /// Will be increased every time the file format is changed.
         /// </summary>
-        public const int LayoutFileVersion = 3;
+        public const int LayoutFileVersion = 4;
 
         /// <summary>
         /// Filter used to retrieve the icons within the IconFolder.

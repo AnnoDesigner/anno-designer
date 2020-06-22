@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Packaging;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
+using Newtonsoft.Json;
 
 namespace AnnoDesigner.Core.Layout
 {
@@ -46,11 +49,8 @@ namespace AnnoDesigner.Core.Layout
             {
                 throw new ArgumentNullException(nameof(pathToLayoutFile));
             }
-
-            using (var streamWithLayout = File.Open(pathToLayoutFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return LoadLayout(streamWithLayout, forceLoad);
-            }
+            var jsonString = File.ReadAllText(pathToLayoutFile);
+            return Load(jsonString, forceLoad);
         }
 
         public List<AnnoObject> LoadLayout(Stream streamWithLayout, bool forceLoad = false)
@@ -59,30 +59,33 @@ namespace AnnoDesigner.Core.Layout
             {
                 throw new ArgumentNullException(nameof(streamWithLayout));
             }
+            using var sr = new StreamReader(streamWithLayout);
+            var jsonString = sr.ReadToEnd();
+            return Load(jsonString, forceLoad);
+        }
 
-            // try to load file version
-            var layoutVersion = SerializationHelper.LoadFromStream<LayoutVersionContainer>(streamWithLayout);
-            // show message if file versions don't match or if loading of the file version failed
+        private List<AnnoObject> Load(string jsonString, bool forceLoad)
+        {
+            var layoutVersion = new LayoutVersionContainer() { FileVersion = 0 };
+            try
+            {
+                layoutVersion = SerializationHelper.LoadFromJsonString<LayoutVersionContainer>(jsonString);
+            }
+            catch (JsonSerializationException) { } //No file version, old layout file.
+
+            // show message if file versions don't match
             if (layoutVersion.FileVersion != CoreConstants.LayoutFileVersion && !forceLoad)
             {
                 throw new LayoutFileVersionMismatchException($"loaded version: {layoutVersion.FileVersion} | expected version: {CoreConstants.LayoutFileVersion}");
             }
 
-            if (streamWithLayout.CanSeek)
+            return layoutVersion.FileVersion switch
             {
-                streamWithLayout.Position = 0;
-            }
-
-            // try to load layout
-            var layout = SerializationHelper.LoadFromStream<SavedLayout>(streamWithLayout);
-
-            if (streamWithLayout.CanSeek)
-            {
-                streamWithLayout.Position = 0;
-            }
-
-            // use fallback for old layouts
-            return layout.Objects ?? SerializationHelper.LoadFromStream<List<AnnoObject>>(streamWithLayout);
+                int i when i >= 4 => SerializationHelper.LoadFromJsonString<SavedLayout>(jsonString).Objects, //file version 4+, Newtonsoft.Json format json
+                int i when i > 0 => SerializationHelper.LoadFromJsonStringLegacy<SavedLayout>(jsonString).Objects, //file version 1-3, DataContractJsonSerializer format json 
+                int i when i == 0 => SerializationHelper.LoadFromJsonStringLegacy<List<AnnoObject>>(jsonString), //no file version, DataContractJsonSerializer format json
+                _ => throw new NotImplementedException()
+            };
         }
     }
 }

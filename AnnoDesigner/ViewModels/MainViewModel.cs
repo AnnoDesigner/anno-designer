@@ -26,7 +26,6 @@ using AnnoDesigner.Helper;
 using AnnoDesigner.Localization;
 using AnnoDesigner.Models;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using NLog;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
@@ -659,8 +658,7 @@ namespace AnnoDesigner.ViewModels
             MainWindowLeft = _appSettings.MainWindowLeft;
             MainWindowTop = _appSettings.MainWindowTop;
             MainWindowWindowState = _appSettings.MainWindowWindowState;
-
-            HotkeyCommandManager.LoadHotkeyMappings(JsonConvert.DeserializeObject<Dictionary<string, HotkeyInformation>>(_appSettings.HotkeyMappings));
+            HotkeyCommandManager.LoadHotkeyMappings(SerializationHelper.LoadFromJsonString<Dictionary<string, HotkeyInformation>>(_appSettings.HotkeyMappings));
         }
 
         public void SaveSettings()
@@ -681,8 +679,8 @@ namespace AnnoDesigner.ViewModels
             _appSettings.UseCurrentZoomOnExportedImageValue = UseCurrentZoomOnExportedImageValue;
             _appSettings.RenderSelectionHighlightsOnExportedImageValue = RenderSelectionHighlightsOnExportedImageValue;
 
-            string savedTreeState = null;
-            savedTreeState = SerializationHelper.SaveToString(PresetsTreeViewModel.GetCondensedTreeState());
+            string savedTreeState;
+            savedTreeState = SerializationHelper.SaveToJsonString(PresetsTreeViewModel.GetCondensedTreeState());
 
             _appSettings.PresetsTreeExpandedState = savedTreeState;
             _appSettings.PresetsTreeLastVersion = PresetsTreeViewModel.BuildingPresetsVersion;
@@ -696,8 +694,8 @@ namespace AnnoDesigner.ViewModels
             _appSettings.MainWindowTop = MainWindowTop;
             _appSettings.MainWindowWindowState = MainWindowWindowState;
 
-            _appSettings.HotkeyMappings = Newtonsoft.Json.JsonConvert.SerializeObject(HotkeyCommandManager.GetRemappedHotkeys());
-            //_appSettings.HotkeyMappings = SerializationHelper.SaveToString(HotkeyCommandManager.GetRemappedHotkeys());
+            var remappedHotkeys = HotkeyCommandManager.GetRemappedHotkeys();
+            _appSettings.HotkeyMappings = SerializationHelper.SaveToJsonString(remappedHotkeys);
 
             _appSettings.Save();
         }
@@ -770,12 +768,8 @@ namespace AnnoDesigner.ViewModels
             //if not filtered, then restore tree state
             if (!isFiltered && !string.IsNullOrWhiteSpace(_appSettings.PresetsTreeExpandedState))
             {
-                Dictionary<int, bool> savedTreeState = null;
-                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(_appSettings.PresetsTreeExpandedState)))
-                {
-                    savedTreeState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
-                }
-
+                Dictionary<int, bool> savedTreeState;
+                savedTreeState = SerializationHelper.LoadFromJsonString<Dictionary<int, bool>>(_appSettings.PresetsTreeExpandedState);
                 PresetsTreeViewModel.SetCondensedTreeState(savedTreeState, _appSettings.PresetsTreeLastVersion);
             }
         }
