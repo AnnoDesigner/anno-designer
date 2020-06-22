@@ -125,7 +125,7 @@ namespace AnnoDesigner.Tests
         [Theory]
         [MemberData(nameof(NewBindingData))]
         //Modifiers
-        public void AddBinding_NewItemAdded_ShouldSyncToObservableCollection(string id,  InputBinding expectedBinding)
+        public void AddHotkey_NewItemAdded_ShouldSyncToObservableCollection(string id,  InputBinding expectedBinding)
         {
             //Arrange
             var hotkeyCommandManager = new HotkeyCommandManager();
@@ -201,7 +201,7 @@ namespace AnnoDesigner.Tests
 
         [Theory]
         [MemberData(nameof(UpdateBindingData))]
-        public void UpdateBinding_KeyOrMouseUpdated_ShouldSyncToObservableCollection(string id, InputBinding expectedBinding, Key expectedKey, ModifierKeys expectedModifierKeys, MouseAction expectedMouseAction)
+        public void UpdateHotkey_KeyOrMouseUpdated_ShouldSyncToObservableCollection(string id, InputBinding expectedBinding, Key expectedKey, ModifierKeys expectedModifierKeys, MouseAction expectedMouseAction)
         {
             //Arrange
             var hotkeyCommandManager = new HotkeyCommandManager();
@@ -268,7 +268,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void RemoveBinding_ShouldSyncToObservableCollection()
+        public void RemoveHotkey_ShouldSyncToObservableCollection()
         {
             //Arrange
             var (hotkeyCommandManager, id, _) = GetDefaultSetup(true);
@@ -281,7 +281,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void AddBinding_Duplicate_ShouldThrowArgumentException()
+        public void AddHotkey_Duplicate_ShouldThrowArgumentException()
         {
             //Arrange
             var (hotkeyCommandManager, id, binding) = GetDefaultSetup(true);
@@ -290,7 +290,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void RemoveBinding_NonExistentBindingId_ShouldThrowKeyNotFoundException()
+        public void RemoveHotkey_NonExistentBindingId_ShouldThrowKeyNotFoundException()
         {
             //Arrange
             var (hotkeyCommandManager, id, binding) = GetDefaultSetup(true);
@@ -299,7 +299,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void GetBinding_NonExistentBindingId_ShouldThrowKeyNotFoundException()
+        public void GetHotkey_NonExistentBindingId_ShouldThrowKeyNotFoundException()
         {
             //Arrange
             var (hotkeyCommandManager, id, binding) = GetDefaultSetup(false);
