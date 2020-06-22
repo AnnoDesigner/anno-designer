@@ -335,15 +335,6 @@ namespace AnnoDesigner.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("8.5")]
-        public double CurrentVersion {
-            get {
-                return ((double)(this["CurrentVersion"]));
-            }
-        }
-        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
@@ -377,6 +368,27 @@ namespace AnnoDesigner.Properties {
             }
             set {
                 this["ShowInfluences"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8.7")]
+        public double CurrentVersion {
+            get {
+                return ((double)(this["CurrentVersion"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string HotkeyMappings {
+            get {
+                return ((string)(this["HotkeyMappings"]));
+            }
+            set {
+                this["HotkeyMappings"] = value;
             }
         }
     }

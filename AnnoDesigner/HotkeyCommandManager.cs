@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Input;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
@@ -23,6 +24,11 @@ namespace AnnoDesigner
         /// Backing collection for the ObservableCollection property.
         /// </summary>
         private readonly ObservableCollection<Hotkey> _observableCollection;
+
+        /// <summary>
+        /// Stores hotkey information loaded from user settings. Use <see cref="EnsureMappedHotkeys"/>
+        /// </summary>
+        private IDictionary<string, HotkeyInformation> hotkeyUserMappings;
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
@@ -67,22 +73,23 @@ namespace AnnoDesigner
         /// <param name="hotkey"></param>
         public void AddHotkey(Hotkey hotkey)
         {
-            if (!hotkeys.ContainsKey(hotkey.Name))
+            if (!hotkeys.ContainsKey(hotkey.HotkeyId))
             {
                 hotkey.PropertyChanged += Hotkey_PropertyChanged;
-                hotkeys.Add(hotkey.Name, hotkey);
+                hotkeys.Add(hotkey.HotkeyId, hotkey);
                 _observableCollection.Add(hotkey);
                 //Check for localization
-                hotkey.Description = hotkey.Name;
+                hotkey.Description = hotkey.HotkeyId;
                 var language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
-                if (Localization.Localization.Translations.TryGetValue(hotkey.Name, out var description))
+                if (Localization.Localization.Translations.TryGetValue(hotkey.HotkeyId, out var description))
                 {
                     hotkey.Description = description;
                 }
+                CheckHotkeyUserMappings();
             }
             else
             {
-                throw new ArgumentException($"Key {hotkey.Name} already exists in collection.", "hotkey");
+                throw new ArgumentException($"Key {hotkey.HotkeyId} already exists in collection.", "hotkey");
             }
         }
 
@@ -160,5 +167,67 @@ namespace AnnoDesigner
                 }
             }
         }
+
+        /// <summary>
+        /// Retrieves a <see cref="Dictionary{string, HotkeyInformation}"/> of Hotkeys that have been remapped from their defaults.
+        /// Hotkeys that have not been changed are ignored.
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, HotkeyInformation> GetRemappedHotkeys()
+        {
+            var remapped = new Dictionary<string, HotkeyInformation>();
+            foreach (var h in hotkeys.Values)
+            {
+                if (h.IsRemapped())
+                {
+                    remapped.Add(h.HotkeyId, h.GetHotkeyInformation());
+                }
+            }
+            return remapped;
+        }
+
+        /// <summary>
+        /// Loads the given hotkey mappings. The hotkey mappings are lazily applied so that hotkeys registered after this
+        /// method is called can still be updated with the information provided. See the remarks section for more info.
+        /// </summary>
+        /// <remarks>
+        /// As we don't know when in the lifetime of the HotkeyCommandManager that this method will be called, the mappings 
+        /// must be "lazily" loaded - this means that hotkeys can be registered with the manager after this method has been
+        /// called, and the mappings can still be loaded. This is done by checking against the hotkeyId property - if we find
+        /// a match, we update the hotkey with the new information.
+        ///
+        /// We can run the matching process over all existing hotkeys when this method is initially called, to update the
+        /// mappings for hotkeys that are already registered.
+        /// </remarks>
+        public void LoadHotkeyMappings(IDictionary<string, HotkeyInformation> mappings)
+        {
+            if (mappings is null || mappings.Count == 0)
+            {
+                return;
+            }
+            hotkeyUserMappings = mappings;
+            CheckHotkeyUserMappings();
+        }
+
+        /// <summary>
+        /// Attempts to map hotkey information loaded from user settings to existing hotkeys set with defaults.
+        /// A value is removed from the <see cref="hotkeyUserMappings"/> dictionary once it is mapped.
+        /// </summary>
+        private void CheckHotkeyUserMappings()
+        {
+            if (hotkeyUserMappings is null || hotkeyUserMappings.Count == 0)
+            {
+                return;
+            }
+            foreach (var kvp in hotkeyUserMappings.ToDictionary(_ => _.Key, _ => _.Value)) //Copy so that we can modify the original collection
+            {
+                if (hotkeys.TryGetValue(kvp.Key, out var hotkey))
+                {
+                    hotkeyUserMappings.Remove(kvp.Key);
+                    hotkey.UpdateHotkey(kvp.Value);
+                }
+            }
+        }
+
     }
 }

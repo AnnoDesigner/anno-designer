@@ -70,6 +70,9 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteRebind(Hotkey hotkey)
         {
+
+            //TODO: Fix before PR - when only modifier keys are pressed, we have an exception thrown.
+
             RebindButtonCurrentTextKey = RECORDING;
             UpdateRebindButtonText();
 
@@ -167,9 +170,6 @@ namespace AnnoDesigner.ViewModels
         /// <returns></returns>
         private MouseBinding UpdateMouseBinding(MouseBinding mouseBinding, MouseAction action, ModifierKeys modifierKeys)
         {
-            //This is not an exact copy, hence why this method is private. It should only be used internally.
-            //Properties such as IsFrozen, IsSealed are not copied, and could lead to inconsistencies if used
-            //in a wider scope.
             var mouseGesture = new MouseGesture(action, modifierKeys);
             mouseBinding.Gesture = mouseGesture;
             return mouseBinding;

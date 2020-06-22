@@ -39,5 +39,6 @@ namespace AnnoDesigner.Models
         double MainWindowTop { get; set; }
         WindowState MainWindowWindowState { get; set; }
         bool UpdateSupportsPrerelease { get; set; }
+        string HotkeyMappings { get;set; }
     }
 }
