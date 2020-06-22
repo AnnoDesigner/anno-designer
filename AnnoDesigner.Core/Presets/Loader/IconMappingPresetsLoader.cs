@@ -30,6 +30,10 @@ namespace AnnoDesigner.Core.Presets.Loader
 
         public IconMappingPresets Load(string jsonString)
         {
+            if (string.IsNullOrWhiteSpace(jsonString))
+            {
+                throw new ArgumentException(nameof(jsonString));
+            }
             var result = new IconMappingPresets();
             try
             {

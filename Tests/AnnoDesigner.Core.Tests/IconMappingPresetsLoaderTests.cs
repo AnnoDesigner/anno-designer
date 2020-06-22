@@ -15,14 +15,18 @@ namespace AnnoDesigner.Core.Tests
 {
     public class IconMappingPresetsLoaderTests
     {
-        [Fact]
-        public void Load_ParameterIsNull_ShouldThrowArgumentNullException()
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData(@"\t\t\t    \t")]
+        [Theory]
+        public void Load_ParameterIsNullOrWhiteSpace_ShouldThrowArgumenException(string s)
         {
             // Arrange
             var loader = new IconMappingPresetsLoader();
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>(() => loader.Load(null));
+            Assert.Throws<ArgumentNullException>(() => loader.Load(s));
             //// Assert
             //Assert.NotNull(ex);
         }
