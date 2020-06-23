@@ -23,26 +23,20 @@ namespace AnnoDesigner.ViewModels
         {
             this.appSettings = appSettings;
             this.navigationService = navigationService;
-            Manager = manager;
+            this.manager = manager;
 
             ViewModels = new Dictionary<string, object>()
             {
-                { "ManageKeybindingsPage",  new ManageKeybindingsViewModel(manager, commons) },
-                { "UpdateSettingsPage", "" }
+                { nameof(ManageKeybindingsPage),  new ManageKeybindingsViewModel(manager, commons) },
+                { nameof(UpdateSettingsPage), "" }
             };
         }
 
         private readonly NavigationService navigationService;
+        private HotkeyCommandManager manager;
         private readonly IAppSettings appSettings;
-        private HotkeyCommandManager _manager;
         private ListViewItem _selectedItem;
-        private Dictionary<string, object> _pageViewModels;
-
-        public HotkeyCommandManager Manager
-        {
-            get { return _manager; }
-            set { UpdateProperty(ref _manager, value); }
-        }
+        private Dictionary<string, object> _viewModels;
 
         public ListViewItem SelectedItem
         {
@@ -65,8 +59,8 @@ namespace AnnoDesigner.ViewModels
 
         public Dictionary<string, object> ViewModels
         {
-            get => _pageViewModels;
-            set => UpdateProperty(ref _pageViewModels, value);
+            get => _viewModels;
+            set => UpdateProperty(ref _viewModels, value);
         }
 
         
