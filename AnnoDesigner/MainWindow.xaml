@@ -207,11 +207,11 @@
                     <MenuItem Header="{l:Localize AboutAnnoDesigner}"
                               Command="{Binding ShowAboutWindowCommand}" />
                 </MenuItem>
-                <MenuItem Header="{Binding Tools}">
+                <MenuItem Header="{l:Localize Tools}">
                     <MenuItem Command="{Binding ShowPreferencesWindowCommand}">
                         <MenuItem.Header>
                             <!-- Header property is an object, so can't just do {Binding Tools, ... } directly in Header attribute -->
-                            <Run Text="{Binding Preferences, StringFormat='\{0\}...'}" />
+                            <Run Text="{l:Localize Preferences, StringFormat='\{0\}...', Mode=OneWay}" />
                         </MenuItem.Header>
                     </MenuItem>
                 </MenuItem>

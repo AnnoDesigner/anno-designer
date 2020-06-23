@@ -98,7 +98,6 @@ namespace AnnoDesigner
 
         private void Hotkey_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Debug.WriteLine($"Changed {sender}, Property Name: {e.PropertyName}. Updating Collection");
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 

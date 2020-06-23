@@ -29,8 +29,8 @@
                     </Style>
                 </StackPanel.Resources>
                 <ListView BorderBrush="Transparent" SelectedItem="{Binding SelectedItem}">
-                    <ListViewItem Name="UpdateSettingsPage"  Content="{l:Localize UpdateSettings}" DataContext="UpdateSettings"/>
-                    <ListViewItem Name="ManageKeybindingsPage"  Content="{l:Localize ManageKeybindings}" DataContext="{Binding Manager}"/>
+                    <ListViewItem Name="UpdateSettingsPage"  Content="{l:Localize UpdateSettings}"/>
+                    <ListViewItem Name="ManageKeybindingsPage"  Content="{l:Localize ManageKeybindings}"/>
                 </ListView>
             </StackPanel>
         </ScrollViewer>

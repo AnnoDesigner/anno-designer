@@ -87,7 +87,6 @@ namespace AnnoDesigner.ViewModels
             //Only set new hotkeys if the user didn't click cancel, and they didn't close the window without a key bound
             if (!userCancelled)
             {
-                Debug.WriteLine($"Recieved the following binding: {modifiers} + {key} + {action} + {actionType}");
                 if (actionType == ActionRecorder.ActionType.KeyAction)
                 {
                     if (hotkey.Binding is KeyBinding keyBinding)
