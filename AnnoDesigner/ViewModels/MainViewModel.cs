@@ -94,8 +94,8 @@ namespace AnnoDesigner.ViewModels
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
 
-
-            HotkeyCommandManager = new HotkeyCommandManager();
+            
+            HotkeyCommandManager = new HotkeyCommandManager(Localization.Localization.Instance);
 
             StatisticsViewModel = new StatisticsViewModel();
             StatisticsViewModel.IsVisible = _appSettings.StatsShowStats;
@@ -1410,7 +1410,7 @@ namespace AnnoDesigner.ViewModels
         public ICommand ShowPreferencesWindowCommand { get; private set; }
         private void ExecuteShowPreferencesWindow(object param)
         {
-            var preferencesWindow = new PreferencesWindow(_appSettings, HotkeyCommandManager)
+            var preferencesWindow = new PreferencesWindow(_appSettings, _commons, HotkeyCommandManager)
             {
                 Owner = Application.Current.MainWindow
             };

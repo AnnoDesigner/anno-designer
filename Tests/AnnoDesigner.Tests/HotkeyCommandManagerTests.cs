@@ -12,6 +12,7 @@ using AnnoDesigner.Models;
 using System.Reflection;
 using Moq;
 using Xunit;
+using AnnoDesigner.Localization;
 
 namespace AnnoDesigner.Tests
 {
@@ -29,8 +30,8 @@ namespace AnnoDesigner.Tests
         /// <returns></returns>
         private static (HotkeyCommandManager, string, KeyBinding) GetDefaultSetup(bool addBinding)
         {
-            var hotkeyCommandManager = new HotkeyCommandManager();
-           
+
+            var hotkeyCommandManager = GetMockedHotkeyCommandManager();
             var id = "hotkey";
             var binding = GetInputBinding(Key.A);
             if (addBinding)
@@ -40,19 +41,24 @@ namespace AnnoDesigner.Tests
             return (hotkeyCommandManager, id, binding);
         }
 
+        public static HotkeyCommandManager GetMockedHotkeyCommandManager()
+        {
+            var localizationDictionary = new Dictionary<string, string>();
+            var mockedLocalization = new Mock<ILocalization>();
+            mockedLocalization.Setup(m => m.InstanceTranslations).Returns(localizationDictionary);
+            return new HotkeyCommandManager(mockedLocalization.Object);
+        }
+
         // The following code errors:
         /*
-            //exception -> do not use Gesture
+            //exception -> Can't create a KeyGesture with single key and no modifiers.
             //InputBindings.Add(new KeyBinding(_viewModel.ShowMessageCommand, new KeyGesture(Key.D, ModifierKeys.None)));
-
-            //exception -> do not use Gesture
             //InputBindings.Add(new KeyBinding(_viewModel.ShowMessageCommand, Key.D, ModifierKeys.None));
-
-            //exception -> do not use Gesture
             //InputBindings.Add(new InputBinding(_viewModel.ShowMessageCommand, new KeyGesture(Key.D, ModifierKeys.None)));
 
             See this PR thread for details: https://github.com/AnnoDesigner/anno-designer/pull/191#issuecomment-632695207
          */
+
         private static KeyBinding GetInputBinding(Key key)
         {
             return GetInputBinding(key, ModifierKeys.None);
@@ -97,7 +103,7 @@ namespace AnnoDesigner.Tests
         public void Ctor_ShouldSetDefaultValues()
         {
             //Arrange
-            var hotkeyCommandManager = new HotkeyCommandManager();
+            var hotkeyCommandManager = GetMockedHotkeyCommandManager();
 
             //Act
             var bindings = hotkeyCommandManager.GetHotkeys();
@@ -128,7 +134,7 @@ namespace AnnoDesigner.Tests
         public void AddHotkey_NewItemAdded_ShouldSyncToObservableCollection(string id,  InputBinding expectedBinding)
         {
             //Arrange
-            var hotkeyCommandManager = new HotkeyCommandManager();
+            var hotkeyCommandManager = GetMockedHotkeyCommandManager();
 
             //Act
             hotkeyCommandManager.AddHotkey(id, expectedBinding);
@@ -204,7 +210,7 @@ namespace AnnoDesigner.Tests
         public void UpdateHotkey_KeyOrMouseUpdated_ShouldSyncToObservableCollection(string id, InputBinding expectedBinding, Key expectedKey, ModifierKeys expectedModifierKeys, MouseAction expectedMouseAction)
         {
             //Arrange
-            var hotkeyCommandManager = new HotkeyCommandManager();
+            var hotkeyCommandManager = GetMockedHotkeyCommandManager();
 
             //Act
             hotkeyCommandManager.AddHotkey(id, expectedBinding);

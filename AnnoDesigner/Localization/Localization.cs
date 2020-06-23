@@ -5,14 +5,14 @@ using AnnoDesigner.Models;
 
 namespace AnnoDesigner.Localization
 {
-    public class Localization : Notify
+    public class Localization : Notify, ILocalization
     {
-        private static Dictionary<string, Dictionary<string, string>> translations;
+        private static IDictionary<string, IDictionary<string, string>> translations;
         private static Localization instance;
 
         public static Localization Instance => instance ??= new Localization();
 
-        public static Dictionary<string, string> Translations => translations[Instance.SelectedLanguage];
+        public static IDictionary<string, string> Translations => translations[Instance.SelectedLanguage];
 
         private ICommons commons;
 
@@ -30,7 +30,7 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        public Dictionary<string, string> InstanceTranslations => Translations;
+        public IDictionary<string, string> InstanceTranslations => Translations;
 
         public static void Init(ICommons commons)
         {
@@ -41,8 +41,8 @@ namespace AnnoDesigner.Localization
 
             //This dictionary initialisation was auto-generated from:
             //https://docs.google.com/spreadsheets/d/1CjECty43mkkm1waO4yhQl1rzZ-ZltrBgj00aq-WJX4w/edit?usp=sharing 
-            //See the "Help" sheet for details on how to export the below dictionary.
-            translations = new Dictionary<string, Dictionary<string, string>>()
+            //See the "Help" sheet for details on how to export the dictionary.
+            translations = new Dictionary<string, IDictionary<string, string>>()
             {
                 {
                     "eng", new Dictionary<string, string>() {

@@ -1,4 +1,4 @@
-﻿<Page x:Class="AnnoDesigner.PreferencesPages.ManageKeybindings"
+﻿<Page x:Class="AnnoDesigner.PreferencesPages.ManageKeybindingsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -13,7 +13,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       d:DataContext="{d:DesignInstance Type=viewModel:ManageKeybindingsViewModel, IsDesignTimeCreatable=False}"
-      Name="ManageKeybindingsWindow">
+      Name="ManageKeybindingsRoot">
     <Page.Resources>
         <models:ManageKeybindingsHotkeyDataTemplateSelector x:Key="dataTemplateSelector"/>
         <Style x:Key="HotkeyRebindButton" TargetType="{x:Type Button}">
@@ -101,8 +101,8 @@
                     <Label Content="{Binding Path=Binding.Key, Converter={StaticResource KeyToDisplayStringConverter}}"
                            Style="{StaticResource HotkeyKey}"/>
                 </StackPanel>
-                <Button Content="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindButtonText}" 
-                            Command="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindCommand }" 
+                <Button Content="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindButtonText}" 
+                            Command="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindCommand }" 
                             CommandParameter="{Binding}" 
                             Grid.Column="2"
                             Style="{StaticResource HotkeyRebindButton}"
@@ -137,8 +137,8 @@
                            Visibility="{Binding Path=Binding.MouseAction, Converter={StaticResource MouseActionToVisibilityConverter}, ConverterParameter={StaticResource 2}}"
                            />
                 </StackPanel>
-                <Button Content="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindButtonText}" 
-                            Command="{Binding ElementName=ManageKeybindingsWindow, Path=DataContext.RebindCommand }" 
+                <Button Content="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindButtonText}" 
+                            Command="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindCommand }" 
                             CommandParameter="{Binding}" 
                             Grid.Column="2"
                             Style="{StaticResource HotkeyRebindButton}"

@@ -22,11 +22,11 @@ namespace AnnoDesigner.PreferencesPages
     /// <summary>
     /// Interaction logic for ManageKeybindings.xaml
     /// </summary>
-    public partial class ManageKeybindings : Page, INavigatedTo
+    public partial class ManageKeybindingsPage : Page, INavigatedTo
     {
-        public void NavigatedTo(object parameter)
+        public void NavigatedTo(object viewModel)
         {
-            ViewModel = new ManageKeybindingsViewModel((HotkeyCommandManager)parameter);
+            ViewModel = (ManageKeybindingsViewModel)viewModel;
             DataContext = ViewModel;
             ViewModel.HotkeyCommandManager.CollectionChanged += Manager_CollectionChanged;
         }
@@ -37,6 +37,6 @@ namespace AnnoDesigner.PreferencesPages
             CollectionViewSource.GetDefaultView(HotkeyActions.ItemsSource).Refresh();
         }
 
-        public ViewModels.ManageKeybindingsViewModel ViewModel;
+        public ManageKeybindingsViewModel ViewModel;
     }
 }

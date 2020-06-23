@@ -18,9 +18,9 @@ namespace AnnoDesigner.PreferencesPages
     /// <summary>
     /// Interaction logic for UpdateSettings.xaml
     /// </summary>
-    public partial class UpdateSettings : Page
+    public partial class UpdateSettingsPage : Page
     {
-        public UpdateSettings()
+        public UpdateSettingsPage()
         {
             InitializeComponent();
         }

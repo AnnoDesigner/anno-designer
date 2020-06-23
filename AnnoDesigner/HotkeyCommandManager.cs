@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using AnnoDesigner.Core.Models;
+using AnnoDesigner.Localization;
 using AnnoDesigner.Models;
 
 namespace AnnoDesigner
@@ -30,13 +31,16 @@ namespace AnnoDesigner
         /// </summary>
         private IDictionary<string, HotkeyInformation> hotkeyUserMappings;
 
+        private ILocalization localization;
+
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        public HotkeyCommandManager()
+        public HotkeyCommandManager(ILocalization localization)
         {
             hotkeys = new Dictionary<string, Hotkey>();
             _observableCollection = new ObservableCollection<Hotkey>();
             ObservableCollection = _observableCollection;
+            this.localization = localization;
         }
 
         public void HandleCommand(InputEventArgs e)
@@ -80,8 +84,7 @@ namespace AnnoDesigner
                 _observableCollection.Add(hotkey);
                 //Check for localization
                 hotkey.Description = hotkey.HotkeyId;
-                var language = Localization.Localization.GetLanguageCodeFromName(Commons.Instance.SelectedLanguage);
-                if (Localization.Localization.Translations.TryGetValue(hotkey.HotkeyId, out var description))
+                if (localization.InstanceTranslations.TryGetValue(hotkey.HotkeyId, out var description))
                 {
                     hotkey.Description = description;
                 }
@@ -157,11 +160,14 @@ namespace AnnoDesigner
             return hotkey;
         }
 
+        /// <summary>
+        /// Updates the <see cref="Hotkey.Description"/> of all <see cref="Hotkey"/> in this <see cref="HotkeyCommandManager"/>
+        /// </summary>
         public void UpdateLanguage()
         {
             foreach (var kvp in hotkeys)
             {
-                if (Localization.Localization.Translations.TryGetValue(kvp.Key, out var description))
+                if (localization.InstanceTranslations.TryGetValue(kvp.Key, out var description))
                 {
                     kvp.Value.Description = description;
                 }

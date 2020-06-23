@@ -20,14 +20,16 @@ namespace AnnoDesigner.ViewModels
         private const string RECORDING = "Recording";
         private const string RESET_ALL = "ResetAll";
         private const string RESET_ALL_CONFIRMATION_MESSAGE = "ResetAllConfirmationMessage";
-        
 
-        public ManageKeybindingsViewModel(HotkeyCommandManager hotkeyCommandManager)
+        private ICommons commons;
+
+        public ManageKeybindingsViewModel(HotkeyCommandManager hotkeyCommandManager, ICommons commons)
         {
             HotkeyCommandManager = hotkeyCommandManager;
             RebindCommand = new RelayCommand<Hotkey>(ExecuteRebind);
             ResetHotkeysCommand = new RelayCommand(ExecuteResetHotkeys);
-            Commons.Instance.SelectedLanguageChanged += Instance_SelectedLanguageChanged;
+            this.commons = commons;
+            this.commons.SelectedLanguageChanged += Instance_SelectedLanguageChanged;
 
             UpdateRebindButtonText();
         }

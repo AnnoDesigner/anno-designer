@@ -12,22 +12,23 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
+using AnnoDesigner.PreferencesPages;
 using NLog;
 
 namespace AnnoDesigner.ViewModels
 {
     public class PreferencesViewModel : Notify
     {
-        public PreferencesViewModel(IAppSettings appSettings, HotkeyCommandManager manager, NavigationService navigationService)
+        public PreferencesViewModel(IAppSettings appSettings, ICommons commons, HotkeyCommandManager manager, NavigationService navigationService)
         {
             this.appSettings = appSettings;
             this.navigationService = navigationService;
             Manager = manager;
 
-            PageViewModels = new Dictionary<string, object>()
+            ViewModels = new Dictionary<string, object>()
             {
-                { "ManageKeybindings", new ManageKeybindingsViewModel(manager) },
-                { "UpdateSettings", null }
+                { "ManageKeybindingsPage",  new ManageKeybindingsViewModel(manager, commons) },
+                { "UpdateSettingsPage", "" }
             };
         }
 
@@ -49,14 +50,20 @@ namespace AnnoDesigner.ViewModels
             set 
             { 
                 UpdateProperty(ref _selectedItem, value);
-                //var t = Type.GetType($"AnnoDesigner.PreferencesPages.{value.Name}");
-                //var page = Activator.CreateInstance(t, manager);
-                //navigator.Navigate(page);
-                navigationService.Navigate(new Uri($@"pack://application:,,,/PreferencesPages\{value.Name}.xaml", UriKind.RelativeOrAbsolute), value.DataContext);
+                if (ViewModels.TryGetValue(value.Name, out var extraData))
+                {
+                    navigationService.Navigate(new Uri($@"pack://application:,,,/PreferencesPages\{value.Name}.xaml", UriKind.RelativeOrAbsolute), extraData);
+                }
+#if DEBUG
+                else
+                {
+                    throw new KeyNotFoundException($"Page {value.Name}.xaml not found.");
+                }
+#endif
             }
         }
 
-        public Dictionary<string, object> PageViewModels
+        public Dictionary<string, object> ViewModels
         {
             get => _pageViewModels;
             set => UpdateProperty(ref _pageViewModels, value);

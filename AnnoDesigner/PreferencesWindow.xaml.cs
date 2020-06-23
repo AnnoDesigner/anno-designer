@@ -25,10 +25,10 @@ namespace AnnoDesigner
     /// </summary>
     public partial class PreferencesWindow : Window
     {
-        public PreferencesWindow(IAppSettings appSettings, HotkeyCommandManager commandManager)
+        public PreferencesWindow(IAppSettings appSettings, ICommons commons, HotkeyCommandManager commandManager)
         {
             InitializeComponent();
-            DataContext = new PreferencesViewModel(appSettings, commandManager, CurrentPage.NavigationService);
+            DataContext = new PreferencesViewModel(appSettings, commons, commandManager, CurrentPage.NavigationService);
             Loaded += Preferences_Loaded;
         }
 
