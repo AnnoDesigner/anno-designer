@@ -72,9 +72,6 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteRebind(Hotkey hotkey)
         {
-
-            //TODO: Fix before PR - when only modifier keys are pressed, we have an exception thrown.
-
             RebindButtonCurrentTextKey = RECORDING;
             UpdateRebindButtonText();
 
@@ -85,7 +82,7 @@ namespace AnnoDesigner.ViewModels
 #pragma warning restore IDE0007 // Use implicit type
 
             //Only set new hotkeys if the user didn't click cancel, and they didn't close the window without a key bound
-            if (!userCancelled)
+            if (!userCancelled && !(key == Key.None && action == MouseAction.None))
             {
                 if (actionType == ActionRecorder.ActionType.KeyAction)
                 {
