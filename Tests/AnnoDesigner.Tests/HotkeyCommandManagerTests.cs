@@ -312,5 +312,239 @@ namespace AnnoDesigner.Tests
             //Act and assert
             Assert.Throws<KeyNotFoundException>(() => hotkeyCommandManager.GetHotkey(id));
         }
+
+        [Fact]
+        public void LoadHotkeyMappings_NullArgument_DoesNotThrowException()
+        {
+            //Arrange
+            var hotkeyCommandMananger = GetMockedHotkeyCommandManager();
+            //Act and Assert
+            hotkeyCommandMananger.LoadHotkeyMappings(null);
+            Assert.True(true);
+        }        
+        
+        [Fact]
+        public void LoadHotkeyMappings_InvalidType_IgnoresMapping()
+        {
+            //Arrange
+            var hotkeyCommandMananger = GetMockedHotkeyCommandManager();
+            var newMappings = new Dictionary<string, HotkeyInformation>()
+            {
+                { "myHotkeyInfo", new HotkeyInformation(Key.A, default, ModifierKeys.None, typeof(HotkeyCommandManager)) }
+            };
+            //Act
+            hotkeyCommandMananger.LoadHotkeyMappings(newMappings);
+            hotkeyCommandMananger.AddHotkey("myHotkeyInfo", new KeyBinding(emptyCommand, Key.C, ModifierKeys.Control));
+            //Assert
+            var keyBinding= hotkeyCommandMananger.GetHotkey("myHotkeyInfo").Binding as KeyBinding;
+            Assert.Equal(Key.C, keyBinding.Key);
+            Assert.Equal(ModifierKeys.Control, keyBinding.Modifiers);
+        }
+
+        public static IEnumerable<object[]> HotkeyMappingLoadData
+        {
+            get
+            {
+                return new List<object[]>()
+                {
+                    new object[]
+                    {
+                        "Keybind1",
+                        GetInputBinding(Key.A),
+                        Key.A,
+                        ModifierKeys.None,
+                        default(MouseAction),
+                        typeof(KeyBinding)
+                    },
+                    new object[]
+                    {
+                        "Keybind2",
+                        GetInputBinding(Key.C, ModifierKeys.Control | ModifierKeys.Alt),
+                        Key.D,
+                        ModifierKeys.Control,
+                        default(MouseAction),
+                        typeof(KeyBinding)
+                    },
+                    new object[]
+                    {
+                        "Keybind3",
+                        GetInputBinding(MouseAction.LeftDoubleClick),
+                        default(Key),
+                        ModifierKeys.Alt,
+                        MouseAction.MiddleDoubleClick,
+                        typeof(MouseBinding)
+                    },
+                    new object[]
+                    {
+                        "Keybind3",
+                        GetInputBinding(MouseAction.RightClick, ModifierKeys.Shift),
+                        Key.F,
+                        ModifierKeys.Control | ModifierKeys.Alt,
+                        default(MouseAction),
+                        typeof(KeyBinding)
+                    },                    
+                    new object[]
+                    {
+                        "Keybind3",
+                        GetInputBinding(MouseAction.RightClick, ModifierKeys.Shift),
+                        default(Key),
+                        ModifierKeys.Shift,
+                        MouseAction.RightClick,
+                        typeof(MouseBinding)
+                    },
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(HotkeyMappingLoadData))]
+        public void LoadHotkeyMappings_CalledAfterHotkeyIsAdded_LoadsNewHotkeyMappings(string hotkeyId, InputBinding binding, Key expectedKey, ModifierKeys expectedModifiers, MouseAction expectedMouseAction, Type expectedType)
+        {
+            //Arrange
+            var hotkeyCommandManager = GetMockedHotkeyCommandManager();
+
+            var newMappings = new Dictionary<string, HotkeyInformation>()
+            {
+                { hotkeyId, new HotkeyInformation(expectedKey, expectedMouseAction, expectedModifiers, expectedType) }
+            };
+
+            //Act
+            hotkeyCommandManager.AddHotkey(hotkeyId, binding);
+            var hotkey = hotkeyCommandManager.GetHotkey(hotkeyId);
+            hotkeyCommandManager.LoadHotkeyMappings(newMappings); //Call LoadHotkeyMappings after hotkey is added
+
+            //Assert
+            var actualHotkey = hotkeyCommandManager.GetHotkey(hotkeyId);
+
+            Assert.Same(hotkey, actualHotkey);
+            if (actualHotkey.Binding is KeyBinding actualKeyBinding)
+            {
+                Assert.Equal(expectedType, actualHotkey.Binding.GetType());
+                Assert.Equal(expectedKey, actualKeyBinding.Key);
+                Assert.Equal(expectedModifiers, actualKeyBinding.Modifiers);
+            }
+            else
+            {
+                var actualMouseBinding = actualHotkey.Binding as MouseBinding;
+                Assert.Equal(expectedType, actualHotkey.Binding.GetType());
+                Assert.Equal(expectedMouseAction, actualMouseBinding.MouseAction);
+                Assert.Equal(expectedModifiers, (actualMouseBinding.Gesture as MouseGesture).Modifiers);
+            }
+
+        }
+
+        [Theory]
+        [MemberData(nameof(HotkeyMappingLoadData))]
+        public void LoadHotkeyMappings_CalledBeforeHotkeyIsAdded_LoadsNewHotkeyMappings(string hotkeyId, InputBinding binding, Key expectedKey, ModifierKeys expectedModifiers, MouseAction expectedMouseAction, Type expectedType)
+        {
+            //Arrange
+            var hotkeyCommandManager = GetMockedHotkeyCommandManager();
+
+            var newMappings = new Dictionary<string, HotkeyInformation>()
+            {
+                { hotkeyId, new HotkeyInformation(expectedKey, expectedMouseAction, expectedModifiers, expectedType) }
+            };
+
+            //Act
+            hotkeyCommandManager.LoadHotkeyMappings(newMappings);  //Call LoadHotkeyMappings before hotkey is added
+            hotkeyCommandManager.AddHotkey(hotkeyId, binding);
+
+            //Assert
+            var actualHotkey = hotkeyCommandManager.GetHotkey(hotkeyId);
+
+            if (actualHotkey.Binding is KeyBinding actualKeyBinding)
+            {
+                Assert.Equal(expectedType, actualHotkey.Binding.GetType());
+                Assert.Equal(expectedKey, actualKeyBinding.Key);
+                Assert.Equal(expectedModifiers, actualKeyBinding.Modifiers);
+            }
+            else
+            {
+                var actualMouseBinding = actualHotkey.Binding as MouseBinding;
+                Assert.Equal(expectedType, actualHotkey.Binding.GetType());
+                Assert.Equal(expectedMouseAction, actualMouseBinding.MouseAction);
+                Assert.Equal(expectedModifiers, (actualMouseBinding.Gesture as MouseGesture).Modifiers);
+            }
+
+        }
+
+        public static IEnumerable<object[]> HotkeyMappingRemappedData
+        {
+            get
+            {
+                return new List<object[]>()
+                {
+                    new object[]
+                    {
+                        "Keybind1",
+                        GetInputBinding(Key.A),
+                        Key.A,
+                        ModifierKeys.None,
+                        default(MouseAction),
+                        typeof(KeyBinding),
+                        0
+                    },
+                    new object[]
+                    {
+                        "Keybind2",
+                        GetInputBinding(Key.C, ModifierKeys.Control | ModifierKeys.Alt),
+                        Key.D,
+                        ModifierKeys.Control,
+                        default(MouseAction),
+                        typeof(KeyBinding),
+                        1
+                    },
+                    new object[]
+                    {
+                        "Keybind3",
+                        GetInputBinding(MouseAction.LeftDoubleClick),
+                        default(Key),
+                        ModifierKeys.Alt,
+                        MouseAction.MiddleDoubleClick,
+                        typeof(MouseBinding),
+                        1
+                    },
+                    new object[]
+                    {
+                        "Keybind3",
+                        GetInputBinding(MouseAction.RightClick, ModifierKeys.Shift),
+                        Key.F,
+                        ModifierKeys.Control | ModifierKeys.Alt,
+                        default(MouseAction),
+                        typeof(KeyBinding),
+                        1
+                    },
+                    new object[]
+                    {
+                        "Keybind3",
+                        GetInputBinding(MouseAction.RightClick, ModifierKeys.Shift),
+                        default(Key),
+                        ModifierKeys.Shift,
+                        MouseAction.RightClick,
+                        typeof(MouseBinding),
+                        0
+                    },
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(HotkeyMappingRemappedData))]
+        public void GetRemappedHotkeys_RetrievesOnlyRemappedHotkeys(string hotkeyId, InputBinding binding, Key expectedKey, ModifierKeys expectedModifiers, MouseAction expectedMouseAction, Type expectedType, int expectedCount)
+        {
+            //Arrange
+            var hotkeyCommandManager = GetMockedHotkeyCommandManager();
+            hotkeyCommandManager.AddHotkey(hotkeyId, binding);
+            var hotkey = hotkeyCommandManager.GetHotkey(hotkeyId);
+
+            //Act
+            //update hotkey with new properties.
+            hotkey.UpdateHotkey(new HotkeyInformation(expectedKey, expectedMouseAction, expectedModifiers, expectedType));
+
+            //Assert
+            Assert.Equal(expectedCount, hotkeyCommandManager.GetRemappedHotkeys().Count);
+        }
+
+        
     }
 }

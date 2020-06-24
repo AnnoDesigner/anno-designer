@@ -97,7 +97,7 @@ namespace AnnoDesigner.Models
                     CommandParameter = Binding.CommandParameter
                 };
             }
-            else
+            else if (type == typeof(MouseBinding))
             {
                 //we currently have a KeyBinding and need a MouseBinding
                 Binding = new MouseBinding()
