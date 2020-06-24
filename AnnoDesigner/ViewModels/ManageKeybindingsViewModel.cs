@@ -21,7 +21,7 @@ namespace AnnoDesigner.ViewModels
         private const string RESET_ALL = "ResetAll";
         private const string RESET_ALL_CONFIRMATION_MESSAGE = "ResetAllConfirmationMessage";
 
-        private ICommons commons;
+        private readonly ICommons commons;
 
         public ManageKeybindingsViewModel(HotkeyCommandManager hotkeyCommandManager, ICommons commons)
         {
@@ -81,7 +81,7 @@ namespace AnnoDesigner.ViewModels
             (Key key, ModifierKeys modifiers, MouseAction action, ActionRecorder.ActionType actionType, bool userCancelled) = window.RecordNewAction(); 
 #pragma warning restore IDE0007 // Use implicit type
 
-            //Only set new hotkeys if the user didn't click cancel, and they didn't close the window without a key bound
+            //Only set new hotkeys if the user didn't click cancel, and they didn't close the window without a key/action bound
             if (!userCancelled && !(key == Key.None && action == MouseAction.None))
             {
                 if (actionType == ActionRecorder.ActionType.KeyAction)
