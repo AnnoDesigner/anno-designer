@@ -83,8 +83,8 @@ namespace AnnoDesigner.Core.Extensions.XamlExtensions
         private static void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
             var hyperlink = sender as Hyperlink;
-            
-            var confirmNavigation = (bool)hyperlink.DataContext;
+
+            var confirmNavigation = GetConfirmNavigation(hyperlink);
             if (!confirmNavigation || 
                 MessageBox.Show(
                     GetNavigationMessage(hyperlink), GetNavigationTitle(hyperlink), 
