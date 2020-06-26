@@ -1,0 +1,99 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:l="clr-namespace:AnnoDesigner.Localization"
+        xmlns:coreConverters="clr-namespace:AnnoDesigner.Core.Converters;assembly=AnnoDesigner.Core"
+        xmlns:ext="clr-namespace:AnnoDesigner.Core.Extensions.XamlExtensions;assembly=AnnoDesigner.Core"
+        xmlns:local="clr-namespace:AnnoDesigner"
+        xmlns:viewModels="clr-namespace:AnnoDesigner.ViewModels"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors" x:Class="AnnoDesigner.LicensesWindow"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True, Type={x:Type viewModels:LicensesViewModel}}"
+        Title="{l:Localize Licenses}" Height="450" Width="500"
+        IsTabStop="False">
+    <Window.Resources>
+        <coreConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed" />
+    </Window.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" IsTabStop="False" Focusable="False">
+        <Grid Grid.IsSharedSizeScope="True">
+            <ItemsControl ItemsSource="{Binding Licenses}" Background="{x:Null}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="10,5,10,5">
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="License" />
+                                        <ColumnDefinition Width="*" SharedSizeGroup="ProjectURL" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="{Binding ProjectName}" Grid.Row="0" Grid.ColumnSpan="2" FontSize="16" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding License}" Grid.Column="0" Grid.Row="1" Foreground="#888" FontWeight="Heavy" Margin="0,0,10,0" />
+                                    <TextBlock Grid.Column="1" Grid.Row="1" Margin="0,0,10,0">
+                                        <Hyperlink NavigateUri="{Binding ProjectWebsite}" ext:HyperlinkExtensions.IsExternal="True" ext:HyperlinkExtensions.NavigationMessage="{l:Localize ExternalLinkConfirmationMessage}" ext:HyperlinkExtensions.NavigationTitle="{l:Localize ExternalLinkMessageTitle}">
+                                            <Run Text="{Binding ProjectWebsite}" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </Grid>
+                                <ToggleButton x:Name="ShowAssets" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Template="{DynamicResource ToggleButtonTemplate}">
+                                    <ToggleButton.Resources>
+                                        <ControlTemplate x:Key="ToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
+                                            <Grid>
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup x:Name="CheckStates">
+                                                        <VisualStateGroup.Transitions>
+                                                            <VisualTransition From="Checked" GeneratedDuration="0" To="Unchecked"/>
+                                                        </VisualStateGroup.Transitions>
+                                                        <VisualState x:Name="Checked">
+                                                            <Storyboard>
+                                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)" Storyboard.TargetName="image">
+                                                                    <EasingDoubleKeyFrame KeyTime="0:0:0.15" Value="180"/>
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </VisualState>
+                                                        <VisualState x:Name="Unchecked">
+                                                            <Storyboard>
+                                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)" Storyboard.TargetName="image">
+                                                                    <EasingDoubleKeyFrame KeyTime="0:0:0.15" Value="0"/>
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </VisualState>
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
+                                                <Image x:Name="image" Source="pack://application:,,,/Images/Icons/chevron-down.png" Width="48" RenderTransformOrigin="0.5,0.5" >
+                                                    <Image.RenderTransform>
+                                                        <!--This empty child element is required for the transition state -->
+                                                        <TransformGroup>
+                                                            <RotateTransform/>
+                                                        </TransformGroup>
+                                                    </Image.RenderTransform>
+                                                </Image>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </ToggleButton.Resources>
+                                </ToggleButton>
+                            </Grid>
+                            <ItemsControl x:Name="itemsControl" ItemsSource="{Binding Assets}" Visibility="{Binding IsChecked, Converter={StaticResource BoolToVisibilityConverter}, ElementName=ShowAssets}">
+                                <!-- Maybe add multiple columns of assets here in future, or remove this entirely if it becomes impractical or unecessary -->
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </ScrollViewer>
+</Window>

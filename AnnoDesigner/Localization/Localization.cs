@@ -167,7 +167,11 @@ namespace AnnoDesigner.Localization
                         { "Rotate" , "Rotate" },
                         { "Copy" , "Copy" },
                         { "Paste" , "Paste" },
-                        { "Delete" , "Delete" }
+                        { "Delete" , "Delete" },
+                        { "Licenses" , "Licenses" },
+                        { "ViewLicenses" , "View open source Licenses" },
+                        { "ExternalLinkConfirmationMessage" , "This will open a new tab in your default web browser. Continue?" },
+                        { "ExternalLinkMessageTitle" , "Opening an external link" }
                     }
                 },
                 {
@@ -293,7 +297,11 @@ namespace AnnoDesigner.Localization
                         { "Rotate" , "Rotieren" },
                         { "Copy" , "Kopie" },
                         { "Paste" , "Einfügen" },
-                        { "Delete" , "löschen" }
+                        { "Delete" , "löschen" },
+                        { "Licenses" , "Lizenzen" },
+                        { "ViewLicenses" , "Open-Source-Lizenzen anzeigen" },
+                        { "ExternalLinkConfirmationMessage" , "Dadurch wird eine neue Registerkarte in Ihrem Standard-Webbrowser geöffnet. Fortfahren?" },
+                        { "ExternalLinkMessageTitle" , "Einen externen Link öffnen" }
                     }
                 },
                 {
@@ -419,7 +427,11 @@ namespace AnnoDesigner.Localization
                         { "Rotate" , "Faire tourner" },
                         { "Copy" , "Copie" },
                         { "Paste" , "Coller" },
-                        { "Delete" , "Supprimer" }
+                        { "Delete" , "Supprimer" },
+                        { "Licenses" , "Licenses" },
+                        { "ViewLicenses" , "Voir les Licenses open source" },
+                        { "ExternalLinkConfirmationMessage" , "Cela ouvrira un nouvel onglet dans votre navigateur web par défaut. Continuer ?" },
+                        { "ExternalLinkMessageTitle" , "Ouverture d'un lien externe" }
                     }
                 },
                 {
@@ -545,7 +557,11 @@ namespace AnnoDesigner.Localization
                         { "Rotate" , "Obróć" },
                         { "Copy" , "Kopia" },
                         { "Paste" , "Pasta" },
-                        { "Delete" , "Skreślić" }
+                        { "Delete" , "Skreślić" },
+                        { "Licenses" , "Licencje" },
+                        { "ViewLicenses" , "Oglądaj licencje open source" },
+                        { "ExternalLinkConfirmationMessage" , "Spowoduje to otwarcie nowej karty w Twojej domyślnej przeglądarce internetowej. Kontynuować?" },
+                        { "ExternalLinkMessageTitle" , "Otwarcie połączenia zewnętrznego" }
                     }
                 },
                 {
@@ -671,11 +687,14 @@ namespace AnnoDesigner.Localization
                         { "Rotate" , "Повернуть" },
                         { "Copy" , "Скопировать" },
                         { "Paste" , "Вставить" },
-                        { "Delete" , "Удалить" }
+                        { "Delete" , "Удалить" },
+                        { "Licenses" , "Лицензии" },
+                        { "ViewLicenses" , "Просмотреть лицензии с открытым исходным кодом" },
+                        { "ExternalLinkConfirmationMessage" , "При этом откроется новая вкладка в вашем веб-браузере по умолчанию. Продолжить?" },
+                        { "ExternalLinkMessageTitle" , "Открытие внешней ссылки" }
                     }
                 },
             };
-
             Instance.commons = commons;
             Instance.Commons_SelectedLanguageChanged(null, null);
             commons.SelectedLanguageChanged += Instance.Commons_SelectedLanguageChanged;

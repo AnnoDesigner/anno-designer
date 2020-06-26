@@ -20,11 +20,13 @@ namespace AnnoDesigner.Core.Helper
         /// Returns the character represented by the <see cref="Key"/> given. This could be non-visible characters such
         /// as control keys. To get a display string that handles these, such as "Space" for <see cref="Key.Space"/>, or "Tab" for 
         /// <see cref="Key.Tab"/>, use the <see cref="GetDisplayString(Key)"/> method instead.
-        /// 
         /// <para>
         /// If <paramref name="useKeyboardState"/> is set to <see langword="true"/>, then the character retrieved is affected by modifier keys. 
         /// For example, <see cref="Key.L"/> could return either "L" or "l", <see cref="Key.OemSemicolon"/> could return ";" or ":" 
         /// depending on if the shift key is pressed.
+        /// </para>
+        /// <para>
+        /// If the character can not be translated, this method returns null.
         /// </para>
         /// </summary>
         /// <param name="key">The key to retrieve the character for.</param>
@@ -50,21 +52,12 @@ namespace AnnoDesigner.Core.Helper
                 case NativeMethods.ToUnicodeReturnValues.DEAD_KEY:
                 case NativeMethods.ToUnicodeReturnValues.NO_TRANSLATION:
                     break;
-#if DEBUG
                 case NativeMethods.ToUnicodeReturnValues.SINGLE_CHARACTER:
                     c = stringBuilder[0];
                     break;
                 case NativeMethods.ToUnicodeReturnValues.TWO_OR_MORE_CHARACTERS:
-                    var c1 = stringBuilder[0];
-                    var c2 = stringBuilder[1];
-                    Debugger.Break(); //See what this might look like.
                     c = stringBuilder[0];
                     break;
-#else
-                case NativeMethods.ToUnicodeReturnValues.SINGLE_CHARACTER:
-                case NativeMethods.ToUnicodeReturnValues.TWO_OR_MORE_CHARACTERS:
-                    c = stringBuilder[0];
-#endif
                 default:
                     break;
             }

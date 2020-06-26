@@ -84,10 +84,6 @@ namespace AnnoDesigner
             {
                 annoCanvas.OpenFile(App.FilenameArgument);
             }
-            
-            //For testing only
-            //TODO: remove this before PR
-            _mainViewModel.ShowPreferencesWindowCommand.Execute(null);
         }
 
         private void MainViewModel_ShowStatisticsChanged(object sender, EventArgs e)

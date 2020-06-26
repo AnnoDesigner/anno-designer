@@ -94,7 +94,7 @@ namespace AnnoDesigner.ViewModels
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
 
-            
+
             HotkeyCommandManager = new HotkeyCommandManager(Localization.Localization.Instance);
 
             StatisticsViewModel = new StatisticsViewModel();
@@ -130,7 +130,7 @@ namespace AnnoDesigner.ViewModels
             ShowStatisticsBuildingCountCommand = new RelayCommand(ExecuteShowStatisticsBuildingCount);
             PlaceBuildingCommand = new RelayCommand(ExecutePlaceBuilding);
             ShowPreferencesWindowCommand = new RelayCommand(ExecuteShowPreferencesWindow);
-
+            ShowLicensesWindowCommand = new RelayCommand(ExecuteShowLicensesWindow);
 
 
             AvailableIcons = new ObservableCollection<IconImage>();
@@ -1417,6 +1417,15 @@ namespace AnnoDesigner.ViewModels
             preferencesWindow.Show();
         }
 
+        public ICommand ShowLicensesWindowCommand { get; private set; }
+        private void ExecuteShowLicensesWindow(object param)
+        {
+            var LicensesWindow = new LicensesWindow()
+            {
+                Owner = Application.Current.MainWindow
+            };
+            LicensesWindow.ShowDialog();
+        } 
         #endregion
 
         #region view models

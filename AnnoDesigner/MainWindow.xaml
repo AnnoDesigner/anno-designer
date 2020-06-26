@@ -216,6 +216,9 @@
                               Command="{Binding ShowWelcomeWindowCommand}" />
                     <MenuItem Header="{l:Localize AboutAnnoDesigner}"
                               Command="{Binding ShowAboutWindowCommand}" />
+                    <Separator />
+                    <MenuItem Header="{l:Localize ViewLicenses}" 
+                              Command="{Binding ShowLicensesWindowCommand}"/>
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="{l:Localize ShowGrid}"
