@@ -17,6 +17,7 @@ namespace AnnoDesigner
         {
             InitializeComponent();
             DataContext = new LicensesViewModel();
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
         }
     }
 }
