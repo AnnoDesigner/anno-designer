@@ -27,6 +27,7 @@ namespace AnnoDesigner.Models
         bool ShowIcons { get; set; }
         bool ShowGrid { get; set; }
         bool ShowTrueInfluenceRange { get; set; }
+        bool SelectAllBuildingsOfType { get; set; }
         bool ShowInfluences { get; set; }
         bool IsPavedStreet { get; set; }
         string TreeViewSearchText { get; set; }

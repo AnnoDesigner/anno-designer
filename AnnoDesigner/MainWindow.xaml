@@ -228,6 +228,10 @@
                           IsCheckable="True"
                           IsChecked="{Binding CanvasShowInfluences}"
                           TabIndex="30" />
+                <MenuItem Header="{l:Localize SelectAllBuildingsOfType}"
+                          IsCheckable="True"
+                          IsChecked="{Binding CanvasSelectAllBuildingsOfType}"
+                          TabIndex="31" />
             </Menu>
 
             <Grid x:Name="gridMain"

@@ -379,5 +379,17 @@ namespace AnnoDesigner.Properties {
                 this["ShowInfluences"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SelectAllBuildingsOfType {
+            get {
+                return ((bool)(this["SelectAllBuildingsOfType"]));
+            }
+            set {
+                this["SelectAllBuildingsOfType"] = value;
+            }
+        }
     }
 }

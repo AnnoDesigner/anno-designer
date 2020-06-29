@@ -26,6 +26,7 @@ namespace AnnoDesigner.Models
         bool RenderGrid { get; set; }
         bool RenderInfluences { get; set; }
         bool RenderTrueInfluenceRange { get; set; }
+        bool SelectAllBuildingsOfType { get; set; }
 
         bool RenderLabel { get; set; }
         bool RenderIcon { get; set; }

@@ -114,6 +114,12 @@ namespace AnnoDesigner.Models
             set { Settings.Default.ShowInfluences = value; }
         }
 
+        public bool SelectAllBuildingsOfType
+        {
+            get { return Settings.Default.SelectAllBuildingsOfType; }
+            set { Settings.Default.SelectAllBuildingsOfType = value; }
+        }
+
         public bool IsPavedStreet
         {
             get { return Settings.Default.IsPavedStreet; }

@@ -202,6 +202,30 @@ namespace AnnoDesigner
         }
 
         /// <summary>
+        /// Backing field of the SelectAllBuildingsOfType property.
+        /// </summary>
+        private bool _selectAllBuildingsOfType;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether when selecting objects, all the ones with the same identifier should be selected.
+        /// </summary>
+        public bool SelectAllBuildingsOfType
+        {
+            get
+            {
+                return _selectAllBuildingsOfType;
+            }
+            set
+            {
+                if (_selectAllBuildingsOfType != value)
+                {
+                    InvalidateVisual();
+                }
+                _selectAllBuildingsOfType = value;
+            }
+        }
+
+        /// <summary>
         /// Backing field of the CurrentObject property
         /// </summary>
         private List<LayoutObject> _currentObjects = new List<LayoutObject>();
@@ -1373,11 +1397,27 @@ namespace AnnoDesigner
                                 // user clicked an object: select or deselect it
                                 if (SelectedObjects.Contains(obj))
                                 {
-                                    SelectedObjects.Remove(obj);
+                                    // If deselecting all of one type, then deselect all that match the identifier.
+                                    if (SelectAllBuildingsOfType) 
+                                    {
+                                        SelectedObjects = SelectedObjects.Except(SelectedObjects.FindAll(_ => _.Identifier.Equals(obj.Identifier))).ToList();
+                                    }
+                                    else
+                                    {
+                                        SelectedObjects.Remove(obj);
+                                    }
                                 }
                                 else
                                 {
-                                    SelectedObjects.Add(obj);
+                                    // If selecting all of one type, then select all that match the identifier.
+                                    if (SelectAllBuildingsOfType) 
+                                    {
+                                        SelectedObjects.AddRange(PlacedObjects.FindAll(_ => _.Identifier.Equals(obj.Identifier)));
+                                    }
+                                    else
+                                    {
+                                        SelectedObjects.Add(obj);
+                                    }
                                 }
                             }
 

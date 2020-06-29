@@ -51,6 +51,7 @@ namespace AnnoDesigner.ViewModels
         private bool _canvasShowLabels;
         private bool _canvasShowTrueInfluenceRange;
         private bool _canvasShowInfluences;
+        private bool _canvasSelectAllBuildingsOfType;
         private bool _automaticUpdateCheck;
         private string _versionValue;
         private string _fileVersionValue;
@@ -642,6 +643,7 @@ namespace AnnoDesigner.ViewModels
             CanvasShowLabels = _appSettings.ShowLabels;
             CanvasShowTrueInfluenceRange = _appSettings.ShowTrueInfluenceRange;
             CanvasShowInfluences = _appSettings.ShowInfluences;
+            CanvasSelectAllBuildingsOfType = _appSettings.SelectAllBuildingsOfType;
 
             BuildingSettingsViewModel.IsPavedStreet = _appSettings.IsPavedStreet;
 
@@ -661,6 +663,7 @@ namespace AnnoDesigner.ViewModels
             _appSettings.ShowLabels = CanvasShowLabels;
             _appSettings.ShowTrueInfluenceRange = CanvasShowTrueInfluenceRange;
             _appSettings.ShowInfluences = CanvasShowInfluences;
+            _appSettings.SelectAllBuildingsOfType = CanvasSelectAllBuildingsOfType;
 
             _appSettings.StatsShowStats = StatisticsViewModel.IsVisible;
             _appSettings.StatsShowBuildingCount = StatisticsViewModel.ShowStatisticsBuildingCount;
@@ -853,6 +856,19 @@ namespace AnnoDesigner.ViewModels
                 if (AnnoCanvas != null)
                 {
                     AnnoCanvas.RenderInfluences = _canvasShowInfluences;
+                }
+            }
+        }
+
+        public bool CanvasSelectAllBuildingsOfType
+        {
+            get { return _canvasSelectAllBuildingsOfType; }
+            set
+            {
+                UpdateProperty(ref _canvasSelectAllBuildingsOfType, value);
+                if (AnnoCanvas != null)
+                {
+                    AnnoCanvas.SelectAllBuildingsOfType = _canvasSelectAllBuildingsOfType;
                 }
             }
         }
