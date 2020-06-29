@@ -97,12 +97,6 @@
                               Command="{Binding CloseWindowCommand}"
                               CommandParameter="{Binding ElementName=mainWindow}" />
                 </MenuItem>
-                <MenuItem Header="{l:Localize Extras}"
-                          TabIndex="21">
-                    <!--<MenuItem Header="Prefer local presets" IsCheckable="True" IsEnabled="False" />
-                <MenuItem Header="Apply automatic color scheme" IsEnabled="False" />-->
-                   
-                </MenuItem>
                 <MenuItem Header="{l:Localize Export}"
                           TabIndex="22">
                     <MenuItem Header="{l:Localize ExportImage}"
