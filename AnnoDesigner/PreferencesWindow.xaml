@@ -29,7 +29,7 @@
                     </Style>
                 </StackPanel.Resources>
                 <ListView BorderBrush="Transparent" SelectedItem="{Binding SelectedItem}">
-                    <ListViewItem Name="UpdateSettingsPage"  Content="{l:Localize UpdateSettings}"/>
+                    <!--<ListViewItem Name="UpdateSettingsPage"  Content="{l:Localize UpdateSettings}"/>-->
                     <ListViewItem Name="ManageKeybindingsPage"  Content="{l:Localize ManageKeybindings}"/>
                 </ListView>
             </StackPanel>
