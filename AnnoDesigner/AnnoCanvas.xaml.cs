@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -424,6 +424,36 @@ namespace AnnoDesigner
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
         public List<LayoutObject> SelectedObjects { get; set; }
+
+        /// <summary>
+        /// Add the object to SelectedObjects, optionally also add all objects with the same identifier.
+        /// </summary>
+        private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects) 
+        {
+            if (includeSameObjects)
+            {
+                SelectedObjects.AddRange(PlacedObjects.FindAll(_ => _.Identifier.Equals(objectToAdd.Identifier)));
+            }
+            else
+            {
+                SelectedObjects.Add(objectToAdd);
+            }
+        }
+
+        /// <summary>
+        /// Remove the object from SelectedObjects, optionally also remove all objects with the same identifier.
+        /// </summary>
+        private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects) 
+        {
+            if (includeSameObjects)
+            {
+                SelectedObjects = SelectedObjects.Except(SelectedObjects.FindAll(_ => _.Identifier.Equals(objectToRemove.Identifier))).ToList();
+            }
+            else
+            {
+                SelectedObjects.Remove(objectToRemove);
+            }
+        }
 
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
 
@@ -1243,7 +1273,7 @@ namespace AnnoDesigner
                         break;
                     case MouseMode.DragSingleStart:
                         SelectedObjects.Clear();
-                        SelectedObjects.Add(GetObjectAt(_mouseDragStart));
+                        AddSelectedObject(GetObjectAt(_mouseDragStart), SelectAllBuildingsOfType);
                         CurrentMode = MouseMode.DragSelection;
                         break;
                     case MouseMode.DragAllStart:
@@ -1397,27 +1427,11 @@ namespace AnnoDesigner
                                 // user clicked an object: select or deselect it
                                 if (SelectedObjects.Contains(obj))
                                 {
-                                    // If deselecting all of one type, then deselect all that match the identifier.
-                                    if (SelectAllBuildingsOfType) 
-                                    {
-                                        SelectedObjects = SelectedObjects.Except(SelectedObjects.FindAll(_ => _.Identifier.Equals(obj.Identifier))).ToList();
-                                    }
-                                    else
-                                    {
-                                        SelectedObjects.Remove(obj);
-                                    }
+                                    RemoveSelectedObject(obj, SelectAllBuildingsOfType);
                                 }
                                 else
                                 {
-                                    // If selecting all of one type, then select all that match the identifier.
-                                    if (SelectAllBuildingsOfType) 
-                                    {
-                                        SelectedObjects.AddRange(PlacedObjects.FindAll(_ => _.Identifier.Equals(obj.Identifier)));
-                                    }
-                                    else
-                                    {
-                                        SelectedObjects.Add(obj);
-                                    }
+                                    AddSelectedObject(obj, SelectAllBuildingsOfType);
                                 }
                             }
 
@@ -1455,9 +1469,9 @@ namespace AnnoDesigner
                                 }
                                 else
                                 {
-                                    // remove selected object
+                                    // Remove object, only ever remove a single object this way.
                                     PlacedObjects.Remove(obj);
-                                    SelectedObjects.Remove(obj);
+                                    RemoveSelectedObject(obj, false);
                                 }
                             }
                             else

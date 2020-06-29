@@ -267,3 +267,4 @@ __pycache__/
 # /Build/
 /Build/logs
 /Build/out
+AnnoDesigner/logs/
