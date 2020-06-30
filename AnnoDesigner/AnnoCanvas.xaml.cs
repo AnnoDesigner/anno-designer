@@ -402,33 +402,54 @@ namespace AnnoDesigner
         public List<LayoutObject> SelectedObjects { get; set; }
 
         /// <summary>
-        /// Add the object to SelectedObjects, optionally also add all objects with the same identifier.
+        /// Add the objects to SelectedObjects, optionally also add all objects which match one of their identifiers.
         /// </summary>
-        private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects) 
+        private void AddSelectedObjects(List<LayoutObject> objectsToAdd, bool includeSameObjects) 
         {
             if (includeSameObjects)
             {
-                SelectedObjects.AddRange(PlacedObjects.FindAll(_ => _.Identifier.Equals(objectToAdd.Identifier)));
+                // Add all placed objects whose identifier matches any of those in the objectsToAdd.
+                SelectedObjects.AddRange(PlacedObjects.FindAll(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier))));
             }
             else
             {
-                SelectedObjects.Add(objectToAdd);
+                SelectedObjects.AddRange(objectsToAdd);
+            }
+
+            // This can lead to some objects being selected multiple times, so only keep distinct objects.
+            SelectedObjects = SelectedObjects.Distinct().ToList();
+        }
+
+        /// <summary>
+        /// Remove the objects from SelectedObjects, optionally also remove all objects which match one of their identifiers.
+        /// </summary>
+        private void RemoveSelectedObjects(List<LayoutObject> objectsToRemove, bool includeSameObjects) 
+        {
+            if (includeSameObjects)
+            {
+                // Exclude any selected objects whose identifier matches any of those in the objectsToRemove.
+                SelectedObjects = SelectedObjects.Except(SelectedObjects.FindAll(placed => objectsToRemove.Any(toRemove => toRemove.Identifier.Equals(placed.Identifier)))).ToList();
+            }
+            else
+            {
+                SelectedObjects = SelectedObjects.Except(objectsToRemove).ToList();
             }
         }
 
         /// <summary>
-        /// Remove the object from SelectedObjects, optionally also remove all objects with the same identifier.
+        /// Add a single object to SelectedObjects, optionally also add all objects with the same identifier.
+        /// </summary>
+        private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects) 
+        {
+            AddSelectedObjects(new List<LayoutObject>() { objectToAdd }, includeSameObjects);
+        }
+
+        /// <summary>
+        /// Remove a single object from SelectedObjects, optionally also remove all objects with the same identifier.
         /// </summary>
         private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects) 
         {
-            if (includeSameObjects)
-            {
-                SelectedObjects = SelectedObjects.Except(SelectedObjects.FindAll(_ => _.Identifier.Equals(objectToRemove.Identifier))).ToList();
-            }
-            else
-            {
-                SelectedObjects.Remove(objectToRemove);
-            }
+            RemoveSelectedObjects(new List<LayoutObject>() { objectToRemove }, includeSameObjects);
         }
 
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
@@ -1295,7 +1316,8 @@ namespace AnnoDesigner
                                 if (IsControlPressed() || IsShiftPressed())
                                 {
                                     // remove previously selected by the selection rect
-                                    SelectedObjects.RemoveAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
+                                    RemoveSelectedObjects(SelectedObjects.Where(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)).ToList(), 
+                                                          ShouldAffectObjectsWithIdentifier());
                                 }
                                 else
                                 {
@@ -1305,7 +1327,8 @@ namespace AnnoDesigner
                                 // adjust rect
                                 _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                                 // select intersecting objects
-                                SelectedObjects.AddRange(PlacedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)));
+                                AddSelectedObjects(PlacedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)),
+                                                   ShouldAffectObjectsWithIdentifier());
 
                                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                                 break;
