@@ -404,12 +404,12 @@ namespace AnnoDesigner
         /// <summary>
         /// Add the objects to SelectedObjects, optionally also add all objects which match one of their identifiers.
         /// </summary>
-        private void AddSelectedObjects(List<LayoutObject> objectsToAdd, bool includeSameObjects) 
+        private void AddSelectedObjects(List<LayoutObject> objectsToAdd, bool includeSameObjects)
         {
             if (includeSameObjects)
             {
                 // Add all placed objects whose identifier matches any of those in the objectsToAdd.
-                SelectedObjects.AddRange(PlacedObjects.FindAll(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier))));
+                SelectedObjects.AddRange(PlacedObjects.FindAll(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase))));
             }
             else
             {
@@ -423,12 +423,12 @@ namespace AnnoDesigner
         /// <summary>
         /// Remove the objects from SelectedObjects, optionally also remove all objects which match one of their identifiers.
         /// </summary>
-        private void RemoveSelectedObjects(List<LayoutObject> objectsToRemove, bool includeSameObjects) 
+        private void RemoveSelectedObjects(List<LayoutObject> objectsToRemove, bool includeSameObjects)
         {
             if (includeSameObjects)
             {
                 // Exclude any selected objects whose identifier matches any of those in the objectsToRemove.
-                SelectedObjects = SelectedObjects.Except(SelectedObjects.FindAll(placed => objectsToRemove.Any(toRemove => toRemove.Identifier.Equals(placed.Identifier)))).ToList();
+                SelectedObjects = SelectedObjects.Except(SelectedObjects.FindAll(placed => objectsToRemove.Any(toRemove => toRemove.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase)))).ToList();
             }
             else
             {
@@ -439,7 +439,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Add a single object to SelectedObjects, optionally also add all objects with the same identifier.
         /// </summary>
-        private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects) 
+        private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects)
         {
             AddSelectedObjects(new List<LayoutObject>() { objectToAdd }, includeSameObjects);
         }
@@ -447,7 +447,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Remove a single object from SelectedObjects, optionally also remove all objects with the same identifier.
         /// </summary>
-        private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects) 
+        private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects)
         {
             RemoveSelectedObjects(new List<LayoutObject>() { objectToRemove }, includeSameObjects);
         }
@@ -1316,7 +1316,7 @@ namespace AnnoDesigner
                                 if (IsControlPressed() || IsShiftPressed())
                                 {
                                     // remove previously selected by the selection rect
-                                    RemoveSelectedObjects(SelectedObjects.Where(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)).ToList(), 
+                                    RemoveSelectedObjects(SelectedObjects.Where(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)).ToList(),
                                                           ShouldAffectObjectsWithIdentifier());
                                 }
                                 else
@@ -1576,7 +1576,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Checks whether the user is pressing the control key.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the control key is pressed, otherwise <c>false</c>.</returns>
         private static bool IsControlPressed()
         {
             return Keyboard.Modifiers.HasFlag(ModifierKeys.Control);
@@ -1585,7 +1585,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Checks whether the user is pressing the shift key.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the shift key is pressed, otherwise <c>false</c>.</returns>
         private static bool IsShiftPressed()
         {
             return Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
@@ -1594,7 +1594,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Checks whether actions should affect all objects with the same identifier.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><c>true</c> if all objects with same identifier should be affected, otherwise <c>false</c>.</returns>
         private static bool ShouldAffectObjectsWithIdentifier()
         {
             return IsShiftPressed() && IsControlPressed();
