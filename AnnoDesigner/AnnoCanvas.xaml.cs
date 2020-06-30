@@ -202,30 +202,6 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Backing field of the SelectAllBuildingsOfType property.
-        /// </summary>
-        private bool _selectAllBuildingsOfType;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether when selecting objects, all the ones with the same identifier should be selected.
-        /// </summary>
-        public bool SelectAllBuildingsOfType
-        {
-            get
-            {
-                return _selectAllBuildingsOfType;
-            }
-            set
-            {
-                if (_selectAllBuildingsOfType != value)
-                {
-                    InvalidateVisual();
-                }
-                _selectAllBuildingsOfType = value;
-            }
-        }
-
-        /// <summary>
         /// Backing field of the CurrentObject property
         /// </summary>
         private List<LayoutObject> _currentObjects = new List<LayoutObject>();
@@ -1273,7 +1249,7 @@ namespace AnnoDesigner
                         break;
                     case MouseMode.DragSingleStart:
                         SelectedObjects.Clear();
-                        AddSelectedObject(GetObjectAt(_mouseDragStart), SelectAllBuildingsOfType);
+                        AddSelectedObject(GetObjectAt(_mouseDragStart), ShouldAffectObjectsWithIdentifier());
                         CurrentMode = MouseMode.DragSelection;
                         break;
                     case MouseMode.DragAllStart:
@@ -1422,16 +1398,17 @@ namespace AnnoDesigner
                             }
 
                             var obj = GetObjectAt(_mousePosition);
+
                             if (obj != null)
                             {
                                 // user clicked an object: select or deselect it
                                 if (SelectedObjects.Contains(obj))
                                 {
-                                    RemoveSelectedObject(obj, SelectAllBuildingsOfType);
+                                    RemoveSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
                                 }
                                 else
                                 {
-                                    AddSelectedObject(obj, SelectAllBuildingsOfType);
+                                    AddSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
                                 }
                             }
 
@@ -1579,7 +1556,7 @@ namespace AnnoDesigner
         /// <returns></returns>
         private static bool IsControlPressed()
         {
-            return Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
+            return Keyboard.Modifiers.HasFlag(ModifierKeys.Control);
         }
 
         /// <summary>
@@ -1589,6 +1566,15 @@ namespace AnnoDesigner
         private static bool IsShiftPressed()
         {
             return Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
+        }
+
+        /// <summary>
+        /// Checks whether actions should affect all objects with the same identifier.
+        /// </summary>
+        /// <returns></returns>
+        private static bool ShouldAffectObjectsWithIdentifier()
+        {
+            return IsShiftPressed() && IsControlPressed();
         }
 
         #endregion

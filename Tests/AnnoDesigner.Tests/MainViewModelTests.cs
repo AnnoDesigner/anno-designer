@@ -387,26 +387,6 @@ namespace AnnoDesigner.Tests
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void SaveSettings_IsCalled_ShouldSaveSelectAllBuildingsOfType(bool expectedSelectAllBuildingsOfType)
-        {
-            // Arrange            
-            var appSettings = new Mock<IAppSettings>();
-            appSettings.SetupAllProperties();
-
-            var viewModel = GetViewModel(null, appSettings.Object);
-            viewModel.CanvasSelectAllBuildingsOfType = expectedSelectAllBuildingsOfType;
-
-            // Act
-            viewModel.SaveSettings();
-
-            // Assert
-            Assert.Equal(expectedSelectAllBuildingsOfType, appSettings.Object.SelectAllBuildingsOfType);
-            appSettings.Verify(x => x.Save(), Times.Once);
-        }
-
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
         public void SaveSettings_IsCalled_ShouldSaveEnableAutomaticUpdateCheck(bool expectedEnableAutomaticUpdateCheck)
         {
             // Arrange            

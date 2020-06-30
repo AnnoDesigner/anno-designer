@@ -87,7 +87,6 @@ namespace AnnoDesigner.Localization
                         { "ShowIcons" , "Show Icons" },
                         { "ShowTrueInfluenceRange" , "Show True Influence Range" },
                         { "ShowInfluences" , "Show Influences" },
-                        { "SelectAllBuildingsOfType" , "Select All Buildings of Type" },
                         { "BuildingSettings" , "Building Settings" },
                         { "Size" , "Size" },
                         { "Color" , "Color" },
