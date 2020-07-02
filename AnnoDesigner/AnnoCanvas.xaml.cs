@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -400,6 +400,69 @@ namespace AnnoDesigner
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
         public List<LayoutObject> SelectedObjects { get; set; }
+
+        /// <summary>
+        /// Add the objects to SelectedObjects, optionally also add all objects which match one of their identifiers.
+        /// </summary>
+        /// <param name="includeSameObjects"> 
+        /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToAdd">.
+        /// </param>
+        private void AddSelectedObjects(List<LayoutObject> objectsToAdd, bool includeSameObjects)
+        {
+            if (includeSameObjects)
+            {
+                // Add all placed objects whose identifier matches any of those in the objectsToAdd.
+                SelectedObjects.AddRange(PlacedObjects.FindAll(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase))));
+            }
+            else
+            {
+                SelectedObjects.AddRange(objectsToAdd);
+            }
+
+            // This can lead to some objects being selected multiple times, so only keep distinct objects.
+            SelectedObjects = SelectedObjects.Distinct().ToList();
+        }
+
+        /// <summary>
+        /// Remove the objects from SelectedObjects, optionally also remove all objects which match one of their identifiers.
+        /// </summary>
+        /// <param name="includeSameObjects"> 
+        /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToRemove">.
+        /// </param>
+        private void RemoveSelectedObjects(List<LayoutObject> objectsToRemove, bool includeSameObjects)
+        {
+            if (includeSameObjects)
+            {
+                // Exclude any selected objects whose identifier matches any of those in the objectsToRemove.
+                SelectedObjects = SelectedObjects.Except(SelectedObjects.FindAll(placed => objectsToRemove.Any(toRemove => toRemove.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase)))).ToList();
+            }
+            else
+            {
+                SelectedObjects = SelectedObjects.Except(objectsToRemove).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Add a single object to SelectedObjects, optionally also add all objects with the same identifier.
+        /// </summary>
+        /// <param name="includeSameObjects"> 
+        /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToAdd">.
+        /// </param>
+        private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects)
+        {
+            AddSelectedObjects(new List<LayoutObject>() { objectToAdd }, includeSameObjects);
+        }
+
+        /// <summary>
+        /// Remove a single object from SelectedObjects, optionally also remove all objects with the same identifier.
+        /// </summary>
+        /// <param name="includeSameObjects"> 
+        /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToRemove">.
+        /// </param>
+        private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects)
+        {
+            RemoveSelectedObjects(new List<LayoutObject>() { objectToRemove }, includeSameObjects);
+        }
 
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
 
@@ -1219,7 +1282,7 @@ namespace AnnoDesigner
                         break;
                     case MouseMode.DragSingleStart:
                         SelectedObjects.Clear();
-                        SelectedObjects.Add(GetObjectAt(_mouseDragStart));
+                        AddSelectedObject(GetObjectAt(_mouseDragStart), ShouldAffectObjectsWithIdentifier());
                         CurrentMode = MouseMode.DragSelection;
                         break;
                     case MouseMode.DragAllStart:
@@ -1265,7 +1328,8 @@ namespace AnnoDesigner
                                 if (IsControlPressed() || IsShiftPressed())
                                 {
                                     // remove previously selected by the selection rect
-                                    SelectedObjects.RemoveAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
+                                    RemoveSelectedObjects(SelectedObjects.Where(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)).ToList(),
+                                                          ShouldAffectObjectsWithIdentifier());
                                 }
                                 else
                                 {
@@ -1275,7 +1339,8 @@ namespace AnnoDesigner
                                 // adjust rect
                                 _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                                 // select intersecting objects
-                                SelectedObjects.AddRange(PlacedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)));
+                                AddSelectedObjects(PlacedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)),
+                                                   ShouldAffectObjectsWithIdentifier());
 
                                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                                 break;
@@ -1368,16 +1433,17 @@ namespace AnnoDesigner
                             }
 
                             var obj = GetObjectAt(_mousePosition);
+
                             if (obj != null)
                             {
                                 // user clicked an object: select or deselect it
                                 if (SelectedObjects.Contains(obj))
                                 {
-                                    SelectedObjects.Remove(obj);
+                                    RemoveSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
                                 }
                                 else
                                 {
-                                    SelectedObjects.Add(obj);
+                                    AddSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
                                 }
                             }
 
@@ -1415,9 +1481,9 @@ namespace AnnoDesigner
                                 }
                                 else
                                 {
-                                    // remove selected object
+                                    // Remove object, only ever remove a single object this way.
                                     PlacedObjects.Remove(obj);
-                                    SelectedObjects.Remove(obj);
+                                    RemoveSelectedObject(obj, false);
                                 }
                             }
                             else
@@ -1522,19 +1588,28 @@ namespace AnnoDesigner
         /// <summary>
         /// Checks whether the user is pressing the control key.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see langword="true"> if the control key is pressed, otherwise <see langword="false">.</returns>
         private static bool IsControlPressed()
         {
-            return Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
+            return (Keyboard.Modifiers & ModifierKeys.Control) != 0;
         }
 
         /// <summary>
         /// Checks whether the user is pressing the shift key.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see langword="true"> if the shift key is pressed, otherwise <see langword="false">.</returns>
         private static bool IsShiftPressed()
         {
-            return Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
+            return (Keyboard.Modifiers & ModifierKeys.Shift) != 0;
+        }
+
+        /// <summary>
+        /// Checks whether actions should affect all objects with the same identifier.
+        /// </summary>
+        /// <returns><see langword="true"> if all objects with same identifier should be affected, otherwise <see langword="false">.</returns>
+        private static bool ShouldAffectObjectsWithIdentifier()
+        {
+            return IsShiftPressed() && IsControlPressed();
         }
 
         #endregion
