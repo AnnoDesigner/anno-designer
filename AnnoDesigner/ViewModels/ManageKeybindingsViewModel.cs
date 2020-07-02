@@ -100,7 +100,9 @@ namespace AnnoDesigner.ViewModels
                 {
                     if (hotkey.Binding is MouseBinding mouseBinding)
                     {
-                        hotkey.Binding = UpdateMouseBinding(mouseBinding, action, modifiers);
+                        var gesture = mouseBinding.Gesture as MouseGesture;
+                        gesture.Modifiers = modifiers;
+                        gesture.MouseAction = action;
                     }
                     else
                     {
@@ -156,20 +158,6 @@ namespace AnnoDesigner.ViewModels
                 CommandTarget = keyBinding.CommandTarget,
                 Gesture = mouseGesture 
             };
-            return mouseBinding;
-        }
-
-        /// <summary>
-        /// Updates a <see cref="MouseBinding"/> with a new <see cref="MouseGesture"/>
-        /// </summary>
-        /// <param name="mouseBinding"></param>
-        /// <param name="action"></param>
-        /// <param name="modifierKeys"></param>
-        /// <returns></returns>
-        private MouseBinding UpdateMouseBinding(MouseBinding mouseBinding, MouseAction action, ModifierKeys modifierKeys)
-        {
-            var mouseGesture = new MouseGesture(action, modifierKeys);
-            mouseBinding.Gesture = mouseGesture;
             return mouseBinding;
         }
 
