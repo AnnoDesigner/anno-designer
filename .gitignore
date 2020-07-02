@@ -267,5 +267,6 @@ __pycache__/
 # /Build/
 /Build/logs
 /Build/out
-# dotnet run does not set the working directory of the application to AnnoDesigner/bin/[Debug|Release], its sets the working directory to the root of the csproj file
+# `dotnet run` does not set the working directory of the application to AnnoDesigner/bin/[Debug|Release], 
+# instead it sets the working directory to the root of the csproj file
 AnnoDesigner/logs/
