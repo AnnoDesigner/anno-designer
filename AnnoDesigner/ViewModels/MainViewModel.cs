@@ -998,7 +998,7 @@ namespace AnnoDesigner.ViewModels
 
         #endregion
 
-        #region commands
+        #region Commands
 
         public ICommand OpenProjectHomepageCommand { get; private set; }
 
@@ -1412,7 +1412,8 @@ namespace AnnoDesigner.ViewModels
         {
             var preferencesWindow = new PreferencesWindow(_appSettings, _commons, HotkeyCommandManager)
             {
-                Owner = Application.Current.MainWindow
+                Owner = Application.Current.MainWindow,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
             preferencesWindow.Show();
         }
