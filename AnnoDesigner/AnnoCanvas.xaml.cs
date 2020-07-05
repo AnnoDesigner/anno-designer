@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,6 +29,144 @@ using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner
 {
+    /// <summary>
+    /// Interface for all actions that can affect the objects placed on the canvas.
+    /// </summary>
+    public interface IAction
+    {
+        void PerformAction(List<LayoutObject> placedObjects);
+        void UndoAction(List<LayoutObject> placedObjects);
+    }
+
+    /// <summary>
+    /// Abstract base class that implements adding or removing objects on the canvas.
+    /// </summary>
+    public abstract class AddRemovePlacedObjects : IAction
+    {
+        private List<LayoutObject> _objectsToPlace;
+        private AddRemove _addOrRemove;
+
+        protected enum AddRemove {
+            Add,
+            Remove
+        }
+
+        protected AddRemovePlacedObjects(List<LayoutObject> objectsToPlace, AddRemove addOrRemove)
+        {
+            _objectsToPlace = objectsToPlace;
+            _addOrRemove = addOrRemove;
+        }
+
+        public void PerformAction(List<LayoutObject> placedObjects)
+        {
+            switch (_addOrRemove)
+            {
+                case AddRemove.Add:
+                    addObject(placedObjects);
+                    break;
+                case AddRemove.Remove:
+                    removeObject(placedObjects);
+                    break;
+            }
+        }
+
+        public void UndoAction(List<LayoutObject> placedObjects)
+        {
+            switch (_addOrRemove) 
+            {
+                case AddRemove.Add:
+                    removeObject(placedObjects);
+                    break;
+                case AddRemove.Remove:
+                    addObject(placedObjects);
+                    break;
+            }
+
+        }
+
+        private void addObject(List<LayoutObject> placedObjects)
+        {
+            placedObjects.AddRange(_objectsToPlace);
+            // sort the objects because borderless objects should be drawn first
+            placedObjects.Sort((a, b) => b.WrappedAnnoObject.Borderless.CompareTo(a.WrappedAnnoObject.Borderless));
+        }
+
+        private void removeObject(List<LayoutObject> placedObjects)
+        {
+            // placedObjects = placedObjects.Except(_objectsToPlace).ToList();
+            _objectsToPlace.ForEach(_ => placedObjects.Remove(_));
+        }
+    }
+
+    /// <summary>
+    /// Places objects on the canvas.
+    /// </summary>
+    public class AddPlacedObjects : AddRemovePlacedObjects
+    {
+        public AddPlacedObjects(List<LayoutObject> objectsToPlace) : base(objectsToPlace, AddRemove.Add) { }
+    }
+
+    /// <summary>
+    /// Removes objects from the canvas.
+    /// </summary>
+    public class RemovePlacedObjects : AddRemovePlacedObjects
+    {
+        public RemovePlacedObjects(List<LayoutObject> objectsToPlace) : base(objectsToPlace, AddRemove.Remove) { }
+    }
+
+    /// <summary>
+    /// Class which manages the actions that have been taken. Allows performing new actions, and undoing and redoing actions.
+    /// </summary>
+    public class ActionManager
+    {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        private List<LayoutObject> _placedObjects;
+        private List<IAction> _previousActions;
+        private List<IAction> _futureActions;
+
+        public ActionManager(ref List<LayoutObject> placedObjects){
+            _placedObjects = placedObjects;
+            _previousActions = new List<IAction>();
+            _futureActions = new List<IAction>();
+        }
+
+        public void PerformAction(IAction action){
+            // Performing a new action so clear all future actions as they are no longer valid.
+            logger.Warn("Performing action");
+            _futureActions.Clear();
+            _previousActions.Add(action);
+            action.PerformAction(_placedObjects);
+        }
+
+        public void UndoAction() {
+            logger.Warn("Attempt an undo.");
+            if (_previousActions.Count == 0)
+            {
+                logger.Warn("No actions to undo");
+                return;
+            }
+            IAction actionToUndo = _previousActions[_previousActions.Count - 1];
+            _previousActions.RemoveAt(_previousActions.Count - 1);
+            _futureActions.Add(actionToUndo);
+            actionToUndo.UndoAction(_placedObjects);
+        }
+
+        public void RedoAction() {
+            logger.Warn("Attempt a redo.");
+            if (_futureActions.Count == 0)
+            {
+                logger.Warn("No actions to redo");
+                return;
+            }
+            IAction actionToRedo = _futureActions[_futureActions.Count - 1];
+            _futureActions.RemoveAt(_futureActions.Count - 1);
+            _previousActions.Add(actionToRedo);
+            actionToRedo.PerformAction(_placedObjects);
+        }
+    }
+
+
     /// <summary>
     /// Interaction logic for AnnoCanvas.xaml
     /// </summary>
@@ -391,15 +529,31 @@ namespace AnnoDesigner
         private Rect _selectionRect;
 
         /// <summary>
+        /// Backing field of the PlacedObjects property.
+        /// </summary>
+        private List<LayoutObject> _placedObjects;
+
+        /// <summary>
         /// List of all currently placed objects.
         /// </summary>
-        public List<LayoutObject> PlacedObjects { get; set; }
+        public List<LayoutObject> PlacedObjects {
+            get
+            {
+                return _placedObjects;
+            }
+            set
+            {
+                _placedObjects = value;
+            }
+        }
 
         /// <summary>
         /// List of all currently selected objects.
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
         public List<LayoutObject> SelectedObjects { get; set; }
+
+        private ActionManager actionManager { get; set; }
 
         /// <summary>
         /// Add the objects to SelectedObjects, optionally also add all objects which match one of their identifiers.
@@ -534,6 +688,7 @@ namespace AnnoDesigner
 
             PlacedObjects = new List<LayoutObject>();
             SelectedObjects = new List<LayoutObject>();
+            actionManager = new ActionManager(ref _placedObjects);
 
             const int dpiFactor = 1;
             _linePen = _penCache.GetPen(Brushes.Black, dpiFactor * 1);
@@ -1299,6 +1454,7 @@ namespace AnnoDesigner
                 // check if the mouse has moved at least one grid cell in any direction
                 if (dx != 0 || dy != 0)
                 {
+                    // TODO: Need to make sure that this uses an action to move the objects.
                     foreach (var curLayoutObject in PlacedObjects)
                     {
                         curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
@@ -1380,6 +1536,7 @@ namespace AnnoDesigner
                                 }
 
                                 // if no collisions were found, permanently move all selected objects
+                                // TODO: Need to move the objects using an action
                                 if (!collisionsExist)
                                 {
                                     foreach (var curLayoutObject in SelectedObjects)
@@ -1482,7 +1639,7 @@ namespace AnnoDesigner
                                 else
                                 {
                                     // Remove object, only ever remove a single object this way.
-                                    PlacedObjects.Remove(obj);
+                                    actionManager.PerformAction(new RemovePlacedObjects(new List<LayoutObject>() { obj } ));
                                     RemoveSelectedObject(obj, false);
                                 }
                             }
@@ -1539,7 +1696,7 @@ namespace AnnoDesigner
             {
                 case Key.Delete:
                     // remove all currently selected objects from the grid and clear selection
-                    SelectedObjects.ForEach(_ => PlacedObjects.Remove(_));
+                    actionManager.PerformAction(new RemovePlacedObjects(CloneList(SelectedObjects)));
                     SelectedObjects.Clear();
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                     break;
@@ -1577,6 +1734,22 @@ namespace AnnoDesigner
                         //Rotate from selected objects
                         CurrentObjects = CloneList(SelectedObjects);
                         Rotate(CurrentObjects);
+                    }
+                    break;
+                case Key.Z:
+                    if (IsControlPressed() && IsShiftPressed())
+                    {
+                        actionManager.RedoAction();
+                    }
+                    else if (IsControlPressed())
+                    {
+                        actionManager.UndoAction();
+                    }
+                    break;
+                case Key.Y:
+                    if (IsControlPressed())
+                    {
+                        actionManager.RedoAction();
                     }
                     break;
 
@@ -1650,9 +1823,7 @@ namespace AnnoDesigner
         {
             if (CurrentObjects.Count != 0 && !PlacedObjects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
             {
-                PlacedObjects.AddRange(CloneList(CurrentObjects));
-                // sort the objects because borderless objects should be drawn first
-                PlacedObjects.Sort((a, b) => b.WrappedAnnoObject.Borderless.CompareTo(a.WrappedAnnoObject.Borderless));
+                actionManager.PerformAction(new AddPlacedObjects(CloneList(CurrentObjects)));
 
                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                 //no need to update colors if drawing the same object(s)
