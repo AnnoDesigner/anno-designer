@@ -242,13 +242,9 @@ namespace AnnoDesigner.ViewModels
             {
                 if (selectedItem != null)
                 {
-                    UpdateUIFromObject(new LayoutObject(new AnnoObject(selectedItem)
-                    {
-                        Color = BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
-                    },
-                    _coordinateHelper,
-                    _brushCache,
-                    _penCache));
+                    var copySelectedItem = new AnnoObject(selectedItem);
+                    copySelectedItem.Color = ColorPresetsHelper.Instance.GetPredefinedColor(copySelectedItem) ?? BuildingSettingsViewModel.SelectedColor ?? Colors.Red;
+                    UpdateUIFromObject(new LayoutObject(copySelectedItem, _coordinateHelper, _brushCache, _penCache));
 
                     ApplyCurrentObject();
                 }
@@ -377,7 +373,7 @@ namespace AnnoDesigner.ViewModels
             BuildingSettingsViewModel.BuildingWidth = (int)layoutObject.Size.Width;
             BuildingSettingsViewModel.BuildingHeight = (int)layoutObject.Size.Height;
             // color
-            BuildingSettingsViewModel.SelectedColor = ColorPresetsHelper.Instance.GetPredefinedColor(obj) ?? layoutObject.Color;
+            BuildingSettingsViewModel.SelectedColor = layoutObject.Color;
             // label
             BuildingSettingsViewModel.BuildingName = obj.Label;
             // Identifier
