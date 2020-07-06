@@ -12,7 +12,9 @@ namespace FandomParser.WikiText
     {
         private static Dictionary<WorldRegion, Dictionary<string, string>> RegionTables { get; set; }
 
-        private static readonly Regex regexNormalizeLineEndings = new Regex(@"\r\n|\n|\r", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private const string STYLE_INFO = "| style=\"text-align:center;\" |";
+        private const string TABLE_HEADER = "! style=\"text-align:center;\" |Size";
+        private const string TABLE_SEPARATOR = " ===";
         private static readonly Regex regexSize = new Regex("^[0-9]+x[0-9]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public WikiTextTableContainer GetTables(string wikiText)
@@ -119,7 +121,7 @@ namespace FandomParser.WikiText
 
             foreach (var curTable in tables)
             {
-                var splitted = curTable.Split(new string[] { " ===" }, StringSplitOptions.RemoveEmptyEntries);
+                var splitted = curTable.Split(new string[] { TABLE_SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
                 var parsedTableHeader = splitted[0].Trim()
                     .Replace(" buildings", string.Empty)
                     .Replace(" Buildings", string.Empty);
@@ -164,17 +166,18 @@ namespace FandomParser.WikiText
 
             foreach (var curTable in tableList)
             {
-                var normalized = regexNormalizeLineEndings.Replace(curTable, Environment.NewLine);
-                //var normalized = Regex.Replace(curTable, @"\r\n|\n|\r", "\r\n");
-                tablesWithLineBreaks.Add(normalized);
-
-                //var splittedTable = curTable.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                //var tableWithLineBreaks = string.Join(Environment.NewLine, splittedTable);
-
-                //tablesWithLineBreaks.Add(tableWithLineBreaks);
+                tablesWithLineBreaks.Add(GetLineBreakAlignedWikiText(curTable));
             }
 
             return tablesWithLineBreaks;
+        }
+
+        private static string GetLineBreakAlignedWikiText(string wikiText)
+        {
+            //based on benchmarks, a Regex.Replace is slower and allocates more memory -> NOT better: return Regex.Replace(wikiText, @"\r\n|\n\r|\n|\r", Environment.NewLine);
+            return wikiText.Replace("\r\n", "\n")
+                .Replace("\r", "\n")
+                .Replace("\n", Environment.NewLine);
         }
 
         private static List<string> RemoveTableHeaders(List<string> tablesWithLineBreaks)
@@ -183,7 +186,7 @@ namespace FandomParser.WikiText
 
             foreach (var curTable in tablesWithLineBreaks)
             {
-                var split = curTable.Split(new[] { $"! style=\"text-align:center;\" |Size" }, StringSplitOptions.RemoveEmptyEntries);
+                var split = curTable.Split(new[] { TABLE_HEADER }, StringSplitOptions.RemoveEmptyEntries);
                 cleanedTables.Add(split[1]);
             }
 
@@ -249,7 +252,7 @@ namespace FandomParser.WikiText
                 }
 
                 //line has no useful information
-                if (curLine.Equals("| style=\"text-align:center;\" |", StringComparison.OrdinalIgnoreCase) &&
+                if (curLine.Equals(STYLE_INFO, StringComparison.OrdinalIgnoreCase) &&
                     entryCounter != 4)//there are buildings without maintenance cost
                 {
                     continue;

@@ -10,7 +10,7 @@ namespace InfoboxParser
 {
     public class InfoboxExtractor : IInfoboxExtractor
     {
-        private static readonly Regex regexReplaceEmpyLines = new Regex(@"^\s*$\n|\r", RegexOptions.Multiline | RegexOptions.Compiled);
+        private static readonly Regex regexMatchEmpyLines = new Regex(@"^\s*$\n|\r", RegexOptions.Multiline | RegexOptions.Compiled);
         private readonly Regex regexMultipleInfoboxes;
         private readonly ICommons _commons;
         private readonly ITitleParserSingle _titleParserSingle;
@@ -145,7 +145,7 @@ namespace InfoboxParser
 
         private string RemoveEmptyLines(string lines)
         {
-            return regexReplaceEmpyLines.Replace(lines, string.Empty).TrimEnd();
+            return regexMatchEmpyLines.Replace(lines, string.Empty).TrimEnd();
         }
     }
 }

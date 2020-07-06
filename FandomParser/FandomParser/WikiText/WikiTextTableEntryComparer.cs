@@ -41,7 +41,6 @@ namespace FandomParser.WikiText
             unchecked
             {
                 //name cannot be null
-                //var hashCode = obj.Name != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Name) : 0;
                 var hashCode = StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Name);
 
                 hashCode = (hashCode * 397) ^ obj.Region.GetHashCode();

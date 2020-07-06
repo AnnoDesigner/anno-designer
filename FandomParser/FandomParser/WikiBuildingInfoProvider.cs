@@ -14,6 +14,11 @@ namespace FandomParser
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        private const string WIKITEXT_LINK_FILE_START = "[[";
+        private const string WIKITEXT_LINK_FILE_END = "]]";
+        private const string WIKITEXT_LINK_START = "{{";
+        private const string WIKITEXT_LINK_END = "}}";
+
         public WikiBuildingInfoPresets GetWikiBuildingInfos(WikiTextTableContainer list)
         {
             var wikibuildingList = new WikiBuildingInfoPresets();
@@ -38,7 +43,7 @@ namespace FandomParser
 
                 result.Region = table.Region;
                 result.Tier = table.Tier;
-                result.Name = table.Name.Replace("[[", string.Empty).Replace("]]", string.Empty);
+                result.Name = table.Name.Replace(WIKITEXT_LINK_FILE_START, string.Empty).Replace(WIKITEXT_LINK_FILE_END, string.Empty);
                 result.Icon = table.Icon.Replace("[[File:", string.Empty).Replace("|40px]]", string.Empty);
 
                 if (table.Size.Contains(Environment.NewLine))
@@ -149,7 +154,7 @@ namespace FandomParser
         {
             ConstructionInfo result = null;
 
-            var splittedInfo = constructionCost.Split(new[] { "{{" }, StringSplitOptions.RemoveEmptyEntries);
+            var splittedInfo = constructionCost.Split(new[] { WIKITEXT_LINK_START }, StringSplitOptions.RemoveEmptyEntries);
 
             if (!double.TryParse(splittedInfo[0], out double parsedValue))
             {
@@ -167,7 +172,7 @@ namespace FandomParser
                 unit.Type = CostUnitType.Unknown;
             }
 
-            unit.Name = splittedInfo[1].Replace("}}", string.Empty).Replace("Infoicon", string.Empty).Trim();
+            unit.Name = splittedInfo[1].Replace(WIKITEXT_LINK_END, string.Empty).Replace("Infoicon", string.Empty).Trim();
 
             result = new ConstructionInfo
             {
@@ -183,7 +188,7 @@ namespace FandomParser
         {
             ConstructionInfo result = null;
 
-            var indexOfFileHeader = constructionCost.IndexOf("[[", StringComparison.OrdinalIgnoreCase);
+            var indexOfFileHeader = constructionCost.IndexOf(WIKITEXT_LINK_FILE_START, StringComparison.OrdinalIgnoreCase);
             var valueString = constructionCost.Substring(0, indexOfFileHeader).Trim();
             var temp = constructionCost.Remove(0, indexOfFileHeader);
             if (!double.TryParse(valueString, out double value))
@@ -230,7 +235,7 @@ namespace FandomParser
         {
             MaintenanceInfo result = null;
 
-            var splittedInfo = maintenanceCost.Split(new[] { "{{" }, StringSplitOptions.RemoveEmptyEntries);
+            var splittedInfo = maintenanceCost.Split(new[] { WIKITEXT_LINK_START }, StringSplitOptions.RemoveEmptyEntries);
 
             if (!double.TryParse(splittedInfo[0], out double parsedValue))
             {
@@ -248,7 +253,7 @@ namespace FandomParser
                 unit.Type = CostUnitType.Unknown;
             }
 
-            unit.Name = splittedInfo[1].Replace("}}", string.Empty).Replace("Infoicon", string.Empty).Trim();
+            unit.Name = splittedInfo[1].Replace(WIKITEXT_LINK_END, string.Empty).Replace("Infoicon", string.Empty).Trim();
 
             result = new MaintenanceInfo
             {
@@ -264,7 +269,7 @@ namespace FandomParser
         {
             MaintenanceInfo result = null;
 
-            var indexOfFileHeader = maintenanceCost.IndexOf("[[", StringComparison.OrdinalIgnoreCase);
+            var indexOfFileHeader = maintenanceCost.IndexOf(WIKITEXT_LINK_FILE_START, StringComparison.OrdinalIgnoreCase);
             var valueString = maintenanceCost.Substring(0, indexOfFileHeader).Trim();
             var temp = maintenanceCost.Remove(0, indexOfFileHeader);
             if (!double.TryParse(valueString, out double value))

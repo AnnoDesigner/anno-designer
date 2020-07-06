@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("FandomParser.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Hewlett-Packard")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("FandomParser.Tests")]
-[assembly: AssemblyCopyright("Copyright © Hewlett-Packard 2020")]
+[assembly: AssemblyCopyright("Copyright © 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
