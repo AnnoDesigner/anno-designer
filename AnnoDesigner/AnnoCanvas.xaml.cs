@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,7 +22,7 @@ using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
-using AnnoDesigner.model;
+using AnnoDesigner.Models;
 using Microsoft.Win32;
 using NLog;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
@@ -172,6 +174,30 @@ namespace AnnoDesigner
                     InvalidateVisual();
                 }
                 _renderIcon = value;
+            }
+        }
+
+        /// <summary>
+        /// Backing field of the RenderTrueInfluenceRange property.
+        /// </summary>
+        private bool _renderTrueInfluenceRange;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the influence range should be calculated from roads present in the grid.
+        /// </summary>
+        public bool RenderTrueInfluenceRange
+        {
+            get
+            {
+                return _renderTrueInfluenceRange;
+            }
+            set
+            {
+                if (_renderTrueInfluenceRange != value)
+                {
+                    InvalidateVisual();
+                }
+                _renderTrueInfluenceRange = value;
             }
         }
 
@@ -375,6 +401,69 @@ namespace AnnoDesigner
         /// </summary>
         public List<LayoutObject> SelectedObjects { get; set; }
 
+        /// <summary>
+        /// Add the objects to SelectedObjects, optionally also add all objects which match one of their identifiers.
+        /// </summary>
+        /// <param name="includeSameObjects"> 
+        /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToAdd">.
+        /// </param>
+        private void AddSelectedObjects(List<LayoutObject> objectsToAdd, bool includeSameObjects)
+        {
+            if (includeSameObjects)
+            {
+                // Add all placed objects whose identifier matches any of those in the objectsToAdd.
+                SelectedObjects.AddRange(PlacedObjects.FindAll(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase))));
+            }
+            else
+            {
+                SelectedObjects.AddRange(objectsToAdd);
+            }
+
+            // This can lead to some objects being selected multiple times, so only keep distinct objects.
+            SelectedObjects = SelectedObjects.Distinct().ToList();
+        }
+
+        /// <summary>
+        /// Remove the objects from SelectedObjects, optionally also remove all objects which match one of their identifiers.
+        /// </summary>
+        /// <param name="includeSameObjects"> 
+        /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToRemove">.
+        /// </param>
+        private void RemoveSelectedObjects(List<LayoutObject> objectsToRemove, bool includeSameObjects)
+        {
+            if (includeSameObjects)
+            {
+                // Exclude any selected objects whose identifier matches any of those in the objectsToRemove.
+                SelectedObjects = SelectedObjects.Except(SelectedObjects.FindAll(placed => objectsToRemove.Any(toRemove => toRemove.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase)))).ToList();
+            }
+            else
+            {
+                SelectedObjects = SelectedObjects.Except(objectsToRemove).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Add a single object to SelectedObjects, optionally also add all objects with the same identifier.
+        /// </summary>
+        /// <param name="includeSameObjects"> 
+        /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToAdd">.
+        /// </param>
+        private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects)
+        {
+            AddSelectedObjects(new List<LayoutObject>() { objectToAdd }, includeSameObjects);
+        }
+
+        /// <summary>
+        /// Remove a single object from SelectedObjects, optionally also remove all objects with the same identifier.
+        /// </summary>
+        /// <param name="includeSameObjects"> 
+        /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToRemove">.
+        /// </param>
+        private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects)
+        {
+            RemoveSelectedObjects(new List<LayoutObject>() { objectToRemove }, includeSameObjects);
+        }
+
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
 
         #region Pens and Brushes
@@ -503,7 +592,7 @@ namespace AnnoDesigner
                         logger.Error(ex, "Loading of the icon names failed.");
 
                         MessageBox.Show("Loading of the icon names failed",
-                            Localization.Localization.Translations[Localization.Localization.GetLanguageCodeFromName(Properties.Settings.Default.SelectedLanguage)]["Error"],
+                            Localization.Localization.Translations["Error"],
                             MessageBoxButton.OK,
                             MessageBoxImage.Error);
                     }
@@ -802,165 +891,238 @@ namespace AnnoDesigner
             }
         }
 
+        /// <summary>
+        /// Renders influence range of the given objects.
+        /// If RenderTrueInfluenceRange is set to true, true influence range will be rendered and objects inside will be highlighted.
+        /// Else maximum influence range will be rendered.
+        /// </summary>
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
-            foreach (var curLayoutObject in objects)
+            AnnoObject[][] gridDictionary = null;
+            if (RenderTrueInfluenceRange && PlacedObjects.Count > 0)
             {
-                var obj = curLayoutObject.WrappedAnnoObject;
-                if (obj.InfluenceRange > 0.5)
+                var placedAnnoObjects = PlacedObjects.Concat(objects).Select(o => o.WrappedAnnoObject).ToList();
+                var placedObjectDictionary = PlacedObjects.ToDictionary(o => o.WrappedAnnoObject);
+
+                void Highlight(AnnoObject objectInRange)
                 {
-                    //The below code looks very complex, but is surprisingly quick as most of its
-                    //calculations are done with Points, which being structs, are value types, and
-                    //consequently have much lower GC and memory copy costs.
+                    drawingContext.DrawRectangle(_influencedBrush, _influencedPen, placedObjectDictionary[objectInRange].CalculateScreenRect(GridSize));
+                }
 
-                    //I did try to cache these points, but as they are absolute values, I needed to
-                    //appy an offset to revert to the proper positions. The process of needing to
-                    //enumerate the points list to add the offset proved to be slower than just
-                    //recalculating all the points again.
+                gridDictionary = RoadSearchHelper.PrepareGridDictionary(placedAnnoObjects);
+                RoadSearchHelper.BreadthFirstSearch(
+                    placedAnnoObjects,
+                    objects.Select(o => o.WrappedAnnoObject).Where(o => o.InfluenceRange > 0.5),
+                    o => (int)o.InfluenceRange + 1,// increase distance to get objects that are touching even the last road cell in influence range
+                    gridDictionary,
+                    Highlight);
+            }
 
-                    //You can see my attempts in some of the previous reverted commits for this branch.
-                    //An alternate caching could work in future, if one can be designed. 
-
-                    //Octagon is drawn in clockwise starting from the top-left corner
-                    //The arrows represent the direction, the inner square represents the influence area
-                    //In the normal working, this area is diagonal (hence the octagon drawn), but this 
-                    //cannot be easily displayed on the diagram below.
-
-                    //Start here: V
-                    //  +-------> --> -------+
-                    //  |                    |
-                    //  |    +---+--+---+    |
-                    //  |    |   |  |   |    |
-                    //  |    | 1 |  | 2 |    |
-                    //  |    |   |  |   |    v
-                    //  ^    +----------+    |
-                    //  |    |   |  |   |    |
-                    //  |    +----------+    v
-                    //  ^    |   |  |   |    |
-                    //  |    | 4 |  | 3 |    |
-                    //  |    |   |  |   |    |
-                    //  |    +---+--+---+    |
-                    //  |                    |
-                    //  +------- <--- <------+
-
-                    //Quadrant 1 = min(x), min(y)
-                    //Quadrant 2 = max(x), min(y)
-                    //Quadrant 3 = min(x), max(y)
-                    //Quadrant 4 = max(x), max(y)
-
-                    //In grid units
-                    var topLeftCorner = curLayoutObject.Position;
-                    var topRightCorner = new Point(curLayoutObject.Position.X + curLayoutObject.Size.Width, curLayoutObject.Position.Y);
-                    var bottomLeftCorner = new Point(curLayoutObject.Position.X, curLayoutObject.Position.Y + curLayoutObject.Size.Height);
-                    var bottomRightCorner = new Point(curLayoutObject.Position.X + curLayoutObject.Size.Width, curLayoutObject.Position.Y + curLayoutObject.Size.Height);
-
-                    var influenceRange = obj.InfluenceRange;
-
+            var geometries = new ConcurrentBag<(long index, StreamGeometry geometry)>();
+            Parallel.ForEach(objects, (curLayoutObject, _, index) =>
+            {
+                if (curLayoutObject.WrappedAnnoObject.InfluenceRange > 0.5)
+                {
                     var sg = new StreamGeometry();
 
-                    var startPoint = new Point(topLeftCorner.X, topLeftCorner.Y - influenceRange);
-                    var stroked = true;
-                    var smoothJoin = true;
-
-                    var geometryFill = true;
-                    var geometryStroke = true;
-
-                    using (StreamGeometryContext sgc = sg.Open())
+                    using (var sgc = sg.Open())
                     {
-                        sgc.BeginFigure(_coordinateHelper.GridToScreen(startPoint, GridSize), geometryFill, geometryStroke);
-
-                        ////////////////////////////////////////////////////////////////
-                        //Draw in width of object
-                        sgc.LineTo(_coordinateHelper.GridToScreen(new Point(topRightCorner.X, startPoint.Y), GridSize), stroked, smoothJoin);
-
-                        //Draw quadrant 2
-                        //Get end value to draw from top-right of 2nd quadrant to bottom-right of 2nd quadrant
-                        startPoint = new Point(topRightCorner.X, topRightCorner.Y - influenceRange);
-                        var endPoint = new Point(topRightCorner.X + influenceRange, topRightCorner.Y);
-
-                        //Following the rules for quadrant 2 - go right and down
-                        var currentPoint = new Point(startPoint.X, startPoint.Y);
-                        while (endPoint != currentPoint)
+                        if (RenderTrueInfluenceRange)
                         {
-                            currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
-                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
-                            currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
-                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
+                            DrawTrueInfluenceRangePolygon(curLayoutObject, sgc, gridDictionary);
                         }
-
-                        ////////////////////////////////////////////////////////////////
-                        startPoint = endPoint;
-                        //Draw in height of object
-                        sgc.LineTo(_coordinateHelper.GridToScreen(new Point(startPoint.X, bottomRightCorner.Y), GridSize), stroked, smoothJoin);
-
-                        //Draw quadrant 3
-                        //Get end value to draw from top-left of 3rd quadrant to bottom-left of 3rd quadrant
-                        //Move startPoint to bottomLeftCorner (x value is already correct)
-                        startPoint = new Point(startPoint.X, bottomRightCorner.Y);
-                        endPoint = new Point(bottomRightCorner.X, bottomRightCorner.Y + influenceRange);
-
-                        //Following the rules for quadrant 3 - go left and down
-                        currentPoint = new Point(startPoint.X, startPoint.Y);
-                        while (endPoint != currentPoint)
+                        else
                         {
-                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
-                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
-                            currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
-                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
+                            DrawInfluenceRangePolygon(curLayoutObject, sgc);
                         }
-
-                        ////////////////////////////////////////////////////////////////
-                        startPoint = endPoint;
-                        //Draw in width of object
-                        sgc.LineTo(_coordinateHelper.GridToScreen(new Point(bottomLeftCorner.X, startPoint.Y), GridSize), stroked, smoothJoin);
-
-                        //Draw quadrant 4
-                        //Get end value to draw from bottom-right of 4th quadrant to top-left of 4th quadrant
-                        //Move startPoint to bottomRightCorner (y value is already correct)
-                        startPoint = new Point(bottomLeftCorner.X, startPoint.Y);
-                        endPoint = new Point(bottomLeftCorner.X - influenceRange, bottomRightCorner.Y);
-
-                        //Following the rules for quadrant 4 - go up and left
-                        currentPoint = new Point(startPoint.X, startPoint.Y);
-                        while (endPoint != currentPoint)
-                        {
-                            currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
-                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
-                            currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
-                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
-                        }
-
-                        ////////////////////////////////////////////////////////////////
-                        startPoint = endPoint;
-                        //Draw in height of object
-                        sgc.LineTo(_coordinateHelper.GridToScreen(new Point(startPoint.X, topLeftCorner.Y), GridSize), stroked, smoothJoin);
-
-                        //Draw quadrant 1
-                        //Get end value to draw from bottom-left of 1st quadrant to top-right of 1st quadrant
-                        //Move startPoint to topLeftCorner (x value is already correct)
-                        startPoint = new Point(startPoint.X, topLeftCorner.Y);
-                        endPoint = new Point(topLeftCorner.X, topLeftCorner.Y - influenceRange);
-
-                        //Following the rules for quadrant 1 - go up and right
-                        currentPoint = new Point(startPoint.X, startPoint.Y);
-                        while (endPoint != currentPoint)
-                        {
-                            currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
-                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
-                            currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
-                            sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
-                        }
-
-                        //Shape should be complete by this point.
                     }
 
                     if (sg.CanFreeze)
                     {
                         sg.Freeze();
                     }
-                    drawingContext.DrawGeometry(_lightBrush, _radiusPen, sg);
+                    geometries.Add((index, sg));
                 }
+            });
+            foreach (var (_, geometry) in geometries.OrderBy(p => p.index))
+            {
+                drawingContext.DrawGeometry(_lightBrush, _radiusPen, geometry);
             }
+        }
+
+        private void DrawTrueInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc, AnnoObject[][] gridDictionary)
+        {
+            var stroked = true;
+            var smoothJoin = true;
+
+            var geometryFill = true;
+            var geometryStroke = true;
+
+            var startObjects = new AnnoObject[1]
+            {
+                curLayoutObject.WrappedAnnoObject
+            };
+
+            var cellsInInfluenceRange = RoadSearchHelper.BreadthFirstSearch(
+                PlacedObjects.Select(o => o.WrappedAnnoObject),
+                startObjects,
+                o => (int)o.InfluenceRange,
+                gridDictionary);
+
+            var points = PolygonBoundaryFinderHelper.GetBoundaryPoints(cellsInInfluenceRange);
+            if (points.Count < 1)
+            {
+                return;
+            }
+
+            sgc.BeginFigure(_coordinateHelper.GridToScreen(new Point(points[0].x, points[0].y), GridSize), geometryFill, geometryStroke);
+            for (var i = 1; i < points.Count; i++)
+            {
+                sgc.LineTo(_coordinateHelper.GridToScreen(new Point(points[i].x, points[i].y), GridSize), stroked, smoothJoin);
+            }
+        }
+
+        private void DrawInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc)
+        {
+            //The below code looks very complex, but is surprisingly quick as most of its
+            //calculations are done with Points, which being structs, are value types, and
+            //consequently have much lower GC and memory copy costs.
+
+            //I did try to cache these points, but as they are absolute values, I needed to
+            //appy an offset to revert to the proper positions. The process of needing to
+            //enumerate the points list to add the offset proved to be slower than just
+            //recalculating all the points again.
+
+            //You can see my attempts in some of the previous reverted commits for this branch.
+            //An alternate caching could work in future, if one can be designed. 
+
+            //Octagon is drawn in clockwise starting from the top-left corner
+            //The arrows represent the direction, the inner square represents the influence area
+            //In the normal working, this area is diagonal (hence the octagon drawn), but this 
+            //cannot be easily displayed on the diagram below.
+
+            //Start here: V
+            //  +-------> --> -------+
+            //  |                    |
+            //  |    +---+--+---+    |
+            //  |    |   |  |   |    |
+            //  |    | 1 |  | 2 |    |
+            //  |    |   |  |   |    v
+            //  ^    +----------+    |
+            //  |    |   |  |   |    |
+            //  |    +----------+    v
+            //  ^    |   |  |   |    |
+            //  |    | 4 |  | 3 |    |
+            //  |    |   |  |   |    |
+            //  |    +---+--+---+    |
+            //  |                    |
+            //  +------- <--- <------+
+
+            //Quadrant 1 = min(x), min(y)
+            //Quadrant 2 = max(x), min(y)
+            //Quadrant 3 = min(x), max(y)
+            //Quadrant 4 = max(x), max(y)
+
+            //In grid units
+            var topLeftCorner = curLayoutObject.Position;
+            var topRightCorner = new Point(curLayoutObject.Position.X + curLayoutObject.Size.Width, curLayoutObject.Position.Y);
+            var bottomLeftCorner = new Point(curLayoutObject.Position.X, curLayoutObject.Position.Y + curLayoutObject.Size.Height);
+            var bottomRightCorner = new Point(curLayoutObject.Position.X + curLayoutObject.Size.Width, curLayoutObject.Position.Y + curLayoutObject.Size.Height);
+
+            var influenceRange = curLayoutObject.WrappedAnnoObject.InfluenceRange;
+
+            var startPoint = new Point(topLeftCorner.X, topLeftCorner.Y - influenceRange);
+            var stroked = true;
+            var smoothJoin = true;
+
+            var geometryFill = true;
+            var geometryStroke = true;
+
+            sgc.BeginFigure(_coordinateHelper.GridToScreen(startPoint, GridSize), geometryFill, geometryStroke);
+
+            ////////////////////////////////////////////////////////////////
+            //Draw in width of object
+            sgc.LineTo(_coordinateHelper.GridToScreen(new Point(topRightCorner.X, startPoint.Y), GridSize), stroked, smoothJoin);
+
+            //Draw quadrant 2
+            //Get end value to draw from top-right of 2nd quadrant to bottom-right of 2nd quadrant
+            startPoint = new Point(topRightCorner.X, topRightCorner.Y - influenceRange);
+            var endPoint = new Point(topRightCorner.X + influenceRange, topRightCorner.Y);
+
+            //Following the rules for quadrant 2 - go right and down
+            var currentPoint = new Point(startPoint.X, startPoint.Y);
+            while (endPoint != currentPoint)
+            {
+                currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
+                sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
+                currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
+                sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
+            }
+
+            ////////////////////////////////////////////////////////////////
+            startPoint = endPoint;
+            //Draw in height of object
+            sgc.LineTo(_coordinateHelper.GridToScreen(new Point(startPoint.X, bottomRightCorner.Y), GridSize), stroked, smoothJoin);
+
+            //Draw quadrant 3
+            //Get end value to draw from top-left of 3rd quadrant to bottom-left of 3rd quadrant
+            //Move startPoint to bottomLeftCorner (x value is already correct)
+            startPoint = new Point(startPoint.X, bottomRightCorner.Y);
+            endPoint = new Point(bottomRightCorner.X, bottomRightCorner.Y + influenceRange);
+
+            //Following the rules for quadrant 3 - go left and down
+            currentPoint = new Point(startPoint.X, startPoint.Y);
+            while (endPoint != currentPoint)
+            {
+                currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
+                sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
+                currentPoint = new Point(currentPoint.X, currentPoint.Y + 1);
+                sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
+            }
+
+            ////////////////////////////////////////////////////////////////
+            startPoint = endPoint;
+            //Draw in width of object
+            sgc.LineTo(_coordinateHelper.GridToScreen(new Point(bottomLeftCorner.X, startPoint.Y), GridSize), stroked, smoothJoin);
+
+            //Draw quadrant 4
+            //Get end value to draw from bottom-right of 4th quadrant to top-left of 4th quadrant
+            //Move startPoint to bottomRightCorner (y value is already correct)
+            startPoint = new Point(bottomLeftCorner.X, startPoint.Y);
+            endPoint = new Point(bottomLeftCorner.X - influenceRange, bottomRightCorner.Y);
+
+            //Following the rules for quadrant 4 - go up and left
+            currentPoint = new Point(startPoint.X, startPoint.Y);
+            while (endPoint != currentPoint)
+            {
+                currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
+                sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
+                currentPoint = new Point(currentPoint.X - 1, currentPoint.Y);
+                sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
+            }
+
+            ////////////////////////////////////////////////////////////////
+            startPoint = endPoint;
+            //Draw in height of object
+            sgc.LineTo(_coordinateHelper.GridToScreen(new Point(startPoint.X, topLeftCorner.Y), GridSize), stroked, smoothJoin);
+
+            //Draw quadrant 1
+            //Get end value to draw from bottom-left of 1st quadrant to top-right of 1st quadrant
+            //Move startPoint to topLeftCorner (x value is already correct)
+            startPoint = new Point(startPoint.X, topLeftCorner.Y);
+            endPoint = new Point(topLeftCorner.X, topLeftCorner.Y - influenceRange);
+
+            //Following the rules for quadrant 1 - go up and right
+            currentPoint = new Point(startPoint.X, startPoint.Y);
+            while (endPoint != currentPoint)
+            {
+                currentPoint = new Point(currentPoint.X + 1, currentPoint.Y);
+                sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
+                currentPoint = new Point(currentPoint.X, currentPoint.Y - 1);
+                sgc.LineTo(_coordinateHelper.GridToScreen(currentPoint, GridSize), stroked, smoothJoin);
+            }
+
+            //Shape should be complete by this point.
         }
 
         private List<LayoutObject> CloneList(List<LayoutObject> list)
@@ -1107,7 +1269,7 @@ namespace AnnoDesigner
             HandleMouse(e);
 
             // check if user begins to drag
-            if (Math.Abs(_mouseDragStart.X - _mousePosition.X) > 1 || Math.Abs(_mouseDragStart.Y - _mousePosition.Y) > 1)
+            if (Math.Abs(_mouseDragStart.X - _mousePosition.X) >= 1 || Math.Abs(_mouseDragStart.Y - _mousePosition.Y) >= 1)
             {
                 switch (CurrentMode)
                 {
@@ -1120,7 +1282,7 @@ namespace AnnoDesigner
                         break;
                     case MouseMode.DragSingleStart:
                         SelectedObjects.Clear();
-                        SelectedObjects.Add(GetObjectAt(_mouseDragStart));
+                        AddSelectedObject(GetObjectAt(_mouseDragStart), ShouldAffectObjectsWithIdentifier());
                         CurrentMode = MouseMode.DragSelection;
                         break;
                     case MouseMode.DragAllStart:
@@ -1166,7 +1328,8 @@ namespace AnnoDesigner
                                 if (IsControlPressed() || IsShiftPressed())
                                 {
                                     // remove previously selected by the selection rect
-                                    SelectedObjects.RemoveAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
+                                    RemoveSelectedObjects(SelectedObjects.Where(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)).ToList(),
+                                                          ShouldAffectObjectsWithIdentifier());
                                 }
                                 else
                                 {
@@ -1176,7 +1339,8 @@ namespace AnnoDesigner
                                 // adjust rect
                                 _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                                 // select intersecting objects
-                                SelectedObjects.AddRange(PlacedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)));
+                                AddSelectedObjects(PlacedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)),
+                                                   ShouldAffectObjectsWithIdentifier());
 
                                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                                 break;
@@ -1269,16 +1433,17 @@ namespace AnnoDesigner
                             }
 
                             var obj = GetObjectAt(_mousePosition);
+
                             if (obj != null)
                             {
                                 // user clicked an object: select or deselect it
                                 if (SelectedObjects.Contains(obj))
                                 {
-                                    SelectedObjects.Remove(obj);
+                                    RemoveSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
                                 }
                                 else
                                 {
-                                    SelectedObjects.Add(obj);
+                                    AddSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
                                 }
                             }
 
@@ -1316,9 +1481,9 @@ namespace AnnoDesigner
                                 }
                                 else
                                 {
-                                    // remove selected object
+                                    // Remove object, only ever remove a single object this way.
                                     PlacedObjects.Remove(obj);
-                                    SelectedObjects.Remove(obj);
+                                    RemoveSelectedObject(obj, false);
                                 }
                             }
                             else
@@ -1423,19 +1588,28 @@ namespace AnnoDesigner
         /// <summary>
         /// Checks whether the user is pressing the control key.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see langword="true"> if the control key is pressed, otherwise <see langword="false">.</returns>
         private static bool IsControlPressed()
         {
-            return Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
+            return (Keyboard.Modifiers & ModifierKeys.Control) != 0;
         }
 
         /// <summary>
         /// Checks whether the user is pressing the shift key.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see langword="true"> if the shift key is pressed, otherwise <see langword="false">.</returns>
         private static bool IsShiftPressed()
         {
-            return Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
+            return (Keyboard.Modifiers & ModifierKeys.Shift) != 0;
+        }
+
+        /// <summary>
+        /// Checks whether actions should affect all objects with the same identifier.
+        /// </summary>
+        /// <returns><see langword="true"> if all objects with same identifier should be affected, otherwise <see langword="false">.</returns>
+        private static bool ShouldAffectObjectsWithIdentifier()
+        {
+            return IsShiftPressed() && IsControlPressed();
         }
 
         #endregion

@@ -1,97 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C73FBFF0-1A11-40FC-8F1F-29637699419A}</ProjectGuid>
+    <TargetFramework>net472</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>AnnoDesigner.Core</RootNamespace>
     <AssemblyName>AnnoDesigner.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Converter\BoolToVisibilityConverter.cs" />
-    <Compile Include="Helper\ConnectivityHelper.cs" />
-    <Compile Include="CoreConstants.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Helper\FileHelper.cs" />
-    <Compile Include="Helper\RecentFilesHelper.cs" />
-    <Compile Include="Layout\Exceptions\LayoutFileVersionMismatchException.cs" />
-    <Compile Include="Layout\Helper\StatisticsCalculationHelper.cs" />
-    <Compile Include="Layout\LayoutLoader.cs" />
-    <Compile Include="Layout\Models\StatisticsCalculationResult.cs" />
-    <Compile Include="Layout\Models\ILayoutLoader.cs" />
-    <Compile Include="Models\AnnoObject.cs" />
-    <Compile Include="Models\ICloseable.cs" />
-    <Compile Include="Models\IconImage.cs" />
-    <Compile Include="Layout\Models\LayoutVersionContainer.cs" />
-    <Compile Include="Layout\Models\SavedLayout.cs" />
-    <Compile Include="Models\IRecentFilesHelper.cs" />
-    <Compile Include="Models\IRecentFilesSerializer.cs" />
-    <Compile Include="Models\Notify.cs" />
-    <Compile Include="Models\RecentFile.cs" />
-    <Compile Include="Models\RelayCommand.cs" />
-    <Compile Include="Models\SerializableColor.cs" />
-    <Compile Include="Models\SerializableDictionary.cs" />
-    <Compile Include="Presets\Comparer\BuildingInfoComparer.cs" />
-    <Compile Include="Presets\Helper\ColorPresetsHelper.cs" />
-    <Compile Include="Presets\Loader\BuildingPresetsLoader.cs" />
-    <Compile Include="Presets\Loader\ColorPresetsLoader.cs" />
-    <Compile Include="Presets\Loader\IconLoader.cs" />
-    <Compile Include="Presets\Loader\IconMappingPresetsLoader.cs" />
-    <Compile Include="Presets\Models\BuildingInfo.cs" />
-    <Compile Include="Presets\Models\BuildingPresets.cs" />
-    <Compile Include="Presets\Models\ColorPresets.cs" />
-    <Compile Include="Presets\Models\ColorScheme.cs" />
-    <Compile Include="Presets\Models\IBuildingInfo.cs" />
-    <Compile Include="Presets\Models\IconMappingPresets.cs" />
-    <Compile Include="Presets\Models\IconNameMap.cs" />
-    <Compile Include="Presets\Models\PredefinedColor.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Helper\SerializationHelper.cs" />
-  </ItemGroup>
-  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="NLog">
-      <Version>4.7.0</Version>
+      <Version>4.7.2</Version>
     </PackageReference>
-    <PackageReference Include="System.IO.Abstractions">
-      <Version>11.0.6</Version>
-    </PackageReference>
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.IO.Abstractions" Version="12.0.4" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,8 +8,18 @@ namespace AnnoDesigner.Core.Extensions
 {
     public static class StringExtensions
     {
+        //private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public static bool Contains(this string s, string token, StringComparison stringComparison)
         {
+
+            if (string.IsNullOrWhiteSpace(s) || string.IsNullOrWhiteSpace(token))
+            {
+                //logger.Trace($"{nameof(s)}: {s} | {nameof(token)}: {token}");
+
+                return false;//or throw error?
+            }
+
             if (s.IndexOf(token, stringComparison) != -1)
             {
                 return true;

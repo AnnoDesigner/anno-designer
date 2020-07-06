@@ -1,21 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Models;
 
 namespace AnnoDesigner.Localization
 {
-    public static class Localization
+    public class Localization : Notify
     {
-        public static Dictionary<string, Dictionary<string, string>> Translations;
+        private static Dictionary<string, Dictionary<string, string>> translations;
+        private static Localization instance;
 
-        static Localization()
+        public static Localization Instance => instance ??= new Localization();
+
+        public static Dictionary<string, string> Translations => translations[Instance.SelectedLanguage];
+
+        private ICommons commons;
+
+        private string selectedLanguage;
+        public string SelectedLanguage
         {
+            get { return selectedLanguage; }
+            set
+            {
+                if (UpdateProperty(ref selectedLanguage, value))
+                {
+                    OnPropertyChanged(nameof(Translations));
+                    OnPropertyChanged(nameof(InstanceTranslations));
+                }
+            }
+        }
+
+        public Dictionary<string, string> InstanceTranslations => Translations;
+
+        public static void Init(ICommons commons)
+        {
+            if (translations != null)
+            {
+                return;
+            }
+
             //This dictionary initialisation was auto-generated from:
             //https://docs.google.com/spreadsheets/d/1CjECty43mkkm1waO4yhQl1rzZ-ZltrBgj00aq-WJX4w/edit?usp=sharing 
             //Steps to format:
             //Run CreateDictionary Script
             //Copy Output
             //Replace the escaped characters (\t\r\n) with the actual characters from within an editor of your choice
-            Translations = new Dictionary<string, Dictionary<string, string>>()
+            translations = new Dictionary<string, Dictionary<string, string>>()
             {
                 {
                     "eng", new Dictionary<string, string>() {
@@ -55,6 +85,7 @@ namespace AnnoDesigner.Localization
                         { "ShowGrid" , "Show Grid" },
                         { "ShowLabels" , "Show Labels" },
                         { "ShowIcons" , "Show Icons" },
+                        { "ShowTrueInfluenceRange" , "Show True Influence Range" },
                         { "ShowInfluences" , "Show Influences" },
                         { "BuildingSettings" , "Building Settings" },
                         { "Size" , "Size" },
@@ -167,6 +198,7 @@ namespace AnnoDesigner.Localization
                         { "ShowGrid" , "Raster/Gitter (an)zeigen" },
                         { "ShowLabels" , "Bezeichnungen (an)zeigen" },
                         { "ShowIcons" , "Symbol (an)zeigen" },
+                        { "ShowTrueInfluenceRange" , "Wahren Einflussbereich anzeigen" },
                         { "ShowInfluences" , "Einflüsse anzeigen" },
                         { "BuildingSettings" , "Gebäude Optionen" },
                         { "Size" , "Größe" },
@@ -279,6 +311,7 @@ namespace AnnoDesigner.Localization
                         { "ShowGrid" , "Montrez le quadrillage" },
                         { "ShowLabels" , "Montrez les étiquettes" },
                         { "ShowIcons" , "Montrez les icônes" },
+                        { "ShowTrueInfluenceRange" , "Montrer l'étendue de l'influence réelle" },
                         { "ShowInfluences" , "Montrez vos influences" },
                         { "BuildingSettings" , "Paramètres de construction" },
                         { "Size" , "Grandeur" },
@@ -391,6 +424,7 @@ namespace AnnoDesigner.Localization
                         { "ShowGrid" , "Pokaż siatkę" },
                         { "ShowLabels" , "Pokaż etykiety" },
                         { "ShowIcons" , "Pokaż ikony" },
+                        { "ShowTrueInfluenceRange" , "Pokaż prawdziwy zakres wpływu" },
                         { "ShowInfluences" , "Pokaż wpływy" },
                         { "BuildingSettings" , "Ustawienia budynku" },
                         { "Size" , "Wymiary" },
@@ -503,6 +537,7 @@ namespace AnnoDesigner.Localization
                         { "ShowGrid" , "Показать сетку" },
                         { "ShowLabels" , "Показывать название" },
                         { "ShowIcons" , "Показывать значок" },
+                        { "ShowTrueInfluenceRange" , "Показать истинный диапазон влияния" },
                         { "ShowInfluences" , "Показать влияние" },
                         { "BuildingSettings" , "Параметры здания" },
                         { "Size" , "Размер" },
@@ -578,6 +613,17 @@ namespace AnnoDesigner.Localization
                     }
                 },
             };
+
+            Instance.commons = commons;
+            Instance.Commons_SelectedLanguageChanged(null, null);
+            commons.SelectedLanguageChanged += Instance.Commons_SelectedLanguageChanged;
+        }
+
+        private Localization() { }
+
+        private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
+        {
+            SelectedLanguage = GetLanguageCodeFromName(commons.SelectedLanguage);
         }
 
         public static readonly Dictionary<string, string> LanguageCodeMap = new Dictionary<string, string>()
@@ -595,11 +641,6 @@ namespace AnnoDesigner.Localization
         public static string GetLanguageCodeFromName(string s)
         {
             return LanguageCodeMap[s];
-        }
-
-        public static void Update()
-        {
-
         }
     }
 }

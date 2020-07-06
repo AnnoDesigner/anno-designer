@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AnnoDesigner.viewmodel;
+using AnnoDesigner.ViewModels;
 using Xunit;
 using Moq;
 using AnnoDesigner.Core.Models;
-using AnnoDesigner.model;
+using AnnoDesigner.Models;
 using AnnoDesigner.Core;
 using System.Globalization;
 
@@ -24,6 +24,7 @@ namespace AnnoDesigner.Tests
             var commonsMock = new Mock<ICommons>();
             commonsMock.SetupGet(x => x.SelectedLanguage).Returns(() => "English");
             _mockedCommons = commonsMock.Object;
+            Localization.Localization.Init(_mockedCommons);
 
             _mockedAppSettings = new Mock<IAppSettings>().Object;
 
@@ -360,6 +361,26 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedShowInfluences, appSettings.Object.ShowInfluences);
+            appSettings.Verify(x => x.Save(), Times.Once);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveShowTrueInfluenceRange(bool expectedShowTrueInfluenceRange)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.CanvasShowTrueInfluenceRange = expectedShowTrueInfluenceRange;
+
+            // Act
+            viewModel.SaveSettings();
+
+            // Assert
+            Assert.Equal(expectedShowTrueInfluenceRange, appSettings.Object.ShowTrueInfluenceRange);
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 

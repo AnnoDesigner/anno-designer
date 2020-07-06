@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Models;
-using AnnoDesigner.model;
-using AnnoDesigner.viewmodel;
+using AnnoDesigner.Models;
+using AnnoDesigner.ViewModels;
 using Moq;
 using Xunit;
 
@@ -13,18 +13,9 @@ namespace AnnoDesigner.Tests
 {
     public class AboutViewModelTests
     {
-        private readonly ICommons _mockedCommons;
-        private readonly IAppSettings _mockedAppSettings;
-
-        public AboutViewModelTests()
+        private AboutViewModel GetViewModel()
         {
-            _mockedCommons = new Mock<ICommons>().Object;
-            _mockedAppSettings = new Mock<IAppSettings>().Object;
-        }
-
-        private AboutViewModel GetViewModel(ICommons commonsToUse = null)
-        {
-            return new AboutViewModel(commonsToUse ?? _mockedCommons);
+            return new AboutViewModel();
         }
 
         #region CloseWindowCommand tests

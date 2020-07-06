@@ -6,8 +6,8 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using AnnoDesigner.model;
-using AnnoDesigner.viewmodel;
+using AnnoDesigner.Models;
+using AnnoDesigner.ViewModels;
 using NLog;
 using NLog.Targets;
 
@@ -123,7 +123,7 @@ namespace AnnoDesigner
                             Environment.Exit(-1);
                         }
                     }
-                    catch (AbandonedMutexException ex)
+                    catch (AbandonedMutexException)
                     {
                         //mutex was killed
                         createdNewMutex = true;
@@ -176,6 +176,7 @@ namespace AnnoDesigner
                 //var updateWindow = new UpdateWindow();                
                 await _commons.UpdateHelper.ReplaceUpdatedPresetsFilesAsync();
 
+                Localization.Localization.Init(_commons);
                 var mainVM = new MainViewModel(_commons, _appSettings);
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
