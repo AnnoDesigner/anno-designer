@@ -122,20 +122,20 @@ namespace AnnoDesigner
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private List<LayoutObject> _placedObjects;
-        private List<IAction> _previousActions;
-        private List<IAction> _futureActions;
+        private Stack<IAction> _previousActions;
+        private Stack<IAction> _futureActions;
 
         public ActionManager(ref List<LayoutObject> placedObjects){
             _placedObjects = placedObjects;
-            _previousActions = new List<IAction>();
-            _futureActions = new List<IAction>();
+            _previousActions = new Stack<IAction>();
+            _futureActions = new Stack<IAction>();
         }
 
         public void PerformAction(IAction action){
             // Performing a new action so clear all future actions as they are no longer valid.
             logger.Warn("Performing action");
             _futureActions.Clear();
-            _previousActions.Add(action);
+            _previousActions.Push(action);
             action.PerformAction(_placedObjects);
         }
 
@@ -146,9 +146,8 @@ namespace AnnoDesigner
                 logger.Warn("No actions to undo");
                 return;
             }
-            IAction actionToUndo = _previousActions[_previousActions.Count - 1];
-            _previousActions.RemoveAt(_previousActions.Count - 1);
-            _futureActions.Add(actionToUndo);
+            IAction actionToUndo = _previousActions.Pop();
+            _futureActions.Push(actionToUndo);
             actionToUndo.UndoAction(_placedObjects);
         }
 
@@ -159,9 +158,8 @@ namespace AnnoDesigner
                 logger.Warn("No actions to redo");
                 return;
             }
-            IAction actionToRedo = _futureActions[_futureActions.Count - 1];
-            _futureActions.RemoveAt(_futureActions.Count - 1);
-            _previousActions.Add(actionToRedo);
+            IAction actionToRedo = _futureActions.Pop();
+            _previousActions.Push(actionToRedo);
             actionToRedo.PerformAction(_placedObjects);
         }
     }
