@@ -7,11 +7,11 @@ using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Core.RecentFiles
 {
-    public class RecentFilesSerializerInMemory : IRecentFilesSerializer
+    public class RecentFilesInMemorySerializer : IRecentFilesSerializer
     {
         private List<RecentFile> _recentFiles;
 
-        public RecentFilesSerializerInMemory()
+        public RecentFilesInMemorySerializer()
         {
             _recentFiles = new List<RecentFile>();
         }
