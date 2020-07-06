@@ -15,13 +15,11 @@ namespace AnnoDesigner.Core.Helper
         /// </summary>
         public event EventHandler<EventArgs> Updated;
 
-        private readonly string _settingsPath;
         private readonly IRecentFilesSerializer _serializer;
         private readonly IFileSystem _fileSystem;
 
-        public RecentFilesHelper(string pahToSettingsFile, IRecentFilesSerializer serializerToUse, IFileSystem fileSystemToUse)
+        public RecentFilesHelper(IRecentFilesSerializer serializerToUse, IFileSystem fileSystemToUse)
         {
-            _settingsPath = pahToSettingsFile;
             _serializer = serializerToUse ?? throw new ArgumentNullException(nameof(serializerToUse));
             _fileSystem = fileSystemToUse ?? throw new ArgumentNullException(nameof(fileSystemToUse));
 
@@ -43,12 +41,7 @@ namespace AnnoDesigner.Core.Helper
 
         private void Load()
         {
-            if (!_fileSystem.File.Exists(_settingsPath))
-            {
-                return;
-            }
-
-            var loadedFiles = _serializer.Deserialize(_settingsPath);
+            var loadedFiles = _serializer.Deserialize();
 
             //remove non existing files
             for (var i = 0; i < loadedFiles.Count; i++)
@@ -65,7 +58,7 @@ namespace AnnoDesigner.Core.Helper
 
         private void Save()
         {
-            _serializer.Serialize(_settingsPath, RecentFiles);
+            _serializer.Serialize(RecentFiles);
         }
 
         public void AddFile(RecentFile fileToAdd)
@@ -102,7 +95,21 @@ namespace AnnoDesigner.Core.Helper
 
         public void RemoveFile(RecentFile fileToRemove)
         {
-            throw new NotImplementedException();
+            if (fileToRemove is null)
+            {
+                return;
+            }
+
+            for (var i = 0; i < RecentFiles.Count; i++)
+            {
+                if (string.Equals(RecentFiles[i].Path, fileToRemove.Path, StringComparison.OrdinalIgnoreCase))
+                {
+                    RecentFiles.RemoveAt(i);
+                    break;
+                }
+            }
+
+            Save();
         }
     }
 }

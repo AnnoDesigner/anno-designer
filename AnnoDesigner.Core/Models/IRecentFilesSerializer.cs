@@ -8,23 +8,17 @@ namespace AnnoDesigner.Core.Models
 {
     public interface IRecentFilesSerializer
     {
-        /*
-         * Implementations could serialize to XML or JSON or SQLite or ...
-         * I would prefer JSON in the "AppData\Local\AnnoDesigner" directory. The app-settings are already there.
-         */
-
         /// <summary>
-        /// Serializes the list of recently used files to a file.
+        /// Serializes the list of recently used files.
         /// </summary>
-        /// <param name="path">The path to the file with the recently used files.</param>
         /// <param name="recentFiles">The list of recently used files.</param>
-        void Serialize(string path, List<RecentFile> recentFiles);
+        void Serialize(List<RecentFile> recentFiles);
 
         /// <summary>
-        /// Loads a list of recently used files from a file.
+        /// Loads a list of recently used files.
         /// </summary>
-        /// <param name="path">The path to the file with the recently used files.</param>
+        /// <remarks>Implementations should return an empty list when no list was serialized previously.</remarks>
         /// <returns>The list of recently used files.</returns>
-        List<RecentFile> Deserialize(string path);
+        List<RecentFile> Deserialize();
     }
 }
