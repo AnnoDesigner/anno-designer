@@ -8,7 +8,11 @@ namespace FandomParser.Core
     {
         string InfoboxTemplateStart { get; }
 
-        string InfoboxTemplateStartBothWorlds { get; }
+        string InfoboxTemplateStart2Regions { get; }
+
+        string InfoboxTemplateStart3Regions { get; }
+
+        string InfoboxTemplateStartOldAndNewWorld { get; }
 
         string InfoboxTemplateEnd { get; }
 

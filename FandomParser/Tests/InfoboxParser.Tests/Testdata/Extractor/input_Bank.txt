@@ -1,0 +1,49 @@
+﻿{{Infobox Buildings|Title = Bank|Building Icon = Bank.png|Image = BankScreenshot.jpg|Credits = 100000|Timber = 40|Bricks = 75|Steel Beams = 60|Windows = 60|Concrete = 50|Maintenance = -1000|Building Type = Public service|Building Size = 10x12|Building Range = Dirt Road Full 43 / Max 88
+Paved Street Full 64 / Max 131|Unlock Condition 1 Amount = 3000|Unlock Condition 1 Type = Engineers}}'''Bank''' is a luxury need of your {{Infoicon Engineers}} and {{Infoicon Investors}}. It can give a big income boost, but it is unlocked when reaching 3000 engineers, which is after being able to advance them to investors. Advancing to investors unlocks the need of bank for engineers but doesn't unlock the ability to build it.
+
+Like every [[Public buildings|public building]] it has a limited range which is based on the street distance between the affected building and the bank. Its full range (dark green) is 43 tiles for [[Roads#Dirt Road|dirt roads]] and 64 for [[Roads#Paved Street|paved streets]]. Its max range (light green) is 88 tiles for dirt roads and 131 for paved streets.
+
+When [[Engineer Residence|engineers residences]] are in the full range of the bank, each of them will gain 2 happiness and grant you more income depending on game settings:
+* high income: +50 coins per minute per residence
+* medium income: +45 coins per minute per residence
+* low income: +40 coins per minute per residence
+
+When [[Investor Residence|investors residences]] are in the full range of the bank, each of them will gain 2 happiness and grant you more income depending on game settings:
+* high income: +125 coins per minute per residence
+* medium income: +113 coins per minute per residence
+* low income: +100 coins per minute per residence.
+
+When residences are outside of the full range but inside the max range they will gain less happiness and give you less income based on the street distance from the bank.
+
+{{Clear}}
+==Items==
+Some [[items]] when equipped in [[Town Hall|town halls]] can have an impact on banks. 
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+===Items specific for banks===
+<div class="mw-collapsible-content">
+{{Town Hall items sets|Banks}}
+</div>
+</div>
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+===Items that affect all public services===
+<div class="mw-collapsible-content">
+{{Town Hall items sets|Public Services}}
+</div>
+</div>
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+===Items that affect all buildings===
+<div class="mw-collapsible-content">
+{{Town Hall items sets|All Buildings}}
+</div>
+</div>
+
+==Trivia==
+*The Bank is in [[Wikipedia:Neoclassical architecture|neoclassical style]].
+
+{{Navbox Buildings}}
+
+RevisionId=12814
+LastEdit=2020-04-24T22:53:37.0000000+02:00

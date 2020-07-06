@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using FandomParser.Core.Presets.Models;
 
@@ -10,6 +11,11 @@ namespace FandomParser.WikiText
     public class WikiTextTableParser
     {
         private static Dictionary<WorldRegion, Dictionary<string, string>> RegionTables { get; set; }
+
+        private const string STYLE_INFO = "| style=\"text-align:center;\" |";
+        private const string TABLE_HEADER = "! style=\"text-align:center;\" |Size";
+        private const string TABLE_SEPARATOR = " ===";
+        private static readonly Regex regexSize = new Regex("^[0-9]+x[0-9]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public WikiTextTableContainer GetTables(string wikiText)
         {
@@ -101,6 +107,10 @@ namespace FandomParser.WikiText
             {
                 result = WorldRegion.NewWorld;
             }
+            else if (parsedRegionHeader.Equals("The Arctic Buildings", StringComparison.OrdinalIgnoreCase))
+            {
+                result = WorldRegion.Arctic;
+            }
 
             return result;
         }
@@ -111,8 +121,10 @@ namespace FandomParser.WikiText
 
             foreach (var curTable in tables)
             {
-                var splitted = curTable.Split(new string[] { " ===" }, StringSplitOptions.RemoveEmptyEntries);
-                var parsedTableHeader = splitted[0].Trim().Replace(" buildings", string.Empty);
+                var splitted = curTable.Split(new string[] { TABLE_SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
+                var parsedTableHeader = splitted[0].Trim()
+                    .Replace(" buildings", string.Empty)
+                    .Replace(" Buildings", string.Empty);
 
                 //align linebreaks for each table
                 var x = AlignLineBreaksInTables(new List<string> { splitted[1] });
@@ -154,13 +166,18 @@ namespace FandomParser.WikiText
 
             foreach (var curTable in tableList)
             {
-                var splittedTable = curTable.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                var tableWithLineBreaks = string.Join(Environment.NewLine, splittedTable);
-
-                tablesWithLineBreaks.Add(tableWithLineBreaks);
+                tablesWithLineBreaks.Add(GetLineBreakAlignedWikiText(curTable));
             }
 
             return tablesWithLineBreaks;
+        }
+
+        private static string GetLineBreakAlignedWikiText(string wikiText)
+        {
+            //based on benchmarks, a Regex.Replace is slower and allocates more memory -> NOT better: return Regex.Replace(wikiText, @"\r\n|\n\r|\n|\r", Environment.NewLine);
+            return wikiText.Replace("\r\n", "\n")
+                .Replace("\r", "\n")
+                .Replace("\n", Environment.NewLine);
         }
 
         private static List<string> RemoveTableHeaders(List<string> tablesWithLineBreaks)
@@ -169,7 +186,7 @@ namespace FandomParser.WikiText
 
             foreach (var curTable in tablesWithLineBreaks)
             {
-                var split = curTable.Split(new[] { $"|Size{Environment.NewLine}" }, StringSplitOptions.RemoveEmptyEntries);
+                var split = curTable.Split(new[] { TABLE_HEADER }, StringSplitOptions.RemoveEmptyEntries);
                 cleanedTables.Add(split[1]);
             }
 
@@ -210,10 +227,37 @@ namespace FandomParser.WikiText
 
             WikiTextTableEntry curEntry = null;
             var entryCounter = 0;
+            var lastLineWasCollapsible = false;
             //read string line by line
             //use StringReader?
             foreach (var curLine in curTable.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
+                //line is a collapsible information
+                if (lastLineWasCollapsible)
+                {
+                    lastLineWasCollapsible = !lastLineWasCollapsible;
+                    continue;
+                }
+
+                if (curLine.StartsWith("!", StringComparison.OrdinalIgnoreCase) && curLine.Contains("colspan=\"6\""))
+                {
+                    lastLineWasCollapsible = true;
+                    continue;
+                }
+
+                //line is empty
+                if (string.IsNullOrWhiteSpace(curLine))
+                {
+                    continue;
+                }
+
+                //line has no useful information
+                if (curLine.Equals(STYLE_INFO, StringComparison.OrdinalIgnoreCase) &&
+                    entryCounter != 4)//there are buildings without maintenance cost
+                {
+                    continue;
+                }
+
                 //line is end of table
                 if (curLine.Equals("=", StringComparison.OrdinalIgnoreCase))
                 {
@@ -221,7 +265,9 @@ namespace FandomParser.WikiText
                 }
 
                 //line contains description
-                if (!curLine.StartsWith("|", StringComparison.OrdinalIgnoreCase) && !curLine.StartsWith("(", StringComparison.OrdinalIgnoreCase))
+                if (!curLine.StartsWith("|", StringComparison.OrdinalIgnoreCase) &&
+                    !curLine.StartsWith("(", StringComparison.OrdinalIgnoreCase) &&
+                    !regexSize.IsMatch(curLine))
                 {
                     curEntry.Description += $"{Environment.NewLine}{curLine}";
                     continue;
@@ -290,9 +336,18 @@ namespace FandomParser.WikiText
                         }
                     case 5:
                         {
-                            curEntry.Size = curLine.Remove(0, 1)
-                                .Replace(" style=\"text-align:center;\" |", string.Empty)
-                                .Replace(" style=\"text-align: center;\" |", string.Empty);
+                            if (curLine.StartsWith("|", StringComparison.OrdinalIgnoreCase))
+                            {
+                                curEntry.Size = curLine.Remove(0, 1)
+                                 .Replace(" style=\"text-align:center;\" |", string.Empty)
+                                 .Replace(" style=\"text-align: center;\" |", string.Empty);
+                            }
+                            else
+                            {
+                                curEntry.Size = curLine.Replace(" style=\"text-align:center;\" |", string.Empty)
+                                    .Replace(" style=\"text-align: center;\" |", string.Empty);
+                            }
+
                             entryCounter++;
                             break;
                         }
