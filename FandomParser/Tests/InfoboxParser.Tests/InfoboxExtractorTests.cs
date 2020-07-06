@@ -121,7 +121,7 @@ namespace InfoboxParser.Tests
 
         [Theory]
         [MemberData(nameof(ExtractorTestData))]
-        public void ExtractInfobox_ContentIsKnown_ShouldReturnExpectedResult(string content, (string, string) expectedResult)
+        public void ExtractInfobox_ContentIsKnown_ShouldReturnExpectedResult(string content, (string title, string infobox) expectedResult)
         {
             // Arrange
             _output.WriteLine($"{nameof(content)}: {content}");
@@ -134,8 +134,7 @@ namespace InfoboxParser.Tests
 
             // Assert
             Assert.Single(result);
-            Assert.Equal(expectedResult, result[0]);
+            Assert.Equal(expectedResult.infobox, result[0].infobox);
         }
-
     }
 }

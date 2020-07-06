@@ -1,188 +1,93 @@
 ﻿{{Infobox Buildings Old and New World
-
 |Building Icon      = Hospital.png
-
 |Title              = Hospital
-
-
 |Image (OW)             = HospitalOWScreenshot.jpg
-
 |Caption (OW)           = 
-
 |Credits (OW)           = 10000
-
 |Maintenance (OW)       = -100
-
 |Workforce Type (OW)    =
-
 |Workforce Amount (OW)  = 
-
 |Attractiveness (OW)    = 
-
 |Influence (OW)         = 
-
 |Timber (OW)            = 12
-
 |Bricks (OW)            = 20
-
 |Steel Beams (OW)       = 16
-
 |Windows (OW)           = 40
-
 |Concrete (OW)          = 
-
 |Weapons (OW)           = 
-
 |Advanced Weapons (OW)  = 
-
-
 |Input 1 Amount (OW)    = 
-
 |Input 1 Amount Electricity (OW)    =
-
 |Input 1 Icon (OW)      = 
-
 |Input 2 Amount (OW)    = 
-
 |Input 2 Amount Electricity (OW)    =
-
 |Input 2 Icon (OW)      = 
-
 |Produces Amount (OW)   = 
-
 |Produces Amount Electricity (OW)   =
-
 |Produces Icon (OW)     = 
-
 |Supplies 1 Amount (OW) = 
-
 |Supplies 1 Amount Electricity (OW) = 
-
 |Supplies 1 Type (OW)   = 
-
 |Supplies 2 Amount (OW) = 
-
 |Supplies 2 Amount Electricity (OW) = 
-
 |Supplies 2 Type (OW)   = 
-
 |Supplies 3 Amount (OW) = 
-
 |Supplies 3 Amount Electricity (OW) = 
-
 |Supplies 3 Type (OW)   = 
-
 |Supplies 4 Amount (OW) = 
-
 |Supplies 4 Amount Electricity (OW) = 
-
 |Supplies 4 Type (OW)   = 
-
-
 |Building Type (OW)     = Institution
-
 |Building Size (OW)     = 6x6
-
 |Building Range (OW)    = Dirt Road Full 22 / Max 46
 Paved Street Full 32 / Max 68
-
 |Requires (OW)          = 
-
 |Modules Amount (OW)    = 
-
 |Modules Size (OW)      = 
-
 |Cost Per Module (OW)   = 
-
 |Unlock Condition 1 Amount (OW)   = 900
-
 |Unlock Condition 1 Type (OW)     = Artisans
-
 |Unlock Condition 2 Amount (OW)   = 
-
 |Unlock Condition 2 Type (OW)     =
-
-
 |Image (NW)             = HospitalNWScreenshot.jpg
-
 |Caption (NW)           = 
-
 |Credits (NW)           = 10000
-
 |Maintenance (NW)       = -100
-
 |Workforce Type (NW)    =
-
 |Workforce Amount (NW)  = 
-
 |Attractiveness (NW)    = 
-
 |Influence (NW)         = 
-
 |Timber (NW)            = 12
-
 |Bricks (NW)            = 20
-
 |Steel Beams (NW)       = 
-
 |Windows (NW)           = 
-
 |Concrete (NW)          = 
-
 |Weapons (NW)           = 
-
 |Advanced Weapons (NW)  = 
-
-
 |Input 1 Amount (NW)    = 
-
 |Input 1 Icon (NW)      = 
-
 |Input 2 Amount (NW)    = 
-
 |Input 2 Icon (NW)      = 
-
 |Produces Amount (NW)   = 
-
 |Produces Icon (NW)     = 
-
 |Supplies 1 Amount (NW) = 
-
 |Supplies 1 Type (NW)   = 
-
 |Supplies 2 Amount (NW) = 
-
 |Supplies 2 Type (NW)   = 
-
 |Supplies 3 Amount (NW) = 
-
 |Supplies 3 Type (NW)   = 
-
 |Supplies 4 Amount (NW) = 
-
 |Supplies 4 Type (NW)   = 
-
-
 |Building Type (NW)     = Institution
-
 |Building Size (NW)     = 5x6
-
 |Building Range (NW)    = Dirt Road Full 22 / Max 46
 Paved Street Full 32 / Max 68
-
 |Requires (NW)          = 
-
 |Modules Amount (NW)    = 
-
 |Modules Size (NW)      = 
-
 |Cost Per Module (NW)   = 
-
 |Unlock Condition 1 Amount (NW)   = 600
-
 |Unlock Condition 1 Type (NW)     = Obreros
-
 |Unlock Condition 2 Amount (NW)   = 
-
 |Unlock Condition 2 Type (NW)     =
 }}

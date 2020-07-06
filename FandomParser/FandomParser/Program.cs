@@ -49,7 +49,7 @@ namespace FandomParser
         {
             try
             {
-                Regex.CacheSize = 40;
+                Regex.CacheSize = 100;
 
                 OutputDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "..", "..", "..", "..", "..", "Presets");
 

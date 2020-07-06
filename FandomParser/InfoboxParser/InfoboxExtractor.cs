@@ -72,15 +72,15 @@ namespace InfoboxParser
                 startIndex = indexInfoboxStart;
             }
 
-            var containsNoknownTemplateStart = startIndex == -1;
-            if (containsNoknownTemplateStart)
+            var containsNoKnownTemplateStart = startIndex == -1;
+            if (containsNoKnownTemplateStart)
             {
                 return result;
             }
 
             var infobox = GetInfobox(content, startIndex);
             string title = null;
-            if (isInfoboxMultiple)
+            if (!isInfoboxMultiple)
             {
                 title = _titleParserSingle.GetBuildingTitle(infobox);
             }
@@ -136,8 +136,11 @@ namespace InfoboxParser
             var splittedInfobox = infobox.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
             var infoboxWithLineBreaks = string.Join(Environment.NewLine + '|', splittedInfobox);
             var removedEmptyLines = RemoveEmptyLines(infoboxWithLineBreaks);
+            var replacedLineEndings = removedEmptyLines.Replace("\r\n", "\n")
+                .Replace("\r", "\n")
+                .Replace("\n", Environment.NewLine);
 
-            return removedEmptyLines;
+            return replacedLineEndings;
         }
 
         private string RemoveEmptyLines(string lines)
