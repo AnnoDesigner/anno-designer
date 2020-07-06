@@ -1,8 +1,8 @@
-#addin nuget:?package=Cake.FileHelpers&version=3.2.1
+#addin nuget:?package=Cake.FileHelpers&version=3.3.0
 const string xunitRunnerVersion = "2.4.1";
 #tool nuget:?package=xunit.runner.console&version=2.4.1
 #tool nuget:?package=OpenCover&version=4.7.922
-#tool nuget:?package=ReportGenerator&version=4.3.0
+#tool nuget:?package=ReportGenerator&version=4.6.1
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
