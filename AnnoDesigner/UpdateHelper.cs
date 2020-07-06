@@ -283,9 +283,8 @@ namespace AnnoDesigner
             {
                 logger.Error(ex, "Error replacing updated presets file.");
 
-                string language = Localization.Localization.GetLanguageCodeFromName(Settings.Default.SelectedLanguage);
-                MessageBox.Show(Localization.Localization.Translations[language]["UpdateErrorPresetMessage"],
-                            Localization.Localization.Translations[language]["Error"],
+                MessageBox.Show(Localization.Localization.Translations["UpdateErrorPresetMessage"],
+                            Localization.Localization.Translations["Error"],
                             MessageBoxButton.OK,
                             MessageBoxImage.Error,
                             MessageBoxResult.OK);
@@ -302,9 +301,8 @@ namespace AnnoDesigner
                 {
                     logger.Info("Could not establish a connection to the internet.");
 
-                    string language = Localization.Localization.GetLanguageCodeFromName(Settings.Default.SelectedLanguage);
-                    MessageBox.Show(Localization.Localization.Translations[language]["UpdateNoConnectionMessage"],
-                        Localization.Localization.Translations[language]["Error"],
+                    MessageBox.Show(Localization.Localization.Translations["UpdateNoConnectionMessage"],
+                        Localization.Localization.Translations["Error"],
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
 

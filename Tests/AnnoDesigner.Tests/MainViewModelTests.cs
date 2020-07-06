@@ -24,6 +24,7 @@ namespace AnnoDesigner.Tests
             var commonsMock = new Mock<ICommons>();
             commonsMock.SetupGet(x => x.SelectedLanguage).Returns(() => "English");
             _mockedCommons = commonsMock.Object;
+            Localization.Localization.Init(_mockedCommons);
 
             _mockedAppSettings = new Mock<IAppSettings>().Object;
 

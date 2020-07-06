@@ -18,36 +18,7 @@ namespace AnnoDesigner.ViewModels
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly ICommons _commons;
         private readonly IAppSettings _appSettings;
-
-        private string _textHeader;
-        private string _textSize;
-        private string _textColor;
-        private string _textApplyColorToSelection;
-        private string _textApplyColorToSelectionToolTip;
-        private string _textApplyPredefinedColorToSelection;
-        private string _textApplyPredefinedColorToSelectionToolTip;
-        private string _textAvailableColors;
-        private string _textStandardColors;
-        private string _textRecentColors;
-        private string _textStandard;
-        private string _textAdvanced;
-        private string _textColorsInLayout;
-        private string _textColorsInLayoutToolTip;
-        private string _textBuildingName;
-        private string _textIcon;
-        private string _textInfluenceType;
-        private string _textRadius;
-        private string _textDistance;
-        private string _textPavedStreet;
-        private string _textPavedStreetWarningTitle;
-        private string _textPavedStreetToolTip;
-        private string _textOptions;
-        private string _textEnableLabel;
-        private string _textBorderless;
-        private string _textRoad;
-        private string _textPlaceBuilding;
 
         private Color? _selectedColor;
         private int _buildingHeight;
@@ -72,43 +43,13 @@ namespace AnnoDesigner.ViewModels
         /// <summary>
         /// only used for databinding
         /// </summary>
-        public BuildingSettingsViewModel(ICommons commonsToUse, IAppSettings appSettingsToUse)
+        public BuildingSettingsViewModel(IAppSettings appSettingsToUse)
         {
-            _commons = commonsToUse;
             _appSettings = appSettingsToUse;
 
             ApplyColorToSelectionCommand = new RelayCommand(ApplyColorToSelection, CanApplyColorToSelection);
             ApplyPredefinedColorToSelectionCommand = new RelayCommand(ApplyPredefinedColorToSelection, CanApplyPredefinedColorToSelection);
             UseColorInLayoutCommand = new RelayCommand(UseColorInLayout, CanUseColorInLayout);
-
-            //only used for WPF Desinger
-            TextHeader = "Building Settings";
-            TextSize = "Size";
-            TextColor = "Color";
-            TextApplyColorToSelection = "Apply color";
-            TextApplyColorToSelectionToolTip = "Apply color to all buildings in current selection";
-            TextApplyPredefinedColorToSelection = "Apply predefined color";
-            TextApplyPredefinedColorToSelectionToolTip = "Apply predefined color (if found) to all buildings in current selection";
-            TextAvailableColors = "Available Colors";
-            TextStandardColors = "Predefined Colors";
-            TextRecentColors = "Recent Colors";
-            TextStandard = "Standard";
-            TextAdvanced = "Advanced";
-            TextColorsInLayout = "Colors in Layout";
-            TextColorsInLayoutToolTip = "Double click color to select it";
-            TextBuildingName = "Label";
-            TextIcon = "Icon";
-            TextInfluenceType = "Influence Type";
-            TextRadius = "Radius";
-            TextDistance = "Distance";
-            TextPavedStreet = "Paved Street";
-            TextPavedStreetWarningTitle = "Paved Street Selection";
-            TextPavedStreetToolTip = "Checking this option will change the Influence Range for buildings,\nrepresenting the increased range they receive when using paved streets.\nUse the 'Place Building' button to place object.";
-            TextOptions = "Options";
-            TextEnableLabel = "Enable label";
-            TextBorderless = "Borderless";
-            TextRoad = "Road";
-            TextPlaceBuilding = "Place building";
 
             SelectedColor = Colors.Red;
             BuildingHeight = 4;
@@ -130,13 +71,11 @@ namespace AnnoDesigner.ViewModels
 
         private void InitBuildingInfluences()
         {
-            string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
-
             foreach (BuildingInfluenceType curInfluenceType in Enum.GetValues(typeof(BuildingInfluenceType)))
             {
                 BuildingInfluences.Add(new BuildingInfluence
                 {
-                    Name = Localization.Localization.Translations[language][curInfluenceType.ToString()],
+                    Name = Localization.Localization.Translations[curInfluenceType.ToString()],
                     Type = curInfluenceType
                 });
             }
@@ -146,174 +85,10 @@ namespace AnnoDesigner.ViewModels
 
         public void UpdateLanguageBuildingInfluenceType()
         {
-            string language = Localization.Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
-
             foreach (var curBuildingInfluence in BuildingInfluences)
             {
-                curBuildingInfluence.Name = Localization.Localization.Translations[language][curBuildingInfluence.Type.ToString()];
+                curBuildingInfluence.Name = Localization.Localization.Translations[curBuildingInfluence.Type.ToString()];
             }
-        }
-
-        public string TextHeader
-        {
-            get { return _textHeader; }
-            set { UpdateProperty(ref _textHeader, value); }
-        }
-
-        public string TextSize
-        {
-            get { return _textSize; }
-            set { UpdateProperty(ref _textSize, value); }
-        }
-
-        public string TextColor
-        {
-            get { return _textColor; }
-            set { UpdateProperty(ref _textColor, value); }
-        }
-
-        public string TextApplyColorToSelection
-        {
-            get { return _textApplyColorToSelection; }
-            set { UpdateProperty(ref _textApplyColorToSelection, value); }
-        }
-
-        public string TextApplyColorToSelectionToolTip
-        {
-            get { return _textApplyColorToSelectionToolTip; }
-            set { UpdateProperty(ref _textApplyColorToSelectionToolTip, value); }
-        }
-
-        public string TextApplyPredefinedColorToSelection
-        {
-            get { return _textApplyPredefinedColorToSelection; }
-            set { UpdateProperty(ref _textApplyPredefinedColorToSelection, value); }
-        }
-
-        public string TextApplyPredefinedColorToSelectionToolTip
-        {
-            get { return _textApplyPredefinedColorToSelectionToolTip; }
-            set { UpdateProperty(ref _textApplyPredefinedColorToSelectionToolTip, value); }
-        }
-
-        public string TextAvailableColors
-        {
-            get { return _textAvailableColors; }
-            set { UpdateProperty(ref _textAvailableColors, value); }
-        }
-
-        public string TextStandardColors
-        {
-            get { return _textStandardColors; }
-            set { UpdateProperty(ref _textStandardColors, value); }
-        }
-
-        public string TextRecentColors
-        {
-            get { return _textRecentColors; }
-            set { UpdateProperty(ref _textRecentColors, value); }
-        }
-
-        public string TextStandard
-        {
-            get { return _textStandard; }
-            set { UpdateProperty(ref _textStandard, value); }
-        }
-
-        public string TextAdvanced
-        {
-            get { return _textAdvanced; }
-            set { UpdateProperty(ref _textAdvanced, value); }
-        }
-
-        public string TextColorsInLayout
-        {
-            get { return _textColorsInLayout; }
-            set { UpdateProperty(ref _textColorsInLayout, value); }
-        }
-
-        public string TextColorsInLayoutToolTip
-        {
-            get { return _textColorsInLayoutToolTip; }
-            set { UpdateProperty(ref _textColorsInLayoutToolTip, value); }
-        }
-
-        public string TextBuildingName
-        {
-            get { return _textBuildingName; }
-            set { UpdateProperty(ref _textBuildingName, value); }
-        }
-
-        public string TextIcon
-        {
-            get { return _textIcon; }
-            set { UpdateProperty(ref _textIcon, value); }
-        }
-
-        public string TextInfluenceType
-        {
-            get { return _textInfluenceType; }
-            set { UpdateProperty(ref _textInfluenceType, value); }
-        }
-
-        public string TextRadius
-        {
-            get { return _textRadius; }
-            set { UpdateProperty(ref _textRadius, value); }
-        }
-
-        public string TextDistance
-        {
-            get { return _textDistance; }
-            set { UpdateProperty(ref _textDistance, value); }
-        }
-
-        public string TextPavedStreet
-        {
-            get { return _textPavedStreet; }
-            set { UpdateProperty(ref _textPavedStreet, value); }
-        }
-
-        public string TextPavedStreetWarningTitle
-        {
-            get { return _textPavedStreetWarningTitle; }
-            set { UpdateProperty(ref _textPavedStreetWarningTitle, value); }
-        }
-
-        public string TextPavedStreetToolTip
-        {
-            get { return _textPavedStreetToolTip; }
-            set { UpdateProperty(ref _textPavedStreetToolTip, value); }
-        }
-
-        public string TextOptions
-        {
-            get { return _textOptions; }
-            set { UpdateProperty(ref _textOptions, value); }
-        }
-
-        public string TextEnableLabel
-        {
-            get { return _textEnableLabel; }
-            set { UpdateProperty(ref _textEnableLabel, value); }
-        }
-
-        public string TextBorderless
-        {
-            get { return _textBorderless; }
-            set { UpdateProperty(ref _textBorderless, value); }
-        }
-
-        public string TextRoad
-        {
-            get { return _textRoad; }
-            set { UpdateProperty(ref _textRoad, value); }
-        }
-
-        public string TextPlaceBuilding
-        {
-            get { return _textPlaceBuilding; }
-            set { UpdateProperty(ref _textPlaceBuilding, value); }
         }
 
         #endregion
@@ -493,7 +268,9 @@ namespace AnnoDesigner.ViewModels
         {
             if (!_appSettings.ShowPavedRoadsWarning)
             {
-                MessageBox.Show(TextPavedStreetToolTip, TextPavedStreetWarningTitle);
+                MessageBox.Show(
+                    Localization.Localization.Translations["PavedStreetToolTip"],
+                    Localization.Localization.Translations["PavedStreetWarningTitle"]);
                 _appSettings.ShowPavedRoadsWarning = true;
             }
 
