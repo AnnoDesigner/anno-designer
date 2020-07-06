@@ -1,0 +1,139 @@
+﻿{{Infobox Buildings Old and New World
+|Building Icon      = Hospital.png
+|Title              = Hospital
+
+|Image (OW)             = HospitalOWScreenshot.jpg
+|Caption (OW)           = 
+|Credits (OW)           = 10000
+|Maintenance (OW)       = -100
+|Workforce Type (OW)    =
+|Workforce Amount (OW)  = 
+|Attractiveness (OW)    = 
+|Influence (OW)         = 
+|Timber (OW)            = 12
+|Bricks (OW)            = 20
+|Steel Beams (OW)       = 16
+|Windows (OW)           = 40
+|Concrete (OW)          = 
+|Weapons (OW)           = 
+|Advanced Weapons (OW)  = 
+
+|Input 1 Amount (OW)    = 
+|Input 1 Amount Electricity (OW)    =
+|Input 1 Icon (OW)      = 
+|Input 2 Amount (OW)    = 
+|Input 2 Amount Electricity (OW)    =
+|Input 2 Icon (OW)      = 
+|Produces Amount (OW)   = 
+|Produces Amount Electricity (OW)   =
+|Produces Icon (OW)     = 
+|Supplies 1 Amount (OW) = 
+|Supplies 1 Amount Electricity (OW) = 
+|Supplies 1 Type (OW)   = 
+|Supplies 2 Amount (OW) = 
+|Supplies 2 Amount Electricity (OW) = 
+|Supplies 2 Type (OW)   = 
+|Supplies 3 Amount (OW) = 
+|Supplies 3 Amount Electricity (OW) = 
+|Supplies 3 Type (OW)   = 
+|Supplies 4 Amount (OW) = 
+|Supplies 4 Amount Electricity (OW) = 
+|Supplies 4 Type (OW)   = 
+
+|Building Type (OW)     = Institution
+|Building Size (OW)     = 6x6
+|Building Range (OW)    = Dirt Road Full 22 / Max 46
+Paved Street Full 32 / Max 68
+|Requires (OW)          = 
+|Modules Amount (OW)    = 
+|Modules Size (OW)      = 
+|Cost Per Module (OW)   = 
+|Unlock Condition 1 Amount (OW)   = 900
+|Unlock Condition 1 Type (OW)     = Artisans
+|Unlock Condition 2 Amount (OW)   = 
+|Unlock Condition 2 Type (OW)     =
+
+|Image (NW)             = HospitalNWScreenshot.jpg
+|Caption (NW)           = 
+|Credits (NW)           = 10000
+|Maintenance (NW)       = -100
+|Workforce Type (NW)    =
+|Workforce Amount (NW)  = 
+|Attractiveness (NW)    = 
+|Influence (NW)         = 
+|Timber (NW)            = 12
+|Bricks (NW)            = 20
+|Steel Beams (NW)       = 
+|Windows (NW)           = 
+|Concrete (NW)          = 
+|Weapons (NW)           = 
+|Advanced Weapons (NW)  = 
+
+|Input 1 Amount (NW)    = 
+|Input 1 Icon (NW)      = 
+|Input 2 Amount (NW)    = 
+|Input 2 Icon (NW)      = 
+|Produces Amount (NW)   = 
+|Produces Icon (NW)     = 
+|Supplies 1 Amount (NW) = 
+|Supplies 1 Type (NW)   = 
+|Supplies 2 Amount (NW) = 
+|Supplies 2 Type (NW)   = 
+|Supplies 3 Amount (NW) = 
+|Supplies 3 Type (NW)   = 
+|Supplies 4 Amount (NW) = 
+|Supplies 4 Type (NW)   = 
+
+|Building Type (NW)     = Institution
+|Building Size (NW)     = 5x6
+|Building Range (NW)    = Dirt Road Full 22 / Max 46
+Paved Street Full 32 / Max 68
+|Requires (NW)          = 
+|Modules Amount (NW)    = 
+|Modules Size (NW)      = 
+|Cost Per Module (NW)   = 
+|Unlock Condition 1 Amount (NW)   = 600
+|Unlock Condition 1 Type (NW)     = Obreros
+|Unlock Condition 2 Amount (NW)   = 
+|Unlock Condition 2 Type (NW)     =
+}}''Fights illness in its influence radius. Can mobilise additional special units if required.''
+
+'''Hospital''' is the third and last emergency institution in Anno 1800. It fights [[City incidents#Illness|illness]] in its influence range while also lowering the chance of illness within a very small area around it. It can be built in both the [[Old World]] and the [[New World]].
+
+In Anno 1800 illness can occur only in residential areas.
+
+Like every [[Public buildings|public building]] the hospital has a limited range which is based on the street distance between the affected building and the hospital. Its full range (dark green) is 22 tiles for [[Roads#Dirt Road|dirt roads]] and 32 for [[Roads#Paved Street|paved streets]]. Its max range (light green) is 46 tiles for dirt roads and 68 for paved streets. Hospitals are effective even for buildings which are in the light green zone but it will take longer for doctors to get there.
+
+After constructing a hospital it takes one minute to train doctors, only after this time the hospital will be able to send out units to fight illness. Every time a hospital is built or relocated, one minute has to pass before the building is operational.
+
+== Mobilisation  ==
+Like in case of other emergency institutions you can mobilise additional units if happiness and amount of your population is high enough (on the island, not globally):
+* 1 unit if happiness value is +10 or higher, and population is at least 100
+* 2 units if happiness value is +30 or higher, and population is at least 200
+* 3 units if happiness value is +50 or higher, and population is at least 300
+Mobilisation has a two minute cooldown.
+
+{{Clear}}
+==Items==
+Some [[items]] when equipped in [[Town Hall|town halls]] can have an impact on hospitals.
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+
+===Items specific for hospitals===
+<div class="mw-collapsible-content">
+{{Town Hall items sets|Hospitals}}
+</div>
+</div>
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+===Items that affect all buildings===
+<div class="mw-collapsible-content">
+{{Town Hall items sets|All Buildings}}
+</div>
+</div>
+
+
+{{Navbox Buildings}}
+
+RevisionId=12802
+LastEdit=2020-04-24T22:53:37.0000000+02:00

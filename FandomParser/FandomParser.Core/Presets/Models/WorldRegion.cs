@@ -10,6 +10,7 @@ namespace FandomParser.Core.Presets.Models
     {
         Unknown,
         OldWorld,
-        NewWorld
+        NewWorld,
+        Arctic
     }
 }

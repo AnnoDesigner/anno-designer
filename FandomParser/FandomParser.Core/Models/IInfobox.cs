@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using FandomParser.Core.Presets.Models;
 
@@ -8,6 +9,10 @@ namespace FandomParser.Core.Models
     public interface IInfobox
     {
         string Name { get; set; }
+
+        string Icon { get; set; }
+
+        Size BuildingSize { get; set; }
 
         BuildingType Type { get; set; }
 
@@ -18,5 +23,7 @@ namespace FandomParser.Core.Models
         SupplyInfo SupplyInfos { get; set; }
 
         UnlockInfo UnlockInfos { get; set; }
+
+        List<ConstructionInfo> ConstructionInfos { get; set; }
     }
 }
