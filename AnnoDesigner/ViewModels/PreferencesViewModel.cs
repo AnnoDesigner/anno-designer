@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Reflection;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Navigation;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 using AnnoDesigner.PreferencesPages;
-using NLog;
 
 namespace AnnoDesigner.ViewModels
 {
@@ -33,7 +25,7 @@ namespace AnnoDesigner.ViewModels
         }
 
         private readonly NavigationService navigationService;
-        private HotkeyCommandManager manager;
+        private readonly HotkeyCommandManager manager;
         private readonly IAppSettings appSettings;
         private ListViewItem _selectedItem;
         private Dictionary<string, object> _viewModels;
@@ -41,30 +33,36 @@ namespace AnnoDesigner.ViewModels
         public ListViewItem SelectedItem
         {
             get { return _selectedItem; }
-            set 
-            { 
+            set
+            {
                 UpdateProperty(ref _selectedItem, value);
-                if (ViewModels.TryGetValue(value.Name, out var extraData))
-                {
-                    navigationService.Navigate(new Uri($@"pack://application:,,,/PreferencesPages\{value.Name}.xaml", UriKind.RelativeOrAbsolute), extraData);
-                }
-#if DEBUG
-                else
-                {
-                    throw new KeyNotFoundException($"Page {value.Name}.xaml not found.");
-                }
-#endif
+                ShowPage(value.Name);
             }
         }
 
         public Dictionary<string, object> ViewModels
         {
-            get => _viewModels;
-            set => UpdateProperty(ref _viewModels, value);
+            get { return _viewModels; }
+            set
+            {
+                UpdateProperty(ref _viewModels, value);
+                //select first item by default
+                ShowPage(_viewModels.First().Key);
+            }
         }
 
-        
+        private void ShowPage(string name)
+        {
+            if (ViewModels.TryGetValue(name, out var extraData))
+            {
+                navigationService.Navigate(new Uri($@"pack://application:,,,/PreferencesPages\{name}.xaml", UriKind.RelativeOrAbsolute), extraData);
+            }
+#if DEBUG
+            else
+            {
+                throw new KeyNotFoundException($"Page {name}.xaml not found.");
+            }
+#endif
+        }
     }
-
-
 }
