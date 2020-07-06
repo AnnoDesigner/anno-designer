@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -9,41 +10,69 @@ using FandomParser.Core;
 using FandomParser.Core.Models;
 using FandomParser.Core.Presets.Models;
 using InfoboxParser.Models;
+using NLog;
 
-namespace InfoboxParser
+namespace InfoboxParser.Parser
 {
-    internal class Parser
+    internal class ParserSingleRegion : IParser
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly ICommons _commons;
+        private readonly ITitleParserSingle _titleParserSingle;
 
         //TODO support edge cases in regex like "|Input 1 Amount Electricity = 1.79769313486232E+308"
 
+        //|Building Icon      = Icon palace module.png
+        private static readonly Regex regexBuildingIcon = new Regex(@"\|Building Icon\s*=\s*(?<icon>(\w*\s*['`´]*)+([\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+
+        //|Building Size = 3x13
+        private static readonly Regex regexBuildingSize = new Regex(@"\|Building Size\s*=\s*(?<value>[0-9]*\s*(x\s*[0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+
         //|Input 1 Amount = 2
-        private static readonly Regex regexInputAmount = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexInputAmount = new Regex(@"\|Input\s*(?<counter>[1-9]+)\s*Amount\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Input 1 Amount Electricity = 4        
-        private static readonly Regex regexInputAmountElectricity = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexInputAmountElectricity = new Regex(@"\|Input\s*(?<counter>[1-9]+)\s*Amount Electricity\s*=\s*(?<value>[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Input 1 Icon = Potato.png
-        private static readonly Regex regexInputIcon = new Regex(@"(?<begin>\|Input)\s*(?<counter>\d+)\s*(?<end>Icon)\s*(?<equalSign>[=])\s*(?<fileName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexInputIcon = new Regex(@"\|Input\s*(?<counter>[1-9]+)\s*Icon\s*=\s*(?<fileName>(\w*\s*)+([.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         //|Supplies 1 Type = Farmers
-        private static readonly Regex regexSupplyType = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexSupplyType = new Regex(@"\|Supplies\s*(?<counter>[1-9]+)\s*Type\s*=\s*(?<typeName>(\w*\s*)+([.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Supplies 1 Amount = 2
-        private static readonly Regex regexSupplyAmount = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexSupplyAmount = new Regex(@"\|Supplies\s*(?<counter>[1-9]+)\s*Amount\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Supplies 1 Amount Electricity = 4
-        private static readonly Regex regexSupplyAmountElectricity = new Regex(@"(?<begin>\|Supplies)\s*(?<counter>\d+)\s*(?<end>Amount Electricity)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexSupplyAmountElectricity = new Regex(@"\|Supplies\s*(?<counter>[1-9]+)\s*Amount Electricity\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
         //|Unlock Condition 1 Type = Farmers
-        private static readonly Regex regexUnlockConditionType = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Type)\s*(?<equalSign>[=])\s*(?<typeName>(?:\w*\s*)+(?:[\.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexUnlockConditionType = new Regex(@"\|Unlock Condition\s*(?<counter>[1-9]+)\s*Type\s*=\s*(?<typeName>(\w*\s*)+([.]\w*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
         //|Unlock Condition 1 Amount = 100
-        private static readonly Regex regexUnlockConditionAmount = new Regex(@"(?<begin>\|Unlock Condition)\s*(?<counter>\d+)\s*(?<end>Amount)\s*(?<equalSign>[=])\s*(?<value>\d*(?:[\.\,]\d*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexUnlockConditionAmount = new Regex(@"\|Unlock Condition\s*(?<counter>[1-9]+)\s*Amount\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 
-        //var culture = CultureInfo.InvariantCulture;
+        //|Credits = 15000
+        private static readonly Regex regexConstructionCredits = new Regex(@"\|Credits\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        //|Timber = 12
+        private static readonly Regex regexConstructionTimber = new Regex(@"\|Timber\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        //|Bricks = 3
+        private static readonly Regex regexConstructionBricks = new Regex(@"\|Bricks\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        //|Steel Beams = 8
+        private static readonly Regex regexConstructionSteelBeams = new Regex(@"\|Steel Beams\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        //|Windows = 2
+        private static readonly Regex regexConstructionWindows = new Regex(@"\|Windows\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        //|Concrete = 15
+        private static readonly Regex regexConstructionConcrete = new Regex(@"\|Concrete\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        //|Weapons = 20
+        private static readonly Regex regexConstructionWeapons = new Regex(@"\|Weapons\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        //|Advanced Weapons = 25
+        private static readonly Regex regexConstructionAdvancedWeapons = new Regex(@"\|Advanced Weapons\s*=\s*(?<value>[-+]*[0-9]*([.,][0-9]*)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+
         private CultureInfo cultureForParsing;
 
-        public Parser(ICommons commons)
+        public ParserSingleRegion(ICommons commons, ITitleParserSingle titleParserSingleToUse)
         {
             _commons = commons;
-            //all numbers in the wiki are entered with "," e.g. "42,21", so we need to use a specific culture
+            _titleParserSingle = titleParserSingleToUse;
+
+            //all numbers in the wiki are entered with comma (,) e.g. "42,21", so we need to use a specific culture for parsing (https://anno1800.fandom.com/wiki/Cannery)
             cultureForParsing = new CultureInfo("de-DE");
         }
 
@@ -56,40 +85,117 @@ namespace InfoboxParser
 
             var result = new List<IInfobox>();
 
-            var buildingName = getBuildingName(wikiText);
+            var buildingName = _titleParserSingle.GetBuildingTitle(wikiText);
             if (string.IsNullOrWhiteSpace(buildingName))
+            {
+            }
+
+            var buildingIcon = getBuildingIcon(wikiText);
+            if (string.IsNullOrWhiteSpace(buildingIcon))
             {
             }
 
             var buildingType = getBuildingType(wikiText);
             if (buildingType == BuildingType.Unknown)
             {
-
             }
 
             var productionInfo = getProductionInfo(wikiText);
             if (productionInfo == null && buildingType == BuildingType.Production)
             {
-
             }
 
             var supplyInfo = getSupplyInfo(wikiText);
             var unlockInfo = getUnlockInfo(wikiText);
-
-            var specialBuildingNameHelper = new SpecialBuildingNameHelper();
-            buildingName = specialBuildingNameHelper.CheckSpecialBuildingName(buildingName);
+            var buildingSize = getBuildingSize(wikiText);
+            var constructionInfo = getConstructionInfo(wikiText);
 
             var parsedInfobox = new Infobox
             {
                 Name = buildingName,
+                Icon = buildingIcon,
                 Type = buildingType,
                 ProductionInfos = productionInfo,
                 SupplyInfos = supplyInfo,
                 UnlockInfos = unlockInfo,
+                BuildingSize = buildingSize,
+                ConstructionInfos = constructionInfo
                 //Region
             };
 
             result.Add(parsedInfobox);
+
+            return result;
+        }
+
+        private string getBuildingIcon(string infobox)
+        {
+            var result = string.Empty;
+
+            //short circuit infoboxes without building icon info
+            if (!infobox.Contains("|Building Icon"))
+            {
+                return result;
+            }
+
+            using (var reader = new StringReader(infobox))
+            {
+                string curLine;
+                while ((curLine = reader.ReadLine()) != null)
+                {
+                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
+
+                    var matchAmount = regexBuildingIcon.Match(curLine);
+                    if (matchAmount.Success)
+                    {
+                        result = matchAmount.Groups["icon"].Value;
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private Size getBuildingSize(string infobox)
+        {
+            var result = Size.Empty;
+
+            //short circuit infoboxes without building size info
+            if (!infobox.Contains("|Building Size"))
+            {
+                return result;
+            }
+
+            using (var reader = new StringReader(infobox))
+            {
+                string curLine;
+                while ((curLine = reader.ReadLine()) != null)
+                {
+                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
+
+                    var matchAmount = regexBuildingSize.Match(curLine);
+                    if (matchAmount.Success)
+                    {
+                        var foundValue = matchAmount.Groups["value"].Value;
+                        var splittedSize = foundValue.Split(new[] { 'x' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (splittedSize.Length != 2)
+                        {
+                            return result;
+                        }
+
+                        var couldParseX = int.TryParse(splittedSize[0], out int x);
+                        var couldParseY = int.TryParse(splittedSize[1], out int y);
+                        if (!couldParseX || !couldParseY)
+                        {
+                            logger.Warn($"could not parse Size: \"{foundValue}\"");
+                        }
+
+                        result = new Size(x, y);
+                        break;
+                    }
+                }
+            }
 
             return result;
         }
@@ -133,35 +239,6 @@ namespace InfoboxParser
             return result;
         }
 
-        private string getBuildingName(string infobox)
-        {
-            var result = string.Empty;
-
-            if (!infobox.Contains("|Title"))
-            {
-                return result;
-            }
-
-            using (var reader = new StringReader(infobox))
-            {
-                string curLine;
-                while ((curLine = reader.ReadLine()) != null)
-                {
-                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
-
-                    if (curLine.StartsWith("|Title", StringComparison.OrdinalIgnoreCase))
-                    {
-                        result = curLine.Replace("|Title", string.Empty)
-                            .Replace("=", string.Empty)
-                            .Trim();
-                        break;
-                    }
-                }
-            }
-
-            return result;
-        }
-
         private ProductionInfo getProductionInfo(string infobox)
         {
             ProductionInfo result = null;
@@ -185,7 +262,7 @@ namespace InfoboxParser
                             .Replace("=", string.Empty)
                             .Trim();
 
-                        if (double.TryParse(productionAmountElectricity, NumberStyles.Number, cultureForParsing, out double parsedProductionAmountElectricity))
+                        if (double.TryParse(productionAmountElectricity, NumberStyles.Number, cultureForParsing, out var parsedProductionAmountElectricity))
                         {
                             if (result == null)
                             {
@@ -206,7 +283,7 @@ namespace InfoboxParser
                             .Replace("=", string.Empty)
                             .Trim();
 
-                        if (double.TryParse(productionAmount, NumberStyles.Number, cultureForParsing, out double parsedProductionAmount))
+                        if (double.TryParse(productionAmount, NumberStyles.Number, cultureForParsing, out var parsedProductionAmount))
                         {
                             if (result == null)
                             {
@@ -250,7 +327,7 @@ namespace InfoboxParser
                         if (matchAmount.Success)
                         {
                             var matchedCounter = matchAmount.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -262,7 +339,7 @@ namespace InfoboxParser
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double inputValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out var inputValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -292,7 +369,7 @@ namespace InfoboxParser
                         if (matchAmountElectricity.Success)
                         {
                             var matchedCounter = matchAmountElectricity.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -304,7 +381,7 @@ namespace InfoboxParser
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double inputValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out var inputValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -334,7 +411,7 @@ namespace InfoboxParser
                         if (matchIcon.Success)
                         {
                             var matchedCounter = matchIcon.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -402,7 +479,7 @@ namespace InfoboxParser
                         if (matchAmount.Success)
                         {
                             var matchedCounter = matchAmount.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -414,7 +491,7 @@ namespace InfoboxParser
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double supplyValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out var supplyValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -444,7 +521,7 @@ namespace InfoboxParser
                         if (matchAmountElectricity.Success)
                         {
                             var matchedCounter = matchAmountElectricity.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -456,7 +533,7 @@ namespace InfoboxParser
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double supplyValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out var supplyValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -486,7 +563,7 @@ namespace InfoboxParser
                         if (matchType.Success)
                         {
                             var matchedCounter = matchType.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -554,7 +631,7 @@ namespace InfoboxParser
                         if (matchAmount.Success)
                         {
                             var matchedCounter = matchAmount.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -563,10 +640,11 @@ namespace InfoboxParser
                             var matchedValue = matchAmount.Groups["value"].Value;
                             if (string.IsNullOrWhiteSpace(matchedValue))
                             {
+                                logger.Trace($"skip line with no amount{Environment.NewLine}{nameof(curLine)}: {curLine}{Environment.NewLine}{nameof(matchAmount)}: {matchAmount}");
                                 continue;
                             }
 
-                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out double conditionValue))
+                            if (!double.TryParse(matchedValue, NumberStyles.Number, cultureForParsing, out var conditionValue))
                             {
                                 throw new Exception("could not find value for input");
                             }
@@ -596,7 +674,7 @@ namespace InfoboxParser
                         if (matchType.Success)
                         {
                             var matchedCounter = matchType.Groups["counter"].Value;
-                            if (!int.TryParse(matchedCounter, out int counter))
+                            if (!int.TryParse(matchedCounter, out var counter))
                             {
                                 throw new Exception("could not find counter");
                             }
@@ -636,6 +714,246 @@ namespace InfoboxParser
             {
                 //order by number from infobox
                 result.UnlockConditions = result.UnlockConditions.OrderBy(x => x.Order).ToList();
+            }
+
+            return result;
+        }
+
+        private List<ConstructionInfo> getConstructionInfo(string infobox)
+        {
+            List<ConstructionInfo> result = new List<ConstructionInfo>();
+
+            using (var reader = new StringReader(infobox))
+            {
+                string curLine;
+                while ((curLine = reader.ReadLine()) != null)
+                {
+                    curLine = curLine.Replace(_commons.InfoboxTemplateEnd, string.Empty);
+
+                    var matchCredits = regexConstructionCredits.Match(curLine);
+                    if (matchCredits.Success)
+                    {
+                        var foundValue = matchCredits.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Credits: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Credits"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchTimber = regexConstructionTimber.Match(curLine);
+                    if (matchTimber.Success)
+                    {
+                        var foundValue = matchTimber.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Timber: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Timber"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchBricks = regexConstructionBricks.Match(curLine);
+                    if (matchBricks.Success)
+                    {
+                        var foundValue = matchBricks.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Bricks: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Bricks"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchSteelBeams = regexConstructionSteelBeams.Match(curLine);
+                    if (matchSteelBeams.Success)
+                    {
+                        var foundValue = matchSteelBeams.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Steel Beams: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Steel Beams"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchWindows = regexConstructionWindows.Match(curLine);
+                    if (matchWindows.Success)
+                    {
+                        var foundValue = matchWindows.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Windows: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Windows"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchConcrete = regexConstructionConcrete.Match(curLine);
+                    if (matchConcrete.Success)
+                    {
+                        var foundValue = matchConcrete.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Concrete: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Reinforced Concrete"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchWeapons = regexConstructionWeapons.Match(curLine);
+                    if (matchWeapons.Success)
+                    {
+                        var foundValue = matchWeapons.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Weapons: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Weapons"
+                            }
+                        });
+                        continue;
+                    }
+
+                    var matchAdvancedWeapons = regexConstructionAdvancedWeapons.Match(curLine);
+                    if (matchAdvancedWeapons.Success)
+                    {
+                        var foundValue = matchAdvancedWeapons.Groups["value"].Value;
+                        if (string.IsNullOrWhiteSpace(foundValue))
+                        {
+                            continue;
+                        }
+
+                        var couldParse = double.TryParse(foundValue, NumberStyles.Number, cultureForParsing, out var parsedValue);
+                        if (!couldParse)
+                        {
+                            logger.Warn($"could not parse Advanced Weapons: \"{foundValue}\"");
+                            continue;
+                        }
+
+                        result.Add(new ConstructionInfo
+                        {
+                            Value = parsedValue,
+                            Unit = new CostUnit
+                            {
+                                Type = CostUnitType.InfoIcon,
+                                Name = "Advanced Weapons"
+                            }
+                        });
+                        continue;
+                    }
+                }
             }
 
             return result;

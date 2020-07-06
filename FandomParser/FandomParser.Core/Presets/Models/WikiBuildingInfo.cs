@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.Serialization;
 
 namespace FandomParser.Core.Presets.Models
 {
-    [DebuggerDisplay("{" + nameof(Name) + "}")]
+    [DebuggerDisplay("{" + nameof(Name) + "} ({" + nameof(Region) + "})")]
     [DataContract]
     public class WikiBuildingInfo
     {

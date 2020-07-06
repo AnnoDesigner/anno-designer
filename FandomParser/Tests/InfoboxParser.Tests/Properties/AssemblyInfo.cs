@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("InfoboxParser.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("keine")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("InfoboxParser.Tests")]
-[assembly: AssemblyCopyright("Copyright © keine 2019")]
+[assembly: AssemblyCopyright("Copyright © 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

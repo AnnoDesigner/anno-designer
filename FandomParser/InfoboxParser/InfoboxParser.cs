@@ -10,6 +10,7 @@ using FandomParser.Core.Models;
 using FandomParser.Core.Presets.Models;
 using InfoboxParser.Models;
 using System.Runtime.CompilerServices;
+using InfoboxParser.Parser;
 
 [assembly: InternalsVisibleTo("InfoboxParser.Tests")]
 
@@ -18,16 +19,28 @@ namespace InfoboxParser
     public class InfoboxParser
     {
         private readonly ICommons _commons;
+        private readonly ITitleParserSingle _titleParserSingle;
+        private readonly ISpecialBuildingNameHelper _specialBuildingNameHelper;
+        private readonly IRegionHelper _regionHelper;
 
-        private readonly Parser parser;
-        private readonly ParserBothWorlds parserBothWorlds;
+        private readonly IParser parserSingleRegion;
+        private readonly IParser parserOldAndNewWorld;
+        private readonly IParserMultipleRegions parserMultipleRegions;
+        private readonly List<string> possibleRegions_2Regions;
+        private readonly List<string> possibleRegions_3Regions;
 
-        public InfoboxParser(ICommons commons)
+        public InfoboxParser(ICommons commonsToUse, ITitleParserSingle titleParserSingleToUse, ISpecialBuildingNameHelper specialBuildingNameHelperToUse, IRegionHelper regionHelperToUse)
         {
-            _commons = commons;
+            _commons = commonsToUse;
+            _titleParserSingle = titleParserSingleToUse;
+            _specialBuildingNameHelper = specialBuildingNameHelperToUse;
+            _regionHelper = regionHelperToUse;
 
-            parser = new Parser(_commons);
-            parserBothWorlds = new ParserBothWorlds(_commons);
+            parserSingleRegion = new ParserSingleRegion(_commons, _titleParserSingle);
+            parserOldAndNewWorld = new ParserOldAndNewWorld(_commons, _specialBuildingNameHelper, _regionHelper);
+            parserMultipleRegions = new ParserMultipleRegions(_commons, _specialBuildingNameHelper, _regionHelper);
+            possibleRegions_2Regions = new List<string> { "A", "B" };
+            possibleRegions_3Regions = new List<string> { "A", "B", "C" };
         }
 
         public List<IInfobox> GetInfobox(string wikiText)
@@ -39,15 +52,28 @@ namespace InfoboxParser
 
             var result = new List<IInfobox>();
 
-            if (!wikiText.StartsWith(_commons.InfoboxTemplateStartBothWorlds))
+
+            if (wikiText.StartsWith(_commons.InfoboxTemplateStartOldAndNewWorld))
             {
-                var infoboxes = parser.GetInfobox(wikiText);
+                var infoboxes = parserOldAndNewWorld.GetInfobox(wikiText);
 
                 result.AddRange(infoboxes);
             }
-            else
+            else if (wikiText.StartsWith(_commons.InfoboxTemplateStart2Regions))
             {
-                var infoboxes = parserBothWorlds.GetInfobox(wikiText);
+                var infoboxes = parserMultipleRegions.GetInfobox(wikiText, possibleRegions_2Regions);
+
+                result.AddRange(infoboxes);
+            }
+            else if (wikiText.StartsWith(_commons.InfoboxTemplateStart3Regions))
+            {
+                var infoboxes = parserMultipleRegions.GetInfobox(wikiText, possibleRegions_3Regions);
+
+                result.AddRange(infoboxes);
+            }
+            else if (wikiText.StartsWith(_commons.InfoboxTemplateStart))
+            {
+                var infoboxes = parserSingleRegion.GetInfobox(wikiText);
 
                 result.AddRange(infoboxes);
             }

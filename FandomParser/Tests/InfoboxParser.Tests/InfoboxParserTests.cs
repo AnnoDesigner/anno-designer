@@ -10,16 +10,35 @@ using System.IO;
 using System.Reflection;
 using FandomParser.Core.Presets.Models;
 using InfoboxParser.Tests.Attributes;
+using InfoboxParser.Models;
+using InfoboxParser.Parser;
 
 namespace InfoboxParser.Tests
 {
     public class InfoboxParserTests
     {
-        private static readonly ICommons mockedCommons;
+        private static readonly ICommons _mockedCommons;
+        private static readonly ISpecialBuildingNameHelper _mockedSpecialBuildingNameHelper;
+        private static readonly ITitleParserSingle _mockedTitleParserSingle;
+        private static readonly IRegionHelper _mockedRegionHelper;
 
         static InfoboxParserTests()
         {
-            mockedCommons = Commons.Instance;
+            _mockedCommons = Commons.Instance;
+            _mockedSpecialBuildingNameHelper = new SpecialBuildingNameHelper();
+            _mockedTitleParserSingle = new TitleParserSingle(_mockedCommons, _mockedSpecialBuildingNameHelper);
+            _mockedRegionHelper = new RegionHelper();
+        }
+
+        private InfoboxParser GetParser(ICommons commonsToUse = null,
+            ITitleParserSingle titleParserSingleToUse = null,
+            ISpecialBuildingNameHelper specialBuildingNameHelperToUse = null,
+            IRegionHelper regionHelperToUse = null)
+        {
+            return new InfoboxParser(commonsToUse ?? _mockedCommons,
+                titleParserSingleToUse ?? _mockedTitleParserSingle,
+                specialBuildingNameHelperToUse ?? _mockedSpecialBuildingNameHelper,
+                regionHelperToUse ?? _mockedRegionHelper);
         }
 
         [Theory]
@@ -29,7 +48,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextIsNullOrWhiteSpace_ShouldReturnNull(string input)
         {
             // Arrange
-            var parser = new InfoboxParser(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -44,7 +63,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "{{Infobox Buildings";
 
-            var parser = new InfoboxParser(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -59,13 +78,43 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "{{Infobox Buildings Old and New World";
 
-            var parser = new InfoboxParser(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
 
             // Assert
             Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
+        public void GetInfobox_WikiTextContainsInfoboxFor2Regions_ShouldReturnMultipleResults()
+        {
+            // Arrange
+            var input = "{{Infobox Buildings 2 Regions";
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
+        public void GetInfobox_WikiTextContainsInfoboxFor3Regions_ShouldReturnMultipleResults()
+        {
+            // Arrange
+            var input = "{{Infobox Buildings 3 Regions";
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(3, result.Count);
         }
     }
 }

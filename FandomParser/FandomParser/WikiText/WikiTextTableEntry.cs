@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -10,6 +11,7 @@ using FandomParser.Core.Presets.Models;
 namespace FandomParser.WikiText
 {
 
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     [DataContract]
     public class WikiTextTableEntry
     {

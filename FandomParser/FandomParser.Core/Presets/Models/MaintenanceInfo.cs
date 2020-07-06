@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace FandomParser.Core.Presets.Models
 {
+    [DebuggerDisplay("{" + nameof(Value) + "} ({" + nameof(Unit) + "})")]
     [DataContract]
     public class MaintenanceInfo
     {

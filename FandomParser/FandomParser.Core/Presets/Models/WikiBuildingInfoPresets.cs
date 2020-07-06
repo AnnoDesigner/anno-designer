@@ -13,6 +13,8 @@ namespace FandomParser.Core.Presets.Models
     {
         public WikiBuildingInfoPresets()
         {
+            Version = new Version(1, 0);
+            DateGenerated = DateTime.UtcNow;
             Infos = new List<WikiBuildingInfo>();
         }
 

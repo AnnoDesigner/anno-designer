@@ -1,0 +1,98 @@
+﻿{{Infobox Buildings|Title = Fishery|Building Icon = Fish.png|Image = FisheryScreenshot.jpg|Credits = 100|Timber = 2|Maintenance = -40|Workforce Type = Farmers|Workforce Amount = -25|Produces Amount = 2|Produces Icon = Fish.png|Supplies 1 Type = Farmers|Supplies 1 Amount = 80|Supplies 2 Type = Workers|Supplies 2 Amount = 40|Building Type = Production|Building Size = 5x11 (5x16 in water)|Hitpoints = 2000|Requires = Free coastline|Unlock Condition 1 Amount = 50|Unlock Condition 1 Type = Farmers}}'''Fishery''' produces [[File:Fish.png|20px]] fish. It can be built only in the [[Old World]], it requires free coastline. It must be connected to a [[Small_Warehouse|warehouse]] or a [[Trading Post|trading post]] by a [[roads|road]] to enable goods transportation; adjacency to the trading post is not sufficient. Fish are needed to fulfill the basic [[Needs|need]] of {{Infoicon Farmers}} and {{Infoicon Workers}}.
+
+For a detailed look into the profitability of fish as a consumer product, see [[Profitability of Consumer Goods|this page]].
+
+== Productivity ==
+It takes 30 seconds to produce 1 ton of fish so the production rate is 2 tons of fish per minute. Productivity can be changed by adjusting [[working conditions]] and using [[items]]. [[Electricity]] has no effect on fisheries.
+
+{{clear}}
+== Fish usage and production chains ==
+'''Fish''' is the first farmers' basic need based on goods. Fulfilling the need for fish increases the number of farmers and workers in each residence by 3.
+
+Fish can be used on [[expeditions]] as extra rations, they grant 15 bonus morale per 50 tons. They can also be sold for 16 coins, or purchased for 40 coins per ton (by [[Trade|passive trading]]).
+
+All [[production chains]] involving fish are listed below.
+
+{{PCList|Fish}}
+
+== Items ==
+Some items when equipped in [[Trade Union|trade unions]] or [[Harbourmaster's Office|harbourmaster's offices]] can have an impact on fisheries. Below you can find three lists of such items. The first part of the list contains items affecting only particular buildings including fisheries, the list is divided by rarity. The second list contains items affecting every production building in the game. The third list contains items affecting every harbour building.
+
+
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+=== Common ===
+
+<div class="mw-collapsible-content">{{Harbourmaster's Office|Rarity=common|Name=Angler}}</div>
+</div>
+
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+=== Uncommon ===
+
+<div class="mw-collapsible-content">{{Harbourmaster's Office|Rarity=uncommon|Name=Fine Fishing Net}}
+{{Harbourmaster's Office|Rarity=uncommon|Name=Line Fisherman}}</div>
+</div>
+
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+=== Rare ===
+
+<div class="mw-collapsible-content">{{Harbourmaster's Office|Rarity=rare|Name=Drift Net}}
+{{Harbourmaster's Office|Rarity=rare|Name=Grubby Hands}}
+{{Harbourmaster's Office|Rarity=rare|Name=Hydroelectric Wheel}}
+{{Harbourmaster's Office|Rarity=rare|Name=Veteran Whaler}}</div>
+</div>
+
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+=== Epic ===
+
+<div class="mw-collapsible-content">{{Harbourmaster's Office|Rarity=epic|Name=Greedy Mitts}}
+{{Harbourmaster's Office|Rarity=epic|Name=Long Range Bottom Trawl}}
+{{Harbourmaster's Office|Rarity=epic|Name=Mother of Pearls}}
+{{Harbourmaster's Office|Rarity=epic|Name=Stainless Hydroelectric Wheel}}</div>
+</div>
+
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+=== Legendary ===
+
+<div class="mw-collapsible-content">{{Harbourmaster's Office|Rarity=legendary|Name=Captain Moby, Old Dog of the Sea}}
+{{Harbourmaster's Office|Rarity=legendary|Name=RacioN8d Super Spinner}}
+{{Harbourmaster's Office|Rarity=legendary|Name=Sticky Shiny Claws}}</div>
+</div>
+
+
+
+
+
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+=== Items for all production buildings ===
+
+<div class="mw-collapsible-content">{{Items for all production buildings|common}}
+{{Items for all production buildings|uncommon}}
+{{Items for all production buildings|rare}}
+{{Items for all production buildings|epic}}
+{{Items for all production buildings|legendary}}</div>
+</div>
+
+
+
+
+
+<div class="mw-collapsible mw-collapsed" style="width:100%">
+=== Items for all harbour buildings ===
+
+<div class="mw-collapsible-content">{{Items for all harbour buildings|all}}</div>
+</div>
+
+
+
+
+{{Navbox Buildings}}
+[[Category:Buildings]]
+
+RevisionId=13877
+LastEdit=2020-04-24T15:27:53.0000000+02:00

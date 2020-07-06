@@ -8,8 +8,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using FandomParser.Core;
+using FandomParser.Core.Models;
 using FandomParser.Core.Presets.Models;
 using FandomParser.WikiText;
+using InfoboxParser;
+using InfoboxParser.Parser;
 using NLog;
 
 namespace FandomParser
@@ -30,35 +33,39 @@ namespace FandomParser
         private string _pathToDetailsFolder;
         private string _pathToExtractedInfoboxesFolder;
         private readonly ICommons _commons;
+        private readonly IInfoboxExtractor _infoboxExtractor;
+        private readonly InfoboxParser.InfoboxParser _infoboxParser;
 
-        public WikiBuildingDetailProvider(ICommons commons)
+        public WikiBuildingDetailProvider(ICommons commons, InfoboxParser.InfoboxParser infoboxParserToUse, IInfoboxExtractor infoboxExtractorToUse)
         {
             _commons = commons;
+            _infoboxParser = infoboxParserToUse;
+            _infoboxExtractor = infoboxExtractorToUse;
         }
 
         public string PathToDetailsFolder
         {
-            get { return _pathToDetailsFolder ?? (_pathToDetailsFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), DIRECTORY_BUILDING_DETAILS)); }
+            get { return _pathToDetailsFolder ??= Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), DIRECTORY_BUILDING_DETAILS); }
         }
 
         public string PathToExtractedInfoboxesFolder
         {
-            get { return _pathToExtractedInfoboxesFolder ?? (_pathToExtractedInfoboxesFolder = Path.Combine(PathToDetailsFolder, DIRECTORY_BUILDING_INFOBOX)); }
+            get { return _pathToExtractedInfoboxesFolder ??= Path.Combine(PathToDetailsFolder, DIRECTORY_BUILDING_INFOBOX); }
         }
 
         public WikiBuildingInfoPresets FetchBuildingDetails(WikiBuildingInfoPresets wikiBuildingInfoList)
         {
             //download complete wikitext for each building
-            SaveCompleteInfos(wikiBuildingInfoList);
+            SaveBuildingsDetailPage(wikiBuildingInfoList);
 
             //extract infobox for each found wikitext
-            ExtractAllInfoboxes();
+            ExtractInfoboxesFromDetailPages();
 
             //parse infoboxes
             return GetUpdatedWikiBuildingInfoList(wikiBuildingInfoList);
         }
 
-        private void SaveCompleteInfos(WikiBuildingInfoPresets wikiBuildingInfoList)
+        private void SaveBuildingsDetailPage(WikiBuildingInfoPresets wikiBuildingInfoList)
         {
             Console.WriteLine("start fetching building details");
 
@@ -105,7 +112,7 @@ namespace FandomParser
                         {
                             Environment.NewLine,
                             $"{REVISION_HEADER_ID}{REVISION_SEPARATOR}{providerResult.RevisionId}",
-                            $"{REVISION_HEADER_DATE}{REVISION_SEPARATOR}{providerResult.EditDate.ToString("o")}"
+                            $"{REVISION_HEADER_DATE}{REVISION_SEPARATOR}{providerResult.EditDate:o}"
                         }, Encoding.UTF8);
                     }
                     else
@@ -125,7 +132,7 @@ namespace FandomParser
             Console.WriteLine(message);
         }
 
-        private void ExtractAllInfoboxes()
+        private void ExtractInfoboxesFromDetailPages()
         {
             Console.WriteLine("start extracting infoboxes");
 
@@ -137,44 +144,34 @@ namespace FandomParser
                 Directory.CreateDirectory(PathToExtractedInfoboxesFolder);
             }
 
-            foreach (var curFile in Directory.EnumerateFiles(PathToDetailsFolder, $"*{FILE_ENDING_WIKITEXT}", SearchOption.TopDirectoryOnly)
-                .Where(x => !Path.GetFileName(x).Equals(FILENAME_MISSING_INFOS, StringComparison.OrdinalIgnoreCase)))
+            var filesWithWikiText = Directory.EnumerateFiles(PathToDetailsFolder, $"*{FILE_ENDING_WIKITEXT}", SearchOption.TopDirectoryOnly)
+                .Where(x => !Path.GetFileName(x).Equals(FILENAME_MISSING_INFOS, StringComparison.OrdinalIgnoreCase));
+            var totalFileCount = filesWithWikiText.Count();
+            var fileCounter = 0;
+
+            foreach (var curFile in filesWithWikiText)
             {
                 try
                 {
-                    var fileName = Path.GetFileNameWithoutExtension(curFile);
+                    Console.WriteLine($"extracting infobox {++fileCounter} of {totalFileCount}");
 
-                    var destinationFilePath = Path.Combine(PathToExtractedInfoboxesFolder, $"{fileName}{FILE_ENDING_INFOBOX}");
-                    if (File.Exists(destinationFilePath))
-                    {
-                        continue;
-                    }
-
-                    //Note: Don't handle files with multiple infoboxes  -> should be separate page in wiki
                     var fileContent = File.ReadAllText(curFile, Encoding.UTF8);
+                    var extractedInfoboxes = _infoboxExtractor.ExtractInfobox(fileContent);
 
-                    var indexInfoboxBothWorldsStart = fileContent.IndexOf(_commons.InfoboxTemplateStartBothWorlds, StringComparison.OrdinalIgnoreCase);
-                    var indexInfoboxStart = fileContent.IndexOf(_commons.InfoboxTemplateStart, StringComparison.OrdinalIgnoreCase);
-
-                    var startIndex = indexInfoboxBothWorldsStart == -1 ? indexInfoboxStart : indexInfoboxBothWorldsStart;
-
-                    //handle files with no infobox
-                    if (startIndex == -1)
+                    foreach (var curExtractedInfobox in extractedInfoboxes)
                     {
-                        continue;
-                    }
+                        var curFileName = Path.GetFileNameWithoutExtension(curFile);
 
-                    var endIndex = fileContent.IndexOf(_commons.InfoboxTemplateEnd, startIndex, StringComparison.OrdinalIgnoreCase);
-                    int length = endIndex - startIndex + _commons.InfoboxTemplateEnd.Length;
+                        if (!string.IsNullOrWhiteSpace(curExtractedInfobox.title))
+                        {
+                            if (!curExtractedInfobox.title.Equals(curFileName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                curFileName = curExtractedInfobox.title;
+                            }
+                        }
 
-                    var infoBox = fileContent.Substring(startIndex, length);
-                    if (!string.IsNullOrWhiteSpace(infoBox))
-                    {
-                        //format infobox with new entries on separate lines for later parsing
-                        var splittedInfobox = infoBox.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
-                        var infoboxWithLineBreaks = string.Join(Environment.NewLine + "|", splittedInfobox);
-
-                        File.WriteAllText(destinationFilePath, infoboxWithLineBreaks, Encoding.UTF8);
+                        var destinationFilePath = GetFileNameForInfobox(GetCleanedFilename(curFileName));
+                        File.WriteAllText(destinationFilePath, curExtractedInfobox.infobox, Encoding.UTF8);
                     }
                 }
                 catch (Exception ex)
@@ -197,12 +194,10 @@ namespace FandomParser
 
             try
             {
-                var infoboxParser = new InfoboxParser.InfoboxParser(_commons);
-
                 foreach (var curFile in Directory.EnumerateFiles(PathToExtractedInfoboxesFolder, $"*{FILE_ENDING_INFOBOX}", SearchOption.TopDirectoryOnly))
                 {
                     var fileContent = File.ReadAllText(curFile, Encoding.UTF8);
-                    var infoboxes = infoboxParser.GetInfobox(fileContent);
+                    var infoboxes = _infoboxParser.GetInfobox(fileContent);
 
                     if (infoboxes.Count == 1)
                     {
@@ -218,35 +213,36 @@ namespace FandomParser
                             throw new Exception("expected unknown region");
                         }
 
-                        if (foundWikiBuildingInfo == null)
+                        if (foundWikiBuildingInfo is null)
                         {
-                            throw new Exception("no WikiBuildingInfo found!");
+                            //if (parsedInfobox?.Name.Contains("Road") == true)
+                            //{
+                            foundWikiBuildingInfo = wikiBuildingInfoList.Infos.FirstOrDefault(x => x.Name.EndsWith(parsedInfobox.Name));
+                            if (foundWikiBuildingInfo is null)
+                            {
+                                var wikiBuildingInfo = CreateNewBuildingInfo(parsedInfobox);
+                                wikiBuildingInfoList.Infos.Add(wikiBuildingInfo);
+                                continue;
+
+                                //var exception = new Exception("No WikiBuildingInfo found!");
+                                //exception.Data.Add(nameof(curFile), curFile);
+                                //exception.Data.Add($"{nameof(parsedInfobox)}.{nameof(parsedInfobox.Name)}", parsedInfobox.Name);
+
+                                //logger.Error(exception);
+                                //continue;
+
+                                //throw exception;
+                                //is page with multiple infoboxes -> not supported yet
+                                //continue;
+                            }
+                            //}
+                            else
+                            {
+
+                            }
                         }
 
-                        var buildingNameForUrl = foundWikiBuildingInfo.Name.Replace(" ", "_");
-
-                        foundWikiBuildingInfo.Type = parsedInfobox.Type;
-                        foundWikiBuildingInfo.ProductionInfos = parsedInfobox.ProductionInfos;
-                        foundWikiBuildingInfo.SupplyInfos = parsedInfobox.SupplyInfos;
-                        foundWikiBuildingInfo.UnlockInfos = parsedInfobox.UnlockInfos;
-
-                        //check Url for "World's Fair" | correct: https://anno1800.fandom.com/wiki/World%27s_Fair
-                        if (buildingNameForUrl.Contains("World's_Fair"))
-                        {
-                            buildingNameForUrl = "World%27s_Fair";
-                        }
-
-                        //(maybe) TODO check Url for "Bombín Weaver" | correct: https://anno1800.fandom.com/wiki/Bomb%C2%AD%C3%ADn_Weaver
-                        //contains unicode char (https://www.utf8-chartable.de/unicode-utf8-table.pl):  U+00AD	­	c2 ad	SOFT HYPHEN
-
-                        foundWikiBuildingInfo.Url = new Uri("https://anno1800.fandom.com/wiki/" + buildingNameForUrl);
-
-                        var revisionInfo = GetRevisionInfo(foundWikiBuildingInfo);
-                        if (revisionInfo != null)
-                        {
-                            foundWikiBuildingInfo.RevisionId = revisionInfo.Item1;
-                            foundWikiBuildingInfo.RevisionDate = revisionInfo.Item2;
-                        }
+                        foundWikiBuildingInfo = CopyInfoboxToBuildingInfo(parsedInfobox, foundWikiBuildingInfo);
                     }
                     else if (infoboxes.Count > 1)
                     {
@@ -254,25 +250,33 @@ namespace FandomParser
                         {
                             //multiple entries possible e.g. "Police Station" or "Museum"
                             var foundWikiBuildingInfo = wikiBuildingInfoList.Infos.FirstOrDefault(x => x.Name.Equals(curInfobox.Name, StringComparison.OrdinalIgnoreCase) && x.Region == curInfobox.Region);
-                            if (foundWikiBuildingInfo == null)
+                            if (foundWikiBuildingInfo is null)
                             {
-                                throw new Exception("no WikiBuildingInfo found!");
+                                //if (curInfobox?.Name.Contains("Road") == true)
+                                //{
+                                foundWikiBuildingInfo = wikiBuildingInfoList.Infos.FirstOrDefault(x => x.Name.EndsWith(curInfobox.Name));
+                                if (foundWikiBuildingInfo is null)
+                                {
+                                    var exception = new Exception("No WikiBuildingInfo found!");
+                                    exception.Data.Add(nameof(curFile), curFile);
+                                    exception.Data.Add($"{nameof(curInfobox)}.{nameof(curInfobox.Name)}", curInfobox.Name);
+
+                                    logger.Error(exception);
+                                    continue;
+
+                                    //throw exception;
+
+                                    //is page with multiple infoboxes -> not supported yet
+                                    //continue;
+                                }
+                                //}
+                                else
+                                {
+
+                                }
                             }
 
-                            var buildingNameForUrl = foundWikiBuildingInfo.Name.Replace(" ", "_");
-
-                            foundWikiBuildingInfo.Type = curInfobox.Type;
-                            foundWikiBuildingInfo.ProductionInfos = curInfobox.ProductionInfos;
-                            foundWikiBuildingInfo.SupplyInfos = curInfobox.SupplyInfos;
-                            foundWikiBuildingInfo.UnlockInfos = curInfobox.UnlockInfos;
-                            foundWikiBuildingInfo.Url = new Uri("https://anno1800.fandom.com/wiki/" + buildingNameForUrl);
-
-                            var revisionInfo = GetRevisionInfo(foundWikiBuildingInfo);
-                            if (revisionInfo != null)
-                            {
-                                foundWikiBuildingInfo.RevisionId = revisionInfo.Item1;
-                                foundWikiBuildingInfo.RevisionDate = revisionInfo.Item2;
-                            }
+                            foundWikiBuildingInfo = CopyInfoboxToBuildingInfo(curInfobox, foundWikiBuildingInfo);
                         }
                     }
                     else
@@ -354,6 +358,64 @@ namespace FandomParser
             }
 
             return Tuple.Create(revisionId, lastEdit);
+        }
+
+        private string GetFileNameForInfobox(string title)
+        {
+            return Path.Combine(PathToExtractedInfoboxesFolder, $"{title}{FILE_ENDING_INFOBOX}");
+        }
+
+        private Uri GetUriForBuilding(string buildingName)
+        {
+            var buildingNameForUrl = buildingName.Replace(" ", "_");
+
+            //check Url for "World's Fair" | correct: https://anno1800.fandom.com/wiki/World%27s_Fair
+            if (buildingNameForUrl.Contains("World's_Fair"))
+            {
+                buildingNameForUrl = "World%27s_Fair";
+            }
+            //(maybe) TODO check Url for "Bombín Weaver" | correct: https://anno1800.fandom.com/wiki/Bomb%C2%AD%C3%ADn_Weaver
+            //contains unicode char (https://www.utf8-chartable.de/unicode-utf8-table.pl):  U+00AD	­	c2 ad	SOFT HYPHEN
+
+            return new Uri("https://anno1800.fandom.com/wiki/" + buildingNameForUrl);
+        }
+
+        private WikiBuildingInfo CopyInfoboxToBuildingInfo(IInfobox infobox, WikiBuildingInfo buildingInfo)
+        {
+            buildingInfo.Type = infobox.Type;
+            buildingInfo.ProductionInfos = infobox.ProductionInfos;
+            buildingInfo.SupplyInfos = infobox.SupplyInfos;
+            buildingInfo.UnlockInfos = infobox.UnlockInfos;
+            buildingInfo.Url = GetUriForBuilding(buildingInfo.Name);
+            buildingInfo.ConstructionInfos = infobox.ConstructionInfos;
+
+            var revisionInfo = GetRevisionInfo(buildingInfo);
+            if (revisionInfo != null)
+            {
+                buildingInfo.RevisionId = revisionInfo.Item1;
+                buildingInfo.RevisionDate = revisionInfo.Item2;
+            }
+
+            return buildingInfo;
+        }
+
+        private WikiBuildingInfo CreateNewBuildingInfo(IInfobox infobox)
+        {
+            var result = new WikiBuildingInfo();
+
+            result.Name = infobox.Name;
+            result.Icon = infobox.Icon;
+            result.BuildingSize = infobox.BuildingSize;
+            result.Type = infobox.Type;
+            result.ProductionInfos = infobox.ProductionInfos;
+            result.SupplyInfos = infobox.SupplyInfos;
+            result.UnlockInfos = infobox.UnlockInfos;
+            result.Url = GetUriForBuilding(infobox.Name);
+            result.ConstructionInfos = infobox.ConstructionInfos;
+            result.RevisionId = -1;
+            result.RevisionDate = DateTime.MinValue;
+
+            return result;
         }
     }
 }

@@ -1,19 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FandomParser.Core;
 using FandomParser.Core.Presets.Models;
+using InfoboxParser.Models;
+using InfoboxParser.Parser;
 using InfoboxParser.Tests.Attributes;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace InfoboxParser.Tests
 {
-    public class ParserBothWorldsTests
+    public class ParserOldAndNewWorldTests
     {
-        private static readonly ICommons mockedCommons;
+        private static readonly ICommons _mockedCommons;
+        private readonly ITestOutputHelper _output;
+        private static readonly ISpecialBuildingNameHelper _mockedSpecialBuildingNameHelper;
+        private static readonly IRegionHelper _mockedRegionHelper;
+
         private static readonly string testDataPoliceStation;
         private static readonly string testDataBrickFactory;
         private static readonly string testDataHospital;
@@ -21,9 +29,13 @@ namespace InfoboxParser.Tests
         private static readonly string testDataSmallWareHouse;
         private static readonly string testDataEmpty_BothWorlds;
 
-        static ParserBothWorldsTests()
+        #region ctor
+
+        static ParserOldAndNewWorldTests()
         {
-            mockedCommons = Commons.Instance;
+            _mockedCommons = Commons.Instance;
+            _mockedSpecialBuildingNameHelper = new SpecialBuildingNameHelper();
+            _mockedRegionHelper = new RegionHelper();
 
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
 
@@ -33,6 +45,22 @@ namespace InfoboxParser.Tests
             testDataMarketplace = File.ReadAllText(Path.Combine(basePath, "Testdata", "Marketplace.infobox"));
             testDataSmallWareHouse = File.ReadAllText(Path.Combine(basePath, "Testdata", "Small_Warehouse.infobox"));
             testDataEmpty_BothWorlds = File.ReadAllText(Path.Combine(basePath, "Testdata", "empty_BothWorlds.infobox"));
+        }
+
+        public ParserOldAndNewWorldTests(ITestOutputHelper testOutputHelperToUse)
+        {
+            _output = testOutputHelperToUse;
+        }
+
+        #endregion
+
+        private IParser GetParser(ICommons commonsToUse = null,
+           ISpecialBuildingNameHelper specialBuildingNameHelperToUse = null,
+           IRegionHelper regionHelperToUse = null)
+        {
+            return new ParserOldAndNewWorld(commonsToUse ?? _mockedCommons,
+                specialBuildingNameHelperToUse ?? _mockedSpecialBuildingNameHelper,
+                regionHelperToUse ?? _mockedRegionHelper);
         }
 
         #region test data
@@ -52,6 +80,365 @@ namespace InfoboxParser.Tests
             }
         }
 
+        public static TheoryData<string, string> BuildingIconTestData
+        {
+            get
+            {
+                return new TheoryData<string, string>
+                {
+                    { "|Building Icon = Charcoal_kiln.png", "Charcoal_kiln.png" },
+                    { "|Building Icon = Furs.png", "Furs.png" },
+                    { "|Building Icon = Furs.png}}", "Furs.png" },
+                    { "|Building Icon = Furs.png    }}", "Furs.png" },
+                    { "|Building Icon      =    Furs.png   ", "Furs.png" },
+                    { "|Building Icon = Furs.jpeg", "Furs.jpeg" },
+                    { "|Building Icon = Arctic Lodge.png", "Arctic Lodge.png" },
+                    { "|Building Icon = Bear Hunting Cabin.png", "Bear Hunting Cabin.png" },
+                    { "|Building Icon = Cocoa_0.png", "Cocoa_0.png" },
+                    { "|Building Icon = Icon electric works gas 0.png ", "Icon electric works gas 0.png" },
+                    { "|Building Icon = Harbourmaster's Office.png", "Harbourmaster's Office.png" },
+                    { "|Building Icon = Harbourmaster´s Office.png", "Harbourmaster´s Office.png" },
+                    { "|Building Icon = Harbourmaster`s Office.png", "Harbourmaster`s Office.png" },
+                };
+            }
+        }
+
+        public static TheoryData<string, int, double, WorldRegion> UnlockInfoAmountTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, double, WorldRegion>
+                {
+                    { "|Unlock Condition 1 Amount (OW) = 42", 1, 42d, WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Amount (OW) = -42", 1, -42d, WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Amount (OW) = 42,21", 1, 42.21d, WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Amount (OW) = -42,21", 1, -42.21d, WorldRegion.OldWorld },
+                    { "|Unlock Condition   1   Amount (OW)   =   42", 1, 42d, WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Amount (OW) = 42}}", 1, 42d, WorldRegion.OldWorld },
+                    { "|Unlock Condition    1    Amount (OW)    =     42   }}", 1, 42d, WorldRegion.OldWorld },
+                    { "|Unlock Condition 4 Amount (OW) = 42", 4, 42d, WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Amount (NW) = 42", 1, 42d, WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Amount (NW) = -42", 1, -42d, WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Amount (NW) = 42,21", 1, 42.21d, WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Amount (NW) = -42,21", 1, -42.21d, WorldRegion.NewWorld },
+                    { "|Unlock Condition   1   Amount (NW)   =   42", 1, 42d, WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Amount (NW) = 42}}", 1, 42d, WorldRegion.NewWorld },
+                    { "|Unlock Condition    1    Amount (NW)    =     42   }}", 1, 42d, WorldRegion.NewWorld },
+                    { "|Unlock Condition 4 Amount (NW) = 42", 4, 42d, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, int, string, WorldRegion> UnlockInfoTypeTestData
+        {
+            get
+            {
+                return new TheoryData<string, int, string, WorldRegion>
+                {
+                    { "|Unlock Condition 1 Type (OW) = Technicians", 1, "Technicians", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = Engineers", 1, "Engineers", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = Obreros", 1, "Obreros", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = Investors", 1, "Investors", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = Jornaleros", 1, "Jornaleros", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = Workers", 1, "Workers", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = dummy with spaces", 1, "dummy with spaces", WorldRegion.OldWorld },
+                    { "|Unlock Condition 4 Type (OW) = Technicians", 4, "Technicians", WorldRegion.OldWorld },
+                    { "|Unlock Condition    1   Type (OW)    =    Technicians   ", 1, "Technicians", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (OW) = Technicians}}", 1, "Technicians", WorldRegion.OldWorld },
+                    { "|Unlock Condition    1    Type (OW)    =    Technicians   }}", 1, "Technicians", WorldRegion.OldWorld },
+                    { "|Unlock Condition 1 Type (NW) = Technicians", 1, "Technicians", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = Engineers", 1, "Engineers", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = Obreros", 1, "Obreros", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = Investors", 1, "Investors", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = Jornaleros", 1, "Jornaleros", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = Workers", 1, "Workers", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = dummy with spaces", 1, "dummy with spaces", WorldRegion.NewWorld },
+                    { "|Unlock Condition 4 Type (NW) = Technicians", 4, "Technicians", WorldRegion.NewWorld },
+                    { "|Unlock Condition    1   Type (NW)    =    Technicians   ", 1, "Technicians", WorldRegion.NewWorld },
+                    { "|Unlock Condition 1 Type (NW) = Technicians}}", 1, "Technicians", WorldRegion.NewWorld },
+                    { "|Unlock Condition    1    Type (NW)    =    Technicians   }}", 1, "Technicians", WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, Size, WorldRegion> BuildingSizeTestData
+        {
+            get
+            {
+                return new TheoryData<string, Size, WorldRegion>
+                {
+                    { "|Building Size (OW) = 3x3", new Size(3, 3), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 1x3", new Size(1, 3), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 1x10", new Size(1, 10), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 10x1", new Size(10, 1), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 18x22", new Size(18, 22), WorldRegion.OldWorld },
+                    { "|Building Size (OW)      =      1   x   10  ", new Size(1, 10), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 4 x 5", new Size(4, 5), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 4x5}}", new Size(4, 5), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 4x5   }}", new Size(4, 5), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 5x11 (5x16 in water)", new Size(5, 11), WorldRegion.OldWorld },
+                    { "|Building Size (OW) = 5x8 (5x13)", new Size(5, 8), WorldRegion.OldWorld },
+                    { "|Building Size (OW)   = 5x7 (partially submerged)", new Size(5, 7), WorldRegion.OldWorld },
+                    { "|Building Size (NW) = 3x3", new Size(3, 3), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 1x3", new Size(1, 3), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 1x10", new Size(1, 10), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 10x1", new Size(10, 1), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 18x22", new Size(18, 22), WorldRegion.NewWorld },
+                    { "|Building Size (NW)      =      1   x   10  ", new Size(1, 10), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 4 x 5", new Size(4, 5), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 4x5}}", new Size(4, 5), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 4x5   }}", new Size(4, 5), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 5x11 (5x16 in water)", new Size(5, 11), WorldRegion.NewWorld },
+                    { "|Building Size (NW) = 5x8 (5x13)", new Size(5, 8), WorldRegion.NewWorld },
+                    { "|Building Size (NW)   = 5x7 (partially submerged)", new Size(5, 7), WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoCreditsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Credits (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Credits (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Credits (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Credits (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Credits (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Credits (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Credits (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Credits (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Credits (OW) = 2,500", 2500, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (NW) = 2,500", 2500, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (OW) = 4,000", 4000, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (NW) = 4,000", 4000, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Credits (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Credits (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Credits (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Credits (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Credits (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Credits (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Credits (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Credits (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Credits (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoTimberTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Timber (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Timber (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Timber (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Timber (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Timber (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Timber (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Timber (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Timber (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Timber (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Timber (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Timber (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Timber (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Timber (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Timber (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Timber (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Timber (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Timber (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Timber (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Timber (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Timber (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoBricksTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Bricks (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Bricks (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Bricks (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Bricks (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Bricks (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Bricks (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Bricks (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Bricks (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Bricks (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Bricks (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Bricks (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Bricks (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Bricks (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Bricks (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoSteelBeamsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Steel Beams (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Steel Beams (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Steel Beams (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Steel Beams (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Steel Beams (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Steel Beams (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Steel Beams (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Steel Beams (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Steel Beams (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Steel Beams (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Steel Beams (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Steel Beams (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Steel Beams (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoWindowsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Windows (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Windows (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Windows (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Windows (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Windows (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Windows (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Windows (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Windows (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Windows (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Windows (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Windows (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Windows (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Windows (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Windows (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Windows (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Windows (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Windows (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Windows (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Windows (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Windows (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoConcreteTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Concrete (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Concrete (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Concrete (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Concrete (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Concrete (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Concrete (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Concrete (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Concrete (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Concrete (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Concrete (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Concrete (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Concrete (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Concrete (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Concrete (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoWeaponsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Weapons (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Weapons (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Weapons (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Weapons (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Weapons (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Weapons (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Weapons (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Weapons (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Weapons (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Weapons (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Weapons (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Weapons (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Weapons (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Weapons (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
+        public static TheoryData<string, double, WorldRegion> ConstructionInfoAdvancedWeaponsTestData
+        {
+            get
+            {
+                return new TheoryData<string, double, WorldRegion>
+                {
+                    { "|Advanced Weapons (OW) = 15000", 15000d, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = 15000", 15000d, WorldRegion.NewWorld },
+                    { "|Advanced Weapons (OW) = 150", 150d, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = 150", 150d, WorldRegion.NewWorld },
+                    { "|Advanced Weapons (OW) = 42,21", 42.21, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = 42,21", 42.21, WorldRegion.NewWorld },
+                    { "|Advanced Weapons (OW) = -42,21", -42.21, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = -42,21", -42.21, WorldRegion.NewWorld },
+                    //{ "|Advanced Weapons (OW) = 42.21", 42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Advanced Weapons (NW) = 42.21", 42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    //{ "|Advanced Weapons (OW) = -42.21", -42.21, WorldRegion.OldWorld },//incorrect numberstyle on wiki
+                    //{ "|Advanced Weapons (NW) = -42.21", -42.21, WorldRegion.NewWorld },//incorrect numberstyle on wiki
+                    { "|Advanced Weapons (OW) = -100", -100d, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = -100", -100d, WorldRegion.NewWorld },
+                    { "|Advanced Weapons (OW)    =    150   ", 150d, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW)    =    150   ", 150d, WorldRegion.NewWorld },
+                    { "|Advanced Weapons (OW) = 150}}", 150d, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = 150}}", 150d, WorldRegion.NewWorld },
+                    { "|Advanced Weapons (OW) = 42,21   }}", 42.21, WorldRegion.OldWorld },
+                    { "|Advanced Weapons (NW) = 42,21   }}", 42.21, WorldRegion.NewWorld },
+                };
+            }
+        }
+
         #endregion
 
         [Theory]
@@ -61,7 +448,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextIsNullOrWhiteSpace_ShouldReturnNull(string input)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -76,7 +463,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsNoBuildingType_ShouldReturnUnknown()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox("dummy");
@@ -93,7 +480,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsUnknownBuildingType_ShouldReturnUnknown(string input)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -109,7 +496,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsBuildingTypeSpecificBuildings_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -135,7 +522,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsBuildingTypeOldWorld_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -161,7 +548,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsBuildingTypeNewWorld_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -178,7 +565,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsBuildingTypeAndWhiteSpace_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -195,7 +582,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsBuildingTypeAndTemplateEnd_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -212,7 +599,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsBuildingTypeDifferentCasing_ShouldReturnCorrectValue(string input, BuildingType expectedType)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -231,7 +618,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsNoTitle_ShouldReturnEmpty()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox("dummy");
@@ -254,7 +641,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsTitle_ShouldReturnCorrectValue(string input, string expectedName)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -277,7 +664,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsTitleAndWhiteSpace_ShouldReturnCorrectValue(string input, string expectedName)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -298,7 +685,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsTitleAndTemplateEnd_ShouldReturnCorrectValue(string input, string expectedName)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -314,7 +701,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsSpecialTitle_ShouldReturnCorrectValue(string input, string expectedName)
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -333,7 +720,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsNoProductionInfo_ShouldReturnNull()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(testDataEmpty_BothWorlds);
@@ -350,7 +737,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount Electricity (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -367,7 +754,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount Electricity  (OW)   =    42    ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -385,7 +772,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount Electricity (OW) = 42,21";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -402,7 +789,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount Electricity (OW) = no_number" + Environment.NewLine + "|Produces Amount (OW) = 1";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -420,7 +807,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -437,7 +824,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount   (OW)   =    42    ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -455,7 +842,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount (OW) = 42,21";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -472,7 +859,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Produces Amount (OW) = no_number" + Environment.NewLine + "|Produces Amount Electricity (OW) = 1";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -490,7 +877,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount (OW) {Environment.NewLine}|Produces Icon (OW) = dummy.png";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -507,7 +894,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Icon  (OW)  =     dummy.png  {Environment.NewLine}|Produces Amount (OW)";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -524,7 +911,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount (OW) = 1{Environment.NewLine}|Input {int.MaxValue + 1L} Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -536,7 +923,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount (OW) = 1{Environment.NewLine}|Input {int.MaxValue + 1L} Amount Electricity (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -548,7 +935,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount (OW) = 1{Environment.NewLine}|Input {int.MaxValue + 1L} Icon (OW) = dummy.png";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -560,7 +947,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount{Environment.NewLine}|Input 1 Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -578,7 +965,7 @@ namespace InfoboxParser.Tests
             // Arrange            
             var input = $"|Produces Amount{Environment.NewLine}|Input 1 Amount  (OW)   =     42    ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -596,7 +983,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount{Environment.NewLine}|Input 1 Amount Electricity (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -614,7 +1001,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount{Environment.NewLine}|Input 1 Amount Electricity   (OW)     =     42      ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -632,7 +1019,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount{Environment.NewLine}|Input 1 Icon (OW) = dummy.png";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -650,7 +1037,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount{Environment.NewLine}|Input 1 Icon  (OW)   =     dummy.png        ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -668,7 +1055,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Produces Amount{Environment.NewLine}|Input 2 Amount (OW) = 21{Environment.NewLine}|Input 1 Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -689,7 +1076,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsNoSupplyInfo_ShouldReturnCorrectValue()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(testDataEmpty_BothWorlds);
@@ -706,7 +1093,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Supplies 1 Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -724,7 +1111,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Supplies 1 Amount (OW)     =  42      ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -742,7 +1129,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Supplies 1 Amount Electricity (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -760,7 +1147,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Supplies 1 Amount Electricity (OW)        =    42     ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -778,7 +1165,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Supplies 1 Type (OW) = Workers";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -796,7 +1183,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = "|Supplies 1 Type (OW)  =    Workers         ";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -814,7 +1201,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Supplies 2 Amount (OW) = 21{Environment.NewLine}|Supplies 1 Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -833,7 +1220,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Supplies {int.MaxValue + 1L} Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -845,7 +1232,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Supplies 1 Amount (OW) = {double.MaxValue.ToString()}";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -857,7 +1244,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Supplies {int.MaxValue + 1L} Amount Electricity (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -869,7 +1256,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Supplies 1 Amount Electricity (OW) = {double.MaxValue.ToString()}";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -881,7 +1268,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Supplies {int.MaxValue + 1L} Type (OW) = Farmer";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -895,7 +1282,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextContainsNoUnlockInfo_ShouldReturnCorrectValue()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(testDataEmpty_BothWorlds);
@@ -906,76 +1293,63 @@ namespace InfoboxParser.Tests
             Assert.Null(result[1].UnlockInfos);
         }
 
-        [Fact]
-        public void GetInfobox_WikiTextContainsUnlockAmount_ShouldReturnCorrectValue()
+        [Theory]
+        [MemberData(nameof(UnlockInfoAmountTestData))]
+        public void GetInfobox_WikiTextContainsUnlockAmount_ShouldReturnCorrectValue(string input, int expectedOrder, double expectedAmount, WorldRegion regionToTest)
         {
             // Arrange
-            var input = "|Unlock Condition 1 Amount (OW) = 42";
-
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
 
             // Assert
             Assert.Equal(2, result.Count);
-            Assert.Single(result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions);
-            Assert.Equal(42, result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions[0].Amount);
-            Assert.Null(result.Single(x => x.Region == WorldRegion.NewWorld).UnlockInfos);
+
+            if (regionToTest == WorldRegion.OldWorld)
+            {
+                Assert.Single(result[0].UnlockInfos.UnlockConditions);
+                Assert.Equal(expectedAmount, result[0].UnlockInfos.UnlockConditions[0].Amount);
+                Assert.Equal(expectedOrder, result[0].UnlockInfos.UnlockConditions[0].Order);
+                Assert.Null(result[0].UnlockInfos.UnlockConditions[0].Type);
+            }
+            else
+            {
+                Assert.Single(result[1].UnlockInfos.UnlockConditions);
+                Assert.Equal(expectedAmount, result[1].UnlockInfos.UnlockConditions[0].Amount);
+                Assert.Equal(expectedOrder, result[1].UnlockInfos.UnlockConditions[0].Order);
+                Assert.Null(result[1].UnlockInfos.UnlockConditions[0].Type);
+            }
+
         }
 
-        [Fact]
-        public void GetInfobox_WikiTextContainsUnlockAmountAndWhiteSpace_ShouldReturnCorrectValue()
+        [Theory]
+        [MemberData(nameof(UnlockInfoTypeTestData))]
+        public void GetInfobox_WikiTextContainsUnlockType_ShouldReturnCorrectValue(string input, int expectedOrder, string expectedType, WorldRegion regionToTest)
         {
             // Arrange
-            var input = "|Unlock Condition 1 Amount (OW)   =    42          ";
-
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
 
             // Assert
             Assert.Equal(2, result.Count);
-            Assert.Single(result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions);
-            Assert.Equal(42, result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions[0].Amount);
-            Assert.Null(result.Single(x => x.Region == WorldRegion.NewWorld).UnlockInfos);
-        }
 
-        [Fact]
-        public void GetInfobox_WikiTextContainsUnlockType_ShouldReturnCorrectValue()
-        {
-            // Arrange
-            var input = "|Unlock Condition 1 Type (OW) = Workers";
-
-            var parser = new ParserBothWorlds(mockedCommons);
-
-            // Act
-            var result = parser.GetInfobox(input);
-
-            // Assert
-            Assert.Equal(2, result.Count);
-            Assert.Single(result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions);
-            Assert.Equal("Workers", result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions[0].Type);
-            Assert.Null(result.Single(x => x.Region == WorldRegion.NewWorld).UnlockInfos);
-        }
-
-        [Fact]
-        public void GetInfobox_WikiTextContainsUnlockTypeAndWhiteSpace_ShouldReturnCorrectValue()
-        {
-            // Arrange
-            var input = "|Unlock Condition 1 Type (OW)  =   Workers     ";
-
-            var parser = new ParserBothWorlds(mockedCommons);
-
-            // Act
-            var result = parser.GetInfobox(input);
-
-            // Assert
-            Assert.Equal(2, result.Count);
-            Assert.Single(result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions);
-            Assert.Equal("Workers", result.Single(x => x.Region == WorldRegion.OldWorld).UnlockInfos.UnlockConditions[0].Type);
-            Assert.Null(result.Single(x => x.Region == WorldRegion.NewWorld).UnlockInfos);
+            if (regionToTest == WorldRegion.OldWorld)
+            {
+                Assert.Single(result[0].UnlockInfos.UnlockConditions);
+                Assert.Equal(0, result[0].UnlockInfos.UnlockConditions[0].Amount);
+                Assert.Equal(expectedOrder, result[0].UnlockInfos.UnlockConditions[0].Order);
+                Assert.Equal(expectedType, result[0].UnlockInfos.UnlockConditions[0].Type);
+            }
+            else
+            {
+                Assert.Single(result[1].UnlockInfos.UnlockConditions);
+                Assert.Equal(0, result[1].UnlockInfos.UnlockConditions[0].Amount);
+                Assert.Equal(expectedOrder, result[1].UnlockInfos.UnlockConditions[0].Order);
+                Assert.Equal(expectedType, result[1].UnlockInfos.UnlockConditions[0].Type);
+            }
         }
 
         [Fact]
@@ -984,7 +1358,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Unlock Condition 2 Amount (OW) = 21{Environment.NewLine}|Unlock Condition 1 Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(input);
@@ -1003,7 +1377,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Unlock Condition {int.MaxValue + 1L} Amount (OW) = 42";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -1015,7 +1389,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Unlock Condition 1 Amount (OW) = {double.MaxValue.ToString()}";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -1027,7 +1401,7 @@ namespace InfoboxParser.Tests
             // Arrange
             var input = $"|Unlock Condition {int.MaxValue + 1L} Type (OW) = Farmers";
 
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act/Assert
             var ex = Assert.Throws<Exception>(() => parser.GetInfobox(input));
@@ -1042,7 +1416,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextIsPoliceStation_ShouldReturnCorrectResult()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(testDataPoliceStation);
@@ -1076,7 +1450,7 @@ namespace InfoboxParser.Tests
         public void GetInfobox_WikiTextIsBrickFactory_ShouldReturnCorrectResult()
         {
             // Arrange
-            var parser = new ParserBothWorlds(mockedCommons);
+            var parser = GetParser();
 
             // Act
             var result = parser.GetInfobox(testDataBrickFactory);
@@ -1117,6 +1491,182 @@ namespace InfoboxParser.Tests
             Assert.Single(result[1].UnlockInfos.UnlockConditions);
             Assert.Equal(1, result[1].UnlockInfos.UnlockConditions[0].Amount);
             Assert.Equal("Obreros", result[1].UnlockInfos.UnlockConditions[0].Type);
+        }
+
+        #endregion
+
+        #region BuildingIcon tests
+
+        [Theory]
+        [InlineData("dummy")]
+        [InlineData("|Building Icon = ")]
+        public void GetInfobox_WikiTextContainsNoBuildingIcon_ShouldReturnEmpty(string input)
+        {
+            // Arrange
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(string.Empty, result[0].Icon);
+        }
+
+        [Theory]
+        [MemberData(nameof(BuildingIconTestData))]
+        public void GetInfobox_WikiTextContainsBuildingIcon_ShouldReturnCorrectValue(string input, string expectedIcon)
+        {
+            // Arrange
+            _output.WriteLine($"{nameof(input)}: {input}");
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            Assert.Equal(expectedIcon, result[0].Icon);
+        }
+
+        #endregion
+
+        #region BuildingSize tests
+
+        [Theory]
+        [InlineData("dummy", WorldRegion.OldWorld)]
+        [InlineData("dummy", WorldRegion.NewWorld)]
+        [InlineData("|Building Size (OW) = ", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (NW) = ", WorldRegion.NewWorld)]
+        public void GetInfobox_WikiTextContainsNoBuildingSize_ShouldReturnEmptySize(string input, WorldRegion regionToTest)
+        {
+            // Arrange
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            if (regionToTest == WorldRegion.OldWorld)
+            {
+                Assert.Equal(Size.Empty, result[0].BuildingSize);
+            }
+            else
+            {
+                Assert.Equal(Size.Empty, result[1].BuildingSize);
+            }
+        }
+
+        [Theory]
+        [InlineData("|Building Size (OW) = ?x?", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (OW) = ? x ?", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (OW) = ? x?", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (OW) = ?x ?", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (OW) = 3x", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (OW) = dummyxdummy", WorldRegion.OldWorld)]
+        [InlineData("|Building Size (NW) = ?x?", WorldRegion.NewWorld)]
+        [InlineData("|Building Size (NW) = ? x ?", WorldRegion.NewWorld)]
+        [InlineData("|Building Size (NW) = ? x?", WorldRegion.NewWorld)]
+        [InlineData("|Building Size (NW) = ?x ?", WorldRegion.NewWorld)]
+        [InlineData("|Building Size (NW) = 3x", WorldRegion.NewWorld)]
+        [InlineData("|Building Size (NW) = dummyxdummy", WorldRegion.NewWorld)]
+        public void GetInfobox_WikiTextContainsUnknownBuildingSize_ShouldReturnEmptySize(string input, WorldRegion regionToTest)
+        {
+            // Arrange
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            if (regionToTest == WorldRegion.OldWorld)
+            {
+                Assert.Equal(Size.Empty, result[0].BuildingSize);
+            }
+            else
+            {
+                Assert.Equal(Size.Empty, result[1].BuildingSize);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(BuildingSizeTestData))]
+        public void GetInfobox_WikiTextContainsBuildingSize_ShouldReturnCorrectValue(string input, Size expectedSize, WorldRegion regionToTest)
+        {
+            // Arrange
+            _output.WriteLine($"{nameof(input)}: {input}");
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            if (regionToTest == WorldRegion.OldWorld)
+            {
+                Assert.Equal(expectedSize, result[0].BuildingSize);
+            }
+            else
+            {
+                Assert.Equal(expectedSize, result[1].BuildingSize);
+            }
+        }
+
+        #endregion
+
+        #region ConstructionInfo tests
+
+        [Theory]
+        [MemberData(nameof(ConstructionInfoCreditsTestData))]
+        [MemberData(nameof(ConstructionInfoTimberTestData))]
+        [MemberData(nameof(ConstructionInfoBricksTestData))]
+        [MemberData(nameof(ConstructionInfoSteelBeamsTestData))]
+        [MemberData(nameof(ConstructionInfoWindowsTestData))]
+        [MemberData(nameof(ConstructionInfoConcreteTestData))]
+        [MemberData(nameof(ConstructionInfoWeaponsTestData))]
+        [MemberData(nameof(ConstructionInfoAdvancedWeaponsTestData))]
+        public void GetInfobox_WikiTextContainsConstructionInfo_ShouldReturnCorrectValue(string input, double expectedValue, WorldRegion regionToTest)
+        {
+            // Arrange
+            _output.WriteLine($"{nameof(input)}: {input}");
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox(input);
+
+            // Assert
+            if (regionToTest == WorldRegion.OldWorld)
+            {
+                Assert.Equal(expectedValue, result[0].ConstructionInfos[0].Value);
+            }
+            else
+            {
+                Assert.Equal(expectedValue, result[1].ConstructionInfos[0].Value);
+            }
+
+        }
+
+        [Fact]
+        public void GetInfobox_ConstructionInfoContainsConcrete_ShouldReturnAdjustedValue()
+        {
+            // Arrange
+            var input = ConstructionInfoConcreteTestData.First();
+            var expectedUnitName = "Reinforced Concrete";
+
+            var parser = GetParser();
+
+            // Act
+            var result = parser.GetInfobox((string)input[0]);
+
+            // Assert
+            if ((WorldRegion)input[2] == WorldRegion.OldWorld)
+            {
+                Assert.Equal(expectedUnitName, result[0].ConstructionInfos[0].Unit.Name);
+            }
+            else
+            {
+                Assert.Equal(expectedUnitName, result[1].ConstructionInfos[0].Unit.Name);
+            }
         }
 
         #endregion
