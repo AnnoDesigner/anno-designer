@@ -17,6 +17,11 @@ namespace AnnoDesigner.Helper
         /// </summary>
         public static AnnoObject[][] PrepareGridDictionary(IEnumerable<AnnoObject> placedObjects)
         {
+            if (placedObjects is null || placedObjects.Count() < 1)
+            {
+                return null;
+            }
+
             var maxX = (int)placedObjects.Max(o => o.Position.X + o.Size.Width) + 1;
             var maxY = (int)placedObjects.Max(o => o.Position.Y + o.Size.Height) + 1;
 
@@ -52,9 +57,16 @@ namespace AnnoDesigner.Helper
             Action<AnnoObject> inRangeAction = null)
         {
             if (startObjects.Count() == 0)
+            {
                 return new bool[0][];
+            }
 
             gridDictionary = gridDictionary ?? PrepareGridDictionary(placedObjects);
+            if (gridDictionary is null)
+            {
+                return new bool[0][];
+            }
+
             inRangeAction = inRangeAction ?? DoNothing;
 
             var visitedObjects = new HashSet<AnnoObject>();

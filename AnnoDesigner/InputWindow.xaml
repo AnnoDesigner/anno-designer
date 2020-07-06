@@ -36,13 +36,13 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Button x:Name="OkButton"
-                    Content="{Binding Ok}"
+                    Content="{l:Localize OK}"
                     Grid.Column="0"
                     Margin="0,0,5,0"
                     Padding="8"
                     Click="OkButton_Click" />
             <Button x:Name="CancelButton"
-                    Content="{Binding Cancel}"
+                    Content="{l:Localize Cancel}"
                     Grid.Column="1"
                     Margin="5,0,0,0"
                     Padding="8"

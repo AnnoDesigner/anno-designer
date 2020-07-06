@@ -6,7 +6,6 @@
     <OutputType>WinExe</OutputType>
     <UseWPF>true</UseWPF>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
@@ -64,9 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon.ico" />
-    <Content Include="Images\Icons\icon64.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="Images\Icons\icon64.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Flags\*.png" />
