@@ -2,10 +2,15 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Abstractions;
+using System.IO.Abstractions.TestingHelpers;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.RecentFiles;
 using AnnoDesigner.Models;
 using AnnoDesigner.ViewModels;
 using NLog;
@@ -177,7 +182,22 @@ namespace AnnoDesigner
                 await _commons.UpdateHelper.ReplaceUpdatedPresetsFilesAsync();
 
                 Localization.Localization.Init(_commons);
-                var mainVM = new MainViewModel(_commons, _appSettings);
+
+                var mockedFileSystem = new MockFileSystem();
+                mockedFileSystem.AddFile(@"C:\test\sub\file_01.ad", MockFileData.NullObject);
+                mockedFileSystem.AddFile(@"C:\test\sub\file_02.ad", MockFileData.NullObject);
+                mockedFileSystem.AddFile(@"C:\test\sub\file_03.ad", MockFileData.NullObject);
+                mockedFileSystem.AddFile(@"C:\test\sub\file_04.ad", MockFileData.NullObject);
+                mockedFileSystem.AddFile(@"C:\test\sub\file_05.ad", MockFileData.NullObject);
+                mockedFileSystem.AddFile(@"C:\test\sub\file_06.ad", MockFileData.NullObject);
+                mockedFileSystem.AddFile(@"C:\test\sub\file_07.ad", MockFileData.NullObject);
+                mockedFileSystem.AddFile(@"C:\test\sub\file_08.ad", MockFileData.NullObject);
+                mockedFileSystem.AddFile(@"C:\test\sub\file_09.ad", MockFileData.NullObject);
+                mockedFileSystem.AddFile(@"C:\test\sub\file_10.ad", MockFileData.NullObject);
+                mockedFileSystem.AddFile(@"C:\test\sub\file_11.ad", MockFileData.NullObject);
+
+                IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(new RecentFilesInMemorySerializer(), new FileSystem());// mockedFileSystem);
+                var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper);
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
                 MainWindow = new MainWindow();

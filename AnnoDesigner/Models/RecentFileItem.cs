@@ -4,22 +4,25 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AnnoDesigner.Core.Models;
 
-namespace AnnoDesigner.Core.Models
+namespace AnnoDesigner.Models
 {
     [DebuggerDisplay("{" + nameof(Path) + ",nq}")]
-    public class RecentFile
+    public class RecentFileItem : Notify
     {
-        public RecentFile(string pathToUse, DateTime lastUsedToUse)
+        private string _path;
+
+        public RecentFileItem(string pathToUse)
         {
             Path = pathToUse;
-            LastUsed = lastUsedToUse;
         }
 
-        /// <summary>
-        /// The path to the file.
-        /// </summary>
-        public string Path { get; }
+        public string Path
+        {
+            get { return _path; }
+            private set { UpdateProperty(ref _path, value); }
+        }
 
         /// <summary>
         /// The last time the file was loaded/used.

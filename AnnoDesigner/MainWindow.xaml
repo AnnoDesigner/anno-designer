@@ -93,6 +93,33 @@
                     <MenuItem Header="{l:Localize LoadLayoutFromJson}"
                               Command="{Binding LoadLayoutFromJsonCommand}" />
                     <Separator />
+                    <MenuItem Header="Recent Files"
+                              ItemsSource="{Binding RecentFiles}">
+                        <MenuItem.Style>
+                            <Style TargetType="{x:Type MenuItem}">
+                                <Setter Property="IsEnabled"
+                                        Value="False" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Path=DataContext.HasRecentFiles}"
+                                                 Value="True">
+                                        <Setter Property="IsEnabled"
+                                                Value="True" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                        <MenuItem.ItemContainerStyle>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Header"
+                                        Value="{Binding Path}" />
+                                <Setter Property="Command"
+                                        Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenRecentFileCommand}" />
+                                <Setter Property="CommandParameter"
+                                        Value="{Binding}" />
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
+                    </MenuItem>
+                    <Separator />
                     <MenuItem Header="{l:Localize Exit}"
                               Command="{Binding CloseWindowCommand}"
                               CommandParameter="{Binding ElementName=mainWindow}" />

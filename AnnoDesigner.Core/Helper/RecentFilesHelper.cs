@@ -43,17 +43,13 @@ namespace AnnoDesigner.Core.Helper
         {
             var loadedFiles = _serializer.Deserialize();
 
-            //remove non existing files
-            for (var i = 0; i < loadedFiles.Count; i++)
-            {
-                var curLoadedFile = loadedFiles[i];
-                if (!_fileSystem.File.Exists(curLoadedFile.Path))
-                {
-                    loadedFiles.RemoveAt(i);
-                }
-            }
+            RemoveNonExistingFiles(loadedFiles);
 
             RecentFiles = loadedFiles;
+
+            EnsureMaxiumItemCount();
+
+            Updated?.Invoke(this, EventArgs.Empty);
         }
 
         private void Save()
@@ -81,16 +77,11 @@ namespace AnnoDesigner.Core.Helper
             //add to top
             RecentFiles.Insert(0, fileToAdd);
 
-            //only keep max items
-            if (RecentFiles.Count > MaximumItemCount)
-            {
-                for (var i = MaximumItemCount; i < RecentFiles.Count; i++)
-                {
-                    RecentFiles.RemoveAt(i);
-                }
-            }
+            EnsureMaxiumItemCount();
 
             Save();
+
+            Updated?.Invoke(this, EventArgs.Empty);
         }
 
         public void RemoveFile(RecentFile fileToRemove)
@@ -110,6 +101,30 @@ namespace AnnoDesigner.Core.Helper
             }
 
             Save();
+        }
+
+        private void EnsureMaxiumItemCount()
+        {
+            if (RecentFiles.Count > MaximumItemCount)
+            {
+                for (var i = MaximumItemCount; i < RecentFiles.Count; i++)
+                {
+                    RecentFiles.RemoveAt(i);
+                }
+            }
+        }
+
+        private void RemoveNonExistingFiles(List<RecentFile> loadedFiles)
+        {
+            for (var i = 0; i < loadedFiles.Count; i++)
+            {
+                var curLoadedFile = loadedFiles[i];
+                if (!_fileSystem.File.Exists(curLoadedFile.Path))
+                {
+                    loadedFiles.RemoveAt(i);
+                    i--;
+                }
+            }
         }
     }
 }
