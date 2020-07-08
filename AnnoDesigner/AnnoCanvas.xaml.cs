@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,8 +34,14 @@ namespace AnnoDesigner
     /// </summary>
     public interface IAction
     {
-        void PerformAction(List<LayoutObject> placedObjects);
-        void UndoAction(List<LayoutObject> placedObjects);
+        public void PerformAction(List<LayoutObject> placedObjects);
+        public void UndoAction(List<LayoutObject> placedObjects);
+    }
+
+    public interface ICombinableAction : IAction
+    {
+        public void CombineActions(ICombinableAction toCombine);
+        public bool CombinableWith(ICombinableAction other);
     }
 
     /// <summary>
@@ -115,6 +121,91 @@ namespace AnnoDesigner
     }
 
     /// <summary>
+    /// Moves all objects on the canvas.
+    /// </summary>
+    public class MoveAllObjects : ICombinableAction
+    {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        private double _delta_x;
+        private double _delta_y;
+
+        public MoveAllObjects(double delta_x, double delta_y)
+        {
+            _delta_x = delta_x;
+            _delta_y = delta_y; 
+        }
+
+        public void PerformAction(List<LayoutObject> placedObjects)
+        {
+            logger.Debug("Perform move all action.");
+            foreach (var curLayoutObject in placedObjects)
+            {
+                curLayoutObject.Position = new Point(curLayoutObject.Position.X + _delta_x, curLayoutObject.Position.Y + _delta_y);
+            }
+        }
+
+        public void UndoAction(List<LayoutObject> placedObjects)
+        {
+            logger.Debug("Undo move all action.");
+            foreach (var curLayoutObject in placedObjects)
+            {
+                curLayoutObject.Position = new Point(curLayoutObject.Position.X - _delta_x, curLayoutObject.Position.Y - _delta_y);
+            }
+        }
+
+        public bool CombinableWith(ICombinableAction other)
+        {
+            if (other is MoveAllObjects)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public void CombineActions(ICombinableAction other)
+        {
+            logger.Debug("Combine two move all actions.");
+            if (!CombinableWith(other)) 
+            {
+                // If this has happened then we are going to end up with some screwed up action history
+                throw new System.ArgumentException("Cannot combine these ICombinableActions", "toCombine");
+            }
+
+            MoveAllObjects toCombine = (MoveAllObjects)other;
+
+            _delta_x += toCombine._delta_x;
+            _delta_y += toCombine._delta_y;
+        }
+    }
+
+    /// <summary>
+    /// Doesn't do anything, it is used to split up actions so they aren't combined together into a single action.
+    ///
+    /// For example multiple consecutive MoveAllObjects actions will be combined into a single one (to save memory and
+    /// so the user doesn't need to undo them all individually). However, we do want some move actions to remain separated
+    /// these should be separated by a NoOpAction.
+    /// </summary>
+    public class NoOpAction : IAction 
+    {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        public NoOpAction() {}
+
+
+        public void PerformAction(List<LayoutObject> placedObjects)
+        {
+            logger.Debug("Performing no-op action.");
+        }
+
+        public void UndoAction(List<LayoutObject> placedObjects)
+        {
+            logger.Debug("Undoing no-op action");
+        }
+    }
+
+    /// <summary>
     /// Class which manages the actions that have been taken. Allows performing new actions, and undoing and redoing actions.
     /// </summary>
     public class ActionManager
@@ -132,27 +223,49 @@ namespace AnnoDesigner
         }
 
         public void PerformAction(IAction action){
-            // Performing a new action so clear all future actions as they are no longer valid.
-            logger.Warn("Performing action");
-            _futureActions.Clear();
-            _previousActions.Push(action);
+            logger.Debug("Performing action");
+
             action.PerformAction(_placedObjects);
+
+            if (action is ICombinableAction && _previousActions.Count > 0 &&
+                _previousActions.Peek() is ICombinableAction)
+            {
+                // Both the new action and the last action are combinable, check if they can combine.
+                // If they can then pop off the previous action and combine them.
+                if (((ICombinableAction)action).CombinableWith((ICombinableAction)_previousActions.Peek()))
+                {
+                    logger.Debug("Have two compatible combinable actions, combine them.");
+                    ((ICombinableAction)action).CombineActions((ICombinableAction)_previousActions.Pop());
+                }
+            }
+
+            _previousActions.Push(action);
+
+            // Performing a new action so clear all future actions as they are no longer valid.
+            _futureActions.Clear();
         }
 
         public void UndoAction() {
-            logger.Warn("Attempt an undo.");
-            if (_previousActions.Count == 0)
+            IAction actionToUndo;
+            logger.Debug("Attempt an undo.");
+
+            // User wants to undo something so continue until we reach an action which is not a no-op
+            do
             {
-                logger.Warn("No actions to undo");
-                return;
-            }
-            IAction actionToUndo = _previousActions.Pop();
-            _futureActions.Push(actionToUndo);
+                if (_previousActions.Count == 0)
+                {
+                    logger.Warn("No actions to undo");
+                    return;
+                }
+                actionToUndo = _previousActions.Pop();
+                _futureActions.Push(actionToUndo);
+            } while (actionToUndo is NoOpAction);
+
             actionToUndo.UndoAction(_placedObjects);
         }
 
         public void RedoAction() {
-            logger.Warn("Attempt a redo.");
+            logger.Debug("Attempt a redo.");
             if (_futureActions.Count == 0)
             {
                 logger.Warn("No actions to redo");
@@ -161,6 +274,12 @@ namespace AnnoDesigner
             IAction actionToRedo = _futureActions.Pop();
             _previousActions.Push(actionToRedo);
             actionToRedo.PerformAction(_placedObjects);
+
+            // We never want NoOpActions on the top of the _futureActions stack so pop all of them off
+            while (_futureActions.Count > 0 && _futureActions.Peek() is NoOpAction)
+            {
+                _previousActions.Push(_futureActions.Pop());
+            }
         }
     }
 
@@ -501,6 +620,12 @@ namespace AnnoDesigner
             }
             set
             {
+                if (_currentMode == MouseMode.DragAll && value != MouseMode.DragAll)
+                {
+                    // Finishing a drag all operation, add a NoOp action so later ones do not combine.
+                    actionManager.PerformAction(new NoOpAction());
+                }
+
                 _currentMode = value;
                 StatusMessage = "Mode: " + _currentMode;
             }
@@ -1452,11 +1577,7 @@ namespace AnnoDesigner
                 // check if the mouse has moved at least one grid cell in any direction
                 if (dx != 0 || dy != 0)
                 {
-                    // TODO: Need to make sure that this uses an action to move the objects.
-                    foreach (var curLayoutObject in PlacedObjects)
-                    {
-                        curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
-                    }
+                    actionManager.PerformAction(new MoveAllObjects(dx, dy));
                     // adjust the drag start to compensate the amount we already moved
                     _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
                     _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
@@ -1693,6 +1814,7 @@ namespace AnnoDesigner
             switch (e.Key)
             {
                 case Key.Delete:
+                    // TODO: This currently doesn't work, will need to fix up.
                     // remove all currently selected objects from the grid and clear selection
                     actionManager.PerformAction(new RemovePlacedObjects(CloneList(SelectedObjects)));
                     SelectedObjects.Clear();
@@ -1735,6 +1857,11 @@ namespace AnnoDesigner
                     }
                     break;
                 case Key.Z:
+                    if (CurrentMode != MouseMode.Standard) 
+                    {
+                        // Block undoing/redoing if partway through an action
+                        return;
+                    }
                     if (IsControlPressed() && IsShiftPressed())
                     {
                         actionManager.RedoAction();
@@ -1745,6 +1872,11 @@ namespace AnnoDesigner
                     }
                     break;
                 case Key.Y:
+                    if (CurrentMode != MouseMode.Standard) 
+                    {
+                        // Block undoing/redoing if partway through an action
+                        return;
+                    }
                     if (IsControlPressed())
                     {
                         actionManager.RedoAction();
