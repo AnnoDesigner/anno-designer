@@ -10,7 +10,7 @@ namespace AnnoDesigner.Core.Tests
         [InlineData(null)]
         [InlineData("")]
         [InlineData(" ")]
-        public void Load_ParameterIsNullOrWhiteSpace_ShouldThrowArgumenException(string jsonString)
+        public void Load_ParameterIsNullOrWhiteSpace_ShouldThrowArgumentException(string jsonString)
         {
             // Arrange
             var loader = new IconMappingPresetsLoader();
