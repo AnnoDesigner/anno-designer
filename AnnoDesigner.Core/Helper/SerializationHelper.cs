@@ -30,9 +30,10 @@ namespace AnnoDesigner.Core.Helper
         public static void SaveToStream<T>(T obj, Stream stream) where T : class
         {
             var serializer = new JsonSerializer();
-            using var sw = new StreamWriter(stream);
+            using var sw = new StreamWriter(stream, Encoding.UTF8, 1024, true);//use constructor that does not close base stream
             using var jsonWriter = new JsonTextWriter(sw);
             serializer.Serialize(jsonWriter, obj, typeof(T));
+            jsonWriter.Flush();
         }
 
 
