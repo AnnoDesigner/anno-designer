@@ -81,9 +81,9 @@ namespace AnnoDesigner.Core.Layout
 
             return layoutVersion.FileVersion switch
             {
-                int i when i >= 4 => SerializationHelper.LoadFromJsonString<SavedLayout>(jsonString).Objects, //file version 4+, Newtonsoft.Json format json
-                int i when i > 0 => SerializationHelper.LoadFromJsonStringLegacy<SavedLayout>(jsonString).Objects, //file version 1-3, DataContractJsonSerializer format json 
-                int i when i == 0 => SerializationHelper.LoadFromJsonStringLegacy<List<AnnoObject>>(jsonString), //no file version, DataContractJsonSerializer format json
+                var version when version >= 4 => SerializationHelper.LoadFromJsonString<SavedLayout>(jsonString).Objects, //file version 4+, Newtonsoft.Json format json
+                var version when version > 0 => SerializationHelper.LoadFromJsonStringLegacy<SavedLayout>(jsonString).Objects, //file version 1-3, DataContractJsonSerializer format json 
+                var version when version == 0 => SerializationHelper.LoadFromJsonStringLegacy<List<AnnoObject>>(jsonString), //no file version, DataContractJsonSerializer format json
                 _ => throw new NotImplementedException()
             };
         }
