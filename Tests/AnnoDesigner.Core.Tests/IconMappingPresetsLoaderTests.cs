@@ -1,34 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using AnnoDesigner.Core.Helper;
-using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
-using AnnoDesigner.Core.Presets.Models;
 using Xunit;
 
 namespace AnnoDesigner.Core.Tests
 {
     public class IconMappingPresetsLoaderTests
     {
+        [Theory]
         [InlineData(null)]
         [InlineData("")]
         [InlineData(" ")]
-        [InlineData(@"\t\t\t    \t")]
-        [Theory]
-        public void Load_ParameterIsNullOrWhiteSpace_ShouldThrowArgumenException(string s)
+        public void Load_ParameterIsNullOrWhiteSpace_ShouldThrowArgumenException(string jsonString)
         {
             // Arrange
             var loader = new IconMappingPresetsLoader();
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>(() => loader.Load(s));
-            //// Assert
-            //Assert.NotNull(ex);
+            Assert.Throws<ArgumentNullException>(() => loader.Load(jsonString));
+        }
+
+        [Fact]
+        public void Load_ParameterContainsOnlyWhiteSpaceChararcters_ShouldThrow()
+        {
+            // Arrange
+            var jsonString = @"\t\t\t    \t";
+            var loader = new IconMappingPresetsLoader();
+
+            // Act
+            var ex = Record.Exception(() => loader.Load(jsonString));
+
+            // Assert
+            Assert.NotNull(ex);
         }
 
         [Theory]
