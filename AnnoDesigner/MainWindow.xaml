@@ -93,7 +93,7 @@
                     <MenuItem Header="{l:Localize LoadLayoutFromJson}"
                               Command="{Binding LoadLayoutFromJsonCommand}" />
                     <Separator />
-                    <MenuItem Header="Recent Files"
+                    <MenuItem Header="{l:Localize RecentFiles}"
                               ItemsSource="{Binding RecentFiles}">
                         <MenuItem.Style>
                             <Style TargetType="{x:Type MenuItem}">

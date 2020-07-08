@@ -158,6 +158,7 @@ namespace AnnoDesigner.Localization
                         { "OK" , "OK" },
                         { "Cancel" , "Cancel" },
                         { "SelectAll" , "Select All" },
+                        { "RecentFiles" , "Recent Files" }
                     }
                 },
                 {
@@ -271,6 +272,7 @@ namespace AnnoDesigner.Localization
                         { "OK" , "OK" },
                         { "Cancel" , "Abbrechen" },
                         { "SelectAll" , "Alle auswählen" },
+                        { "RecentFiles" , "Zuletzt geöffnete Dateien" }
                     }
                 },
                 {
@@ -384,6 +386,7 @@ namespace AnnoDesigner.Localization
                         { "OK" , "OK" },
                         { "Cancel" , "Annuler" },
                         { "SelectAll" , "Sélectionner tout" },
+                        { "RecentFiles" , "Fichiers récents" }
                     }
                 },
                 {
@@ -497,6 +500,7 @@ namespace AnnoDesigner.Localization
                         { "OK" , "OK" },
                         { "Cancel" , "Odwołaj" },
                         { "SelectAll" , "Wybierz wszystkie" },
+                        { "RecentFiles" , "Ostatnie akta" }
                     }
                 },
                 {
@@ -610,6 +614,7 @@ namespace AnnoDesigner.Localization
                         { "OK" , "OK" },
                         { "Cancel" , "Отмена" },
                         { "SelectAll" , "Выберите все" },
+                        { "RecentFiles" , "Последние Файлы" }
                     }
                 },
             };
