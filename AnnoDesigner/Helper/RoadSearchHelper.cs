@@ -22,8 +22,8 @@ namespace AnnoDesigner.Helper
                 return null;
             }
 
-            var maxX = (int)placedObjects.Max(o => o.Position.X + o.Size.Width) + 1;
-            var maxY = (int)placedObjects.Max(o => o.Position.Y + o.Size.Height) + 1;
+            var maxX = Math.Max(0, (int)placedObjects.Max(o => o.Position.X + o.Size.Width) + 1);
+            var maxY = Math.Max(0, (int)placedObjects.Max(o => o.Position.Y + o.Size.Height) + 1);
 
             var result = Enumerable.Range(0, maxX).Select(i => new AnnoObject[maxY]).ToArray();
 
