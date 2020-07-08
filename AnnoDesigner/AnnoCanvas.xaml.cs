@@ -901,8 +901,9 @@ namespace AnnoDesigner
             AnnoObject[][] gridDictionary = null;
             if (RenderTrueInfluenceRange && PlacedObjects.Count > 0)
             {
-                var placedAnnoObjects = PlacedObjects.Concat(objects).Select(o => o.WrappedAnnoObject).ToList();
-                var placedObjectDictionary = PlacedObjects.ToDictionary(o => o.WrappedAnnoObject);
+                var placedObjects = PlacedObjects.Concat(objects).ToHashSet();
+                var placedAnnoObjects = placedObjects.Select(o => o.WrappedAnnoObject).ToList();
+                var placedObjectDictionary = placedObjects.ToDictionary(o => o.WrappedAnnoObject);
 
                 void Highlight(AnnoObject objectInRange)
                 {
