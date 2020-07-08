@@ -5,11 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Models;
 using Newtonsoft.Json;
+using NLog;
 
 namespace AnnoDesigner.Core.RecentFiles
 {
     public class RecentFilesAppSettingsSerializer : IRecentFilesSerializer
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly IAppSettings _appSettings;
 
         public RecentFilesAppSettingsSerializer(IAppSettings appSettingsToUse)
@@ -19,10 +22,26 @@ namespace AnnoDesigner.Core.RecentFiles
 
         public List<RecentFile> Deserialize()
         {
-            var savedList = JsonConvert.DeserializeObject<List<RecentFile>>(_appSettings.RecentFiles);
-            if (savedList is null)
+            if (string.IsNullOrWhiteSpace(_appSettings.RecentFiles))
             {
                 return new List<RecentFile>();
+            }
+
+            var savedList = new List<RecentFile>();
+
+            try
+            {
+                var deserializedList = JsonConvert.DeserializeObject<List<RecentFile>>(_appSettings.RecentFiles);
+                if (deserializedList is null)
+                {
+                    return savedList;
+                }
+
+                savedList = deserializedList.Where(x => !string.IsNullOrWhiteSpace(x.Path)).ToList();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, $"Error deserializing saved list of recent files.{Environment.NewLine}{nameof(_appSettings.RecentFiles)}: \"{_appSettings.RecentFiles}\"");
             }
 
             return savedList;

@@ -13,18 +13,7 @@ namespace AnnoDesigner.Core.RecentFiles
 
         public RecentFilesInMemorySerializer()
         {
-            _recentFiles = new List<RecentFile>();
-            _recentFiles.Add(new RecentFile(@"C:\test\sub\file_01.ad", DateTime.UtcNow));
-            _recentFiles.Add(new RecentFile(@"C:\test\sub\file_02.ad", DateTime.UtcNow));
-            _recentFiles.Add(new RecentFile(@"C:\test\sub\file_03.ad", DateTime.UtcNow));
-            _recentFiles.Add(new RecentFile(@"C:\test\sub\file_04.ad", DateTime.UtcNow));
-            _recentFiles.Add(new RecentFile(@"C:\test\sub\file_05.ad", DateTime.UtcNow));
-            _recentFiles.Add(new RecentFile(@"C:\test\sub\file_06.ad", DateTime.UtcNow));
-            _recentFiles.Add(new RecentFile(@"C:\test\sub\file_07.ad", DateTime.UtcNow));
-            _recentFiles.Add(new RecentFile(@"C:\test\sub\file_08.ad", DateTime.UtcNow));
-            _recentFiles.Add(new RecentFile(@"C:\test\sub\file_09.ad", DateTime.UtcNow));
-            _recentFiles.Add(new RecentFile(@"C:\test\sub\file_10.ad", DateTime.UtcNow));
-            _recentFiles.Add(new RecentFile(@"C:\test\sub\file_11.ad", DateTime.UtcNow));
+            _recentFiles = new List<RecentFile>();            
         }
 
         public List<RecentFile> Deserialize()

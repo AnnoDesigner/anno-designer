@@ -183,22 +183,9 @@ namespace AnnoDesigner
 
                 Localization.Localization.Init(_commons);
 
-                var mockedFileSystem = new MockFileSystem();
-                mockedFileSystem.AddFile(@"C:\test\sub\file_01.ad", MockFileData.NullObject);
-                mockedFileSystem.AddFile(@"C:\test\sub\file_02.ad", MockFileData.NullObject);
-                mockedFileSystem.AddFile(@"C:\test\sub\file_03.ad", MockFileData.NullObject);
-                mockedFileSystem.AddFile(@"C:\test\sub\file_04.ad", MockFileData.NullObject);
-                mockedFileSystem.AddFile(@"C:\test\sub\file_05.ad", MockFileData.NullObject);
-                mockedFileSystem.AddFile(@"C:\test\sub\file_06.ad", MockFileData.NullObject);
-                mockedFileSystem.AddFile(@"C:\test\sub\file_07.ad", MockFileData.NullObject);
-                mockedFileSystem.AddFile(@"C:\test\sub\file_08.ad", MockFileData.NullObject);
-                mockedFileSystem.AddFile(@"C:\test\sub\file_09.ad", MockFileData.NullObject);
-                mockedFileSystem.AddFile(@"C:\test\sub\file_10.ad", MockFileData.NullObject);
-                mockedFileSystem.AddFile(@"C:\test\sub\file_11.ad", MockFileData.NullObject);
+                var serializer = new RecentFilesAppSettingsSerializer(_appSettings);
 
-                var serializer = new RecentFilesAppSettingsSerializer(_appSettings);//new RecentFilesInMemorySerializer()
-
-                IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(serializer, new FileSystem());// mockedFileSystem);
+                IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(serializer, new FileSystem());
                 var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper);
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 

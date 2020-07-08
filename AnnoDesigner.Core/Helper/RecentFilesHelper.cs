@@ -101,6 +101,8 @@ namespace AnnoDesigner.Core.Helper
             }
 
             Save();
+
+            Updated?.Invoke(this, EventArgs.Empty);
         }
 
         private void EnsureMaxiumItemCount()
