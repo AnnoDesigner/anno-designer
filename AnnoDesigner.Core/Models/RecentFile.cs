@@ -10,10 +10,10 @@ namespace AnnoDesigner.Core.Models
     [DebuggerDisplay("{" + nameof(Path) + ",nq}")]
     public class RecentFile
     {
-        public RecentFile(string pathToUse, DateTime lastUsedToUse)
+        public RecentFile(string path, DateTime lastUsed)
         {
-            Path = pathToUse;
-            LastUsed = lastUsedToUse;
+            Path = path;
+            LastUsed = lastUsed;
         }
 
         /// <summary>

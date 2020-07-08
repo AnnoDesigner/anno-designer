@@ -196,7 +196,9 @@ namespace AnnoDesigner
                 mockedFileSystem.AddFile(@"C:\test\sub\file_10.ad", MockFileData.NullObject);
                 mockedFileSystem.AddFile(@"C:\test\sub\file_11.ad", MockFileData.NullObject);
 
-                IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(new RecentFilesInMemorySerializer(), new FileSystem());// mockedFileSystem);
+                var serializer = new RecentFilesAppSettingsSerializer(_appSettings);//new RecentFilesInMemorySerializer()
+
+                IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(serializer, new FileSystem());// mockedFileSystem);
                 var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper);
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using AnnoDesigner.Core.Models;
 using AnnoDesigner.Properties;
 
 namespace AnnoDesigner.Models
@@ -178,6 +179,12 @@ namespace AnnoDesigner.Models
         {
             get { return Settings.Default.UpdateSupportsPrerelease; }
             set { Settings.Default.UpdateSupportsPrerelease = value; }
+        }
+
+        public string RecentFiles
+        {
+            get { return Settings.Default.RecentFiles; }
+            set { Settings.Default.RecentFiles = value; }
         }
     }
 }
