@@ -105,12 +105,9 @@ namespace AnnoDesigner.Core.Helper
 
         private void EnsureMaxiumItemCount()
         {
-            if (RecentFiles.Count > MaximumItemCount)
+            while (RecentFiles.Count > MaximumItemCount)
             {
-                for (var i = MaximumItemCount; i < RecentFiles.Count; i++)
-                {
-                    RecentFiles.RemoveAt(i);
-                }
+                RecentFiles.RemoveAt(RecentFiles.Count - 1);
             }
         }
 
