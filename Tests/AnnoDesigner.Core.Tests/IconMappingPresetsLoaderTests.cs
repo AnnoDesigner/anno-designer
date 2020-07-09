@@ -27,7 +27,7 @@ namespace AnnoDesigner.Core.Tests
             var loader = new IconMappingPresetsLoader();
 
             // Act/Assert
-            Assert.Throws<Exception>(() => loader.Load(jsonString));
+            Assert.ThrowsAny<Exception>(() => loader.Load(jsonString));
         }
 
         [Theory]
