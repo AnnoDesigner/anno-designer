@@ -15,7 +15,7 @@ namespace AnnoDesigner.Core.Tests
             // Arrange
             var loader = new IconMappingPresetsLoader();
 
-            // Act and Assert
+            // Act/Assert
             Assert.Throws<ArgumentNullException>(() => loader.Load(jsonString));
         }
 
@@ -26,11 +26,8 @@ namespace AnnoDesigner.Core.Tests
             var jsonString = @"\t\t\t    \t";
             var loader = new IconMappingPresetsLoader();
 
-            // Act
-            var ex = Record.Exception(() => loader.Load(jsonString));
-
-            // Assert
-            Assert.NotNull(ex);
+            // Act/Assert
+            Assert.Throws<Exception>(() => loader.Load(jsonString));
         }
 
         [Theory]
@@ -42,8 +39,8 @@ namespace AnnoDesigner.Core.Tests
             // Arrange
             var loader = new IconMappingPresetsLoader();
 
-            // Act and Assert
-            var ex = Assert.Throws<ArgumentNullException>(() => loader.LoadFromFile(filePath));
+            // Act/Assert
+            Assert.Throws<ArgumentNullException>(() => loader.LoadFromFile(filePath));
         }
 
         [Fact]
