@@ -1197,8 +1197,11 @@ namespace AnnoDesigner
         {
             var mousePosition = e.GetPosition(this);
             var preZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
-
-            GridSize += e.Delta / 100;
+            
+            var diffGridSize = GridSize * e.Delta / 1000;
+            if (diffGridSize == 0)
+                diffGridSize = e.Delta > 0 ? 1 : -1;// change by at least 1
+            GridSize += diffGridSize;
 
             var postZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
             var diff = postZoomPosition - preZoomPosition;
