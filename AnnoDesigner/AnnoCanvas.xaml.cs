@@ -1195,7 +1195,20 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
+            var mousePosition = e.GetPosition(this);
+            var preZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
+
             GridSize += e.Delta / 100;
+
+            var postZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
+            var diff = postZoomPosition - preZoomPosition;
+            if (diff.LengthSquared > 0)
+            {
+                foreach (var placedObject in PlacedObjects)
+                {
+                    placedObject.Position += diff;
+                }
+            }
         }
 
         private void HandleMouse(MouseEventArgs e)
