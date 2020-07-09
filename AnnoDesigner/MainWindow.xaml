@@ -94,20 +94,8 @@
                               Command="{Binding LoadLayoutFromJsonCommand}" />
                     <Separator />
                     <MenuItem Header="{l:Localize RecentFiles}"
-                              ItemsSource="{Binding RecentFiles}">
-                        <MenuItem.Style>
-                            <Style TargetType="{x:Type MenuItem}">
-                                <Setter Property="IsEnabled"
-                                        Value="False" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Path=DataContext.HasRecentFiles}"
-                                                 Value="True">
-                                        <Setter Property="IsEnabled"
-                                                Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </MenuItem.Style>
+                              ItemsSource="{Binding RecentFiles}"
+                              IsEnabled="{Binding HasRecentFiles}">
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="MenuItem">
                                 <Setter Property="Header"
