@@ -25,7 +25,7 @@ namespace AnnoDesigner.Core.Converters
                 return string.IsNullOrWhiteSpace(s) ? key.ToString() : s;
             }
 #if DEBUG
-            throw new ArgumentException("value is not a `Key`!", "value");
+            throw new ArgumentException($"{nameof(value)} is not a `{nameof(Key)}`!", nameof(value));
 #else
             return "";
 #endif
