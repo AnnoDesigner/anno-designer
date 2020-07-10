@@ -10,6 +10,7 @@ using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 using AnnoDesigner.Core;
 using System.Globalization;
+using System.Windows.Input;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.RecentFiles;
 using System.IO.Abstractions.TestingHelpers;
@@ -561,6 +562,32 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
+        [Theory]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.B, ModifierKeys.None, @"{""id"":{""Key"":45,""MouseAction"":0,""Modifiers"":0,""BindingType"":""System.Windows.Input.KeyBinding, PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35""}}")]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Shift, @"{""id"":{""Key"":44,""MouseAction"":0,""Modifiers"":4,""BindingType"":""System.Windows.Input.KeyBinding, PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35""}}")]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, "{}")]
+        public void SaveSettings_IsCalled_ShouldSaveRemappedHotkeys(string id, Key key, ModifierKeys modifiers, Key newKey, ModifierKeys newModifiers, string expected)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+
+            var command = Mock.Of<ICommand>(c => c.CanExecute(It.IsAny<object>()) == true);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.HotkeyCommandManager.AddHotkey(id, new KeyBinding(command, new KeyGesture(key, modifiers)));
+            var hotkey = viewModel.HotkeyCommandManager.GetHotkey("id");
+            var binding = hotkey.Binding as KeyBinding;
+            binding.Key = newKey;
+            binding.Modifiers = newModifiers;
+
+            // Act
+            viewModel.SaveSettings();
+
+            // Assert
+            Assert.Equal(expected, appSettings.Object.HotkeyMappings);
+            appSettings.Verify(x => x.Save(), Times.Once);
+        }
         #endregion
 
         #region LoadSettings tests
@@ -798,6 +825,33 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedRenderSelectionHighlightsOnExportedImageValue, viewModel.RenderSelectionHighlightsOnExportedImageValue);
+        }
+
+        [Theory]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.B, ModifierKeys.None, @"{""id"":{""Key"":45,""MouseAction"":0,""Modifiers"":0,""BindingType"":""System.Windows.Input.KeyBinding, PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35""}}")]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Shift, @"{""id"":{""Key"":44,""MouseAction"":0,""Modifiers"":4,""BindingType"":""System.Windows.Input.KeyBinding, PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35""}}")]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, "{}")]
+        public void LoadSettings_IsCalled_ShouldLoadRemappedHotkeys(string id, Key key, ModifierKeys modifiers, Key expectedKey, ModifierKeys expectedModifiers, string settingsString)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+
+            var command = Mock.Of<ICommand>(c => c.CanExecute(It.IsAny<object>()) == true);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            appSettings.Setup(x => x.HotkeyMappings).Returns(settingsString);
+
+            // Act
+            viewModel.LoadSettings();
+
+            viewModel.HotkeyCommandManager.AddHotkey(id, new KeyBinding(command, new KeyGesture(key, modifiers)));
+            var binding = viewModel.HotkeyCommandManager.GetHotkey(id).Binding as KeyBinding;
+            var actualKey = binding.Key;
+            var actualModifiers = binding.Modifiers;
+            // Assert
+            Assert.Equal(expectedKey, actualKey);
+            Assert.Equal(expectedModifiers, actualModifiers);
         }
 
         #endregion

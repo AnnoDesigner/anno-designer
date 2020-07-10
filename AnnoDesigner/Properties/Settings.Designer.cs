@@ -383,6 +383,18 @@ namespace AnnoDesigner.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string HotkeyMappings {
+            get {
+                return ((string)(this["HotkeyMappings"]));
+            }
+            set {
+                this["HotkeyMappings"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string RecentFiles {
             get {
                 return ((string)(this["RecentFiles"]));

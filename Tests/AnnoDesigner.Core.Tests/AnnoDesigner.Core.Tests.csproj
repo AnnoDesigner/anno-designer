@@ -34,10 +34,7 @@
     <ProjectReference Include="..\..\AnnoDesigner.Core\AnnoDesigner.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Testdata\Layout\layoutWithNoVersionAndObjects.ad">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Testdata\Layout\v3_layoutWithVersionAndObjects.ad">
+    <None Update="Testdata\Layout\*.ad">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

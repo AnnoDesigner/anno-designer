@@ -5,14 +5,14 @@ using AnnoDesigner.Models;
 
 namespace AnnoDesigner.Localization
 {
-    public class Localization : Notify
+    public class Localization : Notify, ILocalization
     {
-        private static Dictionary<string, Dictionary<string, string>> translations;
+        private static IDictionary<string, IDictionary<string, string>> translations;
         private static Localization instance;
 
         public static Localization Instance => instance ??= new Localization();
 
-        public static Dictionary<string, string> Translations => translations[Instance.SelectedLanguage];
+        public static IDictionary<string, string> Translations => translations[Instance.SelectedLanguage];
 
         private ICommons commons;
 
@@ -30,7 +30,7 @@ namespace AnnoDesigner.Localization
             }
         }
 
-        public Dictionary<string, string> InstanceTranslations => Translations;
+        public IDictionary<string, string> InstanceTranslations => Translations;
 
         public static void Init(ICommons commons)
         {
@@ -41,11 +41,8 @@ namespace AnnoDesigner.Localization
 
             //This dictionary initialisation was auto-generated from:
             //https://docs.google.com/spreadsheets/d/1CjECty43mkkm1waO4yhQl1rzZ-ZltrBgj00aq-WJX4w/edit?usp=sharing 
-            //Steps to format:
-            //Run CreateDictionary Script
-            //Copy Output
-            //Replace the escaped characters (\t\r\n) with the actual characters from within an editor of your choice
-            translations = new Dictionary<string, Dictionary<string, string>>()
+            //See the "Help" sheet for details on how to export the dictionary.
+            translations = new Dictionary<string, IDictionary<string, string>>()
             {
                 {
                     "eng", new Dictionary<string, string>() {
@@ -98,9 +95,9 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Range" },
                         { "Distance" , "Distance" },
                         { "Both" , "Both" },
-                        { "PavedStreet", "Paved Street" },
-                        { "PavedStreetWarningTitle", "Paved Street Selection" },
-                        { "PavedStreetToolTip", "Checking this option will change the Influence Range for buildings,\nrepresenting the increased range they receive when using paved streets.\nUse the 'Place Building' button to place an object." },
+                        { "PavedStreet" , "Paved Street" },
+                        { "PavedStreetWarningTitle" , "Paved Street Selection" },
+                        { "PavedStreetToolTip" , $"Checking this option will change the Influence Range for buildings, {Environment.NewLine}representing the increased range they receive when using paved streets.{Environment.NewLine}Use the 'Place Building' button to place an object." },
                         { "Options" , "Options" },
                         { "EnableLabel" , "Enable label" },
                         { "Borderless" , "Borderless" },
@@ -150,15 +147,32 @@ namespace AnnoDesigner.Localization
                         { "UpdateRequiresAdminRightsMessage" , "To download the update the application needs write access. Please provide credentials." },
                         { "Error" , "Error" },
                         { "UpdateErrorPresetMessage" , "There was an error installing the update." },
+                        { "UpdateNoConnectionMessage" , "Could not establish a connection to the internet." },
                         { "ColorsInLayout" , "Colors in Layout" },
                         { "ColorsInLayoutToolTip" , "Double click color to select it" },
-                        { "UpdateNoConnectionMessage" , "Could not establish a connection to the internet." },
                         { "LoadLayoutHeader" , "Load Layout" },
                         { "LoadLayoutMessage" , "Please paste the JSON string below." },
                         { "ClipboardContainsLayoutAsJson" , "Clipboard contains current layout as JSON." },
                         { "OK" , "OK" },
                         { "Cancel" , "Cancel" },
                         { "SelectAll" , "Select All" },
+                        { "Tools" , "Tools" },
+                        { "Preferences" , "Preferences" },
+                        { "ResetAllConfirmationMessage" , "Are you sure you want to reset all hotkeys to their defaults?" },
+                        { "ResetAll" , "Reset All" },
+                        { "UpdateSettings" , "Update Settings" },
+                        { "ManageKeybindings" , "Manage Keybindings" },
+                        { "Rebind" , "Rebind" },
+                        { "Recording" , "Recording" },
+                        { "RecordANewAction" , "Record a new action" },
+                        { "Rotate" , "Rotate" },
+                        { "Copy" , "Copy" },
+                        { "Paste" , "Paste" },
+                        { "Delete" , "Delete" },
+                        { "Licenses" , "Licenses" },
+                        { "ViewLicenses" , "View open source Licenses" },
+                        { "ExternalLinkConfirmationMessage" , "This will open a new tab in your default web browser. Continue?" },
+                        { "ExternalLinkMessageTitle" , "Opening an external link" },
                         { "RecentFiles" , "Recent Files" }
                     }
                 },
@@ -213,9 +227,9 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Bereich" },
                         { "Distance" , "Entfernung" },
                         { "Both" , "Beide" },
-                        { "PavedStreet", "Gepflasterte Straße" },
-                        { "PavedStreetWarningTitle", "Auswahl der gepflasterten Straße" },
-                        { "PavedStreetToolTip", "Wenn Sie diese Option aktivieren, wird der Einflussbereich für Gebäude geändert,\ndie die erhöhte Reichweite darstellen, die sie bei der Nutzung gepflasterter Straßen erhalten.\nVerwenden Sie die Schaltfläche 'Gebäude platzieren', um ein Objekt zu platzieren." },
+                        { "PavedStreet" , "Gepflasterte Straße" },
+                        { "PavedStreetWarningTitle" , "Auswahl der gepflasterten Straße" },
+                        { "PavedStreetToolTip" , $"Wenn Sie diese Option aktivieren, wird der Einflussbereich für Gebäude geändert,{Environment.NewLine}die die erhöhte Reichweite darstellen, die sie bei der Nutzung gepflasterter Straßen erhalten.{Environment.NewLine}Verwenden Sie die Schaltfläche 'Gebäude platzieren', um ein Objekt zu platzieren." },
                         { "Options" , "Optionen" },
                         { "EnableLabel" , "Bezeichnung aktivieren" },
                         { "Borderless" , "Randlos" },
@@ -230,7 +244,7 @@ namespace AnnoDesigner.Localization
                         { "OriginalApplicationBy" , "Ursprüngliche Anwendung von" },
                         { "BuildingPresets" , "Gebäudevorlagen" },
                         { "CombinedForAnnoVersions" , "Zusammengefügte Gebäudevorlagen für" },
-                        { "AdditionalChanges" ,"Weitere Änderungen von Beitragenden auf Github" },
+                        { "AdditionalChanges" , "Weitere Änderungen von Beitragenden auf Github" },
                         { "ManyThanks" , "Vielen Dank an alle, die an diesem Projekt mitgeholfen haben!" },
                         { "VisitTheFandom" , "Besuche auch die Fandom Seiten von Anno!" },
                         { "OriginalHomepage" , "Original Startseite" },
@@ -265,15 +279,32 @@ namespace AnnoDesigner.Localization
                         { "UpdateRequiresAdminRightsMessage" , "Um das Update herunterzuladen, benötigt die Anwendung Schreibzugriff. Bitte geben Sie die Zugangsdaten an." },
                         { "Error" , "Fehler" },
                         { "UpdateErrorPresetMessage" , "Es gab einen Fehler bei der Installation des Updates." },
+                        { "UpdateNoConnectionMessage" , "Es konnte keine Verbindung zum Internet hergestellt werden." },
                         { "ColorsInLayout" , "Farben im Layout" },
                         { "ColorsInLayoutToolTip" , "Doppelklicken Sie auf die Farbe, um sie auszuwählen." },
-                        { "UpdateNoConnectionMessage" , "Es konnte keine Verbindung zum Internet hergestellt werden." },
                         { "LoadLayoutHeader" , "Layout laden" },
                         { "LoadLayoutMessage" , "Bitte fügen Sie die JSON-Zeichenkette unten ein." },
                         { "ClipboardContainsLayoutAsJson" , "Die Zwischenablage enthält das aktuelle Layout als JSON." },
                         { "OK" , "OK" },
                         { "Cancel" , "Abbrechen" },
                         { "SelectAll" , "Alle auswählen" },
+                        { "Tools" , "Werkzeuge" },
+                        { "Preferences" , "Einstellungen" },
+                        { "ResetAllConfirmationMessage" , "Sind Sie sicher, dass Sie alle Tastenkombinationen auf ihre Standardeinstellungen zurücksetzen möchten?" },
+                        { "ResetAll" , "Alle zurücksetzen" },
+                        { "UpdateSettings" , "Update-Einstellungen" },
+                        { "ManageKeybindings" , "Tastenkombinationen verwalten" },
+                        { "Rebind" , "Neu binden" },
+                        { "Recording" , "Aufzeichnung" },
+                        { "RecordANewAction" , "Eine neue Aktion aufzeichnen" },
+                        { "Rotate" , "Rotieren" },
+                        { "Copy" , "Kopieren" },
+                        { "Paste" , "Einfügen" },
+                        { "Delete" , "Löschen" },
+                        { "Licenses" , "Lizenzen" },
+                        { "ViewLicenses" , "Open-Source-Lizenzen anzeigen" },
+                        { "ExternalLinkConfirmationMessage" , "Dadurch wird ein neuer Tab in Ihrem Standard-Webbrowser geöffnet. Fortfahren?" },
+                        { "ExternalLinkMessageTitle" , "Einen externen Link öffnen" },
                         { "RecentFiles" , "Zuletzt geöffnete Dateien" }
                     }
                 },
@@ -328,9 +359,9 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Zone de détection" },
                         { "Distance" , "Distance" },
                         { "Both" , "Tous les deux" },
-                        { "PavedStreet", "Rue pavée" },
-                        { "PavedStreetWarningTitle", "Sélection de rues pavées" },
-                        { "PavedStreetToolTip", "Si vous cochez cette option, la plage d'influence des bâtiments sera modifiée,\nce qui représente la portée accrue qu'ils reçoivent lorsqu'ils utilisent des rues pavées.\nUtilisez le bouton 'Placer le bâtiment' pour placer l'objet." },
+                        { "PavedStreet" , "Rue pavée" },
+                        { "PavedStreetWarningTitle" , "Sélection de rues pavées" },
+                        { "PavedStreetToolTip" , $"Si vous cochez cette option, la plage d'influence des bâtiments sera modifiée, {Environment.NewLine}ce qui représente la portée accrue qu'ils reçoivent lorsqu'ils utilisent des rues pavées.{Environment.NewLine}Utilisez le bouton 'Placer le bâtiment' pour placer l'objet." },
                         { "Options" , "Options" },
                         { "EnableLabel" , "Activer les étiquettes" },
                         { "Borderless" , "Sans bordure" },
@@ -380,15 +411,32 @@ namespace AnnoDesigner.Localization
                         { "UpdateRequiresAdminRightsMessage" , "Pour télécharger la mise à jour, l'application a besoin d'un accès en écriture. Veuillez fournir vos justificatifs d'identité." },
                         { "Error" , "Erreur" },
                         { "UpdateErrorPresetMessage" , "Il y a eu une erreur lors de l'installation de la mise à jour." },
+                        { "UpdateNoConnectionMessage" , "Impossible d'établir une connexion à Internet." },
                         { "ColorsInLayout" , "Couleurs dans la mise en page" },
                         { "ColorsInLayoutToolTip" , "Double-cliquez sur la couleur pour la sélectionner" },
-                        { "UpdateNoConnectionMessage" , "Impossible d'établir une connexion à Internet." },
                         { "LoadLayoutHeader" , "Disposition de la charge" },
                         { "LoadLayoutMessage" , "Veuillez coller la chaîne JSON ci-dessous." },
                         { "ClipboardContainsLayoutAsJson" , "Le presse-papiers contient la mise en page actuelle en tant que JSON." },
                         { "OK" , "OK" },
                         { "Cancel" , "Annuler" },
                         { "SelectAll" , "Sélectionner tout" },
+                        { "Tools" , "Outils" },
+                        { "Preferences" , "Préférences" },
+                        { "ResetAllConfirmationMessage" , "Êtes-vous sûr de vouloir réinitialiser toutes les touches de raccourci à leurs paramètres par défaut ?" },
+                        { "ResetAll" , "Réinitialiser tout" },
+                        { "UpdateSettings" , "Mise à jour des paramètres" },
+                        { "ManageKeybindings" , "Gérer les porte-clés" },
+                        { "Rebind" , "Relier" },
+                        { "Recording" , "Enregistrement" },
+                        { "RecordANewAction" , "Enregistrer une nouvelle action" },
+                        { "Rotate" , "Faire tourner" },
+                        { "Copy" , "Copie" },
+                        { "Paste" , "Coller" },
+                        { "Delete" , "Supprimer" },
+                        { "Licenses" , "Licenses" },
+                        { "ViewLicenses" , "Voir les Licenses open source" },
+                        { "ExternalLinkConfirmationMessage" , "Cela ouvrira un nouvel onglet dans votre navigateur web par défaut. Continuer ?" },
+                        { "ExternalLinkMessageTitle" , "Ouverture d'un lien externe" },
                         { "RecentFiles" , "Fichiers récents" }
                     }
                 },
@@ -399,9 +447,9 @@ namespace AnnoDesigner.Localization
                         { "Open" , "Otwórz" },
                         { "Save" , "Zapisz" },
                         { "SaveAs" , "Zapisz jako" },
-                        { "Exit" , "Zamknij" },
-                        { "CopyLayoutToClipboard" , "Skopiuj układ do schowka jako JSON" },
+                        { "CopyLayoutToClipboard" , "Skopiuj układ do schowka jako JSON." },
                         { "LoadLayoutFromJson" , "Układ obciążenia od JSON" },
+                        { "Exit" , "Zamknij" },
                         { "Extras" , "Dodatki" },
                         { "Normalize" , "Znormalizuj" },
                         { "ResetZoom" , "Resetuj powiększenie" },
@@ -443,9 +491,9 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Zasięg" },
                         { "Distance" , "Odległość" },
                         { "Both" , "Obydwoje" },
-                        { "PavedStreet", "Droga Brukowana" },
-                        { "PavedStreetWarningTitle", "Wybór Drogi Brukowanej" },
-                        { "PavedStreetToolTip", "Zaznaczenie tej opcji spowoduje zmianę zakresu wpływu dla budynków, \nreprezentujący zwiększony zasięg, jaki otrzymują, gdy używając brukowanych ulic.\nUżyj przycisku 'Postaw budynek', aby umieścić obiekt." },
+                        { "PavedStreet" , "Droga Brukowana" },
+                        { "PavedStreetWarningTitle" , "Wybór Drogi Brukowanej" },
+                        { "PavedStreetToolTip" , $"Zaznaczenie tej opcji spowoduje zmianę zakresu wpływu dla budynków, {Environment.NewLine}reprezentujący zwiększony zasięg, jaki otrzymują, gdy używając brukowanych ulic.{Environment.NewLine}Użyj przycisku 'Postaw budynek', aby umieścić obiekt." },
                         { "Options" , "Opcje" },
                         { "EnableLabel" , "Pokaż etykietę" },
                         { "Borderless" , "Bez obramowania" },
@@ -495,15 +543,32 @@ namespace AnnoDesigner.Localization
                         { "UpdateRequiresAdminRightsMessage" , "Aby pobrać aktualizację, aplikacja musi mieć dostęp do zapisu. Proszę podać dane uwierzytelniające." },
                         { "Error" , "Błąd" },
                         { "UpdateErrorPresetMessage" , "Wystąpił błąd podczas instalacji aktualizacji." },
+                        { "UpdateNoConnectionMessage" , "Nie udało się nawiązać połączenia z Internetem." },
                         { "ColorsInLayout" , "Kolory w układzie" },
                         { "ColorsInLayoutToolTip" , "Podwójne kliknięcie na kolor, aby go wybrać" },
-                        { "UpdateNoConnectionMessage" , "Nie udało się nawiązać połączenia z Internetem." },
                         { "LoadLayoutHeader" , "Układ obciążenia" },
                         { "LoadLayoutMessage" , "Proszę wkleić poniższy ciąg JSON." },
                         { "ClipboardContainsLayoutAsJson" , "Schowek zawiera aktualny układ jako JSON." },
                         { "OK" , "OK" },
                         { "Cancel" , "Odwołaj" },
                         { "SelectAll" , "Wybierz wszystkie" },
+                        { "Tools" , "Narzędzia" },
+                        { "Preferences" , "Preferencje" },
+                        { "ResetAllConfirmationMessage" , "Czy na pewno chcesz zresetować wszystkie klawisze funkcyjne do ich domyślnych ustawień?" },
+                        { "ResetAll" , "Zresetuj wszystko" },
+                        { "UpdateSettings" , "Ustawienia aktualizacji" },
+                        { "ManageKeybindings" , "Zarządzanie klawiaturami" },
+                        { "Rebind" , "Powiąż ponownie" },
+                        { "Recording" , "Nagranie" },
+                        { "RecordANewAction" , "Zapisać nową akcję" },
+                        { "Rotate" , "Obróć" },
+                        { "Copy" , "Kopia" },
+                        { "Paste" , "Pasta" },
+                        { "Delete" , "Skreślić" },
+                        { "Licenses" , "Licencje" },
+                        { "ViewLicenses" , "Oglądaj licencje open source" },
+                        { "ExternalLinkConfirmationMessage" , "Spowoduje to otwarcie nowej karty w Twojej domyślnej przeglądarce internetowej. Kontynuować?" },
+                        { "ExternalLinkMessageTitle" , "Otwarcie połączenia zewnętrznego" },
                         { "RecentFiles" , "Ostatnie akta" }
                     }
                 },
@@ -558,9 +623,9 @@ namespace AnnoDesigner.Localization
                         { "Range" , "Диапазон" },
                         { "Distance" , "Расстояние" },
                         { "Both" , "Оба" },
-                        { "PavedStreet", "Павед Стрит" },
-                        { "PavedStreetWarningTitle", "Выбор улицы Павед Стрит" },
-                        { "PavedStreetToolTip", "Установив этот флажок, можно изменить диапазон влияния для зданий,\nпредставляет собой увеличенную дальность, которую они получают при использовании мощеных улиц.\nИспользуйте кнопку 'Выбрать здание', чтобы поместить объект." },
+                        { "PavedStreet" , "Павед Стрит" },
+                        { "PavedStreetWarningTitle" , "Выбор улицы Павед Стрит" },
+                        { "PavedStreetToolTip" , $"Установив этот флажок, можно изменить диапазон влияния для зданий,{Environment.NewLine}представляет собой увеличенную дальность, которую они получают при использовании мощеных улиц.{Environment.NewLine}Используйте кнопку 'Выбрать здание', чтобы поместить объект." },
                         { "Options" , "Параметры" },
                         { "EnableLabel" , "Показывать название" },
                         { "Borderless" , "Без полей" },
@@ -610,20 +675,36 @@ namespace AnnoDesigner.Localization
                         { "UpdateRequiresAdminRightsMessage" , "Для загрузки обновления приложению необходим доступ на запись. Пожалуйста, предоставьте полномочия." },
                         { "Error" , "Ошибка" },
                         { "UpdateErrorPresetMessage" , "Произошла ошибка при установке обновления." },
+                        { "UpdateNoConnectionMessage" , "Не смог установить соединение с интернетом." },
                         { "ColorsInLayout" , "Цвета в макетах" },
                         { "ColorsInLayoutToolTip" , "Дважды щелкните по цвету, чтобы выбрать его." },
-                        { "UpdateNoConnectionMessage" , "Не смог установить соединение с интернетом." },
                         { "LoadLayoutHeader" , "Загрузить макет" },
                         { "LoadLayoutMessage" , "Пожалуйста, вставьте JSON строку ниже." },
                         { "ClipboardContainsLayoutAsJson" , "Буфер обмена содержит текущую верстку в виде JSON." },
                         { "OK" , "OK" },
                         { "Cancel" , "Отмена" },
                         { "SelectAll" , "Выберите все" },
+                        { "Tools" , "Инструменты" },
+                        { "Preferences" , "Предпочтения" },
+                        { "ResetAllConfirmationMessage" , "Вы уверены, что хотите сбросить все горячие клавиши в их настройки по умолчанию?" },
+                        { "ResetAll" , "Сбросить все" },
+                        { "UpdateSettings" , "Обновление Настройки" },
+                        { "ManageKeybindings" , "Управление привязками к ключам" },
+                        { "Rebind" , "Перезаписать" },
+                        { "Recording" , "Запись" },
+                        { "RecordANewAction" , "Записать новое действие" },
+                        { "Rotate" , "Повернуть" },
+                        { "Copy" , "Скопировать" },
+                        { "Paste" , "Вставить" },
+                        { "Delete" , "Удалить" },
+                        { "Licenses" , "Лицензии" },
+                        { "ViewLicenses" , "Просмотреть лицензии с открытым исходным кодом" },
+                        { "ExternalLinkConfirmationMessage" , "При этом откроется новая вкладка в вашем веб-браузере по умолчанию. Продолжить?" },
+                        { "ExternalLinkMessageTitle" , "Открытие внешней ссылки" },
                         { "RecentFiles" , "Последние Файлы" }
                     }
                 },
             };
-
             Instance.commons = commons;
             Instance.Commons_SelectedLanguageChanged(null, null);
             commons.SelectedLanguageChanged += Instance.Commons_SelectedLanguageChanged;

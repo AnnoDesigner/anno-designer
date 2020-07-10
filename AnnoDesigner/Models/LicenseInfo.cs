@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AnnoDesigner.Models
+{
+    public class LicenseInfo
+    {
+        public string ProjectName { get; set; }
+        public string License { get; set; }
+        public string LicenseURL { get; set; }
+        public string ProjectWebsite { get; set; }
+        public IEnumerable<string> Assets { get; set; }
+    }
+}

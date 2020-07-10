@@ -8,7 +8,7 @@
         xmlns:my="clr-namespace:AnnoDesigner"
         xmlns:coreModels="clr-namespace:AnnoDesigner.Core.Models;assembly=AnnoDesigner.Core"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:converter="clr-namespace:AnnoDesigner.Core.Converter;assembly=AnnoDesigner.Core"
+        xmlns:converter="clr-namespace:AnnoDesigner.Core.Converters;assembly=AnnoDesigner.Core"
         xmlns:modelPresetsTree="clr-namespace:AnnoDesigner.Models.PresetsTree"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
@@ -112,20 +112,6 @@
                               Command="{Binding CloseWindowCommand}"
                               CommandParameter="{Binding ElementName=mainWindow}" />
                 </MenuItem>
-                <MenuItem Header="{l:Localize Extras}"
-                          TabIndex="21">
-                    <!--<MenuItem Header="Prefer local presets" IsCheckable="True" IsEnabled="False" />
-                <MenuItem Header="Apply automatic color scheme" IsEnabled="False" />-->
-                    <MenuItem Header="{l:Localize Normalize}"
-                              Command="{Binding CanvasNormalizeCommand}" />
-                    <MenuItem Header="{l:Localize ResetZoom}"
-                              Command="{Binding CanvasResetZoomCommand}" />
-                    <Separator />
-                    <MenuItem Header="{l:Localize RegisterFileExtension}"
-                              Command="{Binding RegisterExtensionCommand}" />
-                    <MenuItem Header="{l:Localize UnregisterFileExtension}"
-                              Command="{Binding UnregisterExtensionCommand}" />
-                </MenuItem>
                 <MenuItem Header="{l:Localize Export}"
                           TabIndex="22">
                     <MenuItem Header="{l:Localize ExportImage}"
@@ -169,6 +155,24 @@
                               IsChecked="{Binding StatisticsViewModel.ShowStatisticsBuildingCount}"
                               IsEnabled="{Binding StatisticsViewModel.IsVisible, Mode=OneWay}"
                               Command="{Binding ShowStatisticsBuildingCountCommand}" />
+                </MenuItem>
+                <MenuItem Header="{l:Localize Tools}">
+                    <MenuItem Header="{l:Localize Normalize}"
+                              Command="{Binding CanvasNormalizeCommand}" />
+                    <MenuItem Header="{l:Localize ResetZoom}"
+                              Command="{Binding CanvasResetZoomCommand}" />
+                    <Separator />
+                    <MenuItem Header="{l:Localize RegisterFileExtension}"
+                              Command="{Binding RegisterExtensionCommand}" />
+                    <MenuItem Header="{l:Localize UnregisterFileExtension}"
+                              Command="{Binding UnregisterExtensionCommand}" />
+                    <Separator />
+                    <MenuItem Command="{Binding ShowPreferencesWindowCommand}">
+                        <MenuItem.Header>
+                            <!-- Header property is an object, so can't just do {Binding Tools, ... } directly in Header attribute -->
+                            <Run Text="{l:Localize Preferences, StringFormat='\{0\}...', Mode=OneWay}" />
+                        </MenuItem.Header>
+                    </MenuItem>
                 </MenuItem>
                 <MenuItem Header="{l:Localize Help}"
                           TabIndex="25"
@@ -221,6 +225,9 @@
                               Command="{Binding ShowWelcomeWindowCommand}" />
                     <MenuItem Header="{l:Localize AboutAnnoDesigner}"
                               Command="{Binding ShowAboutWindowCommand}" />
+                    <Separator />
+                    <MenuItem Header="{l:Localize ViewLicenses}" 
+                              Command="{Binding ShowLicensesWindowCommand}"/>
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="{l:Localize ShowGrid}"

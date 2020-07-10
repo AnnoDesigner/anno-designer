@@ -13,6 +13,7 @@ namespace AnnoDesigner.Core.Layout.Models
         [DataMember(Order = 1)]
         public List<AnnoObject> Objects { get; set; }
 
+        public SavedLayout():this(null) { }
         public SavedLayout(List<AnnoObject> objects)
         {
             FileVersion = CoreConstants.LayoutFileVersion;

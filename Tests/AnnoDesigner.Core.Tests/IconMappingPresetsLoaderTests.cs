@@ -1,31 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using AnnoDesigner.Core.Helper;
-using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
-using AnnoDesigner.Core.Presets.Models;
 using Xunit;
 
 namespace AnnoDesigner.Core.Tests
 {
     public class IconMappingPresetsLoaderTests
     {
-        [Fact]
-        public void Load_StreamIsNull_ShouldThrow()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public void Load_ParameterIsNullOrWhiteSpace_ShouldThrowArgumentException(string jsonString)
         {
             // Arrange
-            IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
+            var loader = new IconMappingPresetsLoader();
 
-            // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => loader.Load((Stream)null));
+            // Act/Assert
+            Assert.Throws<ArgumentNullException>(() => loader.Load(jsonString));
+        }
 
-            // Assert
-            Assert.NotNull(ex);
+        [Fact]
+        public void Load_ParameterContainsOnlyWhiteSpaceChararcters_ShouldThrow()
+        {
+            // Arrange
+            var jsonString = @"\t\t\t    \t";
+            var loader = new IconMappingPresetsLoader();
+
+            // Act/Assert
+            Assert.ThrowsAny<Exception>(() => loader.Load(jsonString));
         }
 
         [Theory]
@@ -35,13 +37,10 @@ namespace AnnoDesigner.Core.Tests
         public void Load_FilePathIsNullOrWhiteSpace_ShouldThrow(string filePath)
         {
             // Arrange
-            IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
+            var loader = new IconMappingPresetsLoader();
 
-            // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => loader.Load((string)filePath));
-
-            // Assert
-            Assert.NotNull(ex);
+            // Act/Assert
+            Assert.Throws<ArgumentNullException>(() => loader.LoadFromFile(filePath));
         }
 
         [Fact]
@@ -49,12 +48,10 @@ namespace AnnoDesigner.Core.Tests
         {
             // Arrange
             var loader = new IconMappingPresetsLoader();
-
             var content = "[{\"IconFilename\":\"icon.png\",\"Localizations\":{\"eng\":\"mapped name\"}}]";
-            var streamWithIconMapping = new MemoryStream(Encoding.UTF8.GetBytes(content));
 
             // Act
-            var result = loader.Load(streamWithIconMapping);
+            var result = loader.Load(content);
 
             // Assert
             Assert.Single(result.IconNameMappings);
@@ -66,12 +63,10 @@ namespace AnnoDesigner.Core.Tests
         {
             // Arrange
             var loader = new IconMappingPresetsLoader();
-
             var content = "{\"Version\":\"0.1\",\"IconNameMappings\":[{\"IconFilename\":\"icon.png\",\"Localizations\":{\"eng\":\"mapped name\"}}]}";
-            var streamWithIconMapping = new MemoryStream(Encoding.UTF8.GetBytes(content));
 
             // Act
-            var result = loader.Load(streamWithIconMapping);
+            var result = loader.Load(content);
 
             // Assert
             Assert.Single(result.IconNameMappings);

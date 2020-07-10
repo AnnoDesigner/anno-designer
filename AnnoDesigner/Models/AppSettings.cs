@@ -33,152 +33,161 @@ namespace AnnoDesigner.Models
 
         public bool SettingsUpgradeNeeded
         {
-            get { return Settings.Default.SettingsUpgradeNeeded; }
-            set { Settings.Default.SettingsUpgradeNeeded = value; }
+            get => Settings.Default.SettingsUpgradeNeeded;
+            set => Settings.Default.SettingsUpgradeNeeded = value;
         }
 
         public bool PromptedForAutoUpdateCheck
         {
-            get { return Settings.Default.PromptedForAutoUpdateCheck; }
-            set { Settings.Default.PromptedForAutoUpdateCheck = value; }
+            get => Settings.Default.PromptedForAutoUpdateCheck;
+            set => Settings.Default.PromptedForAutoUpdateCheck = value;
         }
 
         public string SelectedLanguage
         {
-            get { return Settings.Default.SelectedLanguage; }
-            set { Settings.Default.SelectedLanguage = value; }
+            get => Settings.Default.SelectedLanguage;
+            set => Settings.Default.SelectedLanguage = value;
         }
 
         public bool StatsShowStats
         {
-            get { return Settings.Default.StatsShowStats; }
-            set { Settings.Default.StatsShowStats = value; }
+            get => Settings.Default.StatsShowStats;
+            set => Settings.Default.StatsShowStats = value;
         }
 
         public bool StatsShowBuildingCount
         {
-            get { return Settings.Default.StatsShowBuildingCount; }
-            set { Settings.Default.StatsShowBuildingCount = value; }
+            get => Settings.Default.StatsShowBuildingCount;
+            set => Settings.Default.StatsShowBuildingCount = value;
         }
 
         public bool ShowPavedRoadsWarning
         {
-            get { return Settings.Default.ShowPavedRoadsWarning; }
-            set { Settings.Default.ShowPavedRoadsWarning = value; }
+            get => Settings.Default.ShowPavedRoadsWarning;
+            set => Settings.Default.ShowPavedRoadsWarning = value;
         }
 
         public bool EnableAutomaticUpdateCheck
         {
-            get { return Settings.Default.EnableAutomaticUpdateCheck; }
-            set { Settings.Default.EnableAutomaticUpdateCheck = value; }
+            get => Settings.Default.EnableAutomaticUpdateCheck;
+            set => Settings.Default.EnableAutomaticUpdateCheck = value;
         }
 
         public bool UseCurrentZoomOnExportedImageValue
         {
-            get { return Settings.Default.UseCurrentZoomOnExportedImageValue; }
-            set { Settings.Default.UseCurrentZoomOnExportedImageValue = value; }
+            get => Settings.Default.UseCurrentZoomOnExportedImageValue;
+            set => Settings.Default.UseCurrentZoomOnExportedImageValue = value;
         }
 
         public bool RenderSelectionHighlightsOnExportedImageValue
         {
-            get { return Settings.Default.RenderSelectionHighlightsOnExportedImageValue; }
-            set { Settings.Default.RenderSelectionHighlightsOnExportedImageValue = value; }
+            get => Settings.Default.RenderSelectionHighlightsOnExportedImageValue;
+            set => Settings.Default.RenderSelectionHighlightsOnExportedImageValue = value;
         }
 
         public bool ShowLabels
         {
-            get { return Settings.Default.ShowLabels; }
-            set { Settings.Default.ShowLabels = value; }
+            get => Settings.Default.ShowLabels;
+            set => Settings.Default.ShowLabels = value;
         }
 
         public bool ShowIcons
         {
-            get { return Settings.Default.ShowIcons; }
-            set { Settings.Default.ShowIcons = value; }
+            get => Settings.Default.ShowIcons;
+            set => Settings.Default.ShowIcons = value;
         }
 
         public bool ShowGrid
         {
-            get { return Settings.Default.ShowGrid; }
-            set { Settings.Default.ShowGrid = value; }
+            get => Settings.Default.ShowGrid;
+            set => Settings.Default.ShowGrid = value;
         }
 
         public bool ShowTrueInfluenceRange
         {
-            get { return Settings.Default.ShowTrueInfluenceRange; }
-            set { Settings.Default.ShowTrueInfluenceRange = value; }
+            get => Settings.Default.ShowTrueInfluenceRange;
+            set => Settings.Default.ShowTrueInfluenceRange = value;
         }
 
         public bool ShowInfluences
         {
-            get { return Settings.Default.ShowInfluences; }
-            set { Settings.Default.ShowInfluences = value; }
+            get => Settings.Default.ShowInfluences;
+            set => Settings.Default.ShowInfluences = value;
         }
 
         public bool IsPavedStreet
         {
-            get { return Settings.Default.IsPavedStreet; }
-            set { Settings.Default.IsPavedStreet = value; }
+            get => Settings.Default.IsPavedStreet;
+            set => Settings.Default.IsPavedStreet = value;
         }
 
         public string TreeViewSearchText
         {
-            get { return Settings.Default.TreeViewSearchText; }
-            set { Settings.Default.TreeViewSearchText = value; }
+            get => Settings.Default.TreeViewSearchText;
+            set => Settings.Default.TreeViewSearchText = value;
         }
 
         public string PresetsTreeGameVersionFilter
         {
-            get { return Settings.Default.PresetsTreeGameVersionFilter; }
-            set { Settings.Default.PresetsTreeGameVersionFilter = value; }
+            get => Settings.Default.PresetsTreeGameVersionFilter;
+            set => Settings.Default.PresetsTreeGameVersionFilter = value;
         }
 
         public string PresetsTreeExpandedState
         {
-            get { return Settings.Default.PresetsTreeExpandedState; }
-            set { Settings.Default.PresetsTreeExpandedState = value; }
+            get => Settings.Default.PresetsTreeExpandedState;
+            set => Settings.Default.PresetsTreeExpandedState = value;
         }
 
         public string PresetsTreeLastVersion
         {
-            get { return Settings.Default.PresetsTreeLastVersion; }
-            set { Settings.Default.PresetsTreeLastVersion = value; }
+            get => Settings.Default.PresetsTreeLastVersion;
+            set => Settings.Default.PresetsTreeLastVersion = value;
         }
 
         public double MainWindowHeight
         {
-            get { return Settings.Default.MainWindowHeight; }
-            set { Settings.Default.MainWindowHeight = value; }
+            get => Settings.Default.MainWindowHeight;
+            set => Settings.Default.MainWindowHeight = value;
         }
 
         public double MainWindowWidth
         {
-            get { return Settings.Default.MainWindowWidth; }
-            set { Settings.Default.MainWindowWidth = value; }
+            get => Settings.Default.MainWindowWidth;
+            set => Settings.Default.MainWindowWidth = value;
         }
 
         public double MainWindowLeft
         {
-            get { return Settings.Default.MainWindowLeft; }
-            set { Settings.Default.MainWindowLeft = value; }
+            get => Settings.Default.MainWindowLeft;
+            set => Settings.Default.MainWindowLeft = value;
         }
 
         public double MainWindowTop
         {
-            get { return Settings.Default.MainWindowTop; }
-            set { Settings.Default.MainWindowTop = value; }
+            get => Settings.Default.MainWindowTop;
+            set => Settings.Default.MainWindowTop = value;
         }
 
         public WindowState MainWindowWindowState
         {
-            get { return Settings.Default.MainWindowWindowState; }
-            set { Settings.Default.MainWindowWindowState = value; }
+            get => Settings.Default.MainWindowWindowState;
+            set => Settings.Default.MainWindowWindowState = value;
         }
 
         public bool UpdateSupportsPrerelease
         {
-            get { return Settings.Default.UpdateSupportsPrerelease; }
-            set { Settings.Default.UpdateSupportsPrerelease = value; }
+            get => Settings.Default.UpdateSupportsPrerelease;
+            set => Settings.Default.UpdateSupportsPrerelease = value;
+        }
+
+        /// <summary>
+        /// Serialized <see cref="IDictionary{string, HotkeyInformation}"/>.
+        /// </summary>
+        public string HotkeyMappings
+        {
+            get => Settings.Default.HotkeyMappings;
+            set => Settings.Default.HotkeyMappings = value;
         }
 
         public string RecentFiles

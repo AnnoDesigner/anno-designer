@@ -72,6 +72,7 @@ namespace AnnoDesigner.ViewModels
         private double _mainWindowLeft;
         private double _mainWindowTop;
         private WindowState _minWindowWindowState;
+        private HotkeyCommandManager _hotkeyCommandManager;
         private ObservableCollection<RecentFileItem> _recentFiles;
 
         //for identifier checking process
@@ -96,6 +97,9 @@ namespace AnnoDesigner.ViewModels
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
+
+
+            HotkeyCommandManager = new HotkeyCommandManager(Localization.Localization.Instance);
 
             StatisticsViewModel = new StatisticsViewModel();
             StatisticsViewModel.IsVisible = _appSettings.StatsShowStats;
@@ -129,6 +133,8 @@ namespace AnnoDesigner.ViewModels
             ShowStatisticsCommand = new RelayCommand(ExecuteShowStatistics);
             ShowStatisticsBuildingCountCommand = new RelayCommand(ExecuteShowStatisticsBuildingCount);
             PlaceBuildingCommand = new RelayCommand(ExecutePlaceBuilding);
+            ShowPreferencesWindowCommand = new RelayCommand(ExecuteShowPreferencesWindow);
+            ShowLicensesWindowCommand = new RelayCommand(ExecuteShowLicensesWindow);
             OpenRecentFileCommand = new RelayCommand(ExecuteOpenRecentFile);
 
             AvailableIcons = new ObservableCollection<IconImage>();
@@ -200,6 +206,7 @@ namespace AnnoDesigner.ViewModels
                 _ = UpdateStatisticsAsync(UpdateMode.All);
 
                 PresetsTreeSearchViewModel.SearchText = string.Empty;
+                HotkeyCommandManager.UpdateLanguage();
             }
             catch (Exception ex)
             {
@@ -670,6 +677,7 @@ namespace AnnoDesigner.ViewModels
             MainWindowLeft = _appSettings.MainWindowLeft;
             MainWindowTop = _appSettings.MainWindowTop;
             MainWindowWindowState = _appSettings.MainWindowWindowState;
+            HotkeyCommandManager.LoadHotkeyMappings(SerializationHelper.LoadFromJsonString<Dictionary<string, HotkeyInformation>>(_appSettings.HotkeyMappings));
         }
 
         public void SaveSettings()
@@ -690,13 +698,9 @@ namespace AnnoDesigner.ViewModels
             _appSettings.UseCurrentZoomOnExportedImageValue = UseCurrentZoomOnExportedImageValue;
             _appSettings.RenderSelectionHighlightsOnExportedImageValue = RenderSelectionHighlightsOnExportedImageValue;
 
-            string savedTreeState = null;
-            using (var ms = new MemoryStream())
-            {
-                SerializationHelper.SaveToStream(PresetsTreeViewModel.GetCondensedTreeState(), ms);
+            string savedTreeState;
+            savedTreeState = SerializationHelper.SaveToJsonString(PresetsTreeViewModel.GetCondensedTreeState());
 
-                savedTreeState = Encoding.UTF8.GetString(ms.ToArray());
-            }
             _appSettings.PresetsTreeExpandedState = savedTreeState;
             _appSettings.PresetsTreeLastVersion = PresetsTreeViewModel.BuildingPresetsVersion;
 
@@ -708,6 +712,9 @@ namespace AnnoDesigner.ViewModels
             _appSettings.MainWindowLeft = MainWindowLeft;
             _appSettings.MainWindowTop = MainWindowTop;
             _appSettings.MainWindowWindowState = MainWindowWindowState;
+
+            var remappedHotkeys = HotkeyCommandManager.GetRemappedHotkeys();
+            _appSettings.HotkeyMappings = SerializationHelper.SaveToJsonString(remappedHotkeys);
 
             _appSettings.Save();
         }
@@ -780,12 +787,8 @@ namespace AnnoDesigner.ViewModels
             //if not filtered, then restore tree state
             if (!isFiltered && !string.IsNullOrWhiteSpace(_appSettings.PresetsTreeExpandedState))
             {
-                Dictionary<int, bool> savedTreeState = null;
-                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(_appSettings.PresetsTreeExpandedState)))
-                {
-                    savedTreeState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
-                }
-
+                Dictionary<int, bool> savedTreeState;
+                savedTreeState = SerializationHelper.LoadFromJsonString<Dictionary<int, bool>>(_appSettings.PresetsTreeExpandedState);
                 PresetsTreeViewModel.SetCondensedTreeState(savedTreeState, _appSettings.PresetsTreeLastVersion);
             }
         }
@@ -1006,6 +1009,12 @@ namespace AnnoDesigner.ViewModels
             set { UpdateProperty(ref _minWindowWindowState, value); }
         }
 
+        public HotkeyCommandManager HotkeyCommandManager
+        {
+            get { return _hotkeyCommandManager; }
+            set { UpdateProperty(ref _hotkeyCommandManager, value); }
+        }
+
         public ObservableCollection<RecentFileItem> RecentFiles
         {
             get { return _recentFiles; }
@@ -1025,7 +1034,7 @@ namespace AnnoDesigner.ViewModels
 
         #endregion
 
-        #region commands
+        #region Commands
 
         public ICommand OpenProjectHomepageCommand { get; private set; }
 
@@ -1432,6 +1441,29 @@ namespace AnnoDesigner.ViewModels
             {
                 MessageBox.Show("Error: Invalid building configuration.");
             }
+        }
+
+        public ICommand ShowPreferencesWindowCommand { get; private set; }
+
+        private void ExecuteShowPreferencesWindow(object param)
+        {
+            var preferencesWindow = new PreferencesWindow(_appSettings, _commons, HotkeyCommandManager)
+            {
+                Owner = Application.Current.MainWindow,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            preferencesWindow.Show();
+        }
+
+        public ICommand ShowLicensesWindowCommand { get; private set; }
+
+        private void ExecuteShowLicensesWindow(object param)
+        {
+            var LicensesWindow = new LicensesWindow()
+            {
+                Owner = Application.Current.MainWindow
+            };
+            LicensesWindow.ShowDialog();
         }
 
         public ICommand OpenRecentFileCommand { get; private set; }

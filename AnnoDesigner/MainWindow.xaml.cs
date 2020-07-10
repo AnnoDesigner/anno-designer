@@ -41,6 +41,8 @@ namespace AnnoDesigner
         {
             _mainViewModel = DataContext as MainViewModel;
             _mainViewModel.AnnoCanvas = annoCanvas;
+            _mainViewModel.AnnoCanvas.RegisterHotkeys(_mainViewModel.HotkeyCommandManager);
+
             _mainViewModel.ShowStatisticsChanged += MainViewModel_ShowStatisticsChanged;
 
             App.DpiScale = VisualTreeHelper.GetDpi(this);
