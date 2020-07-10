@@ -41,6 +41,7 @@ namespace AnnoDesigner.ViewModels
         private readonly ICoordinateHelper _coordinateHelper;
         private readonly IBrushCache _brushCache;
         private readonly IPenCache _penCache;
+        private readonly IRecentFilesHelper _recentFilesHelper;
 
         public event EventHandler<EventArgs> ShowStatisticsChanged;
 
@@ -71,6 +72,7 @@ namespace AnnoDesigner.ViewModels
         private double _mainWindowLeft;
         private double _mainWindowTop;
         private WindowState _minWindowWindowState;
+        private ObservableCollection<RecentFileItem> _recentFiles;
 
         //for identifier checking process
         private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
@@ -78,7 +80,8 @@ namespace AnnoDesigner.ViewModels
 
         public MainViewModel(ICommons commonsToUse,
             IAppSettings appSettingsToUse,
-            ILayoutLoader _layoutLoaderToUse = null,
+            IRecentFilesHelper recentFilesHelperToUse,
+            ILayoutLoader layoutLoaderToUse = null,
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
             IPenCache penCacheToUse = null)
@@ -87,8 +90,9 @@ namespace AnnoDesigner.ViewModels
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
 
             _appSettings = appSettingsToUse;
+            _recentFilesHelper = recentFilesHelperToUse;
 
-            _layoutLoader = _layoutLoaderToUse ?? new LayoutLoader();
+            _layoutLoader = layoutLoaderToUse ?? new LayoutLoader();
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
@@ -125,11 +129,15 @@ namespace AnnoDesigner.ViewModels
             ShowStatisticsCommand = new RelayCommand(ExecuteShowStatistics);
             ShowStatisticsBuildingCountCommand = new RelayCommand(ExecuteShowStatisticsBuildingCount);
             PlaceBuildingCommand = new RelayCommand(ExecutePlaceBuilding);
+            OpenRecentFileCommand = new RelayCommand(ExecuteOpenRecentFile);
 
             AvailableIcons = new ObservableCollection<IconImage>();
             _noIconItem = new IconImage("None");
             AvailableIcons.Add(_noIconItem);
             SelectedIcon = _noIconItem;
+
+            RecentFiles = new ObservableCollection<RecentFileItem>();
+            _recentFilesHelper.Updated += RecentFilesHelper_Updated;
 
             Languages = new ObservableCollection<SupportedLanguage>();
             Languages.Add(new SupportedLanguage("English")
@@ -161,6 +169,8 @@ namespace AnnoDesigner.ViewModels
 
             VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
             FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
+
+            RecentFilesHelper_Updated(this, EventArgs.Empty);
         }
 
         private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
@@ -199,6 +209,18 @@ namespace AnnoDesigner.ViewModels
             {
                 IsLanguageChange = false;
             }
+        }
+
+        private void RecentFilesHelper_Updated(object sender, EventArgs e)
+        {
+            RecentFiles.Clear();
+
+            foreach (var curRecentFile in _recentFilesHelper.RecentFiles)
+            {
+                RecentFiles.Add(new RecentFileItem(curRecentFile.Path));
+            }
+
+            OnPropertyChanged(nameof(HasRecentFiles));
         }
 
         private void PresetsTreeSearchViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -459,10 +481,12 @@ namespace AnnoDesigner.ViewModels
             logger.Trace($"Status message changed: {message}");
         }
 
-        private void AnnoCanvas_LoadedFileChanged(string filename)
+        private void AnnoCanvas_LoadedFileChanged(string filePath)
         {
-            MainWindowTitle = string.IsNullOrEmpty(filename) ? "Anno Designer" : string.Format("{0} - Anno Designer", Path.GetFileName(filename));
-            logger.Info($"Loaded file: {(string.IsNullOrEmpty(filename) ? "(none)" : filename)}");
+            MainWindowTitle = string.IsNullOrEmpty(filePath) ? "Anno Designer" : string.Format("{0} - Anno Designer", Path.GetFileName(filePath));
+            logger.Info($"Loaded file: {(string.IsNullOrEmpty(filePath) ? "(none)" : filePath)}");
+
+            _recentFilesHelper.AddFile(new RecentFile(filePath, DateTime.UtcNow));
         }
 
         public Task UpdateStatisticsAsync(UpdateMode mode)
@@ -982,6 +1006,23 @@ namespace AnnoDesigner.ViewModels
             set { UpdateProperty(ref _minWindowWindowState, value); }
         }
 
+        public ObservableCollection<RecentFileItem> RecentFiles
+        {
+            get { return _recentFiles; }
+            set
+            {
+                if (UpdateProperty(ref _recentFiles, value))
+                {
+                    OnPropertyChanged(nameof(HasRecentFiles));
+                }
+            }
+        }
+
+        public bool HasRecentFiles
+        {
+            get { return RecentFiles.Count > 0; }
+        }
+
         #endregion
 
         #region commands
@@ -1391,6 +1432,20 @@ namespace AnnoDesigner.ViewModels
             {
                 MessageBox.Show("Error: Invalid building configuration.");
             }
+        }
+
+        public ICommand OpenRecentFileCommand { get; private set; }
+
+        private void ExecuteOpenRecentFile(object param)
+        {
+            if (!(param is RecentFileItem recentFile))
+            {
+                return;
+            }
+
+            AnnoCanvas.OpenFile(recentFile.Path);
+
+            _recentFilesHelper.AddFile(new RecentFile(recentFile.Path, DateTime.UtcNow));
         }
 
         #endregion

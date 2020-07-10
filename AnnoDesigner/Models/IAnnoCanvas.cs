@@ -37,5 +37,6 @@ namespace AnnoDesigner.Models
         void ResetZoom();
         void Normalize();
         void Normalize(int border);
+        void OpenFile(string filename, bool forceLoad = false);
     }
 }

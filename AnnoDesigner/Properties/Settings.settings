@@ -80,9 +80,6 @@
     <Setting Name="PresetsTreeGameVersionFilter" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="CurrentVersion" Type="System.Double" Scope="Application">
-      <Value Profile="(Default)">8.5</Value>
-    </Setting>
     <Setting Name="UpdateSupportsPrerelease" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -91,6 +88,12 @@
     </Setting>
     <Setting Name="ShowInfluences" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="CurrentVersion" Type="System.Double" Scope="Application">
+      <Value Profile="(Default)">8.7</Value>
+    </Setting>
+    <Setting Name="RecentFiles" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

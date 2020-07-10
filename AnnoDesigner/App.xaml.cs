@@ -2,10 +2,15 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Abstractions;
+using System.IO.Abstractions.TestingHelpers;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.RecentFiles;
 using AnnoDesigner.Models;
 using AnnoDesigner.ViewModels;
 using NLog;
@@ -177,7 +182,11 @@ namespace AnnoDesigner
                 await _commons.UpdateHelper.ReplaceUpdatedPresetsFilesAsync();
 
                 Localization.Localization.Init(_commons);
-                var mainVM = new MainViewModel(_commons, _appSettings);
+
+                var serializer = new RecentFilesAppSettingsSerializer(_appSettings);
+
+                IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(serializer, new FileSystem());
+                var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper);
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
                 MainWindow = new MainWindow();
