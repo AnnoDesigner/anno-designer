@@ -62,8 +62,6 @@
                   Grid.ColumnSpan="3">
                 <Menu.Resources>
                     <Style TargetType="{x:Type MenuItem}">
-                        <!--<Setter Property="Foreground"
-                            Value="Black" />-->
                         <Style.Triggers>
                             <Trigger Property="IsEnabled"
                                      Value="False">
@@ -126,8 +124,15 @@
                 <MenuItem Header="{l:Localize Language}"
                           TabIndex="23"
                           ItemsSource="{Binding Languages}">
+                    <MenuItem.Resources>
+                        <Image x:Key="flagImage"
+                               Source="{Binding FlagPath}"
+                               x:Shared="False" />
+                    </MenuItem.Resources>
                     <MenuItem.ItemContainerStyle>
                         <Style TargetType="MenuItem">
+                            <Setter Property="Icon"
+                                    Value="{StaticResource flagImage}" />
                             <Setter Property="Header"
                                     Value="{Binding Name}" />
                             <Setter Property="IsCheckable"
