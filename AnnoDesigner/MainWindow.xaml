@@ -636,17 +636,25 @@
                           DockPanel.Dock="Top">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="23" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBox x:Name="TextBoxSearchPresets"
-                                 Grid.Column="0"
-                                 Grid.Row="0"
-                                 Height="23"
-                                 VerticalContentAlignment="Center"
-                                 ToolTip="{l:Localize SearchToolTip}"
-                                 Text="{Binding PresetsTreeSearchViewModel.SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                 KeyUp="TextBoxSearchPresetsKeyUp">
+                        <xctk:WatermarkTextBox x:Name="TextBoxSearchPresets"
+                                               VerticalContentAlignment="Center"
+                                               ToolTip="{l:Localize SearchToolTip}"
+                                               Text="{Binding PresetsTreeSearchViewModel.SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                               KeyUp="TextBoxSearchPresetsKeyUp">
+                            <xctk:WatermarkTextBox.Watermark>
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="M12.003748,4.5049986C10.494726,4.5309996 8.9806971,4.987008 7.7016882,5.9000024 4.5866403,8.1250076 4.0476317,12.220008 6.5006675,15.049994 8.9517054,17.875006 13.465759,18.364996 16.581798,16.140005 19.698844,13.915 20.235855,9.8199996 17.783826,6.9899983 16.404809,5.3980035 14.373776,4.5479979 12.305754,4.5049986 12.205747,4.5029997 12.104748,4.5029997 12.003748,4.5049986z M12.127743,2.0721107E-06C15.724792,-0.0019966637 19.286836,1.4420032 21.684881,4.2050108 25.103918,8.1500015 25.075918,13.549994 22.002878,17.435003L31.444,28.325001 26.299932,32.000002 16.892806,21.15C11.969737,23.054996 6.0676631,21.830006 2.5996136,17.834997 -1.5464387,13.049994 -0.63543081,6.1250085 4.6346449,2.3600098 6.8586745,0.77200525 9.5027079,0.0010016877 12.127743,2.0721107E-06z"
+                                          Stretch="Uniform"
+                                          Fill="#FF000000"
+                                          Width="16"
+                                          Height="16" />
+                                    <TextBlock Text="{l:Localize SearchPlaceholder}"
+                                               Margin="4,0,0,0" />
+                                </StackPanel>
+                            </xctk:WatermarkTextBox.Watermark>
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="GotFocus">
                                     <b:InvokeCommandAction Command="{Binding PresetsTreeSearchViewModel.GotFocusCommand}" />
@@ -655,25 +663,12 @@
                                     <b:InvokeCommandAction Command="{Binding PresetsTreeSearchViewModel.LostFocusCommand}" />
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
-                            <!--<b:Interaction.Behaviors>
-                                <myBehaviors:FixCaretIndexBehavior />
-                            </b:Interaction.Behaviors>-->
-                            <TextBox.InputBindings>
+                            <xctk:WatermarkTextBox.InputBindings>
                                 <KeyBinding Key="Esc"
                                             Command="{Binding PresetsTreeSearchViewModel.ClearSearchTextCommand}"
                                             CommandParameter="{Binding ElementName=TextBoxSearchPresets}" />
-                            </TextBox.InputBindings>
-                        </TextBox>
-                        <!-- Maybe add a clear text box button eventually. (Needs styling etc)-->
-                        <!--<Button Grid.Column="1"
-                            Content="X"
-                            Height="20"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Margin="0,0,2,0"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            />-->
+                            </xctk:WatermarkTextBox.InputBindings>
+                        </xctk:WatermarkTextBox>
                         <xctk:CheckComboBox Grid.Column="0"
                                             Grid.Row="1"
                                             IsEditable="False"
