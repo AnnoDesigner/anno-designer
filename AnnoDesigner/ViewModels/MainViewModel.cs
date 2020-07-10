@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +24,7 @@ using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Localization;
 using AnnoDesigner.Models;
+using AnnoDesigner.PreferencesPages;
 using Microsoft.Win32;
 using NLog;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
@@ -52,10 +52,6 @@ namespace AnnoDesigner.ViewModels
         private bool _canvasShowLabels;
         private bool _canvasShowTrueInfluenceRange;
         private bool _canvasShowInfluences;
-        private bool _automaticUpdateCheck;
-        private string _versionValue;
-        private string _fileVersionValue;
-        private string _presetsVersionValue;
         private bool _useCurrentZoomOnExportedImageValue;
         private bool _renderSelectionHighlightsOnExportedImageValue;
         private bool _isLanguageChange;
@@ -98,7 +94,6 @@ namespace AnnoDesigner.ViewModels
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
 
-
             HotkeyCommandManager = new HotkeyCommandManager(Localization.Localization.Instance);
 
             StatisticsViewModel = new StatisticsViewModel();
@@ -117,6 +112,9 @@ namespace AnnoDesigner.ViewModels
 
             AboutViewModel = new AboutViewModel();
 
+            PreferencesUpdateViewModel = new UpdateSettingsViewModel(_commons, _appSettings);
+            PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons);
+
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
             CanvasResetZoomCommand = new RelayCommand(CanvasResetZoom);
@@ -129,7 +127,6 @@ namespace AnnoDesigner.ViewModels
             LanguageSelectedCommand = new RelayCommand(ExecuteLanguageSelected);
             ShowAboutWindowCommand = new RelayCommand(ExecuteShowAboutWindow);
             ShowWelcomeWindowCommand = new RelayCommand(ExecuteShowWelcomeWindow);
-            CheckForUpdatesCommand = new RelayCommand(ExecuteCheckForUpdates);
             ShowStatisticsCommand = new RelayCommand(ExecuteShowStatistics);
             ShowStatisticsBuildingCountCommand = new RelayCommand(ExecuteShowStatisticsBuildingCount);
             PlaceBuildingCommand = new RelayCommand(ExecutePlaceBuilding);
@@ -173,8 +170,8 @@ namespace AnnoDesigner.ViewModels
             MainWindowTitle = "Anno Designer";
             PresetsSectionHeader = "Building presets - not loaded";
 
-            VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
-            FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
+            PreferencesUpdateViewModel.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
+            PreferencesUpdateViewModel.FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
 
             RecentFilesHelper_Updated(this, EventArgs.Empty);
         }
@@ -504,134 +501,6 @@ namespace AnnoDesigner.ViewModels
                 AnnoCanvas.BuildingPresets);
         }
 
-        public async Task CheckForUpdatesSub(bool forcedCheck)
-        {
-            if (AutomaticUpdateCheck || forcedCheck)
-            {
-                try
-                {
-                    await CheckForNewAppVersionAsync(forcedCheck);
-
-                    await CheckForPresetsAsync();
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex, "Error checking version.");
-                    MessageBox.Show("Error checking version. \n\nAdded more information to log.", "Version check failed");
-                    return;
-                }
-            }
-        }
-
-        private async Task CheckForNewAppVersionAsync(bool forcedCheck)
-        {
-            try
-            {
-                var dowloadedContent = "0.1";
-                using (var webClient = new WebClient())
-                {
-                    dowloadedContent = await webClient.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/AnnoDesigner/anno-designer/master/version.txt"));
-                }
-
-                if (double.Parse(dowloadedContent, CultureInfo.InvariantCulture) > Constants.Version)
-                {
-                    // new version found
-                    if (MessageBox.Show("A newer version was found, do you want to visit the releases page?\nhttps://github.com/AnnoDesigner/anno-designer/releases\n\n Clicking 'Yes' will open a new tab in your web browser.",
-                        "Update available",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Asterisk,
-                        MessageBoxResult.OK) == MessageBoxResult.Yes)
-                    {
-                        Process.Start("https://github.com/AnnoDesigner/anno-designer/releases");
-                    }
-                }
-                else
-                {
-                    StatusMessage = "Version is up to date.";
-
-                    if (forcedCheck)
-                    {
-                        MessageBox.Show("This version is up to date.", "No updates found");
-                    }
-                }
-
-                //If not already prompted
-                if (!_appSettings.PromptedForAutoUpdateCheck)
-                {
-                    _appSettings.PromptedForAutoUpdateCheck = true;
-
-                    if (MessageBox.Show("Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.", "Continue checking for updates?", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
-                    {
-                        AutomaticUpdateCheck = false;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Error checking version.");
-                MessageBox.Show($"Error checking version.{Environment.NewLine}{Environment.NewLine}More information is found in the log.",
-                    "Version check failed",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                return;
-            }
-        }
-
-        private async Task CheckForPresetsAsync()
-        {
-            var foundRelease = await _commons.UpdateHelper.GetAvailableReleasesAsync(ReleaseType.Presets);
-            if (foundRelease == null)
-            {
-                return;
-            }
-
-            var isNewReleaseAvailable = foundRelease.Version > new Version(AnnoCanvas.BuildingPresets.Version);
-            if (isNewReleaseAvailable)
-            {
-                if (MessageBox.Show(Localization.Localization.Translations["UpdateAvailablePresetMessage"],
-                    Localization.Localization.Translations["UpdateAvailableHeader"],
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Asterisk,
-                    MessageBoxResult.OK) == MessageBoxResult.Yes)
-                {
-                    IsBusy = true;
-
-                    if (!Commons.CanWriteInFolder())
-                    {
-                        //already asked for admin rights?
-                        if (Environment.GetCommandLineArgs().Any(x => x.Trim().Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            MessageBox.Show($"You have no write access to the folder.{Environment.NewLine}The update can not be installed.",
-                                Localization.Localization.Translations["Error"],
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Warning);
-
-                            IsBusy = false;
-                            return;
-                        }
-
-                        MessageBox.Show(Localization.Localization.Translations["UpdateRequiresAdminRightsMessage"],
-                            Localization.Localization.Translations["AdminRightsRequired"],
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Information,
-                            MessageBoxResult.OK);
-
-                        Commons.RestartApplication(true, Constants.Argument_Ask_For_Admin, App.ExecutablePath);
-                    }
-
-                    //Context is required here, do not use ConfigureAwait(false)
-                    var newLocation = await _commons.UpdateHelper.DownloadReleaseAsync(foundRelease);
-                    logger.Debug($"downloaded new preset ({foundRelease.Version}): {newLocation}");
-
-                    IsBusy = false;
-
-                    Commons.RestartApplication(false, null, App.ExecutablePath);
-
-                    Environment.Exit(-1);
-                }
-            }
-        }
-
         /// <summary>
         /// Called when localisation is changed, to repopulate the tree view
         /// </summary>
@@ -659,7 +528,7 @@ namespace AnnoDesigner.ViewModels
         {
             StatisticsViewModel.ToggleBuildingList(_appSettings.StatsShowBuildingCount, AnnoCanvas.PlacedObjects, AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
 
-            AutomaticUpdateCheck = _appSettings.EnableAutomaticUpdateCheck;
+            PreferencesUpdateViewModel.AutomaticUpdateCheck = _appSettings.EnableAutomaticUpdateCheck;
 
             UseCurrentZoomOnExportedImageValue = _appSettings.UseCurrentZoomOnExportedImageValue;
             RenderSelectionHighlightsOnExportedImageValue = _appSettings.RenderSelectionHighlightsOnExportedImageValue;
@@ -693,7 +562,7 @@ namespace AnnoDesigner.ViewModels
             _appSettings.StatsShowStats = StatisticsViewModel.IsVisible;
             _appSettings.StatsShowBuildingCount = StatisticsViewModel.ShowStatisticsBuildingCount;
 
-            _appSettings.EnableAutomaticUpdateCheck = AutomaticUpdateCheck;
+            _appSettings.EnableAutomaticUpdateCheck = PreferencesUpdateViewModel.AutomaticUpdateCheck;
 
             _appSettings.UseCurrentZoomOnExportedImageValue = UseCurrentZoomOnExportedImageValue;
             _appSettings.RenderSelectionHighlightsOnExportedImageValue = RenderSelectionHighlightsOnExportedImageValue;
@@ -730,7 +599,7 @@ namespace AnnoDesigner.ViewModels
 
             PresetsSectionHeader = string.Format("Building presets - loaded v{0}", presets.Version);
 
-            PresetsVersionValue = presets.Version;
+            PreferencesUpdateViewModel.PresetsVersionValue = presets.Version;
             PresetsTreeViewModel.LoadItems(presets);
 
             RestoreSearchAndFilter();
@@ -878,30 +747,6 @@ namespace AnnoDesigner.ViewModels
                     AnnoCanvas.RenderInfluences = _canvasShowInfluences;
                 }
             }
-        }
-
-        public bool AutomaticUpdateCheck
-        {
-            get { return _automaticUpdateCheck; }
-            set { UpdateProperty(ref _automaticUpdateCheck, value); }
-        }
-
-        public string VersionValue
-        {
-            get { return _versionValue; }
-            set { UpdateProperty(ref _versionValue, value); }
-        }
-
-        public string FileVersionValue
-        {
-            get { return _fileVersionValue; }
-            set { UpdateProperty(ref _fileVersionValue, value); }
-        }
-
-        public string PresetsVersionValue
-        {
-            get { return _presetsVersionValue; }
-            set { UpdateProperty(ref _presetsVersionValue, value); }
         }
 
         public bool UseCurrentZoomOnExportedImageValue
@@ -1408,13 +1253,6 @@ namespace AnnoDesigner.ViewModels
             welcomeWindow.Show();
         }
 
-        public ICommand CheckForUpdatesCommand { get; private set; }
-
-        private async void ExecuteCheckForUpdates(object param)
-        {
-            await CheckForUpdatesSub(true);
-        }
-
         public ICommand ShowStatisticsCommand { get; private set; }
 
         private void ExecuteShowStatistics(object param)
@@ -1447,11 +1285,27 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteShowPreferencesWindow(object param)
         {
-            var preferencesWindow = new PreferencesWindow(_appSettings, _commons, HotkeyCommandManager)
+            var preferencesWindow = new PreferencesWindow()
             {
                 Owner = Application.Current.MainWindow,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
+            var vm = new PreferencesViewModel();
+            preferencesWindow.DataContext = vm;
+
+            vm.Pages.Add(new PreferencePage
+            {
+                Name = nameof(ManageKeybindingsPage),
+                ViewModel = PreferencesKeyBindingsViewModel,
+                Header = Localization.Localization.Instance.InstanceTranslations["ManageKeybindings"]
+            });
+            vm.Pages.Add(new PreferencePage
+            {
+                Name = nameof(UpdateSettingsPage),
+                ViewModel = PreferencesUpdateViewModel,
+                Header = Localization.Localization.Instance.InstanceTranslations["UpdateSettings"]
+            });
+
             preferencesWindow.Show();
         }
 
@@ -1495,6 +1349,10 @@ namespace AnnoDesigner.ViewModels
         public WelcomeViewModel WelcomeViewModel { get; set; }
 
         public AboutViewModel AboutViewModel { get; set; }
+
+        public UpdateSettingsViewModel PreferencesUpdateViewModel { get; set; }
+
+        public ManageKeybindingsViewModel PreferencesKeyBindingsViewModel { get; set; }
 
         #endregion    
     }

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using System.Xml;
 using AnnoDesigner.Core.Controls;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
@@ -22,6 +18,10 @@ namespace AnnoDesigner.ViewModels
         private const string RESET_ALL_CONFIRMATION_MESSAGE = "ResetAllConfirmationMessage";
 
         private readonly ICommons commons;
+        private HotkeyCommandManager _manager;
+        private ICommand _rebindCommand;
+        private ICommand _resetHotkeysCommand;
+        private string _rebindButtonText;
 
         public ManageKeybindingsViewModel(HotkeyCommandManager hotkeyCommandManager, ICommons commons)
         {
@@ -39,11 +39,6 @@ namespace AnnoDesigner.ViewModels
             UpdateRebindButtonText();
         }
 
-        private HotkeyCommandManager _manager;
-        private ICommand _rebindCommand;
-        private ICommand _resetHotkeysCommand;
-        private string _rebindButtonText;
-
         public HotkeyCommandManager HotkeyCommandManager
         {
             get { return _manager; }
@@ -55,7 +50,7 @@ namespace AnnoDesigner.ViewModels
             get { return _rebindCommand; }
             set { UpdateProperty(ref _rebindCommand, value); }
         }
-        
+
         public ICommand ResetHotkeysCommand
         {
             get { return _resetHotkeysCommand; }
@@ -78,7 +73,7 @@ namespace AnnoDesigner.ViewModels
             var window = new HotkeyRecorderWindow();
 
 #pragma warning disable IDE0007 // Use implicit type //Intent is much clearer
-            (Key key, ModifierKeys modifiers, MouseAction action, ActionRecorder.ActionType actionType, bool userCancelled) = window.RecordNewAction(); 
+            (Key key, ModifierKeys modifiers, MouseAction action, ActionRecorder.ActionType actionType, bool userCancelled) = window.RecordNewAction();
 #pragma warning restore IDE0007 // Use implicit type
 
             //Only set new hotkeys if the user didn't click cancel, and they didn't close the window without a key/action bound
@@ -156,7 +151,7 @@ namespace AnnoDesigner.ViewModels
                 Command = keyBinding.Command,
                 CommandParameter = keyBinding.CommandParameter,
                 CommandTarget = keyBinding.CommandTarget,
-                Gesture = mouseGesture 
+                Gesture = mouseGesture
             };
             return mouseBinding;
         }
@@ -164,8 +159,8 @@ namespace AnnoDesigner.ViewModels
         private void ExecuteResetHotkeys(object param)
         {
             if (Xceed.Wpf.Toolkit.MessageBox.Show(
-                Localization.Localization.Translations[RESET_ALL_CONFIRMATION_MESSAGE], 
-                Localization.Localization.Translations[RESET_ALL], 
+                Localization.Localization.Translations[RESET_ALL_CONFIRMATION_MESSAGE],
+                Localization.Localization.Translations[RESET_ALL],
                 MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
                 HotkeyCommandManager.ResetHotkeys();

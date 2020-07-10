@@ -56,7 +56,7 @@ namespace AnnoDesigner
             _mainViewModel.LoadAvailableIcons();
 
             // check for updates on startup            
-            _ = _mainViewModel.CheckForUpdatesSub(false);//just fire and forget
+            _ = _mainViewModel.PreferencesUpdateViewModel.CheckForUpdatesSub(false);//just fire and forget
 
             // load color presets
             colorPicker.StandardColors.Clear();

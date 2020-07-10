@@ -177,48 +177,6 @@
                 <MenuItem Header="{l:Localize Help}"
                           TabIndex="25"
                           HorizontalAlignment="Right">
-                    <MenuItem IsEnabled="False">
-                        <MenuItem.Header>
-                            <TextBlock>
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0}: {1}">
-                                        <l:Localize Key="Version" />
-                                        <Binding Path="VersionValue" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem IsEnabled="False">
-                        <MenuItem.Header>
-                            <TextBlock>
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0}: {1}">
-                                        <l:Localize Key="FileVersion" />
-                                        <Binding Path="FileVersionValue" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem IsEnabled="False">
-                        <MenuItem.Header>
-                            <TextBlock>
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0}: {1}">
-                                        <l:Localize Key="PresetsVersion" />
-                                        <Binding Path="PresetsVersionValue" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem Header="{l:Localize CheckForUpdates}"
-                              Command="{Binding CheckForUpdatesCommand}" />
-                    <MenuItem Header="{l:Localize EnableAutomaticUpdateCheck}"
-                              IsCheckable="True"
-                              IsChecked="{Binding AutomaticUpdateCheck}" />
-                    <Separator />
                     <MenuItem Header="{l:Localize GoToProjectHomepage}"
                               Command="{Binding OpenProjectHomepageCommand}" />
                     <MenuItem Header="{l:Localize OpenWelcomePage}"
@@ -226,8 +184,8 @@
                     <MenuItem Header="{l:Localize AboutAnnoDesigner}"
                               Command="{Binding ShowAboutWindowCommand}" />
                     <Separator />
-                    <MenuItem Header="{l:Localize ViewLicenses}" 
-                              Command="{Binding ShowLicensesWindowCommand}"/>
+                    <MenuItem Header="{l:Localize ViewLicenses}"
+                              Command="{Binding ShowLicensesWindowCommand}" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="{l:Localize ShowGrid}"
