@@ -651,7 +651,7 @@
                                           Fill="#FF000000"
                                           Width="16"
                                           Height="16" />
-                                    <TextBlock Text="Enter search text"
+                                    <TextBlock Text="{l:Localize SearchPlaceholder}"
                                                Margin="4,0,0,0" />
                                 </StackPanel>
                             </xctk:WatermarkTextBox.Watermark>
