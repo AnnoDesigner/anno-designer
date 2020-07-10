@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 
@@ -31,6 +32,14 @@ namespace AnnoDesigner.Localization
         }
 
         public IDictionary<string, string> InstanceTranslations => Translations;
+
+        static Localization()
+        {
+            if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+            {
+                Init(Commons.Instance);
+            }
+        }
 
         public static void Init(ICommons commons)
         {
