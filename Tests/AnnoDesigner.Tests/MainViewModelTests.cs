@@ -11,6 +11,9 @@ using AnnoDesigner.Models;
 using AnnoDesigner.Core;
 using System.Globalization;
 using System.Windows.Input;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.RecentFiles;
+using System.IO.Abstractions.TestingHelpers;
 
 namespace AnnoDesigner.Tests
 {
@@ -19,6 +22,7 @@ namespace AnnoDesigner.Tests
         private readonly ICommons _mockedCommons;
         private readonly IAppSettings _mockedAppSettings;
         private readonly IAnnoCanvas _mockedAnnoCanvas;
+        private readonly IRecentFilesHelper _inMemoryRecentFilesHelper;
 
         public MainViewModelTests()
         {
@@ -32,13 +36,18 @@ namespace AnnoDesigner.Tests
             var annoCanvasMock = new Mock<IAnnoCanvas>();
             annoCanvasMock.SetupAllProperties();
             _mockedAnnoCanvas = annoCanvasMock.Object;
+
+            _inMemoryRecentFilesHelper = new RecentFilesHelper(new RecentFilesInMemorySerializer(), new MockFileSystem());
         }
 
         private MainViewModel GetViewModel(ICommons commonsToUse = null,
             IAppSettings appSettingsToUse = null,
+            IRecentFilesHelper recentFilesHelperToUse = null,
             IAnnoCanvas annoCanvasToUse = null)
         {
-            return new MainViewModel(commonsToUse ?? _mockedCommons, appSettingsToUse ?? _mockedAppSettings)
+            return new MainViewModel(commonsToUse ?? _mockedCommons,
+                appSettingsToUse ?? _mockedAppSettings,
+                recentFilesHelperToUse ?? _inMemoryRecentFilesHelper)
             {
                 AnnoCanvas = annoCanvasToUse ?? _mockedAnnoCanvas
             };
@@ -835,7 +844,7 @@ namespace AnnoDesigner.Tests
 
             // Act
             viewModel.LoadSettings();
-            
+
             viewModel.HotkeyCommandManager.AddHotkey(id, new KeyBinding(command, new KeyGesture(key, modifiers)));
             var binding = viewModel.HotkeyCommandManager.GetHotkey(id).Binding as KeyBinding;
             var actualKey = binding.Key;

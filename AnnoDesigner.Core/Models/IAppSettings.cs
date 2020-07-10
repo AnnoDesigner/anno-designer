@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace AnnoDesigner.Models
+namespace AnnoDesigner.Core.Models
 {
     public interface IAppSettings
     {
@@ -39,6 +39,7 @@ namespace AnnoDesigner.Models
         double MainWindowTop { get; set; }
         WindowState MainWindowWindowState { get; set; }
         bool UpdateSupportsPrerelease { get; set; }
-        string HotkeyMappings { get;set; }
+        string HotkeyMappings { get; set; }
+        string RecentFiles { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using AnnoDesigner.Core.Models;
 using AnnoDesigner.Properties;
 
 namespace AnnoDesigner.Models
@@ -187,6 +188,12 @@ namespace AnnoDesigner.Models
         {
             get => Settings.Default.HotkeyMappings;
             set => Settings.Default.HotkeyMappings = value;
+        }
+
+        public string RecentFiles
+        {
+            get { return Settings.Default.RecentFiles; }
+            set { Settings.Default.RecentFiles = value; }
         }
     }
 }

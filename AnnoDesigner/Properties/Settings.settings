@@ -93,6 +93,9 @@
       <Value Profile="(Default)">8.7</Value>
     </Setting>
     <Setting Name="HotkeyMappings" Type="System.String" Scope="User">
+    <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="RecentFiles" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

@@ -103,8 +103,9 @@ namespace AnnoDesigner.Localization
                         { "Borderless" , "Borderless" },
                         { "Road" , "Road" },
                         { "PlaceBuilding" , "Place building" },
-                        { "Search" , "Search" },
+                        { "Search" , "Filter" },
                         { "SearchToolTip" , "ESC to clear search text" },
+                        { "SearchPlaceholder" , "Type the name of a building here" },
                         { "TitleAbout" , "About" },
                         { "BuildingLayoutDesigner" , "A building layout designer for Ubisofts Anno-series" },
                         { "Credits" , "Credits" },
@@ -172,6 +173,7 @@ namespace AnnoDesigner.Localization
                         { "ViewLicenses" , "View open source Licenses" },
                         { "ExternalLinkConfirmationMessage" , "This will open a new tab in your default web browser. Continue?" },
                         { "ExternalLinkMessageTitle" , "Opening an external link" }
+                        { "RecentFiles" , "Recent Files" }
                     }
                 },
                 {
@@ -233,8 +235,9 @@ namespace AnnoDesigner.Localization
                         { "Borderless" , "Randlos" },
                         { "Road" , "Straße" },
                         { "PlaceBuilding" , "Gebäude platzieren" },
-                        { "Search" , "Suche" },
+                        { "Search" , "Filtern" },
                         { "SearchToolTip" , "ESC um Suchtext zu leeren" },
+                        { "SearchPlaceholder" , "Geben Sie hier den Namen eines Gebäudes ein" },
                         { "TitleAbout" , "über" },
                         { "BuildingLayoutDesigner" , "Ein Gebäudelayout Designer für Ubisofts Anno Reihe" },
                         { "Credits" , "Credits" },
@@ -302,6 +305,7 @@ namespace AnnoDesigner.Localization
                         { "ViewLicenses" , "Open-Source-Lizenzen anzeigen" },
                         { "ExternalLinkConfirmationMessage" , "Dadurch wird ein neuer Tab in Ihrem Standard-Webbrowser geöffnet. Fortfahren?" },
                         { "ExternalLinkMessageTitle" , "Einen externen Link öffnen" }
+                        { "RecentFiles" , "Zuletzt geöffnete Dateien" }
                     }
                 },
                 {
@@ -363,8 +367,9 @@ namespace AnnoDesigner.Localization
                         { "Borderless" , "Sans bordure" },
                         { "Road" , "Routes" },
                         { "PlaceBuilding" , "Placer le bâtiment" },
-                        { "Search" , "Rechercher" },
+                        { "Search" , "Filtrez" },
                         { "SearchToolTip" , "ESC pour effacer la recherche" },
+                        { "SearchPlaceholder" , "Tapez le nom d'un bâtiment ici" },
                         { "TitleAbout" , "À propos" },
                         { "BuildingLayoutDesigner" , "Un planificateur de carte pour la série Anno d'Ubisofts" },
                         { "Credits" , "Crédits" },
@@ -432,6 +437,7 @@ namespace AnnoDesigner.Localization
                         { "ViewLicenses" , "Voir les Licenses open source" },
                         { "ExternalLinkConfirmationMessage" , "Cela ouvrira un nouvel onglet dans votre navigateur web par défaut. Continuer ?" },
                         { "ExternalLinkMessageTitle" , "Ouverture d'un lien externe" }
+                        { "RecentFiles" , "Fichiers récents" }
                     }
                 },
                 {
@@ -493,8 +499,9 @@ namespace AnnoDesigner.Localization
                         { "Borderless" , "Bez obramowania" },
                         { "Road" , "Droga / Ulica" },
                         { "PlaceBuilding" , "Postaw budynek" },
-                        { "Search" , "Wyszukiwanie" },
+                        { "Search" , "Filtr" },
                         { "SearchToolTip" , "ESC aby wyczyścić tekst do przeszukiwania" },
+                        { "SearchPlaceholder" , "Wpisz tutaj nazwę budynku" },
                         { "TitleAbout" , "Na temat / O" },
                         { "BuildingLayoutDesigner" , "Program do planowania zabudowy w serii Anno Ubisoftu" },
                         { "Credits" , "Autorzy" },
@@ -562,6 +569,7 @@ namespace AnnoDesigner.Localization
                         { "ViewLicenses" , "Oglądaj licencje open source" },
                         { "ExternalLinkConfirmationMessage" , "Spowoduje to otwarcie nowej karty w Twojej domyślnej przeglądarce internetowej. Kontynuować?" },
                         { "ExternalLinkMessageTitle" , "Otwarcie połączenia zewnętrznego" }
+                        { "RecentFiles" , "Ostatnie akta" }
                     }
                 },
                 {
@@ -623,8 +631,9 @@ namespace AnnoDesigner.Localization
                         { "Borderless" , "Без полей" },
                         { "Road" , "Дорогa" },
                         { "PlaceBuilding" , "Выбрать здание" },
-                        { "Search" , "Поиск" },
+                        { "Search" , "Фильтр" },
                         { "SearchToolTip" , "ESC чтобы очистить текст поиска" },
+                        { "SearchPlaceholder" , "Введите здесь название здания" },
                         { "TitleAbout" , "О программе" },
                         { "BuildingLayoutDesigner" , "Конструктор макета здания для Ubisofts Anno-серии" },
                         { "Credits" , "Авторы" },
@@ -692,6 +701,7 @@ namespace AnnoDesigner.Localization
                         { "ViewLicenses" , "Просмотреть лицензии с открытым исходным кодом" },
                         { "ExternalLinkConfirmationMessage" , "При этом откроется новая вкладка в вашем веб-браузере по умолчанию. Продолжить?" },
                         { "ExternalLinkMessageTitle" , "Открытие внешней ссылки" }
+                        { "RecentFiles" , "Последние Файлы" }
                     }
                 },
             };
