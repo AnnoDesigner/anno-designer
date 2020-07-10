@@ -172,7 +172,7 @@ namespace AnnoDesigner.Localization
                         { "Licenses" , "Licenses" },
                         { "ViewLicenses" , "View open source Licenses" },
                         { "ExternalLinkConfirmationMessage" , "This will open a new tab in your default web browser. Continue?" },
-                        { "ExternalLinkMessageTitle" , "Opening an external link" }
+                        { "ExternalLinkMessageTitle" , "Opening an external link" },
                         { "RecentFiles" , "Recent Files" }
                     }
                 },
@@ -304,7 +304,7 @@ namespace AnnoDesigner.Localization
                         { "Licenses" , "Lizenzen" },
                         { "ViewLicenses" , "Open-Source-Lizenzen anzeigen" },
                         { "ExternalLinkConfirmationMessage" , "Dadurch wird ein neuer Tab in Ihrem Standard-Webbrowser geöffnet. Fortfahren?" },
-                        { "ExternalLinkMessageTitle" , "Einen externen Link öffnen" }
+                        { "ExternalLinkMessageTitle" , "Einen externen Link öffnen" },
                         { "RecentFiles" , "Zuletzt geöffnete Dateien" }
                     }
                 },
@@ -436,7 +436,7 @@ namespace AnnoDesigner.Localization
                         { "Licenses" , "Licenses" },
                         { "ViewLicenses" , "Voir les Licenses open source" },
                         { "ExternalLinkConfirmationMessage" , "Cela ouvrira un nouvel onglet dans votre navigateur web par défaut. Continuer ?" },
-                        { "ExternalLinkMessageTitle" , "Ouverture d'un lien externe" }
+                        { "ExternalLinkMessageTitle" , "Ouverture d'un lien externe" },
                         { "RecentFiles" , "Fichiers récents" }
                     }
                 },
@@ -568,7 +568,7 @@ namespace AnnoDesigner.Localization
                         { "Licenses" , "Licencje" },
                         { "ViewLicenses" , "Oglądaj licencje open source" },
                         { "ExternalLinkConfirmationMessage" , "Spowoduje to otwarcie nowej karty w Twojej domyślnej przeglądarce internetowej. Kontynuować?" },
-                        { "ExternalLinkMessageTitle" , "Otwarcie połączenia zewnętrznego" }
+                        { "ExternalLinkMessageTitle" , "Otwarcie połączenia zewnętrznego" },
                         { "RecentFiles" , "Ostatnie akta" }
                     }
                 },
@@ -700,7 +700,7 @@ namespace AnnoDesigner.Localization
                         { "Licenses" , "Лицензии" },
                         { "ViewLicenses" , "Просмотреть лицензии с открытым исходным кодом" },
                         { "ExternalLinkConfirmationMessage" , "При этом откроется новая вкладка в вашем веб-браузере по умолчанию. Продолжить?" },
-                        { "ExternalLinkMessageTitle" , "Открытие внешней ссылки" }
+                        { "ExternalLinkMessageTitle" , "Открытие внешней ссылки" },
                         { "RecentFiles" , "Последние Файлы" }
                     }
                 },
