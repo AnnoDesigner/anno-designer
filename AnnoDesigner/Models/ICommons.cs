@@ -13,5 +13,8 @@ namespace AnnoDesigner.Models
         IUpdateHelper UpdateHelper { get; }
 
         string SelectedLanguage { get; set; }
+
+        bool CanWriteInFolder(string folderPathToCheck = null);
+        void RestartApplication(bool asAdmin, string parameters, string path = null);
     }
 }

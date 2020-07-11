@@ -64,7 +64,7 @@ namespace AnnoDesigner
             }
         }
 
-        public static bool CanWriteInFolder(string folderPathToCheck = null)
+        public bool CanWriteInFolder(string folderPathToCheck = null)
         {
             var result = false;
 
@@ -93,7 +93,7 @@ namespace AnnoDesigner
             return result;
         }
 
-        public static void RestartApplication(bool asAdmin, string parameters, string path = null)
+        public void RestartApplication(bool asAdmin, string parameters, string path = null)
         {
             var arguments = string.Empty;
             if (!string.IsNullOrWhiteSpace(parameters))
