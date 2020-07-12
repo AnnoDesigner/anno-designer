@@ -24,7 +24,11 @@ namespace AnnoDesigner.Localization
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            return Convert(values[0], targetType, values[1], culture);
+            if (values.Length == 2 && values[0] is IDictionary<string, string>)
+            {
+                return Convert(values[0], targetType, values[1], culture);
+            }
+            throw new Exception($"Incorrect DynamicLocalize parameters.");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
