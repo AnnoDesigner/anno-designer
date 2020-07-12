@@ -62,6 +62,7 @@ namespace AnnoDesigner.ViewModels
                 IsUpdateAvailable = false;
                 IsPresetUpdateAvailable = false;
 
+                BusyContent = Localization.Localization.Translations["UpdatePrefBusyCheckUpdates"];
                 IsBusy = true;
 
                 await CheckForNewAppVersionAsync(isAutomaticUpdateCheck);
@@ -194,6 +195,7 @@ namespace AnnoDesigner.ViewModels
                 return;
             }
 
+            BusyContent = Localization.Localization.Translations["UpdatePrefBusyDownloadPresets"];
             IsBusy = true;
 
             if (!_commons.CanWriteInFolder())

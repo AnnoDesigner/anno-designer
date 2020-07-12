@@ -12,8 +12,7 @@
       d:DesignHeight="450"
       d:DesignWidth="800"
       d:DataContext="{d:DesignInstance Type=viewModels:UpdateSettingsViewModel, IsDesignTimeCreatable=False}"
-      Background="White"
-      Title="UpdateSettings">
+      Background="White">
     <Page.Resources>
         <coreConverters:BoolToVisibilityConverter x:Key="converterBoolToVisibilityCollapsed"
                                                   TrueValue="Visible"
@@ -26,7 +25,7 @@
 
             <!--#region Current Version -->
 
-            <TextBlock Text="Current Version"
+            <TextBlock Text="{l:Localize UpdatePrefCurrentVersion}"
                        FontSize="14"
                        Margin="0,10,0,10" />
 
@@ -70,7 +69,7 @@
 
             <!--#region Settings -->
 
-            <TextBlock Text="Settings"
+            <TextBlock Text="{l:Localize UpdatePrefSettings}"
                        FontSize="14"
                        Margin="0,10,0,10" />
 
@@ -79,14 +78,14 @@
                           Content="{l:Localize EnableAutomaticUpdateCheck}"
                           Margin="0,0,0,10" />
                 <CheckBox IsChecked="{Binding UpdateSupportsPrerelease}"
-                          Content="Check for Pre-Releases" />
+                          Content="{l:Localize UpdatePrefCheckPreRelease}" />
             </StackPanel>
 
             <!--#endregion-->
 
             <!--#region Updates -->
 
-            <TextBlock Text="Updates"
+            <TextBlock Text="{l:Localize UpdatePrefUpdates}"
                        FontSize="14"
                        Margin="0,10,0,10" />
 
@@ -97,14 +96,14 @@
                         Command="{Binding CheckForUpdatesCommand}"
                         Padding="5,2"
                         Margin="0,0,10,0" />
-                <Button Content="Download Presets and restart Application"
+                <Button Content="{l:Localize UpdatePrefDownloadPresetsAndRestart}"
                         Command="{Binding DownloadPresetsCommand}"
                         Padding="5,2"
                         Margin="0,0,10,0"
                         Visibility="{Binding IsPresetUpdateAvailable, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
             </StackPanel>
 
-            <TextBlock Text="A new Update is available! Please check the website for release notes."
+            <TextBlock Text="{l:Localize UpdatePrefNewAppUpdateAvailable}"
                        Margin="20,5,0,0"
                        FontWeight="Bold"
                        TextWrapping="Wrap"
@@ -114,7 +113,7 @@
             <Hyperlink Command="{Binding OpenReleasesCommand}">https://github.com/AnnoDesigner/anno-designer/releases</Hyperlink>
             </TextBlock>
 
-            <TextBlock Text="This version is up to date."
+            <TextBlock Text="{l:Localize UpdatePrefNoUpdates}"
                        Margin="20,5,0,0"
                        Foreground="Green"
                        FontWeight="Bold"
@@ -126,12 +125,12 @@
                        Visibility="{Binding IsUpdateError, Converter={StaticResource converterBoolToVisibilityCollapsed}}">
             <Run Foreground="Red"
                  FontWeight="Bold"
-                 Text="Error checking for updates." />
+                 Text="{l:Localize UpdatePrefErrorCheckingUpdates, Mode=OneWay}" />
             <LineBreak />
-            <Run Text="More information is found in the log." />
+            <Run Text="{l:Localize UpdatePrefMoreInfoInLog, Mode=OneWay}" />
             </TextBlock>
 
-            <TextBlock Text="A new Update for the Presets is available!"
+            <TextBlock Text="{l:Localize UpdatePrefNewPresetsUpdateAvailable}"
                        Margin="20,5,0,0"
                        FontWeight="Bold"
                        TextWrapping="Wrap"
