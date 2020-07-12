@@ -104,8 +104,8 @@ namespace AnnoDesigner.Tests
             Assert.NotNull(viewModel.MainWindowTitle);
             Assert.NotNull(viewModel.PresetsSectionHeader);
 
-            //Assert.Equal(Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture), viewModel.VersionValue);
-            //Assert.Equal(CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture), viewModel.FileVersionValue);
+            Assert.Equal(Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture), viewModel.PreferencesUpdateViewModel.VersionValue);
+            Assert.Equal(CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture), viewModel.PreferencesUpdateViewModel.FileVersionValue);
         }
 
         #endregion
@@ -410,7 +410,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedEnableAutomaticUpdateCheck, appSettings.Object.EnableAutomaticUpdateCheck);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.Between(1, 2, Range.Inclusive));
         }
 
         [Theory]
