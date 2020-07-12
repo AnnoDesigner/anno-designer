@@ -43,12 +43,6 @@ namespace AnnoDesigner.ViewModels
             CheckForUpdatesCommand = new RelayCommand(ExecuteCheckForUpdates);
             OpenReleasesCommand = new RelayCommand(ExecuteOpenReleases);
             DownloadPresetsCommand = new RelayCommand(ExecuteDownloadPresets);
-
-            //for testing
-            //IsUpdateAvailable = true;
-            //IsUpdateError = true;
-            //IsAppUpToDate = true;
-            //IsPresetUpdateAvailable = true;
         }
 
         private AvailableRelease FoundPresetRelease { get; set; }
@@ -237,7 +231,13 @@ namespace AnnoDesigner.ViewModels
         public bool AutomaticUpdateCheck
         {
             get { return _automaticUpdateCheck; }
-            set { UpdateProperty(ref _automaticUpdateCheck, value); }
+            set
+            {
+                if (UpdateProperty(ref _automaticUpdateCheck, value))
+                {
+                    _appSettings.Save();
+                }
+            }
         }
 
         public string VersionValue
