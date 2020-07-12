@@ -60,7 +60,7 @@
                    Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 1404 by &quot;&lt;Unknown&gt;&quot;'}" />
         <TextBlock Margin="24,189,0,0"
                    VerticalAlignment="Top"
-                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 2207 by Peter Hozak (DeathApril)'}" />
+                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 2070 by Peter Hozak (DeathApril)'}" />
         <TextBlock Margin="24,207,0,0"
                    VerticalAlignment="Top"
                    Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 2205 by PickledWhispers'}" />

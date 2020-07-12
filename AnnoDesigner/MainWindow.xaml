@@ -719,7 +719,7 @@
             </DockPanel>
             <StatusBar Grid.Row="2"
                        Grid.ColumnSpan="3">
-                <StatusBarItem Content="{Binding StatusBarControls}" />
+                <StatusBarItem Content="{l:Localize StatusBarControls}" />
                 <StatusBarItem Content="{Binding StatusMessage}"
                                Margin="10,0,0,0" />
                 <StatusBarItem Content="{Binding StatusMessageClipboard}"

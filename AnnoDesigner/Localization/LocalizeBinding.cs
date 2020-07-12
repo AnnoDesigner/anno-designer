@@ -5,7 +5,7 @@ using System.Windows.Data;
 
 namespace AnnoDesigner.Localization
 {
-    public class LocalizeConverter : IValueConverter
+    public class LocalizeConverter : IValueConverter, IMultiValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -22,7 +22,21 @@ namespace AnnoDesigner.Localization
 #endif
         }
 
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Length == 2 && values[0] is IDictionary<string, string>)
+            {
+                return Convert(values[0], targetType, values[1], culture);
+            }
+            throw new Exception($"Incorrect DynamicLocalize parameters.");
+        }
+
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
@@ -49,6 +63,33 @@ namespace AnnoDesigner.Localization
         public Localize(string key) : this()
         {
             Key = key;
+        }
+    }
+
+    public class DynamicLocalize : MultiBinding
+    {
+        private static LocalizeConverter LocalizeConverter { get; } = new LocalizeConverter();
+
+        public string KeyPath
+        {
+            set
+            {
+                Bindings.Add(new Binding(value));
+            }
+        }
+
+        public DynamicLocalize()
+        {
+            Bindings.Add(new Binding(nameof(Localization.Instance.InstanceTranslations))
+            {
+                Source = Localization.Instance
+            });
+            Converter = LocalizeConverter;
+        }
+
+        public DynamicLocalize(string keyPath) : this()
+        {
+            KeyPath = keyPath;
         }
     }
 }
