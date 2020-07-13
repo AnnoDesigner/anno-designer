@@ -1299,13 +1299,13 @@ namespace AnnoDesigner.ViewModels
             {
                 Name = nameof(ManageKeybindingsPage),
                 ViewModel = PreferencesKeyBindingsViewModel,
-                Header = Localization.Localization.Translations["ManageKeybindings"]
+                HeaderKeyForTranslation = "ManageKeybindings"
             });
             vm.Pages.Add(new PreferencePage
             {
                 Name = nameof(UpdateSettingsPage),
                 ViewModel = PreferencesUpdateViewModel,
-                Header = Localization.Localization.Translations["UpdateSettings"]
+                HeaderKeyForTranslation = "UpdateSettings"
             });
 
             preferencesWindow.Show();

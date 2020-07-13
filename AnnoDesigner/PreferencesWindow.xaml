@@ -37,15 +37,15 @@
                                 Value="10" />
                     </Style>
                 </StackPanel.Resources>
-                <ListView BorderBrush="Transparent"     
+                <ListView BorderBrush="Transparent"
                           SelectionMode="Single"
                           ItemsSource="{Binding Pages}"
                           SelectedItem="{Binding SelectedItem}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Header}" />
+                            <TextBlock Text="{l:DynamicLocalize HeaderKeyForTranslation}" />
                         </DataTemplate>
-                    </ListView.ItemTemplate>                    
+                    </ListView.ItemTemplate>
                 </ListView>
             </StackPanel>
         </ScrollViewer>

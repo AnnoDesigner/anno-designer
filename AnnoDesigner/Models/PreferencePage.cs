@@ -9,14 +9,14 @@ namespace AnnoDesigner.Models
 {
     public class PreferencePage : Notify
     {
-        private string _header;
+        private string _headerKeyForTranslation;
         private string _name;
         private Notify _viewModel;
 
-        public string Header
+        public string HeaderKeyForTranslation
         {
-            get { return _header; }
-            set { UpdateProperty(ref _header, value); }
+            get { return _headerKeyForTranslation; }
+            set { UpdateProperty(ref _headerKeyForTranslation, value); }
         }
 
         public string Name
