@@ -12,6 +12,7 @@
         Title="{l:Localize Preferences}"
         Height="450"
         Width="800"
+        Background="White"
         d:DataContext="{d:DesignInstance Type=viewModel:PreferencesViewModel, IsDesignTimeCreatable=True}">
     <Grid>
         <Grid.ColumnDefinitions>
