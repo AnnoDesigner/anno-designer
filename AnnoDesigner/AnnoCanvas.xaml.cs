@@ -3,10 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,18 +12,20 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core;
+using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
+using AnnoDesigner.Core.Services;
 using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Models;
+using AnnoDesigner.Services;
 using Microsoft.Win32;
 using NLog;
-using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner
 {
@@ -338,6 +338,7 @@ namespace AnnoDesigner
         private readonly ICoordinateHelper _coordinateHelper;
         private readonly IBrushCache _brushCache;
         private readonly IPenCache _penCache;
+        private readonly IMessageBoxService _messageBoxService;
 
         /// <summary>
         /// States the mode of mouse interaction.
@@ -525,7 +526,8 @@ namespace AnnoDesigner
             Dictionary<string, IconImage> iconsToUse,
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
-            IPenCache penCacheToUse = null)
+            IPenCache penCacheToUse = null,
+            IMessageBoxService messageBoxServiceToUse = null)
         {
             InitializeComponent();
 
@@ -533,6 +535,7 @@ namespace AnnoDesigner
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
+            _messageBoxService = messageBoxServiceToUse ?? new MessageBoxService();
 
             _layoutLoader = new LayoutLoader();
 
@@ -628,7 +631,7 @@ namespace AnnoDesigner
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Loading of the building presets failed");
+                    _messageBoxService.ShowError(ex.Message, "Loading of the building presets failed");
                 }
 
                 sw.Stop();
@@ -649,10 +652,8 @@ namespace AnnoDesigner
                     {
                         logger.Error(ex, "Loading of the icon names failed.");
 
-                        MessageBox.Show("Loading of the icon names failed",
-                            Localization.Localization.Translations["Error"],
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Error);
+                        _messageBoxService.ShowError("Loading of the icon names failed",
+                            Localization.Localization.Translations["Error"]);
                     }
 
                     sw.Stop();
@@ -1861,9 +1862,8 @@ namespace AnnoDesigner
             {
                 logger.Warn(layoutEx, "Version of layout does not match.");
 
-                if (MessageBox.Show(
-                        "Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
-                        "File version mismatch", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (_messageBoxService.ShowQuestion("Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
+                        "File version mismatch"))
                 {
                     OpenFile(filename, true);
                 }
@@ -1880,9 +1880,9 @@ namespace AnnoDesigner
         /// Displays a message box containing some error information.
         /// </summary>
         /// <param name="e">exception containing error information</param>
-        private static void IOErrorMessageBox(Exception e)
+        private void IOErrorMessageBox(Exception e)
         {
-            MessageBox.Show(e.Message, "Something went wrong while saving/loading file.");
+            _messageBoxService.ShowError(e.Message, "Something went wrong while saving/loading file.");
         }
 
         #endregion

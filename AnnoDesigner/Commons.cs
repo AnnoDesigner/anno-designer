@@ -1,12 +1,9 @@
-﻿using AnnoDesigner.Models;
-using NLog;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AnnoDesigner.Models;
+using AnnoDesigner.Services;
+using NLog;
 
 namespace AnnoDesigner
 {
@@ -29,7 +26,7 @@ namespace AnnoDesigner
 
         static Commons()
         {
-            _updateHelper = new UpdateHelper(App.ApplicationPath, new AppSettings());
+            _updateHelper = new UpdateHelper(App.ApplicationPath, new AppSettings(), new MessageBoxService());
         }
 
         private Commons()

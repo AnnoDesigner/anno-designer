@@ -108,7 +108,7 @@ namespace AnnoDesigner.ViewModels
             StatisticsViewModel.IsVisible = _appSettings.StatsShowStats;
             StatisticsViewModel.ShowStatisticsBuildingCount = _appSettings.StatsShowBuildingCount;
 
-            BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings);
+            BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings, _messageBoxService);
 
             PresetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization(_commons), _commons);
             PresetsTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
@@ -1225,7 +1225,7 @@ namespace AnnoDesigner.ViewModels
                 }
 
                 // initialize output canvas
-                var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _coordinateHelper, _brushCache, _penCache)
+                var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
                 {
                     PlacedObjects = allObjects,
                     RenderGrid = AnnoCanvas.RenderGrid,
@@ -1428,7 +1428,7 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteShowPreferencesWindow(object param)
         {
-            var preferencesWindow = new PreferencesWindow(_appSettings, _commons, HotkeyCommandManager)
+            var preferencesWindow = new PreferencesWindow(_appSettings, _commons, HotkeyCommandManager, _messageBoxService)
             {
                 Owner = Application.Current.MainWindow,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner

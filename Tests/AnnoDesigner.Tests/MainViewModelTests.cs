@@ -15,6 +15,7 @@ using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.RecentFiles;
 using System.IO.Abstractions.TestingHelpers;
 using AnnoDesigner.Core.Services;
+using AnnoDesigner.Core.Presets.Models;
 
 namespace AnnoDesigner.Tests
 {
@@ -460,7 +461,7 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
-        [Theory(Skip = "needs abstraction of 'MessageBox.Show' in BuildingSettingsViewModel")]
+        [Theory]
         [InlineData(true)]
         [InlineData(false)]
         public void SaveSettings_IsCalled_ShouldSaveIsPavedStreet(bool expectedIsPavedStreet)
@@ -469,7 +470,15 @@ namespace AnnoDesigner.Tests
             var appSettings = new Mock<IAppSettings>();
             appSettings.SetupAllProperties();
 
-            var viewModel = GetViewModel(null, appSettings.Object);
+            var presets = new BuildingPresets
+            {
+                Buildings = new List<BuildingInfo>()
+            };
+
+            var canvas = new Mock<IAnnoCanvas>();
+            canvas.SetupGet(x => x.BuildingPresets).Returns(() => presets);
+
+            var viewModel = GetViewModel(null, appSettings.Object, annoCanvasToUse: canvas.Object);
             viewModel.BuildingSettingsViewModel.IsPavedStreet = expectedIsPavedStreet;
 
             // Act
