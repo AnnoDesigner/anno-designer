@@ -8,7 +8,8 @@
         xmlns:my="clr-namespace:AnnoDesigner"
         xmlns:coreModels="clr-namespace:AnnoDesigner.Core.Models;assembly=AnnoDesigner.Core"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:converter="clr-namespace:AnnoDesigner.Core.Converters;assembly=AnnoDesigner.Core"
+        xmlns:coreConverters="clr-namespace:AnnoDesigner.Core.Converters;assembly=AnnoDesigner.Core"
+        xmlns:converters="clr-namespace:AnnoDesigner.Converters"
         xmlns:modelPresetsTree="clr-namespace:AnnoDesigner.Models.PresetsTree"
         xmlns:properties="clr-namespace:AnnoDesigner.Properties"
         xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
@@ -30,12 +31,12 @@
         Loaded="WindowLoaded"
         Closing="WindowClosing">
     <Window.Resources>
-        <converter:BoolToVisibilityConverter x:Key="converterBoolToVisibility"
-                                             TrueValue="Visible"
-                                             FalseValue="Hidden" />
-        <converter:BoolToVisibilityConverter x:Key="converterBoolToVisibilityCollapsed"
-                                             TrueValue="Visible"
-                                             FalseValue="Collapsed" />
+        <coreConverters:BoolToVisibilityConverter x:Key="converterBoolToVisibility"
+                                                  TrueValue="Visible"
+                                                  FalseValue="Hidden" />
+        <coreConverters:BoolToVisibilityConverter x:Key="converterBoolToVisibilityCollapsed"
+                                                  TrueValue="Visible"
+                                                  FalseValue="Collapsed" />
         <xctk:ColorToSolidColorBrushConverter x:Key="converterColorToSolidColorBrush" />
         <HierarchicalDataTemplate DataType="{x:Type coreModels:AnnoObject}">
             <TextBlock Text="{Binding Label}" />
@@ -231,8 +232,8 @@
                     <MenuItem Header="{l:Localize AboutAnnoDesigner}"
                               Command="{Binding ShowAboutWindowCommand}" />
                     <Separator />
-                    <MenuItem Header="{l:Localize ViewLicenses}" 
-                              Command="{Binding ShowLicensesWindowCommand}"/>
+                    <MenuItem Header="{l:Localize ViewLicenses}"
+                              Command="{Binding ShowLicensesWindowCommand}" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="{l:Localize ShowGrid}"
@@ -533,6 +534,7 @@
                                         <Setter Property="Width"
                                                 Value="300" />
                                     </Style>
+                                    <converters:IconImageToDisplayNameConverter x:Key="converterIconImageToDisplayName" />
                                 </ComboBox.Resources>
                                 <ComboBox.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -550,7 +552,7 @@
                                             </Viewbox>
                                             <TextBlock Margin="0,5,5,5"
                                                        VerticalAlignment="Center"
-                                                       Text="{Binding DisplayName}" />
+                                                       Text="{Binding ., Converter={StaticResource converterIconImageToDisplayName}}" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>

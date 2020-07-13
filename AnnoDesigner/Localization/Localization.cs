@@ -182,7 +182,8 @@ namespace AnnoDesigner.Localization
                         { "ViewLicenses" , "View open source Licenses" },
                         { "ExternalLinkConfirmationMessage" , "This will open a new tab in your default web browser. Continue?" },
                         { "ExternalLinkMessageTitle" , "Opening an external link" },
-                        { "RecentFiles" , "Recent Files" }
+                        { "RecentFiles" , "Recent Files" },
+                        { "NoIcon" , "No Icon" }
                     }
                 },
                 {
@@ -314,7 +315,8 @@ namespace AnnoDesigner.Localization
                         { "ViewLicenses" , "Open-Source-Lizenzen anzeigen" },
                         { "ExternalLinkConfirmationMessage" , "Dadurch wird ein neuer Tab in Ihrem Standard-Webbrowser geöffnet. Fortfahren?" },
                         { "ExternalLinkMessageTitle" , "Einen externen Link öffnen" },
-                        { "RecentFiles" , "Zuletzt geöffnete Dateien" }
+                        { "RecentFiles" , "Zuletzt geöffnete Dateien" },
+                        { "NoIcon" , "Kein Icon" }
                     }
                 },
                 {
@@ -446,7 +448,8 @@ namespace AnnoDesigner.Localization
                         { "ViewLicenses" , "Voir les Licenses open source" },
                         { "ExternalLinkConfirmationMessage" , "Cela ouvrira un nouvel onglet dans votre navigateur web par défaut. Continuer ?" },
                         { "ExternalLinkMessageTitle" , "Ouverture d'un lien externe" },
-                        { "RecentFiles" , "Fichiers récents" }
+                        { "RecentFiles" , "Fichiers récents" },
+                        { "NoIcon" , "Pas d'icône" }
                     }
                 },
                 {
@@ -578,7 +581,8 @@ namespace AnnoDesigner.Localization
                         { "ViewLicenses" , "Oglądaj licencje open source" },
                         { "ExternalLinkConfirmationMessage" , "Spowoduje to otwarcie nowej karty w Twojej domyślnej przeglądarce internetowej. Kontynuować?" },
                         { "ExternalLinkMessageTitle" , "Otwarcie połączenia zewnętrznego" },
-                        { "RecentFiles" , "Ostatnie akta" }
+                        { "RecentFiles" , "Ostatnie akta" },
+                        { "NoIcon" , "Nie ma Ikony" }
                     }
                 },
                 {
@@ -710,7 +714,8 @@ namespace AnnoDesigner.Localization
                         { "ViewLicenses" , "Просмотреть лицензии с открытым исходным кодом" },
                         { "ExternalLinkConfirmationMessage" , "При этом откроется новая вкладка в вашем веб-браузере по умолчанию. Продолжить?" },
                         { "ExternalLinkMessageTitle" , "Открытие внешней ссылки" },
-                        { "RecentFiles" , "Последние Файлы" }
+                        { "RecentFiles" , "Последние Файлы" },
+                        { "NoIcon" , "Иконки нет" }
                     }
                 },
             };
@@ -720,6 +725,8 @@ namespace AnnoDesigner.Localization
         }
 
         private Localization() { }
+
+        internal static IDictionary<string, IDictionary<string, string>> TranslationsRaw => translations;
 
         private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
         {
