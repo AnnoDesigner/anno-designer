@@ -38,7 +38,7 @@ namespace AnnoDesigner.Models
             set => UpdateProperty(ref _mouseAction, value);
         }
 
-        public GestureType GestureType
+        public GestureType Type
         {
             get => _gestureType;
             set => UpdateProperty(ref _gestureType, value);
@@ -68,12 +68,12 @@ namespace AnnoDesigner.Models
 
         private bool MatchKeyGesture(InputEventArgs inputEventArgs)
         {
-            if (inputEventArgs is null)
+            //never match Key.None
+            if (inputEventArgs is KeyEventArgs eventArgs && eventArgs.Key != Key.None)
             {
-                throw new ArgumentNullException(nameof(inputEventArgs));
+                return Key == eventArgs.Key && ModifierKeys == Keyboard.Modifiers;
             }
-
-            return true;
+            return false;
         }
 
         private Key _key;
