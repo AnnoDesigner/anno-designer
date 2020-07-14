@@ -1,14 +1,14 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
-using AnnoDesigner.Models;
-using AnnoDesigner.ViewModels;
 using System.Windows.Media;
-using Xunit;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
-using Moq;
-using System.Collections.ObjectModel;
 using AnnoDesigner.Core.Services;
+using AnnoDesigner.Models;
+using AnnoDesigner.ViewModels;
+using Moq;
+using Xunit;
 
 namespace AnnoDesigner.Tests
 {

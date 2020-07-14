@@ -1,22 +1,12 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
+using System.ComponentModel;
+using System.Configuration;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.ComponentModel;
-using AnnoDesigner.Properties;
-using System.Globalization;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using AnnoDesigner.Core.Models;
-using AnnoDesigner.Core;
-using System.Text;
-using System.Configuration;
-using AnnoDesigner.Core.Helper;
-using AnnoDesigner.ViewModels;
 using System.Windows.Threading;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.ViewModels;
 using NLog;
 
 namespace AnnoDesigner
@@ -29,12 +19,15 @@ namespace AnnoDesigner
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private static MainViewModel _mainViewModel;
+        private readonly IAppSettings _appSettings;
 
         #region Initialization
 
-        public MainWindow()
+        public MainWindow(IAppSettings appSettingsToUse)
         {
             InitializeComponent();
+
+            _appSettings = appSettingsToUse;
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -58,8 +51,12 @@ namespace AnnoDesigner
             //load presets before checking for updates
             _mainViewModel.LoadPresets();
 
-            // check for updates on startup            
-            _ = _mainViewModel.CheckForUpdatesSub(false);//just fire and forget
+            // check for updates on startup
+            if (_appSettings.EnableAutomaticUpdateCheck)
+            {
+                //just fire and forget
+                _ = _mainViewModel.PreferencesUpdateViewModel.CheckForUpdates(isAutomaticUpdateCheck: true);
+            }
 
             // load color presets
             colorPicker.StandardColors.Clear();

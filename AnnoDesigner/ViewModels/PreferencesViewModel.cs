@@ -1,41 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Controls;
 using System.Windows.Navigation;
 using AnnoDesigner.Core.Models;
-using AnnoDesigner.Core.Services;
 using AnnoDesigner.Models;
-using AnnoDesigner.PreferencesPages;
 
 namespace AnnoDesigner.ViewModels
 {
     public class PreferencesViewModel : Notify
     {
-        public PreferencesViewModel(IAppSettings appSettings,
-            ICommons commons,
-            HotkeyCommandManager manager,
-            NavigationService navigationService,
-            IMessageBoxService messageBoxServiceToUse)
-        {
-            this.appSettings = appSettings;
-            this.navigationService = navigationService;
-            this.manager = manager;
+        private PreferencePage _selectedItem;
 
-            ViewModels = new Dictionary<string, object>()
-            {
-                { nameof(ManageKeybindingsPage),  new ManageKeybindingsViewModel(manager, commons, messageBoxServiceToUse) },
-                { nameof(UpdateSettingsPage), "" }
-            };
+        public PreferencesViewModel()
+        {
+            Pages = new ObservableCollection<PreferencePage>();
         }
 
-        private readonly NavigationService navigationService;
-        private readonly HotkeyCommandManager manager;
-        private readonly IAppSettings appSettings;
-        private ListViewItem _selectedItem;
-        private Dictionary<string, object> _viewModels;
+        public NavigationService NavigationService { get; set; }
 
-        public ListViewItem SelectedItem
+        public PreferencePage SelectedItem
         {
             get { return _selectedItem; }
             set
@@ -45,22 +29,19 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
-        public Dictionary<string, object> ViewModels
+        public ObservableCollection<PreferencePage> Pages { get; }
+
+        public void ShowFirstPage()
         {
-            get { return _viewModels; }
-            set
-            {
-                UpdateProperty(ref _viewModels, value);
-                //select first item by default
-                ShowPage(_viewModels.First().Key);
-            }
+            SelectedItem = Pages.First();
         }
 
         private void ShowPage(string name)
         {
-            if (ViewModels.TryGetValue(name, out var extraData))
+            var foundPage = Pages.SingleOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            if (foundPage != null)
             {
-                navigationService.Navigate(new Uri($@"pack://application:,,,/PreferencesPages\{name}.xaml", UriKind.RelativeOrAbsolute), extraData);
+                NavigationService?.Navigate(new Uri($@"pack://application:,,,/PreferencesPages\{name}.xaml", UriKind.RelativeOrAbsolute), foundPage.ViewModel);
             }
 #if DEBUG
             else
