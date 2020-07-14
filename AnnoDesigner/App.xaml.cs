@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Configuration;
-using System.Diagnostics;
 using System.IO;
+using System.IO.Abstractions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using AnnoDesigner.Core.Extensions;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.RecentFiles;
+using AnnoDesigner.Core.Services;
 using AnnoDesigner.Models;
+using AnnoDesigner.Services;
 using AnnoDesigner.ViewModels;
 using NLog;
 using NLog.Targets;
@@ -21,11 +27,13 @@ namespace AnnoDesigner
         private static readonly ICommons _commons;
         private static readonly IAppSettings _appSettings;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly IMessageBoxService _messageBoxService;
 
         static App()
         {
             _commons = Commons.Instance;
             _appSettings = new AppSettings();
+            _messageBoxService = new MessageBoxService();
         }
 
         public App()
@@ -66,7 +74,7 @@ namespace AnnoDesigner
                 }
             }
 
-            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            _messageBoxService.ShowError(message);
 
             Environment.Exit(-1);
         }
@@ -119,7 +127,7 @@ namespace AnnoDesigner
 
                         if (!createdNewMutex)
                         {
-                            MessageBox.Show("Another instance of the app is already running.");
+                            _messageBoxService.ShowMessage("Another instance of the app is already running.");
                             Environment.Exit(-1);
                         }
                     }
@@ -146,10 +154,7 @@ namespace AnnoDesigner
                 {
                     logger.Error(ex, "Error upgrading settings.");
 
-                    MessageBox.Show("The settings file has become corrupted. We must reset your settings.",
-                          "Error",
-                          MessageBoxButton.OK,
-                          MessageBoxImage.Error);
+                    _messageBoxService.ShowError("The settings file has become corrupted. We must reset your settings.");
 
                     var fileName = "";
                     if (!string.IsNullOrEmpty(ex.Filename))
@@ -177,7 +182,11 @@ namespace AnnoDesigner
                 await _commons.UpdateHelper.ReplaceUpdatedPresetsFilesAsync();
 
                 Localization.Localization.Init(_commons);
-                var mainVM = new MainViewModel(_commons, _appSettings);
+
+                var serializer = new RecentFilesAppSettingsSerializer(_appSettings);
+
+                IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(serializer, new FileSystem());
+                var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper, _messageBoxService);
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
                 MainWindow = new MainWindow();

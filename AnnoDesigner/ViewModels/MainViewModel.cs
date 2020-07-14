@@ -21,13 +21,13 @@ using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Helper;
+using AnnoDesigner.Core.Services;
 using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Localization;
 using AnnoDesigner.Models;
 using Microsoft.Win32;
 using NLog;
-using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner.ViewModels
 {
@@ -41,6 +41,8 @@ namespace AnnoDesigner.ViewModels
         private readonly ICoordinateHelper _coordinateHelper;
         private readonly IBrushCache _brushCache;
         private readonly IPenCache _penCache;
+        private readonly IRecentFilesHelper _recentFilesHelper;
+        private readonly IMessageBoxService _messageBoxService;
 
         public event EventHandler<EventArgs> ShowStatisticsChanged;
 
@@ -71,6 +73,8 @@ namespace AnnoDesigner.ViewModels
         private double _mainWindowLeft;
         private double _mainWindowTop;
         private WindowState _minWindowWindowState;
+        private HotkeyCommandManager _hotkeyCommandManager;
+        private ObservableCollection<RecentFileItem> _recentFiles;
 
         //for identifier checking process
         private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
@@ -78,7 +82,9 @@ namespace AnnoDesigner.ViewModels
 
         public MainViewModel(ICommons commonsToUse,
             IAppSettings appSettingsToUse,
-            ILayoutLoader _layoutLoaderToUse = null,
+            IRecentFilesHelper recentFilesHelperToUse,
+            IMessageBoxService messageBoxServiceToUse,
+            ILayoutLoader layoutLoaderToUse = null,
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
             IPenCache penCacheToUse = null)
@@ -87,17 +93,22 @@ namespace AnnoDesigner.ViewModels
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
 
             _appSettings = appSettingsToUse;
+            _recentFilesHelper = recentFilesHelperToUse;
+            _messageBoxService = messageBoxServiceToUse;
 
-            _layoutLoader = _layoutLoaderToUse ?? new LayoutLoader();
+            _layoutLoader = layoutLoaderToUse ?? new LayoutLoader();
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
+
+
+            HotkeyCommandManager = new HotkeyCommandManager(Localization.Localization.Instance);
 
             StatisticsViewModel = new StatisticsViewModel();
             StatisticsViewModel.IsVisible = _appSettings.StatsShowStats;
             StatisticsViewModel.ShowStatisticsBuildingCount = _appSettings.StatsShowBuildingCount;
 
-            BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings);
+            BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings, _messageBoxService);
 
             PresetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization(_commons), _commons);
             PresetsTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
@@ -125,11 +136,17 @@ namespace AnnoDesigner.ViewModels
             ShowStatisticsCommand = new RelayCommand(ExecuteShowStatistics);
             ShowStatisticsBuildingCountCommand = new RelayCommand(ExecuteShowStatisticsBuildingCount);
             PlaceBuildingCommand = new RelayCommand(ExecutePlaceBuilding);
+            ShowPreferencesWindowCommand = new RelayCommand(ExecuteShowPreferencesWindow);
+            ShowLicensesWindowCommand = new RelayCommand(ExecuteShowLicensesWindow);
+            OpenRecentFileCommand = new RelayCommand(ExecuteOpenRecentFile);
 
             AvailableIcons = new ObservableCollection<IconImage>();
             _noIconItem = new IconImage("None");
             AvailableIcons.Add(_noIconItem);
             SelectedIcon = _noIconItem;
+
+            RecentFiles = new ObservableCollection<RecentFileItem>();
+            _recentFilesHelper.Updated += RecentFilesHelper_Updated;
 
             Languages = new ObservableCollection<SupportedLanguage>();
             Languages.Add(new SupportedLanguage("English")
@@ -161,6 +178,8 @@ namespace AnnoDesigner.ViewModels
 
             VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
             FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
+
+            RecentFilesHelper_Updated(this, EventArgs.Empty);
         }
 
         private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
@@ -190,6 +209,7 @@ namespace AnnoDesigner.ViewModels
                 _ = UpdateStatisticsAsync(UpdateMode.All);
 
                 PresetsTreeSearchViewModel.SearchText = string.Empty;
+                HotkeyCommandManager.UpdateLanguage();
             }
             catch (Exception ex)
             {
@@ -199,6 +219,18 @@ namespace AnnoDesigner.ViewModels
             {
                 IsLanguageChange = false;
             }
+        }
+
+        private void RecentFilesHelper_Updated(object sender, EventArgs e)
+        {
+            RecentFiles.Clear();
+
+            foreach (var curRecentFile in _recentFilesHelper.RecentFiles)
+            {
+                RecentFiles.Add(new RecentFileItem(curRecentFile.Path));
+            }
+
+            OnPropertyChanged(nameof(HasRecentFiles));
         }
 
         private void PresetsTreeSearchViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -252,7 +284,8 @@ namespace AnnoDesigner.ViewModels
             catch (Exception ex)
             {
                 logger.Error(ex, "Error applying preset.");
-                MessageBox.Show("Something went wrong while applying the preset.");
+                _messageBoxService.ShowError("Something went wrong while applying the preset.",
+                   Localization.Localization.Translations["Error"]);
             }
         }
 
@@ -459,10 +492,12 @@ namespace AnnoDesigner.ViewModels
             logger.Trace($"Status message changed: {message}");
         }
 
-        private void AnnoCanvas_LoadedFileChanged(string filename)
+        private void AnnoCanvas_LoadedFileChanged(string filePath)
         {
-            MainWindowTitle = string.IsNullOrEmpty(filename) ? "Anno Designer" : string.Format("{0} - Anno Designer", Path.GetFileName(filename));
-            logger.Info($"Loaded file: {(string.IsNullOrEmpty(filename) ? "(none)" : filename)}");
+            MainWindowTitle = string.IsNullOrEmpty(filePath) ? "Anno Designer" : string.Format("{0} - Anno Designer", Path.GetFileName(filePath));
+            logger.Info($"Loaded file: {(string.IsNullOrEmpty(filePath) ? "(none)" : filePath)}");
+
+            _recentFilesHelper.AddFile(new RecentFile(filePath, DateTime.UtcNow));
         }
 
         public Task UpdateStatisticsAsync(UpdateMode mode)
@@ -486,7 +521,7 @@ namespace AnnoDesigner.ViewModels
                 catch (Exception ex)
                 {
                     logger.Error(ex, "Error checking version.");
-                    MessageBox.Show("Error checking version. \n\nAdded more information to log.", "Version check failed");
+                    _messageBoxService.ShowError("Error checking version. \n\nAdded more information to log.", "Version check failed");
                     return;
                 }
             }
@@ -505,11 +540,8 @@ namespace AnnoDesigner.ViewModels
                 if (double.Parse(dowloadedContent, CultureInfo.InvariantCulture) > Constants.Version)
                 {
                     // new version found
-                    if (MessageBox.Show("A newer version was found, do you want to visit the releases page?\nhttps://github.com/AnnoDesigner/anno-designer/releases\n\n Clicking 'Yes' will open a new tab in your web browser.",
-                        "Update available",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Asterisk,
-                        MessageBoxResult.OK) == MessageBoxResult.Yes)
+                    if (_messageBoxService.ShowQuestion("A newer version was found, do you want to visit the releases page?\nhttps://github.com/AgmasGold/anno-designer/releases\n\n Clicking 'Yes' will open a new tab in your web browser.",
+                        "Update available"))
                     {
                         Process.Start("https://github.com/AnnoDesigner/anno-designer/releases");
                     }
@@ -520,7 +552,8 @@ namespace AnnoDesigner.ViewModels
 
                     if (forcedCheck)
                     {
-                        MessageBox.Show("This version is up to date.", "No updates found");
+                        _messageBoxService.ShowMessage("This version is up to date.",
+                            "No updates found");
                     }
                 }
 
@@ -529,7 +562,8 @@ namespace AnnoDesigner.ViewModels
                 {
                     _appSettings.PromptedForAutoUpdateCheck = true;
 
-                    if (MessageBox.Show("Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.", "Continue checking for updates?", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
+                    if (_messageBoxService.ShowQuestion("Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.",
+                        "Continue checking for updates?"))
                     {
                         AutomaticUpdateCheck = false;
                     }
@@ -538,10 +572,8 @@ namespace AnnoDesigner.ViewModels
             catch (Exception ex)
             {
                 logger.Error(ex, "Error checking version.");
-                MessageBox.Show($"Error checking version.{Environment.NewLine}{Environment.NewLine}More information is found in the log.",
-                    "Version check failed",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                _messageBoxService.ShowError($"Error checking version.{Environment.NewLine}{Environment.NewLine}More information is found in the log.",
+                   "Version check failed");
                 return;
             }
         }
@@ -557,11 +589,8 @@ namespace AnnoDesigner.ViewModels
             var isNewReleaseAvailable = foundRelease.Version > new Version(AnnoCanvas.BuildingPresets.Version);
             if (isNewReleaseAvailable)
             {
-                if (MessageBox.Show(Localization.Localization.Translations["UpdateAvailablePresetMessage"],
-                    Localization.Localization.Translations["UpdateAvailableHeader"],
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Asterisk,
-                    MessageBoxResult.OK) == MessageBoxResult.Yes)
+                if (_messageBoxService.ShowQuestion(Localization.Localization.Translations["UpdateAvailablePresetMessage"],
+                    Localization.Localization.Translations["UpdateAvailableHeader"]))
                 {
                     IsBusy = true;
 
@@ -570,20 +599,15 @@ namespace AnnoDesigner.ViewModels
                         //already asked for admin rights?
                         if (Environment.GetCommandLineArgs().Any(x => x.Trim().Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase)))
                         {
-                            MessageBox.Show($"You have no write access to the folder.{Environment.NewLine}The update can not be installed.",
-                                Localization.Localization.Translations["Error"],
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Warning);
+                            _messageBoxService.ShowWarning($"You have no write access to the folder.{Environment.NewLine}The update can not be installed.",
+                                  Localization.Localization.Translations["Error"]);
 
                             IsBusy = false;
                             return;
                         }
 
-                        MessageBox.Show(Localization.Localization.Translations["UpdateRequiresAdminRightsMessage"],
-                            Localization.Localization.Translations["AdminRightsRequired"],
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Information,
-                            MessageBoxResult.OK);
+                        _messageBoxService.ShowMessage(Localization.Localization.Translations["UpdateRequiresAdminRightsMessage"],
+                            Localization.Localization.Translations["AdminRightsRequired"]);
 
                         Commons.RestartApplication(true, Constants.Argument_Ask_For_Admin, App.ExecutablePath);
                     }
@@ -646,6 +670,7 @@ namespace AnnoDesigner.ViewModels
             MainWindowLeft = _appSettings.MainWindowLeft;
             MainWindowTop = _appSettings.MainWindowTop;
             MainWindowWindowState = _appSettings.MainWindowWindowState;
+            HotkeyCommandManager.LoadHotkeyMappings(SerializationHelper.LoadFromJsonString<Dictionary<string, HotkeyInformation>>(_appSettings.HotkeyMappings));
         }
 
         public void SaveSettings()
@@ -666,13 +691,9 @@ namespace AnnoDesigner.ViewModels
             _appSettings.UseCurrentZoomOnExportedImageValue = UseCurrentZoomOnExportedImageValue;
             _appSettings.RenderSelectionHighlightsOnExportedImageValue = RenderSelectionHighlightsOnExportedImageValue;
 
-            string savedTreeState = null;
-            using (var ms = new MemoryStream())
-            {
-                SerializationHelper.SaveToStream(PresetsTreeViewModel.GetCondensedTreeState(), ms);
+            string savedTreeState;
+            savedTreeState = SerializationHelper.SaveToJsonString(PresetsTreeViewModel.GetCondensedTreeState());
 
-                savedTreeState = Encoding.UTF8.GetString(ms.ToArray());
-            }
             _appSettings.PresetsTreeExpandedState = savedTreeState;
             _appSettings.PresetsTreeLastVersion = PresetsTreeViewModel.BuildingPresetsVersion;
 
@@ -684,6 +705,9 @@ namespace AnnoDesigner.ViewModels
             _appSettings.MainWindowLeft = MainWindowLeft;
             _appSettings.MainWindowTop = MainWindowTop;
             _appSettings.MainWindowWindowState = MainWindowWindowState;
+
+            var remappedHotkeys = HotkeyCommandManager.GetRemappedHotkeys();
+            _appSettings.HotkeyMappings = SerializationHelper.SaveToJsonString(remappedHotkeys);
 
             _appSettings.Save();
         }
@@ -756,12 +780,8 @@ namespace AnnoDesigner.ViewModels
             //if not filtered, then restore tree state
             if (!isFiltered && !string.IsNullOrWhiteSpace(_appSettings.PresetsTreeExpandedState))
             {
-                Dictionary<int, bool> savedTreeState = null;
-                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(_appSettings.PresetsTreeExpandedState)))
-                {
-                    savedTreeState = SerializationHelper.LoadFromStream<Dictionary<int, bool>>(ms);
-                }
-
+                Dictionary<int, bool> savedTreeState;
+                savedTreeState = SerializationHelper.LoadFromJsonString<Dictionary<int, bool>>(_appSettings.PresetsTreeExpandedState);
                 PresetsTreeViewModel.SetCondensedTreeState(savedTreeState, _appSettings.PresetsTreeLastVersion);
             }
         }
@@ -982,9 +1002,32 @@ namespace AnnoDesigner.ViewModels
             set { UpdateProperty(ref _minWindowWindowState, value); }
         }
 
+        public HotkeyCommandManager HotkeyCommandManager
+        {
+            get { return _hotkeyCommandManager; }
+            set { UpdateProperty(ref _hotkeyCommandManager, value); }
+        }
+
+        public ObservableCollection<RecentFileItem> RecentFiles
+        {
+            get { return _recentFiles; }
+            set
+            {
+                if (UpdateProperty(ref _recentFiles, value))
+                {
+                    OnPropertyChanged(nameof(HasRecentFiles));
+                }
+            }
+        }
+
+        public bool HasRecentFiles
+        {
+            get { return RecentFiles.Count > 0; }
+        }
+
         #endregion
 
-        #region commands
+        #region Commands
 
         public ICommand OpenProjectHomepageCommand { get; private set; }
 
@@ -1052,9 +1095,8 @@ namespace AnnoDesigner.ViewModels
             {
                 logger.Warn(layoutEx, "Version of layout does not match.");
 
-                if (MessageBox.Show(
-                        "Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
-                        "File version mismatch", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (_messageBoxService.ShowQuestion("Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
+                        "File version mismatch"))
                 {
                     ExecuteLoadLayoutFromJsonSub(jsonString, true);
                 }
@@ -1062,10 +1104,8 @@ namespace AnnoDesigner.ViewModels
             catch (Exception ex)
             {
                 logger.Error(ex, "Error loading layout from JSON.");
-                MessageBox.Show("Something went wrong while loading the layout.",
-                        Localization.Localization.Translations["Error"],
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
+                _messageBoxService.ShowError("Something went wrong while loading the layout.",
+                        Localization.Localization.Translations["Error"]);
             }
         }
 
@@ -1101,10 +1141,7 @@ namespace AnnoDesigner.ViewModels
         {
             var message = isDeregistration ? Localization.Localization.Translations["UnregisterFileExtensionSuccessful"] : Localization.Localization.Translations["RegisterFileExtensionSuccessful"];
 
-            MessageBox.Show(message,
-                Localization.Localization.Translations["Successful"],
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            _messageBoxService.ShowMessage(message, Localization.Localization.Translations["Successful"]);
         }
 
         public ICommand ExportImageCommand { get; private set; }
@@ -1139,20 +1176,16 @@ namespace AnnoDesigner.ViewModels
                 {
                     RenderToFile(dialog.FileName, 1, exportZoom, exportSelection, StatisticsViewModel.IsVisible);
 
-                    MessageBox.Show(Application.Current.MainWindow,
-                        Localization.Localization.Translations["ExportImageSuccessful"],
-                        Localization.Localization.Translations["Successful"],
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                    _messageBoxService.ShowMessage(Application.Current.MainWindow,
+                       Localization.Localization.Translations["ExportImageSuccessful"],
+                       Localization.Localization.Translations["Successful"]);
                 }
                 catch (Exception ex)
                 {
                     logger.Error(ex, "Error exporting image.");
-                    MessageBox.Show(Application.Current.MainWindow,
+                    _messageBoxService.ShowError(Application.Current.MainWindow,
                         "Something went wrong while exporting the image.",
-                        Localization.Localization.Translations["Error"],
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
+                        Localization.Localization.Translations["Error"]);
                 }
             }
         }
@@ -1192,7 +1225,7 @@ namespace AnnoDesigner.ViewModels
                 }
 
                 // initialize output canvas
-                var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _coordinateHelper, _brushCache, _penCache)
+                var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
                 {
                     PlacedObjects = allObjects,
                     RenderGrid = AnnoCanvas.RenderGrid,
@@ -1291,17 +1324,14 @@ namespace AnnoDesigner.ViewModels
 
                     Clipboard.SetText(jsonString, TextDataFormat.UnicodeText);
 
-                    MessageBox.Show(Localization.Localization.Translations["ClipboardContainsLayoutAsJson"],
-                        Localization.Localization.Translations["Successful"],
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information,
-                        MessageBoxResult.OK);
+                    _messageBoxService.ShowMessage(Localization.Localization.Translations["ClipboardContainsLayoutAsJson"],
+                        Localization.Localization.Translations["Successful"]);
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Error saving layout to JSON.");
-                MessageBox.Show(ex.Message, "Something went wrong while saving the layout.");
+                _messageBoxService.ShowError(ex.Message, "Something went wrong while saving the layout.");
             }
         }
 
@@ -1389,8 +1419,46 @@ namespace AnnoDesigner.ViewModels
             }
             catch (Exception)
             {
-                MessageBox.Show("Error: Invalid building configuration.");
+                _messageBoxService.ShowError("Error: Invalid building configuration.",
+                   Localization.Localization.Translations["Error"]);
             }
+        }
+
+        public ICommand ShowPreferencesWindowCommand { get; private set; }
+
+        private void ExecuteShowPreferencesWindow(object param)
+        {
+            var preferencesWindow = new PreferencesWindow(_appSettings, _commons, HotkeyCommandManager, _messageBoxService)
+            {
+                Owner = Application.Current.MainWindow,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            preferencesWindow.Show();
+        }
+
+        public ICommand ShowLicensesWindowCommand { get; private set; }
+
+        private void ExecuteShowLicensesWindow(object param)
+        {
+            var LicensesWindow = new LicensesWindow()
+            {
+                Owner = Application.Current.MainWindow
+            };
+            LicensesWindow.ShowDialog();
+        }
+
+        public ICommand OpenRecentFileCommand { get; private set; }
+
+        private void ExecuteOpenRecentFile(object param)
+        {
+            if (!(param is RecentFileItem recentFile))
+            {
+                return;
+            }
+
+            AnnoCanvas.OpenFile(recentFile.Path);
+
+            _recentFilesHelper.AddFile(new RecentFile(recentFile.Path, DateTime.UtcNow));
         }
 
         #endregion

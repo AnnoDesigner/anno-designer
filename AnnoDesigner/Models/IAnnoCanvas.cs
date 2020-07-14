@@ -9,7 +9,7 @@ using AnnoDesigner.CustomEventArgs;
 
 namespace AnnoDesigner.Models
 {
-    public interface IAnnoCanvas
+    public interface IAnnoCanvas : IHotkeySource
     {
         event EventHandler<EventArgs> ColorsInLayoutUpdated;
         event Action<List<LayoutObject>> OnClipboardChanged;
@@ -37,5 +37,6 @@ namespace AnnoDesigner.Models
         void ResetZoom();
         void Normalize();
         void Normalize(int border);
+        void OpenFile(string filename, bool forceLoad = false);
     }
 }

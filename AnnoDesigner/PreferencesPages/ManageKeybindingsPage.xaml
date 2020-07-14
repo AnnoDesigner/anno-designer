@@ -1,0 +1,165 @@
+﻿<Page x:Class="AnnoDesigner.PreferencesPages.ManageKeybindingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:AnnoDesigner.PreferencesPages"
+      xmlns:l="clr-namespace:AnnoDesigner.Localization"
+      xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
+      xmlns:models="clr-namespace:AnnoDesigner.Models"
+      xmlns:coreConverter="clr-namespace:AnnoDesigner.Core.Converters;assembly=AnnoDesigner.Core"
+      xmlns:converter="clr-namespace:AnnoDesigner.Converters"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      d:DataContext="{d:DesignInstance Type=viewModel:ManageKeybindingsViewModel, IsDesignTimeCreatable=False}"
+      Name="ManageKeybindingsRoot">
+    <Page.Resources>
+        <models:ManageKeybindingsHotkeyDataTemplateSelector x:Key="dataTemplateSelector"/>
+        <Style x:Key="HotkeyRebindButton" TargetType="{x:Type Button}">
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Margin" Value="20,12,0,12" />
+            <Setter Property="Padding" Value="3" />
+        </Style>
+        <Style x:Key="HotkeyDescription" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="Padding" Value="10,0,10,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="HotkeyDelimiter" TargetType="{x:Type TextBlock}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="30" />
+            <!-- We can change the delimeter for all hotkeys by changing the value below -->
+            <Setter Property="Text" Value="+" />
+        </Style>
+        <Style x:Key="HotkeyImage" TargetType="{x:Type Image}">
+            <Setter Property="Width" Value="50" />
+            <!--<Setter Property="Height" Value="Auto" />-->
+        </Style>
+        <Style x:Key="HotkeyKey" TargetType="{x:Type Label}">
+            <Setter Property="Height" Value="40" />
+            <Setter Property="MinWidth" Value="30" />
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="BorderBrush" Value="#111" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="#444" />
+            <Setter Property="FontSize" Value="25" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="Margin" Value="3,0"/>
+            <Setter Property="FontFamily" Value="Calibri" />
+            <Setter Property="Foreground" Value="#EEE" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Label}">
+                        <Grid>
+                            <Border CornerRadius="10,10,10,10"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    Background="{TemplateBinding Background}"
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                    Padding="{TemplateBinding Padding}"
+                                    Margin="{TemplateBinding Margin}">
+                                <ContentPresenter  Margin="0"  
+                                                   HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                                   VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                                   Content="{TemplateBinding Content}" />
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <coreConverter:ModifierKeysToVisibilityConverter x:Key="ModifierKeysToVisibilityConverter" />
+        <coreConverter:KeyToDisplayStringConverter x:Key="KeyToDisplayStringConverter" />
+        <converter:MouseActionToImageSourceConverter x:Key="MouseActionToImageSourceConverter" />
+        <converter:MouseActionToVisibilityConverter x:Key="MouseActionToVisibilityConverter" />
+        <sys:Int32 x:Key="0">0</sys:Int32>
+        <sys:Int32 x:Key="1">1</sys:Int32>
+        <sys:Int32 x:Key="2">2</sys:Int32>
+        <DataTemplate x:Key="KeyBinding">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="HotkeyDescriptionSizeGroupCol0" Width="Auto"/>
+                    <ColumnDefinition SharedSizeGroup="HotkeyKeySizeGroupCol1" Width="Auto"/>
+                    <ColumnDefinition SharedSizeGroup="HotkeyRebindButtonSizeGroupCol2" Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Description}" 
+                           Style="{StaticResource HotkeyDescription}"
+                           Grid.Column="0" />
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="1" Margin="3,5,3,5">
+                    <Label Content="{Binding Path=Binding.Modifiers}" 
+                           Style="{StaticResource HotkeyKey}"
+                           Visibility="{Binding Path=Binding.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}"/>
+                    <TextBlock Style="{StaticResource HotkeyDelimiter}" 
+                               Visibility="{Binding Path=Binding.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
+                    <Label Content="{Binding Path=Binding.Key, Converter={StaticResource KeyToDisplayStringConverter}}"
+                           Style="{StaticResource HotkeyKey}"/>
+                </StackPanel>
+                <Button Content="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindButtonText}" 
+                            Command="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindCommand }" 
+                            CommandParameter="{Binding}" 
+                            Grid.Column="2"
+                            Style="{StaticResource HotkeyRebindButton}"
+                            />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="MouseBinding">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="HotkeyDescriptionSizeGroupCol0" Width="Auto"/>
+                    <ColumnDefinition SharedSizeGroup="HotkeyKeySizeGroupCol1" Width="Auto"/>
+                    <ColumnDefinition SharedSizeGroup="HotkeyRebindButtonSizeGroupCol2" Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Description}" 
+                           Style="{StaticResource HotkeyDescription}"
+                           Grid.Column="0" />
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="1" Margin="3,5,3,5">
+                    <Label Content="{Binding Path=Binding.Gesture.Modifiers}" 
+                           Style="{StaticResource HotkeyKey}"
+                           Visibility="{Binding Path=Binding.Gesture.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}"/>
+                    <TextBlock Style="{StaticResource HotkeyDelimiter}" 
+                               Visibility="{Binding Path=Binding.Gesture.Modifiers, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
+                    <!-- First image will always be visible, so does not need the visibility attribute specified -->
+                    <Image Source="{Binding Path=Binding.MouseAction, Converter={StaticResource MouseActionToImageSourceConverter}}"
+                           Style="{StaticResource HotkeyImage}" 
+                           />
+                    <TextBlock Style="{StaticResource HotkeyDelimiter}" 
+                               Visibility="{Binding Path=Binding.MouseAction, Converter={StaticResource MouseActionToVisibilityConverter}, ConverterParameter={StaticResource 1}}"
+                               />
+                    <Image Source="{Binding Path=Binding.MouseAction, Converter={StaticResource MouseActionToImageSourceConverter}}"
+                           Style="{StaticResource HotkeyImage}"
+                           Visibility="{Binding Path=Binding.MouseAction, Converter={StaticResource MouseActionToVisibilityConverter}, ConverterParameter={StaticResource 2}}"
+                           />
+                </StackPanel>
+                <Button Content="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindButtonText}" 
+                            Command="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindCommand }" 
+                            CommandParameter="{Binding}" 
+                            Grid.Column="2"
+                            Style="{StaticResource HotkeyRebindButton}"
+                            />
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.IsSharedSizeScope="True" Grid.Row="0">
+            <ItemsControl ItemsSource="{Binding HotkeyCommandManager.ObservableCollection}" 
+                      ItemTemplateSelector="{StaticResource dataTemplateSelector}"
+                      Name="HotkeyActions"
+                      HorizontalAlignment="Stretch">
+            </ItemsControl>
+        </Grid>
+        <StackPanel Grid.Row="1" FlowDirection="RightToLeft" Orientation="Horizontal" VerticalAlignment="Center" Margin="10">
+            <Button Content="{l:Localize ResetAll}" Padding="10" Command="{Binding ResetHotkeysCommand}" />
+        </StackPanel>
+    </Grid>
+</Page>

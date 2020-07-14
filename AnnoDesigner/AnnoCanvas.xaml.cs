@@ -3,10 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,27 +12,38 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core;
+using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
+using AnnoDesigner.Core.Services;
 using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Models;
+using AnnoDesigner.Services;
 using Microsoft.Win32;
 using NLog;
-using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner
 {
     /// <summary>
     /// Interaction logic for AnnoCanvas.xaml
     /// </summary>
-    public partial class AnnoCanvas : UserControl, IAnnoCanvas
+    public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        //Important: These match the values in the Localization.Localization.Translations dictionary
+        public const string ROTATE_COMMAND_KEY = "Rotate";
+        public const string COPY_COMMAND_KEY = "Copy";
+        public const string PASTE_COMMAND_KEY = "Paste";
+        public const string DELETE_COMMAND_KEY = "Delete";
+        //not implmented yet
+        public const string UNDO_COMMAND_KEY = "Undo";
+        public const string ROTATE_ALL_COMMAND_KEY = "RotateAll";
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
@@ -329,6 +338,7 @@ namespace AnnoDesigner
         private readonly ICoordinateHelper _coordinateHelper;
         private readonly IBrushCache _brushCache;
         private readonly IPenCache _penCache;
+        private readonly IMessageBoxService _messageBoxService;
 
         /// <summary>
         /// States the mode of mouse interaction.
@@ -516,17 +526,20 @@ namespace AnnoDesigner
             Dictionary<string, IconImage> iconsToUse,
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
-            IPenCache penCacheToUse = null)
+            IPenCache penCacheToUse = null,
+            IMessageBoxService messageBoxServiceToUse = null)
         {
             InitializeComponent();
+
 
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
+            _messageBoxService = messageBoxServiceToUse ?? new MessageBoxService();
 
             _layoutLoader = new LayoutLoader();
 
-            Stopwatch sw = new Stopwatch();
+            var sw = new Stopwatch();
             sw.Start();
 
             // initialize
@@ -534,6 +547,54 @@ namespace AnnoDesigner
 
             PlacedObjects = new List<LayoutObject>();
             SelectedObjects = new List<LayoutObject>();
+
+            //Commands
+            rotateCommand = new RelayCommand(ExecuteRotate);
+            copyCommand = new RelayCommand(ExecuteCopy);
+            pasteCommand = new RelayCommand(ExecutePaste);
+            deleteCommand = new RelayCommand(ExecuteDelete);
+            //Set up default keybindings
+            var rotateBinding = new KeyBinding()
+            {
+                Command = rotateCommand,
+                Key = Key.R,
+                Modifiers = ModifierKeys.None
+            };
+            rotateHotkey = new Hotkey(ROTATE_COMMAND_KEY, rotateBinding);
+
+            var copyBinding = new KeyBinding()
+            {
+                Command = copyCommand,
+                Key = Key.C,
+                Modifiers = ModifierKeys.Control
+            };
+            copyHotkey = new Hotkey(COPY_COMMAND_KEY, copyBinding);
+
+            var pasteBinding = new KeyBinding()
+            {
+                Command = pasteCommand,
+                Key = Key.V,
+                Modifiers = ModifierKeys.Control
+            };
+            pasteHotkey = new Hotkey(PASTE_COMMAND_KEY, pasteBinding);
+
+            var deleteBinding = new KeyBinding()
+            {
+                Command = deleteCommand,
+                Key = Key.Delete,
+                Modifiers = ModifierKeys.None
+            };
+            deleteHotkey = new Hotkey(DELETE_COMMAND_KEY, deleteBinding);
+
+            //TODO: Find a solution for this before PR. When the binding type switches from a KeyBinding to a MouseBinding
+            //this does not update (which is correct, as the orignal object is dereferenced). Maybe we pass around a reference
+            //to the InputBindingCollection stored with the Hotkey itself, so that when the Hotkey.Binding reference changes,
+            //the hotkey can update the InputBindingCollection
+
+            //InputBindings.Add(rotateBinding);
+            //InputBindings.Add(copyBinding);
+            //InputBindings.Add(pasteBinding);
+            //InputBindings.Add(deleteBinding);
 
             const int dpiFactor = 1;
             _linePen = _penCache.GetPen(Brushes.Black, dpiFactor * 1);
@@ -570,7 +631,7 @@ namespace AnnoDesigner
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Loading of the building presets failed");
+                    _messageBoxService.ShowError(ex.Message, "Loading of the building presets failed");
                 }
 
                 sw.Stop();
@@ -584,17 +645,15 @@ namespace AnnoDesigner
                     IconMappingPresets iconNameMapping = null;
                     try
                     {
-                        IconMappingPresetsLoader loader = new IconMappingPresetsLoader();
-                        iconNameMapping = loader.Load(Path.Combine(App.ApplicationPath, CoreConstants.PresetsFiles.IconNameFile));
+                        var loader = new IconMappingPresetsLoader();
+                        iconNameMapping = loader.LoadFromFile(Path.Combine(App.ApplicationPath, CoreConstants.PresetsFiles.IconNameFile));
                     }
                     catch (Exception ex)
                     {
                         logger.Error(ex, "Loading of the icon names failed.");
 
-                        MessageBox.Show("Loading of the icon names failed",
-                            Localization.Localization.Translations["Error"],
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Error);
+                        _messageBoxService.ShowError("Loading of the icon names failed",
+                            Localization.Localization.Translations["Error"]);
                     }
 
                     sw.Stop();
@@ -1555,54 +1614,13 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            switch (e.Key)
+            //Still needed until we find a solution to the problem caused when a KeyBinding switches to a MouseBinding
+            //and vice versa in the InputBindingCollection.
+            HotkeyCommandManager.HandleCommand(e);
+            if (e.Handled)
             {
-                case Key.Delete:
-                    // remove all currently selected objects from the grid and clear selection
-                    SelectedObjects.ForEach(_ => PlacedObjects.Remove(_));
-                    SelectedObjects.Clear();
-                    StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-                    break;
-                case Key.C:
-                    if (IsControlPressed())
-                    {
-                        if (SelectedObjects.Count != 0)
-                        {
-                            ClipboardObjects = CloneList(SelectedObjects);
-                        }
-                    }
-                    break;
-                case Key.V:
-                    if (IsControlPressed())
-                    {
-                        if (ClipboardObjects.Count != 0)
-                        {
-                            CurrentObjects = CloneList(ClipboardObjects);
-                            MoveCurrentObjectsToMouse();
-                        }
-                    }
-                    break;
-                case Key.R:
-                    if (CurrentObjects.Count == 1)
-                    {
-                        CurrentObjects[0].Size = _coordinateHelper.Rotate(CurrentObjects[0].Size);
-                    }
-                    else if (CurrentObjects.Count > 1)
-                    {
-                        Rotate(CurrentObjects);
-                    }
-                    else
-                    {
-                        //Count == 0;
-                        //Rotate from selected objects
-                        CurrentObjects = CloneList(SelectedObjects);
-                        Rotate(CurrentObjects);
-                    }
-                    break;
-
+                InvalidateVisual();
             }
-
-            InvalidateVisual();
         }
 
         /// <summary>
@@ -1863,9 +1881,8 @@ namespace AnnoDesigner
             {
                 logger.Warn(layoutEx, "Version of layout does not match.");
 
-                if (MessageBox.Show(
-                        "Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
-                        "File version mismatch", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (_messageBoxService.ShowQuestion("Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
+                        "File version mismatch"))
                 {
                     OpenFile(filename, true);
                 }
@@ -1882,9 +1899,9 @@ namespace AnnoDesigner
         /// Displays a message box containing some error information.
         /// </summary>
         /// <param name="e">exception containing error information</param>
-        private static void IOErrorMessageBox(Exception e)
+        private void IOErrorMessageBox(Exception e)
         {
-            MessageBox.Show(e.Message, "Something went wrong while saving/loading file.");
+            _messageBoxService.ShowError(e.Message, "Something went wrong while saving/loading file.");
         }
 
         #endregion
@@ -1895,6 +1912,8 @@ namespace AnnoDesigner
         /// Holds event handlers for command executions.
         /// </summary>
         private static readonly Dictionary<ICommand, Action<AnnoCanvas>> CommandExecuteMappings;
+
+        public HotkeyCommandManager HotkeyCommandManager { get; set; }
 
         /// <summary>
         /// Creates event handlers for command executions and registers them at the CommandManager.
@@ -1929,6 +1948,72 @@ namespace AnnoDesigner
                 e.Handled = true;
             }
         }
+
+
+
+        private readonly Hotkey rotateHotkey;
+        private readonly ICommand rotateCommand;
+        private void ExecuteRotate(object param)
+        {
+            if (CurrentObjects.Count == 1)
+            {
+                CurrentObjects[0].Size = _coordinateHelper.Rotate(CurrentObjects[0].Size);
+            }
+            else if (CurrentObjects.Count > 1)
+            {
+                Rotate(CurrentObjects);
+            }
+            else
+            {
+                //Count == 0;
+                //Rotate from selected objects
+                CurrentObjects = CloneList(SelectedObjects);
+                Rotate(CurrentObjects);
+            }
+            InvalidateVisual();
+        }
+
+        private readonly Hotkey copyHotkey;
+        private readonly ICommand copyCommand;
+        private void ExecuteCopy(object param)
+        {
+            if (SelectedObjects.Count != 0)
+            {
+                ClipboardObjects = CloneList(SelectedObjects);
+            }
+        }
+
+        private readonly Hotkey pasteHotkey;
+        private readonly ICommand pasteCommand;
+        private void ExecutePaste(object param)
+        {
+            if (ClipboardObjects.Count != 0)
+            {
+                CurrentObjects = CloneList(ClipboardObjects);
+                MoveCurrentObjectsToMouse();
+            }
+        }
+
+        private readonly Hotkey deleteHotkey;
+        private readonly ICommand deleteCommand;
+        private void ExecuteDelete(object param)
+        {
+            // remove all currently selected objects from the grid and clear selection
+            SelectedObjects.ForEach(_ => PlacedObjects.Remove(_));
+            SelectedObjects.Clear();
+            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+        }
+
+
+        public void RegisterHotkeys(HotkeyCommandManager manager)
+        {
+            HotkeyCommandManager = manager;
+            manager.AddHotkey(rotateHotkey);
+            manager.AddHotkey(copyHotkey);
+            manager.AddHotkey(pasteHotkey);
+            manager.AddHotkey(deleteHotkey);
+        }
+
 
         #endregion
     }

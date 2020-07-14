@@ -18,6 +18,7 @@ namespace AnnoDesigner.Core.Tests
         #region testdata
 
         private static readonly string testData_v3_LayoutWithVersionAndObjects;
+        private static readonly string testData_v4_LayoutWithVersionAndObjects;
         private static readonly string testData_LayoutWithNoVersionAndObjects;
 
         #endregion
@@ -27,6 +28,7 @@ namespace AnnoDesigner.Core.Tests
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
 
             testData_v3_LayoutWithVersionAndObjects = File.ReadAllText(Path.Combine(basePath, "Testdata", "Layout", "v3_layoutWithVersionAndObjects.ad"), Encoding.UTF8);
+            testData_v4_LayoutWithVersionAndObjects = File.ReadAllText(Path.Combine(basePath, "Testdata", "Layout", "v4_layoutWithVersionAndObjects.ad"), Encoding.UTF8);
             testData_LayoutWithNoVersionAndObjects = File.ReadAllText(Path.Combine(basePath, "Testdata", "Layout", "layoutWithNoVersionAndObjects.ad"), Encoding.UTF8);
         }
 
@@ -97,7 +99,7 @@ namespace AnnoDesigner.Core.Tests
             // Arrange
             ILayoutLoader loader = new LayoutLoader();
 
-            var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(testData_v3_LayoutWithVersionAndObjects));
+            var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(testData_v4_LayoutWithVersionAndObjects));
 
             // Act
             var result = loader.LoadLayout(streamWithLayout);
@@ -135,6 +137,20 @@ namespace AnnoDesigner.Core.Tests
 
             // Assert
             Assert.Single(result);
+        }
+
+        [Fact]
+        public void LoadLayout_LayoutHasOlderVersionAndIsForcedToLoad_ShouldReturnListWithObjects()
+        {
+            // Arrange
+            ILayoutLoader loader = new LayoutLoader();
+            var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(testData_v3_LayoutWithVersionAndObjects));
+
+            // Act
+            var result = loader.LoadLayout(streamWithLayout, true);
+
+            // Assert
+            Assert.NotNull(result);
         }
 
         [Fact]
