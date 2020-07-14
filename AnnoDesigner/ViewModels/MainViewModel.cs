@@ -20,6 +20,7 @@ using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Helper;
+using AnnoDesigner.Core.Services;
 using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Localization;
@@ -27,7 +28,6 @@ using AnnoDesigner.Models;
 using AnnoDesigner.PreferencesPages;
 using Microsoft.Win32;
 using NLog;
-using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner.ViewModels
 {
@@ -42,6 +42,7 @@ namespace AnnoDesigner.ViewModels
         private readonly IBrushCache _brushCache;
         private readonly IPenCache _penCache;
         private readonly IRecentFilesHelper _recentFilesHelper;
+        private readonly IMessageBoxService _messageBoxService;
 
         public event EventHandler<EventArgs> ShowStatisticsChanged;
 
@@ -78,6 +79,7 @@ namespace AnnoDesigner.ViewModels
         public MainViewModel(ICommons commonsToUse,
             IAppSettings appSettingsToUse,
             IRecentFilesHelper recentFilesHelperToUse,
+            IMessageBoxService messageBoxServiceToUse,
             ILayoutLoader layoutLoaderToUse = null,
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
@@ -88,6 +90,7 @@ namespace AnnoDesigner.ViewModels
 
             _appSettings = appSettingsToUse;
             _recentFilesHelper = recentFilesHelperToUse;
+            _messageBoxService = messageBoxServiceToUse;
 
             _layoutLoader = layoutLoaderToUse ?? new LayoutLoader();
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
@@ -100,7 +103,7 @@ namespace AnnoDesigner.ViewModels
             StatisticsViewModel.IsVisible = _appSettings.StatsShowStats;
             StatisticsViewModel.ShowStatisticsBuildingCount = _appSettings.StatsShowBuildingCount;
 
-            BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings);
+            BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings, _messageBoxService);
 
             PresetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization(_commons), _commons);
             PresetsTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
@@ -113,7 +116,7 @@ namespace AnnoDesigner.ViewModels
             AboutViewModel = new AboutViewModel();
 
             PreferencesUpdateViewModel = new UpdateSettingsViewModel(_commons, _appSettings);
-            PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons);
+            PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons, _messageBoxService);
 
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
@@ -278,7 +281,8 @@ namespace AnnoDesigner.ViewModels
             catch (Exception ex)
             {
                 logger.Error(ex, "Error applying preset.");
-                MessageBox.Show("Something went wrong while applying the preset.");
+                _messageBoxService.ShowError("Something went wrong while applying the preset.",
+                   Localization.Localization.Translations["Error"]);
             }
         }
 
@@ -949,9 +953,8 @@ namespace AnnoDesigner.ViewModels
             {
                 logger.Warn(layoutEx, "Version of layout does not match.");
 
-                if (MessageBox.Show(
-                        "Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
-                        "File version mismatch", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (_messageBoxService.ShowQuestion("Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
+                        "File version mismatch"))
                 {
                     ExecuteLoadLayoutFromJsonSub(jsonString, true);
                 }
@@ -959,10 +962,8 @@ namespace AnnoDesigner.ViewModels
             catch (Exception ex)
             {
                 logger.Error(ex, "Error loading layout from JSON.");
-                MessageBox.Show("Something went wrong while loading the layout.",
-                        Localization.Localization.Translations["Error"],
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
+                _messageBoxService.ShowError("Something went wrong while loading the layout.",
+                        Localization.Localization.Translations["Error"]);
             }
         }
 
@@ -998,10 +999,7 @@ namespace AnnoDesigner.ViewModels
         {
             var message = isDeregistration ? Localization.Localization.Translations["UnregisterFileExtensionSuccessful"] : Localization.Localization.Translations["RegisterFileExtensionSuccessful"];
 
-            MessageBox.Show(message,
-                Localization.Localization.Translations["Successful"],
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            _messageBoxService.ShowMessage(message, Localization.Localization.Translations["Successful"]);
         }
 
         public ICommand ExportImageCommand { get; private set; }
@@ -1036,20 +1034,16 @@ namespace AnnoDesigner.ViewModels
                 {
                     RenderToFile(dialog.FileName, 1, exportZoom, exportSelection, StatisticsViewModel.IsVisible);
 
-                    MessageBox.Show(Application.Current.MainWindow,
-                        Localization.Localization.Translations["ExportImageSuccessful"],
-                        Localization.Localization.Translations["Successful"],
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                    _messageBoxService.ShowMessage(Application.Current.MainWindow,
+                       Localization.Localization.Translations["ExportImageSuccessful"],
+                       Localization.Localization.Translations["Successful"]);
                 }
                 catch (Exception ex)
                 {
                     logger.Error(ex, "Error exporting image.");
-                    MessageBox.Show(Application.Current.MainWindow,
+                    _messageBoxService.ShowError(Application.Current.MainWindow,
                         "Something went wrong while exporting the image.",
-                        Localization.Localization.Translations["Error"],
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
+                        Localization.Localization.Translations["Error"]);
                 }
             }
         }
@@ -1089,7 +1083,7 @@ namespace AnnoDesigner.ViewModels
                 }
 
                 // initialize output canvas
-                var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _coordinateHelper, _brushCache, _penCache)
+                var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
                 {
                     PlacedObjects = allObjects,
                     RenderGrid = AnnoCanvas.RenderGrid,
@@ -1188,17 +1182,14 @@ namespace AnnoDesigner.ViewModels
 
                     Clipboard.SetText(jsonString, TextDataFormat.UnicodeText);
 
-                    MessageBox.Show(Localization.Localization.Translations["ClipboardContainsLayoutAsJson"],
-                        Localization.Localization.Translations["Successful"],
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information,
-                        MessageBoxResult.OK);
+                    _messageBoxService.ShowMessage(Localization.Localization.Translations["ClipboardContainsLayoutAsJson"],
+                        Localization.Localization.Translations["Successful"]);
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Error saving layout to JSON.");
-                MessageBox.Show(ex.Message, "Something went wrong while saving the layout.");
+                _messageBoxService.ShowError(ex.Message, "Something went wrong while saving the layout.");
             }
         }
 
@@ -1279,7 +1270,8 @@ namespace AnnoDesigner.ViewModels
             }
             catch (Exception)
             {
-                MessageBox.Show("Error: Invalid building configuration.");
+                _messageBoxService.ShowError("Error: Invalid building configuration.",
+                   Localization.Localization.Translations["Error"]);
             }
         }
 

@@ -48,6 +48,9 @@ namespace AnnoDesigner
 
             _mainViewModel.LoadAvailableIcons();
 
+            //load presets before checking for updates
+            _mainViewModel.LoadPresets();
+
             // check for updates on startup
             if (_appSettings.EnableAutomaticUpdateCheck)
             {
@@ -72,9 +75,7 @@ namespace AnnoDesigner
             //catch (Exception ex)
             //{
             //    MessageBox.Show(ex.Message, "Loading of the color presets failed");
-            //}
-
-            _mainViewModel.LoadPresets();
+            //}            
 
             // load file given by argument
             if (!string.IsNullOrEmpty(App.FilenameArgument))

@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AnnoDesigner.ViewModels;
-using Xunit;
-using Moq;
-using AnnoDesigner.Core.Models;
-using AnnoDesigner.Models;
-using AnnoDesigner.Core;
 using System.Globalization;
-using System.Windows.Input;
-using AnnoDesigner.Core.Helper;
-using AnnoDesigner.Core.RecentFiles;
 using System.IO.Abstractions.TestingHelpers;
+using System.Windows.Input;
+using AnnoDesigner.Core;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Presets.Models;
+using AnnoDesigner.Core.RecentFiles;
+using AnnoDesigner.Core.Services;
+using AnnoDesigner.Models;
+using AnnoDesigner.ViewModels;
+using Moq;
+using Xunit;
 
 namespace AnnoDesigner.Tests
 {
@@ -23,6 +22,7 @@ namespace AnnoDesigner.Tests
         private readonly IAppSettings _mockedAppSettings;
         private readonly IAnnoCanvas _mockedAnnoCanvas;
         private readonly IRecentFilesHelper _inMemoryRecentFilesHelper;
+        private readonly IMessageBoxService _mockedMessageBoxService;
 
         public MainViewModelTests()
         {
@@ -38,16 +38,20 @@ namespace AnnoDesigner.Tests
             _mockedAnnoCanvas = annoCanvasMock.Object;
 
             _inMemoryRecentFilesHelper = new RecentFilesHelper(new RecentFilesInMemorySerializer(), new MockFileSystem());
+
+            _mockedMessageBoxService = new Mock<IMessageBoxService>().Object;
         }
 
         private MainViewModel GetViewModel(ICommons commonsToUse = null,
             IAppSettings appSettingsToUse = null,
             IRecentFilesHelper recentFilesHelperToUse = null,
+            IMessageBoxService messageBoxServiceToUse = null,
             IAnnoCanvas annoCanvasToUse = null)
         {
             return new MainViewModel(commonsToUse ?? _mockedCommons,
                 appSettingsToUse ?? _mockedAppSettings,
-                recentFilesHelperToUse ?? _inMemoryRecentFilesHelper)
+                recentFilesHelperToUse ?? _inMemoryRecentFilesHelper,
+                messageBoxServiceToUse ?? _mockedMessageBoxService)
             {
                 AnnoCanvas = annoCanvasToUse ?? _mockedAnnoCanvas
             };
@@ -453,7 +457,7 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
-        [Theory(Skip = "needs abstraction of 'MessageBox.Show' in BuildingSettingsViewModel")]
+        [Theory]
         [InlineData(true)]
         [InlineData(false)]
         public void SaveSettings_IsCalled_ShouldSaveIsPavedStreet(bool expectedIsPavedStreet)
@@ -462,7 +466,15 @@ namespace AnnoDesigner.Tests
             var appSettings = new Mock<IAppSettings>();
             appSettings.SetupAllProperties();
 
-            var viewModel = GetViewModel(null, appSettings.Object);
+            var presets = new BuildingPresets
+            {
+                Buildings = new List<BuildingInfo>()
+            };
+
+            var canvas = new Mock<IAnnoCanvas>();
+            canvas.SetupGet(x => x.BuildingPresets).Returns(() => presets);
+
+            var viewModel = GetViewModel(null, appSettings.Object, annoCanvasToUse: canvas.Object);
             viewModel.BuildingSettingsViewModel.IsPavedStreet = expectedIsPavedStreet;
 
             // Act

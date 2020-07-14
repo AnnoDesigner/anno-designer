@@ -1,19 +1,21 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
-using AnnoDesigner.Models;
-using AnnoDesigner.ViewModels;
 using System.Windows.Media;
-using Xunit;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
+using AnnoDesigner.Core.Services;
+using AnnoDesigner.Models;
+using AnnoDesigner.ViewModels;
 using Moq;
-using System.Collections.ObjectModel;
+using Xunit;
 
 namespace AnnoDesigner.Tests
 {
     public class BuildingSettingsViewModelTests
     {
         private readonly IAppSettings _mockedAppSettings;
+        private readonly IMessageBoxService _mockedMessageBoxService;
 
         public BuildingSettingsViewModelTests()
         {
@@ -22,11 +24,13 @@ namespace AnnoDesigner.Tests
             Localization.Localization.Init(commonsMock.Object);
 
             _mockedAppSettings = new Mock<IAppSettings>().Object;
+            _mockedMessageBoxService = new Mock<IMessageBoxService>().Object;
         }
 
         private BuildingSettingsViewModel GetViewModel(IAppSettings appSettingsToUse = null)
         {
-            return new BuildingSettingsViewModel(appSettingsToUse ?? _mockedAppSettings);
+            return new BuildingSettingsViewModel(appSettingsToUse ?? _mockedAppSettings,
+                _mockedMessageBoxService);
         }
 
         #region ctor tests

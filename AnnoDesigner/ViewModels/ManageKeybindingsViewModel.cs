@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Input;
 using AnnoDesigner.Core.Controls;
+using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Services;
 using AnnoDesigner.Models;
 
 namespace AnnoDesigner.ViewModels
@@ -22,14 +23,18 @@ namespace AnnoDesigner.ViewModels
         private ICommand _rebindCommand;
         private ICommand _resetHotkeysCommand;
         private string _rebindButtonText;
+        private readonly IMessageBoxService _messageBoxService;
 
-        public ManageKeybindingsViewModel(HotkeyCommandManager hotkeyCommandManager, ICommons commons)
+        public ManageKeybindingsViewModel(HotkeyCommandManager hotkeyCommandManager,
+            ICommons commons,
+            IMessageBoxService messageBoxServiceToUse)
         {
             HotkeyCommandManager = hotkeyCommandManager;
             RebindCommand = new RelayCommand<Hotkey>(ExecuteRebind);
             ResetHotkeysCommand = new RelayCommand(ExecuteResetHotkeys);
             this.commons = commons;
             this.commons.SelectedLanguageChanged += Instance_SelectedLanguageChanged;
+            _messageBoxService = messageBoxServiceToUse;
 
             UpdateRebindButtonText();
         }
@@ -158,10 +163,8 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteResetHotkeys(object param)
         {
-            if (Xceed.Wpf.Toolkit.MessageBox.Show(
-                Localization.Localization.Translations[RESET_ALL_CONFIRMATION_MESSAGE],
-                Localization.Localization.Translations[RESET_ALL],
-                MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            if (_messageBoxService.ShowQuestion(Localization.Localization.Translations[RESET_ALL_CONFIRMATION_MESSAGE],
+                Localization.Localization.Translations[RESET_ALL]))
             {
                 HotkeyCommandManager.ResetHotkeys();
             }
