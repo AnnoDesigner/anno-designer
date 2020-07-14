@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AnnoDesigner.ViewModels;
-using Xunit;
-using Moq;
-using AnnoDesigner.Core.Models;
-using AnnoDesigner.Models;
-using AnnoDesigner.Core;
 using System.Globalization;
-using System.Windows.Input;
-using AnnoDesigner.Core.Helper;
-using AnnoDesigner.Core.RecentFiles;
 using System.IO.Abstractions.TestingHelpers;
-using AnnoDesigner.Core.Services;
+using System.Windows.Input;
+using AnnoDesigner.Core;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
+using AnnoDesigner.Core.RecentFiles;
+using AnnoDesigner.Core.Services;
+using AnnoDesigner.Models;
+using AnnoDesigner.ViewModels;
+using Moq;
+using Xunit;
 
 namespace AnnoDesigner.Tests
 {
@@ -81,7 +78,7 @@ namespace AnnoDesigner.Tests
             Assert.NotNull(viewModel.LanguageSelectedCommand);
             Assert.NotNull(viewModel.ShowAboutWindowCommand);
             Assert.NotNull(viewModel.ShowWelcomeWindowCommand);
-            Assert.NotNull(viewModel.CheckForUpdatesCommand);
+            Assert.NotNull(viewModel.PreferencesUpdateViewModel.CheckForUpdatesCommand);
             Assert.NotNull(viewModel.ShowStatisticsCommand);
             Assert.NotNull(viewModel.ShowStatisticsBuildingCountCommand);
             Assert.NotNull(viewModel.PlaceBuildingCommand);
@@ -92,17 +89,16 @@ namespace AnnoDesigner.Tests
             Assert.NotNull(viewModel.PresetsTreeSearchViewModel);
             Assert.NotNull(viewModel.WelcomeViewModel);
             Assert.NotNull(viewModel.AboutViewModel);
+            Assert.NotNull(viewModel.PreferencesUpdateViewModel);
 
             Assert.False(viewModel.CanvasShowGrid);
             Assert.False(viewModel.CanvasShowIcons);
             Assert.False(viewModel.CanvasShowLabels);
-            Assert.False(viewModel.AutomaticUpdateCheck);
             Assert.False(viewModel.UseCurrentZoomOnExportedImageValue);
             Assert.False(viewModel.RenderSelectionHighlightsOnExportedImageValue);
             Assert.False(viewModel.IsLanguageChange);
             Assert.False(viewModel.IsBusy);
 
-            Assert.Null(viewModel.PresetsVersionValue);
             Assert.Null(viewModel.StatusMessage);
             Assert.Null(viewModel.StatusMessageClipboard);
 
@@ -112,8 +108,8 @@ namespace AnnoDesigner.Tests
             Assert.NotNull(viewModel.MainWindowTitle);
             Assert.NotNull(viewModel.PresetsSectionHeader);
 
-            Assert.Equal(Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture), viewModel.VersionValue);
-            Assert.Equal(CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture), viewModel.FileVersionValue);
+            Assert.Equal(Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture), viewModel.PreferencesUpdateViewModel.VersionValue);
+            Assert.Equal(CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture), viewModel.PreferencesUpdateViewModel.FileVersionValue);
         }
 
         #endregion
@@ -411,14 +407,14 @@ namespace AnnoDesigner.Tests
             appSettings.SetupAllProperties();
 
             var viewModel = GetViewModel(null, appSettings.Object);
-            viewModel.AutomaticUpdateCheck = expectedEnableAutomaticUpdateCheck;
+            viewModel.PreferencesUpdateViewModel.AutomaticUpdateCheck = expectedEnableAutomaticUpdateCheck;
 
             // Act
             viewModel.SaveSettings();
 
             // Assert
             Assert.Equal(expectedEnableAutomaticUpdateCheck, appSettings.Object.EnableAutomaticUpdateCheck);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.Between(1, 2, Range.Inclusive));
         }
 
         [Theory]
@@ -793,13 +789,13 @@ namespace AnnoDesigner.Tests
             appSettings.Setup(x => x.EnableAutomaticUpdateCheck).Returns(() => expectedEnableAutomaticUpdateCheck);
 
             var viewModel = GetViewModel(null, appSettings.Object);
-            viewModel.AutomaticUpdateCheck = !expectedEnableAutomaticUpdateCheck;
+            viewModel.PreferencesUpdateViewModel.AutomaticUpdateCheck = !expectedEnableAutomaticUpdateCheck;
 
             // Act
             viewModel.LoadSettings();
 
             // Assert
-            Assert.Equal(expectedEnableAutomaticUpdateCheck, viewModel.AutomaticUpdateCheck);
+            Assert.Equal(expectedEnableAutomaticUpdateCheck, viewModel.PreferencesUpdateViewModel.AutomaticUpdateCheck);
         }
 
         [Theory]

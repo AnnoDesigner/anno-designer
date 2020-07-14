@@ -1,43 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using AnnoDesigner.Core.Models;
-using System.Collections.ObjectModel;
-using AnnoDesigner.ViewModels;
-using AnnoDesigner.PreferencesPages;
+﻿using System.Windows;
 using AnnoDesigner.Models;
-using AnnoDesigner.Core.Services;
+using AnnoDesigner.ViewModels;
 
 namespace AnnoDesigner
 {
-    /// <summary>
-    /// Interaction logic for Preferences.xaml
-    /// </summary>
     public partial class PreferencesWindow : Window
     {
-        public PreferencesWindow(IAppSettings appSettings,
-            ICommons commons,
-            HotkeyCommandManager commandManager,
-            IMessageBoxService messageBoxServiceToUse)
+        public PreferencesWindow()
         {
             InitializeComponent();
-            DataContext = new PreferencesViewModel(appSettings, commons, commandManager, CurrentPage.NavigationService, messageBoxServiceToUse);
+
             Loaded += Preferences_Loaded;
         }
 
         private void Preferences_Loaded(object sender, RoutedEventArgs e)
         {
+            if (DataContext is PreferencesViewModel vm)
+            {
+                vm.NavigationService = CurrentPage.NavigationService;
+                vm.ShowFirstPage();
+            }
+
             CurrentPage.Navigated += CurrentPage_Navigated;
         }
 
