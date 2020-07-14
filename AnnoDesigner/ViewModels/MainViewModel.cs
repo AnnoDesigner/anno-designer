@@ -138,7 +138,7 @@ namespace AnnoDesigner.ViewModels
             OpenRecentFileCommand = new RelayCommand(ExecuteOpenRecentFile);
 
             AvailableIcons = new ObservableCollection<IconImage>();
-            _noIconItem = new IconImage("None");
+            _noIconItem = GenerateNoIconItem();
             AvailableIcons.Add(_noIconItem);
             SelectedIcon = _noIconItem;
 
@@ -179,6 +179,24 @@ namespace AnnoDesigner.ViewModels
             RecentFilesHelper_Updated(this, EventArgs.Empty);
         }
 
+        private IconImage GenerateNoIconItem()
+        {
+            var localizations = new Dictionary<string, string>();
+
+            foreach (var curLanguageCode in Localization.Localization.LanguageCodeMap)
+            {
+                if (Localization.Localization.TranslationsRaw.TryGetValue(curLanguageCode.Value, out var foundTranslations))
+                {
+                    if (foundTranslations.TryGetValue("NoIcon", out var curTranslationOfNone))
+                    {
+                        localizations.Add(curLanguageCode.Value, curTranslationOfNone);
+                    }
+                }
+            }
+
+            return new IconImage("NoIcon") { Localizations = localizations };
+        }
+
         private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
         {
             try
@@ -207,6 +225,11 @@ namespace AnnoDesigner.ViewModels
 
                 PresetsTreeSearchViewModel.SearchText = string.Empty;
                 HotkeyCommandManager.UpdateLanguage();
+
+                AvailableIcons.Clear();
+                AvailableIcons.Add(_noIconItem);
+                LoadAvailableIcons();
+                SelectedIcon = _noIconItem;
             }
             catch (Exception ex)
             {
@@ -522,7 +545,7 @@ namespace AnnoDesigner.ViewModels
 
         public void LoadAvailableIcons()
         {
-            foreach (var icon in AnnoCanvas.Icons)
+            foreach (var icon in AnnoCanvas.Icons.OrderBy(x => x.Value.NameForLanguage(Localization.Localization.Instance.SelectedLanguage)))
             {
                 AvailableIcons.Add(icon.Value);
             }
