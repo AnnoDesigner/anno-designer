@@ -1,11 +1,4 @@
-﻿using AnnoDesigner.Core;
-using AnnoDesigner.Core.Helper;
-using AnnoDesigner.Core.Models;
-using AnnoDesigner.Models;
-using AnnoDesigner.Properties;
-using NLog;
-using Octokit;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -15,7 +8,14 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Windows;
+using AnnoDesigner.Core;
+using AnnoDesigner.Core.Extensions;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Services;
+using AnnoDesigner.Models;
+using NLog;
+using Octokit;
 
 namespace AnnoDesigner
 {
@@ -35,6 +35,7 @@ namespace AnnoDesigner
         private HttpClient _httpClient;
         private readonly string _basePath;
         private readonly IAppSettings _appSettings;
+        private readonly IMessageBoxService _messageBoxService;
 
         /// <summary>
         /// Initializes a new instance of <see cref="AnnoDesigner.UpdateHelper"./>
@@ -43,10 +44,13 @@ namespace AnnoDesigner
         /// <remarks>
         /// example to get the basePath: <c>string basePath = AppDomain.CurrentDomain.BaseDirectory;</c>
         /// </remarks>
-        public UpdateHelper(string basePathToUse, IAppSettings appSettingsToUse)
+        public UpdateHelper(string basePathToUse,
+            IAppSettings appSettingsToUse,
+            IMessageBoxService messageBoxServiceToUse)
         {
             _basePath = basePathToUse;
             _appSettings = appSettingsToUse;
+            _messageBoxService = messageBoxServiceToUse;
         }
 
         private GitHubClient ApiClient
@@ -284,11 +288,8 @@ namespace AnnoDesigner
             {
                 logger.Error(ex, "Error replacing updated presets file.");
 
-                MessageBox.Show(Localization.Localization.Translations["UpdateErrorPresetMessage"],
-                            Localization.Localization.Translations["Error"],
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Error,
-                            MessageBoxResult.OK);
+                _messageBoxService.ShowError(Localization.Localization.Translations["UpdateErrorPresetMessage"],
+                            Localization.Localization.Translations["Error"]);
             }
         }
 
@@ -302,10 +303,8 @@ namespace AnnoDesigner
                 {
                     logger.Info("Could not establish a connection to the internet.");
 
-                    MessageBox.Show(Localization.Localization.Translations["UpdateNoConnectionMessage"],
-                        Localization.Localization.Translations["Error"],
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
+                    _messageBoxService.ShowError(Localization.Localization.Translations["UpdateNoConnectionMessage"],
+                            Localization.Localization.Translations["Error"]);
 
                     return null;
                 }

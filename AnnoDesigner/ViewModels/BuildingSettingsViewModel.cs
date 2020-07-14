@@ -1,16 +1,15 @@
-using AnnoDesigner.Core.Models;
-using AnnoDesigner.Core.Presets.Helper;
-using AnnoDesigner.Core.Presets.Models;
-using AnnoDesigner.Models;
-using AnnoDesigner.Properties;
-using NLog;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
-using Xceed.Wpf.Toolkit;
+using AnnoDesigner.Core.Extensions;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Presets.Helper;
+using AnnoDesigner.Core.Presets.Models;
+using AnnoDesigner.Core.Services;
+using AnnoDesigner.Models;
+using NLog;
 
 namespace AnnoDesigner.ViewModels
 {
@@ -19,6 +18,7 @@ namespace AnnoDesigner.ViewModels
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly IAppSettings _appSettings;
+        private readonly IMessageBoxService _messageBoxService;
 
         private Color? _selectedColor;
         private int _buildingHeight;
@@ -43,9 +43,10 @@ namespace AnnoDesigner.ViewModels
         /// <summary>
         /// only used for databinding
         /// </summary>
-        public BuildingSettingsViewModel(IAppSettings appSettingsToUse)
+        public BuildingSettingsViewModel(IAppSettings appSettingsToUse, IMessageBoxService messageBoxServiceToUse)
         {
             _appSettings = appSettingsToUse;
+            _messageBoxService = messageBoxServiceToUse;
 
             ApplyColorToSelectionCommand = new RelayCommand(ApplyColorToSelection, CanApplyColorToSelection);
             ApplyPredefinedColorToSelectionCommand = new RelayCommand(ApplyPredefinedColorToSelection, CanApplyPredefinedColorToSelection);
@@ -268,8 +269,7 @@ namespace AnnoDesigner.ViewModels
         {
             if (!_appSettings.ShowPavedRoadsWarning)
             {
-                MessageBox.Show(
-                    Localization.Localization.Translations["PavedStreetToolTip"],
+                _messageBoxService.ShowMessage(Localization.Localization.Translations["PavedStreetToolTip"],
                     Localization.Localization.Translations["PavedStreetWarningTitle"]);
                 _appSettings.ShowPavedRoadsWarning = true;
             }

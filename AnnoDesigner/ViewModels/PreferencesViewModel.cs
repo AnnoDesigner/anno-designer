@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Services;
 using AnnoDesigner.Models;
 using AnnoDesigner.PreferencesPages;
 
@@ -11,7 +12,11 @@ namespace AnnoDesigner.ViewModels
 {
     public class PreferencesViewModel : Notify
     {
-        public PreferencesViewModel(IAppSettings appSettings, ICommons commons, HotkeyCommandManager manager, NavigationService navigationService)
+        public PreferencesViewModel(IAppSettings appSettings,
+            ICommons commons,
+            HotkeyCommandManager manager,
+            NavigationService navigationService,
+            IMessageBoxService messageBoxServiceToUse)
         {
             this.appSettings = appSettings;
             this.navigationService = navigationService;
@@ -19,7 +24,7 @@ namespace AnnoDesigner.ViewModels
 
             ViewModels = new Dictionary<string, object>()
             {
-                { nameof(ManageKeybindingsPage),  new ManageKeybindingsViewModel(manager, commons) },
+                { nameof(ManageKeybindingsPage),  new ManageKeybindingsViewModel(manager, commons, messageBoxServiceToUse) },
                 { nameof(UpdateSettingsPage), "" }
             };
         }
