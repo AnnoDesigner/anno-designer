@@ -15,10 +15,10 @@ namespace AnnoDesigner.Models
     {
         public HotkeyInformation() { }
         public HotkeyInformation(Key key) : this (key, default, ModifierKeys.None, GestureType.KeyGesture) { }
-        public HotkeyInformation(MouseAction mouseAction) : this (default, mouseAction, ModifierKeys.None, GestureType.MouseGesture) { }
+        public HotkeyInformation(ExtendedMouseAction mouseAction) : this (default, mouseAction, ModifierKeys.None, GestureType.MouseGesture) { }
         public HotkeyInformation(Key key, ModifierKeys modifiers) : this (key, default, modifiers, GestureType.KeyGesture) { }
-        public HotkeyInformation(MouseAction mouseAction, ModifierKeys modifiers) : this (default, mouseAction, modifiers, GestureType.MouseGesture) { }
-        public HotkeyInformation(Key key, MouseAction mouseAction, ModifierKeys modifiers, GestureType gestureType)
+        public HotkeyInformation(ExtendedMouseAction mouseAction, ModifierKeys modifiers) : this (default, mouseAction, modifiers, GestureType.MouseGesture) { }
+        public HotkeyInformation(Key key, ExtendedMouseAction mouseAction, ModifierKeys modifiers, GestureType gestureType)
         {
             Key = key;
             MouseAction = mouseAction;
