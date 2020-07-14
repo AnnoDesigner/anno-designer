@@ -184,6 +184,18 @@ namespace AnnoDesigner.Localization
                         { "ExternalLinkMessageTitle" , "Opening an external link" },
                         { "RecentFiles" , "Recent Files" },
                         { "NoIcon" , "No Icon" }
+                        { "UpdatePreferencesVersionInformation" , "Version Information" },
+                        { "UpdatePreferencesSettings" , "Settings" },
+                        { "UpdatePreferencesCheckPreRelease" , "Check for Pre-Releases" },
+                        { "UpdatePreferencesUpdates" , "Updates" },
+                        { "UpdatePreferencesDownloadPresetsAndRestart" , "Download Presets and restart Application" },
+                        { "UpdatePreferencesNewAppUpdateAvailable" , "A new Update is available! Please check the website for release notes." },
+                        { "UpdatePreferencesNoUpdates" , "This version is up to date." },
+                        { "UpdatePreferencesErrorCheckingUpdates" , "Error checking for updates." },
+                        { "UpdatePreferencesMoreInfoInLog" , "More information is found in the log." },
+                        { "UpdatePreferencesNewPresetsUpdateAvailable" , "A new Update for the Presets is available!" },
+                        { "UpdatePreferencesBusyCheckUpdates" , "Checking for updates ..." },
+                        { "UpdatePreferencesBusyDownloadPresets" , "Downloading Presets ..." },
                     }
                 },
                 {
@@ -215,7 +227,7 @@ namespace AnnoDesigner.Localization
                         { "Help" , "Hilfe" },
                         { "Version" , "Version" },
                         { "FileVersion" , "Dateiversion" },
-                        { "PresetsVersion" , "Preset-Version" },
+                        { "PresetsVersion" , "Vorlagenversion" },
                         { "CheckForUpdates" , "Auf Updates prüfen" },
                         { "EnableAutomaticUpdateCheck" , "Automatische Updateprüfung beim Start aktivieren" },
                         { "GoToProjectHomepage" , "Gehe zu Projekt Startseite" },
@@ -317,6 +329,18 @@ namespace AnnoDesigner.Localization
                         { "ExternalLinkMessageTitle" , "Einen externen Link öffnen" },
                         { "RecentFiles" , "Zuletzt geöffnete Dateien" },
                         { "NoIcon" , "Kein Icon" }
+                        { "UpdatePreferencesVersionInformation" , "Versions-Informationen" },
+                        { "UpdatePreferencesSettings" , "Einstellungen" },
+                        { "UpdatePreferencesCheckPreRelease" , "Auf Vorabveröffentlichungen prüfen" },
+                        { "UpdatePreferencesUpdates" , "Updates" },
+                        { "UpdatePreferencesDownloadPresetsAndRestart" , "Vorlagen herunterladen und Anwendung neu starten" },
+                        { "UpdatePreferencesNewAppUpdateAvailable" , "Ein neues Update ist verfügbar! Bitte schauen Sie auf der Website nach Versionshinweisen." },
+                        { "UpdatePreferencesNoUpdates" , "Diese Version ist auf dem neuesten Stand." },
+                        { "UpdatePreferencesErrorCheckingUpdates" , "Fehler beim Prüfen auf Updates." },
+                        { "UpdatePreferencesMoreInfoInLog" , "Weitere Informationen finden Sie im Protokoll." },
+                        { "UpdatePreferencesNewPresetsUpdateAvailable" , "Ein neues Update für die Vorlagen ist verfügbar!" },
+                        { "UpdatePreferencesBusyCheckUpdates" , "Prüfe auf Updates ..." },
+                        { "UpdatePreferencesBusyDownloadPresets" , "Herunterladen von Vorlagen ..." },
                     }
                 },
                 {
@@ -450,6 +474,19 @@ namespace AnnoDesigner.Localization
                         { "ExternalLinkMessageTitle" , "Ouverture d'un lien externe" },
                         { "RecentFiles" , "Fichiers récents" },
                         { "NoIcon" , "Pas d'icône" }
+                        { "RecentFiles" , "Informations sur les versions" },
+                        { "UpdatePreferencesVersionInformation" , "Version actuelle" },
+                        { "UpdatePreferencesSettings" , "Paramètres" },
+                        { "UpdatePreferencesCheckPreRelease" , "Vérifier les pré-livraisons" },
+                        { "UpdatePreferencesUpdates" , "Mises à jour" },
+                        { "UpdatePreferencesDownloadPresetsAndRestart" , "Télécharger les préréglages et relancer l'application" },
+                        { "UpdatePreferencesNewAppUpdateAvailable" , "Une nouvelle mise à jour est disponible ! Veuillez consulter le site web pour les notes de mise à jour." },
+                        { "UpdatePreferencesNoUpdates" , "Cette version est à jour." },
+                        { "UpdatePreferencesErrorCheckingUpdates" , "Vérification d'erreurs pour les mises à jour." },
+                        { "UpdatePreferencesMoreInfoInLog" , "Vous trouverez plus d'informations dans le journal de bord." },
+                        { "UpdatePreferencesNewPresetsUpdateAvailable" , "Une nouvelle mise à jour des présélections est disponible!" },
+                        { "UpdatePreferencesBusyCheckUpdates" , "Vérifier les mises à jour ..." },
+                        { "UpdatePreferencesBusyDownloadPresets" , "Téléchargement des préréglages ..." },
                     }
                 },
                 {
@@ -583,6 +620,18 @@ namespace AnnoDesigner.Localization
                         { "ExternalLinkMessageTitle" , "Otwarcie połączenia zewnętrznego" },
                         { "RecentFiles" , "Ostatnie akta" },
                         { "NoIcon" , "Nie ma Ikony" }
+                        { "UpdatePreferencesVersionInformation" , "Informacja o wersji" },
+                        { "UpdatePreferencesSettings" , "Ustawienia" },
+                        { "UpdatePreferencesCheckPreRelease" , "Sprawdź, czy nie występują luzy wstępne" },
+                        { "UpdatePreferencesUpdates" , "Aktualizacje" },
+                        { "UpdatePreferencesDownloadPresetsAndRestart" , "Pobieranie ustawień wstępnych i ponowne uruchamianie aplikacji" },
+                        { "UpdatePreferencesNewAppUpdateAvailable" , "Nowa aktualizacja jest już dostępna! Prosimy o zapoznanie się z uwagami dotyczącymi wydania aktualizacji na stronie internetowej." },
+                        { "UpdatePreferencesNoUpdates" , "Ta wersja jest aktualna." },
+                        { "UpdatePreferencesErrorCheckingUpdates" , "Sprawdzanie błędów w poszukiwaniu aktualizacji." },
+                        { "UpdatePreferencesMoreInfoInLog" , "Więcej informacji znajduje się w dzienniku." },
+                        { "UpdatePreferencesNewPresetsUpdateAvailable" , "Dostępna jest nowa aktualizacja ustawień wstępnych!" },
+                        { "UpdatePreferencesBusyCheckUpdates" , "Sprawdzanie aktualizacji ..." },
+                        { "UpdatePreferencesBusyDownloadPresets" , "Pobieranie zaprogramowanych ustawień..." },
                     }
                 },
                 {
@@ -716,6 +765,18 @@ namespace AnnoDesigner.Localization
                         { "ExternalLinkMessageTitle" , "Открытие внешней ссылки" },
                         { "RecentFiles" , "Последние Файлы" },
                         { "NoIcon" , "Иконки нет" }
+                        { "UpdatePreferencesVersionInformation" , "Информация о версии" },
+                        { "UpdatePreferencesSettings" , "Настройки" },
+                        { "UpdatePreferencesCheckPreRelease" , "Проверка на наличие предпродаж" },
+                        { "UpdatePreferencesUpdates" , "Обновления" },
+                        { "UpdatePreferencesDownloadPresetsAndRestart" , "Скачать Предустановки и перезапустить приложение" },
+                        { "UpdatePreferencesNewAppUpdateAvailable" , "Доступно новое Обновление! Пожалуйста, ознакомьтесь с примечаниями к обновлению на сайте." },
+                        { "UpdatePreferencesNoUpdates" , "Эта версия обновлена." },
+                        { "UpdatePreferencesErrorCheckingUpdates" , "Проверка на ошибки при обновлении." },
+                        { "UpdatePreferencesMoreInfoInLog" , "Более подробная информация находится в журнале." },
+                        { "UpdatePreferencesNewPresetsUpdateAvailable" , "Доступно новое Обновление для пресетов!" },
+                        { "UpdatePreferencesBusyCheckUpdates" , "Проверка обновлений ..." },
+                        { "UpdatePreferencesBusyDownloadPresets" , "Загрузка предустановок ..." },
                     }
                 },
             };

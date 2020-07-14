@@ -19,6 +19,10 @@ namespace AnnoDesigner.ViewModels
         private const string RESET_ALL_CONFIRMATION_MESSAGE = "ResetAllConfirmationMessage";
 
         private readonly ICommons commons;
+        private HotkeyCommandManager _manager;
+        private ICommand _rebindCommand;
+        private ICommand _resetHotkeysCommand;
+        private string _rebindButtonText;
         private readonly IMessageBoxService _messageBoxService;
 
         public ManageKeybindingsViewModel(HotkeyCommandManager hotkeyCommandManager,
@@ -39,11 +43,6 @@ namespace AnnoDesigner.ViewModels
         {
             UpdateRebindButtonText();
         }
-
-        private HotkeyCommandManager _manager;
-        private ICommand _rebindCommand;
-        private ICommand _resetHotkeysCommand;
-        private string _rebindButtonText;
 
         public HotkeyCommandManager HotkeyCommandManager
         {
