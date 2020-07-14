@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace AnnoDesigner.Models
+namespace AnnoDesigner.Core.Models
 {
     public enum ExtendedMouseAction
     {
@@ -49,14 +49,5 @@ namespace AnnoDesigner.Models
         /// Xbutton2Click
         /// </summary>
         XButton2Click,
-        /// <summary>
-        /// XButton1DoubleClick
-        /// </summary>
-        XButton1DoubleClick,
-        /// <summary>
-        /// XButton2DoubleClick
-        /// </summary>
-        XButton2DoubleClick
-
     }
 }

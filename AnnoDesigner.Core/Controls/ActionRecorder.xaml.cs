@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.CustomEventArgs;
+using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Core.Controls
 {
@@ -28,7 +29,7 @@ namespace AnnoDesigner.Core.Controls
             InitializeComponent();
             Key = Key.None;
             Modifiers = ModifierKeys.None;
-            MouseAction = MouseAction.None;
+            MouseAction = ExtendedMouseAction.None;
         }
 
         public event EventHandler<ActionRecorderEventArgs> RecordingStarted;
@@ -38,7 +39,7 @@ namespace AnnoDesigner.Core.Controls
         {
             Modifiers = ModifierKeys.None;
             Key = Key.None;
-            MouseAction = MouseAction.None;
+            MouseAction = ExtendedMouseAction.None;
             ResultType = ActionType.None;
         }
 
@@ -57,7 +58,7 @@ namespace AnnoDesigner.Core.Controls
 
         // Using a DependencyProperty as the backing store for MouseAction.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MouseActionProperty =
-            DependencyProperty.Register("MouseAction", typeof(MouseAction), typeof(ActionRecorder), new FrameworkPropertyMetadata(MouseAction.None, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+            DependencyProperty.Register("MouseAction", typeof(ExtendedMouseAction), typeof(ActionRecorder), new FrameworkPropertyMetadata(ExtendedMouseAction.None, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         // Using a DependencyProperty as the backing store for IsDisplayFrozen.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsDisplayFrozenProperty =
@@ -106,9 +107,9 @@ namespace AnnoDesigner.Core.Controls
             }
         }
 
-        public MouseAction MouseAction
+        public ExtendedMouseAction MouseAction
         {
-            get { return (MouseAction)GetValue(MouseActionProperty); }
+            get { return (ExtendedMouseAction)GetValue(MouseActionProperty); }
             set
             {
                 SetValue(MouseActionProperty, value);
@@ -120,16 +121,22 @@ namespace AnnoDesigner.Core.Controls
         }
 
         private static Key[] MODIFIER_KEYS { get; } = new[]
-            {
-                Key.LeftCtrl,
-                Key.RightCtrl,
-                Key.LeftAlt,
-                Key.RightAlt,
-                Key.LeftShift,
-                Key.RightShift,
-                Key.LWin,
-                Key.RWin
-            };
+        {
+            Key.LeftCtrl,
+            Key.RightCtrl,
+            Key.LeftAlt,
+            Key.RightAlt,
+            Key.LeftShift,
+            Key.RightShift,
+            Key.LWin,
+            Key.RWin
+        };
+
+        private static ExtendedMouseAction[] UNSUPPORTED_MOUSE_ACTIONS { get; } = new[]
+        {
+            ExtendedMouseAction.XButton1Click,
+            ExtendedMouseAction.XButton2Click
+        };
 
         /// <summary>
         /// True if we are currently recording a key combination (optional modifier key(s) + key on keyboard)
@@ -148,7 +155,7 @@ namespace AnnoDesigner.Core.Controls
         {
             var modifiers = Modifiers == ModifierKeys.None ? "" : Modifiers.ToString();
             var key = Key == Key.None ? "" : KeyboardInteropHelper.GetDisplayString(Key) ?? Key.ToString();
-            var mouse = MouseAction == MouseAction.None ? "" : MouseAction.ToString();
+            var mouse = MouseAction == ExtendedMouseAction.None ? "" : MouseAction.ToString();
 
             string display;
             if (recordingKeyCombination)
@@ -192,40 +199,13 @@ namespace AnnoDesigner.Core.Controls
                 {
                     recordingMouseCombination = true;
                 }
-                if (e.ClickCount > 1)
+                //Do not record MouseActions that are not supported.
+                var action = PolyGesture.GetExtendedMouseAction(e);
+                if (!UNSUPPORTED_MOUSE_ACTIONS.Contains(action))
                 {
-                    switch (e.ChangedButton)
-                    {
-                        case MouseButton.Left:
-                            MouseAction = MouseAction.LeftDoubleClick;
-                            break;
-                        case MouseButton.Middle:
-                            MouseAction = MouseAction.MiddleDoubleClick;
-                            break;
-                        case MouseButton.Right:
-                            MouseAction = MouseAction.RightDoubleClick;
-                            break;
-                        default:
-                            return;
-                    }
+                    MouseAction = action;
                 }
-                else
-                {
-                    switch (e.ChangedButton)
-                    {
-                        case MouseButton.Left:
-                            MouseAction = MouseAction.LeftClick;
-                            break;
-                        case MouseButton.Middle:
-                            MouseAction = MouseAction.MiddleClick;
-                            break;
-                        case MouseButton.Right:
-                            MouseAction = MouseAction.RightClick;
-                            break;
-                        default:
-                            return;
-                    }
-                }
+
             }
         }
 
@@ -236,12 +216,6 @@ namespace AnnoDesigner.Core.Controls
             {
                 EndCurrentRecording();
             }
-        }
-
-        protected override void OnPreviewKeyDown(KeyEventArgs e)
-        {
-            //OnKeyDown(e);
-            //base.OnPreviewKeyDown(e);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)

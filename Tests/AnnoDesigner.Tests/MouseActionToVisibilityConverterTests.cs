@@ -25,7 +25,7 @@ namespace AnnoDesigner.Tests
         public void Convert_PassedKnownValueAndParameter_ShouldReturnCorrectValue(MouseAction input, Visibility expected)
         {
             // Arrange
-            var converter = new MouseActionToVisibilityConverter();
+            var converter = new ExtendedMouseActionToVisibilityConverter();
 
             // Act
             var result = converter.Convert(input, typeof(Visibility), 0, CultureInfo.CurrentCulture);
@@ -40,7 +40,7 @@ namespace AnnoDesigner.Tests
         public void Convert_PassedUnknownValueAndParameter_ShouldReturnNull(MouseAction input)
         {
             // Arrange
-            var converter = new MouseActionToVisibilityConverter();
+            var converter = new ExtendedMouseActionToVisibilityConverter();
 
             // Act
             var result = converter.Convert(input, typeof(Visibility), 0, CultureInfo.CurrentCulture);
@@ -53,7 +53,7 @@ namespace AnnoDesigner.Tests
         public void Convert_PassedUnknownValueAndUnknownParameter_ShouldReturnNull()
         {
             // Arrange
-            var converter = new MouseActionToVisibilityConverter();
+            var converter = new ExtendedMouseActionToVisibilityConverter();
 
             // Act
             var result = converter.Convert(null, typeof(Visibility), null, CultureInfo.CurrentCulture);
@@ -70,7 +70,7 @@ namespace AnnoDesigner.Tests
         public void ConvertBack_PassedAnyValue_ShouldThrow()
         {
             // Arrange
-            var converter = new MouseActionToVisibilityConverter();
+            var converter = new ExtendedMouseActionToVisibilityConverter();
 
             // Act/Assert
             Assert.Throws<NotImplementedException>(() => converter.ConvertBack(MouseAction.LeftClick, typeof(Visibility), null, CultureInfo.CurrentCulture));

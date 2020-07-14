@@ -554,36 +554,16 @@ namespace AnnoDesigner
             pasteCommand = new RelayCommand(ExecutePaste);
             deleteCommand = new RelayCommand(ExecuteDelete);
             //Set up default keybindings
-            var rotateBinding = new KeyBinding()
-            {
-                Command = rotateCommand,
-                Key = Key.R,
-                Modifiers = ModifierKeys.None
-            };
+            var rotateBinding = new InputBinding(rotateCommand, new PolyGesture(Key.R, ModifierKeys.None));
             rotateHotkey = new Hotkey(ROTATE_COMMAND_KEY, rotateBinding);
 
-            var copyBinding = new KeyBinding()
-            {
-                Command = copyCommand,
-                Key = Key.C,
-                Modifiers = ModifierKeys.Control
-            };
+            var copyBinding = new InputBinding(copyCommand, new PolyGesture(Key.C, ModifierKeys.Control));
             copyHotkey = new Hotkey(COPY_COMMAND_KEY, copyBinding);
 
-            var pasteBinding = new KeyBinding()
-            {
-                Command = pasteCommand,
-                Key = Key.V,
-                Modifiers = ModifierKeys.Control
-            };
+            var pasteBinding = new InputBinding(pasteCommand, new PolyGesture(Key.V, ModifierKeys.Control));
             pasteHotkey = new Hotkey(PASTE_COMMAND_KEY, pasteBinding);
 
-            var deleteBinding = new KeyBinding()
-            {
-                Command = deleteCommand,
-                Key = Key.Delete,
-                Modifiers = ModifierKeys.None
-            };
+            var deleteBinding = new InputBinding(deleteCommand, new PolyGesture(Key.Delete, ModifierKeys.None));
             deleteHotkey = new Hotkey(DELETE_COMMAND_KEY, deleteBinding);
 
             //TODO: Find a solution for this before PR. When the binding type switches from a KeyBinding to a MouseBinding

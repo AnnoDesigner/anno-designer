@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace AnnoDesigner.Models
+namespace AnnoDesigner.Core.Models
 {
     public enum GestureType
     {
@@ -18,6 +18,19 @@ namespace AnnoDesigner.Models
 
     public class PolyGesture : InputGesture, INotifyPropertyChanged
     {
+        public PolyGesture() { }
+        public PolyGesture(Key key) : this(key, default) { }
+        public PolyGesture(ExtendedMouseAction mouseAction) : this(mouseAction, default) { }
+        public PolyGesture(Key key, ModifierKeys modifierKeys) : this(key, default, modifierKeys, GestureType.KeyGesture) { }
+        public PolyGesture(ExtendedMouseAction mouseAction, ModifierKeys modifierKeys) : this(default, mouseAction, modifierKeys, GestureType.MouseGesture) { }
+        private PolyGesture(Key key, ExtendedMouseAction mouseAction, ModifierKeys modifierKeys, GestureType type)
+        {
+            Key = key;
+            MouseAction = mouseAction;
+            ModifierKeys = modifierKeys;
+            Type = type;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Key Key
@@ -81,13 +94,12 @@ namespace AnnoDesigner.Models
         private ExtendedMouseAction _mouseAction;
         private GestureType _gestureType;
 
-
         /// <summary>
         /// Extracts an ExtendedMouseAction from InputEventArgs
         /// </summary>
         /// <param name="inputArgs"></param>
         /// <returns></returns>
-        private ExtendedMouseAction GetExtendedMouseAction(InputEventArgs inputArgs)
+        public static ExtendedMouseAction GetExtendedMouseAction(InputEventArgs inputArgs)
         {
             if (inputArgs != null)
             {
@@ -108,16 +120,12 @@ namespace AnnoDesigner.Models
                         (2, MouseButton.Left) => ExtendedMouseAction.LeftDoubleClick,
                         (2, MouseButton.Right) => ExtendedMouseAction.RightDoubleClick,
                         (2, MouseButton.Middle) => ExtendedMouseAction.MiddleDoubleClick,
-                        (2, MouseButton.XButton1) => ExtendedMouseAction.XButton1DoubleClick,
-                        (2, MouseButton.XButton2) => ExtendedMouseAction.XButton2DoubleClick,
                         _ => ExtendedMouseAction.None,
                     };
                 }
             }
             return ExtendedMouseAction.None;
         }
-
-
 
         //Copied from AnnoDesigner.Core.Models.Notify as we need to inherit from InputGesture
         #region OnPropertyChanged helper methods
