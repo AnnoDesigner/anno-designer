@@ -182,7 +182,6 @@ namespace AnnoDesigner.Core.Controls
                 }
             }
             RecordedInput.Content = display;
-            //RecordedInput.Text = display;
         }
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
