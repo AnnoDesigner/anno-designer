@@ -22,6 +22,10 @@ namespace AnnoDesigner.Core.Presets.Loader
             try
             {
                 result = SerializationHelper.LoadFromFile<BuildingPresets>(pathToBuildingPresetsFile);
+                if (result != null)
+                {
+                    logger.Debug($"Loaded building presets version: {result.Version}");
+                }
             }
             catch (Exception ex)
             {
