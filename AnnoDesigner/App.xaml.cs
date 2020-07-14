@@ -74,7 +74,7 @@ namespace AnnoDesigner
                 }
             }
 
-            _messageBoxService.ShowError(message, "Error");
+            _messageBoxService.ShowError(message);
 
             Environment.Exit(-1);
         }
@@ -127,7 +127,7 @@ namespace AnnoDesigner
 
                         if (!createdNewMutex)
                         {
-                            _messageBoxService.ShowMessage("Another instance of the app is already running.", string.Empty);
+                            _messageBoxService.ShowMessage("Another instance of the app is already running.");
                             Environment.Exit(-1);
                         }
                     }
@@ -154,7 +154,7 @@ namespace AnnoDesigner
                 {
                     logger.Error(ex, "Error upgrading settings.");
 
-                    _messageBoxService.ShowError("The settings file has become corrupted. We must reset your settings.", "Error");
+                    _messageBoxService.ShowError("The settings file has become corrupted. We must reset your settings.");
 
                     var fileName = "";
                     if (!string.IsNullOrEmpty(ex.Filename))
