@@ -1,11 +1,4 @@
-﻿using AnnoDesigner.Core;
-using AnnoDesigner.Core.Helper;
-using AnnoDesigner.Core.Models;
-using AnnoDesigner.Models;
-using AnnoDesigner.Properties;
-using NLog;
-using Octokit;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -15,7 +8,14 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Windows;
+using AnnoDesigner.Core;
+using AnnoDesigner.Core.Extensions;
+using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Services;
+using AnnoDesigner.Models;
+using NLog;
+using Octokit;
 
 namespace AnnoDesigner
 {
@@ -35,6 +35,7 @@ namespace AnnoDesigner
         private HttpClient _httpClient;
         private readonly string _basePath;
         private readonly IAppSettings _appSettings;
+        private readonly IMessageBoxService _messageBoxService;
 
         /// <summary>
         /// Initializes a new instance of <see cref="AnnoDesigner.UpdateHelper"./>
@@ -43,10 +44,13 @@ namespace AnnoDesigner
         /// <remarks>
         /// example to get the basePath: <c>string basePath = AppDomain.CurrentDomain.BaseDirectory;</c>
         /// </remarks>
-        public UpdateHelper(string basePathToUse, IAppSettings appSettingsToUse)
+        public UpdateHelper(string basePathToUse,
+            IAppSettings appSettingsToUse,
+            IMessageBoxService messageBoxServiceToUse)
         {
             _basePath = basePathToUse;
             _appSettings = appSettingsToUse;
+            _messageBoxService = messageBoxServiceToUse;
         }
 
         private GitHubClient ApiClient
@@ -151,14 +155,14 @@ namespace AnnoDesigner
                 var release = AllReleases.FirstOrDefault(x => x.Id == releaseToDownload.Id);
                 if (release == null)
                 {
-                    logger.Warn($"No release found for {nameof(releaseToDownload.Id)}: {nameof(releaseToDownload.Id)}.");
+                    logger.Warn($"No release found for {nameof(releaseToDownload.Id)}: {nameof(releaseToDownload.Id)}");
                     return null;
                 }
 
                 var assetName = GetAssetNameForReleaseType(releaseToDownload.Type);
                 if (string.IsNullOrWhiteSpace(assetName))
                 {
-                    logger.Warn($"No asset name found for type: {releaseToDownload.Type}.");
+                    logger.Warn($"No asset name found for type: {releaseToDownload.Type}");
                     return null;
                 }
 
@@ -173,7 +177,7 @@ namespace AnnoDesigner
 
                 if (foundAsset == null)
                 {
-                    logger.Warn($"No asset found with name: {assetName}.");
+                    logger.Warn($"No asset found with name: {assetName}");
                     return null;
                 }
 
@@ -191,7 +195,7 @@ namespace AnnoDesigner
                 var pathToUpdatedPresetsFile = GetPathToUpdatedPresetsFile(releaseToDownload.Type);
                 if (string.IsNullOrWhiteSpace(pathToUpdatedPresetsFile))
                 {
-                    logger.Warn($"Could not get path to updated presets file for type: {releaseToDownload.Type}.");
+                    logger.Warn($"Could not get path to updated presets file for type: {releaseToDownload.Type}");
                     return null;
                 }
 
@@ -227,7 +231,7 @@ namespace AnnoDesigner
                             continue;
                         }
 
-                        logger.Debug($"start replacing presets with update: {pathToUpdatedPresetsFile}");
+                        logger.Debug($"Start replacing presets with update: {pathToUpdatedPresetsFile}");
 
                         if (curReleaseType == ReleaseType.PresetsAndIcons)
                         {
@@ -261,7 +265,7 @@ namespace AnnoDesigner
 
                             File.Delete(pathToUpdatedPresetsFile);
 
-                            logger.Debug("finished extracting updated presets file");
+                            logger.Debug("Finished extracting updated presets file.");
 
                             continue;
                         }
@@ -276,7 +280,7 @@ namespace AnnoDesigner
 
                         File.Move(pathToUpdatedPresetsFile, pathToOriginalPresetsFile);
 
-                        logger.Debug("finished replacing presets with update");
+                        logger.Debug("Finished replacing presets with update.");
                     }
                 });
             }
@@ -284,11 +288,8 @@ namespace AnnoDesigner
             {
                 logger.Error(ex, "Error replacing updated presets file.");
 
-                MessageBox.Show(Localization.Localization.Translations["UpdateErrorPresetMessage"],
-                            Localization.Localization.Translations["Error"],
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Error,
-                            MessageBoxResult.OK);
+                _messageBoxService.ShowError(Localization.Localization.Translations["UpdateErrorPresetMessage"],
+                            Localization.Localization.Translations["Error"]);
             }
         }
 
@@ -302,10 +303,8 @@ namespace AnnoDesigner
                 {
                     logger.Info("Could not establish a connection to the internet.");
 
-                    MessageBox.Show(Localization.Localization.Translations["UpdateNoConnectionMessage"],
-                        Localization.Localization.Translations["Error"],
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
+                    _messageBoxService.ShowError(Localization.Localization.Translations["UpdateNoConnectionMessage"],
+                            Localization.Localization.Translations["Error"]);
 
                     return null;
                 }
@@ -335,32 +334,71 @@ namespace AnnoDesigner
                 return result;
             }
 
+            logger.Debug($"Check for updates with tag: \"{tagToCheck}\"");
+
             var supportPrerelease = _appSettings.UpdateSupportsPrerelease;
             logger.Debug($"Update supports prereleases: {supportPrerelease}");
 
-            var foundGithubRelease = AllReleases.FirstOrDefault(x => !x.Draft &&
-            x.Prerelease == supportPrerelease &&
-            x.TagName.StartsWith(tagToCheck, StringComparison.OrdinalIgnoreCase));
-            //for testing - latest preset and icons release
-            //var latestPresetRelease = releases.FirstOrDefault(x => !x.Draft && !x.Prerelease && x.TagName.StartsWith("Presetsv3.0.0", StringComparison.OrdinalIgnoreCase));
-            if (foundGithubRelease == null)
+            Release foundPrerelease = null;
+            if (supportPrerelease)
+            {
+                foundPrerelease = AllReleases.FirstOrDefault(x => !x.Draft && x.Prerelease && x.TagName.StartsWith(tagToCheck, StringComparison.OrdinalIgnoreCase));
+            }
+
+            Version versionPrerelease = default;
+            if (foundPrerelease != null)
+            {
+                versionPrerelease = ParseVersionFromTag(foundPrerelease, tagToCheck);
+                logger.Debug($"Found version (prerelease): {versionPrerelease}");
+            }
+
+            var foundRelease = AllReleases.FirstOrDefault(x => !x.Draft && !x.Prerelease && x.TagName.StartsWith(tagToCheck, StringComparison.OrdinalIgnoreCase));
+            Version versionRelease = default;
+            if (foundRelease != null)
+            {
+                versionRelease = ParseVersionFromTag(foundRelease, tagToCheck);
+                logger.Debug($"Found version: {versionRelease}");
+            }
+
+            if (versionPrerelease == default && versionRelease == default)
             {
                 return result;
             }
 
-            var versionString = foundGithubRelease.TagName.Replace(tagToCheck, string.Empty).Trim();
-            if (!Version.TryParse(versionString, out var foundVersion))
+            if (versionPrerelease != default && versionPrerelease > versionRelease)
             {
-                logger.Warn($"Could not get version of preset release. {nameof(foundGithubRelease.TagName)}: {foundGithubRelease.TagName}");
+                result = new AvailableRelease
+                {
+                    Id = foundPrerelease.Id,
+                    Type = releaseType,
+                    Version = versionPrerelease
+                };
+            }
+            else
+            {
+                result = new AvailableRelease
+                {
+                    Id = foundRelease.Id,
+                    Type = releaseType,
+                    Version = versionRelease
+                };
+            }
+
+            return result;
+        }
+
+        private Version ParseVersionFromTag(Release release, string tagToCheck)
+        {
+            var result = default(Version);
+
+            var versionString = release.TagName.Replace(tagToCheck, string.Empty).Trim();
+            if (!Version.TryParse(versionString, out var parsedVersion))
+            {
+                logger.Warn($"Could not parse version of release. ({nameof(release.TagName)}: {release.TagName})");
                 return result;
             }
 
-            result = new AvailableRelease
-            {
-                Id = foundGithubRelease.Id,
-                Type = releaseType,
-                Version = foundVersion
-            };
+            result = parsedVersion;
 
             return result;
         }
@@ -456,7 +494,7 @@ namespace AnnoDesigner
         {
             try
             {
-                logger.Debug($"start downloading file: {url}");
+                logger.Debug($"Start downloading file: {url}");
 
                 var stream = await LocalHttpClient.GetStreamAsync(url).ConfigureAwait(false);
                 using (var fileStream = new FileStream(pathToSavedFile, System.IO.FileMode.Create))
@@ -464,7 +502,7 @@ namespace AnnoDesigner
                     await stream.CopyToAsync(fileStream).ConfigureAwait(false);
                 }
 
-                logger.Debug($"finished downloading file to \"{pathToSavedFile}\"");
+                logger.Debug($"Finished downloading file to \"{pathToSavedFile}\"");
 
                 return pathToSavedFile;
             }

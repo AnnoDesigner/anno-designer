@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using AnnoDesigner.ViewModels;
 using AnnoDesigner.PreferencesPages;
 using AnnoDesigner.Models;
+using AnnoDesigner.Core.Services;
 
 namespace AnnoDesigner
 {
@@ -25,10 +26,13 @@ namespace AnnoDesigner
     /// </summary>
     public partial class PreferencesWindow : Window
     {
-        public PreferencesWindow(IAppSettings appSettings, ICommons commons, HotkeyCommandManager commandManager)
+        public PreferencesWindow(IAppSettings appSettings,
+            ICommons commons,
+            HotkeyCommandManager commandManager,
+            IMessageBoxService messageBoxServiceToUse)
         {
             InitializeComponent();
-            DataContext = new PreferencesViewModel(appSettings, commons, commandManager, CurrentPage.NavigationService);
+            DataContext = new PreferencesViewModel(appSettings, commons, commandManager, CurrentPage.NavigationService, messageBoxServiceToUse);
             Loaded += Preferences_Loaded;
         }
 
