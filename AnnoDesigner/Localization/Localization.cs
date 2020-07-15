@@ -195,6 +195,11 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesNewPresetsUpdateAvailable" , "A new Update for the Presets is available!" },
                         { "UpdatePreferencesBusyCheckUpdates" , "Checking for updates ..." },
                         { "UpdatePreferencesBusyDownloadPresets" , "Downloading Presets ..." },
+                        { "GeneralSettings" , "General Settings" },
+                        { "GeneralPreferencesUISettings" , "UI Settings" },
+                        { "GeneralPreferencesUseLightGridLines" , "Use lighter grid lines" },
+                        { "GeneralPreferencesHideInfluenceOnSelection" , "Hide influenece on selection" },
+                        { "GeneralPreferencesUseZoomToPoint" , "Use new zoom behaviour" },
                     }
                 },
                 {
@@ -339,6 +344,11 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesNewPresetsUpdateAvailable" , "Ein neues Update für die Vorlagen ist verfügbar!" },
                         { "UpdatePreferencesBusyCheckUpdates" , "Prüfe auf Updates ..." },
                         { "UpdatePreferencesBusyDownloadPresets" , "Herunterladen von Vorlagen ..." },
+                        { "GeneralSettings" , "Allgemein" },
+                        { "GeneralPreferencesUISettings" , "Darstellung" },
+                        { "GeneralPreferencesUseLightGridLines" , "Nutze hellere Farbe für Raster-/Gitterlinien" },
+                        { "GeneralPreferencesHideInfluenceOnSelection" , "Verstecke Einflußbereich beim Selektieren" },
+                        { "GeneralPreferencesUseZoomToPoint" , "Verwende neues Zoomverhalten" },
                     }
                 },
                 {
@@ -483,6 +493,11 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesNewPresetsUpdateAvailable" , "Une nouvelle mise à jour des présélections est disponible!" },
                         { "UpdatePreferencesBusyCheckUpdates" , "Vérifier les mises à jour ..." },
                         { "UpdatePreferencesBusyDownloadPresets" , "Téléchargement des préréglages ..." },
+                        { "GeneralSettings" , "General Settings" },
+                        { "GeneralPreferencesUISettings" , "UI Settings" },
+                        { "GeneralPreferencesUseLightGridLines" , "Use lighter grid lines" },
+                        { "GeneralPreferencesHideInfluenceOnSelection" , "Hide influenece on selection" },
+                        { "GeneralPreferencesUseZoomToPoint" , "Use new zoom behaviour" },
                     }
                 },
                 {
@@ -627,6 +642,11 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesNewPresetsUpdateAvailable" , "Dostępna jest nowa aktualizacja ustawień wstępnych!" },
                         { "UpdatePreferencesBusyCheckUpdates" , "Sprawdzanie aktualizacji ..." },
                         { "UpdatePreferencesBusyDownloadPresets" , "Pobieranie zaprogramowanych ustawień..." },
+                        { "GeneralSettings" , "General Settings" },
+                        { "GeneralPreferencesUISettings" , "UI Settings" },
+                        { "GeneralPreferencesUseLightGridLines" , "Use lighter grid lines" },
+                        { "GeneralPreferencesHideInfluenceOnSelection" , "Hide influenece on selection" },
+                        { "GeneralPreferencesUseZoomToPoint" , "Use new zoom behaviour" },
                     }
                 },
                 {
@@ -771,6 +791,11 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesNewPresetsUpdateAvailable" , "Доступно новое Обновление для пресетов!" },
                         { "UpdatePreferencesBusyCheckUpdates" , "Проверка обновлений ..." },
                         { "UpdatePreferencesBusyDownloadPresets" , "Загрузка предустановок ..." },
+                        { "GeneralSettings" , "General Settings" },
+                        { "GeneralPreferencesUISettings" , "UI Settings" },
+                        { "GeneralPreferencesUseLightGridLines" , "Use lighter grid lines" },
+                        { "GeneralPreferencesHideInfluenceOnSelection" , "Hide influenece on selection" },
+                        { "GeneralPreferencesUseZoomToPoint" , "Use new zoom behaviour" },
                     }
                 },
             };
