@@ -192,8 +192,20 @@ namespace AnnoDesigner.Models
 
         public string RecentFiles
         {
-            get { return Settings.Default.RecentFiles; }
-            set { Settings.Default.RecentFiles = value; }
+            get => Settings.Default.RecentFiles;
+            set => Settings.Default.RecentFiles = value;
+        }
+
+        public string ColorGridLines
+        {
+            get => Settings.Default.ColorGridLines;
+            set => Settings.Default.ColorGridLines = value;
+        }
+
+        public string ColorObjectBorderLines
+        {
+            get => Settings.Default.ColorObjectBorderLines;
+            set => Settings.Default.ColorObjectBorderLines = value;
         }
     }
 }
