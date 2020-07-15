@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
-using AnnoDesigner.Core.Models;
 using Newtonsoft.Json;
 
 namespace AnnoDesigner.Core.Helper
@@ -16,7 +13,7 @@ namespace AnnoDesigner.Core.Helper
         /// <typeparam name="T">type of the object being serialized</typeparam>
         /// <param name="obj">object to serialize</param>
         /// <param name="filename">output JSON filename</param>
-        public static void SaveToFile<T>(T obj, string filename) where T : class
+        public static void SaveToFile<T>(T obj, string filename)
         {
             File.WriteAllText(filename, SaveToJsonString(obj));
         }
@@ -27,7 +24,7 @@ namespace AnnoDesigner.Core.Helper
         /// <typeparam name="T">type of the object being serialized</typeparam>
         /// <param name="obj">object to serialize</param>
         /// <param name="stream">output JSON stream</param>
-        public static void SaveToStream<T>(T obj, Stream stream) where T : class
+        public static void SaveToStream<T>(T obj, Stream stream)
         {
             var serializer = new JsonSerializer();
             using var sw = new StreamWriter(stream, Encoding.UTF8, 1024, true);//use constructor that does not close base stream
@@ -42,7 +39,7 @@ namespace AnnoDesigner.Core.Helper
         /// </summary>
         /// <typeparam name="T">type of the object being serialized</typeparam>
         /// <param name="obj">object to serialize</param>
-        public static string SaveToJsonString<T>(T obj, Formatting formatting = Formatting.None) where T : class
+        public static string SaveToJsonString<T>(T obj, Formatting formatting = Formatting.None)
         {
             return JsonConvert.SerializeObject(obj, formatting);
         }
@@ -53,7 +50,7 @@ namespace AnnoDesigner.Core.Helper
         /// <typeparam name="T">type of object being deserialized</typeparam>
         /// <param name="filename">input JSON filename</param>
         /// <returns>deserialized object</returns>
-        public static T LoadFromFile<T>(string filename) where T : class
+        public static T LoadFromFile<T>(string filename)
         {
             var fileContents = File.ReadAllText(filename);
             return LoadFromJsonString<T>(fileContents);
@@ -65,7 +62,7 @@ namespace AnnoDesigner.Core.Helper
         /// <typeparam name="T">type of object being deserialized</typeparam>
         /// <param name="stream">input JSON stream</param>
         /// <returns>deserialized object</returns>
-        public static T LoadFromStream<T>(Stream stream) where T : class
+        public static T LoadFromStream<T>(Stream stream)
         {
             var serializer = new JsonSerializer();
             using var sr = new StreamReader(stream);
@@ -83,7 +80,7 @@ namespace AnnoDesigner.Core.Helper
         /// <exception cref="Newtonsoft.Json.JsonSerializationException">If <paramref name="jsonString"/> 
         /// is null or empty, or the json is not valid for the given object.</exception>
         /// <returns>deserialized object</returns>
-        public static T LoadFromJsonString<T>(string jsonString) where T : class
+        public static T LoadFromJsonString<T>(string jsonString)
         {
             if (string.IsNullOrWhiteSpace(jsonString))
             {
@@ -98,7 +95,7 @@ namespace AnnoDesigner.Core.Helper
         /// <typeparam name="T">type of object being deserialized</typeparam>
         /// <param name="s">JSON string to deserialize</param>
         /// <returns>deserialized object</returns>
-        public static T LoadFromJsonStringLegacy<T>(string jsonString) where T : class
+        public static T LoadFromJsonStringLegacy<T>(string jsonString)
         {
             using var ms = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
             var serializer = new DataContractJsonSerializer(typeof(T));
