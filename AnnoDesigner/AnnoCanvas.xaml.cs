@@ -772,8 +772,11 @@ namespace AnnoDesigner
 
             if (!RenderInfluences)
             {
-                RenderObjectInfluenceRadius(drawingContext, SelectedObjects);
-                RenderObjectInfluenceRange(drawingContext, SelectedObjects);
+                if (!_appSettings.HideInfluenceOnSelection)
+                {
+                    RenderObjectInfluenceRadius(drawingContext, SelectedObjects);
+                    RenderObjectInfluenceRange(drawingContext, SelectedObjects);
+                }
             }
             else
             {

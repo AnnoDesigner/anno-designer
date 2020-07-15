@@ -439,5 +439,17 @@ namespace AnnoDesigner.Properties {
                 this["UseZoomToPoint"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideInfluenceOnSelection {
+            get {
+                return ((bool)(this["HideInfluenceOnSelection"]));
+            }
+            set {
+                this["HideInfluenceOnSelection"] = value;
+            }
+        }
     }
 }

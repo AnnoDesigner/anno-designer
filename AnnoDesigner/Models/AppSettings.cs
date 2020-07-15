@@ -233,6 +233,12 @@ namespace AnnoDesigner.Models
             get => Settings.Default.UseZoomToPoint;
             set => Settings.Default.UseZoomToPoint = value;
         }
+
+        public bool HideInfluenceOnSelection
+        {
+            get => Settings.Default.HideInfluenceOnSelection;
+            set => Settings.Default.HideInfluenceOnSelection = value;
+        }
     }
 }
 

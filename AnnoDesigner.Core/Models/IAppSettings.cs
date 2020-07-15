@@ -46,5 +46,6 @@ namespace AnnoDesigner.Core.Models
         string ColorGridLines { get; set; }
         string ColorObjectBorderLines { get; set; }
         bool UseZoomToPoint { get; set; }
+        bool HideInfluenceOnSelection { get; set; }
     }
 }

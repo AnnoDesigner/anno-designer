@@ -238,6 +238,7 @@ namespace AnnoDesigner.ViewModels
             {
                 if (UpdateProperty(ref _hideInfluenceOnSelection, value))
                 {
+                    _appSettings.HideInfluenceOnSelection = value;
                     _appSettings.Save();
                 }
             }
