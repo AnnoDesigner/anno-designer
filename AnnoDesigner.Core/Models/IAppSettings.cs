@@ -45,5 +45,6 @@ namespace AnnoDesigner.Core.Models
         string RecentFiles { get; set; }
         string ColorGridLines { get; set; }
         string ColorObjectBorderLines { get; set; }
+        bool UseZoomToPoint { get; set; }
     }
 }

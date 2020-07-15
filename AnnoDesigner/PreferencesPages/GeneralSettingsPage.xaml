@@ -118,11 +118,13 @@
         </Grid>
 
         <StackPanel Margin="20,0,0,10">
+            <CheckBox IsChecked="{Binding UseZoomToPoint}"
+                      Content="{l:Localize GeneralPreferencesUseZoomToPoint}"
+                      Margin="0,0,0,10" />
             <CheckBox IsChecked="{Binding HideInfluenceOnSelection}"
                       Content="{l:Localize GeneralPreferencesHideInfluenceOnSelection}"
-                      Margin="0,0,0,10" />
-            <CheckBox IsChecked="{Binding UseZoomToPoint}"
-                      Content="{l:Localize GeneralPreferencesUseZoomToPoint}" />
+                      Visibility="Collapsed" />
+
         </StackPanel>
 
         <!--#endregion-->

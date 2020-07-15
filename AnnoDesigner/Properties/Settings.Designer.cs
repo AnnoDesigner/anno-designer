@@ -427,5 +427,17 @@ namespace AnnoDesigner.Properties {
                 this["ColorObjectBorderLines"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseZoomToPoint {
+            get {
+                return ((bool)(this["UseZoomToPoint"]));
+            }
+            set {
+                this["UseZoomToPoint"] = value;
+            }
+        }
     }
 }

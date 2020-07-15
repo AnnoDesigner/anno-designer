@@ -227,6 +227,12 @@ namespace AnnoDesigner.Models
             get => Settings.Default.ColorObjectBorderLines;
             set => Settings.Default.ColorObjectBorderLines = value;
         }
+
+        public bool UseZoomToPoint
+        {
+            get => Settings.Default.UseZoomToPoint;
+            set => Settings.Default.UseZoomToPoint = value;
+        }
     }
 }
 

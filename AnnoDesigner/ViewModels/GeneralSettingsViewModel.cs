@@ -30,6 +30,8 @@ namespace AnnoDesigner.ViewModels
         {
             _appSettings = appSettingsToUse;
 
+            UseZoomToPoint = _appSettings.UseZoomToPoint;
+
             GridLineColors = new ObservableCollection<UserDefinedColor>();
             InitGridLineColors();
             var savedGridLineColor = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorGridLines);
@@ -248,6 +250,7 @@ namespace AnnoDesigner.ViewModels
             {
                 if (UpdateProperty(ref _useZoomToPoint, value))
                 {
+                    _appSettings.UseZoomToPoint = value;
                     _appSettings.Save();
                 }
             }

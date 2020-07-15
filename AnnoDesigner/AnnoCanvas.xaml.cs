@@ -1298,7 +1298,14 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            GridSize += e.Delta / 100;
+            if (!_appSettings.UseZoomToPoint)
+            {
+                GridSize += e.Delta / 100;
+            }
+            else
+            {
+                //will be added by PR #220
+            }
         }
 
         private void HandleMouse(MouseEventArgs e)
