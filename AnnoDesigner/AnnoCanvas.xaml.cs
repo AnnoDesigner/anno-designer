@@ -496,8 +496,8 @@ namespace AnnoDesigner
         /// <remarks>Also calls <see cref="UIElement.InvalidateVisual()"/></remarks>
         public void LoadObjectBorderLineColor()
         {
-            var colorFromJson = SerializationHelper.LoadFromJsonString<SerializableColor>(_appSettings.ColorObjectBorderLines);//explicit variable to make debugging easier
-            _linePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson), DPI_FACTOR * 1);
+            var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorObjectBorderLines);//explicit variable to make debugging easier
+            _linePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson.Color), DPI_FACTOR * 1);
 
             InvalidateVisual();
         }

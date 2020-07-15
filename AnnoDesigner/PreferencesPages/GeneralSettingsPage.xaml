@@ -18,6 +18,7 @@
         <coreConverters:BoolToVisibilityConverter x:Key="converterBoolToVisibilityCollapsed"
                                                   TrueValue="Visible"
                                                   FalseValue="Collapsed" />
+        <converters:UserDefinedColorToDisplayNameConverter x:Key="converterUserDefinedColorToDisplayName" />
     </Page.Resources>
     <StackPanel Orientation="Vertical"
                 Margin="10,5,0,0">
@@ -30,7 +31,8 @@
 
         <Grid Margin="20,0,0,10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition MinWidth="180"
+                                  Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -45,9 +47,6 @@
                       ItemsSource="{Binding GridLineColors}"
                       SelectedItem="{Binding SelectedGridLineColor}"
                       VerticalAlignment="Bottom">
-                <ComboBox.Resources>
-                    <converters:UserDefinedColorToDisplayNameConverter x:Key="converterUserDefinedColorToDisplayName" />
-                </ComboBox.Resources>
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Converter={StaticResource converterUserDefinedColorToDisplayName}}" />
@@ -72,6 +71,50 @@
                               RecentColorsHeader="{l:Localize RecentColors}"
                               SelectedColor="{Binding SelectedCustomGridLineColor}"
                               Visibility="{Binding IsGridLineColorPickerVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
+        </Grid>
+
+        <Grid Margin="20,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="180"
+                                  Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="{l:Localize GeneralPreferencesObjectBorderLinesColor, StringFormat='\{0\}:', Mode=OneWay}" />
+            <ComboBox Grid.Column="1"
+                      Margin="10,0,0,0"
+                      Width="140"
+                      Height="22"
+                      IsEnabled="True"
+                      ItemsSource="{Binding ObjectBorderLineColors}"
+                      SelectedItem="{Binding SelectedObjectBorderLineColor}"
+                      VerticalAlignment="Bottom">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource converterUserDefinedColorToDisplayName}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <xctk:ColorPicker Grid.Column="2"
+                              Margin="10,0,0,0"
+                              Width="140"
+                              DisplayColorAndName="True"
+                              DisplayColorTooltip="True"
+                              ShowDropDownButton="True"
+                              ShowAvailableColors="True"
+                              ShowRecentColors="True"
+                              ShowStandardColors="False"
+                              AvailableColorsSortingMode="HueSaturationBrightness"
+                              StandardTabHeader="{l:Localize Standard}"
+                              AdvancedTabHeader="{l:Localize Advanced}"
+                              AvailableColorsHeader="{l:Localize AvailableColors}"
+                              StandardColorsHeader="{l:Localize StandardColors}"
+                              RecentColorsHeader="{l:Localize RecentColors}"
+                              SelectedColor="{Binding SelectedCustomObjectBorderLineColor}"
+                              Visibility="{Binding IsObjectBorderLineColorPickerVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
         </Grid>
 
         <StackPanel Margin="20,0,0,10">

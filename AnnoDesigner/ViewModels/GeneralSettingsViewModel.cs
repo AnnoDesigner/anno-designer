@@ -18,9 +18,13 @@ namespace AnnoDesigner.ViewModels
         private bool _hideInfluenceOnSelection;
         private bool _useZoomToPoint;
         private UserDefinedColor _selectedGridLineColor;
+        private UserDefinedColor _selectedObjectBorderLineColor;
         private ObservableCollection<UserDefinedColor> _gridLineColors;
+        private ObservableCollection<UserDefinedColor> _objectBorderLineColors;
         private bool _isGridLineColorPickerVisible;
+        private bool _isObjectBorderLineColorPickerVisible;
         private Color? _selectedCustomGridLineColor;
+        private Color? _selectedCustomObjectBorderLineColor;
 
         public GeneralSettingsViewModel(IAppSettings appSettingsToUse)
         {
@@ -31,7 +35,15 @@ namespace AnnoDesigner.ViewModels
             var savedGridLineColor = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorGridLines);
             SelectedGridLineColor = GridLineColors.SingleOrDefault(x => x.Type == savedGridLineColor.Type);
             SelectedCustomGridLineColor = savedGridLineColor.Color;
+
+            ObjectBorderLineColors = new ObservableCollection<UserDefinedColor>();
+            InitObjectBorderLineColors();
+            var savedObjectBorderLineColor = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorObjectBorderLines);
+            SelectedObjectBorderLineColor = ObjectBorderLineColors.SingleOrDefault(x => x.Type == savedObjectBorderLineColor.Type);
+            SelectedCustomObjectBorderLineColor = savedObjectBorderLineColor.Color;
         }
+
+        #region Color for grid lines
 
         private void InitGridLineColors()
         {
@@ -58,7 +70,7 @@ namespace AnnoDesigner.ViewModels
                 if (UpdateProperty(ref _selectedGridLineColor, value))
                 {
                     UpdateGridLineColorVisibility();
-                    SaveSelectedColor();
+                    SaveSelectedGridLineColor();
                 }
             }
         }
@@ -73,7 +85,7 @@ namespace AnnoDesigner.ViewModels
                     if (value != null)
                     {
                         SelectedGridLineColor.Color = value.Value;
-                        SaveSelectedColor();
+                        SaveSelectedGridLineColor();
                     }
                 }
             }
@@ -100,7 +112,7 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
-        private void SaveSelectedColor()
+        private void SaveSelectedGridLineColor()
         {
             switch (SelectedGridLineColor.Type)
             {
@@ -121,6 +133,101 @@ namespace AnnoDesigner.ViewModels
             _appSettings.ColorGridLines = json;
             _appSettings.Save();
         }
+
+        #endregion
+
+        #region Color for object border lines
+
+        private void InitObjectBorderLineColors()
+        {
+            foreach (UserDefinedColorType curColorType in Enum.GetValues(typeof(UserDefinedColorType)))
+            {
+                ObjectBorderLineColors.Add(new UserDefinedColor
+                {
+                    Type = curColorType
+                });
+            }
+        }
+
+        public ObservableCollection<UserDefinedColor> ObjectBorderLineColors
+        {
+            get { return _objectBorderLineColors; }
+            set { UpdateProperty(ref _objectBorderLineColors, value); }
+        }
+
+        public UserDefinedColor SelectedObjectBorderLineColor
+        {
+            get { return _selectedObjectBorderLineColor; }
+            set
+            {
+                if (UpdateProperty(ref _selectedObjectBorderLineColor, value))
+                {
+                    UpdateObjectBorderLineVisibility();
+                    SaveSelectedObjectBorderLine();
+                }
+            }
+        }
+
+        public Color? SelectedCustomObjectBorderLineColor
+        {
+            get { return _selectedCustomObjectBorderLineColor; }
+            set
+            {
+                if (UpdateProperty(ref _selectedCustomObjectBorderLineColor, value))
+                {
+                    if (value != null)
+                    {
+                        SelectedObjectBorderLineColor.Color = value.Value;
+                        SaveSelectedObjectBorderLine();
+                    }
+                }
+            }
+        }
+
+        public bool IsObjectBorderLineColorPickerVisible
+        {
+            get { return _isObjectBorderLineColorPickerVisible; }
+            set { UpdateProperty(ref _isObjectBorderLineColorPickerVisible, value); }
+        }
+
+        private void UpdateObjectBorderLineVisibility()
+        {
+            switch (SelectedObjectBorderLineColor.Type)
+            {
+                case UserDefinedColorType.Custom:
+                    IsObjectBorderLineColorPickerVisible = true;
+                    break;
+                case UserDefinedColorType.Default:
+                case UserDefinedColorType.Light:
+                default:
+                    IsObjectBorderLineColorPickerVisible = false;
+                    break;
+            }
+        }
+
+        private void SaveSelectedObjectBorderLine()
+        {
+            switch (SelectedObjectBorderLineColor.Type)
+            {
+                case UserDefinedColorType.Default:
+                    SelectedObjectBorderLineColor.Color = Colors.Black;
+                    break;
+                case UserDefinedColorType.Light:
+                    SelectedObjectBorderLineColor.Color = Colors.LightGray;
+                    break;
+                case UserDefinedColorType.Custom:
+                    SelectedObjectBorderLineColor.Color = SelectedCustomObjectBorderLineColor ?? Colors.Black;
+                    break;
+                default:
+                    break;
+            }
+
+            var json = SerializationHelper.SaveToJsonString(SelectedObjectBorderLineColor);
+            _appSettings.ColorObjectBorderLines = json;
+            _appSettings.Save();
+        }
+
+        #endregion
 
         public bool HideInfluenceOnSelection
         {
