@@ -7,22 +7,23 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AnnoDesigner.Converters;
+using AnnoDesigner.Core.Models;
 using Xunit;
 
 namespace AnnoDesigner.Tests
 {
-    public class MouseActionToVisibilityConverterTests
+    public class ExtendedMouseActionToVisibilityConverterTests
     {
         #region Convert tests
 
         [Theory]
-        [InlineData(MouseAction.LeftClick, Visibility.Visible)]
-        [InlineData(MouseAction.MiddleClick, Visibility.Visible)]
-        [InlineData(MouseAction.RightClick, Visibility.Visible)]
-        [InlineData(MouseAction.LeftDoubleClick, Visibility.Visible)]
-        [InlineData(MouseAction.MiddleDoubleClick, Visibility.Visible)]
-        [InlineData(MouseAction.RightDoubleClick, Visibility.Visible)]
-        public void Convert_PassedKnownValueAndParameter_ShouldReturnCorrectValue(MouseAction input, Visibility expected)
+        [InlineData(ExtendedMouseAction.LeftClick, Visibility.Visible)]
+        [InlineData(ExtendedMouseAction.MiddleClick, Visibility.Visible)]
+        [InlineData(ExtendedMouseAction.RightClick, Visibility.Visible)]
+        [InlineData(ExtendedMouseAction.LeftDoubleClick, Visibility.Visible)]
+        [InlineData(ExtendedMouseAction.MiddleDoubleClick, Visibility.Visible)]
+        [InlineData(ExtendedMouseAction.RightDoubleClick, Visibility.Visible)]
+        public void Convert_PassedKnownValueAndParameter_ShouldReturnCorrectValue(ExtendedMouseAction input, Visibility expected)
         {
             // Arrange
             var converter = new ExtendedMouseActionToVisibilityConverter();
@@ -35,9 +36,9 @@ namespace AnnoDesigner.Tests
         }
 
         [Theory]
-        [InlineData(MouseAction.WheelClick)]
-        [InlineData(MouseAction.None)]
-        public void Convert_PassedUnknownValueAndParameter_ShouldReturnNull(MouseAction input)
+        [InlineData(ExtendedMouseAction.WheelClick)]
+        [InlineData(ExtendedMouseAction.None)]
+        public void Convert_PassedUnknownValueAndParameter_ShouldReturnNull(ExtendedMouseAction input)
         {
             // Arrange
             var converter = new ExtendedMouseActionToVisibilityConverter();
@@ -73,7 +74,7 @@ namespace AnnoDesigner.Tests
             var converter = new ExtendedMouseActionToVisibilityConverter();
 
             // Act/Assert
-            Assert.Throws<NotImplementedException>(() => converter.ConvertBack(MouseAction.LeftClick, typeof(Visibility), null, CultureInfo.CurrentCulture));
+            Assert.Throws<NotImplementedException>(() => converter.ConvertBack(ExtendedMouseAction.LeftClick, typeof(Visibility), null, CultureInfo.CurrentCulture));
         }
 
         #endregion

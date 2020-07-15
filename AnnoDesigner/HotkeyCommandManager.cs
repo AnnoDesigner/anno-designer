@@ -31,7 +31,7 @@ namespace AnnoDesigner
         /// </summary>
         private IDictionary<string, HotkeyInformation> hotkeyUserMappings;
 
-        private ILocalization localization;
+        private readonly ILocalization localization;
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 

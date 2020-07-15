@@ -839,10 +839,10 @@ namespace AnnoDesigner.Tests
         }
 
         [Theory]
-        [InlineData("id", Key.A, ModifierKeys.Alt, Key.B, ModifierKeys.None, @"{""id"":{""Key"":45,""MouseAction"":0,""Modifiers"":0,""BindingType"":""System.Windows.Input.KeyBinding, PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35""}}")]
-        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Shift, @"{""id"":{""Key"":44,""MouseAction"":0,""Modifiers"":4,""BindingType"":""System.Windows.Input.KeyBinding, PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35""}}")]
-        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, "{}")]
-        public void LoadSettings_IsCalled_ShouldLoadRemappedHotkeys(string id, Key key, ModifierKeys modifiers, Key expectedKey, ModifierKeys expectedModifiers, string settingsString)
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.S, ModifierKeys.Control | ModifierKeys.Shift, ExtendedMouseAction.None, GestureType.KeyGesture, @"{""Rotate"":{""Key"":62,""MouseAction"":0,""Modifiers"":6,""Type"":1}}")]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Shift, ExtendedMouseAction.LeftDoubleClick, GestureType.MouseGesture, @"{""Rotate"":{""Key"":0,""MouseAction"":5,""Modifiers"":4,""Type"":0}}")]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, ExtendedMouseAction.None, GestureType.KeyGesture, "{}")]
+        public void LoadSettings_IsCalled_ShouldLoadRemappedHotkeys(string id, Key key, ModifierKeys modifiers, Key expectedKey, ModifierKeys expectedModifiers, ExtendedMouseAction expectedMouseAction, GestureType expectedType, string settingsString)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
@@ -856,13 +856,13 @@ namespace AnnoDesigner.Tests
             // Act
             viewModel.LoadSettings();
 
-            viewModel.HotkeyCommandManager.AddHotkey(id, new KeyBinding(command, new KeyGesture(key, modifiers)));
-            var binding = viewModel.HotkeyCommandManager.GetHotkey(id).Binding as KeyBinding;
-            var actualKey = binding.Key;
-            var actualModifiers = binding.Modifiers;
+            viewModel.HotkeyCommandManager.AddHotkey(id, new InputBinding(command, new PolyGesture(key, modifiers)));
+            var gesture = viewModel.HotkeyCommandManager.GetHotkey(id).Binding.Gesture as PolyGesture;
             // Assert
-            Assert.Equal(expectedKey, actualKey);
-            Assert.Equal(expectedModifiers, actualModifiers);
+            Assert.Equal(expectedKey, gesture.Key);
+            Assert.Equal(expectedModifiers, gesture.ModifierKeys);
+            Assert.Equal(expectedMouseAction, gesture.MouseAction);
+            Assert.Equal(expectedType, gesture.Type);
         }
 
         #endregion
