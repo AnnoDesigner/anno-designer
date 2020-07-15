@@ -183,6 +183,7 @@ namespace AnnoDesigner.Localization
                         { "ExternalLinkConfirmationMessage" , "This will open a new tab in your default web browser. Continue?" },
                         { "ExternalLinkMessageTitle" , "Opening an external link" },
                         { "RecentFiles" , "Recent Files" },
+                        { "NoIcon" , "No Icon" },
                         { "UpdatePreferencesVersionInformation" , "Version Information" },
                         { "UpdatePreferencesSettings" , "Settings" },
                         { "UpdatePreferencesCheckPreRelease" , "Check for Pre-Releases" },
@@ -335,6 +336,7 @@ namespace AnnoDesigner.Localization
                         { "ExternalLinkConfirmationMessage" , "Dadurch wird ein neuer Tab in Ihrem Standard-Webbrowser geöffnet. Fortfahren?" },
                         { "ExternalLinkMessageTitle" , "Einen externen Link öffnen" },
                         { "RecentFiles" , "Zuletzt geöffnete Dateien" },
+                        { "NoIcon" , "Kein Icon" },
                         { "UpdatePreferencesVersionInformation" , "Versions-Informationen" },
                         { "UpdatePreferencesSettings" , "Einstellungen" },
                         { "UpdatePreferencesCheckPreRelease" , "Auf Vorabveröffentlichungen prüfen" },
@@ -486,8 +488,9 @@ namespace AnnoDesigner.Localization
                         { "ViewLicenses" , "Voir les Licenses open source" },
                         { "ExternalLinkConfirmationMessage" , "Cela ouvrira un nouvel onglet dans votre navigateur web par défaut. Continuer ?" },
                         { "ExternalLinkMessageTitle" , "Ouverture d'un lien externe" },
-                        { "RecentFiles" , "Informations sur les versions" },
-                        { "UpdatePreferencesVersionInformation" , "Version actuelle" },
+                        { "RecentFiles" , "Fichiers récents" },
+                        { "NoIcon" , "Pas d'icône" },
+                        { "UpdatePreferencesVersionInformation" , "Informations sur les versions" },
                         { "UpdatePreferencesSettings" , "Paramètres" },
                         { "UpdatePreferencesCheckPreRelease" , "Vérifier les pré-livraisons" },
                         { "UpdatePreferencesUpdates" , "Mises à jour" },
@@ -639,6 +642,7 @@ namespace AnnoDesigner.Localization
                         { "ExternalLinkConfirmationMessage" , "Spowoduje to otwarcie nowej karty w Twojej domyślnej przeglądarce internetowej. Kontynuować?" },
                         { "ExternalLinkMessageTitle" , "Otwarcie połączenia zewnętrznego" },
                         { "RecentFiles" , "Ostatnie akta" },
+                        { "NoIcon" , "Nie ma Ikony" },
                         { "UpdatePreferencesVersionInformation" , "Informacja o wersji" },
                         { "UpdatePreferencesSettings" , "Ustawienia" },
                         { "UpdatePreferencesCheckPreRelease" , "Sprawdź, czy nie występują luzy wstępne" },
@@ -791,6 +795,7 @@ namespace AnnoDesigner.Localization
                         { "ExternalLinkConfirmationMessage" , "При этом откроется новая вкладка в вашем веб-браузере по умолчанию. Продолжить?" },
                         { "ExternalLinkMessageTitle" , "Открытие внешней ссылки" },
                         { "RecentFiles" , "Последние Файлы" },
+                        { "NoIcon" , "Иконки нет" },
                         { "UpdatePreferencesVersionInformation" , "Информация о версии" },
                         { "UpdatePreferencesSettings" , "Настройки" },
                         { "UpdatePreferencesCheckPreRelease" , "Проверка на наличие предпродаж" },
@@ -820,6 +825,8 @@ namespace AnnoDesigner.Localization
         }
 
         private Localization() { }
+
+        internal static IDictionary<string, IDictionary<string, string>> TranslationsRaw => translations;
 
         private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
         {

@@ -498,6 +498,8 @@ namespace AnnoDesigner
         {
             var colorFromJson = SerializationHelper.LoadFromJsonString<SerializableColor>(_appSettings.ColorObjectBorderLines);//explicit variable to make debugging easier
             _linePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson), DPI_FACTOR * 1);
+
+            InvalidateVisual();
         }
 
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
