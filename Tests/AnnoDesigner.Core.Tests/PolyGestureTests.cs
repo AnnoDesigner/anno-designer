@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using AnnoDesigner.Core.Models;
+using Xunit;
+
+namespace AnnoDesigner.Core.Tests
+{
+    public class PolyGestureTests
+    {
+        [Fact]
+        public void Set_Type_InvalidGestureType_ShouldThrowArgumentException()
+        {
+            //Arrange
+            var p = new PolyGesture(Key.A, ModifierKeys.Control);
+            //Act and Assert
+            Assert.Throws<ArgumentException>(() => p.Type = (GestureType)int.MaxValue);
+        }
+
+        [Theory]
+        [InlineData(GestureType.KeyGesture, true)]
+        [InlineData(GestureType.MouseGesture, true)]
+        [InlineData((GestureType)int.MaxValue, false)]
+        [InlineData((GestureType)2, false)]
+        [InlineData((GestureType)3, false)]
+        [InlineData((GestureType)(-1), false)]
+        public void IsDefinedGestureType_ReturnsCorrectValue(GestureType type, bool expected)
+        {
+            Assert.Equal(expected, PolyGesture.IsDefinedGestureType(type));
+        }
+    }
+}

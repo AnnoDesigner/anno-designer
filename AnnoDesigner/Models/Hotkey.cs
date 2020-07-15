@@ -77,10 +77,12 @@ namespace AnnoDesigner.Models
         private void SynchronizeProperties(Key key, ExtendedMouseAction mouseAction, ModifierKeys modifiers, GestureType type)
         {
             var gesture = GetGestureOrThrow();
+
+            gesture.Type = type;
             gesture.Key = key;
             gesture.MouseAction = mouseAction;
             gesture.ModifierKeys = modifiers;
-            gesture.Type = type;
+            OnPropertyChanged(nameof(Binding.Gesture));
         }
 
         /// <summary>
@@ -112,16 +114,23 @@ namespace AnnoDesigner.Models
         /// <param name="information"></param>
         public void UpdateHotkey(HotkeyInformation information)
         {
-            SynchronizeProperties(information.Key, information.MouseAction, information.Modifiers, information.Type);
+            UpdateHotkey(information.Key, information.MouseAction, information.Modifiers, information.Type);
         }
-        
+
         /// <summary>
         /// Updates a hotkey and based on the given information
         /// </summary>
         /// <param name="information"></param>
         public void UpdateHotkey(Key key, ExtendedMouseAction mouseAction, ModifierKeys modifiers, GestureType type)
         {
-            SynchronizeProperties(key, mouseAction, modifiers, type);
+            if (PolyGesture.IsDefinedGestureType(type))
+            {
+                SynchronizeProperties(key, mouseAction, modifiers, type);
+            }
+            else
+            {
+                throw new ArgumentException($"Value provided is not valid for enum {nameof(GestureType)}", nameof(type));
+            }
         }
 
         /// <summary>

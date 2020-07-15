@@ -573,11 +573,14 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.Once);
         }
 
+        //[InlineData("id", Key.A, ModifierKeys.Alt, Key.S, ModifierKeys.Control | ModifierKeys.Shift, ExtendedMouseAction.None, GestureType.KeyGesture, @"{""id"":{""Key"":62,""MouseAction"":0,""Modifiers"":6,""Type"":1}}")]
+        //[InlineData("id", Key.A, ModifierKeys.Alt, Key.None, ModifierKeys.Shift, ExtendedMouseAction.LeftDoubleClick, GestureType.MouseGesture, @"{""id"":{""Key"":0,""MouseAction"":5,""Modifiers"":4,""Type"":0}}")]
+        //[InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, ExtendedMouseAction.None, GestureType.KeyGesture, "{}")]
+
         [Theory]
-        [InlineData("id", Key.A, ModifierKeys.Alt, Key.B, ModifierKeys.None, @"{""id"":{""Key"":45,""MouseAction"":0,""Modifiers"":0,""BindingType"":""System.Windows.Input.KeyBinding, PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35""}}")]
-        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Shift, @"{""id"":{""Key"":44,""MouseAction"":0,""Modifiers"":4,""BindingType"":""System.Windows.Input.KeyBinding, PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35""}}")]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.S, ModifierKeys.Control | ModifierKeys.Shift, @"{""id"":{""Key"":62,""MouseAction"":0,""Modifiers"":6,""Type"":1}}")]
         [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, "{}")]
-        public void SaveSettings_IsCalled_ShouldSaveRemappedHotkeys(string id, Key key, ModifierKeys modifiers, Key newKey, ModifierKeys newModifiers, string expected)
+        public void SaveSettings_IsCalled_ShouldSaveRemappedHotkeys(string id, Key key, ModifierKeys modifiers, Key newKey, ModifierKeys newModifiers, string expectedJsonString)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
@@ -586,17 +589,17 @@ namespace AnnoDesigner.Tests
             var command = Mock.Of<ICommand>(c => c.CanExecute(It.IsAny<object>()) == true);
 
             var viewModel = GetViewModel(null, appSettings.Object);
-            viewModel.HotkeyCommandManager.AddHotkey(id, new KeyBinding(command, new KeyGesture(key, modifiers)));
+            viewModel.HotkeyCommandManager.AddHotkey(id, new InputBinding(command, new PolyGesture(key, modifiers)));
             var hotkey = viewModel.HotkeyCommandManager.GetHotkey("id");
-            var binding = hotkey.Binding as KeyBinding;
-            binding.Key = newKey;
-            binding.Modifiers = newModifiers;
+            var gesture = hotkey.Binding.Gesture as PolyGesture;
+            gesture.Key = newKey;
+            gesture.ModifierKeys = newModifiers;
 
             // Act
             viewModel.SaveSettings();
 
             // Assert
-            Assert.Equal(expected, appSettings.Object.HotkeyMappings);
+            Assert.Equal(expectedJsonString, appSettings.Object.HotkeyMappings);
             appSettings.Verify(x => x.Save(), Times.Once);
         }
         #endregion
@@ -839,8 +842,8 @@ namespace AnnoDesigner.Tests
         }
 
         [Theory]
-        [InlineData("id", Key.A, ModifierKeys.Alt, Key.S, ModifierKeys.Control | ModifierKeys.Shift, ExtendedMouseAction.None, GestureType.KeyGesture, @"{""Rotate"":{""Key"":62,""MouseAction"":0,""Modifiers"":6,""Type"":1}}")]
-        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Shift, ExtendedMouseAction.LeftDoubleClick, GestureType.MouseGesture, @"{""Rotate"":{""Key"":0,""MouseAction"":5,""Modifiers"":4,""Type"":0}}")]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.S, ModifierKeys.Control | ModifierKeys.Shift, ExtendedMouseAction.None, GestureType.KeyGesture, @"{""id"":{""Key"":62,""MouseAction"":0,""Modifiers"":6,""Type"":1}}")]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.None, ModifierKeys.Shift, ExtendedMouseAction.LeftDoubleClick, GestureType.MouseGesture, @"{""id"":{""Key"":0,""MouseAction"":5,""Modifiers"":4,""Type"":0}}")]
         [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, ExtendedMouseAction.None, GestureType.KeyGesture, "{}")]
         public void LoadSettings_IsCalled_ShouldLoadRemappedHotkeys(string id, Key key, ModifierKeys modifiers, Key expectedKey, ModifierKeys expectedModifiers, ExtendedMouseAction expectedMouseAction, GestureType expectedType, string settingsString)
         {

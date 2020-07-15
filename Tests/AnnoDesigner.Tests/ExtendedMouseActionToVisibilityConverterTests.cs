@@ -36,9 +36,9 @@ namespace AnnoDesigner.Tests
         }
 
         [Theory]
-        [InlineData(ExtendedMouseAction.WheelClick)]
+        [InlineData((ExtendedMouseAction)int.MaxValue)]
         [InlineData(ExtendedMouseAction.None)]
-        public void Convert_PassedUnknownValueAndParameter_ShouldReturnNull(ExtendedMouseAction input)
+        public void Convert_PassedUnknownValue_ShouldReturnNull(ExtendedMouseAction input)
         {
             // Arrange
             var converter = new ExtendedMouseActionToVisibilityConverter();

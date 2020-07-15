@@ -396,21 +396,6 @@ namespace AnnoDesigner.Tests
             Assert.Equal(expectedMouseAction, actualGesture.MouseAction);
             Assert.Equal(expectedModifiers, actualGesture.ModifierKeys);
             Assert.Equal(expectedType, actualGesture.Type);
-
-            //if (actualHotkey.Binding is KeyBinding actualKeyBinding)
-            //{
-            //    Assert.Equal(expectedType, actualHotkey.Binding.GetType());
-            //    Assert.Equal(expectedKey, actualKeyBinding.Key);
-            //    Assert.Equal(expectedModifiers, actualKeyBinding.Modifiers);
-            //}
-            //else
-            //{
-            //    var actualMouseBinding = actualHotkey.Binding as MouseBinding;
-            //    Assert.Equal(expectedType, actualHotkey.Binding.GetType());
-            //    Assert.Equal(expectedMouseAction, actualMouseBinding.MouseAction);
-            //    Assert.Equal(expectedModifiers, (actualMouseBinding.Gesture as MouseGesture).Modifiers);
-            //}
-
         }
 
         [Theory]
