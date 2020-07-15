@@ -7,6 +7,7 @@
       xmlns:viewModels="clr-namespace:AnnoDesigner.ViewModels"
       xmlns:coreConverters="clr-namespace:AnnoDesigner.Core.Converters;assembly=AnnoDesigner.Core"
       xmlns:l="clr-namespace:AnnoDesigner.Localization"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       mc:Ignorable="d"
       d:DesignHeight="450"
       d:DesignWidth="800"
@@ -26,10 +27,43 @@
                    FontSize="14"
                    Margin="0,10,0,10" />
 
+        <Grid Margin="20,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="{l:Localize GeneralPreferencesGridLinesColor, StringFormat='\{0\}:', Mode=OneWay}" />
+            <ComboBox Grid.Column="1"
+                      Margin="10,0,0,0"
+                      Width="140"
+                      Height="22"
+                      IsEnabled="True"
+                      ItemsSource="{Binding GridLineColors}"
+                      SelectedItem="{Binding SelectedGridLineColor}"
+                      DisplayMemberPath="Name" />
+            <xctk:ColorPicker Grid.Column="2"
+                              Margin="10,0,0,0"
+                              Width="140"
+                              DisplayColorAndName="True"
+                              DisplayColorTooltip="True"
+                              ShowDropDownButton="True"
+                              ShowAvailableColors="True"
+                              ShowRecentColors="True"
+                              ShowStandardColors="False"
+                              AvailableColorsSortingMode="HueSaturationBrightness"
+                              StandardTabHeader="{l:Localize Standard}"
+                              AdvancedTabHeader="{l:Localize Advanced}"
+                              AvailableColorsHeader="{l:Localize AvailableColors}"
+                              StandardColorsHeader="{l:Localize StandardColors}"
+                              RecentColorsHeader="{l:Localize RecentColors}"
+                              SelectedColor="{Binding SelectedGridLineColor}"
+                              Visibility="{Binding IsGridLineColorPickerVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
+        </Grid>
+
         <StackPanel Margin="20,0,0,10">
-            <CheckBox IsChecked="{Binding UseLightGridLines}"
-                      Content="{l:Localize GeneralPreferencesUseLightGridLines}"
-                      Margin="0,0,0,10" />
             <CheckBox IsChecked="{Binding HideInfluenceOnSelection}"
                       Content="{l:Localize GeneralPreferencesHideInfluenceOnSelection}"
                       Margin="0,0,0,10" />

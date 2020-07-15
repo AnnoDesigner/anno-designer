@@ -194,6 +194,7 @@ namespace AnnoDesigner.ViewModels
                 RepopulateTreeView();
 
                 BuildingSettingsViewModel.UpdateLanguageBuildingInfluenceType();
+                PreferencesGeneralViewModel.UpdateLanguageUserDefinedColorType();
 
                 //Force a language update on the clipboard status item.
                 if (!string.IsNullOrWhiteSpace(StatusMessageClipboard))

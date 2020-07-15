@@ -197,9 +197,12 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesBusyDownloadPresets" , "Downloading Presets ..." },
                         { "GeneralSettings" , "General Settings" },
                         { "GeneralPreferencesUISettings" , "UI Settings" },
-                        { "GeneralPreferencesUseLightGridLines" , "Use lighter grid lines" },
                         { "GeneralPreferencesHideInfluenceOnSelection" , "Hide influenece on selection" },
                         { "GeneralPreferencesUseZoomToPoint" , "Use new zoom behaviour" },
+                        { "GeneralPreferencesGridLinesColor" , "Color for grid lines" },
+                        { "ColorTypeDefault" , "Default" },
+                        { "ColorTypeLight" , "Light" },
+                        { "ColorTypeCustom" , "Custom" },
                     }
                 },
                 {
@@ -346,9 +349,12 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesBusyDownloadPresets" , "Herunterladen von Vorlagen ..." },
                         { "GeneralSettings" , "Allgemein" },
                         { "GeneralPreferencesUISettings" , "Darstellung" },
-                        { "GeneralPreferencesUseLightGridLines" , "Nutze hellere Farbe für Raster-/Gitterlinien" },
                         { "GeneralPreferencesHideInfluenceOnSelection" , "Verstecke Einflußbereich beim Selektieren" },
                         { "GeneralPreferencesUseZoomToPoint" , "Verwende neues Zoomverhalten" },
+                        { "GeneralPreferencesGridLinesColor" , "Farbe für Raster-/Gitterlinien" },
+                        { "ColorTypeDefault" , "Standard" },
+                        { "ColorTypeLight" , "Heller" },
+                        { "ColorTypeCustom" , "Benutzerdefiniert" },
                     }
                 },
                 {
@@ -495,9 +501,12 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesBusyDownloadPresets" , "Téléchargement des préréglages ..." },
                         { "GeneralSettings" , "General Settings" },
                         { "GeneralPreferencesUISettings" , "UI Settings" },
-                        { "GeneralPreferencesUseLightGridLines" , "Use lighter grid lines" },
                         { "GeneralPreferencesHideInfluenceOnSelection" , "Hide influenece on selection" },
                         { "GeneralPreferencesUseZoomToPoint" , "Use new zoom behaviour" },
+                        { "GeneralPreferencesGridLinesColor" , "Color for grid lines" },
+                        { "ColorTypeDefault" , "Default" },
+                        { "ColorTypeLight" , "Light" },
+                        { "ColorTypeCustom" , "Custom" },
                     }
                 },
                 {
@@ -644,9 +653,12 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesBusyDownloadPresets" , "Pobieranie zaprogramowanych ustawień..." },
                         { "GeneralSettings" , "General Settings" },
                         { "GeneralPreferencesUISettings" , "UI Settings" },
-                        { "GeneralPreferencesUseLightGridLines" , "Use lighter grid lines" },
                         { "GeneralPreferencesHideInfluenceOnSelection" , "Hide influenece on selection" },
                         { "GeneralPreferencesUseZoomToPoint" , "Use new zoom behaviour" },
+                        { "GeneralPreferencesGridLinesColor" , "Color for grid lines" },
+                        { "ColorTypeDefault" , "Default" },
+                        { "ColorTypeLight" , "Light" },
+                        { "ColorTypeCustom" , "Custom" },
                     }
                 },
                 {
@@ -793,9 +805,12 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesBusyDownloadPresets" , "Загрузка предустановок ..." },
                         { "GeneralSettings" , "General Settings" },
                         { "GeneralPreferencesUISettings" , "UI Settings" },
-                        { "GeneralPreferencesUseLightGridLines" , "Use lighter grid lines" },
                         { "GeneralPreferencesHideInfluenceOnSelection" , "Hide influenece on selection" },
                         { "GeneralPreferencesUseZoomToPoint" , "Use new zoom behaviour" },
+                        { "GeneralPreferencesGridLinesColor" , "Color for grid lines" },
+                        { "ColorTypeDefault" , "Default" },
+                        { "ColorTypeLight" , "Light" },
+                        { "ColorTypeCustom" , "Custom" },
                     }
                 },
             };
