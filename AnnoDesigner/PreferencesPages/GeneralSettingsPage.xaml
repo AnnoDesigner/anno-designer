@@ -8,6 +8,7 @@
       xmlns:coreConverters="clr-namespace:AnnoDesigner.Core.Converters;assembly=AnnoDesigner.Core"
       xmlns:l="clr-namespace:AnnoDesigner.Localization"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:converters="clr-namespace:AnnoDesigner.Converters"
       mc:Ignorable="d"
       d:DesignHeight="450"
       d:DesignWidth="800"
@@ -43,7 +44,17 @@
                       IsEnabled="True"
                       ItemsSource="{Binding GridLineColors}"
                       SelectedItem="{Binding SelectedGridLineColor}"
-                      DisplayMemberPath="Name" />
+                      VerticalAlignment="Bottom">
+                <ComboBox.Resources>
+                    <converters:UserDefinedColorToDisplayNameConverter x:Key="converterUserDefinedColorToDisplayName" />
+                </ComboBox.Resources>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource converterUserDefinedColorToDisplayName}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
             <xctk:ColorPicker Grid.Column="2"
                               Margin="10,0,0,0"
                               Width="140"
@@ -59,7 +70,7 @@
                               AvailableColorsHeader="{l:Localize AvailableColors}"
                               StandardColorsHeader="{l:Localize StandardColors}"
                               RecentColorsHeader="{l:Localize RecentColors}"
-                              SelectedColor="{Binding SelectedGridLineColor}"
+                              SelectedColor="{Binding SelectedCustomGridLineColor}"
                               Visibility="{Binding IsGridLineColorPickerVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
         </Grid>
 

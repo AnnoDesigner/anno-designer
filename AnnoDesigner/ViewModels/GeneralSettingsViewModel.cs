@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Media;
+using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 using NLog;
@@ -21,6 +20,7 @@ namespace AnnoDesigner.ViewModels
         private UserDefinedColor _selectedGridLineColor;
         private ObservableCollection<UserDefinedColor> _gridLineColors;
         private bool _isGridLineColorPickerVisible;
+        private Color? _selectedCustomGridLineColor;
 
         public GeneralSettingsViewModel(IAppSettings appSettingsToUse)
         {
@@ -28,7 +28,9 @@ namespace AnnoDesigner.ViewModels
 
             GridLineColors = new ObservableCollection<UserDefinedColor>();
             InitGridLineColors();
-            SelectedGridLineColor = GridLineColors.SingleOrDefault(x => x.Type == UserDefinedColorType.Default);
+            var savedGridLineColor = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorGridLines);
+            SelectedGridLineColor = GridLineColors.SingleOrDefault(x => x.Type == savedGridLineColor.Type);
+            SelectedCustomGridLineColor = savedGridLineColor.Color;
         }
 
         private void InitGridLineColors()
@@ -37,17 +39,8 @@ namespace AnnoDesigner.ViewModels
             {
                 GridLineColors.Add(new UserDefinedColor
                 {
-                    Name = Localization.Localization.Translations["ColorType" + curColorType.ToString()],
                     Type = curColorType
                 });
-            }
-        }
-
-        public void UpdateLanguageUserDefinedColorType()
-        {
-            foreach (var curColorType in GridLineColors)
-            {
-                curColorType.Name = Localization.Localization.Translations["ColorType" + curColorType.Type.ToString()];
             }
         }
 
@@ -64,7 +57,24 @@ namespace AnnoDesigner.ViewModels
             {
                 if (UpdateProperty(ref _selectedGridLineColor, value))
                 {
-                    UpdateGridLineColorVisibility(_selectedGridLineColor.Type);
+                    UpdateGridLineColorVisibility();
+                    SaveSelectedColor();
+                }
+            }
+        }
+
+        public Color? SelectedCustomGridLineColor
+        {
+            get { return _selectedCustomGridLineColor; }
+            set
+            {
+                if (UpdateProperty(ref _selectedCustomGridLineColor, value))
+                {
+                    if (value != null)
+                    {
+                        SelectedGridLineColor.Color = value.Value;
+                        SaveSelectedColor();
+                    }
                 }
             }
         }
@@ -75,9 +85,9 @@ namespace AnnoDesigner.ViewModels
             set { UpdateProperty(ref _isGridLineColorPickerVisible, value); }
         }
 
-        private void UpdateGridLineColorVisibility(UserDefinedColorType type)
+        private void UpdateGridLineColorVisibility()
         {
-            switch (type)
+            switch (SelectedGridLineColor.Type)
             {
                 case UserDefinedColorType.Custom:
                     IsGridLineColorPickerVisible = true;
@@ -88,6 +98,28 @@ namespace AnnoDesigner.ViewModels
                     IsGridLineColorPickerVisible = false;
                     break;
             }
+        }
+
+        private void SaveSelectedColor()
+        {
+            switch (SelectedGridLineColor.Type)
+            {
+                case UserDefinedColorType.Default:
+                    SelectedGridLineColor.Color = Colors.Black;
+                    break;
+                case UserDefinedColorType.Light:
+                    SelectedGridLineColor.Color = Colors.LightGray;
+                    break;
+                case UserDefinedColorType.Custom:
+                    SelectedGridLineColor.Color = SelectedCustomGridLineColor ?? Colors.Black;
+                    break;
+                default:
+                    break;
+            }
+
+            var json = SerializationHelper.SaveToJsonString(SelectedGridLineColor);
+            _appSettings.ColorGridLines = json;
+            _appSettings.Save();
         }
 
         public bool HideInfluenceOnSelection

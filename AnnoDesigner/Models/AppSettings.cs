@@ -11,19 +11,39 @@ namespace AnnoDesigner.Models
 {
     public class AppSettings : IAppSettings
     {
+        public event EventHandler SettingsChanged;
+
+        #region ctor
+
+        private static readonly Lazy<AppSettings> lazy = new Lazy<AppSettings>(() => new AppSettings());
+
+        public static AppSettings Instance
+        {
+            get { return lazy.Value; }
+        }
+
+        private AppSettings()
+        {
+        }
+
+        #endregion
+
         public void Reload()
         {
             Settings.Default.Reload();
+            SettingsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Reset()
         {
             Settings.Default.Reset();
+            SettingsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Save()
         {
             Settings.Default.Save();
+            SettingsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Upgrade()

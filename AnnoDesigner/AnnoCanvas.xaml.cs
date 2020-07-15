@@ -484,8 +484,8 @@ namespace AnnoDesigner
         /// <remarks>Also calls <see cref="UIElement.InvalidateVisual()"/></remarks>
         public void LoadGridLineColor()
         {
-            var colorFromJson = SerializationHelper.LoadFromJsonString<SerializableColor>(_appSettings.ColorGridLines);//explicit variable to make debugging easier
-            _gridLinePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson), DPI_FACTOR * 1);
+            var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorGridLines);//explicit variable to make debugging easier
+            _gridLinePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson.Color), DPI_FACTOR * 1);
 
             InvalidateVisual();
         }
@@ -565,7 +565,8 @@ namespace AnnoDesigner
         {
             InitializeComponent();
 
-            _appSettings = appSettingsToUse ?? new AppSettings();
+            _appSettings = appSettingsToUse ?? AppSettings.Instance;
+            _appSettings.SettingsChanged += AppSettings_SettingsChanged;
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
@@ -711,6 +712,12 @@ namespace AnnoDesigner
             }
 
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+        }
+
+        private void AppSettings_SettingsChanged(object sender, EventArgs e)
+        {
+            LoadGridLineColor();
+            LoadObjectBorderLineColor();
         }
 
         #endregion

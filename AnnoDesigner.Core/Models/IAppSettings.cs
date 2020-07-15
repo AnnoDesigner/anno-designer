@@ -9,6 +9,8 @@ namespace AnnoDesigner.Core.Models
 {
     public interface IAppSettings
     {
+        event EventHandler SettingsChanged;
+
         void Reload();
         void Reset();
         void Save();
