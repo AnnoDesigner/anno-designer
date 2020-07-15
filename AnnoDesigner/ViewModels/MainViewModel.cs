@@ -1106,7 +1106,7 @@ namespace AnnoDesigner.ViewModels
                 }
 
                 // initialize output canvas
-                var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
+                var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _appSettings, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
                 {
                     PlacedObjects = allObjects,
                     RenderGrid = AnnoCanvas.RenderGrid,
