@@ -117,7 +117,7 @@
         <sys:Int32 x:Key="1">1</sys:Int32>
         <sys:Int32 x:Key="2">2</sys:Int32>
         <DataTemplate x:Key="KeyBinding">
-            <Grid>
+            <Grid MinHeight="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition SharedSizeGroup="HotkeyDescriptionSizeGroupCol0"
                                       Width="Auto" />
@@ -149,7 +149,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="MouseBinding">
-            <Grid>
+            <Grid MinHeight="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition SharedSizeGroup="HotkeyDescriptionSizeGroupCol0"
                                       Width="Auto" />
@@ -169,7 +169,8 @@
                     <Label Content="{Binding Path=Binding.Gesture.ModifierKeys}"
                            Style="{StaticResource HotkeyKey}"
                            Visibility="{Binding Path=Binding.Gesture.ModifierKeys, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
-                    <TextBlock Style="{StaticResource HotkeyDelimiter}" />
+                    <TextBlock Style="{StaticResource HotkeyDelimiter}"
+                               Visibility="{Binding Path=Binding.Gesture.ModifierKeys, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
                     <Grid>
                         <!-- multiplication unicode symbol-->
                         <!-- Content="×2" -->

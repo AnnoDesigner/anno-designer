@@ -604,7 +604,7 @@ namespace AnnoDesigner
 
             //We specifically do not add the `InputBinding`s to the `InputBindingCollection` of `AnnoCanvas`, as if we did that,
             //`InputBinding.Gesture.Matches()` would be fired for *every* event - MouseWheel, MouseDown, KeyUp, KeyDown, MouseMove etc
-            //which we don't want
+            //which we don't want, as it produces a noticeable performance impact.
 
             LoadGridLineColor();
             LoadObjectBorderLineColor();
