@@ -198,7 +198,7 @@ namespace AnnoDesigner.Localization
                         { "NoIcon" , "No Icon" },
                         { "GeneralSettings" , "General Settings" },
                         { "GeneralPreferencesUISettings" , "UI Settings" },
-                        { "GeneralPreferencesHideInfluenceOnSelection" , "Hide influenece on selection" },
+                        { "GeneralPreferencesHideInfluenceOnSelection" , "Hide influence on selection" },
                         { "GeneralPreferencesUseZoomToPoint" , "Use new zoom behaviour" },
                         { "GeneralPreferencesGridLinesColor" , "Grid line color" },
                         { "GeneralPreferencesObjectBorderLinesColor" , "Border color" },
