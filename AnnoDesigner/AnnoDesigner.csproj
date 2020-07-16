@@ -78,7 +78,7 @@
     <ProjectReference Include="..\AnnoDesigner.Core\AnnoDesigner.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="3.8.1" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="3.8.2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
     <PackageReference Include="NLog" Version="4.7.2" />

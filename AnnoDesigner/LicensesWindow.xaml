@@ -11,7 +11,7 @@
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors" x:Class="AnnoDesigner.LicensesWindow"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True, Type={x:Type viewModels:LicensesViewModel}}"
-        Title="{l:Localize Licenses}" Height="450" Width="500"
+        Title="{l:Localize Licenses}" Height="450" Width="600"
         IsTabStop="False">
     <Window.Resources>
         <coreConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed" />
@@ -44,7 +44,7 @@
                                         </Hyperlink>
                                     </TextBlock>
                                 </Grid>
-                                <ToggleButton x:Name="ShowAssets" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Template="{DynamicResource ToggleButtonTemplate}">
+                                <ToggleButton x:Name="ShowAssets" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Template="{DynamicResource ToggleButtonTemplate}" Visibility="{Binding HasAssets, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <ToggleButton.Resources>
                                         <ControlTemplate x:Key="ToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
                                             <Grid>

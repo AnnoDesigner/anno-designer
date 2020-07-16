@@ -32,7 +32,17 @@ namespace AnnoDesigner.Core.Models
 
         public string DisplayName
         {
-            get { return Localizations == null ? Name : Localizations["eng"]; }
+            get { return NameForLanguage("eng"); }
+        }
+
+        public string NameForLanguage(string language)
+        {
+            if (Localizations is null || !Localizations.TryGetValue(language, out var translation))
+            {
+                return Name;
+            }
+
+            return translation;
         }
 
         public BitmapImage Icon

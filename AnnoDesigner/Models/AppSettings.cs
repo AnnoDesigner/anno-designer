@@ -11,19 +11,39 @@ namespace AnnoDesigner.Models
 {
     public class AppSettings : IAppSettings
     {
+        public event EventHandler SettingsChanged;
+
+        #region ctor
+
+        private static readonly Lazy<AppSettings> lazy = new Lazy<AppSettings>(() => new AppSettings());
+
+        public static AppSettings Instance
+        {
+            get { return lazy.Value; }
+        }
+
+        private AppSettings()
+        {
+        }
+
+        #endregion
+
         public void Reload()
         {
             Settings.Default.Reload();
+            SettingsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Reset()
         {
             Settings.Default.Reset();
+            SettingsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Save()
         {
             Settings.Default.Save();
+            SettingsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Upgrade()
@@ -192,8 +212,32 @@ namespace AnnoDesigner.Models
 
         public string RecentFiles
         {
-            get { return Settings.Default.RecentFiles; }
-            set { Settings.Default.RecentFiles = value; }
+            get => Settings.Default.RecentFiles;
+            set => Settings.Default.RecentFiles = value;
+        }
+
+        public string ColorGridLines
+        {
+            get => Settings.Default.ColorGridLines;
+            set => Settings.Default.ColorGridLines = value;
+        }
+
+        public string ColorObjectBorderLines
+        {
+            get => Settings.Default.ColorObjectBorderLines;
+            set => Settings.Default.ColorObjectBorderLines = value;
+        }
+
+        public bool UseZoomToPoint
+        {
+            get => Settings.Default.UseZoomToPoint;
+            set => Settings.Default.UseZoomToPoint = value;
+        }
+
+        public bool HideInfluenceOnSelection
+        {
+            get => Settings.Default.HideInfluenceOnSelection;
+            set => Settings.Default.HideInfluenceOnSelection = value;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace AnnoDesigner
 
         static Commons()
         {
-            _updateHelper = new UpdateHelper(App.ApplicationPath, new AppSettings(), new MessageBoxService());
+            _updateHelper = new UpdateHelper(App.ApplicationPath, AppSettings.Instance, new MessageBoxService());
         }
 
         private Commons()
