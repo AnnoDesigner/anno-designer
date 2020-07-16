@@ -117,7 +117,7 @@ namespace AnnoDesigner.ViewModels
 
             PreferencesUpdateViewModel = new UpdateSettingsViewModel(_commons, _appSettings);
             PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons, _messageBoxService);
-            PreferencesGeneralViewModel = new GeneralSettingsViewModel(_appSettings);
+            PreferencesGeneralViewModel = new GeneralSettingsViewModel(_appSettings, _commons);
 
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);

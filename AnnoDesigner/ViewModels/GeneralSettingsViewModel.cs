@@ -14,6 +14,7 @@ namespace AnnoDesigner.ViewModels
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly IAppSettings _appSettings;
+        private readonly ICommons _commons;
 
         private bool _hideInfluenceOnSelection;
         private bool _useZoomToPoint;
@@ -26,9 +27,11 @@ namespace AnnoDesigner.ViewModels
         private Color? _selectedCustomGridLineColor;
         private Color? _selectedCustomObjectBorderLineColor;
 
-        public GeneralSettingsViewModel(IAppSettings appSettingsToUse)
+        public GeneralSettingsViewModel(IAppSettings appSettingsToUse, ICommons commonsToUse)
         {
             _appSettings = appSettingsToUse;
+            _commons = commonsToUse;
+            _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
 
             UseZoomToPoint = _appSettings.UseZoomToPoint;
 
@@ -43,6 +46,19 @@ namespace AnnoDesigner.ViewModels
             var savedObjectBorderLineColor = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorObjectBorderLines);
             SelectedObjectBorderLineColor = ObjectBorderLineColors.SingleOrDefault(x => x.Type == savedObjectBorderLineColor.Type);
             SelectedCustomObjectBorderLineColor = savedObjectBorderLineColor.Color;
+        }
+
+        private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
+        {
+            var selectedGridLineColorType = SelectedGridLineColor.Type;
+            GridLineColors.Clear();
+            InitGridLineColors();
+            SelectedGridLineColor = GridLineColors.SingleOrDefault(x => x.Type == selectedGridLineColorType);
+
+            var selectedObjectBorderLineColorType = SelectedObjectBorderLineColor.Type;
+            ObjectBorderLineColors.Clear();
+            InitObjectBorderLineColors();
+            SelectedObjectBorderLineColor = ObjectBorderLineColors.SingleOrDefault(x => x.Type == selectedObjectBorderLineColorType);
         }
 
         #region Color for grid lines
