@@ -38,14 +38,30 @@ namespace AnnoDesigner.ViewModels
             GridLineColors = new ObservableCollection<UserDefinedColor>();
             RefreshGridLineColors();
             var savedGridLineColor = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorGridLines);
-            SelectedGridLineColor = GridLineColors.SingleOrDefault(x => x.Type == savedGridLineColor.Type);
-            SelectedCustomGridLineColor = savedGridLineColor.Color;
+            if (savedGridLineColor is null)
+            {
+                SelectedGridLineColor = GridLineColors.First();
+                SelectedCustomGridLineColor = SelectedGridLineColor.Color;
+            }
+            else
+            {
+                SelectedGridLineColor = GridLineColors.SingleOrDefault(x => x.Type == savedGridLineColor.Type);
+                SelectedCustomGridLineColor = savedGridLineColor.Color;
+            }
 
             ObjectBorderLineColors = new ObservableCollection<UserDefinedColor>();
             RefreshObjectBorderLineColors();
             var savedObjectBorderLineColor = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorObjectBorderLines);
-            SelectedObjectBorderLineColor = ObjectBorderLineColors.SingleOrDefault(x => x.Type == savedObjectBorderLineColor.Type);
-            SelectedCustomObjectBorderLineColor = savedObjectBorderLineColor.Color;
+            if (savedObjectBorderLineColor is null)
+            {
+                SelectedObjectBorderLineColor = ObjectBorderLineColors.First();
+                SelectedCustomObjectBorderLineColor = SelectedObjectBorderLineColor.Color;
+            }
+            else
+            {
+                SelectedObjectBorderLineColor = ObjectBorderLineColors.SingleOrDefault(x => x.Type == savedObjectBorderLineColor.Type);
+                SelectedCustomObjectBorderLineColor = savedObjectBorderLineColor.Color;
+            }
         }
 
         private void Commons_SelectedLanguageChanged(object sender, EventArgs e)

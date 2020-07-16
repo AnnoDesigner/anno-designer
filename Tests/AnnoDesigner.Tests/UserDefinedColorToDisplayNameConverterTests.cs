@@ -11,8 +11,9 @@ namespace AnnoDesigner.Tests
     {
         public UserDefinedColorToDisplayNameConverterTests()
         {
-            Localization.Localization.Init(Mock.Of<ICommons>());
-            Localization.Localization.Instance.SelectedLanguage = "eng";
+            var commonsMock = new Mock<ICommons>();
+            commonsMock.SetupGet(x => x.SelectedLanguage).Returns(() => "English");
+            Localization.Localization.Init(commonsMock.Object);
         }
 
         #region test data
