@@ -214,7 +214,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedMainWindowHeight, appSettings.Object.MainWindowHeight);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Fact]
@@ -234,7 +234,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedMainMainWindowWidth, appSettings.Object.MainWindowWidth);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Fact]
@@ -254,7 +254,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedMainMainWindowLeft, appSettings.Object.MainWindowLeft);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Fact]
@@ -274,7 +274,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedMainMainWindowTop, appSettings.Object.MainWindowTop);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -294,7 +294,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedMainMainWindowWindowState, appSettings.Object.MainWindowWindowState);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -314,7 +314,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedShowGrid, appSettings.Object.ShowGrid);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -334,7 +334,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedShowIcons, appSettings.Object.ShowIcons);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -354,7 +354,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedShowLabels, appSettings.Object.ShowLabels);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -374,7 +374,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedShowInfluences, appSettings.Object.ShowInfluences);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -394,7 +394,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedShowTrueInfluenceRange, appSettings.Object.ShowTrueInfluenceRange);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -414,7 +414,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedEnableAutomaticUpdateCheck, appSettings.Object.EnableAutomaticUpdateCheck);
-            appSettings.Verify(x => x.Save(), Times.Between(1, 2, Range.Inclusive));
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -434,7 +434,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedUseCurrentZoomOnExportedImageValue, appSettings.Object.UseCurrentZoomOnExportedImageValue);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -454,7 +454,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedRenderSelectionHighlightsOnExportedImageValue, appSettings.Object.RenderSelectionHighlightsOnExportedImageValue);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -482,7 +482,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedIsPavedStreet, appSettings.Object.IsPavedStreet);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -502,7 +502,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedStatsShowStats, appSettings.Object.StatsShowStats);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -522,7 +522,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedStatsShowBuildingCount, appSettings.Object.StatsShowBuildingCount);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -544,7 +544,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedTreeViewSearchText, appSettings.Object.TreeViewSearchText);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -570,7 +570,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedPresetsTreeGameVersionFilter.ToString(), appSettings.Object.PresetsTreeGameVersionFilter);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         //[InlineData("id", Key.A, ModifierKeys.Alt, Key.S, ModifierKeys.Control | ModifierKeys.Shift, ExtendedMouseAction.None, GestureType.KeyGesture, @"{""id"":{""Key"":62,""MouseAction"":0,""Modifiers"":6,""Type"":1}}")]
@@ -600,7 +600,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedJsonString, appSettings.Object.HotkeyMappings);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
         #endregion
 
