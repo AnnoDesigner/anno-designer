@@ -117,6 +117,7 @@ namespace AnnoDesigner.ViewModels
 
             PreferencesUpdateViewModel = new UpdateSettingsViewModel(_commons, _appSettings);
             PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons, _messageBoxService);
+            PreferencesGeneralViewModel = new GeneralSettingsViewModel(_appSettings, _commons);
 
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
@@ -1312,6 +1313,12 @@ namespace AnnoDesigner.ViewModels
 
             vm.Pages.Add(new PreferencePage
             {
+                Name = nameof(GeneralSettingsPage),
+                ViewModel = PreferencesGeneralViewModel,
+                HeaderKeyForTranslation = "GeneralSettings"
+            });
+            vm.Pages.Add(new PreferencePage
+            {
                 Name = nameof(ManageKeybindingsPage),
                 ViewModel = PreferencesKeyBindingsViewModel,
                 HeaderKeyForTranslation = "ManageKeybindings"
@@ -1370,6 +1377,8 @@ namespace AnnoDesigner.ViewModels
         public UpdateSettingsViewModel PreferencesUpdateViewModel { get; set; }
 
         public ManageKeybindingsViewModel PreferencesKeyBindingsViewModel { get; set; }
+
+        public GeneralSettingsViewModel PreferencesGeneralViewModel { get; set; }
 
         #endregion    
     }

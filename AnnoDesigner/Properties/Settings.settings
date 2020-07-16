@@ -104,5 +104,11 @@
     <Setting Name="ColorObjectBorderLines" Type="System.String" Scope="User">
       <Value Profile="(Default)">{"A":255,"R":0,"G":0,"B":0}</Value>
     </Setting>
+    <Setting Name="UseZoomToPoint" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="HideInfluenceOnSelection" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

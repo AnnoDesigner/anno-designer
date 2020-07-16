@@ -484,8 +484,8 @@ namespace AnnoDesigner
         /// <remarks>Also calls <see cref="UIElement.InvalidateVisual()"/></remarks>
         public void LoadGridLineColor()
         {
-            var colorFromJson = SerializationHelper.LoadFromJsonString<SerializableColor>(_appSettings.ColorGridLines);//explicit variable to make debugging easier
-            _gridLinePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson), DPI_FACTOR * 1);
+            var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorGridLines);//explicit variable to make debugging easier
+            _gridLinePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson.Color), DPI_FACTOR * 1);
 
             InvalidateVisual();
         }
@@ -496,8 +496,8 @@ namespace AnnoDesigner
         /// <remarks>Also calls <see cref="UIElement.InvalidateVisual()"/></remarks>
         public void LoadObjectBorderLineColor()
         {
-            var colorFromJson = SerializationHelper.LoadFromJsonString<SerializableColor>(_appSettings.ColorObjectBorderLines);//explicit variable to make debugging easier
-            _linePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson), DPI_FACTOR * 1);
+            var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorObjectBorderLines);//explicit variable to make debugging easier
+            _linePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson.Color), DPI_FACTOR * 1);
 
             InvalidateVisual();
         }
@@ -565,7 +565,8 @@ namespace AnnoDesigner
         {
             InitializeComponent();
 
-            _appSettings = appSettingsToUse ?? new AppSettings();
+            _appSettings = appSettingsToUse ?? AppSettings.Instance;
+            _appSettings.SettingsChanged += AppSettings_SettingsChanged;
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
@@ -713,6 +714,12 @@ namespace AnnoDesigner
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
 
+        private void AppSettings_SettingsChanged(object sender, EventArgs e)
+        {
+            LoadGridLineColor();
+            LoadObjectBorderLineColor();
+        }
+
         #endregion
 
         #region Rendering
@@ -765,8 +772,11 @@ namespace AnnoDesigner
 
             if (!RenderInfluences)
             {
-                RenderObjectInfluenceRadius(drawingContext, SelectedObjects);
-                RenderObjectInfluenceRange(drawingContext, SelectedObjects);
+                if (!_appSettings.HideInfluenceOnSelection)
+                {
+                    RenderObjectInfluenceRadius(drawingContext, SelectedObjects);
+                    RenderObjectInfluenceRange(drawingContext, SelectedObjects);
+                }
             }
             else
             {
@@ -1291,7 +1301,14 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            GridSize += e.Delta / 100;
+            if (!_appSettings.UseZoomToPoint)
+            {
+                GridSize += e.Delta / 100;
+            }
+            else
+            {
+                //will be added by PR #220
+            }
         }
 
         private void HandleMouse(MouseEventArgs e)
