@@ -35,13 +35,6 @@ namespace AnnoDesigner.Core.Controls
         public event EventHandler<ActionRecorderEventArgs> RecordingStarted;
         public event EventHandler<ActionRecorderEventArgs> RecordingFinished;
 
-        public void Reset()
-        {
-            Modifiers = ModifierKeys.None;
-            Key = Key.None;
-            MouseAction = ExtendedMouseAction.None;
-            ResultType = ActionType.None;
-        }
 
         public enum ActionType
         {
@@ -151,6 +144,14 @@ namespace AnnoDesigner.Core.Controls
         /// </summary>
         private bool startNewRecording = false;
 
+        public void Reset()
+        {
+            Modifiers = ModifierKeys.None;
+            Key = Key.None;
+            MouseAction = ExtendedMouseAction.None;
+            ResultType = ActionType.None;
+        }
+
         private void UpdateDisplay()
         {
             var modifiers = Modifiers == ModifierKeys.None ? "" : Modifiers.ToString();
@@ -194,15 +195,16 @@ namespace AnnoDesigner.Core.Controls
 
             if (!recordingKeyCombination)
             {
-                if (!recordingMouseCombination)
-                {
-                    recordingMouseCombination = true;
-                }
                 //Do not record MouseActions that are not supported.
                 var action = PolyGesture.GetExtendedMouseAction(e);
                 if (!UNSUPPORTED_MOUSE_ACTIONS.Contains(action))
                 {
+                    if (!recordingMouseCombination)
+                    {
+                        recordingMouseCombination = true;
+                    }
                     MouseAction = action;
+                    EnsureCorrectResultType();
                 }
 
             }
@@ -257,23 +259,28 @@ namespace AnnoDesigner.Core.Controls
         {
             if (!startNewRecording)
             {
-                if (recordingKeyCombination)
-                {
-                    ResultType = ActionType.KeyAction;
-                }
-                else if (recordingMouseCombination)
-                {
-                    ResultType = ActionType.MouseAction;
-                }
-                else
-                {
-                    ResultType = ActionType.None;
-                }
+                EnsureCorrectResultType();
 
                 recordingKeyCombination = false;
                 recordingMouseCombination = false;
                 startNewRecording = true; //Save the current state, but if we start recording again, remove the current saved Modifiers
                 RecordingFinished?.Invoke(this, new ActionRecorderEventArgs(Key, MouseAction, Modifiers, ResultType));
+            }
+        }
+
+        private void EnsureCorrectResultType()
+        {
+            if (recordingKeyCombination)
+            {
+                ResultType = ActionType.KeyAction;
+            }
+            else if (recordingMouseCombination)
+            {
+                ResultType = ActionType.MouseAction;
+            }
+            else
+            {
+                ResultType = ActionType.None;
             }
         }
 
