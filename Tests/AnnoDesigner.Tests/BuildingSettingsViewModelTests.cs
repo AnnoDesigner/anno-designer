@@ -20,7 +20,8 @@ namespace AnnoDesigner.Tests
         public BuildingSettingsViewModelTests()
         {
             var commonsMock = new Mock<ICommons>();
-            commonsMock.SetupGet(x => x.SelectedLanguage).Returns(() => "English");
+            commonsMock.SetupGet(x => x.CurrentLanguage).Returns(() => "English");
+            commonsMock.SetupGet(x => x.CurrentLanguageCode).Returns(() => "eng");
             Localization.Localization.Init(commonsMock.Object);
 
             _mockedAppSettings = new Mock<IAppSettings>().Object;

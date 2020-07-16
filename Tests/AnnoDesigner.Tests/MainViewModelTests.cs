@@ -23,12 +23,20 @@ namespace AnnoDesigner.Tests
         private readonly IAnnoCanvas _mockedAnnoCanvas;
         private readonly IRecentFilesHelper _inMemoryRecentFilesHelper;
         private readonly IMessageBoxService _mockedMessageBoxService;
+        private readonly ILocalizationHelper _mockedLocalizationHelper;
 
         public MainViewModelTests()
         {
             var commonsMock = new Mock<ICommons>();
-            commonsMock.SetupGet(x => x.SelectedLanguage).Returns(() => "English");
+            commonsMock.SetupGet(x => x.CurrentLanguage).Returns(() => "English");
+            commonsMock.SetupGet(x => x.CurrentLanguageCode).Returns(() => "eng");
             _mockedCommons = commonsMock.Object;
+
+            var mockedLocalizationHelper = new Mock<ILocalizationHelper>();
+            mockedLocalizationHelper.Setup(x => x.GetLocalization(It.IsAny<string>())).Returns<string>(x => x);
+            mockedLocalizationHelper.Setup(x => x.GetLocalization(It.IsAny<string>(), It.IsAny<string>())).Returns((string value, string langauge) => value);
+            _mockedLocalizationHelper = mockedLocalizationHelper.Object;
+
             Localization.Localization.Init(_mockedCommons);
 
             _mockedAppSettings = new Mock<IAppSettings>().Object;
@@ -46,12 +54,14 @@ namespace AnnoDesigner.Tests
             IAppSettings appSettingsToUse = null,
             IRecentFilesHelper recentFilesHelperToUse = null,
             IMessageBoxService messageBoxServiceToUse = null,
-            IAnnoCanvas annoCanvasToUse = null)
+            IAnnoCanvas annoCanvasToUse = null,
+            ILocalizationHelper localizationHelperToUse = null)
         {
             return new MainViewModel(commonsToUse ?? _mockedCommons,
                 appSettingsToUse ?? _mockedAppSettings,
                 recentFilesHelperToUse ?? _inMemoryRecentFilesHelper,
-                messageBoxServiceToUse ?? _mockedMessageBoxService)
+                messageBoxServiceToUse ?? _mockedMessageBoxService,
+                localizationHelperToUse ?? _mockedLocalizationHelper)
             {
                 AnnoCanvas = annoCanvasToUse ?? _mockedAnnoCanvas
             };
@@ -903,7 +913,7 @@ namespace AnnoDesigner.Tests
 
             var commons = new Mock<ICommons>();
             commons.SetupAllProperties();
-            commons.Object.SelectedLanguage = languageBeforeChange;
+            commons.Object.CurrentLanguage = languageBeforeChange;
 
             var viewModel = GetViewModel(commons.Object, null);
             viewModel.IsLanguageChange = true;
@@ -915,7 +925,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Null(ex);
-            Assert.Equal(languageBeforeChange, commons.Object.SelectedLanguage);
+            Assert.Equal(languageBeforeChange, commons.Object.CurrentLanguage);
         }
 
         [Fact]
@@ -926,7 +936,7 @@ namespace AnnoDesigner.Tests
 
             var commons = new Mock<ICommons>();
             commons.SetupAllProperties();
-            commons.Object.SelectedLanguage = languageBeforeChange;
+            commons.Object.CurrentLanguage = languageBeforeChange;
 
             var viewModel = GetViewModel(commons.Object, null);
 
@@ -936,7 +946,7 @@ namespace AnnoDesigner.Tests
             viewModel.LanguageSelectedCommand.Execute(languageToSet);
 
             // Assert
-            Assert.Equal(languageToSet.Name, commons.Object.SelectedLanguage);
+            Assert.Equal(languageToSet.Name, commons.Object.CurrentLanguage);
         }
 
         [Fact]
@@ -947,7 +957,7 @@ namespace AnnoDesigner.Tests
 
             var commons = new Mock<ICommons>();
             commons.SetupAllProperties();
-            commons.Object.SelectedLanguage = languageBeforeChange;
+            commons.Object.CurrentLanguage = languageBeforeChange;
 
             var viewModel = GetViewModel(commons.Object, null);
 
@@ -957,7 +967,7 @@ namespace AnnoDesigner.Tests
             viewModel.LanguageSelectedCommand.Execute(languageToSet);
 
             // Assert
-            Assert.Equal(languageToSet.Name, commons.Object.SelectedLanguage);
+            Assert.Equal(languageToSet.Name, commons.Object.CurrentLanguage);
             Assert.False(viewModel.IsLanguageChange);
         }
 

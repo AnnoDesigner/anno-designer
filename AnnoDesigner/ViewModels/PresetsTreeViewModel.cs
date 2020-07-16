@@ -228,12 +228,12 @@ namespace AnnoDesigner.ViewModels
                             Id = ++itemId
                         };
 
-                        foreach (var curBuildingInfo in curGroup.OrderBy(x => x.GetOrderParameter(_commons.SelectedLanguage)))
+                        foreach (var curBuildingInfo in curGroup.OrderBy(x => x.GetOrderParameter(_commons.CurrentLanguageCode)))
                         {
                             groupItem.Children.Add(new GenericTreeItem(groupItem)
                             {
-                                Header = curBuildingInfo.ToAnnoObject(_commons.SelectedLanguage).Label,
-                                AnnoObject = curBuildingInfo.ToAnnoObject(_commons.SelectedLanguage),
+                                Header = curBuildingInfo.ToAnnoObject(_commons.CurrentLanguageCode).Label,
+                                AnnoObject = curBuildingInfo.ToAnnoObject(_commons.CurrentLanguageCode),
                                 Id = ++itemId
                             });
                         }
@@ -253,8 +253,8 @@ namespace AnnoDesigner.ViewModels
                             {
                                 moduleItem.Children.Add(new GenericTreeItem(moduleItem)
                                 {
-                                    Header = fourthLevel.ToAnnoObject(_commons.SelectedLanguage).Label,
-                                    AnnoObject = fourthLevel.ToAnnoObject(_commons.SelectedLanguage),
+                                    Header = fourthLevel.ToAnnoObject(_commons.CurrentLanguageCode).Label,
+                                    AnnoObject = fourthLevel.ToAnnoObject(_commons.CurrentLanguageCode),
                                     Id = ++itemId
                                 });
                             }
@@ -268,13 +268,13 @@ namespace AnnoDesigner.ViewModels
                         factionItem.Children.Add(groupItem);
                     }
 
-                    var groupedFactionBuildings = curFaction.Where(x => x.Group == null).OrderBy(x => x.GetOrderParameter(_commons.SelectedLanguage));
+                    var groupedFactionBuildings = curFaction.Where(x => x.Group == null).OrderBy(x => x.GetOrderParameter(_commons.CurrentLanguageCode));
                     foreach (var curGroup in groupedFactionBuildings)
                     {
                         factionItem.Children.Add(new GenericTreeItem(factionItem)
                         {
-                            Header = curGroup.ToAnnoObject(_commons.SelectedLanguage).Label,
-                            AnnoObject = curGroup.ToAnnoObject(_commons.SelectedLanguage),
+                            Header = curGroup.ToAnnoObject(_commons.CurrentLanguageCode).Label,
+                            AnnoObject = curGroup.ToAnnoObject(_commons.CurrentLanguageCode),
                             Id = ++itemId
                         });
                     }

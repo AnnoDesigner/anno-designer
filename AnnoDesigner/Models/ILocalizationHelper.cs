@@ -8,8 +8,8 @@ namespace AnnoDesigner.Models
 {
     public interface ILocalizationHelper
     {
-        string GetLocalization(string valueToTranslate);
+        string GetLocalization(string translationKey);
 
-        string GetLocalization(string valueToTranslate, string languageCode);
+        string GetLocalization(string translationKey, string languageCode);
     }
 }

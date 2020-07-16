@@ -28,12 +28,16 @@ namespace AnnoDesigner
         private static readonly IAppSettings _appSettings;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly IMessageBoxService _messageBoxService;
+        private static readonly ILocalizationHelper _localizationHelper;
 
         static App()
         {
             _commons = Commons.Instance;
             _appSettings = AppSettings.Instance;
             _messageBoxService = new MessageBoxService();
+
+            Localization.Localization.Init(_commons);
+            _localizationHelper = Localization.Localization.Instance;
         }
 
         public App()
@@ -181,12 +185,10 @@ namespace AnnoDesigner
                 //var updateWindow = new UpdateWindow();                
                 await _commons.UpdateHelper.ReplaceUpdatedPresetsFilesAsync();
 
-                Localization.Localization.Init(_commons);
+                var recentFilesSerializer = new RecentFilesAppSettingsSerializer(_appSettings);
 
-                var serializer = new RecentFilesAppSettingsSerializer(_appSettings);
-
-                IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(serializer, new FileSystem());
-                var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper, _messageBoxService);
+                IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(recentFilesSerializer, new FileSystem());
+                var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper, _messageBoxService, _localizationHelper);
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
                 MainWindow = new MainWindow(_appSettings);
@@ -196,7 +198,7 @@ namespace AnnoDesigner
                 //updateWindow.Show();
 
                 //If language is not recognized, bring up the language selection screen
-                if (!Localization.Localization.LanguageCodeMap.ContainsKey(_appSettings.SelectedLanguage))
+                if (!_commons.LanguageCodeMap.ContainsKey(_appSettings.SelectedLanguage))
                 {
                     var w = new Welcome();
                     w.DataContext = mainVM.WelcomeViewModel;
@@ -204,7 +206,7 @@ namespace AnnoDesigner
                 }
                 else
                 {
-                    _commons.SelectedLanguage = _appSettings.SelectedLanguage;
+                    _commons.CurrentLanguage = _appSettings.SelectedLanguage;
                 }
 
                 MainWindow.ShowDialog();

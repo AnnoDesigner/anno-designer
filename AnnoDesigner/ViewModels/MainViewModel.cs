@@ -43,6 +43,7 @@ namespace AnnoDesigner.ViewModels
         private readonly IPenCache _penCache;
         private readonly IRecentFilesHelper _recentFilesHelper;
         private readonly IMessageBoxService _messageBoxService;
+        private readonly ILocalizationHelper _localizationHelper;
 
         public event EventHandler<EventArgs> ShowStatisticsChanged;
 
@@ -80,6 +81,7 @@ namespace AnnoDesigner.ViewModels
             IAppSettings appSettingsToUse,
             IRecentFilesHelper recentFilesHelperToUse,
             IMessageBoxService messageBoxServiceToUse,
+            ILocalizationHelper localizationHelperToUse,
             ILayoutLoader layoutLoaderToUse = null,
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
@@ -91,6 +93,7 @@ namespace AnnoDesigner.ViewModels
             _appSettings = appSettingsToUse;
             _recentFilesHelper = recentFilesHelperToUse;
             _messageBoxService = messageBoxServiceToUse;
+            _localizationHelper = localizationHelperToUse;
 
             _layoutLoader = layoutLoaderToUse ?? new LayoutLoader();
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
@@ -99,7 +102,7 @@ namespace AnnoDesigner.ViewModels
 
             HotkeyCommandManager = new HotkeyCommandManager(Localization.Localization.Instance);
 
-            StatisticsViewModel = new StatisticsViewModel();
+            StatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
             StatisticsViewModel.IsVisible = _appSettings.StatsShowStats;
             StatisticsViewModel.ShowStatisticsBuildingCount = _appSettings.StatsShowBuildingCount;
 
@@ -184,15 +187,10 @@ namespace AnnoDesigner.ViewModels
         {
             var localizations = new Dictionary<string, string>();
 
-            foreach (var curLanguageCode in Localization.Localization.LanguageCodeMap)
+            foreach (var curLanguageCode in _commons.LanguageCodeMap.Values)
             {
-                if (Localization.Localization.TranslationsRaw.TryGetValue(curLanguageCode.Value, out var foundTranslations))
-                {
-                    if (foundTranslations.TryGetValue("NoIcon", out var curTranslationOfNone))
-                    {
-                        localizations.Add(curLanguageCode.Value, curTranslationOfNone);
-                    }
-                }
+                var curTranslationOfNone = _localizationHelper.GetLocalization("NoIcon", curLanguageCode);
+                localizations.Add(curLanguageCode, curTranslationOfNone);
             }
 
             return new IconImage("NoIcon") { Localizations = localizations };
@@ -202,7 +200,7 @@ namespace AnnoDesigner.ViewModels
         {
             try
             {
-                InitLanguageMenu(_commons.SelectedLanguage);
+                InitLanguageMenu(_commons.CurrentLanguage);
 
                 if (AnnoCanvas == null)
                 {
@@ -220,7 +218,7 @@ namespace AnnoDesigner.ViewModels
                 }
 
                 //update settings
-                _appSettings.SelectedLanguage = _commons.SelectedLanguage;
+                _appSettings.SelectedLanguage = _commons.CurrentLanguage;
 
                 _ = UpdateStatisticsAsync(UpdateMode.All);
 
@@ -546,7 +544,7 @@ namespace AnnoDesigner.ViewModels
 
         public void LoadAvailableIcons()
         {
-            foreach (var icon in AnnoCanvas.Icons.OrderBy(x => x.Value.NameForLanguage(Localization.Localization.Instance.SelectedLanguage)))
+            foreach (var icon in AnnoCanvas.Icons.OrderBy(x => x.Value.NameForLanguage(_commons.CurrentLanguageCode)))
             {
                 AvailableIcons.Add(icon.Value);
             }
@@ -1137,7 +1135,7 @@ namespace AnnoDesigner.ViewModels
 
                 if (renderStatistics)
                 {
-                    var exportStatisticsViewModel = new StatisticsViewModel();
+                    var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
 
                     var exportStatisticsView = new StatisticsView
                     {
@@ -1237,7 +1235,7 @@ namespace AnnoDesigner.ViewModels
 
                 InitLanguageMenu(selectedLanguage.Name);
 
-                _commons.SelectedLanguage = selectedLanguage.Name;
+                _commons.CurrentLanguage = selectedLanguage.Name;
             }
             finally
             {

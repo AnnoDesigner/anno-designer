@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using AnnoDesigner.Models;
@@ -40,19 +41,17 @@ namespace AnnoDesigner
             get { return _updateHelper; }
         }
 
-        public string SelectedLanguage
+        public string CurrentLanguage
         {
             get
             {
-                if (_selectedLanguage != null && Localization.Localization.LanguageCodeMap.ContainsKey(_selectedLanguage))
+                if (_selectedLanguage != null && LanguageCodeMap.ContainsKey(_selectedLanguage))
                 {
                     return _selectedLanguage;
                 }
-                else
-                {
-                    _selectedLanguage = "English";
-                    return _selectedLanguage;
-                }
+
+                _selectedLanguage = "English";
+                return _selectedLanguage;
             }
             set
             {
@@ -60,6 +59,20 @@ namespace AnnoDesigner
                 SelectedLanguageChanged?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        public string CurrentLanguageCode => LanguageCodeMap[CurrentLanguage];
+
+        public Dictionary<string, string> LanguageCodeMap => new Dictionary<string, string>()
+        {
+            { "English", "eng" },
+            { "Deutsch", "ger" },
+            { "Français","fra" },
+            { "Español", "esp" },
+            { "Italiano", "ita" },
+            { "Polski", "pol" },
+            { "Русский", "rus" },
+            { "český", "cze" },
+        };
 
         public bool CanWriteInFolder(string folderPathToCheck = null)
         {
