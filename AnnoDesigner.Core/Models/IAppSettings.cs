@@ -9,6 +9,8 @@ namespace AnnoDesigner.Core.Models
 {
     public interface IAppSettings
     {
+        event EventHandler SettingsChanged;
+
         void Reload();
         void Reset();
         void Save();
@@ -41,5 +43,9 @@ namespace AnnoDesigner.Core.Models
         bool UpdateSupportsPrerelease { get; set; }
         string HotkeyMappings { get; set; }
         string RecentFiles { get; set; }
+        string ColorGridLines { get; set; }
+        string ColorObjectBorderLines { get; set; }
+        bool UseZoomToPoint { get; set; }
+        bool HideInfluenceOnSelection { get; set; }
     }
 }

@@ -18,18 +18,18 @@ using AnnoDesigner.ViewModels;
 namespace AnnoDesigner.PreferencesPages
 {
     /// <summary>
-    /// Interaction logic for UpdateSettings.xaml
+    /// Interaction logic for GeneralSettingsPage.xaml
     /// </summary>
-    public partial class UpdateSettingsPage : Page, INavigatedTo
+    public partial class GeneralSettingsPage : Page, INavigatedTo
     {
-        public UpdateSettingsPage()
+        public GeneralSettingsPage()
         {
             InitializeComponent();
         }
 
         public void NavigatedTo(object viewModel)
         {
-            if (viewModel is UpdateSettingsViewModel vm)
+            if (viewModel is GeneralSettingsViewModel vm)
             {
                 DataContext = vm;
             }

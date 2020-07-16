@@ -32,7 +32,7 @@ namespace AnnoDesigner
         static App()
         {
             _commons = Commons.Instance;
-            _appSettings = new AppSettings();
+            _appSettings = AppSettings.Instance;
             _messageBoxService = new MessageBoxService();
         }
 
@@ -189,7 +189,7 @@ namespace AnnoDesigner
                 var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper, _messageBoxService);
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
-                MainWindow = new MainWindow();
+                MainWindow = new MainWindow(_appSettings);
                 MainWindow.DataContext = mainVM;
                 //MainWindow.Loaded += (s, args) => { updateWindow.Close(); };
 
