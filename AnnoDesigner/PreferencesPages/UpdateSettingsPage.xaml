@@ -32,7 +32,7 @@
             <StackPanel Margin="20,0,0,10">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="125" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
@@ -43,7 +43,7 @@
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="125" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
@@ -54,7 +54,7 @@
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="125" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
