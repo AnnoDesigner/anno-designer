@@ -106,7 +106,7 @@ namespace AnnoDesigner.ViewModels
             StatisticsViewModel.IsVisible = _appSettings.StatsShowStats;
             StatisticsViewModel.ShowStatisticsBuildingCount = _appSettings.StatsShowBuildingCount;
 
-            BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings, _messageBoxService);
+            BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings, _messageBoxService, _localizationHelper);
 
             PresetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization(_commons), _commons);
             PresetsTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
@@ -304,7 +304,7 @@ namespace AnnoDesigner.ViewModels
             {
                 logger.Error(ex, "Error applying preset.");
                 _messageBoxService.ShowError("Something went wrong while applying the preset.",
-                   Localization.Localization.Translations["Error"]);
+                   _localizationHelper.GetLocalization("Error"));
             }
         }
 
@@ -502,7 +502,7 @@ namespace AnnoDesigner.ViewModels
 
         private void AnnoCanvas_ClipboardChanged(List<LayoutObject> itemsOnClipboard)
         {
-            StatusMessageClipboard = Localization.Localization.Translations["StatusBarItemsOnClipboard"] + ": " + itemsOnClipboard.Count;
+            StatusMessageClipboard = _localizationHelper.GetLocalization("StatusBarItemsOnClipboard") + ": " + itemsOnClipboard.Count;
         }
 
         private void AnnoCanvas_StatusMessageChanged(string message)
@@ -941,8 +941,8 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteLoadLayoutFromJson(object param)
         {
-            var input = InputWindow.Prompt(this, Localization.Localization.Translations["LoadLayoutMessage"],
-                Localization.Localization.Translations["LoadLayoutHeader"]);
+            var input = InputWindow.Prompt(this, _localizationHelper.GetLocalization("LoadLayoutMessage"),
+                _localizationHelper.GetLocalization("LoadLayoutHeader"));
 
             ExecuteLoadLayoutFromJsonSub(input, false);
         }
@@ -985,7 +985,7 @@ namespace AnnoDesigner.ViewModels
             {
                 logger.Error(ex, "Error loading layout from JSON.");
                 _messageBoxService.ShowError("Something went wrong while loading the layout.",
-                        Localization.Localization.Translations["Error"]);
+                        _localizationHelper.GetLocalization("Error"));
             }
         }
 
@@ -1019,9 +1019,9 @@ namespace AnnoDesigner.ViewModels
 
         private void ShowRegistrationMessageBox(bool isDeregistration)
         {
-            var message = isDeregistration ? Localization.Localization.Translations["UnregisterFileExtensionSuccessful"] : Localization.Localization.Translations["RegisterFileExtensionSuccessful"];
+            var message = isDeregistration ? _localizationHelper.GetLocalization("UnregisterFileExtensionSuccessful") : _localizationHelper.GetLocalization("RegisterFileExtensionSuccessful");
 
-            _messageBoxService.ShowMessage(message, Localization.Localization.Translations["Successful"]);
+            _messageBoxService.ShowMessage(message, _localizationHelper.GetLocalization("Successful"));
         }
 
         public ICommand ExportImageCommand { get; private set; }
@@ -1057,15 +1057,15 @@ namespace AnnoDesigner.ViewModels
                     RenderToFile(dialog.FileName, 1, exportZoom, exportSelection, StatisticsViewModel.IsVisible);
 
                     _messageBoxService.ShowMessage(Application.Current.MainWindow,
-                       Localization.Localization.Translations["ExportImageSuccessful"],
-                       Localization.Localization.Translations["Successful"]);
+                       _localizationHelper.GetLocalization("ExportImageSuccessful"),
+                       _localizationHelper.GetLocalization("Successful"));
                 }
                 catch (Exception ex)
                 {
                     logger.Error(ex, "Error exporting image.");
                     _messageBoxService.ShowError(Application.Current.MainWindow,
                         "Something went wrong while exporting the image.",
-                        Localization.Localization.Translations["Error"]);
+                        _localizationHelper.GetLocalization("Error"));
                 }
             }
         }
@@ -1204,8 +1204,8 @@ namespace AnnoDesigner.ViewModels
 
                     Clipboard.SetText(jsonString, TextDataFormat.UnicodeText);
 
-                    _messageBoxService.ShowMessage(Localization.Localization.Translations["ClipboardContainsLayoutAsJson"],
-                        Localization.Localization.Translations["Successful"]);
+                    _messageBoxService.ShowMessage(_localizationHelper.GetLocalization("ClipboardContainsLayoutAsJson"),
+                        _localizationHelper.GetLocalization("Successful"));
                 }
             }
             catch (Exception ex)
@@ -1293,7 +1293,7 @@ namespace AnnoDesigner.ViewModels
             catch (Exception)
             {
                 _messageBoxService.ShowError("Error: Invalid building configuration.",
-                   Localization.Localization.Translations["Error"]);
+                   _localizationHelper.GetLocalization("Error"));
             }
         }
 

@@ -344,6 +344,7 @@ namespace AnnoDesigner
         private readonly IBrushCache _brushCache;
         private readonly IPenCache _penCache;
         private readonly IMessageBoxService _messageBoxService;
+        private readonly ILocalizationHelper _localizationHelper;
 
         /// <summary>
         /// States the mode of mouse interaction.
@@ -561,7 +562,8 @@ namespace AnnoDesigner
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
             IPenCache penCacheToUse = null,
-            IMessageBoxService messageBoxServiceToUse = null)
+            IMessageBoxService messageBoxServiceToUse = null,
+            ILocalizationHelper localizationHelperToUse = null)
         {
             InitializeComponent();
 
@@ -571,6 +573,7 @@ namespace AnnoDesigner
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
             _messageBoxService = messageBoxServiceToUse ?? new MessageBoxService();
+            _localizationHelper = localizationHelperToUse ?? Localization.Localization.Instance;
 
             _layoutLoader = new LayoutLoader();
 
@@ -690,7 +693,7 @@ namespace AnnoDesigner
                         logger.Error(ex, "Loading of the icon names failed.");
 
                         _messageBoxService.ShowError("Loading of the icon names failed",
-                            Localization.Localization.Translations["Error"]);
+                            _localizationHelper.GetLocalization("Error"));
                     }
 
                     sw.Stop();
