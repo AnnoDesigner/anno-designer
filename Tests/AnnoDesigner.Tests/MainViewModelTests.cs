@@ -573,10 +573,6 @@ namespace AnnoDesigner.Tests
             appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
-        //[InlineData("id", Key.A, ModifierKeys.Alt, Key.S, ModifierKeys.Control | ModifierKeys.Shift, ExtendedMouseAction.None, GestureType.KeyGesture, @"{""id"":{""Key"":62,""MouseAction"":0,""Modifiers"":6,""Type"":1}}")]
-        //[InlineData("id", Key.A, ModifierKeys.Alt, Key.None, ModifierKeys.Shift, ExtendedMouseAction.LeftDoubleClick, GestureType.MouseGesture, @"{""id"":{""Key"":0,""MouseAction"":5,""Modifiers"":4,""Type"":0}}")]
-        //[InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, ExtendedMouseAction.None, GestureType.KeyGesture, "{}")]
-
         [Theory]
         [InlineData("id", Key.A, ModifierKeys.Alt, Key.S, ModifierKeys.Control | ModifierKeys.Shift, @"{""id"":{""Key"":62,""MouseAction"":0,""Modifiers"":6,""Type"":1}}")]
         [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, "{}")]
