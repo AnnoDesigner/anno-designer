@@ -147,19 +147,21 @@ namespace AnnoDesigner.Core.Models
                 }
                 else
                 {
-                    var args = inputArgs as MouseButtonEventArgs;
-                    return (args.ClickCount, args.ChangedButton) switch
+                    if (inputArgs is MouseButtonEventArgs args)
                     {
-                        (1, MouseButton.Left) => ExtendedMouseAction.LeftClick,
-                        (1, MouseButton.Right) => ExtendedMouseAction.RightClick,
-                        (1, MouseButton.Middle) => ExtendedMouseAction.MiddleClick,
-                        (1, MouseButton.XButton1) => ExtendedMouseAction.XButton1Click,
-                        (1, MouseButton.XButton2) => ExtendedMouseAction.XButton2Click,
-                        (2, MouseButton.Left) => ExtendedMouseAction.LeftDoubleClick,
-                        (2, MouseButton.Right) => ExtendedMouseAction.RightDoubleClick,
-                        (2, MouseButton.Middle) => ExtendedMouseAction.MiddleDoubleClick,
-                        _ => ExtendedMouseAction.None,
-                    };
+                        return (args.ClickCount, args.ChangedButton) switch
+                        {
+                            (1, MouseButton.Left) => ExtendedMouseAction.LeftClick,
+                            (1, MouseButton.Right) => ExtendedMouseAction.RightClick,
+                            (1, MouseButton.Middle) => ExtendedMouseAction.MiddleClick,
+                            (1, MouseButton.XButton1) => ExtendedMouseAction.XButton1Click,
+                            (1, MouseButton.XButton2) => ExtendedMouseAction.XButton2Click,
+                            (2, MouseButton.Left) => ExtendedMouseAction.LeftDoubleClick,
+                            (2, MouseButton.Right) => ExtendedMouseAction.RightDoubleClick,
+                            (2, MouseButton.Middle) => ExtendedMouseAction.MiddleDoubleClick,
+                            _ => ExtendedMouseAction.None,
+                        };
+                    }
                 }
             }
             return ExtendedMouseAction.None;
