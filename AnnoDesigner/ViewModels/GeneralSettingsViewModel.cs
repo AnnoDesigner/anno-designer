@@ -133,6 +133,12 @@ namespace AnnoDesigner.ViewModels
 
         private void UpdateGridLineColorVisibility()
         {
+            if (SelectedGridLineColor is null)
+            {
+                IsGridLineColorPickerVisible = false;
+                return;
+            }
+
             switch (SelectedGridLineColor.Type)
             {
                 case UserDefinedColorType.Custom:
@@ -226,6 +232,12 @@ namespace AnnoDesigner.ViewModels
 
         private void UpdateObjectBorderLineVisibility()
         {
+            if (SelectedObjectBorderLineColor is null)
+            {
+                IsObjectBorderLineColorPickerVisible = false;
+                return;
+            }
+
             switch (SelectedObjectBorderLineColor.Type)
             {
                 case UserDefinedColorType.Custom:
