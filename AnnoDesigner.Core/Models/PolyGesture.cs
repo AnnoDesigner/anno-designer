@@ -80,7 +80,7 @@ namespace AnnoDesigner.Core.Models
         }
 
         /// <summary>
-        /// Matches InputEventArgs to the current `PolyGesture`.
+        /// Matches InputEventArgs to the current <see cref="PolyGesture"/>.
         /// </summary>
         /// <param name="targetElement"></param>
         /// <param name="inputEventArgs"></param>
