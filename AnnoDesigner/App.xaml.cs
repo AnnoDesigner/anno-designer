@@ -32,7 +32,7 @@ namespace AnnoDesigner
         static App()
         {
             _commons = Commons.Instance;
-            _appSettings = new AppSettings();
+            _appSettings = AppSettings.Instance;
             _messageBoxService = new MessageBoxService();
         }
 

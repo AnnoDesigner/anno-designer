@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core;
 using AnnoDesigner.Core.Extensions;
+using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Models;
@@ -49,6 +50,7 @@ namespace AnnoDesigner
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
 
         #region Properties
+
         /// <summary>
         /// Contains all loaded icons as a mapping of name (the filename without extension) to loaded BitmapImage.
         /// </summary>
@@ -334,8 +336,11 @@ namespace AnnoDesigner
 
         #region Privates and constructor
 
+        private const int DPI_FACTOR = 1;
+
         private readonly ILayoutLoader _layoutLoader;
         private readonly ICoordinateHelper _coordinateHelper;
+        private readonly IAppSettings _appSettings;
         private readonly IBrushCache _brushCache;
         private readonly IPenCache _penCache;
         private readonly IMessageBoxService _messageBoxService;
@@ -366,7 +371,6 @@ namespace AnnoDesigner
         /// <summary>
         /// Indicates the current mouse mode.
         /// </summary>
-        //private MouseMode CurrentMode
         private MouseMode CurrentMode
         {
             get
@@ -474,14 +478,43 @@ namespace AnnoDesigner
             RemoveSelectedObjects(new List<LayoutObject>() { objectToRemove }, includeSameObjects);
         }
 
+        /// <summary>
+        /// Used to load current color for grid lines from settings.
+        /// </summary>
+        /// <remarks>Also calls <see cref="UIElement.InvalidateVisual()"/></remarks>
+        public void LoadGridLineColor()
+        {
+            var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorGridLines);//explicit variable to make debugging easier
+            _gridLinePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson.Color), DPI_FACTOR * 1);
+
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Used to load current color for object border lines from settings.
+        /// </summary>
+        /// <remarks>Also calls <see cref="UIElement.InvalidateVisual()"/></remarks>
+        public void LoadObjectBorderLineColor()
+        {
+            var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorObjectBorderLines);//explicit variable to make debugging easier
+            _linePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson.Color), DPI_FACTOR * 1);
+
+            InvalidateVisual();
+        }
+
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
 
         #region Pens and Brushes
 
         /// <summary>
-        /// Used for grid lines and object borders.
+        /// Used for object borders.
         /// </summary>
-        private readonly Pen _linePen;
+        private Pen _linePen;
+
+        /// <summary>
+        /// Used for grid lines.
+        /// </summary>
+        private Pen _gridLinePen;
 
         public double LinePenThickness
         {
@@ -524,6 +557,7 @@ namespace AnnoDesigner
 
         public AnnoCanvas(BuildingPresets presetsToUse,
             Dictionary<string, IconImage> iconsToUse,
+            IAppSettings appSettingsToUse = null,
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
             IPenCache penCacheToUse = null,
@@ -531,7 +565,8 @@ namespace AnnoDesigner
         {
             InitializeComponent();
 
-
+            _appSettings = appSettingsToUse ?? AppSettings.Instance;
+            _appSettings.SettingsChanged += AppSettings_SettingsChanged;
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
@@ -553,6 +588,7 @@ namespace AnnoDesigner
             copyCommand = new RelayCommand(ExecuteCopy);
             pasteCommand = new RelayCommand(ExecutePaste);
             deleteCommand = new RelayCommand(ExecuteDelete);
+
             //Set up default keybindings
             var rotateBinding = new InputBinding(rotateCommand, new PolyGesture(Key.R, ModifierKeys.None));
             rotateHotkey = new Hotkey(ROTATE_COMMAND_KEY, rotateBinding);
@@ -574,13 +610,14 @@ namespace AnnoDesigner
             //InputBindings.Add(rotateBinding);
             //InputBindings.Add(copyBinding);
             //InputBindings.Add(pasteBinding);
-            //InputBindings.Add(deleteBinding);
+            //InputBindings.Add(deleteBinding);            
 
-            const int dpiFactor = 1;
-            _linePen = _penCache.GetPen(Brushes.Black, dpiFactor * 1);
-            _highlightPen = _penCache.GetPen(Brushes.Yellow, dpiFactor * 2);
-            _radiusPen = _penCache.GetPen(Brushes.Black, dpiFactor * 2);
-            _influencedPen = _penCache.GetPen(Brushes.LawnGreen, dpiFactor * 2);
+            LoadGridLineColor();
+            LoadObjectBorderLineColor();
+
+            _highlightPen = _penCache.GetPen(Brushes.Yellow, DPI_FACTOR * 2);
+            _radiusPen = _penCache.GetPen(Brushes.Black, DPI_FACTOR * 2);
+            _influencedPen = _penCache.GetPen(Brushes.LawnGreen, DPI_FACTOR * 2);
 
             var color = Colors.LightYellow;
             color.A = 32;
@@ -657,9 +694,16 @@ namespace AnnoDesigner
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
 
+        private void AppSettings_SettingsChanged(object sender, EventArgs e)
+        {
+            LoadGridLineColor();
+            LoadObjectBorderLineColor();
+        }
+
         #endregion
 
         #region Rendering
+
         /// <summary>
         /// Renders the whole scene including grid, placed objects, current object, selection highlights, influence radii and selection rectangle.
         /// </summary>
@@ -673,7 +717,7 @@ namespace AnnoDesigner
             //var dpiFactor = 1 / m.M11;
 
             // assure pixel perfect drawing
-            var halfPenWidth = _linePen.Thickness / 2;
+            var halfPenWidth = _gridLinePen.Thickness / 2;
             var guidelines = new GuidelineSet();
             guidelines.GuidelinesX.Add(halfPenWidth);
             guidelines.GuidelinesY.Add(halfPenWidth);
@@ -691,11 +735,11 @@ namespace AnnoDesigner
             {
                 for (var i = 0; i < width; i += _gridStep)
                 {
-                    drawingContext.DrawLine(_linePen, new Point(i, 0), new Point(i, height));
+                    drawingContext.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
                 }
                 for (var i = 0; i < height; i += _gridStep)
                 {
-                    drawingContext.DrawLine(_linePen, new Point(0, i), new Point(width, i));
+                    drawingContext.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
                 }
             }
 
@@ -708,8 +752,11 @@ namespace AnnoDesigner
 
             if (!RenderInfluences)
             {
-                RenderObjectInfluenceRadius(drawingContext, SelectedObjects);
-                RenderObjectInfluenceRange(drawingContext, SelectedObjects);
+                if (!_appSettings.HideInfluenceOnSelection)
+                {
+                    RenderObjectInfluenceRadius(drawingContext, SelectedObjects);
+                    RenderObjectInfluenceRange(drawingContext, SelectedObjects);
+                }
             }
             else
             {
@@ -1234,7 +1281,14 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            GridSize += e.Delta / 100;
+            if (!_appSettings.UseZoomToPoint)
+            {
+                GridSize += e.Delta / 100;
+            }
+            else
+            {
+                //will be added by PR #220
+            }
         }
 
         private void HandleMouse(MouseEventArgs e)

@@ -179,7 +179,7 @@ namespace AnnoDesigner.Localization
                         { "Paste" , "Paste" },
                         { "Delete" , "Delete" },
                         { "Licenses" , "Licenses" },
-                        { "ViewLicenses" , "View open source Licenses" },
+                        { "ViewLicenses" , "View open source licenses" },
                         { "ExternalLinkConfirmationMessage" , "This will open a new tab in your default web browser. Continue?" },
                         { "ExternalLinkMessageTitle" , "Opening an external link" },
                         { "RecentFiles" , "Recent Files" },
@@ -195,6 +195,16 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesNewPresetsUpdateAvailable" , "A new Update for the Presets is available!" },
                         { "UpdatePreferencesBusyCheckUpdates" , "Checking for updates ..." },
                         { "UpdatePreferencesBusyDownloadPresets" , "Downloading Presets ..." },
+                        { "NoIcon" , "No Icon" },
+                        { "GeneralSettings" , "General Settings" },
+                        { "GeneralPreferencesUISettings" , "UI Settings" },
+                        { "GeneralPreferencesHideInfluenceOnSelection" , "Hide influenece on selection" },
+                        { "GeneralPreferencesUseZoomToPoint" , "Use new zoom behaviour" },
+                        { "GeneralPreferencesGridLinesColor" , "Grid line color" },
+                        { "GeneralPreferencesObjectBorderLinesColor" , "Border color" },
+                        { "ColorTypeDefault" , "Default" },
+                        { "ColorTypeLight" , "Light" },
+                        { "ColorTypeCustom" , "Custom" }
                     }
                 },
                 {
@@ -313,8 +323,8 @@ namespace AnnoDesigner.Localization
                         { "Preferences" , "Einstellungen" },
                         { "ResetAllConfirmationMessage" , "Sind Sie sicher, dass Sie alle Tastenkombinationen auf ihre Standardeinstellungen zurücksetzen möchten?" },
                         { "ResetAll" , "Alle zurücksetzen" },
-                        { "UpdateSettings" , "Update-Einstellungen" },
-                        { "ManageKeybindings" , "Tastenkombinationen verwalten" },
+                        { "UpdateSettings" , "Updates" },
+                        { "ManageKeybindings" , "Tastenkombinationen" },
                         { "Rebind" , "Neu binden" },
                         { "Recording" , "Aufzeichnung" },
                         { "RecordANewAction" , "Eine neue Aktion aufzeichnen" },
@@ -339,6 +349,16 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesNewPresetsUpdateAvailable" , "Ein neues Update für die Vorlagen ist verfügbar!" },
                         { "UpdatePreferencesBusyCheckUpdates" , "Prüfe auf Updates ..." },
                         { "UpdatePreferencesBusyDownloadPresets" , "Herunterladen von Vorlagen ..." },
+                        { "NoIcon" , "Kein Icon" },
+                        { "GeneralSettings" , "Allgemein" },
+                        { "GeneralPreferencesUISettings" , "Darstellung" },
+                        { "GeneralPreferencesHideInfluenceOnSelection" , "Verstecke Einflußbereich beim Selektieren" },
+                        { "GeneralPreferencesUseZoomToPoint" , "Verwende neues Zoomverhalten" },
+                        { "GeneralPreferencesGridLinesColor" , "Raster-/Gitterlinienfarbe" },
+                        { "GeneralPreferencesObjectBorderLinesColor" , "Randfarbe" },
+                        { "ColorTypeDefault" , "Standard" },
+                        { "ColorTypeLight" , "Heller" },
+                        { "ColorTypeCustom" , "Benutzerdefiniert" }
                     }
                 },
                 {
@@ -466,12 +486,12 @@ namespace AnnoDesigner.Localization
                         { "Copy" , "Copie" },
                         { "Paste" , "Coller" },
                         { "Delete" , "Supprimer" },
-                        { "Licenses" , "Licenses" },
-                        { "ViewLicenses" , "Voir les Licenses open source" },
+                        { "Licenses" , "Licences" },
+                        { "ViewLicenses" , "Voir les licences open source" },
                         { "ExternalLinkConfirmationMessage" , "Cela ouvrira un nouvel onglet dans votre navigateur web par défaut. Continuer ?" },
                         { "ExternalLinkMessageTitle" , "Ouverture d'un lien externe" },
-                        { "RecentFiles" , "Informations sur les versions" },
-                        { "UpdatePreferencesVersionInformation" , "Version actuelle" },
+                        { "RecentFiles" , "Fichiers récents" },
+                        { "UpdatePreferencesVersionInformation" , "Informations sur les versions" },
                         { "UpdatePreferencesSettings" , "Paramètres" },
                         { "UpdatePreferencesCheckPreRelease" , "Vérifier les pré-livraisons" },
                         { "UpdatePreferencesUpdates" , "Mises à jour" },
@@ -483,6 +503,16 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesNewPresetsUpdateAvailable" , "Une nouvelle mise à jour des présélections est disponible!" },
                         { "UpdatePreferencesBusyCheckUpdates" , "Vérifier les mises à jour ..." },
                         { "UpdatePreferencesBusyDownloadPresets" , "Téléchargement des préréglages ..." },
+                        { "NoIcon" , "Pas d'icône" },
+                        { "GeneralSettings" , "Paramètres généraux" },
+                        { "GeneralPreferencesUISettings" , "Paramètres de l'interface utilisateur" },
+                        { "GeneralPreferencesHideInfluenceOnSelection" , "Cacher l'influence sur la sélection" },
+                        { "GeneralPreferencesUseZoomToPoint" , "Utiliser un nouveau comportement de zoom" },
+                        { "GeneralPreferencesGridLinesColor" , "Couleur des lignes de la grille" },
+                        { "GeneralPreferencesObjectBorderLinesColor" , "Couleur de la bordure" },
+                        { "ColorTypeDefault" , "Défaut" },
+                        { "ColorTypeLight" , "Lumière" },
+                        { "ColorTypeCustom" , "Personnalisation" }
                     }
                 },
                 {
@@ -627,6 +657,16 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesNewPresetsUpdateAvailable" , "Dostępna jest nowa aktualizacja ustawień wstępnych!" },
                         { "UpdatePreferencesBusyCheckUpdates" , "Sprawdzanie aktualizacji ..." },
                         { "UpdatePreferencesBusyDownloadPresets" , "Pobieranie zaprogramowanych ustawień..." },
+                        { "NoIcon" , "Nie ma Ikony" },
+                        { "GeneralSettings" , "Ustawienia ogólne" },
+                        { "GeneralPreferencesUISettings" , "Ustawienia UI" },
+                        { "GeneralPreferencesHideInfluenceOnSelection" , "Ukrycie wpływu na selekcję" },
+                        { "GeneralPreferencesUseZoomToPoint" , "Wykorzystaj nowe zachowanie zoomu" },
+                        { "GeneralPreferencesGridLinesColor" , "Kolor linii siatki" },
+                        { "GeneralPreferencesObjectBorderLinesColor" , "Kolor granicy" },
+                        { "ColorTypeDefault" , "Domyślnie" },
+                        { "ColorTypeLight" , "Światło" },
+                        { "ColorTypeCustom" , "Niestandardowy" }
                     }
                 },
                 {
@@ -771,15 +811,28 @@ namespace AnnoDesigner.Localization
                         { "UpdatePreferencesNewPresetsUpdateAvailable" , "Доступно новое Обновление для пресетов!" },
                         { "UpdatePreferencesBusyCheckUpdates" , "Проверка обновлений ..." },
                         { "UpdatePreferencesBusyDownloadPresets" , "Загрузка предустановок ..." },
+                        { "NoIcon" , "Иконки нет" },
+                        { "GeneralSettings" , "Общие настройки" },
+                        { "GeneralPreferencesUISettings" , "Настройки пользовательского интерфейса" },
+                        { "GeneralPreferencesHideInfluenceOnSelection" , "Скрыть влияние на выбор" },
+                        { "GeneralPreferencesUseZoomToPoint" , "Использовать новое поведение масштабирования" },
+                        { "GeneralPreferencesGridLinesColor" , "Цвет линии сетки" },
+                        { "GeneralPreferencesObjectBorderLinesColor" , "Цвет границы" },
+                        { "ColorTypeDefault" , "По умолчанию" },
+                        { "ColorTypeLight" , "Свет" },
+                        { "ColorTypeCustom" , "Пользовательский" }
                     }
                 },
             };
+
             Instance.commons = commons;
             Instance.Commons_SelectedLanguageChanged(null, null);
             commons.SelectedLanguageChanged += Instance.Commons_SelectedLanguageChanged;
         }
 
         private Localization() { }
+
+        internal static IDictionary<string, IDictionary<string, string>> TranslationsRaw => translations;
 
         private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
         {
