@@ -19,6 +19,7 @@ namespace AnnoDesigner.ViewModels
         }
 
         private const string APACHE_2 = "Apache-2.0 License";
+        private const string MS_PL = "Microsoft Public License (Ms-PL)";
         //private const string MIT = "MIT License";
         //etc
 
@@ -26,7 +27,7 @@ namespace AnnoDesigner.ViewModels
         {
             Licenses = new ObservableCollection<LicenseInfo>
             {
-                new LicenseInfo()
+                new LicenseInfo
                 {
                     License = APACHE_2,
                     LicenseURL = "https://github.com/google/material-design-icons/blob/master/LICENSE",
@@ -39,10 +40,15 @@ namespace AnnoDesigner.ViewModels
                         "right-click.png",
                         "chevron-up.png"
                     }
+                },
+                new LicenseInfo
+                {
+                    License=MS_PL,
+                    LicenseURL="https://licenses.nuget.org/MS-PL",
+                    ProjectName="Extended WPF Toolkit™ (3.8.2)",
+                    ProjectWebsite="https://github.com/xceedsoftware/wpftoolkit"
                 }
             };
-
-
 
 
 
