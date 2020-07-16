@@ -17,19 +17,21 @@ namespace AnnoDesigner.Tests
         #region Convert tests
 
         [Theory]
-        [InlineData(ExtendedMouseAction.LeftClick, Visibility.Visible)]
-        [InlineData(ExtendedMouseAction.MiddleClick, Visibility.Visible)]
-        [InlineData(ExtendedMouseAction.RightClick, Visibility.Visible)]
+        [InlineData(ExtendedMouseAction.LeftClick, Visibility.Collapsed)]
+        [InlineData(ExtendedMouseAction.MiddleClick, Visibility.Collapsed)]
+        [InlineData(ExtendedMouseAction.RightClick, Visibility.Collapsed)]
+        [InlineData(ExtendedMouseAction.XButton1Click, Visibility.Collapsed)]
+        [InlineData(ExtendedMouseAction.XButton2Click, Visibility.Collapsed)]
         [InlineData(ExtendedMouseAction.LeftDoubleClick, Visibility.Visible)]
         [InlineData(ExtendedMouseAction.MiddleDoubleClick, Visibility.Visible)]
         [InlineData(ExtendedMouseAction.RightDoubleClick, Visibility.Visible)]
-        public void Convert_PassedKnownValueAndParameter_ShouldReturnCorrectValue(ExtendedMouseAction input, Visibility expected)
+        public void Convert_PassedKnownValue_ShouldReturnCorrectValue(ExtendedMouseAction input, Visibility expected)
         {
             // Arrange
             var converter = new ExtendedMouseActionToVisibilityConverter();
 
             // Act
-            var result = converter.Convert(input, typeof(Visibility), 0, CultureInfo.CurrentCulture);
+            var result = converter.Convert(input, typeof(Visibility), null, CultureInfo.CurrentCulture);
 
             // Assert
             Assert.Equal(expected, result);
@@ -37,21 +39,22 @@ namespace AnnoDesigner.Tests
 
         [Theory]
         [InlineData((ExtendedMouseAction)int.MaxValue)]
+        [InlineData((ExtendedMouseAction)(-1))]
         [InlineData(ExtendedMouseAction.None)]
-        public void Convert_PassedUnknownValue_ShouldReturnNull(ExtendedMouseAction input)
+        public void Convert_PassedUnknownOrNoneValue_ShouldReturnNull(ExtendedMouseAction input)
         {
             // Arrange
             var converter = new ExtendedMouseActionToVisibilityConverter();
 
             // Act
-            var result = converter.Convert(input, typeof(Visibility), 0, CultureInfo.CurrentCulture);
+            var result = converter.Convert(input, typeof(Visibility), null, CultureInfo.CurrentCulture);
 
             // Assert
             Assert.Null(result);
         }
 
         [Fact]
-        public void Convert_PassedUnknownValueAndUnknownParameter_ShouldReturnNull()
+        public void Convert_PassedNullValue_ShouldReturnNull()
         {
             // Arrange
             var converter = new ExtendedMouseActionToVisibilityConverter();

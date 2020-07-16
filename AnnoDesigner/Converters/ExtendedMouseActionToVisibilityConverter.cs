@@ -12,26 +12,10 @@ namespace AnnoDesigner.Converters
     [ValueConversion(typeof(ExtendedMouseAction), typeof(Visibility))]
     public class ExtendedMouseActionToVisibilityConverter : IValueConverter
     {
-        private static readonly List<int> validPositions = new List<int>() { 0, 1, 2 };
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (!(value is ExtendedMouseAction mouseAction))
             {
-                return null;
-            }
-
-            if (!(parameter is int position))
-            {
-                Debug.Fail("No position specified in MouseActionToVisibilityConverter.");
-                Debug.Assert(false); //error here when running in debug mode.
-                return null;
-            }
-
-            if (!validPositions.Contains(position))
-            {
-                Debug.Fail($"Specified position {position} is not valid in MouseActionToVisibilityConverter.");
-                Debug.Assert(false); //error here when running in debug mode.
                 return null;
             }
 
@@ -43,8 +27,7 @@ namespace AnnoDesigner.Converters
                 case ExtendedMouseAction.XButton1Click:
                 case ExtendedMouseAction.XButton2Click:
                 case ExtendedMouseAction.WheelClick:
-                    return position > 0 ? Visibility.Collapsed : Visibility.Visible;
-                //If we're on the item in position 1 (the first mouse action), then show, else hide.
+                    return Visibility.Collapsed;
                 case ExtendedMouseAction.LeftDoubleClick:
                 case ExtendedMouseAction.RightDoubleClick:
                 case ExtendedMouseAction.MiddleDoubleClick:

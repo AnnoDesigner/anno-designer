@@ -111,8 +111,8 @@
         </Style>
         <coreConverter:ModifierKeysToVisibilityConverter x:Key="ModifierKeysToVisibilityConverter" />
         <coreConverter:KeyToDisplayStringConverter x:Key="KeyToDisplayStringConverter" />
-        <converter:ExtendedMouseActionToImageSourceConverter x:Key="MouseActionToImageSourceConverter" />
-        <converter:ExtendedMouseActionToVisibilityConverter x:Key="MouseActionToVisibilityConverter" />
+        <converter:ExtendedMouseActionToImageSourceConverter x:Key="ExtendedMouseActionToImageSourceConverter" />
+        <converter:ExtendedMouseActionToVisibilityConverter x:Key="ExtendedMouseActionToVisibilityConverter" />
         <sys:Int32 x:Key="0">0</sys:Int32>
         <sys:Int32 x:Key="1">1</sys:Int32>
         <sys:Int32 x:Key="2">2</sys:Int32>
@@ -129,17 +129,17 @@
                 <TextBlock Text="{Binding Description}"
                            Style="{StaticResource HotkeyDescription}"
                            Grid.Column="0" />
-                <StackPanel Orientation="Horizontal" 
-                            VerticalAlignment="Center" 
-                            Grid.Column="1" 
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Grid.Column="1"
                             Margin="3,5,3,5">
-                    <Label Content="{Binding Path=Binding.Gesture.ModifierKeys}" 
+                    <Label Content="{Binding Path=Binding.Gesture.ModifierKeys}"
                            Style="{StaticResource HotkeyKey}"
-                           Visibility="{Binding Path=Binding.Gesture.ModifierKeys, Converter={StaticResource ModifierKeysToVisibilityConverter}}"/>
-                    <TextBlock Style="{StaticResource HotkeyDelimiter}" 
+                           Visibility="{Binding Path=Binding.Gesture.ModifierKeys, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
+                    <TextBlock Style="{StaticResource HotkeyDelimiter}"
                                Visibility="{Binding Path=Binding.Gesture.ModifierKeys, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
                     <Label Content="{Binding Path=Binding.Gesture.Key, Converter={StaticResource KeyToDisplayStringConverter}}"
-                           Style="{StaticResource HotkeyKey}"/>
+                           Style="{StaticResource HotkeyKey}" />
                 </StackPanel>
                 <Button Content="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindButtonText}"
                         Command="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindCommand }"
@@ -161,26 +161,24 @@
                 <TextBlock Text="{Binding Description}"
                            Style="{StaticResource HotkeyDescription}"
                            Grid.Column="0" />
-                <StackPanel Orientation="Horizontal" 
-                            VerticalAlignment="Center" 
-                            Grid.Column="1" 
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Grid.Column="1"
                             Margin="3,5,3,5">
-                    <Label Content="{Binding Path=Binding.Gesture.ModifierKeys}" 
+
+                    <Label Content="{Binding Path=Binding.Gesture.ModifierKeys}"
                            Style="{StaticResource HotkeyKey}"
-                           Visibility="{Binding Path=Binding.Gesture.ModifierKeys, Converter={StaticResource ModifierKeysToVisibilityConverter}}"/>
-                    <TextBlock Style="{StaticResource HotkeyDelimiter}" 
-                               Visibility="{Binding Path=Binding.Gesture.ModifierKeys, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
-                    <!-- First image will always be visible, so does not need the visibility attribute specified -->
-                    <Image Source="{Binding Path=Binding.Gesture.MouseAction, Converter={StaticResource MouseActionToImageSourceConverter}}"
-                           Style="{StaticResource HotkeyImage}" 
-                           />
-                    <TextBlock Style="{StaticResource HotkeyDelimiter}" 
-                               Visibility="{Binding Path=Binding.Gesture.MouseAction, Converter={StaticResource MouseActionToVisibilityConverter}, ConverterParameter={StaticResource 1}}"
-                               />
-                    <Image Source="{Binding Path=Binding.Gesture.MouseAction, Converter={StaticResource MouseActionToImageSourceConverter}}"
-                           Style="{StaticResource HotkeyImage}"
-                           Visibility="{Binding Path=Binding.Gesture.MouseAction, Converter={StaticResource MouseActionToVisibilityConverter}, ConverterParameter={StaticResource 2}}"
-                           />
+                           Visibility="{Binding Path=Binding.Gesture.ModifierKeys, Converter={StaticResource ModifierKeysToVisibilityConverter}}" />
+                    <TextBlock Style="{StaticResource HotkeyDelimiter}" />
+                    <Grid>
+                        <!-- multiplication unicode symbol-->
+                        <!-- Content="×2" -->
+                        <Label Content="&#x00D7;2"
+                               Margin="-10,-13,0,0"
+                               Visibility="{Binding Path=Binding.Gesture.MouseAction, Converter={StaticResource ExtendedMouseActionToVisibilityConverter}}" />
+                        <Image Source="{Binding Path=Binding.Gesture.MouseAction, Converter={StaticResource ExtendedMouseActionToImageSourceConverter}}"
+                               Style="{StaticResource HotkeyImage}" />
+                    </Grid>
                 </StackPanel>
                 <Button Content="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindButtonText}"
                         Command="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindCommand }"
@@ -212,5 +210,6 @@
                     Padding="10"
                     Command="{Binding ResetHotkeysCommand}" />
         </StackPanel>
+
     </Grid>
 </Page>

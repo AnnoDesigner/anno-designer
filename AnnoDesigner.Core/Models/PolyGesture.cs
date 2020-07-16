@@ -172,7 +172,7 @@ namespace AnnoDesigner.Core.Models
         /// <returns>True if the given gestureType is valid, false otherwise</returns>
         public static bool IsDefinedGestureType(GestureType gestureType)
         {
-            return (int)gestureType < 2;
+            return gestureType >= 0 && (int)gestureType < 2;
         }
 
         //Copied from AnnoDesigner.Core.Models.Notify as we need to inherit from InputGesture

@@ -8,7 +8,7 @@ using System.Windows.Input;
 namespace AnnoDesigner.Core.Models
 {
     /// <summary>
-    /// Mouse action enum with support for XButton1 and XButton2 (extended).
+    /// <see cref="MouseAction"/> enum with support for XButton1Click and XButton2Click.
     /// </summary>
     public enum ExtendedMouseAction
     {
