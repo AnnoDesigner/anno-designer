@@ -36,13 +36,13 @@ namespace AnnoDesigner.ViewModels
             UseZoomToPoint = _appSettings.UseZoomToPoint;
 
             GridLineColors = new ObservableCollection<UserDefinedColor>();
-            InitGridLineColors();
+            RefreshGridLineColors();
             var savedGridLineColor = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorGridLines);
             SelectedGridLineColor = GridLineColors.SingleOrDefault(x => x.Type == savedGridLineColor.Type);
             SelectedCustomGridLineColor = savedGridLineColor.Color;
 
             ObjectBorderLineColors = new ObservableCollection<UserDefinedColor>();
-            InitObjectBorderLineColors();
+            RefreshObjectBorderLineColors();
             var savedObjectBorderLineColor = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorObjectBorderLines);
             SelectedObjectBorderLineColor = ObjectBorderLineColors.SingleOrDefault(x => x.Type == savedObjectBorderLineColor.Type);
             SelectedCustomObjectBorderLineColor = savedObjectBorderLineColor.Color;
@@ -52,18 +52,18 @@ namespace AnnoDesigner.ViewModels
         {
             var selectedGridLineColorType = SelectedGridLineColor.Type;
             GridLineColors.Clear();
-            InitGridLineColors();
+            RefreshGridLineColors();
             SelectedGridLineColor = GridLineColors.SingleOrDefault(x => x.Type == selectedGridLineColorType);
 
             var selectedObjectBorderLineColorType = SelectedObjectBorderLineColor.Type;
             ObjectBorderLineColors.Clear();
-            InitObjectBorderLineColors();
+            RefreshObjectBorderLineColors();
             SelectedObjectBorderLineColor = ObjectBorderLineColors.SingleOrDefault(x => x.Type == selectedObjectBorderLineColorType);
         }
 
         #region Color for grid lines
 
-        private void InitGridLineColors()
+        private void RefreshGridLineColors()
         {
             foreach (UserDefinedColorType curColorType in Enum.GetValues(typeof(UserDefinedColorType)))
             {
@@ -156,7 +156,7 @@ namespace AnnoDesigner.ViewModels
 
         #region Color for object border lines
 
-        private void InitObjectBorderLineColors()
+        private void RefreshObjectBorderLineColors()
         {
             foreach (UserDefinedColorType curColorType in Enum.GetValues(typeof(UserDefinedColorType)))
             {
