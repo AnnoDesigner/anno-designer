@@ -1295,6 +1295,12 @@ namespace AnnoDesigner
             InvalidateVisual();
         }
 
+        public Point ScreenToGrid(Point screenPoint, int gridStep)
+        {
+            return new Point(screenPoint.X / gridStep, screenPoint.Y / gridStep);
+        }
+
+
         /// <summary>
         /// Handles the zoom level
         /// </summary>
@@ -1308,9 +1314,9 @@ namespace AnnoDesigner
             else
             {
                 var mousePosition = e.GetPosition(this);
-                var preZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
+                var preZoomPosition = ScreenToGrid(mousePosition, GridSize);
 
-                var diffGridSize = GridSize * e.Delta / 1000;
+                var diffGridSize = GridSize * e.Delta / 500;
                 if (diffGridSize == 0)
                 {
                     diffGridSize = e.Delta > 0 ? 1 : -1;// change by at least 1
@@ -1318,7 +1324,7 @@ namespace AnnoDesigner
 
                 GridSize += diffGridSize;
 
-                var postZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
+                var postZoomPosition = ScreenToGrid(mousePosition, GridSize);
                 var diff = postZoomPosition - preZoomPosition;
                 if (diff.LengthSquared > 0)
                 {
