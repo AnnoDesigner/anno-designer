@@ -405,6 +405,21 @@ namespace AnnoDesigner
         private Rect _selectionRect;
 
         /// <summary>
+        /// X/Y offsets in grid coordinates used to enable smooth zooming when using zoom to point
+        /// </summary>
+        private Vector previousSmoothingOffset;
+
+        /// <summary>
+        /// The current X offset in screen coordinates required when using zoom to point
+        /// </summary>
+        private double _offsetX;
+
+        /// <summary>
+        /// The current Y offset in screen coordinates required when using zoom to point
+        /// </summary>
+        private double _offsetY;
+
+        /// <summary>
         /// List of all currently placed objects.
         /// </summary>
         public List<LayoutObject> PlacedObjects { get; set; }
@@ -1295,14 +1310,6 @@ namespace AnnoDesigner
             InvalidateVisual();
         }
 
-        Vector oldDiff;
-
-        double _offsetX;
-        double _offsetY;
-
-
-
-
         /// <summary>
         /// Handles the zoom level
         /// </summary>
@@ -1331,25 +1338,33 @@ namespace AnnoDesigner
                 var postZoomPosition = _coordinateHelper.ScreenToPreciseGrid(mousePosition, GridSize);
                 var diff = postZoomPosition - preZoomPosition;
 
-                //Not a fan of this, but where do we put it?
+                //Not a fan of this, but where do we put it? Location will probably be moved in future.
+                //Maybe AnnoDesigner.Core.Helpers.MathHelper?
                 static double GetFractionalValue(double value) => value - Math.Truncate(value);
 
-                var newXDiff = GetFractionalValue(oldDiff.X + diff.X);
-                var newYDiff = GetFractionalValue(oldDiff.Y + diff.Y);
+                var newXDiff = GetFractionalValue(previousSmoothingOffset.X + diff.X);
+                var newYDiff = GetFractionalValue(previousSmoothingOffset.Y + diff.Y);
+
 
                 _offsetX = GridSize * newXDiff;
                 _offsetY = GridSize * newYDiff;
 
-                oldDiff = new Vector(newXDiff, newYDiff);
+                previousSmoothingOffset = new Vector(newXDiff, newYDiff);
 
                 _offsetX %= GridSize;
                 _offsetY %= GridSize;
+
+                logger.Debug($"Diff: {previousSmoothingOffset}");
 
                 if (diff.LengthSquared > 0)
                 {
                     foreach (var placedObject in PlacedObjects)
                     {
                         placedObject.Position += diff;
+                        if (GetFractionalValue(placedObject.Position.X) != newXDiff || GetFractionalValue(placedObject.Position.Y) != newYDiff)
+                        {
+                            logger.Debug($"Pos : {GetFractionalValue(placedObject.Position.X)}, {GetFractionalValue(placedObject.Position.Y)}");
+                        }
                     }
                 }
             }
