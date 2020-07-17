@@ -1322,6 +1322,8 @@ namespace AnnoDesigner
         {
             if (!_appSettings.UseZoomToPoint)
             {
+                _offsetX = 0;
+                _offsetY = 0;
                 GridSize += e.Delta / 100;
             }
             else
@@ -1329,7 +1331,7 @@ namespace AnnoDesigner
                 var mousePosition = e.GetPosition(this);
                 var preZoomPosition = ScreenToGrid(mousePosition, GridSize);
 
-                var diffGridSize = GridSize * e.Delta / 500;
+                var diffGridSize = GridSize * e.Delta / 1000;
                 if (diffGridSize == 0)
                 {
                     diffGridSize = e.Delta > 0 ? 1 : -1;// change by at least 1
