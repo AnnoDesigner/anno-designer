@@ -43,10 +43,7 @@ namespace AnnoDesigner.Tests
 
         public static HotkeyCommandManager GetMockedHotkeyCommandManager()
         {
-            var localizationDictionary = new Dictionary<string, string>();
-            var mockedLocalization = new Mock<ILocalization>();
-            mockedLocalization.Setup(m => m.InstanceTranslations).Returns(localizationDictionary);
-            return new HotkeyCommandManager(mockedLocalization.Object);
+            return new HotkeyCommandManager(Mock.Of<ILocalizationHelper>());
         }
 
         private static InputBinding GetInputBinding(Key key)

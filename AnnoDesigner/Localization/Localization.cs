@@ -7,7 +7,7 @@ using NLog;
 
 namespace AnnoDesigner.Localization
 {
-    public class Localization : Notify, ILocalization, ILocalizationHelper
+    public class Localization : Notify, ILocalizationHelper
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -34,13 +34,13 @@ namespace AnnoDesigner.Localization
 
         #endregion
 
+        private static IDictionary<string, IDictionary<string, string>> TranslationsRaw { get; set; }
+
         private string SelectedLanguageCode => _commons.CurrentLanguageCode;
 
         public static IDictionary<string, string> Translations => TranslationsRaw[Instance.SelectedLanguageCode];
 
         public IDictionary<string, string> InstanceTranslations => Translations;
-
-        internal static IDictionary<string, IDictionary<string, string>> TranslationsRaw { get; private set; }
 
         public static void Init(ICommons commons)
         {

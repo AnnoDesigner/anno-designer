@@ -100,7 +100,7 @@ namespace AnnoDesigner.ViewModels
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
 
-            HotkeyCommandManager = new HotkeyCommandManager(Localization.Localization.Instance);
+            HotkeyCommandManager = new HotkeyCommandManager(_localizationHelper);
 
             StatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
             StatisticsViewModel.IsVisible = _appSettings.StatsShowStats;
@@ -119,7 +119,7 @@ namespace AnnoDesigner.ViewModels
             AboutViewModel = new AboutViewModel();
 
             PreferencesUpdateViewModel = new UpdateSettingsViewModel(_commons, _appSettings, _localizationHelper);
-            PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons, _messageBoxService);
+            PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons, _messageBoxService, _localizationHelper);
             PreferencesGeneralViewModel = new GeneralSettingsViewModel(_appSettings, _commons);
 
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
