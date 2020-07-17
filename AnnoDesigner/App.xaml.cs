@@ -40,7 +40,7 @@ namespace AnnoDesigner
             Localization.Localization.Init(_commons);
             _localizationHelper = Localization.Localization.Instance;
 
-            _updateHelper = new UpdateHelper(ApplicationPath, _appSettings, _messageBoxService);
+            _updateHelper = new UpdateHelper(ApplicationPath, _appSettings, _messageBoxService, _localizationHelper);
         }
 
         public App()

@@ -31,6 +31,7 @@ namespace AnnoDesigner.Tests
             var commonsMock = new Mock<ICommons>();
             commonsMock.SetupGet(x => x.CurrentLanguage).Returns(() => "English");
             commonsMock.SetupGet(x => x.CurrentLanguageCode).Returns(() => "eng");
+            commonsMock.SetupGet(x => x.LanguageCodeMap).Returns(() => new Dictionary<string, string>());
             _mockedCommons = commonsMock.Object;
 
             var mockedLocalizationHelper = new Mock<ILocalizationHelper>();
@@ -916,6 +917,7 @@ namespace AnnoDesigner.Tests
 
             var commons = new Mock<ICommons>();
             commons.SetupAllProperties();
+            commons.SetupGet(x => x.LanguageCodeMap).Returns(() => new Dictionary<string, string>());
             commons.Object.CurrentLanguage = languageBeforeChange;
 
             var viewModel = GetViewModel(commons.Object, null);
@@ -939,6 +941,7 @@ namespace AnnoDesigner.Tests
 
             var commons = new Mock<ICommons>();
             commons.SetupAllProperties();
+            commons.SetupGet(x => x.LanguageCodeMap).Returns(() => new Dictionary<string, string>());
             commons.Object.CurrentLanguage = languageBeforeChange;
 
             var viewModel = GetViewModel(commons.Object, null);
@@ -960,6 +963,7 @@ namespace AnnoDesigner.Tests
 
             var commons = new Mock<ICommons>();
             commons.SetupAllProperties();
+            commons.SetupGet(x => x.LanguageCodeMap).Returns(() => new Dictionary<string, string>());
             commons.Object.CurrentLanguage = languageBeforeChange;
 
             var viewModel = GetViewModel(commons.Object, null);
