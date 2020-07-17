@@ -21,6 +21,21 @@ namespace AnnoDesigner.Helper
         }
 
         /// <summary>
+        /// Convert a screen coordinate to a grid coordinate by determining in which grid cell the point is contained.
+        /// The grid coordinate can be a fractional value, where the fractional part denotes the screen-coordinates position
+        /// within the grid cell.
+        /// </summary>
+        /// <example>
+        /// A grid coordinate returned of (1.5, 1.25), means the screen coordinate is 50% from the left side of the cell, and 25% from the top.
+        /// </example>
+        /// <param name="screenPoint"></param>
+        /// <returns></returns>
+        public Point ScreenToPreciseGrid(Point screenPoint, int gridStep)
+        {
+            return new Point(screenPoint.X / gridStep, screenPoint.Y / gridStep);
+        }
+
+        /// <summary>
         /// Converts a screen coordinate to a grid coordinate by determining which grid cell is nearest.
         /// </summary>
         /// <param name="screenPoint"></param>

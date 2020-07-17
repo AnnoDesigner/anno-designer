@@ -21,5 +21,7 @@ namespace AnnoDesigner.Models
         double ScreenToGrid(double screenLength, int gridStep);
 
         Point ScreenToGrid(Point screenPoint, int gridStep);
+
+        Point ScreenToPreciseGrid(Point screenPoint, int gridStep);
     }
 }

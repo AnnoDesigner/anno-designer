@@ -1295,17 +1295,6 @@ namespace AnnoDesigner
             InvalidateVisual();
         }
 
-        public Point ScreenToGrid(Point screenPoint, int gridStep)
-        {
-            return new Point(screenPoint.X / gridStep, screenPoint.Y / gridStep);
-        }
-
-        public Point GridToScreen(Point gridPoint, int gridStep)
-        {
-            return new Point(gridPoint.X * gridStep, gridPoint.Y * gridStep);
-        }
-
-
         Vector oldDiff;
 
         double _offsetX;
@@ -1329,7 +1318,7 @@ namespace AnnoDesigner
             else
             {
                 var mousePosition = e.GetPosition(this);
-                var preZoomPosition = ScreenToGrid(mousePosition, GridSize);
+                var preZoomPosition = _coordinateHelper.ScreenToPreciseGrid(mousePosition, GridSize);
 
                 var diffGridSize = GridSize * e.Delta / 1000;
                 if (diffGridSize == 0)
@@ -1339,16 +1328,14 @@ namespace AnnoDesigner
 
                 GridSize += diffGridSize;
 
-                var postZoomPosition = ScreenToGrid(mousePosition, GridSize);
+                var postZoomPosition = _coordinateHelper.ScreenToPreciseGrid(mousePosition, GridSize);
                 var diff = postZoomPosition - preZoomPosition;
-                double GetDecimalPlaces(double value)
-                {
-                    return value - Math.Truncate(value);
-                }
 
+                //Not a fan of this, but where do we put it?
+                static double GetFractionalValue(double value) => value - Math.Truncate(value);
 
-                var newXDiff = GetDecimalPlaces(oldDiff.X + diff.X);
-                var newYDiff = GetDecimalPlaces(oldDiff.Y + diff.Y);
+                var newXDiff = GetFractionalValue(oldDiff.X + diff.X);
+                var newYDiff = GetFractionalValue(oldDiff.Y + diff.Y);
 
                 _offsetX = GridSize * newXDiff;
                 _offsetY = GridSize * newYDiff;
