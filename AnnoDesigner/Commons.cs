@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using AnnoDesigner.Models;
-using AnnoDesigner.Services;
 using NLog;
 
 namespace AnnoDesigner
@@ -11,8 +10,7 @@ namespace AnnoDesigner
     public class Commons : ICommons
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private static readonly IUpdateHelper _updateHelper;
-        private static string _selectedLanguage;
+        private static string _currentLanguage;
 
         public event EventHandler SelectedLanguageChanged;
 
@@ -23,39 +21,28 @@ namespace AnnoDesigner
         public static Commons Instance
         {
             get { return lazy.Value; }
-        }
-
-        static Commons()
-        {
-            _updateHelper = new UpdateHelper(App.ApplicationPath, AppSettings.Instance, new MessageBoxService());
-        }
+        }        
 
         private Commons()
-        {
-        }
+        {        }
 
         #endregion
-
-        public IUpdateHelper UpdateHelper
-        {
-            get { return _updateHelper; }
-        }
 
         public string CurrentLanguage
         {
             get
             {
-                if (_selectedLanguage != null && LanguageCodeMap.ContainsKey(_selectedLanguage))
+                if (_currentLanguage != null && LanguageCodeMap.ContainsKey(_currentLanguage))
                 {
-                    return _selectedLanguage;
+                    return _currentLanguage;
                 }
 
-                _selectedLanguage = "English";
-                return _selectedLanguage;
+                _currentLanguage = "English";
+                return _currentLanguage;
             }
             set
             {
-                _selectedLanguage = value ?? "English";
+                _currentLanguage = value ?? "English";
                 SelectedLanguageChanged?.Invoke(this, EventArgs.Empty);
             }
         }

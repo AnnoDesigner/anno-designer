@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Services;
 using AnnoDesigner.Models;
 using NLog;
-using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner.ViewModels
 {
@@ -21,6 +20,8 @@ namespace AnnoDesigner.ViewModels
 
         private readonly ICommons _commons;
         private readonly IAppSettings _appSettings;
+        private readonly IMessageBoxService _messageBoxService;
+        private readonly IUpdateHelper _updateHelper;
         private readonly ILocalizationHelper _localizationHelper;
 
         private bool _automaticUpdateCheck;
@@ -37,10 +38,14 @@ namespace AnnoDesigner.ViewModels
 
         public UpdateSettingsViewModel(ICommons commonsToUse,
             IAppSettings appSettingsToUse,
+            IMessageBoxService messageBoxServiceToUse,
+            IUpdateHelper updateHelperToUse,
             ILocalizationHelper localizationHelperToUse)
         {
             _commons = commonsToUse;
             _appSettings = appSettingsToUse;
+            _messageBoxService = messageBoxServiceToUse;
+            _updateHelper = updateHelperToUse;
             _localizationHelper = localizationHelperToUse;
 
             CheckForUpdatesCommand = new RelayCommand(ExecuteCheckForUpdates);
@@ -83,11 +88,9 @@ namespace AnnoDesigner.ViewModels
 
                 if (isAutomaticUpdateCheck)
                 {
-                    MessageBox.Show(Application.Current.MainWindow,
+                    _messageBoxService.ShowError(Application.Current.MainWindow,
                         $"Error checking version.{Environment.NewLine}{Environment.NewLine}More information is found in the log.",
-                        "Version check failed",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
+                        "Version check failed");
                 }
             }
         }
@@ -124,11 +127,9 @@ namespace AnnoDesigner.ViewModels
                 {
                     _appSettings.PromptedForAutoUpdateCheck = true;
 
-                    if (MessageBox.Show(Application.Current.MainWindow,
+                    if (!_messageBoxService.ShowQuestion(Application.Current.MainWindow,
                         "Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.",
-                        "Continue checking for updates?",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Question) == MessageBoxResult.No)
+                        "Continue checking for updates?"))
                     {
                         AutomaticUpdateCheck = false;
                     }
@@ -140,7 +141,7 @@ namespace AnnoDesigner.ViewModels
         {
             FoundPresetRelease = null;
 
-            var foundRelease = await _commons.UpdateHelper.GetAvailableReleasesAsync(ReleaseType.Presets);
+            var foundRelease = await _updateHelper.GetAvailableReleasesAsync(ReleaseType.Presets);
             if (foundRelease == null)
             {
                 return;
@@ -151,12 +152,9 @@ namespace AnnoDesigner.ViewModels
             {
                 if (isAutomaticUpdateCheck)
                 {
-                    if (MessageBox.Show(Application.Current.MainWindow,
+                    if (_messageBoxService.ShowQuestion(Application.Current.MainWindow,
                         _localizationHelper.GetLocalization("UpdateAvailablePresetMessage"),
-                        _localizationHelper.GetLocalization("UpdateAvailableHeader"),
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Asterisk,
-                        MessageBoxResult.OK) == MessageBoxResult.Yes)
+                        _localizationHelper.GetLocalization("UpdateAvailableHeader")))
                     {
                         ExecuteDownloadPresets(null);
                     }
@@ -200,27 +198,22 @@ namespace AnnoDesigner.ViewModels
                 //already asked for admin rights?
                 if (Environment.GetCommandLineArgs().Any(x => x.Trim().Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase)))
                 {
-                    MessageBox.Show($"You have no write access to the folder.{Environment.NewLine}The update can not be installed.",
-                        _localizationHelper.GetLocalization("Error"),
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
+                    _messageBoxService.ShowWarning($"You have no write access to the folder.{Environment.NewLine}The update can not be installed.",
+                        _localizationHelper.GetLocalization("Error"));
 
                     IsBusy = false;
                     return;
                 }
 
-                MessageBox.Show(_localizationHelper.GetLocalization("UpdateRequiresAdminRightsMessage"),
-                    _localizationHelper.GetLocalization("AdminRightsRequired"),
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information,
-                    MessageBoxResult.OK);
+                _messageBoxService.ShowMessage(_localizationHelper.GetLocalization("UpdateRequiresAdminRightsMessage"),
+                    _localizationHelper.GetLocalization("AdminRightsRequired"));
 
                 _appSettings.Save();
                 _commons.RestartApplication(true, Constants.Argument_Ask_For_Admin, App.ExecutablePath);
             }
 
             //Context is required here, do not use ConfigureAwait(false)
-            var newLocation = await _commons.UpdateHelper.DownloadReleaseAsync(FoundPresetRelease);
+            var newLocation = await _updateHelper.DownloadReleaseAsync(FoundPresetRelease);
             logger.Debug($"downloaded new preset ({FoundPresetRelease.Version}): {newLocation}");
 
             IsBusy = false;

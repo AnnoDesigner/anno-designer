@@ -10,7 +10,6 @@ namespace AnnoDesigner.Models
     {
         event EventHandler SelectedLanguageChanged;
 
-        IUpdateHelper UpdateHelper { get; }
         string CurrentLanguage { get; set; }
         string CurrentLanguageCode { get; }
         Dictionary<string, string> LanguageCodeMap { get; }

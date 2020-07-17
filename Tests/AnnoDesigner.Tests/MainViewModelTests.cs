@@ -24,6 +24,7 @@ namespace AnnoDesigner.Tests
         private readonly IRecentFilesHelper _inMemoryRecentFilesHelper;
         private readonly IMessageBoxService _mockedMessageBoxService;
         private readonly ILocalizationHelper _mockedLocalizationHelper;
+        private readonly IUpdateHelper _mockedUpdateHelper;
 
         public MainViewModelTests()
         {
@@ -48,19 +49,22 @@ namespace AnnoDesigner.Tests
             _inMemoryRecentFilesHelper = new RecentFilesHelper(new RecentFilesInMemorySerializer(), new MockFileSystem());
 
             _mockedMessageBoxService = new Mock<IMessageBoxService>().Object;
+            _mockedUpdateHelper = new Mock<IUpdateHelper>().Object;
         }
 
         private MainViewModel GetViewModel(ICommons commonsToUse = null,
             IAppSettings appSettingsToUse = null,
             IRecentFilesHelper recentFilesHelperToUse = null,
             IMessageBoxService messageBoxServiceToUse = null,
-            IAnnoCanvas annoCanvasToUse = null,
-            ILocalizationHelper localizationHelperToUse = null)
+            IUpdateHelper updateHelperToUse = null,
+            ILocalizationHelper localizationHelperToUse = null,
+            IAnnoCanvas annoCanvasToUse = null)
         {
             return new MainViewModel(commonsToUse ?? _mockedCommons,
                 appSettingsToUse ?? _mockedAppSettings,
                 recentFilesHelperToUse ?? _inMemoryRecentFilesHelper,
                 messageBoxServiceToUse ?? _mockedMessageBoxService,
+                updateHelperToUse ?? _mockedUpdateHelper,
                 localizationHelperToUse ?? _mockedLocalizationHelper)
             {
                 AnnoCanvas = annoCanvasToUse ?? _mockedAnnoCanvas
