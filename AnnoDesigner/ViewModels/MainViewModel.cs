@@ -118,7 +118,7 @@ namespace AnnoDesigner.ViewModels
 
             AboutViewModel = new AboutViewModel();
 
-            PreferencesUpdateViewModel = new UpdateSettingsViewModel(_commons, _appSettings);
+            PreferencesUpdateViewModel = new UpdateSettingsViewModel(_commons, _appSettings, _localizationHelper);
             PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons, _messageBoxService);
             PreferencesGeneralViewModel = new GeneralSettingsViewModel(_appSettings, _commons);
 
