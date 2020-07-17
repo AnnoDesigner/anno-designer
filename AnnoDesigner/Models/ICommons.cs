@@ -10,8 +10,6 @@ namespace AnnoDesigner.Models
     {
         event EventHandler SelectedLanguageChanged;
 
-        IUpdateHelper UpdateHelper { get; }
-
         string SelectedLanguage { get; set; }
 
         bool CanWriteInFolder(string folderPathToCheck = null);

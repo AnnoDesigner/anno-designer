@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Models
 {
@@ -13,13 +14,13 @@ namespace AnnoDesigner.Models
     {
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if (container is FrameworkElement element && item is Hotkey hotkey && hotkey.Binding is InputBinding)
+            if (container is FrameworkElement element && item is Hotkey hotkey && hotkey.Binding is InputBinding binding && binding.Gesture is PolyGesture gesture)
             {
-                if (hotkey.Binding is MouseBinding)
+                if (gesture.Type == GestureType.MouseGesture)
                 {
                     return element.FindResource("MouseBinding") as DataTemplate;
                 }
-                else if (hotkey.Binding is KeyBinding)
+                else if (gesture.Type == GestureType.KeyGesture)
                 {
                     return element.FindResource("KeyBinding") as DataTemplate;
                 }

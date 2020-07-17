@@ -78,87 +78,16 @@ namespace AnnoDesigner.ViewModels
             var window = new HotkeyRecorderWindow();
 
 #pragma warning disable IDE0007 // Use implicit type //Intent is much clearer
-            (Key key, ModifierKeys modifiers, MouseAction action, ActionRecorder.ActionType actionType, bool userCancelled) = window.RecordNewAction();
+            (Key key, ModifierKeys modifiers, ExtendedMouseAction action, ActionRecorder.ActionType actionType, bool userCancelled) = window.RecordNewAction();
 #pragma warning restore IDE0007 // Use implicit type
 
             //Only set new hotkeys if the user didn't click cancel, and they didn't close the window without a key/action bound
-            if (!userCancelled && !(key == Key.None && action == MouseAction.None))
+            if (!userCancelled && !(key == Key.None && action == ExtendedMouseAction.None))
             {
-                if (actionType == ActionRecorder.ActionType.KeyAction)
-                {
-                    if (hotkey.Binding is KeyBinding keyBinding)
-                    {
-                        keyBinding.Key = key;
-                        keyBinding.Modifiers = modifiers;
-                    }
-                    else
-                    {
-                        hotkey.Binding = GetKeyBinding(hotkey.Binding as MouseBinding, key, modifiers);
-                    }
-                }
-                else
-                {
-                    if (hotkey.Binding is MouseBinding mouseBinding)
-                    {
-                        var gesture = mouseBinding.Gesture as MouseGesture;
-                        gesture.Modifiers = modifiers;
-                        gesture.MouseAction = action;
-                    }
-                    else
-                    {
-                        hotkey.Binding = GetMouseBinding(hotkey.Binding as KeyBinding, action, modifiers);
-                    }
-                }
+                hotkey.UpdateHotkey(key, action, modifiers, (actionType == ActionRecorder.ActionType.KeyAction ? GestureType.KeyGesture : GestureType.MouseGesture));
             }
             RebindButtonCurrentTextKey = REBIND;
             UpdateRebindButtonText();
-        }
-
-        /// <summary>
-        /// Creates a <see cref="KeyBinding"/> from a given <see cref="MouseBinding"/>, copying over the Command, CommandParameter and CommandTarget properties
-        /// </summary>
-        /// <param name="mouseBinding"></param>
-        /// <param name="key"></param>
-        /// <param name="modifierKeys"></param>
-        /// <returns></returns>
-        private KeyBinding GetKeyBinding(MouseBinding mouseBinding, Key key, ModifierKeys modifierKeys)
-        {
-            //This is not an exact copy, hence why this method is private and should only be used internally by the class.
-            //Properties such as IsFrozen, IsSealed are not copied, and could lead to inconsistencies if used
-            //in a wider scope.
-            var keyBinding = new KeyBinding
-            {
-                Command = mouseBinding.Command,
-                CommandParameter = mouseBinding.CommandParameter,
-                CommandTarget = mouseBinding.CommandTarget,
-                Key = key,
-                Modifiers = modifierKeys
-            };
-            return keyBinding;
-        }
-
-        /// <summary>
-        /// Creates a <see cref="MouseBinding"/> from a given <see cref="KeyBinding"/>, copying over the Command, CommandParameter and CommandTarget properties
-        /// </summary>
-        /// <param name="keyBinding"></param>
-        /// <param name="action"></param>
-        /// <param name="modifierKeys"></param>
-        /// <returns></returns>
-        private MouseBinding GetMouseBinding(KeyBinding keyBinding, MouseAction action, ModifierKeys modifierKeys)
-        {
-            //This is not an exact copy, hence why this method is private. It should only be used internally.
-            //Properties such as IsFrozen, IsSealed are not copied, and could lead to inconsistencies if used
-            //in a wider scope.
-            //We have to create the MouseGesture separately, as we can't access the modifiers property from the MouseBinding
-            var mouseGesture = new MouseGesture(action, modifierKeys);
-            var mouseBinding = new MouseBinding
-            {
-                Command = keyBinding.Command,
-                CommandParameter = keyBinding.CommandParameter,
-                CommandTarget = keyBinding.CommandTarget,
-                Gesture = mouseGesture
-            };
-            return mouseBinding;
         }
 
         private void ExecuteResetHotkeys(object param)

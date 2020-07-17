@@ -31,7 +31,7 @@ namespace AnnoDesigner
         /// </summary>
         private IDictionary<string, HotkeyInformation> hotkeyUserMappings;
 
-        private ILocalization localization;
+        private readonly ILocalization localization;
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
@@ -224,12 +224,19 @@ namespace AnnoDesigner
             {
                 return;
             }
-            foreach (var kvp in hotkeyUserMappings.ToDictionary(_ => _.Key, _ => _.Value)) //Copy so that we can modify the original collection
+            //Copy so that we can modify the original collection within the foreach loop
+            foreach (var kvp in hotkeyUserMappings.ToDictionary(_ => _.Key, _ => _.Value)) 
             {
                 if (hotkeys.TryGetValue(kvp.Key, out var hotkey))
                 {
+                    try
+                    {
+                        hotkey.UpdateHotkey(kvp.Value);
+                    }
+                    catch { }
+                    //ignore any exceptions. Remove this mapping anyway, even if an exception is thrown,
+                    //as its probably responsible for the exception
                     hotkeyUserMappings.Remove(kvp.Key);
-                    hotkey.UpdateHotkey(kvp.Value);
                 }
             }
         }

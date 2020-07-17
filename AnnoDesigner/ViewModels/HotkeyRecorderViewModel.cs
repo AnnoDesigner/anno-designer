@@ -21,7 +21,7 @@ namespace AnnoDesigner.ViewModels
 
         private ActionRecorder.ActionType _result;
         private Key _key;
-        private MouseAction _mouseAction;
+        private ExtendedMouseAction _mouseAction;
         private ModifierKeys _modifiers;
 
         public ActionRecorder.ActionType Result
@@ -34,7 +34,7 @@ namespace AnnoDesigner.ViewModels
             get => _key;
             set => UpdateProperty(ref _key, value);
         }
-        public MouseAction MouseAction
+        public ExtendedMouseAction MouseAction
         {
             get => _mouseAction;
             set => UpdateProperty(ref _mouseAction, value);
