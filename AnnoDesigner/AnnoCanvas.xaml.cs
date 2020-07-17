@@ -590,47 +590,21 @@ namespace AnnoDesigner
             deleteCommand = new RelayCommand(ExecuteDelete);
 
             //Set up default keybindings
-            var rotateBinding = new KeyBinding()
-            {
-                Command = rotateCommand,
-                Key = Key.R,
-                Modifiers = ModifierKeys.None
-            };
+            var rotateBinding = new InputBinding(rotateCommand, new PolyGesture(Key.R, ModifierKeys.None));
             rotateHotkey = new Hotkey(ROTATE_COMMAND_KEY, rotateBinding);
 
-            var copyBinding = new KeyBinding()
-            {
-                Command = copyCommand,
-                Key = Key.C,
-                Modifiers = ModifierKeys.Control
-            };
+            var copyBinding = new InputBinding(copyCommand, new PolyGesture(Key.C, ModifierKeys.Control));
             copyHotkey = new Hotkey(COPY_COMMAND_KEY, copyBinding);
 
-            var pasteBinding = new KeyBinding()
-            {
-                Command = pasteCommand,
-                Key = Key.V,
-                Modifiers = ModifierKeys.Control
-            };
+            var pasteBinding = new InputBinding(pasteCommand, new PolyGesture(Key.V, ModifierKeys.Control));
             pasteHotkey = new Hotkey(PASTE_COMMAND_KEY, pasteBinding);
 
-            var deleteBinding = new KeyBinding()
-            {
-                Command = deleteCommand,
-                Key = Key.Delete,
-                Modifiers = ModifierKeys.None
-            };
+            var deleteBinding = new InputBinding(deleteCommand, new PolyGesture(Key.Delete, ModifierKeys.None));
             deleteHotkey = new Hotkey(DELETE_COMMAND_KEY, deleteBinding);
 
-            //TODO: Find a solution for this before PR. When the binding type switches from a KeyBinding to a MouseBinding
-            //this does not update (which is correct, as the orignal object is dereferenced). Maybe we pass around a reference
-            //to the InputBindingCollection stored with the Hotkey itself, so that when the Hotkey.Binding reference changes,
-            //the hotkey can update the InputBindingCollection
-
-            //InputBindings.Add(rotateBinding);
-            //InputBindings.Add(copyBinding);
-            //InputBindings.Add(pasteBinding);
-            //InputBindings.Add(deleteBinding);            
+            //We specifically do not add the `InputBinding`s to the `InputBindingCollection` of `AnnoCanvas`, as if we did that,
+            //`InputBinding.Gesture.Matches()` would be fired for *every* event - MouseWheel, MouseDown, KeyUp, KeyDown, MouseMove etc
+            //which we don't want, as it produces a noticeable performance impact.
 
             LoadGridLineColor();
             LoadObjectBorderLineColor();
@@ -1668,8 +1642,9 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            //Still needed until we find a solution to the problem caused when a KeyBinding switches to a MouseBinding
-            //and vice versa in the InputBindingCollection.
+            //Used here instead of adding to the InputBindingsCollection as we don't want run `Binding.Matches` on *every* event.
+            //When an InputBinding is added to the InputBindingsCollection, the  `Matches` method is fired for every event - KeyUp,
+            //KeyDown, MouseUp, MouseMove, MouseWheel etc.
             HotkeyCommandManager.HandleCommand(e);
             if (e.Handled)
             {

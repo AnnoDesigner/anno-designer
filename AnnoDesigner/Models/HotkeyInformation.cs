@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Models
 {
@@ -14,22 +15,22 @@ namespace AnnoDesigner.Models
     public class HotkeyInformation
     {
         public HotkeyInformation() { }
-        public HotkeyInformation(Key key) : this (key, default, ModifierKeys.None, typeof(KeyBinding)) { }
-        public HotkeyInformation(MouseAction mouseAction) : this (default, mouseAction, ModifierKeys.None, typeof(MouseBinding)) { }
-        public HotkeyInformation(Key key, ModifierKeys modifiers) : this (key, default, modifiers, typeof(KeyBinding)) { }
-        public HotkeyInformation(MouseAction mouseAction, ModifierKeys modifiers) : this (default, mouseAction, modifiers, typeof(MouseBinding)) { }
-        public HotkeyInformation(Key key, MouseAction mouseAction, ModifierKeys modifiers, Type bindingType)
+        public HotkeyInformation(Key key) : this(key, ModifierKeys.None) { }
+        public HotkeyInformation(ExtendedMouseAction mouseAction) : this(mouseAction, ModifierKeys.None) { }
+        public HotkeyInformation(Key key, ModifierKeys modifiers) : this(key, default, modifiers, GestureType.KeyGesture) { }
+        public HotkeyInformation(ExtendedMouseAction mouseAction, ModifierKeys modifiers) : this(default, mouseAction, modifiers, GestureType.MouseGesture) { }
+        public HotkeyInformation(Key key, ExtendedMouseAction mouseAction, ModifierKeys modifiers, GestureType gestureType)
         {
             Key = key;
             MouseAction = mouseAction;
             Modifiers = modifiers;
-            BindingType = bindingType;
+            Type = gestureType;
         }
 
         public Key Key { get; set; }
-        public MouseAction MouseAction { get; set; }
+        public ExtendedMouseAction MouseAction { get; set; }
         public ModifierKeys Modifiers { get; set; }
-        public Type BindingType { get; set; }
+        public GestureType Type { get; set; }
     }
 
 }

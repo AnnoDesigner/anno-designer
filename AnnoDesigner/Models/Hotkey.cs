@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -11,7 +12,7 @@ namespace AnnoDesigner.Models
 {
     /// <summary>
     /// Acts as a wrapper for a named <see cref="InputBinding"/>, and allows updating if the currently wrapped <see cref="InputBinding"/> 
-    /// is replaced with a fresh reference.
+    /// is replaced with a fresh reference, whilst still maintaining the same <see cref="HotkeyId"/>.
     /// </summary>
     public class Hotkey : Notify
     {
@@ -23,26 +24,29 @@ namespace AnnoDesigner.Models
             Binding = binding;
             Description = description;
 
-            if (binding is KeyBinding keyBinding)
+            if (binding.Gesture is PolyGesture gesture)
             {
-                defaultKey = keyBinding.Key;
-                defaultModifiers = keyBinding.Modifiers;
-                defaultType = typeof(KeyBinding);
+                defaultKey = gesture.Key;
+                defaultModifiers = gesture.ModifierKeys;
+                defaultMouseAction = gesture.MouseAction;
+                defaultType = gesture.Type;
             }
             else
             {
-                var mouseBinding = binding as MouseBinding;
-                defaultMouseAction = mouseBinding.MouseAction;
-                defaultModifiers = (mouseBinding.Gesture as MouseGesture).Modifiers;
-                defaultType = typeof(MouseBinding);
+                throw new ArgumentException($"{nameof(binding)} must use a {nameof(PolyGesture)}");
             }
         }
 
         private InputBinding _binding;
         public InputBinding Binding
         {
-            get { return _binding; }
-            set { UpdateProperty(ref _binding, value); }
+            get => _binding;
+            set
+            {
+                UpdateProperty(ref _binding, value);
+                //Check that a PolyGesture is still being used
+                _ = GetGestureOrThrow();
+            }
         }
 
         private string _name;
@@ -51,15 +55,15 @@ namespace AnnoDesigner.Models
         /// </summary>
         public string HotkeyId
         {
-            get { return _name; }
-            set { UpdateProperty(ref _name, value); }
+            get => _name;
+            set => UpdateProperty(ref _name, value);
         }
 
         private string _description;
         public string Description
         {
-            get { return _description; }
-            set { UpdateProperty(ref _description, value); }
+            get => _description;
+            set => UpdateProperty(ref _description, value);
         }
 
         /// <summary>
@@ -70,99 +74,38 @@ namespace AnnoDesigner.Models
             SynchronizeProperties(defaultKey, defaultMouseAction, defaultModifiers, defaultType);
         }
 
-        private void SynchronizeProperties(Key key, MouseAction mouseAction, ModifierKeys modifiers, Type type)
+        private void SynchronizeProperties(Key key, ExtendedMouseAction mouseAction, ModifierKeys modifiers, GestureType type)
         {
-            var isKeyBinding = Binding is KeyBinding;
-            var isCorrectType = Binding.GetType() == type;
-            if (isKeyBinding && isCorrectType)
-            {
-                var keyBinding = Binding as KeyBinding;
-                keyBinding.Key = key;
-                keyBinding.Modifiers = modifiers;
-            }
-            else if (!isKeyBinding && isCorrectType)
-            {
-                var mouseBinding = Binding as MouseBinding;
-                mouseBinding.MouseAction = mouseAction;
-                (mouseBinding.Gesture as MouseGesture).Modifiers = modifiers;
-            }
-            else if (type == typeof(KeyBinding))
-            {
-                //we currently have a MouseBinding and need a KeyBinding
-                Binding = new KeyBinding()
-                {
-                    Key = key,
-                    Modifiers = modifiers,
-                    Command = Binding.Command,
-                    CommandParameter = Binding.CommandParameter
-                };
-            }
-            else if (type == typeof(MouseBinding))
-            {
-                //we currently have a KeyBinding and need a MouseBinding
-                Binding = new MouseBinding()
-                {
-                    Gesture = new MouseGesture(mouseAction, modifiers),
-                    Command = Binding.Command,
-                    CommandParameter = Binding.CommandParameter
-                };
-            }
+            var gesture = GetGestureOrThrow();
+
+            gesture.Type = type;
+            gesture.Key = key;
+            gesture.MouseAction = mouseAction;
+            gesture.ModifierKeys = modifiers;
+            OnPropertyChanged(nameof(Binding.Gesture));
         }
 
         /// <summary>
-        /// Returns <see langword="true"/> if the current <see cref="Key"/> or <see cref="MouseAction"/> mappings for this <see cref="Hotkey"/> 
+        /// Returns <see langword="true"/> if the current mappings for this <see cref="Hotkey"/> 
         /// do not match the default mappings it was created with.
         /// </summary>
         /// <returns></returns>
         public bool IsRemapped()
         {
-            var isChangedType = Binding.GetType() != defaultType;
-            if (isChangedType)
-            {
-                return true;
-            }
-            else if (Binding is KeyBinding keyBinding)
-            {
-                return !(keyBinding.Key == defaultKey && keyBinding.Modifiers == defaultModifiers);
-            }
-            else if (Binding is MouseBinding mouseBinding && mouseBinding.Gesture is MouseGesture mouseGesture)
-            {
-                return !(mouseGesture.MouseAction == defaultMouseAction && mouseGesture.Modifiers == defaultModifiers);
-            }
-#if DEBUG
-            throw new Exception($"Unrecognised InputBinding type {Binding.GetType()}.");
-#else
-            return false;
-#endif
+            var gesture = GetGestureOrThrow(); 
+            return !(gesture.Type == defaultType && gesture.Key == defaultKey && gesture.ModifierKeys == defaultModifiers && gesture.MouseAction == defaultMouseAction);
         }
 
         public HotkeyInformation GetHotkeyInformation()
         {
-            var hotkeyInfo = new HotkeyInformation();
-            if (Binding is KeyBinding keyBinding)
-            {
-                hotkeyInfo.Key = keyBinding.Key;
-                hotkeyInfo.Modifiers = keyBinding.Modifiers;
-                hotkeyInfo.BindingType = typeof(KeyBinding);
-                return hotkeyInfo;
-            }  
-            else if (Binding is MouseBinding mouseBinding && mouseBinding.Gesture is MouseGesture mouseGesture) {
-                hotkeyInfo.MouseAction = mouseGesture.MouseAction;
-                hotkeyInfo.Modifiers = mouseGesture.Modifiers;
-                hotkeyInfo.BindingType = typeof(MouseBinding);
-                return hotkeyInfo;
-            }
-#if DEBUG
-            throw new Exception($"Unrecognised InputBinding type {Binding.GetType()}.");
-#else
+            var gesture = GetGestureOrThrow();
             return new HotkeyInformation()
             {
-                Key = defaultKey,
-                MouseAction = defaultMouseAction,
-                Modifiers = defaultModifiers,
-                BindingType = defaultType
+                Key = gesture.Key,
+                Modifiers = gesture.ModifierKeys,
+                MouseAction = gesture.MouseAction,
+                Type = gesture.Type
             };
-#endif
         }
 
         /// <summary>
@@ -171,12 +114,37 @@ namespace AnnoDesigner.Models
         /// <param name="information"></param>
         public void UpdateHotkey(HotkeyInformation information)
         {
-            SynchronizeProperties(information.Key, information.MouseAction, information.Modifiers, information.BindingType);
+            UpdateHotkey(information.Key, information.MouseAction, information.Modifiers, information.Type);
+        }
+
+        /// <summary>
+        /// Updates a hotkey and based on the given information
+        /// </summary>
+        /// <param name="information"></param>
+        public void UpdateHotkey(Key key, ExtendedMouseAction mouseAction, ModifierKeys modifiers, GestureType type)
+        {
+            if (PolyGesture.IsDefinedGestureType(type))
+            {
+                SynchronizeProperties(key, mouseAction, modifiers, type);
+            }
+            else
+            {
+                throw new ArgumentException($"Value provided is not valid for enum {nameof(GestureType)}", nameof(type));
+            }
+        }
+
+        /// <summary>
+        /// Checks that the Hotkey is using a PolyGesture
+        /// </summary>
+        /// <returns></returns>
+        private PolyGesture GetGestureOrThrow()
+        {
+            return Binding.Gesture as PolyGesture ?? throw new InvalidOperationException($"{nameof(Hotkey)} must use a {nameof(PolyGesture)}");
         }
 
         private readonly Key defaultKey = default;
-        private readonly MouseAction defaultMouseAction = default;
+        private readonly ExtendedMouseAction defaultMouseAction = default;
         private readonly ModifierKeys defaultModifiers = default;
-        private readonly Type defaultType = default;
+        private readonly GestureType defaultType = default;
     }
 }

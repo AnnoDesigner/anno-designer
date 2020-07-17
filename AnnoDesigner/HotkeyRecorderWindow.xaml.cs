@@ -40,7 +40,7 @@ namespace AnnoDesigner
             }
         }
 
-        public (Key key, ModifierKeys modifiers, MouseAction action, ActionRecorder.ActionType result, bool userCancelled) RecordNewAction()
+        public (Key key, ModifierKeys modifiers, ExtendedMouseAction action, ActionRecorder.ActionType result, bool userCancelled) RecordNewAction()
         {
             ViewModel.Reset();
             ShowDialog();
