@@ -43,6 +43,7 @@ namespace AnnoDesigner.ViewModels
         private readonly IPenCache _penCache;
         private readonly IRecentFilesHelper _recentFilesHelper;
         private readonly IMessageBoxService _messageBoxService;
+        private readonly IUpdateHelper _updateHelper;
 
         public event EventHandler<EventArgs> ShowStatisticsChanged;
 
@@ -80,6 +81,7 @@ namespace AnnoDesigner.ViewModels
             IAppSettings appSettingsToUse,
             IRecentFilesHelper recentFilesHelperToUse,
             IMessageBoxService messageBoxServiceToUse,
+            IUpdateHelper updateHelperToUse,
             ILayoutLoader layoutLoaderToUse = null,
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
@@ -91,6 +93,7 @@ namespace AnnoDesigner.ViewModels
             _appSettings = appSettingsToUse;
             _recentFilesHelper = recentFilesHelperToUse;
             _messageBoxService = messageBoxServiceToUse;
+            _updateHelper = updateHelperToUse;
 
             _layoutLoader = layoutLoaderToUse ?? new LayoutLoader();
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
@@ -115,7 +118,7 @@ namespace AnnoDesigner.ViewModels
 
             AboutViewModel = new AboutViewModel();
 
-            PreferencesUpdateViewModel = new UpdateSettingsViewModel(_commons, _appSettings);
+            PreferencesUpdateViewModel = new UpdateSettingsViewModel(_commons, _appSettings, _messageBoxService, _updateHelper);
             PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons, _messageBoxService);
             PreferencesGeneralViewModel = new GeneralSettingsViewModel(_appSettings, _commons);
 

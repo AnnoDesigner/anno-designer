@@ -21,6 +21,7 @@ namespace AnnoDesigner.ViewModels
         private readonly ICommons _commons;
         private readonly IAppSettings _appSettings;
         private readonly IMessageBoxService _messageBoxService;
+        private readonly IUpdateHelper _updateHelper;
 
         private bool _automaticUpdateCheck;
         private bool _updateSupportsPrerelease;
@@ -36,11 +37,13 @@ namespace AnnoDesigner.ViewModels
 
         public UpdateSettingsViewModel(ICommons commonsToUse,
             IAppSettings appSettingsToUse,
-            IMessageBoxService messageBoxServiceToUse)
+            IMessageBoxService messageBoxServiceToUse,
+            IUpdateHelper updateHelperToUse)
         {
             _commons = commonsToUse;
             _appSettings = appSettingsToUse;
             _messageBoxService = messageBoxServiceToUse;
+            _updateHelper = updateHelperToUse;
 
             CheckForUpdatesCommand = new RelayCommand(ExecuteCheckForUpdates);
             OpenReleasesCommand = new RelayCommand(ExecuteOpenReleases);
@@ -135,7 +138,7 @@ namespace AnnoDesigner.ViewModels
         {
             FoundPresetRelease = null;
 
-            var foundRelease = await _commons.UpdateHelper.GetAvailableReleasesAsync(ReleaseType.Presets);
+            var foundRelease = await _updateHelper.GetAvailableReleasesAsync(ReleaseType.Presets);
             if (foundRelease == null)
             {
                 return;
@@ -207,7 +210,7 @@ namespace AnnoDesigner.ViewModels
             }
 
             //Context is required here, do not use ConfigureAwait(false)
-            var newLocation = await _commons.UpdateHelper.DownloadReleaseAsync(FoundPresetRelease);
+            var newLocation = await _updateHelper.DownloadReleaseAsync(FoundPresetRelease);
             logger.Debug($"downloaded new preset ({FoundPresetRelease.Version}): {newLocation}");
 
             IsBusy = false;
