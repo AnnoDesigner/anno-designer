@@ -224,7 +224,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedMainWindowHeight, appSettings.Object.MainWindowHeight);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Fact]
@@ -244,7 +244,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedMainMainWindowWidth, appSettings.Object.MainWindowWidth);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Fact]
@@ -264,7 +264,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedMainMainWindowLeft, appSettings.Object.MainWindowLeft);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Fact]
@@ -284,7 +284,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedMainMainWindowTop, appSettings.Object.MainWindowTop);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -304,7 +304,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedMainMainWindowWindowState, appSettings.Object.MainWindowWindowState);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -324,7 +324,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedShowGrid, appSettings.Object.ShowGrid);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -344,7 +344,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedShowIcons, appSettings.Object.ShowIcons);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -364,7 +364,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedShowLabels, appSettings.Object.ShowLabels);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -384,7 +384,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedShowInfluences, appSettings.Object.ShowInfluences);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -404,7 +404,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedShowTrueInfluenceRange, appSettings.Object.ShowTrueInfluenceRange);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -424,7 +424,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedEnableAutomaticUpdateCheck, appSettings.Object.EnableAutomaticUpdateCheck);
-            appSettings.Verify(x => x.Save(), Times.Between(1, 2, Range.Inclusive));
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -444,7 +444,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedUseCurrentZoomOnExportedImageValue, appSettings.Object.UseCurrentZoomOnExportedImageValue);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -464,7 +464,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedRenderSelectionHighlightsOnExportedImageValue, appSettings.Object.RenderSelectionHighlightsOnExportedImageValue);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -492,7 +492,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedIsPavedStreet, appSettings.Object.IsPavedStreet);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -512,7 +512,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedStatsShowStats, appSettings.Object.StatsShowStats);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -532,7 +532,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedStatsShowBuildingCount, appSettings.Object.StatsShowBuildingCount);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -554,7 +554,7 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedTreeViewSearchText, appSettings.Object.TreeViewSearchText);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
@@ -580,14 +580,13 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedPresetsTreeGameVersionFilter.ToString(), appSettings.Object.PresetsTreeGameVersionFilter);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
 
         [Theory]
-        [InlineData("id", Key.A, ModifierKeys.Alt, Key.B, ModifierKeys.None, @"{""id"":{""Key"":45,""MouseAction"":0,""Modifiers"":0,""BindingType"":""System.Windows.Input.KeyBinding, PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35""}}")]
-        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Shift, @"{""id"":{""Key"":44,""MouseAction"":0,""Modifiers"":4,""BindingType"":""System.Windows.Input.KeyBinding, PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35""}}")]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.S, ModifierKeys.Control | ModifierKeys.Shift, @"{""id"":{""Key"":62,""MouseAction"":0,""Modifiers"":6,""Type"":1}}")]
         [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, "{}")]
-        public void SaveSettings_IsCalled_ShouldSaveRemappedHotkeys(string id, Key key, ModifierKeys modifiers, Key newKey, ModifierKeys newModifiers, string expected)
+        public void SaveSettings_IsCalled_ShouldSaveRemappedHotkeys(string id, Key key, ModifierKeys modifiers, Key newKey, ModifierKeys newModifiers, string expectedJsonString)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
@@ -596,18 +595,18 @@ namespace AnnoDesigner.Tests
             var command = Mock.Of<ICommand>(c => c.CanExecute(It.IsAny<object>()) == true);
 
             var viewModel = GetViewModel(null, appSettings.Object);
-            viewModel.HotkeyCommandManager.AddHotkey(id, new KeyBinding(command, new KeyGesture(key, modifiers)));
+            viewModel.HotkeyCommandManager.AddHotkey(id, new InputBinding(command, new PolyGesture(key, modifiers)));
             var hotkey = viewModel.HotkeyCommandManager.GetHotkey("id");
-            var binding = hotkey.Binding as KeyBinding;
-            binding.Key = newKey;
-            binding.Modifiers = newModifiers;
+            var gesture = hotkey.Binding.Gesture as PolyGesture;
+            gesture.Key = newKey;
+            gesture.ModifierKeys = newModifiers;
 
             // Act
             viewModel.SaveSettings();
 
             // Assert
-            Assert.Equal(expected, appSettings.Object.HotkeyMappings);
-            appSettings.Verify(x => x.Save(), Times.Once);
+            Assert.Equal(expectedJsonString, appSettings.Object.HotkeyMappings);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
         }
         #endregion
 
@@ -849,10 +848,10 @@ namespace AnnoDesigner.Tests
         }
 
         [Theory]
-        [InlineData("id", Key.A, ModifierKeys.Alt, Key.B, ModifierKeys.None, @"{""id"":{""Key"":45,""MouseAction"":0,""Modifiers"":0,""BindingType"":""System.Windows.Input.KeyBinding, PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35""}}")]
-        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Shift, @"{""id"":{""Key"":44,""MouseAction"":0,""Modifiers"":4,""BindingType"":""System.Windows.Input.KeyBinding, PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35""}}")]
-        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, "{}")]
-        public void LoadSettings_IsCalled_ShouldLoadRemappedHotkeys(string id, Key key, ModifierKeys modifiers, Key expectedKey, ModifierKeys expectedModifiers, string settingsString)
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.S, ModifierKeys.Control | ModifierKeys.Shift, ExtendedMouseAction.None, GestureType.KeyGesture, @"{""id"":{""Key"":62,""MouseAction"":0,""Modifiers"":6,""Type"":1}}")]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.None, ModifierKeys.Shift, ExtendedMouseAction.LeftDoubleClick, GestureType.MouseGesture, @"{""id"":{""Key"":0,""MouseAction"":5,""Modifiers"":4,""Type"":0}}")]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, ExtendedMouseAction.None, GestureType.KeyGesture, "{}")]
+        public void LoadSettings_IsCalled_ShouldLoadRemappedHotkeys(string id, Key key, ModifierKeys modifiers, Key expectedKey, ModifierKeys expectedModifiers, ExtendedMouseAction expectedMouseAction, GestureType expectedType, string settingsString)
         {
             // Arrange            
             var appSettings = new Mock<IAppSettings>();
@@ -866,13 +865,13 @@ namespace AnnoDesigner.Tests
             // Act
             viewModel.LoadSettings();
 
-            viewModel.HotkeyCommandManager.AddHotkey(id, new KeyBinding(command, new KeyGesture(key, modifiers)));
-            var binding = viewModel.HotkeyCommandManager.GetHotkey(id).Binding as KeyBinding;
-            var actualKey = binding.Key;
-            var actualModifiers = binding.Modifiers;
+            viewModel.HotkeyCommandManager.AddHotkey(id, new InputBinding(command, new PolyGesture(key, modifiers)));
+            var gesture = viewModel.HotkeyCommandManager.GetHotkey(id).Binding.Gesture as PolyGesture;
             // Assert
-            Assert.Equal(expectedKey, actualKey);
-            Assert.Equal(expectedModifiers, actualModifiers);
+            Assert.Equal(expectedKey, gesture.Key);
+            Assert.Equal(expectedModifiers, gesture.ModifierKeys);
+            Assert.Equal(expectedMouseAction, gesture.MouseAction);
+            Assert.Equal(expectedType, gesture.Type);
         }
 
         #endregion
