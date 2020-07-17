@@ -28,12 +28,14 @@ namespace AnnoDesigner
         private static readonly IAppSettings _appSettings;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly IMessageBoxService _messageBoxService;
+        private static readonly IUpdateHelper _updateHelper;
 
         static App()
         {
             _commons = Commons.Instance;
             _appSettings = AppSettings.Instance;
             _messageBoxService = new MessageBoxService();
+            _updateHelper = new UpdateHelper(ApplicationPath, _appSettings, _messageBoxService);
         }
 
         public App()
@@ -179,14 +181,14 @@ namespace AnnoDesigner
                 }
 
                 //var updateWindow = new UpdateWindow();                
-                await _commons.UpdateHelper.ReplaceUpdatedPresetsFilesAsync();
+                await _updateHelper.ReplaceUpdatedPresetsFilesAsync();
 
                 Localization.Localization.Init(_commons);
 
                 var serializer = new RecentFilesAppSettingsSerializer(_appSettings);
 
                 IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(serializer, new FileSystem());
-                var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper, _messageBoxService);
+                var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper, _messageBoxService, _updateHelper);
 
                 //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
                 MainWindow = new MainWindow(_appSettings);
