@@ -753,11 +753,11 @@ namespace AnnoDesigner
             // draw grid
             if (RenderGrid)
             {
-                for (var i = 0; i < width; i += _gridStep)
+                for (var i = _offsetX; i < width; i += _gridStep)
                 {
                     drawingContext.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
                 }
-                for (var i = 0; i < height; i += _gridStep)
+                for (var i = _offsetY; i < height; i += _gridStep)
                 {
                     drawingContext.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
                 }
@@ -1300,6 +1300,19 @@ namespace AnnoDesigner
             return new Point(screenPoint.X / gridStep, screenPoint.Y / gridStep);
         }
 
+        public Point GridToScreen(Point gridPoint, int gridStep)
+        {
+            return new Point(gridPoint.X * gridStep, gridPoint.Y * gridStep);
+        }
+
+
+        Vector oldDiff;
+
+        double _offsetX;
+        double _offsetY;
+
+
+
 
         /// <summary>
         /// Handles the zoom level
@@ -1326,6 +1339,23 @@ namespace AnnoDesigner
 
                 var postZoomPosition = ScreenToGrid(mousePosition, GridSize);
                 var diff = postZoomPosition - preZoomPosition;
+                double GetDecimalPlaces(double value)
+                {
+                    return value - Math.Truncate(value);
+                }
+
+
+                var newXDiff = GetDecimalPlaces(oldDiff.X + diff.X);
+                var newYDiff = GetDecimalPlaces(oldDiff.Y + diff.Y);
+
+                _offsetX = GridSize * newXDiff;
+                _offsetY = GridSize * newYDiff;
+
+                oldDiff = new Vector(newXDiff, newYDiff);
+
+                _offsetX %= GridSize;
+                _offsetY %= GridSize;
+
                 if (diff.LengthSquared > 0)
                 {
                     foreach (var placedObject in PlacedObjects)
