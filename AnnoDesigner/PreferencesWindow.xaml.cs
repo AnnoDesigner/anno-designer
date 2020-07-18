@@ -1,10 +1,11 @@
 ﻿using System.Windows;
+using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 using AnnoDesigner.ViewModels;
 
 namespace AnnoDesigner
 {
-    public partial class PreferencesWindow : Window
+    public partial class PreferencesWindow : Window, ICloseable
     {
         public PreferencesWindow()
         {

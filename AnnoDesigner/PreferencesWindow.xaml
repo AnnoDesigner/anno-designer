@@ -24,32 +24,39 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ScrollViewer Grid.Row="1"
-                      Grid.Column="0"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Auto">
-            <StackPanel>
-                <StackPanel.Resources>
-                    <Style x:Name="ItemStyle"
-                           TargetType="{x:Type ListViewItem}">
-                        <Setter Property="FontSize"
-                                Value="18" />
-                        <Setter Property="Padding"
-                                Value="10" />
-                    </Style>
-                </StackPanel.Resources>
-                <ListView BorderBrush="Transparent"
-                          SelectionMode="Single"
-                          ItemsSource="{Binding Pages}"
-                          SelectedItem="{Binding SelectedItem}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{l:DynamicLocalize HeaderKeyForTranslation}" />
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackPanel>
-        </ScrollViewer>
+        <DockPanel Grid.Row="1"
+                   Grid.Column="0"
+                   HorizontalAlignment="Stretch"
+                   LastChildFill="False">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Auto" DockPanel.Dock="Top">
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <Style x:Name="ItemStyle"
+                               TargetType="{x:Type ListViewItem}">
+                            <Setter Property="FontSize"
+                                    Value="18" />
+                            <Setter Property="Padding"
+                                    Value="10" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <ListView BorderBrush="Transparent"
+                              SelectionMode="Single"
+                              ItemsSource="{Binding Pages}"
+                              SelectedItem="{Binding SelectedItem}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{l:DynamicLocalize HeaderKeyForTranslation}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </ScrollViewer>
+            <Button Content="{l:Localize Close}"
+                    Command="{Binding CloseWindowCommand}"
+                    CommandParameter="{Binding ElementName=Preferences}" 
+                    Height="30" Margin="10" DockPanel.Dock="Bottom"/>
+        </DockPanel>
         <GridSplitter Grid.Column="1"
                       Grid.Row="1"
                       Width="5"
