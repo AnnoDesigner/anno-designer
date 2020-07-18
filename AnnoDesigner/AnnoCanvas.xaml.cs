@@ -419,6 +419,12 @@ namespace AnnoDesigner
         /// </summary>
         private double _offsetY;
 
+        private Vector _cumulativeSmoothingOffset;
+        private Vector _currentSmoothingOffset;
+        private List<Vector> _offsets = new List<Vector>(100);
+        private bool _appliedZoomLevel = false;
+
+
         /// <summary>
         /// List of all currently placed objects.
         /// </summary>
@@ -755,6 +761,12 @@ namespace AnnoDesigner
             // draw mouse grid position highlight
             //drawingContext.DrawRectangle(_lightBrush, _highlightPen, new Rect(GridToScreen(ScreenToGrid(_mousePosition)), new Size(_gridStep, _gridStep)));
 
+            if (_appSettings.UseZoomToPoint && !_appliedZoomLevel)
+            {
+                ApplySmoothing(_currentSmoothingOffset, PlacedObjects);
+                _appliedZoomLevel = true;
+            }
+
             // draw placed objects            
             RenderObjectList(drawingContext, PlacedObjects, useTransparency: false);
             RenderObjectSelection(drawingContext, SelectedObjects);
@@ -839,6 +851,7 @@ namespace AnnoDesigner
                     var pos = _coordinateHelper.GridToScreen(CurrentObjects[i].Position, GridSize);
                     CurrentObjects[i].Position = _coordinateHelper.RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy), GridSize);
                 }
+                //ApplySmoothing(_currentSmoothingOffset, CurrentObjects);
             }
             else
             {
@@ -846,7 +859,13 @@ namespace AnnoDesigner
                 var size = _coordinateHelper.GridToScreen(CurrentObjects[0].Size, GridSize);
                 pos.X -= size.Width / 2;
                 pos.Y -= size.Height / 2;
-                CurrentObjects[0].Position = _coordinateHelper.RoundScreenToGrid(pos, GridSize);
+                pos = _coordinateHelper.RoundScreenToGrid(pos, GridSize);
+                var fractionalValue = MathHelper.GetFractionalValue(_currentSmoothingOffset.X);
+                pos.X += fractionalValue;
+                fractionalValue = MathHelper.GetFractionalValue(_currentSmoothingOffset.Y);
+                pos.Y += fractionalValue;
+                CurrentObjects[0].Position = pos;
+                //ApplySmoothing(_currentSmoothingOffset, CurrentObjects);
             }
         }
 
@@ -933,7 +952,6 @@ namespace AnnoDesigner
                 }
             }
         }
-
 
         /// <summary>
         /// Renders a selection highlight on the specified object.
@@ -1221,13 +1239,21 @@ namespace AnnoDesigner
             //Shape should be complete by this point.
         }
 
-        private List<LayoutObject> CloneList(List<LayoutObject> list)
+        /// <summary>
+        /// Applies an offset to each objects position to smooth out zooming when using zoom to point.
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name=""></param>
+        private void ApplySmoothing(Vector offset, List<LayoutObject> objects)
         {
-            var newList = new List<LayoutObject>(list.Capacity);
-            list.ForEach(_ => newList.Add(new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)));
-            return newList;
+            foreach (var obj in objects)
+            {
+                //We cannot just do obj.Position += offset.
+                var pos = obj.Position;
+                pos += offset;
+                obj.Position = pos;
+            }
         }
-
         #endregion
 
         #region Coordinate and rectangle conversions
@@ -1294,6 +1320,7 @@ namespace AnnoDesigner
             {
                 _offsetX = 0;
                 _offsetY = 0;
+                _cumulativeSmoothingOffset = default;
                 GridSize += e.Delta / 100;
             }
             else
@@ -1312,12 +1339,8 @@ namespace AnnoDesigner
                 var postZoomPosition = _coordinateHelper.ScreenToPreciseGrid(mousePosition, GridSize);
                 var diff = postZoomPosition - preZoomPosition;
 
-                //Not a fan of this, but where do we put it? Location will probably be moved in future.
-                //Maybe AnnoDesigner.Core.Helpers.MathHelper?
-                static double GetFractionalValue(double value) => value - Math.Truncate(value);
-
-                var newXDiff = GetFractionalValue(previousSmoothingOffset.X + diff.X);
-                var newYDiff = GetFractionalValue(previousSmoothingOffset.Y + diff.Y);
+                var newXDiff = MathHelper.GetFractionalValue(previousSmoothingOffset.X + diff.X);
+                var newYDiff = MathHelper.GetFractionalValue(previousSmoothingOffset.Y + diff.Y);
 
 
                 _offsetX = GridSize * newXDiff;
@@ -1328,19 +1351,24 @@ namespace AnnoDesigner
                 _offsetX %= GridSize;
                 _offsetY %= GridSize;
 
-                logger.Debug($"Diff: {previousSmoothingOffset}");
+                _currentSmoothingOffset = diff;
+                _offsets.Add(diff);
+                _appliedZoomLevel = false;
+                _cumulativeSmoothingOffset += _currentSmoothingOffset;
 
-                if (diff.LengthSquared > 0)
-                {
-                    foreach (var placedObject in PlacedObjects)
-                    {
-                        placedObject.Position += diff;
-                        if (GetFractionalValue(placedObject.Position.X) != newXDiff || GetFractionalValue(placedObject.Position.Y) != newYDiff)
-                        {
-                            logger.Debug($"Pos : {GetFractionalValue(placedObject.Position.X)}, {GetFractionalValue(placedObject.Position.Y)}");
-                        }
-                    }
-                }
+                logger.Debug($"Current: {_currentSmoothingOffset},  Cumulative: {_cumulativeSmoothingOffset}");
+
+                //if (diff.LengthSquared > 0)
+                //{
+                //    foreach (var placedObject in PlacedObjects)
+                //    {
+                //        placedObject.Position += diff;
+                //        if (GetFractionalValue(placedObject.Position.X) != newXDiff || GetFractionalValue(placedObject.Position.Y) != newYDiff)
+                //        {
+                //            logger.Debug($"Pos : {GetFractionalValue(placedObject.Position.X)}, {GetFractionalValue(placedObject.Position.Y)}");
+                //        }
+                //    }
+                //}
             }
         }
 
@@ -1371,6 +1399,7 @@ namespace AnnoDesigner
                 {
                     CurrentObjects.Clear();
                     CurrentObjects.Add(new LayoutObject(new AnnoObject(obj.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache));
+                    //ApplySmoothing(_cumulativeSmoothingOffset, CurrentObjects);
                     OnCurrentObjectChanged(obj);
                 }
                 return;
@@ -1664,6 +1693,7 @@ namespace AnnoDesigner
                 if (CurrentObjects.Count == 0 && SelectedObjects.Count != 0)
                 {
                     CurrentObjects = CloneList(SelectedObjects);
+                    //ApplySmoothing(_cumulativeSmoothingOffset, CurrentObjects);
                 }
 
                 Rotate(CurrentObjects);
@@ -1833,7 +1863,6 @@ namespace AnnoDesigner
             var dx = PlacedObjects.Min(_ => _.Position.X) - border;
             var dy = PlacedObjects.Min(_ => _.Position.Y) - border;
             PlacedObjects.ForEach(_ => _.Position = new Point(_.Position.X - dx, _.Position.Y - dy));
-
             InvalidateVisual();
         }
 
@@ -2083,6 +2112,16 @@ namespace AnnoDesigner
             manager.AddHotkey(deleteHotkey);
         }
 
+        #endregion
+
+        #region helper methods
+
+            private List<LayoutObject> CloneList(List<LayoutObject> list)
+        {
+            var newList = new List<LayoutObject>(list.Capacity);
+            list.ForEach(_ => newList.Add(new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)));
+            return newList;
+        }
 
         #endregion
     }
