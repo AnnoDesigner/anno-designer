@@ -419,7 +419,7 @@ namespace AnnoDesigner
         /// </summary>
         private double _offsetY;
 
-        private Vector _cumulativeSmoothingOffset;
+        private Vector _currentDiff;
         private Vector _currentSmoothingOffset;
         private List<Vector> _offsets = new List<Vector>(100);
         private bool _appliedZoomLevel = false;
@@ -739,36 +739,58 @@ namespace AnnoDesigner
             guidelines.Freeze();
             drawingContext.PushGuidelineSet(guidelines);
 
-            var width = RenderSize.Width;
-            var height = RenderSize.Height;
-
+            var width = RenderSize.Width + GridSize;
+            var height = RenderSize.Height + GridSize;
+            var start = -GridSize;
             // draw background
             drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(new Point(), RenderSize));
+
+            drawingContext.PushTransform(new TranslateTransform(_offsetX, _offsetY));
+
 
             // draw grid
             if (RenderGrid)
             {
-                for (var i = _offsetX; i < width; i += _gridStep)
+                for (var i = start; i < width; i += _gridStep)
                 {
-                    drawingContext.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
+                    drawingContext.DrawLine(_gridLinePen, new Point(i, start), new Point(i, height ));
                 }
-                for (var i = _offsetY; i < height; i += _gridStep)
+                for (var i = start; i < height; i += _gridStep)
                 {
-                    drawingContext.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
+                    drawingContext.DrawLine(_gridLinePen, new Point(start, i), new Point(width, i));
                 }
             }
+
+            //drawingContext.Pop();
+
+
+            //if (RenderGrid)
+            //{
+            //    for (var i = _offsetX; i < width; i += _gridStep)
+            //    {
+            //        drawingContext.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
+            //    }
+            //    for (var i = _offsetY; i < height; i += _gridStep)
+            //    {
+            //        drawingContext.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
+            //    }
+            //}
 
             // draw mouse grid position highlight
             //drawingContext.DrawRectangle(_lightBrush, _highlightPen, new Rect(GridToScreen(ScreenToGrid(_mousePosition)), new Size(_gridStep, _gridStep)));
 
-            if (_appSettings.UseZoomToPoint && !_appliedZoomLevel)
-            {
-                ApplySmoothing(_currentSmoothingOffset, PlacedObjects);
-                _appliedZoomLevel = true;
-            }
+            var transform = new TranslateTransform(_currentSmoothingOffset.X, _currentSmoothingOffset.Y);
+            drawingContext.PushTransform(transform);
+
+
 
             // draw placed objects            
             RenderObjectList(drawingContext, PlacedObjects, useTransparency: false);
+
+
+            ////pop translate
+            //drawingContext.Pop();
+
             RenderObjectSelection(drawingContext, SelectedObjects);
 
             if (!RenderInfluences)
@@ -809,11 +831,13 @@ namespace AnnoDesigner
                 }
             }
 
+
             // draw selection rect while dragging the mouse
             if (CurrentMode == MouseMode.SelectionRect)
             {
                 drawingContext.DrawRectangle(_lightBrush, _highlightPen, _selectionRect);
             }
+
 
             // pop back guidlines set
             drawingContext.Pop();
@@ -851,7 +875,6 @@ namespace AnnoDesigner
                     var pos = _coordinateHelper.GridToScreen(CurrentObjects[i].Position, GridSize);
                     CurrentObjects[i].Position = _coordinateHelper.RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy), GridSize);
                 }
-                //ApplySmoothing(_currentSmoothingOffset, CurrentObjects);
             }
             else
             {
@@ -860,12 +883,7 @@ namespace AnnoDesigner
                 pos.X -= size.Width / 2;
                 pos.Y -= size.Height / 2;
                 pos = _coordinateHelper.RoundScreenToGrid(pos, GridSize);
-                var fractionalValue = MathHelper.GetFractionalValue(_currentSmoothingOffset.X);
-                pos.X += fractionalValue;
-                fractionalValue = MathHelper.GetFractionalValue(_currentSmoothingOffset.Y);
-                pos.Y += fractionalValue;
                 CurrentObjects[0].Position = pos;
-                //ApplySmoothing(_currentSmoothingOffset, CurrentObjects);
             }
         }
 
@@ -1238,22 +1256,6 @@ namespace AnnoDesigner
 
             //Shape should be complete by this point.
         }
-
-        /// <summary>
-        /// Applies an offset to each objects position to smooth out zooming when using zoom to point.
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name=""></param>
-        private void ApplySmoothing(Vector offset, List<LayoutObject> objects)
-        {
-            foreach (var obj in objects)
-            {
-                //We cannot just do obj.Position += offset.
-                var pos = obj.Position;
-                pos += offset;
-                obj.Position = pos;
-            }
-        }
         #endregion
 
         #region Coordinate and rectangle conversions
@@ -1320,7 +1322,7 @@ namespace AnnoDesigner
             {
                 _offsetX = 0;
                 _offsetY = 0;
-                _cumulativeSmoothingOffset = default;
+                _currentDiff = default;
                 GridSize += e.Delta / 100;
             }
             else
@@ -1351,12 +1353,12 @@ namespace AnnoDesigner
                 _offsetX %= GridSize;
                 _offsetY %= GridSize;
 
-                _currentSmoothingOffset = diff;
+                _currentSmoothingOffset = new Vector(_coordinateHelper.GridToScreen(diff.X, GridSize), _coordinateHelper.GridToScreen(diff.Y, GridSize));
                 _offsets.Add(diff);
                 _appliedZoomLevel = false;
-                _cumulativeSmoothingOffset += _currentSmoothingOffset;
+                _currentDiff = diff; 
 
-                logger.Debug($"Current: {_currentSmoothingOffset},  Cumulative: {_cumulativeSmoothingOffset}");
+                logger.Debug($"Current: {_currentSmoothingOffset},  Cumulative: {_currentDiff}");
 
                 //if (diff.LengthSquared > 0)
                 //{
@@ -1399,7 +1401,6 @@ namespace AnnoDesigner
                 {
                     CurrentObjects.Clear();
                     CurrentObjects.Add(new LayoutObject(new AnnoObject(obj.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache));
-                    //ApplySmoothing(_cumulativeSmoothingOffset, CurrentObjects);
                     OnCurrentObjectChanged(obj);
                 }
                 return;
@@ -1693,7 +1694,6 @@ namespace AnnoDesigner
                 if (CurrentObjects.Count == 0 && SelectedObjects.Count != 0)
                 {
                     CurrentObjects = CloneList(SelectedObjects);
-                    //ApplySmoothing(_cumulativeSmoothingOffset, CurrentObjects);
                 }
 
                 Rotate(CurrentObjects);
