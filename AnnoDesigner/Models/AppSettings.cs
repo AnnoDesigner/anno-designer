@@ -239,6 +239,12 @@ namespace AnnoDesigner.Models
             get => Settings.Default.HideInfluenceOnSelection;
             set => Settings.Default.HideInfluenceOnSelection = value;
         }
+
+        public double ZoomSensitivityPercentage
+        {
+            get => Settings.Default.ZoomSensitivityPercentage;
+            set => Settings.Default.ZoomSensitivityPercentage = value;
+        }
     }
 }
 

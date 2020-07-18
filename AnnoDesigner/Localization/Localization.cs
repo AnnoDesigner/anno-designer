@@ -202,6 +202,7 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesUseZoomToPoint" , "Use new zoom behaviour" },
                         { "GeneralPreferencesGridLinesColor" , "Grid line color" },
                         { "GeneralPreferencesObjectBorderLinesColor" , "Border color" },
+                        { "GeneralPreferencesZoomSensitivity" , "Zoom sensitivity" },
                         { "ColorTypeDefault" , "Default" },
                         { "ColorTypeLight" , "Light" },
                         { "ColorTypeCustom" , "Custom" }
@@ -356,6 +357,7 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesUseZoomToPoint" , "Verwende neues Zoomverhalten" },
                         { "GeneralPreferencesGridLinesColor" , "Raster-/Gitterlinienfarbe" },
                         { "GeneralPreferencesObjectBorderLinesColor" , "Randfarbe" },
+                        { "GeneralPreferencesZoomSensitivity" , "Zoom-Empfindlichkeit" },
                         { "ColorTypeDefault" , "Standard" },
                         { "ColorTypeLight" , "Heller" },
                         { "ColorTypeCustom" , "Benutzerdefiniert" }
@@ -510,6 +512,7 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesUseZoomToPoint" , "Utiliser un nouveau comportement de zoom" },
                         { "GeneralPreferencesGridLinesColor" , "Couleur des lignes de la grille" },
                         { "GeneralPreferencesObjectBorderLinesColor" , "Couleur de la bordure" },
+                        { "GeneralPreferencesZoomSensitivity" , "Sensibilité du zoom" },
                         { "ColorTypeDefault" , "Défaut" },
                         { "ColorTypeLight" , "Lumière" },
                         { "ColorTypeCustom" , "Personnalisation" }
@@ -664,6 +667,7 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesUseZoomToPoint" , "Wykorzystaj nowe zachowanie zoomu" },
                         { "GeneralPreferencesGridLinesColor" , "Kolor linii siatki" },
                         { "GeneralPreferencesObjectBorderLinesColor" , "Kolor granicy" },
+                        { "GeneralPreferencesZoomSensitivity" , "Wrażliwość na zoom" },
                         { "ColorTypeDefault" , "Domyślnie" },
                         { "ColorTypeLight" , "Światło" },
                         { "ColorTypeCustom" , "Niestandardowy" }
@@ -818,6 +822,7 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesUseZoomToPoint" , "Использовать новое поведение масштабирования" },
                         { "GeneralPreferencesGridLinesColor" , "Цвет линии сетки" },
                         { "GeneralPreferencesObjectBorderLinesColor" , "Цвет границы" },
+                        { "GeneralPreferencesZoomSensitivity" , "Чувствительность к увеличению" },
                         { "ColorTypeDefault" , "По умолчанию" },
                         { "ColorTypeLight" , "Свет" },
                         { "ColorTypeCustom" , "Пользовательский" }

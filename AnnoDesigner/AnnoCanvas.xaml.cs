@@ -1275,22 +1275,23 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
+            //We subtract from 101 here to get the inverse of the value (e.g 100 becomes 1, and 1 becomes 100)
+            var zoomFactor = (((Constants.ZoomSensitivitySliderMaximum + 1) - _appSettings.ZoomSensitivityPercentage) * Constants.ZoomSensitivityCoefficient) + Constants.ZoomSensitivityMinimum;
+            var change = (int)(e.Delta / zoomFactor);
+            //change by at least 1
+            if (change == 0)
+            {
+                change = e.Delta > 0 ? 1 : -1;
+            }
             if (!_appSettings.UseZoomToPoint)
             {
-                GridSize += e.Delta / 100;
+                GridSize += change;
             }
             else
             {
                 var mousePosition = e.GetPosition(this);
                 var preZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
-
-                var diffGridSize = GridSize * e.Delta / 1000;
-                if (diffGridSize == 0)
-                {
-                    diffGridSize = e.Delta > 0 ? 1 : -1;// change by at least 1
-                }
-
-                GridSize += diffGridSize;
+                GridSize += change;
 
                 var postZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
                 var diff = postZoomPosition - preZoomPosition;

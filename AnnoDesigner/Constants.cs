@@ -30,6 +30,26 @@ namespace AnnoDesigner
         public const int GridStepDefault = 20;
 
         /// <summary>
+        /// The minimum value for zoom sensitivity. A larger value means a less sensitive minimum zoom.
+        /// </summary>
+        public const double ZoomSensitivityMinimum = 5;
+
+        /// <summary>
+        /// The chosen zoom sensitivity percentage is inverted then multiplied by this value.
+        /// </summary>
+        /// <example>
+        /// ZoomSensitivityPercentage is set to 1(%). Calculated value would be 100*<see cref="ZoomSensitivityCoefficient"/>.
+        /// ZoomSensitivityPercentage is set to 100(%). Calculated value would be 1*<see cref="ZoomSensitivityCoefficient"/>.
+        /// </example>
+        public const double ZoomSensitivityCoefficient = 1.1;
+
+        /// <summary>
+        /// Maximum value for the zoom sensitivity slider. A double value is required for databinding directly to the inherited 
+        /// <see cref="System.Windows.Controls.Primitives.RangeBase.Maximum"/> property on a <see cref="System.Windows.Controls.Slider"/>.
+        /// </summary>
+        public const double ZoomSensitivitySliderMaximum = 100d;
+
+        /// <summary>
         /// The value that affects the rendering sizes of icons on the anno canvas. 1 produces an icon of the biggest size.
         /// </summary>
         public const double IconSizeFactor = 1.1;
