@@ -71,7 +71,7 @@ namespace AnnoDesigner.Core.Tests
             var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(layoutContent));
 
             // Act
-            var ex = Assert.Throws<LayoutFileVersionMismatchException>(() => loader.LoadLayout(streamWithLayout));
+            var ex = Assert.Throws<LayoutFileUnsupportedFormatException>(() => loader.LoadLayout(streamWithLayout));
 
             // Assert
             Assert.NotNull(ex);
@@ -87,7 +87,7 @@ namespace AnnoDesigner.Core.Tests
             var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(layoutContent));
 
             // Act
-            var ex = Assert.Throws<LayoutFileVersionMismatchException>(() => loader.LoadLayout(streamWithLayout));
+            var ex = Assert.Throws<LayoutFileUnsupportedFormatException>(() => loader.LoadLayout(streamWithLayout));
 
             // Assert
             Assert.NotNull(ex);

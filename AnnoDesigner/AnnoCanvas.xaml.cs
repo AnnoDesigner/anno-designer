@@ -1906,7 +1906,7 @@ namespace AnnoDesigner
                     ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
                 }
             }
-            catch (LayoutFileVersionMismatchException layoutEx)
+            catch (LayoutFileUnsupportedFormatException layoutEx)
             {
                 logger.Warn(layoutEx, "Version of layout does not match.");
 

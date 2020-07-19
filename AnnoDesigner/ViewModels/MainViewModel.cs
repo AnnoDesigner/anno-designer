@@ -976,7 +976,7 @@ namespace AnnoDesigner.ViewModels
                     }
                 }
             }
-            catch (LayoutFileVersionMismatchException layoutEx)
+            catch (LayoutFileUnsupportedFormatException layoutEx)
             {
                 logger.Warn(layoutEx, "Version of layout does not match.");
 

@@ -41,7 +41,7 @@ namespace AnnoDesigner.Core.Layout
         /// </summary>
         /// <param name="pathToLayoutFile">path to file to load</param>
         /// <param name="forceLoad">ignore version of layout file and load anyway</param>
-        /// <exception cref="LayoutFileVersionMismatchException">indicates a version mismatch of the layout file</exception>
+        /// <exception cref="LayoutFileUnsupportedFormatException">indicates the given layout file is in an unsupported format.</exception>
         /// <returns>list of loaded objects</returns>
         public List<AnnoObject> LoadLayout(string pathToLayoutFile, bool forceLoad = false)
         {
@@ -73,11 +73,10 @@ namespace AnnoDesigner.Core.Layout
             }
             catch (JsonSerializationException) { } //No file version, old layout file.
 
-            //show message if we don't recognise the file version
-            //Only recognising from a version that has been explicitly tested onwards.
-            if (!(layoutVersion.FileVersion >= CoreConstants.LayoutFileVersionSupportedMinimum || layoutVersion.FileVersion <= CoreConstants.LayoutFileVersion) && !forceLoad)
+            //Only throw an exception if we do not support the layout
+            if (!(layoutVersion.FileVersion >= CoreConstants.LayoutFileVersionSupportedMinimum && layoutVersion.FileVersion <= CoreConstants.LayoutFileVersion) && !forceLoad)
             {
-                throw new LayoutFileVersionMismatchException($"loaded version: {layoutVersion.FileVersion} | expected version: {CoreConstants.LayoutFileVersion}");
+                throw new LayoutFileUnsupportedFormatException($"loaded version: {layoutVersion.FileVersion} | expected version: {CoreConstants.LayoutFileVersionSupportedMinimum} <= file version <= {CoreConstants.LayoutFileVersion}");
             }
 
             return layoutVersion.FileVersion switch
