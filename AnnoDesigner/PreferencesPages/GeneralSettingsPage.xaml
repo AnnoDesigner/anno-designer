@@ -131,7 +131,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0"
-                       Text="{l:Localize GeneralPreferencesZoomSensitivity}" />
+                       Text="{l:Localize GeneralPreferencesZoomSensitivity, StringFormat='{}{0}:'}" />
             <Slider Grid.Column="1"
                     Name="ZoomSlider"
                     Value="{Binding ZoomSensitivityFactor}"
