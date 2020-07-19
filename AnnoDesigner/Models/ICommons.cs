@@ -10,7 +10,9 @@ namespace AnnoDesigner.Models
     {
         event EventHandler SelectedLanguageChanged;
 
-        string SelectedLanguage { get; set; }
+        string CurrentLanguage { get; set; }
+        string CurrentLanguageCode { get; }
+        Dictionary<string, string> LanguageCodeMap { get; }
 
         bool CanWriteInFolder(string folderPathToCheck = null);
         void RestartApplication(bool asAdmin, string parameters, string path = null);

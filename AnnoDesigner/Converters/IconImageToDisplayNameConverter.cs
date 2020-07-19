@@ -19,7 +19,7 @@ namespace AnnoDesigner.Converters
                 return value;
             }
 
-            return iconImage.NameForLanguage(Localization.Localization.Instance.SelectedLanguage);
+            return iconImage.NameForLanguage(Commons.Instance.CurrentLanguageCode);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -22,6 +22,7 @@ namespace AnnoDesigner.ViewModels
         private readonly IAppSettings _appSettings;
         private readonly IMessageBoxService _messageBoxService;
         private readonly IUpdateHelper _updateHelper;
+        private readonly ILocalizationHelper _localizationHelper;
 
         private bool _automaticUpdateCheck;
         private bool _updateSupportsPrerelease;
@@ -38,12 +39,14 @@ namespace AnnoDesigner.ViewModels
         public UpdateSettingsViewModel(ICommons commonsToUse,
             IAppSettings appSettingsToUse,
             IMessageBoxService messageBoxServiceToUse,
-            IUpdateHelper updateHelperToUse)
+            IUpdateHelper updateHelperToUse,
+            ILocalizationHelper localizationHelperToUse)
         {
             _commons = commonsToUse;
             _appSettings = appSettingsToUse;
             _messageBoxService = messageBoxServiceToUse;
             _updateHelper = updateHelperToUse;
+            _localizationHelper = localizationHelperToUse;
 
             CheckForUpdatesCommand = new RelayCommand(ExecuteCheckForUpdates);
             OpenReleasesCommand = new RelayCommand(ExecuteOpenReleases);
@@ -61,7 +64,7 @@ namespace AnnoDesigner.ViewModels
                 IsUpdateAvailable = false;
                 IsPresetUpdateAvailable = false;
 
-                BusyContent = Localization.Localization.Translations["UpdatePreferencesBusyCheckUpdates"];
+                BusyContent = _localizationHelper.GetLocalization("UpdatePreferencesBusyCheckUpdates");
                 IsBusy = true;
 
                 await CheckForNewAppVersionAsync(isAutomaticUpdateCheck);
@@ -150,8 +153,8 @@ namespace AnnoDesigner.ViewModels
                 if (isAutomaticUpdateCheck)
                 {
                     if (_messageBoxService.ShowQuestion(Application.Current.MainWindow,
-                        Localization.Localization.Translations["UpdateAvailablePresetMessage"],
-                        Localization.Localization.Translations["UpdateAvailableHeader"]))
+                        _localizationHelper.GetLocalization("UpdateAvailablePresetMessage"),
+                        _localizationHelper.GetLocalization("UpdateAvailableHeader")))
                     {
                         ExecuteDownloadPresets(null);
                     }
@@ -187,7 +190,7 @@ namespace AnnoDesigner.ViewModels
                 return;
             }
 
-            BusyContent = Localization.Localization.Translations["UpdatePreferencesBusyDownloadPresets"];
+            BusyContent = _localizationHelper.GetLocalization("UpdatePreferencesBusyDownloadPresets");
             IsBusy = true;
 
             if (!_commons.CanWriteInFolder())
@@ -196,14 +199,14 @@ namespace AnnoDesigner.ViewModels
                 if (Environment.GetCommandLineArgs().Any(x => x.Trim().Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase)))
                 {
                     _messageBoxService.ShowWarning($"You have no write access to the folder.{Environment.NewLine}The update can not be installed.",
-                        Localization.Localization.Translations["Error"]);
+                        _localizationHelper.GetLocalization("Error"));
 
                     IsBusy = false;
                     return;
                 }
 
-                _messageBoxService.ShowMessage(Localization.Localization.Translations["UpdateRequiresAdminRightsMessage"],
-                    Localization.Localization.Translations["AdminRightsRequired"]);
+                _messageBoxService.ShowMessage(_localizationHelper.GetLocalization("UpdateRequiresAdminRightsMessage"),
+                    _localizationHelper.GetLocalization("AdminRightsRequired"));
 
                 _appSettings.Save();
                 _commons.RestartApplication(true, Constants.Argument_Ask_For_Admin, App.ExecutablePath);

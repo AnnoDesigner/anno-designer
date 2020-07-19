@@ -3,35 +3,24 @@ using System.Collections.Generic;
 using System.Windows;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
+using NLog;
 
 namespace AnnoDesigner.Localization
 {
-    public class Localization : Notify, ILocalization
+    public class Localization : Notify, ILocalizationHelper
     {
-        private static IDictionary<string, IDictionary<string, string>> translations;
-        private static Localization instance;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static Localization Instance => instance ??= new Localization();
+        private ICommons _commons;
 
-        public static IDictionary<string, string> Translations => translations[Instance.SelectedLanguage];
+        #region ctor
 
-        private ICommons commons;
+        private static readonly Lazy<Localization> lazy = new Lazy<Localization>(() => new Localization());
 
-        private string selectedLanguage;
-        public string SelectedLanguage
+        public static Localization Instance
         {
-            get { return selectedLanguage; }
-            set
-            {
-                if (UpdateProperty(ref selectedLanguage, value))
-                {
-                    OnPropertyChanged(nameof(Translations));
-                    OnPropertyChanged(nameof(InstanceTranslations));
-                }
-            }
+            get { return lazy.Value; }
         }
-
-        public IDictionary<string, string> InstanceTranslations => Translations;
 
         static Localization()
         {
@@ -41,9 +30,21 @@ namespace AnnoDesigner.Localization
             }
         }
 
+        private Localization() { }
+
+        #endregion
+
+        private static IDictionary<string, IDictionary<string, string>> TranslationsRaw { get; set; }
+
+        private string SelectedLanguageCode => _commons.CurrentLanguageCode;
+
+        public static IDictionary<string, string> Translations => TranslationsRaw[Instance.SelectedLanguageCode];
+
+        public IDictionary<string, string> InstanceTranslations => Translations;
+
         public static void Init(ICommons commons)
         {
-            if (translations != null)
+            if (TranslationsRaw != null)
             {
                 return;
             }
@@ -51,7 +52,7 @@ namespace AnnoDesigner.Localization
             //This dictionary initialisation was auto-generated from:
             //https://docs.google.com/spreadsheets/d/1CjECty43mkkm1waO4yhQl1rzZ-ZltrBgj00aq-WJX4w/edit?usp=sharing 
             //See the "Help" sheet for details on how to export the dictionary.
-            translations = new Dictionary<string, IDictionary<string, string>>()
+            TranslationsRaw = new Dictionary<string, IDictionary<string, string>>()
             {
                 {
                     "eng", new Dictionary<string, string>() {
@@ -830,35 +831,59 @@ namespace AnnoDesigner.Localization
                 },
             };
 
-            Instance.commons = commons;
+            Instance._commons = commons;
             Instance.Commons_SelectedLanguageChanged(null, null);
             commons.SelectedLanguageChanged += Instance.Commons_SelectedLanguageChanged;
         }
 
-        private Localization() { }
-
-        internal static IDictionary<string, IDictionary<string, string>> TranslationsRaw => translations;
-
         private void Commons_SelectedLanguageChanged(object sender, EventArgs e)
         {
-            SelectedLanguage = GetLanguageCodeFromName(commons.SelectedLanguage);
+            OnPropertyChanged(nameof(Translations));
+            OnPropertyChanged(nameof(InstanceTranslations));
         }
 
-        public static readonly Dictionary<string, string> LanguageCodeMap = new Dictionary<string, string>()
+        public string GetLocalization(string valueToTranslate)
         {
-            { "English", "eng" },
-            { "Deutsch", "ger" },
-            { "Français","fra" },
-            { "Español", "esp" },
-            { "Italiano", "ita" },
-            { "Polski", "pol" },
-            { "Русский", "rus" },
-            { "český", "cze" },
-        };
+            return GetLocalization(valueToTranslate, null);
+        }
 
-        public static string GetLanguageCodeFromName(string s)
+        public string GetLocalization(string valueToTranslate, string languageCode = null)
         {
-            return LanguageCodeMap[s];
+            if (string.IsNullOrWhiteSpace(languageCode))
+            {
+                languageCode = _commons.CurrentLanguageCode;
+            }
+
+            if (!_commons.LanguageCodeMap.ContainsValue(languageCode))
+            {
+                languageCode = "eng";
+            }
+
+            try
+            {
+                if (TranslationsRaw[languageCode].TryGetValue(valueToTranslate.Replace(" ", string.Empty), out string foundLocalization))
+                {
+                    return foundLocalization;
+                }
+                else
+                {
+                    logger.Trace($"try to set localization to english for: \"{valueToTranslate}\"");
+                    if (TranslationsRaw["eng"].TryGetValue(valueToTranslate.Replace(" ", string.Empty), out string engLocalization))
+                    {
+                        return engLocalization;
+                    }
+                    else
+                    {
+                        logger.Trace($"found no localization (\"eng\") and ({languageCode}) for: \"{valueToTranslate}\"");
+                        return valueToTranslate;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, $"error getting localization ({languageCode}) for: \"{valueToTranslate}\"");
+                return valueToTranslate;
+            }
         }
     }
 }

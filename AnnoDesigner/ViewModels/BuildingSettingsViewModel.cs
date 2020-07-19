@@ -19,6 +19,7 @@ namespace AnnoDesigner.ViewModels
 
         private readonly IAppSettings _appSettings;
         private readonly IMessageBoxService _messageBoxService;
+        private readonly ILocalizationHelper _localizationHelper;
 
         private Color? _selectedColor;
         private int _buildingHeight;
@@ -43,10 +44,13 @@ namespace AnnoDesigner.ViewModels
         /// <summary>
         /// only used for databinding
         /// </summary>
-        public BuildingSettingsViewModel(IAppSettings appSettingsToUse, IMessageBoxService messageBoxServiceToUse)
+        public BuildingSettingsViewModel(IAppSettings appSettingsToUse,
+            IMessageBoxService messageBoxServiceToUse,
+            ILocalizationHelper localizationHelperToUse)
         {
             _appSettings = appSettingsToUse;
             _messageBoxService = messageBoxServiceToUse;
+            _localizationHelper = localizationHelperToUse;
 
             ApplyColorToSelectionCommand = new RelayCommand(ApplyColorToSelection, CanApplyColorToSelection);
             ApplyPredefinedColorToSelectionCommand = new RelayCommand(ApplyPredefinedColorToSelection, CanApplyPredefinedColorToSelection);
@@ -76,7 +80,7 @@ namespace AnnoDesigner.ViewModels
             {
                 BuildingInfluences.Add(new BuildingInfluence
                 {
-                    Name = Localization.Localization.Translations[curInfluenceType.ToString()],
+                    Name = _localizationHelper.GetLocalization(curInfluenceType.ToString()),
                     Type = curInfluenceType
                 });
             }
@@ -88,7 +92,7 @@ namespace AnnoDesigner.ViewModels
         {
             foreach (var curBuildingInfluence in BuildingInfluences)
             {
-                curBuildingInfluence.Name = Localization.Localization.Translations[curBuildingInfluence.Type.ToString()];
+                curBuildingInfluence.Name = _localizationHelper.GetLocalization(curBuildingInfluence.Type.ToString());
             }
         }
 
@@ -269,8 +273,8 @@ namespace AnnoDesigner.ViewModels
         {
             if (!_appSettings.ShowPavedRoadsWarning)
             {
-                _messageBoxService.ShowMessage(Localization.Localization.Translations["PavedStreetToolTip"],
-                    Localization.Localization.Translations["PavedStreetWarningTitle"]);
+                _messageBoxService.ShowMessage(_localizationHelper.GetLocalization("PavedStreetToolTip"),
+                    _localizationHelper.GetLocalization("PavedStreetWarningTitle"));
                 _appSettings.ShowPavedRoadsWarning = true;
             }
 

@@ -36,6 +36,7 @@ namespace AnnoDesigner
         private readonly string _basePath;
         private readonly IAppSettings _appSettings;
         private readonly IMessageBoxService _messageBoxService;
+        private readonly ILocalizationHelper _localizationHelper;
 
         /// <summary>
         /// Initializes a new instance of <see cref="AnnoDesigner.UpdateHelper"./>
@@ -46,11 +47,13 @@ namespace AnnoDesigner
         /// </remarks>
         public UpdateHelper(string basePathToUse,
             IAppSettings appSettingsToUse,
-            IMessageBoxService messageBoxServiceToUse)
+            IMessageBoxService messageBoxServiceToUse,
+            ILocalizationHelper localizationHelperToUse)
         {
             _basePath = basePathToUse;
             _appSettings = appSettingsToUse;
             _messageBoxService = messageBoxServiceToUse;
+            _localizationHelper = localizationHelperToUse;
         }
 
         private GitHubClient ApiClient
@@ -288,8 +291,8 @@ namespace AnnoDesigner
             {
                 logger.Error(ex, "Error replacing updated presets file.");
 
-                _messageBoxService.ShowError(Localization.Localization.Translations["UpdateErrorPresetMessage"],
-                            Localization.Localization.Translations["Error"]);
+                _messageBoxService.ShowError(_localizationHelper.GetLocalization("UpdateErrorPresetMessage"),
+                    _localizationHelper.GetLocalization("Error"));
             }
         }
 
@@ -303,8 +306,8 @@ namespace AnnoDesigner
                 {
                     logger.Info("Could not establish a connection to the internet.");
 
-                    _messageBoxService.ShowError(Localization.Localization.Translations["UpdateNoConnectionMessage"],
-                            Localization.Localization.Translations["Error"]);
+                    _messageBoxService.ShowError(_localizationHelper.GetLocalization("UpdateNoConnectionMessage"),
+                            _localizationHelper.GetLocalization("Error"));
 
                     return null;
                 }

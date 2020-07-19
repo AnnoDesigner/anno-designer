@@ -25,9 +25,14 @@ namespace AnnoDesigner.ViewModels
         private ObservableCollection<StatisticsBuilding> _selectedBuildings;
         private StatisticsCalculationHelper _statisticsCalculationHelper;
         private readonly Dictionary<string, BuildingInfo> _cachedPresetsBuilding;
+        private readonly ILocalizationHelper _localizationHelper;
+        private readonly ICommons _commons;
 
-        public StatisticsViewModel()
+        public StatisticsViewModel(ILocalizationHelper localizationHelperToUse, ICommons commonsToUse)
         {
+            _localizationHelper = localizationHelperToUse;
+            _commons = commonsToUse;
+
             UsedArea = "12x4";
             UsedTiles = 308;
             MinTiles = 48;
@@ -192,20 +197,20 @@ namespace AnnoDesigner.ViewModels
                     if (building != null || isUnknownObject)
                     {
                         statisticBuilding.Count = item.Count();
-                        statisticBuilding.Name = isUnknownObject ? Localization.Localization.Translations["UnknownObject"] : building.Localization[Localization.Localization.Instance.SelectedLanguage];
+                        statisticBuilding.Name = isUnknownObject ? _localizationHelper.GetLocalization("UnknownObject") : building.Localization[_commons.CurrentLanguageCode];
                     }
                     else
                     {
                         item.ElementAt(0).Identifier = "";
 
                         statisticBuilding.Count = item.Count();
-                        statisticBuilding.Name = Localization.Localization.Translations["StatNameNotFound"];
+                        statisticBuilding.Name = _localizationHelper.GetLocalization("StatNameNotFound");
                     }
                 }
                 else
                 {
                     statisticBuilding.Count = item.Count();
-                    statisticBuilding.Name = Localization.Localization.Translations["StatNameNotFound"];
+                    statisticBuilding.Name = _localizationHelper.GetLocalization("StatNameNotFound");
                 }
 
                 tempList.Add(statisticBuilding);

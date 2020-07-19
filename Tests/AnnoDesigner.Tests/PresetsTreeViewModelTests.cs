@@ -26,7 +26,8 @@ namespace AnnoDesigner.Tests
         public PresetsTreeViewModelTests()
         {
             var commonsMock = new Mock<ICommons>();
-            commonsMock.SetupGet(x => x.SelectedLanguage).Returns(() => "English");
+            commonsMock.SetupGet(x => x.CurrentLanguage).Returns(() => "English");
+            commonsMock.SetupGet(x => x.CurrentLanguageCode).Returns(() => "eng");
             _mockedCommons = commonsMock.Object;
         }
 
@@ -112,10 +113,10 @@ namespace AnnoDesigner.Tests
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
             var buildingPresets = loader.Load(Path.Combine(basePath, CoreConstants.PresetsFiles.BuildingPresetsFile));
 
-            var buildings_1404 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A4")).OrderByDescending(x => x.GetOrderParameter("English")).Take(10).ToList();
-            var buildings_2070 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A5")).OrderByDescending(x => x.GetOrderParameter("English")).Take(10).ToList();
-            var buildings_2205 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A6")).OrderByDescending(x => x.GetOrderParameter("English")).Take(10).ToList();
-            var buildings_1800 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A7")).OrderByDescending(x => x.GetOrderParameter("English")).Take(10).ToList();
+            var buildings_1404 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A4")).OrderByDescending(x => x.GetOrderParameter("eng")).Take(10).ToList();
+            var buildings_2070 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A5")).OrderByDescending(x => x.GetOrderParameter("eng")).Take(10).ToList();
+            var buildings_2205 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A6")).OrderByDescending(x => x.GetOrderParameter("eng")).Take(10).ToList();
+            var buildings_1800 = buildingPresets.Buildings.Where(x => x.Header.StartsWith("(A7")).OrderByDescending(x => x.GetOrderParameter("eng")).Take(10).ToList();
 
             var filteredBuildings = new List<BuildingInfo>();
             filteredBuildings.AddRange(buildings_1404);

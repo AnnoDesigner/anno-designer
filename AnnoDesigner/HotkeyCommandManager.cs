@@ -3,52 +3,48 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using AnnoDesigner.Core.Models;
-using AnnoDesigner.Localization;
 using AnnoDesigner.Models;
 
 namespace AnnoDesigner
 {
     public class HotkeyCommandManager : Notify, INotifyCollectionChanged
     {
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        private readonly ILocalizationHelper _localizationHelper;
+        /// <summary>
+        /// Backing collection for the ObservableCollection property.
+        /// </summary>
+        private readonly ObservableCollection<Hotkey> _observableCollection;
+        /// <summary>
+        /// Stores hotkey information loaded from user settings. Use <see cref="EnsureMappedHotkeys"/>
+        /// </summary>
+        private IDictionary<string, HotkeyInformation> hotkeyUserMappings;
         private readonly Dictionary<string, Hotkey> hotkeys;
+
+        public HotkeyCommandManager(ILocalizationHelper localizationHelperToUse)
+        {
+            hotkeys = new Dictionary<string, Hotkey>();
+            _observableCollection = new ObservableCollection<Hotkey>();
+            ObservableCollection = _observableCollection;
+            _localizationHelper = localizationHelperToUse;
+        }
 
         /// <summary>
         /// Represents a read-only data-bindable collection of hotkeys.
         /// </summary>
         //public ReadOnlyObservableCollection<Hotkey> ObservableCollection { get; }
         public ObservableCollection<Hotkey> ObservableCollection { get; }
-        /// <summary>
-        /// Backing collection for the ObservableCollection property.
-        /// </summary>
-        private readonly ObservableCollection<Hotkey> _observableCollection;
-
-        /// <summary>
-        /// Stores hotkey information loaded from user settings. Use <see cref="EnsureMappedHotkeys"/>
-        /// </summary>
-        private IDictionary<string, HotkeyInformation> hotkeyUserMappings;
-
-        private readonly ILocalization localization;
-
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-
-        public HotkeyCommandManager(ILocalization localization)
-        {
-            hotkeys = new Dictionary<string, Hotkey>();
-            _observableCollection = new ObservableCollection<Hotkey>();
-            ObservableCollection = _observableCollection;
-            this.localization = localization;
-        }
 
         public void HandleCommand(InputEventArgs e)
         {
             IEnumerable<Hotkey> values = hotkeys.Values;
             foreach (var item in values)
             {
-                
+
                 if (item?.Binding?.Command?.CanExecute(item.Binding.CommandParameter) ?? false)
                 {
                     if (item.Binding.Gesture.Matches(e.Source, e))
@@ -83,11 +79,7 @@ namespace AnnoDesigner
                 hotkeys.Add(hotkey.HotkeyId, hotkey);
                 _observableCollection.Add(hotkey);
                 //Check for localization
-                hotkey.Description = hotkey.HotkeyId;
-                if (localization.InstanceTranslations.TryGetValue(hotkey.HotkeyId, out var description))
-                {
-                    hotkey.Description = description;
-                }
+                hotkey.Description = _localizationHelper.GetLocalization(hotkey.HotkeyId);
                 CheckHotkeyUserMappings();
             }
             else
@@ -166,10 +158,7 @@ namespace AnnoDesigner
         {
             foreach (var kvp in hotkeys)
             {
-                if (localization.InstanceTranslations.TryGetValue(kvp.Key, out var description))
-                {
-                    kvp.Value.Description = description;
-                }
+                kvp.Value.Description = _localizationHelper.GetLocalization(kvp.Key);
             }
         }
 
@@ -225,7 +214,7 @@ namespace AnnoDesigner
                 return;
             }
             //Copy so that we can modify the original collection within the foreach loop
-            foreach (var kvp in hotkeyUserMappings.ToDictionary(_ => _.Key, _ => _.Value)) 
+            foreach (var kvp in hotkeyUserMappings.ToDictionary(_ => _.Key, _ => _.Value))
             {
                 if (hotkeys.TryGetValue(kvp.Key, out var hotkey))
                 {
