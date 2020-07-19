@@ -325,7 +325,7 @@ namespace AnnoDesigner.Localization
                         { "14Gardens", "14 Jardins" },
                         { "15AgriculturalOrnaments", "15 Ornements Agricoles" },
                         { "16AgriculturalFences", "16 Clôtures Agricoles" },
-                        { "17IndustrialOrnaments", "17 Ornements Industriels" },                        
+                        { "17IndustrialOrnaments", "17 Ornements Industriels" },
                         { "18IndustrialFences", "18 Clôtures Industrielles" },
                         { "19AmusementPark", "19 Parc d'attractions" }
                     }
@@ -549,10 +549,10 @@ namespace AnnoDesigner.Localization
         {
             if (string.IsNullOrWhiteSpace(languageCode))
             {
-                languageCode = Localization.GetLanguageCodeFromName(_commons.SelectedLanguage);
+                languageCode = _commons.CurrentLanguageCode;
             }
 
-            if (!Localization.LanguageCodeMap.ContainsValue(languageCode))
+            if (!_commons.LanguageCodeMap.ContainsValue(languageCode))
             {
                 languageCode = "eng";
             }

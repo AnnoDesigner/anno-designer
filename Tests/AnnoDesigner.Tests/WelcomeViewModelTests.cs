@@ -98,7 +98,7 @@ namespace AnnoDesigner.Tests
             viewModel.ContinueCommand.Execute(null);
 
             // Assert
-            Assert.Equal(expectedLanguage, commons.Object.SelectedLanguage);
+            Assert.Equal(expectedLanguage, commons.Object.CurrentLanguage);
         }
 
         [Fact]

@@ -16,11 +16,21 @@ namespace AnnoDesigner.Tests
     {
         private readonly IAppSettings _mockedAppSettings;
         private readonly IMessageBoxService _mockedMessageBoxService;
+        private static ILocalizationHelper _mockedLocalization;
+        private readonly ICommons _mockedCommons;
 
         public BuildingSettingsViewModelTests()
         {
             var commonsMock = new Mock<ICommons>();
-            commonsMock.SetupGet(x => x.SelectedLanguage).Returns(() => "English");
+            commonsMock.SetupGet(x => x.CurrentLanguage).Returns(() => "English");
+            commonsMock.SetupGet(x => x.CurrentLanguageCode).Returns(() => "eng");
+            _mockedCommons = commonsMock.Object;
+
+            var mockedLocalizationHelper = new Mock<ILocalizationHelper>();
+            mockedLocalizationHelper.Setup(x => x.GetLocalization(It.IsAny<string>())).Returns<string>(x => x);
+            mockedLocalizationHelper.Setup(x => x.GetLocalization(It.IsAny<string>(), It.IsAny<string>())).Returns((string value, string langauge) => value);
+            _mockedLocalization = mockedLocalizationHelper.Object;
+
             Localization.Localization.Init(commonsMock.Object);
 
             _mockedAppSettings = new Mock<IAppSettings>().Object;
@@ -30,7 +40,8 @@ namespace AnnoDesigner.Tests
         private BuildingSettingsViewModel GetViewModel(IAppSettings appSettingsToUse = null)
         {
             return new BuildingSettingsViewModel(appSettingsToUse ?? _mockedAppSettings,
-                _mockedMessageBoxService);
+                _mockedMessageBoxService,
+                _mockedLocalization);
         }
 
         #region ctor tests

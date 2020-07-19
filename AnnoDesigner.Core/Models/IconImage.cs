@@ -35,9 +35,9 @@ namespace AnnoDesigner.Core.Models
             get { return NameForLanguage("eng"); }
         }
 
-        public string NameForLanguage(string language)
+        public string NameForLanguage(string languageCode)
         {
-            if (Localizations is null || !Localizations.TryGetValue(language, out var translation))
+            if (Localizations is null || !Localizations.TryGetValue(languageCode, out var translation))
             {
                 return Name;
             }

@@ -19,22 +19,26 @@ namespace AnnoDesigner.ViewModels
         private const string RESET_ALL_CONFIRMATION_MESSAGE = "ResetAllConfirmationMessage";
 
         private readonly ICommons commons;
+        private readonly IMessageBoxService _messageBoxService;
+        private readonly ILocalizationHelper _localizationHelper;
         private HotkeyCommandManager _manager;
         private ICommand _rebindCommand;
         private ICommand _resetHotkeysCommand;
         private string _rebindButtonText;
-        private readonly IMessageBoxService _messageBoxService;
 
         public ManageKeybindingsViewModel(HotkeyCommandManager hotkeyCommandManager,
             ICommons commons,
-            IMessageBoxService messageBoxServiceToUse)
+            IMessageBoxService messageBoxServiceToUse,
+            ILocalizationHelper localizationHelperToUse)
         {
             HotkeyCommandManager = hotkeyCommandManager;
+            _messageBoxService = messageBoxServiceToUse;
+            _localizationHelper = localizationHelperToUse;
+
             RebindCommand = new RelayCommand<Hotkey>(ExecuteRebind);
             ResetHotkeysCommand = new RelayCommand(ExecuteResetHotkeys);
             this.commons = commons;
             this.commons.SelectedLanguageChanged += Instance_SelectedLanguageChanged;
-            _messageBoxService = messageBoxServiceToUse;
 
             UpdateRebindButtonText();
         }
@@ -92,8 +96,8 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteResetHotkeys(object param)
         {
-            if (_messageBoxService.ShowQuestion(Localization.Localization.Translations[RESET_ALL_CONFIRMATION_MESSAGE],
-                Localization.Localization.Translations[RESET_ALL]))
+            if (_messageBoxService.ShowQuestion(_localizationHelper.GetLocalization(RESET_ALL_CONFIRMATION_MESSAGE),
+                _localizationHelper.GetLocalization(RESET_ALL)))
             {
                 HotkeyCommandManager.ResetHotkeys();
             }
@@ -101,7 +105,7 @@ namespace AnnoDesigner.ViewModels
 
         private void UpdateRebindButtonText()
         {
-            RebindButtonText = Localization.Localization.Translations[RebindButtonCurrentTextKey];
+            RebindButtonText = _localizationHelper.GetLocalization(RebindButtonCurrentTextKey);
         }
     }
 }
