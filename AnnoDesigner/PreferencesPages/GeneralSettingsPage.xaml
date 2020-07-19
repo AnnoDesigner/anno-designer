@@ -134,7 +134,7 @@
                        Text="{l:Localize GeneralPreferencesZoomSensitivity, StringFormat='{}{0}:'}" />
             <Slider Grid.Column="1"
                     Name="ZoomSlider"
-                    Value="{Binding ZoomSensitivityFactor}"
+                    Value="{Binding ZoomSensitivityPercentage}"
                     Maximum="{x:Static annoDesigner:Constants.ZoomSensitivitySliderMaximum}"
                     Minimum="1"
                     Width="150"

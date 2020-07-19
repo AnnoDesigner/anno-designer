@@ -26,7 +26,7 @@ namespace AnnoDesigner.ViewModels
         private bool _isObjectBorderLineColorPickerVisible;
         private Color? _selectedCustomGridLineColor;
         private Color? _selectedCustomObjectBorderLineColor;
-        private double _zoomSensitivityFactor;
+        private double _zoomSensitivityPercentage;
 
         public GeneralSettingsViewModel(IAppSettings appSettingsToUse, ICommons commonsToUse)
         {
@@ -35,7 +35,7 @@ namespace AnnoDesigner.ViewModels
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
 
             UseZoomToPoint = _appSettings.UseZoomToPoint;
-            ZoomSensitivityFactor = _appSettings.ZoomSensitivityPercentage;
+            ZoomSensitivityPercentage = _appSettings.ZoomSensitivityPercentage;
 
             GridLineColors = new ObservableCollection<UserDefinedColor>();
             RefreshGridLineColors();
@@ -303,12 +303,12 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
-        public double ZoomSensitivityFactor
+        public double ZoomSensitivityPercentage
         {
-            get => _zoomSensitivityFactor;
+            get => _zoomSensitivityPercentage;
             set
             {
-                if (UpdateProperty(ref _zoomSensitivityFactor, value))
+                if (UpdateProperty(ref _zoomSensitivityPercentage, value))
                 {
                     _appSettings.ZoomSensitivityPercentage = value;
                     _appSettings.Save();
