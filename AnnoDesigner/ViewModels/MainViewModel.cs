@@ -44,6 +44,7 @@ namespace AnnoDesigner.ViewModels
         private readonly IRecentFilesHelper _recentFilesHelper;
         private readonly IMessageBoxService _messageBoxService;
         private readonly IUpdateHelper _updateHelper;
+        private readonly ILocalizationHelper _localizationHelper;
 
         public event EventHandler<EventArgs> ShowStatisticsChanged;
 
@@ -82,6 +83,7 @@ namespace AnnoDesigner.ViewModels
             IRecentFilesHelper recentFilesHelperToUse,
             IMessageBoxService messageBoxServiceToUse,
             IUpdateHelper updateHelperToUse,
+            ILocalizationHelper localizationHelperToUse,
             ILayoutLoader layoutLoaderToUse = null,
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
@@ -94,19 +96,20 @@ namespace AnnoDesigner.ViewModels
             _recentFilesHelper = recentFilesHelperToUse;
             _messageBoxService = messageBoxServiceToUse;
             _updateHelper = updateHelperToUse;
+            _localizationHelper = localizationHelperToUse;
 
             _layoutLoader = layoutLoaderToUse ?? new LayoutLoader();
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
 
-            HotkeyCommandManager = new HotkeyCommandManager(Localization.Localization.Instance);
+            HotkeyCommandManager = new HotkeyCommandManager(_localizationHelper);
 
-            StatisticsViewModel = new StatisticsViewModel();
+            StatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
             StatisticsViewModel.IsVisible = _appSettings.StatsShowStats;
             StatisticsViewModel.ShowStatisticsBuildingCount = _appSettings.StatsShowBuildingCount;
 
-            BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings, _messageBoxService);
+            BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings, _messageBoxService, _localizationHelper);
 
             PresetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization(_commons), _commons);
             PresetsTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
@@ -118,8 +121,8 @@ namespace AnnoDesigner.ViewModels
 
             AboutViewModel = new AboutViewModel();
 
-            PreferencesUpdateViewModel = new UpdateSettingsViewModel(_commons, _appSettings, _messageBoxService, _updateHelper);
-            PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons, _messageBoxService);
+            PreferencesUpdateViewModel = new UpdateSettingsViewModel(_commons, _appSettings, _messageBoxService, _updateHelper, _localizationHelper);
+            PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons, _messageBoxService, _localizationHelper);
             PreferencesGeneralViewModel = new GeneralSettingsViewModel(_appSettings, _commons);
 
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
@@ -187,15 +190,10 @@ namespace AnnoDesigner.ViewModels
         {
             var localizations = new Dictionary<string, string>();
 
-            foreach (var curLanguageCode in Localization.Localization.LanguageCodeMap)
+            foreach (var curLanguageCode in _commons.LanguageCodeMap.Values)
             {
-                if (Localization.Localization.TranslationsRaw.TryGetValue(curLanguageCode.Value, out var foundTranslations))
-                {
-                    if (foundTranslations.TryGetValue("NoIcon", out var curTranslationOfNone))
-                    {
-                        localizations.Add(curLanguageCode.Value, curTranslationOfNone);
-                    }
-                }
+                var curTranslationOfNone = _localizationHelper.GetLocalization("NoIcon", curLanguageCode);
+                localizations.Add(curLanguageCode, curTranslationOfNone);
             }
 
             return new IconImage("NoIcon") { Localizations = localizations };
@@ -205,7 +203,7 @@ namespace AnnoDesigner.ViewModels
         {
             try
             {
-                InitLanguageMenu(_commons.SelectedLanguage);
+                InitLanguageMenu(_commons.CurrentLanguage);
 
                 if (AnnoCanvas == null)
                 {
@@ -223,7 +221,7 @@ namespace AnnoDesigner.ViewModels
                 }
 
                 //update settings
-                _appSettings.SelectedLanguage = _commons.SelectedLanguage;
+                _appSettings.SelectedLanguage = _commons.CurrentLanguage;
 
                 _ = UpdateStatisticsAsync(UpdateMode.All);
 
@@ -309,7 +307,7 @@ namespace AnnoDesigner.ViewModels
             {
                 logger.Error(ex, "Error applying preset.");
                 _messageBoxService.ShowError("Something went wrong while applying the preset.",
-                   Localization.Localization.Translations["Error"]);
+                   _localizationHelper.GetLocalization("Error"));
             }
         }
 
@@ -507,7 +505,7 @@ namespace AnnoDesigner.ViewModels
 
         private void AnnoCanvas_ClipboardChanged(List<LayoutObject> itemsOnClipboard)
         {
-            StatusMessageClipboard = Localization.Localization.Translations["StatusBarItemsOnClipboard"] + ": " + itemsOnClipboard.Count;
+            StatusMessageClipboard = _localizationHelper.GetLocalization("StatusBarItemsOnClipboard") + ": " + itemsOnClipboard.Count;
         }
 
         private void AnnoCanvas_StatusMessageChanged(string message)
@@ -549,7 +547,7 @@ namespace AnnoDesigner.ViewModels
 
         public void LoadAvailableIcons()
         {
-            foreach (var icon in AnnoCanvas.Icons.OrderBy(x => x.Value.NameForLanguage(Localization.Localization.Instance.SelectedLanguage)))
+            foreach (var icon in AnnoCanvas.Icons.OrderBy(x => x.Value.NameForLanguage(_commons.CurrentLanguageCode)))
             {
                 AvailableIcons.Add(icon.Value);
             }
@@ -946,8 +944,8 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteLoadLayoutFromJson(object param)
         {
-            var input = InputWindow.Prompt(this, Localization.Localization.Translations["LoadLayoutMessage"],
-                Localization.Localization.Translations["LoadLayoutHeader"]);
+            var input = InputWindow.Prompt(this, _localizationHelper.GetLocalization("LoadLayoutMessage"),
+                _localizationHelper.GetLocalization("LoadLayoutHeader"));
 
             ExecuteLoadLayoutFromJsonSub(input, false);
         }
@@ -990,7 +988,7 @@ namespace AnnoDesigner.ViewModels
             {
                 logger.Error(ex, "Error loading layout from JSON.");
                 _messageBoxService.ShowError("Something went wrong while loading the layout.",
-                        Localization.Localization.Translations["Error"]);
+                        _localizationHelper.GetLocalization("Error"));
             }
         }
 
@@ -1024,9 +1022,9 @@ namespace AnnoDesigner.ViewModels
 
         private void ShowRegistrationMessageBox(bool isDeregistration)
         {
-            var message = isDeregistration ? Localization.Localization.Translations["UnregisterFileExtensionSuccessful"] : Localization.Localization.Translations["RegisterFileExtensionSuccessful"];
+            var message = isDeregistration ? _localizationHelper.GetLocalization("UnregisterFileExtensionSuccessful") : _localizationHelper.GetLocalization("RegisterFileExtensionSuccessful");
 
-            _messageBoxService.ShowMessage(message, Localization.Localization.Translations["Successful"]);
+            _messageBoxService.ShowMessage(message, _localizationHelper.GetLocalization("Successful"));
         }
 
         public ICommand ExportImageCommand { get; private set; }
@@ -1062,15 +1060,15 @@ namespace AnnoDesigner.ViewModels
                     RenderToFile(dialog.FileName, 1, exportZoom, exportSelection, StatisticsViewModel.IsVisible);
 
                     _messageBoxService.ShowMessage(Application.Current.MainWindow,
-                       Localization.Localization.Translations["ExportImageSuccessful"],
-                       Localization.Localization.Translations["Successful"]);
+                       _localizationHelper.GetLocalization("ExportImageSuccessful"),
+                       _localizationHelper.GetLocalization("Successful"));
                 }
                 catch (Exception ex)
                 {
                     logger.Error(ex, "Error exporting image.");
                     _messageBoxService.ShowError(Application.Current.MainWindow,
                         "Something went wrong while exporting the image.",
-                        Localization.Localization.Translations["Error"]);
+                        _localizationHelper.GetLocalization("Error"));
                 }
             }
         }
@@ -1140,7 +1138,7 @@ namespace AnnoDesigner.ViewModels
 
                 if (renderStatistics)
                 {
-                    var exportStatisticsViewModel = new StatisticsViewModel();
+                    var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
 
                     var exportStatisticsView = new StatisticsView
                     {
@@ -1209,8 +1207,8 @@ namespace AnnoDesigner.ViewModels
 
                     Clipboard.SetText(jsonString, TextDataFormat.UnicodeText);
 
-                    _messageBoxService.ShowMessage(Localization.Localization.Translations["ClipboardContainsLayoutAsJson"],
-                        Localization.Localization.Translations["Successful"]);
+                    _messageBoxService.ShowMessage(_localizationHelper.GetLocalization("ClipboardContainsLayoutAsJson"),
+                        _localizationHelper.GetLocalization("Successful"));
                 }
             }
             catch (Exception ex)
@@ -1240,7 +1238,7 @@ namespace AnnoDesigner.ViewModels
 
                 InitLanguageMenu(selectedLanguage.Name);
 
-                _commons.SelectedLanguage = selectedLanguage.Name;
+                _commons.CurrentLanguage = selectedLanguage.Name;
             }
             finally
             {
@@ -1298,7 +1296,7 @@ namespace AnnoDesigner.ViewModels
             catch (Exception)
             {
                 _messageBoxService.ShowError("Error: Invalid building configuration.",
-                   Localization.Localization.Translations["Error"]);
+                   _localizationHelper.GetLocalization("Error"));
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using AnnoDesigner.Models;
@@ -9,7 +10,7 @@ namespace AnnoDesigner
     public class Commons : ICommons
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private static string _selectedLanguage;
+        private static string _currentLanguage;
 
         public event EventHandler SelectedLanguageChanged;
 
@@ -23,31 +24,42 @@ namespace AnnoDesigner
         }        
 
         private Commons()
-        {
-        }
+        {        }
 
         #endregion
 
-        public string SelectedLanguage
+        public string CurrentLanguage
         {
             get
             {
-                if (_selectedLanguage != null && Localization.Localization.LanguageCodeMap.ContainsKey(_selectedLanguage))
+                if (_currentLanguage != null && LanguageCodeMap.ContainsKey(_currentLanguage))
                 {
-                    return _selectedLanguage;
+                    return _currentLanguage;
                 }
-                else
-                {
-                    _selectedLanguage = "English";
-                    return _selectedLanguage;
-                }
+
+                _currentLanguage = "English";
+                return _currentLanguage;
             }
             set
             {
-                _selectedLanguage = value ?? "English";
+                _currentLanguage = value ?? "English";
                 SelectedLanguageChanged?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        public string CurrentLanguageCode => LanguageCodeMap[CurrentLanguage];
+
+        public Dictionary<string, string> LanguageCodeMap => new Dictionary<string, string>()
+        {
+            { "English", "eng" },
+            { "Deutsch", "ger" },
+            { "Français","fra" },
+            { "Español", "esp" },
+            { "Italiano", "ita" },
+            { "Polski", "pol" },
+            { "Русский", "rus" },
+            { "český", "cze" },
+        };
 
         public bool CanWriteInFolder(string folderPathToCheck = null)
         {

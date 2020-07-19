@@ -74,9 +74,9 @@ namespace AnnoDesigner.ViewModels
 
         private void LoadSelectedLanguage(ICloseable window)
         {
-            _commons.SelectedLanguage = SelectedItem.Name;
+            _commons.CurrentLanguage = SelectedItem.Name;
 
-            _appSettings.SelectedLanguage = _commons.SelectedLanguage;
+            _appSettings.SelectedLanguage = _commons.CurrentLanguage;
             _appSettings.Save();
 
             window?.Close();
