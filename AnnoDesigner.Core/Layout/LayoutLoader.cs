@@ -73,8 +73,9 @@ namespace AnnoDesigner.Core.Layout
             }
             catch (JsonSerializationException) { } //No file version, old layout file.
 
-            // show message if file versions don't match
-            if (layoutVersion.FileVersion != CoreConstants.LayoutFileVersion && !forceLoad)
+            //show message if we don't recognise the file version
+            //Only recognising from a version that has been explicitly tested onwards.
+            if (!(layoutVersion.FileVersion >= CoreConstants.LayoutFileVersionSupportedMinimum || layoutVersion.FileVersion <= CoreConstants.LayoutFileVersion) && !forceLoad)
             {
                 throw new LayoutFileVersionMismatchException($"loaded version: {layoutVersion.FileVersion} | expected version: {CoreConstants.LayoutFileVersion}");
             }
