@@ -1908,10 +1908,10 @@ namespace AnnoDesigner
             }
             catch (LayoutFileUnsupportedFormatException layoutEx)
             {
-                logger.Warn(layoutEx, "Version of layout does not match.");
+                logger.Warn(layoutEx, "Version of layout file is not supported.");
 
                 if (_messageBoxService.ShowQuestion("Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
-                        "File version mismatch"))
+                        "File version unsupported"))
                 {
                     OpenFile(filename, true);
                 }

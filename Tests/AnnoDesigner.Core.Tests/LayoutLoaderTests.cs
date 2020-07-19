@@ -38,11 +38,8 @@ namespace AnnoDesigner.Core.Tests
             // Arrange
             ILayoutLoader loader = new LayoutLoader();
 
-            // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => loader.LoadLayout((Stream)null));
-
-            // Assert
-            Assert.NotNull(ex);
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>(() => loader.LoadLayout((Stream)null));
         }
 
         [Theory]
@@ -54,27 +51,37 @@ namespace AnnoDesigner.Core.Tests
             // Arrange
             ILayoutLoader loader = new LayoutLoader();
 
-            // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => loader.LoadLayout((string)filePath));
-
-            // Assert
-            Assert.NotNull(ex);
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>(() => loader.LoadLayout((string)filePath));
         }
 
         [Fact]
-        public void LoadLayout_LayoutHasOlderVersion_ShouldThrow()
+        public void LoadLayout_LayoutHasOlderSupportedVersion_ShouldReturnListWithObjects()
         {
             // Arrange
             ILayoutLoader loader = new LayoutLoader();
 
-            var layoutContent = $"{{\"FileVersion\":{CoreConstants.LayoutFileVersion - 1},\"Objects\":[]}}";
-            var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(layoutContent));
+            var layoutContent = $"{{\"FileVersion\":{CoreConstants.LayoutFileVersionSupportedMinimum},\"Objects\":[]}}";
+            using var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(layoutContent));
 
             // Act
-            var ex = Assert.Throws<LayoutFileUnsupportedFormatException>(() => loader.LoadLayout(streamWithLayout));
+            var result = loader.LoadLayout(streamWithLayout);
 
             // Assert
-            Assert.NotNull(ex);
+            Assert.NotNull(result);
+        }
+        
+        [Fact]
+        public void LoadLayout_LayoutHasOlderUnsupportedVersion_ShouldThrow()
+        {
+            // Arrange
+            ILayoutLoader loader = new LayoutLoader();
+
+            var layoutContent = $"{{\"FileVersion\":{CoreConstants.LayoutFileVersionSupportedMinimum - 1},\"Objects\":[]}}";
+            using var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(layoutContent));
+
+            // Act and Assert
+            Assert.Throws<LayoutFileUnsupportedFormatException>(() => loader.LoadLayout(streamWithLayout));
         }
 
         [Fact]
@@ -84,13 +91,10 @@ namespace AnnoDesigner.Core.Tests
             ILayoutLoader loader = new LayoutLoader();
 
             var layoutContent = $"{{\"FileVersion\":{CoreConstants.LayoutFileVersion + 1},\"Objects\":[]}}";
-            var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(layoutContent));
+            using var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(layoutContent));
 
-            // Act
-            var ex = Assert.Throws<LayoutFileUnsupportedFormatException>(() => loader.LoadLayout(streamWithLayout));
-
-            // Assert
-            Assert.NotNull(ex);
+            // Act and Assert
+            Assert.Throws<LayoutFileUnsupportedFormatException>(() => loader.LoadLayout(streamWithLayout));
         }
 
         [Fact]
@@ -99,7 +103,7 @@ namespace AnnoDesigner.Core.Tests
             // Arrange
             ILayoutLoader loader = new LayoutLoader();
 
-            var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(testData_v4_LayoutWithVersionAndObjects));
+            using var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(testData_v4_LayoutWithVersionAndObjects));
 
             // Act
             var result = loader.LoadLayout(streamWithLayout);
@@ -114,7 +118,7 @@ namespace AnnoDesigner.Core.Tests
             // Arrange
             ILayoutLoader loader = new LayoutLoader();
 
-            var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(testData_LayoutWithNoVersionAndObjects));
+            using var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(testData_LayoutWithNoVersionAndObjects));
 
             // Act
             var result = loader.LoadLayout(streamWithLayout, true);
@@ -130,7 +134,7 @@ namespace AnnoDesigner.Core.Tests
             ILayoutLoader loader = new LayoutLoader();
 
             var layoutContent = $"{{\"FileVersion\":{CoreConstants.LayoutFileVersion + 1},\"Objects\":[{{\"Identifier\":\"Lorem\"}}]}}";
-            var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(layoutContent));
+            using var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(layoutContent));
 
             // Act
             var result = loader.LoadLayout(streamWithLayout, true);
@@ -144,7 +148,7 @@ namespace AnnoDesigner.Core.Tests
         {
             // Arrange
             ILayoutLoader loader = new LayoutLoader();
-            var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(testData_v3_LayoutWithVersionAndObjects));
+            using var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(testData_v3_LayoutWithVersionAndObjects));
 
             // Act
             var result = loader.LoadLayout(streamWithLayout, true);
@@ -164,7 +168,7 @@ namespace AnnoDesigner.Core.Tests
             var expectedG = 242;
             var expectedB = 63;
             var layoutContent = $"{{\"FileVersion\":{CoreConstants.LayoutFileVersion},\"Objects\":[{{\"Identifier\":\"Lorem\",\"Color\":{{\"A\":{expectedA},\"R\":{expectedR},\"G\":{expectedG},\"B\":{expectedB}}}}}]}}";
-            var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(layoutContent));
+            using var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(layoutContent));
 
             // Act
             var result = loader.LoadLayout(streamWithLayout, true);
@@ -183,7 +187,7 @@ namespace AnnoDesigner.Core.Tests
             // Arrange
             ILayoutLoader loader = new LayoutLoader();
 
-            var savedStream = new MemoryStream();
+            using var savedStream = new MemoryStream();
 
             var listToSave = new List<AnnoObject> { new AnnoObject { Identifier = "Lorem" } };
 
@@ -209,7 +213,7 @@ namespace AnnoDesigner.Core.Tests
             byte expectedG = 242;
             byte expectedB = 63;
 
-            var savedStream = new MemoryStream();
+            using var savedStream = new MemoryStream();
 
             var listToSave = new List<AnnoObject> { new AnnoObject { Identifier = "Lorem", Color = new SerializableColor(expectedA, expectedR, expectedG, expectedB) } };
 
