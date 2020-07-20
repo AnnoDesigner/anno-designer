@@ -13,7 +13,7 @@ namespace AnnoDesigner.ViewModels
         /// <summary>
         /// These keys match values in the Localization dictionary
         /// </summary>
-        private const string REBIND = "Rebind";
+        private const string EDIT = "Edit";
         private const string RECORDING = "Recording";
         private const string RESET_ALL = "ResetAll";
         private const string RESET_ALL_CONFIRMATION_MESSAGE = "ResetAllConfirmationMessage";
@@ -22,9 +22,9 @@ namespace AnnoDesigner.ViewModels
         private readonly IMessageBoxService _messageBoxService;
         private readonly ILocalizationHelper _localizationHelper;
         private HotkeyCommandManager _manager;
-        private ICommand _rebindCommand;
+        private ICommand _editCommand;
         private ICommand _resetHotkeysCommand;
-        private string _rebindButtonText;
+        private string _editButtonText;
 
         public ManageKeybindingsViewModel(HotkeyCommandManager hotkeyCommandManager,
             ICommons commons,
@@ -35,7 +35,7 @@ namespace AnnoDesigner.ViewModels
             _messageBoxService = messageBoxServiceToUse;
             _localizationHelper = localizationHelperToUse;
 
-            RebindCommand = new RelayCommand<Hotkey>(ExecuteRebind);
+            EditCommand = new RelayCommand<Hotkey>(ExecuteRebind);
             ResetHotkeysCommand = new RelayCommand(ExecuteResetHotkeys);
             this.commons = commons;
             this.commons.SelectedLanguageChanged += Instance_SelectedLanguageChanged;
@@ -54,10 +54,10 @@ namespace AnnoDesigner.ViewModels
             set { UpdateProperty(ref _manager, value); }
         }
 
-        public ICommand RebindCommand
+        public ICommand EditCommand
         {
-            get { return _rebindCommand; }
-            set { UpdateProperty(ref _rebindCommand, value); }
+            get { return _editCommand; }
+            set { UpdateProperty(ref _editCommand, value); }
         }
 
         public ICommand ResetHotkeysCommand
@@ -66,17 +66,17 @@ namespace AnnoDesigner.ViewModels
             set { UpdateProperty(ref _resetHotkeysCommand, value); }
         }
 
-        public string RebindButtonText
+        public string EditButtonText
         {
-            get { return _rebindButtonText; }
-            set { UpdateProperty(ref _rebindButtonText, value); }
+            get { return _editButtonText; }
+            set { UpdateProperty(ref _editButtonText, value); }
         }
 
-        public string RebindButtonCurrentTextKey { get; set; } = REBIND;
+        public string EditButtonCurrentTextKey { get; set; } = EDIT;
 
         private void ExecuteRebind(Hotkey hotkey)
         {
-            RebindButtonCurrentTextKey = RECORDING;
+            EditButtonCurrentTextKey = RECORDING;
             UpdateRebindButtonText();
 
             var window = new HotkeyRecorderWindow();
@@ -90,7 +90,7 @@ namespace AnnoDesigner.ViewModels
             {
                 hotkey.UpdateHotkey(key, action, modifiers, (actionType == ActionRecorder.ActionType.KeyAction ? GestureType.KeyGesture : GestureType.MouseGesture));
             }
-            RebindButtonCurrentTextKey = REBIND;
+            EditButtonCurrentTextKey = EDIT;
             UpdateRebindButtonText();
         }
 
@@ -105,7 +105,7 @@ namespace AnnoDesigner.ViewModels
 
         private void UpdateRebindButtonText()
         {
-            RebindButtonText = _localizationHelper.GetLocalization(RebindButtonCurrentTextKey);
+            EditButtonText = _localizationHelper.GetLocalization(EditButtonCurrentTextKey);
         }
     }
 }

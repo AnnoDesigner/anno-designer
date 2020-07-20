@@ -37,15 +37,15 @@ namespace AnnoDesigner
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        //Important: These match the values in the Localization.Localization.Translations dictionary
-        public const string ROTATE_COMMAND_KEY = "Rotate";
-        public const string COPY_COMMAND_KEY = "Copy";
-        public const string PASTE_COMMAND_KEY = "Paste";
-        public const string DELETE_COMMAND_KEY = "Delete";
-        public const string DUPLICATE_COMMAND_KEY = "Duplicate";
+        //Important: These match values in the translations dictionary (e.g "Rotate" matches "Rotate" in the localization dictionary)
+        public const string ROTATE_LOCALIZATION_KEY = "Rotate";
+        public const string COPY_LOCALIZATION_KEY = "Copy";
+        public const string PASTE_LOCALIZATION_KEY = "Paste";
+        public const string DELETE_LOCALIZATION_KEY = "Delete";
+        public const string DUPLICATE_LOCALIZATION_KEY = "Duplicate";
         //not implmented yet
-        public const string UNDO_COMMAND_KEY = "Undo";
-        public const string ROTATE_ALL_COMMAND_KEY = "RotateAll";
+        public const string UNDO_LOCALIZATION_KEY = "Undo";
+        public const string ROTATE_ALL_LOCALIZATION_KEY = "RotateAll";
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
@@ -506,26 +506,36 @@ namespace AnnoDesigner
             #region Hotkeys/Commands
             //Commands
             rotateCommand = new RelayCommand(ExecuteRotate);
+            rotateAllCommand = new RelayCommand(ExecuteRotateAll);
             copyCommand = new RelayCommand(ExecuteCopy);
             pasteCommand = new RelayCommand(ExecutePaste);
             deleteCommand = new RelayCommand(ExecuteDelete);
             duplicateCommand = new RelayCommand(ExecuteDuplicate);
 
             //Set up default keybindings
-            var rotateBinding = new InputBinding(rotateCommand, new PolyGesture(Key.R, ModifierKeys.None));
-            rotateHotkey = new Hotkey(ROTATE_COMMAND_KEY, rotateBinding);
+
+            //for rotation with the r key.
+            var rotateBinding1 = new InputBinding(rotateCommand, new PolyGesture(Key.R, ModifierKeys.None));
+            rotateHotkey1 = new Hotkey("Rotate_1", rotateBinding1, ROTATE_LOCALIZATION_KEY);
+
+            //for rotation with middle click
+            var rotateBinding2 = new InputBinding(rotateCommand, new PolyGesture(ExtendedMouseAction.MiddleClick));
+            rotateHotkey2 = new Hotkey("Rotate_2", rotateBinding2, ROTATE_LOCALIZATION_KEY);
+
+            var rotateAllBinding = new InputBinding(rotateAllCommand, new PolyGesture(Key.R, ModifierKeys.Shift));
+            rotateAllHotkey = new Hotkey("RotateAll", rotateAllBinding, ROTATE_ALL_LOCALIZATION_KEY);
 
             var copyBinding = new InputBinding(copyCommand, new PolyGesture(Key.C, ModifierKeys.Control));
-            copyHotkey = new Hotkey(COPY_COMMAND_KEY, copyBinding);
+            copyHotkey = new Hotkey(COPY_LOCALIZATION_KEY, copyBinding, COPY_LOCALIZATION_KEY);
 
             var pasteBinding = new InputBinding(pasteCommand, new PolyGesture(Key.V, ModifierKeys.Control));
-            pasteHotkey = new Hotkey(PASTE_COMMAND_KEY, pasteBinding);
+            pasteHotkey = new Hotkey(PASTE_LOCALIZATION_KEY, pasteBinding, PASTE_LOCALIZATION_KEY);
 
             var deleteBinding = new InputBinding(deleteCommand, new PolyGesture(Key.Delete, ModifierKeys.None));
-            deleteHotkey = new Hotkey(DELETE_COMMAND_KEY, deleteBinding);
+            deleteHotkey = new Hotkey(DELETE_LOCALIZATION_KEY, deleteBinding, DELETE_LOCALIZATION_KEY);
 
             var duplicateBinding = new InputBinding(duplicateCommand, new PolyGesture(ExtendedMouseAction.LeftDoubleClick, ModifierKeys.None));
-            duplicateHotkey = new Hotkey(DUPLICATE_COMMAND_KEY, duplicateBinding);
+            duplicateHotkey = new Hotkey(DUPLICATE_LOCALIZATION_KEY, duplicateBinding, DUPLICATE_LOCALIZATION_KEY);
 
             //We specifically do not add the `InputBinding`s to the `InputBindingCollection` of `AnnoCanvas`, as if we did that,
             //`InputBinding.Gesture.Matches()` would be fired for *every* event - MouseWheel, MouseDown, KeyUp, KeyDown, MouseMove etc
@@ -1621,16 +1631,16 @@ namespace AnnoDesigner
                         }
                 }
             }
-            // rotate current object
-            else if (e.ChangedButton == MouseButton.Middle)
-            {
-                if (CurrentObjects.Count == 0 && SelectedObjects.Count != 0)
-                {
-                    CurrentObjects = CloneList(SelectedObjects);
-                }
+            //// rotate current object
+            //else if (e.ChangedButton == MouseButton.Middle)
+            //{
+            //    if (CurrentObjects.Count == 0 && SelectedObjects.Count != 0)
+            //    {
+            //        CurrentObjects = CloneList(SelectedObjects);
+            //    }
 
-                Rotate(CurrentObjects);
-            }
+            //    Rotate(CurrentObjects);
+            //}
 
             InvalidateVisual();
         }
@@ -1649,10 +1659,6 @@ namespace AnnoDesigner
             //When an InputBinding is added to the InputBindingsCollection, the  `Matches` method is fired for every event - KeyUp,
             //KeyDown, MouseUp, MouseMove, MouseWheel etc.
             HotkeyCommandManager.HandleCommand(e);
-            if (e.Handled)
-            {
-                InvalidateVisual();
-            }
         }
 
         /// <summary>
@@ -1807,7 +1813,9 @@ namespace AnnoDesigner
         public void RegisterHotkeys(HotkeyCommandManager manager)
         {
             HotkeyCommandManager = manager;
-            manager.AddHotkey(rotateHotkey);
+            manager.AddHotkey(rotateHotkey1);
+            manager.AddHotkey(rotateHotkey2);
+            manager.AddHotkey(rotateAllHotkey);
             manager.AddHotkey(copyHotkey);
             manager.AddHotkey(pasteHotkey);
             manager.AddHotkey(deleteHotkey);
@@ -1997,8 +2005,14 @@ namespace AnnoDesigner
         }
 
 
-
-        private readonly Hotkey rotateHotkey;
+        /// <summary>
+        /// R key rotate
+        /// </summary>
+        private readonly Hotkey rotateHotkey1;
+        /// <summary>
+        /// MiddleClick rotate
+        /// </summary>
+        private readonly Hotkey rotateHotkey2;
         private readonly ICommand rotateCommand;
         private void ExecuteRotate(object param)
         {
@@ -2017,6 +2031,16 @@ namespace AnnoDesigner
                 CurrentObjects = CloneList(SelectedObjects);
                 Rotate(CurrentObjects);
             }
+            InvalidateVisual();
+        }
+
+        private readonly Hotkey rotateAllHotkey;
+        private readonly ICommand rotateAllCommand;
+        private void ExecuteRotateAll(object param)
+        {
+            Rotate(PlacedObjects);
+            //Objects tend to go offscreen when we rotate everything, so normalise the cnavas after a rotate.
+            Normalize(1);
             InvalidateVisual();
         }
 
@@ -2063,6 +2087,7 @@ namespace AnnoDesigner
                 OnCurrentObjectChanged(obj);
             }
         }
+
         #endregion
 
         #region Helper methods
