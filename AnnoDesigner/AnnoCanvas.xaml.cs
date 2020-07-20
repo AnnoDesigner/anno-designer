@@ -2029,7 +2029,7 @@ namespace AnnoDesigner
         private void ExecuteRotateAll(object param)
         {
             Rotate(PlacedObjects);
-            //Objects tend to go offscreen when we rotate everything, so normalise the cnavas after a rotate.
+            //Objects tend to go offscreen when we rotate everything, so normalise the canvas after a rotate.
             Normalize(1);
             InvalidateVisual();
         }
