@@ -1631,16 +1631,6 @@ namespace AnnoDesigner
                         }
                 }
             }
-            //// rotate current object
-            //else if (e.ChangedButton == MouseButton.Middle)
-            //{
-            //    if (CurrentObjects.Count == 0 && SelectedObjects.Count != 0)
-            //    {
-            //        CurrentObjects = CloneList(SelectedObjects);
-            //    }
-
-            //    Rotate(CurrentObjects);
-            //}
 
             InvalidateVisual();
         }
