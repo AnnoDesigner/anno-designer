@@ -21,6 +21,7 @@ using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.Services;
+using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Models;
@@ -36,7 +37,6 @@ namespace AnnoDesigner
     public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         //Important: These match the values in the Localization.Localization.Translations dictionary
         public const string ROTATE_COMMAND_KEY = "Rotate";
         public const string COPY_COMMAND_KEY = "Copy";
@@ -408,13 +408,22 @@ namespace AnnoDesigner
         /// <summary>
         /// List of all currently placed objects.
         /// </summary>
-        public List<LayoutObject> PlacedObjects { get; set; }
+        public QuadTree<LayoutObject> PlacedObjectsQuadTree { get; set; }
+
+        //TODO: For testing only, eventually, remove PlacedObjectsQuadTree, and just use this instead
+        public List<LayoutObject> PlacedObjects
+        {
+            get => PlacedObjectsQuadTree.ToList();
+            set => PlacedObjectsQuadTree.AddRange(value.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+        }
 
         /// <summary>
         /// List of all currently selected objects.
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
         public List<LayoutObject> SelectedObjects { get; set; }
+
+        public HotkeyCommandManager HotkeyCommandManager { get; set; }
 
         /// <summary>
         /// Add the objects to SelectedObjects, optionally also add all objects which match one of their identifiers.
@@ -427,7 +436,8 @@ namespace AnnoDesigner
             if (includeSameObjects)
             {
                 // Add all placed objects whose identifier matches any of those in the objectsToAdd.
-                SelectedObjects.AddRange(PlacedObjects.FindAll(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase))));
+                SelectedObjects.AddRange(PlacedObjectsQuadTree.FindAll(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase))));
+
             }
             else
             {
@@ -583,7 +593,7 @@ namespace AnnoDesigner
             // initialize
             CurrentMode = MouseMode.Standard;
 
-            PlacedObjects = new List<LayoutObject>();
+            PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(0d, 0d, 200d, 200d));
             SelectedObjects = new List<LayoutObject>();
 
             //Commands
@@ -744,7 +754,7 @@ namespace AnnoDesigner
             //drawingContext.DrawRectangle(_lightBrush, _highlightPen, new Rect(GridToScreen(ScreenToGrid(_mousePosition)), new Size(_gridStep, _gridStep)));
 
             // draw placed objects            
-            RenderObjectList(drawingContext, PlacedObjects, useTransparency: false);
+            RenderObjectList(drawingContext, PlacedObjectsQuadTree.All().ToList(), useTransparency: false); ;
             RenderObjectSelection(drawingContext, SelectedObjects);
 
             if (!RenderInfluences)
@@ -757,8 +767,8 @@ namespace AnnoDesigner
             }
             else
             {
-                RenderObjectInfluenceRadius(drawingContext, PlacedObjects);
-                RenderObjectInfluenceRange(drawingContext, PlacedObjects);
+                RenderObjectInfluenceRadius(drawingContext, PlacedObjectsQuadTree.All().ToList());
+                RenderObjectInfluenceRange(drawingContext, PlacedObjectsQuadTree.All().ToList());
             }
 
             if (CurrentObjects.Count == 0)
@@ -955,7 +965,7 @@ namespace AnnoDesigner
                     var circleCenterX = circle.Center.X;
                     var circleCenterY = circle.Center.Y;
 
-                    foreach (var curPlacedObject in PlacedObjects)
+                    foreach (var curPlacedObject in PlacedObjectsQuadTree)
                     {
                         var distance = curPlacedObject.GetScreenRectCenterPoint(GridSize);
                         distance.X -= circleCenterX;
@@ -982,9 +992,9 @@ namespace AnnoDesigner
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
             AnnoObject[][] gridDictionary = null;
-            if (RenderTrueInfluenceRange && PlacedObjects.Count > 0)
+            if (RenderTrueInfluenceRange && PlacedObjectsQuadTree.Count() > 0)
             {
-                var placedObjects = PlacedObjects.Concat(objects).ToHashSet();
+                var placedObjects = PlacedObjectsQuadTree.Concat(objects).ToHashSet();
                 var placedAnnoObjects = placedObjects.Select(o => o.WrappedAnnoObject).ToList();
                 var placedObjectDictionary = placedObjects.ToDictionary(o => o.WrappedAnnoObject);
 
@@ -1048,7 +1058,7 @@ namespace AnnoDesigner
             };
 
             var cellsInInfluenceRange = RoadSearchHelper.BreadthFirstSearch(
-                PlacedObjects.Select(o => o.WrappedAnnoObject),
+                PlacedObjectsQuadTree.Select(o => o.WrappedAnnoObject),
                 startObjects,
                 o => (int)o.InfluenceRange,
                 gridDictionary);
@@ -1299,7 +1309,7 @@ namespace AnnoDesigner
                 var diff = postZoomPosition - preZoomPosition;
                 if (diff.LengthSquared > 0)
                 {
-                    foreach (var placedObject in PlacedObjects)
+                    foreach (var placedObject in PlacedObjectsQuadTree)
                     {
                         placedObject.Position += diff;
                     }
@@ -1409,7 +1419,7 @@ namespace AnnoDesigner
                 // check if the mouse has moved at least one grid cell in any direction
                 if (dx != 0 || dy != 0)
                 {
-                    foreach (var curLayoutObject in PlacedObjects)
+                    foreach (var curLayoutObject in PlacedObjectsQuadTree)
                     {
                         curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
                     }
@@ -1449,7 +1459,12 @@ namespace AnnoDesigner
                                 // adjust rect
                                 _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                                 // select intersecting objects
-                                AddSelectedObjects(PlacedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)),
+                                var top = _coordinateHelper.ScreenToGrid(_selectionRect.Top, GridSize);
+                                var left = _coordinateHelper.ScreenToGrid(_selectionRect.Left, GridSize);
+                                var height = _coordinateHelper.ScreenToGrid(_selectionRect.Size.Height, GridSize);
+                                var width = _coordinateHelper.ScreenToGrid(_selectionRect.Size.Width, GridSize);
+                                var _selectionRectGrid = new Rect(top, left, width, height);
+                                AddSelectedObjects(PlacedObjectsQuadTree.GetItemsIntersecting(_selectionRectGrid).ToList(),
                                                    ShouldAffectObjectsWithIdentifier());
 
                                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
@@ -1469,7 +1484,9 @@ namespace AnnoDesigner
 
                                 if (_unselectedObjects == null)
                                 {
-                                    _unselectedObjects = PlacedObjects.FindAll(_ => !SelectedObjects.Contains(_));
+                                    _unselectedObjects = new List<LayoutObject>();
+                                    //This feels like a very expensive operation - is there something we can do to not need this?
+                                    _unselectedObjects = PlacedObjectsQuadTree.FindAll(_ => !SelectedObjects.Contains(_)).ToList();
                                 }
 
                                 var collisionsExist = false;
@@ -1592,7 +1609,7 @@ namespace AnnoDesigner
                                 else
                                 {
                                     // Remove object, only ever remove a single object this way.
-                                    PlacedObjects.Remove(obj);
+                                    PlacedObjectsQuadTree.Remove(obj);
                                     RemoveSelectedObject(obj, false);
                                 }
                             }
@@ -1710,6 +1727,8 @@ namespace AnnoDesigner
             return a.Exists(_ => _.CollisionRect.IntersectsWith(b.CollisionRect));
         }
 
+        int placedobjects = 0;
+
         /// <summary>
         /// Tries to place the current object on the grid.
         /// Fails if there are any collisions.
@@ -1718,20 +1737,29 @@ namespace AnnoDesigner
         /// <returns>true if placement succeeded, otherwise false</returns>
         private bool TryPlaceCurrentObject(bool isContinuousDrawing)
         {
-            if (CurrentObjects.Count != 0 && !PlacedObjects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
+            if (CurrentObjects.Count != 0 && !PlacedObjectsQuadTree.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
             {
-                PlacedObjects.AddRange(CloneList(CurrentObjects));
-                // sort the objects because borderless objects should be drawn first
-                PlacedObjects.Sort((a, b) => b.WrappedAnnoObject.Borderless.CompareTo(a.WrappedAnnoObject.Borderless));
+                logger.Debug("Start Place ================================ ");
+                placedobjects++;
+                if (PlacedObjectsQuadTree.Count() + 1 != placedobjects)
+                {
 
-                StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+                }
+                PlacedObjectsQuadTree.AddRange(CloneList(CurrentObjects).Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                // sort the objects because borderless objects should be drawn first
+                //TODO solve before PR
+                //PlacedObjects.Sort((a, b) => b.WrappedAnnoObject.Borderless.CompareTo(a.WrappedAnnoObject.Borderless));
+
+                //StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+
                 //no need to update colors if drawing the same object(s)
                 if (!isContinuousDrawing)
                 {
                     ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
                 }
-
+                logger.Debug("End Place ================================ ");
                 return true;
+
             }
 
             return false;
@@ -1745,7 +1773,15 @@ namespace AnnoDesigner
         private LayoutObject GetObjectAt(Point position)
         {
             var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
-            return PlacedObjects.Find(_ => _.CollisionRect.Contains(gridPosition));
+            var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(new Rect(gridPosition, new Size(1, 1)));
+            //logger.Debug(possibleItems.Count());
+            var layoutObject = PlacedObjectsQuadTree.Find(_ => _.CollisionRect.Contains(gridPosition));
+            if (layoutObject != null && possibleItems.Count() == 0)
+            {
+                logger.Warn("QuadTree did not match");
+            }     
+            //return PlacedObjectsQuadTree.Find(_ => _.CollisionRect.Contains(gridPosition));
+            return possibleItems.ToList().Find(_ => _.CollisionRect.Contains(gridPosition));
         }
 
         #endregion
@@ -1788,14 +1824,17 @@ namespace AnnoDesigner
         /// <param name="border"></param>
         public void Normalize(int border)
         {
-            if (PlacedObjects.Count == 0)
+            if (PlacedObjectsQuadTree.Count() == 0)
             {
                 return;
             }
 
-            var dx = PlacedObjects.Min(_ => _.Position.X) - border;
-            var dy = PlacedObjects.Min(_ => _.Position.Y) - border;
-            PlacedObjects.ForEach(_ => _.Position = new Point(_.Position.X - dx, _.Position.Y - dy));
+            var dx = PlacedObjectsQuadTree.Min(_ => _.Position.X) - border;
+            var dy = PlacedObjectsQuadTree.Min(_ => _.Position.Y) - border;
+            foreach (var item in PlacedObjectsQuadTree)
+            {
+                item.Position = new Point(item.Position.X - dx, item.Position.Y - dy);
+            }
 
             InvalidateVisual();
         }
@@ -1809,7 +1848,7 @@ namespace AnnoDesigner
         /// </summary>
         public void NewFile()
         {
-            PlacedObjects.Clear();
+            PlacedObjectsQuadTree.Clear();
             SelectedObjects.Clear();
             LoadedFile = "";
             InvalidateVisual();
@@ -1826,7 +1865,7 @@ namespace AnnoDesigner
             try
             {
                 Normalize(1);
-                _layoutLoader.SaveLayout(PlacedObjects.Select(x => x.WrappedAnnoObject).ToList(), LoadedFile);
+                _layoutLoader.SaveLayout(PlacedObjectsQuadTree.Select(x => x.WrappedAnnoObject).ToList(), LoadedFile);
             }
             catch (Exception e)
             {
@@ -1901,7 +1940,7 @@ namespace AnnoDesigner
                         layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
                     }
 
-                    PlacedObjects = layoutObjects;
+                    PlacedObjectsQuadTree.AddRange(layoutObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
                     LoadedFile = filename;
                     Normalize(1);
 
@@ -1944,8 +1983,6 @@ namespace AnnoDesigner
         /// Holds event handlers for command executions.
         /// </summary>
         private static readonly Dictionary<ICommand, Action<AnnoCanvas>> CommandExecuteMappings;
-
-        public HotkeyCommandManager HotkeyCommandManager { get; set; }
 
         /// <summary>
         /// Creates event handlers for command executions and registers them at the CommandManager.
@@ -2031,7 +2068,7 @@ namespace AnnoDesigner
         private void ExecuteDelete(object param)
         {
             // remove all currently selected objects from the grid and clear selection
-            SelectedObjects.ForEach(_ => PlacedObjects.Remove(_));
+            SelectedObjects.ForEach(_ => PlacedObjectsQuadTree.Remove(_));
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
