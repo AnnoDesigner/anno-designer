@@ -79,7 +79,7 @@ namespace AnnoDesigner
                 hotkeys.Add(hotkey.HotkeyId, hotkey);
                 _observableCollection.Add(hotkey);
                 //Check for localization
-                hotkey.Description = _localizationHelper.GetLocalization(hotkey.HotkeyId);
+                hotkey.Description = _localizationHelper.GetLocalization(hotkey.LocalizationKey);
                 CheckHotkeyUserMappings();
             }
             else
@@ -158,7 +158,7 @@ namespace AnnoDesigner
         {
             foreach (var kvp in hotkeys)
             {
-                kvp.Value.Description = _localizationHelper.GetLocalization(kvp.Key);
+                kvp.Value.Description = _localizationHelper.GetLocalization(kvp.Value.LocalizationKey);
             }
         }
 
