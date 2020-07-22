@@ -331,7 +331,7 @@ namespace AnnoDesigner.Localization
                         { "Edit" , "Bearbeiten" },
                         { "Recording" , "Aufzeichnung" },
                         { "RecordANewAction" , "Eine neue Aktion aufzeichnen" },
-                        { "Rotate" , "Rotieren" },
+                        { "Rotate" , "Drehen" },
                         { "Copy" , "Kopieren" },
                         { "Paste" , "Einfügen" },
                         { "Delete" , "Löschen" },
