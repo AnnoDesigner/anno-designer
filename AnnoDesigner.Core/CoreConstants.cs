@@ -15,6 +15,12 @@ namespace AnnoDesigner.Core
         public const int LayoutFileVersion = 4;
 
         /// <summary>
+        /// The minimum supported file version that can be guaranteed to be loaded without an issue,
+        /// assuming the file itself is valid.
+        /// </summary>
+        public const int LayoutFileVersionSupportedMinimum = 3;
+
+        /// <summary>
         /// Filter used to retrieve the icons within the IconFolder.
         /// </summary>
         public const string IconFolderFilter = "*.png";

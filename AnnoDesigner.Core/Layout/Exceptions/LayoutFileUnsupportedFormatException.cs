@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace AnnoDesigner.Core.Layout.Exceptions
 {
-    public class LayoutFileVersionMismatchException : Exception
+    public class LayoutFileUnsupportedFormatException : Exception
     {
-        public LayoutFileVersionMismatchException()
+        public LayoutFileUnsupportedFormatException()
         {
         }
 
-        public LayoutFileVersionMismatchException(string message)
+        public LayoutFileUnsupportedFormatException(string message)
             : base(message)
         {
         }
 
-        public LayoutFileVersionMismatchException(string message, Exception inner)
+        public LayoutFileUnsupportedFormatException(string message, Exception inner)
             : base(message, inner)
         {
         }
