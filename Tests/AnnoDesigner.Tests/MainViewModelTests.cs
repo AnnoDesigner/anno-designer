@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Windows.Input;
 using AnnoDesigner.Core;
@@ -25,9 +26,12 @@ namespace AnnoDesigner.Tests
         private readonly IMessageBoxService _mockedMessageBoxService;
         private readonly ILocalizationHelper _mockedLocalizationHelper;
         private readonly IUpdateHelper _mockedUpdateHelper;
+        private readonly IFileSystem _mockedFileSystem;
 
         public MainViewModelTests()
         {
+            _mockedFileSystem = new MockFileSystem();
+
             var commonsMock = new Mock<ICommons>();
             commonsMock.SetupGet(x => x.CurrentLanguage).Returns(() => "English");
             commonsMock.SetupGet(x => x.CurrentLanguageCode).Returns(() => "eng");
@@ -59,14 +63,16 @@ namespace AnnoDesigner.Tests
             IMessageBoxService messageBoxServiceToUse = null,
             IUpdateHelper updateHelperToUse = null,
             ILocalizationHelper localizationHelperToUse = null,
-            IAnnoCanvas annoCanvasToUse = null)
+            IAnnoCanvas annoCanvasToUse = null,
+            IFileSystem fileSystemToUse = null)
         {
             return new MainViewModel(commonsToUse ?? _mockedCommons,
                 appSettingsToUse ?? _mockedAppSettings,
                 recentFilesHelperToUse ?? _inMemoryRecentFilesHelper,
                 messageBoxServiceToUse ?? _mockedMessageBoxService,
                 updateHelperToUse ?? _mockedUpdateHelper,
-                localizationHelperToUse ?? _mockedLocalizationHelper)
+                localizationHelperToUse ?? _mockedLocalizationHelper,
+                fileSystemToUse ?? _mockedFileSystem)
             {
                 AnnoCanvas = annoCanvasToUse ?? _mockedAnnoCanvas
             };

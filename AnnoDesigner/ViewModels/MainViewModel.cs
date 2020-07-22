@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -45,6 +46,7 @@ namespace AnnoDesigner.ViewModels
         private readonly IMessageBoxService _messageBoxService;
         private readonly IUpdateHelper _updateHelper;
         private readonly ILocalizationHelper _localizationHelper;
+        private readonly IFileSystem _fileSystem;
 
         public event EventHandler<EventArgs> ShowStatisticsChanged;
 
@@ -84,6 +86,7 @@ namespace AnnoDesigner.ViewModels
             IMessageBoxService messageBoxServiceToUse,
             IUpdateHelper updateHelperToUse,
             ILocalizationHelper localizationHelperToUse,
+            IFileSystem fileSystemToUse,
             ILayoutLoader layoutLoaderToUse = null,
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
@@ -97,6 +100,7 @@ namespace AnnoDesigner.ViewModels
             _messageBoxService = messageBoxServiceToUse;
             _updateHelper = updateHelperToUse;
             _localizationHelper = localizationHelperToUse;
+            _fileSystem = fileSystemToUse;
 
             _layoutLoader = layoutLoaderToUse ?? new LayoutLoader();
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
@@ -1354,9 +1358,16 @@ namespace AnnoDesigner.ViewModels
                 return;
             }
 
-            AnnoCanvas.OpenFile(recentFile.Path);
+            if (_fileSystem.File.Exists(recentFile.Path))
+            {
+                AnnoCanvas.OpenFile(recentFile.Path);
 
-            _recentFilesHelper.AddFile(new RecentFile(recentFile.Path, DateTime.UtcNow));
+                _recentFilesHelper.AddFile(new RecentFile(recentFile.Path, DateTime.UtcNow));
+            }
+            else
+            {
+                _recentFilesHelper.RemoveFile(new RecentFile(recentFile.Path, DateTime.UtcNow));
+            }
         }
 
         #endregion
