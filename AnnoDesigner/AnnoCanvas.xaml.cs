@@ -593,7 +593,7 @@ namespace AnnoDesigner
             // initialize
             CurrentMode = MouseMode.Standard;
 
-            PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(0d, 0d, 200d, 200d));
+            PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-10_000d, -10_000d, 20_000d, 20_000d));
             SelectedObjects = new List<LayoutObject>();
 
             //Commands
@@ -1739,7 +1739,6 @@ namespace AnnoDesigner
         {
             if (CurrentObjects.Count != 0 && !PlacedObjectsQuadTree.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
             {
-                logger.Debug("Start Place ================================ ");
                 placedobjects++;
                 if (PlacedObjectsQuadTree.Count() + 1 != placedobjects)
                 {
@@ -1747,7 +1746,7 @@ namespace AnnoDesigner
                 }
                 PlacedObjectsQuadTree.AddRange(CloneList(CurrentObjects).Select(obj => (obj, new Rect(obj.Position, obj.Size))));
                 // sort the objects because borderless objects should be drawn first
-                //TODO solve before PR
+                //TODO: PR: Solve sorting  before PR.
                 //PlacedObjects.Sort((a, b) => b.WrappedAnnoObject.Borderless.CompareTo(a.WrappedAnnoObject.Borderless));
 
                 //StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
@@ -1757,7 +1756,6 @@ namespace AnnoDesigner
                 {
                     ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
                 }
-                logger.Debug("End Place ================================ ");
                 return true;
 
             }
@@ -1773,13 +1771,11 @@ namespace AnnoDesigner
         private LayoutObject GetObjectAt(Point position)
         {
             var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
-            var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(new Rect(gridPosition, new Size(1, 1)));
+            //Search a 20x20 grid area around the mouse
+            var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(new Rect(new Point(gridPosition.X - 10, gridPosition.Y - 10), new Size(20, 20)));
+            //TODO: PR: Clean up 
             //logger.Debug(possibleItems.Count());
-            var layoutObject = PlacedObjectsQuadTree.Find(_ => _.CollisionRect.Contains(gridPosition));
-            if (layoutObject != null && possibleItems.Count() == 0)
-            {
-                logger.Warn("QuadTree did not match");
-            }     
+            //var layoutObject = PlacedObjectsQuadTree.Find(_ => _.CollisionRect.Contains(gridPosition)); 
             //return PlacedObjectsQuadTree.Find(_ => _.CollisionRect.Contains(gridPosition));
             return possibleItems.ToList().Find(_ => _.CollisionRect.Contains(gridPosition));
         }

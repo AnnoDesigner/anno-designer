@@ -12,30 +12,13 @@ namespace AnnoDesigner.Core.DataStructures
 {
     public class QuadTree<T> : IEnumerable<T>
     {
-        [DebuggerDisplay("Count = {Count()}")]
         public class Quadrant
         {
-            NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-            bool hasSubdivisions;
             /// <summary>
             /// Represents if a new item has been added between updating metadata.
             /// If false and metadata is accessed, the metadata needs to be refreshed.
             /// </summary>
-            bool _isDirty;
-            bool isDirty
-            {
-                get => _isDirty;
-                set
-                {
-                    logger.Debug($"Set value: {value}, extent: {Extent}");
-                    _isDirty = value;
-                    if (value is false)
-                    {
-
-                    }
-                }
-            }
+            bool isDirty = false;
 
             Quadrant topRight;
             Quadrant topLeft;
@@ -50,7 +33,7 @@ namespace AnnoDesigner.Core.DataStructures
             /// <summary>
             /// A reference to the parent <see cref="Quadrant"/> for this Quadrant.
             /// </summary>
-            readonly Quadrant parent;
+            public Quadrant Parent { get; set; }
 
             /// <summary>
             /// A count of all items in this Quadrant
@@ -70,9 +53,7 @@ namespace AnnoDesigner.Core.DataStructures
 
             public Quadrant(Rect extent)
             {
-                logger.Debug($"In Constructor {Extent}");
                 Extent = extent;
-                hasSubdivisions = false;
                 items = new List<(T, Rect)>();
                 itemCache = new List<T>();
                 isDirty = false;
@@ -84,13 +65,6 @@ namespace AnnoDesigner.Core.DataStructures
                 topLeftBounds = new Rect(Extent.Left, Extent.Top, w, h);
                 bottomRightBounds = new Rect(Extent.Left + w, Extent.Top + h, w, h);
                 bottomLeftBounds = new Rect(Extent.Left, Extent.Top + h, w, h);
-                logger.Debug($"Constructor End {Extent}");
-            }
-
-            public void Subdivide()
-            {
-
-                hasSubdivisions = true;
             }
 
             public void Insert(T item, Rect bounds)
@@ -99,12 +73,6 @@ namespace AnnoDesigner.Core.DataStructures
                 {
                     return; //item does not belong in quadrant
                 }
-
-                ////Otherwise, subdivide
-                //if (!hasSubdivisions)
-                //{
-                //    Subdivide();
-                //}
 
                 Quadrant childQuadrant = null;
                 if (topRightBounds.Contains(bounds))
@@ -134,36 +102,19 @@ namespace AnnoDesigner.Core.DataStructures
                 }
                 else
                 {
+                    childQuadrant.Parent = this;
                     childQuadrant.Insert(item, bounds);
                 }
 
-                //var inserted = false;
-                //if (topRight.Extent.Contains(bounds))
-                //{
-                //    topRight.Insert(item, bounds);
-                //    inserted = true;
-                //}
-                //else if (topLeft.Extent.Contains(bounds))
-                //{
-                //    topLeft.Insert(item, bounds);
-                //    inserted = true;
-                //}
-                //else if (bottomRight.Extent.Contains(bounds))
-                //{
-                //    bottomRight.Insert(item, bounds);
-                //    inserted = true;
-                //}
-                //else if (bottomLeft.Extent.Contains(bounds))
-                //{
-                //    bottomLeft.Insert(item, bounds);
-                //    inserted = true;
-                //}
+                isDirty = true;
+            }
 
-                //if (!inserted)
-                //{
-                //    //if not inserted into a sub-quadrant add the item here as it intersects several quadrants
-                //    items.Add((item, bounds));
-                //}
+            public void MarkAsDirty()
+            {
+                if (Parent != null)
+                {
+                    Parent.MarkAsDirty();
+                }
                 isDirty = true;
             }
 
@@ -218,34 +169,26 @@ namespace AnnoDesigner.Core.DataStructures
                 }
             }
 
-
             public void UpdateMetadata()
             {
-                logger.Debug($"Updating data, extent: {Extent}");
                 //initialise with the outdated count value
                 var items = new List<T>(count);
                 var empty = new List<T>(0);
-                //if (hasSubdivisions)
-                //{
                     items.AddRange(topLeft?.All() ?? empty);
                     items.AddRange(topRight?.All() ?? empty);
+                    items.AddRange(bottomRight?.All() ?? empty);
                     items.AddRange(bottomLeft?.All() ?? empty);
-                    items.AddRange(bottomLeft?.All() ?? empty);
-                //}
                 items.AddRange(this.items.Select(obj => obj.item));
                 count = items.Count;
                 itemCache = items;
-                logger.Debug($"In Metadata {Extent}");
                 isDirty = false;
-                logger.Debug($"Out Metadata {Extent}");
             }
         }
 
         /// <summary>
         /// The root of the <see cref="QuadTree{T}"/>
         /// </summary>
-        //TODO: For testing only. Do not keep public
-        public Quadrant root;
+        Quadrant root;
         Rect _extent;
 
         /// <summary>
@@ -257,10 +200,9 @@ namespace AnnoDesigner.Core.DataStructures
             set
             {
                 _extent = value;
-                //perform reindex
+                //TODO: PR: perform reindex
             }
         }
-
 
         /// <summary>
         /// Create a <see cref="QuadTree{T}"/>
@@ -296,8 +238,6 @@ namespace AnnoDesigner.Core.DataStructures
         {
             return root.GetItemsIntersecting(bounds) ?? new List<T>();
         }
-
-        NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Retrieves all the items from the <see cref="QuadTree{T}"/>
