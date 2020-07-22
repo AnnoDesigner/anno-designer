@@ -74,7 +74,8 @@ namespace AnnoDesigner.Core.Layout
             catch (JsonSerializationException) { } //No file version, old layout file.
 
             //Only throw an exception if we do not support the layout
-            if (!(layoutVersion.FileVersion >= CoreConstants.LayoutFileVersionSupportedMinimum && layoutVersion.FileVersion <= CoreConstants.LayoutFileVersion) && !forceLoad)
+            var isLayoutVersionSupported = layoutVersion.FileVersion >= CoreConstants.LayoutFileVersionSupportedMinimum && layoutVersion.FileVersion <= CoreConstants.LayoutFileVersion;
+            if (!isLayoutVersionSupported && !forceLoad)
             {
                 throw new LayoutFileUnsupportedFormatException($"loaded version: {layoutVersion.FileVersion} | expected version: {CoreConstants.LayoutFileVersionSupportedMinimum} <= file version <= {CoreConstants.LayoutFileVersion}");
             }
