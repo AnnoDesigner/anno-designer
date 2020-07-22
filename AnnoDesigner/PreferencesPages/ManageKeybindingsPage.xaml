@@ -18,7 +18,7 @@
       Name="ManageKeybindingsRoot">
     <Page.Resources>
         <models:ManageKeybindingsHotkeyDataTemplateSelector x:Key="dataTemplateSelector" />
-        <Style x:Key="HotkeyRebindButton"
+        <Style x:Key="HotkeyEditButton"
                TargetType="{x:Type Button}">
             <Setter Property="VerticalContentAlignment"
                     Value="Center" />
@@ -123,7 +123,7 @@
                                       Width="Auto" />
                     <ColumnDefinition SharedSizeGroup="HotkeyKeySizeGroupCol1"
                                       Width="Auto" />
-                    <ColumnDefinition SharedSizeGroup="HotkeyRebindButtonSizeGroupCol2"
+                    <ColumnDefinition SharedSizeGroup="HotkeyEditButtonSizeGroupCol2"
                                       Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding Description}"
@@ -141,11 +141,11 @@
                     <Label Content="{Binding Path=Binding.Gesture.Key, Converter={StaticResource KeyToDisplayStringConverter}}"
                            Style="{StaticResource HotkeyKey}" />
                 </StackPanel>
-                <Button Content="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindButtonText}"
-                        Command="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindCommand }"
+                <Button Content="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.EditButtonText}"
+                        Command="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.EditCommand }"
                         CommandParameter="{Binding}"
                         Grid.Column="2"
-                        Style="{StaticResource HotkeyRebindButton}" />
+                        Style="{StaticResource HotkeyEditButton}" />
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="MouseBinding">
@@ -155,7 +155,7 @@
                                       Width="Auto" />
                     <ColumnDefinition SharedSizeGroup="HotkeyKeySizeGroupCol1"
                                       Width="Auto" />
-                    <ColumnDefinition SharedSizeGroup="HotkeyRebindButtonSizeGroupCol2"
+                    <ColumnDefinition SharedSizeGroup="HotkeyEditButtonSizeGroupCol2"
                                       Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding Description}"
@@ -181,11 +181,11 @@
                                Style="{StaticResource HotkeyImage}" />
                     </Grid>
                 </StackPanel>
-                <Button Content="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindButtonText}"
-                        Command="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.RebindCommand }"
+                <Button Content="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.EditButtonText}"
+                        Command="{Binding ElementName=ManageKeybindingsRoot, Path=DataContext.EditCommand }"
                         CommandParameter="{Binding}"
                         Grid.Column="2"
-                        Style="{StaticResource HotkeyRebindButton}" />
+                        Style="{StaticResource HotkeyEditButton}" />
             </Grid>
         </DataTemplate>
     </Page.Resources>
