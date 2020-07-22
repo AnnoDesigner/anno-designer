@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using System.Windows.Navigation;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
@@ -15,6 +16,7 @@ namespace AnnoDesigner.ViewModels
         public PreferencesViewModel()
         {
             Pages = new ObservableCollection<PreferencePage>();
+            CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
         }
 
         public NavigationService NavigationService { get; set; }
@@ -49,6 +51,12 @@ namespace AnnoDesigner.ViewModels
                 throw new KeyNotFoundException($"Page {name}.xaml not found.");
             }
 #endif
+        }
+
+        public ICommand CloseWindowCommand { get; private set; }
+        private void CloseWindow(ICloseable window)
+        {
+            window?.Close();
         }
     }
 }
