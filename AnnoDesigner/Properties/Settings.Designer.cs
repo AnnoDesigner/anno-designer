@@ -451,5 +451,17 @@ namespace AnnoDesigner.Properties {
                 this["HideInfluenceOnSelection"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public double ZoomSensitivityPercentage {
+            get {
+                return ((double)(this["ZoomSensitivityPercentage"]));
+            }
+            set {
+                this["ZoomSensitivityPercentage"] = value;
+            }
+        }
     }
 }

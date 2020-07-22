@@ -47,5 +47,6 @@ namespace AnnoDesigner.Core.Models
         string ColorObjectBorderLines { get; set; }
         bool UseZoomToPoint { get; set; }
         bool HideInfluenceOnSelection { get; set; }
+        double ZoomSensitivityPercentage { get; set; }
     }
 }
