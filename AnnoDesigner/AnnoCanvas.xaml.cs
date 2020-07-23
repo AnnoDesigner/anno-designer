@@ -1736,13 +1736,13 @@ namespace AnnoDesigner
             //When an InputBinding is added to the InputBindingsCollection, the  `Matches` method is fired for every event - KeyUp,
             //KeyDown, MouseUp, MouseMove, MouseWheel etc.
             HotkeyCommandManager.HandleCommand(e);
-
+#if DEBUG
             if (e.Key == Key.D && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
             {
                 debugModeIsEnabled = !debugModeIsEnabled;
                 e.Handled = true;
             }
-
+#endif
             if (e.Handled)
             {
                 InvalidateVisual();
@@ -1777,11 +1777,11 @@ namespace AnnoDesigner
             return IsShiftPressed() && IsControlPressed();
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region Collision handling
+#region Collision handling
 
         /// <summary>
         /// Checks if there is a collision between given objects a and b.
@@ -1877,8 +1877,8 @@ namespace AnnoDesigner
             return possibleItems.ToList().Find(_ => _.CollisionRect.Contains(gridPosition));
         }
 
-        #endregion
-        #region API
+#endregion
+#region API
 
 
         /// <summary>
@@ -1949,9 +1949,9 @@ namespace AnnoDesigner
         }
 
 
-        #endregion
+#endregion
 
-        #region New/Save/Load/Export methods
+#region New/Save/Load/Export methods
 
         /// <summary>
         /// Removes all objects from the grid.
@@ -2086,9 +2086,9 @@ namespace AnnoDesigner
             _messageBoxService.ShowError(e.Message, "Something went wrong while saving/loading file.");
         }
 
-        #endregion
+#endregion
 
-        #region Commands
+#region Commands
 
         /// <summary>
         /// Holds event handlers for command executions.
@@ -2215,9 +2215,9 @@ namespace AnnoDesigner
             }
         }
 
-        #endregion
+#endregion
 
-        #region Helper methods
+#region Helper methods
 
         private List<LayoutObject> CloneList(List<LayoutObject> list)
         {
@@ -2226,6 +2226,6 @@ namespace AnnoDesigner
             return newList;
         }
 
-        #endregion
+#endregion
     }
 }
