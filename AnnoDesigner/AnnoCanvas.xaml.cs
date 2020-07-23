@@ -471,16 +471,23 @@ namespace AnnoDesigner
         /// </summary>
         private readonly Brush _influencedBrush;
 
+        /// <summary>
+        /// Brush used for filling and drawing debug-related information.
+        /// </summary>
+        private readonly Brush _debugBrush;
 
+        #endregion
+
+#if DEBUG
         #region Debug options
 
         private bool debugModeIsEnabled = true;
         private bool debugShowObjectPositions = true;
         private bool debugShowQuadTreeViz = true;
         private bool debugShowSelectionRectCoordinates = true;
-        private bool debugShowSelectionRectCoordinatesAsScreen = true;
 
         #endregion
+#endif
 
         #region Constructor
         /// <summary>
@@ -517,7 +524,8 @@ namespace AnnoDesigner
             // initialize
             CurrentMode = MouseMode.Standard;
 
-            PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-10_000d, -10_000d, 20_000d, 20_000d));
+            //PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-10_000d, -10_000d, 20_000d, 20_000d));
+            PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(0,0, 200, 200));
             SelectedObjects = new List<LayoutObject>();
 
             #region Hotkeys/Commands
@@ -572,6 +580,7 @@ namespace AnnoDesigner
             color = Colors.LawnGreen;
             color.A = 32;
             _influencedBrush = _brushCache.GetSolidBrush(color);
+            _debugBrush = Brushes.DarkBlue;
 
             sw.Stop();
             logger.Trace($"init variables took: {sw.ElapsedMilliseconds}ms");
@@ -741,7 +750,40 @@ namespace AnnoDesigner
             if (CurrentMode == MouseMode.SelectionRect)
             {
                 drawingContext.DrawRectangle(_lightBrush, _highlightPen, _selectionRect);
+#if DEBUG
+                if (debugModeIsEnabled && debugShowSelectionRectCoordinates)
+                {
+                    var rect = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
+                    var top = rect.Top;
+                    var left = rect.Left;
+                    var h = rect.Height;
+                    var w = rect.Width;
+                    var text = new FormattedText($"{top:F2}, {left:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                   TYPEFACE, 12, _debugBrush,
+                   null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                    {
+                        TextAlignment = TextAlignment.Left
+                    };
+                    var location = _selectionRect.BottomRight;
+                    location.X -= text.Width;
+                    location.Y -= text.Height;
+                    drawingContext.DrawText(text, location);
+                }
+#endif
             }
+
+#if DEBUG
+            if (debugModeIsEnabled && debugShowQuadTreeViz)
+            {
+                var brush = Brushes.Transparent;
+                var pen = _penCache.GetPen(_debugBrush, 1);
+                var rects = PlacedObjectsQuadTree.GetQuadrantRects();
+                foreach (var rect in rects)
+                {
+                    drawingContext.DrawRectangle(brush, pen, _coordinateHelper.GridToScreen(rect, GridSize));
+                }
+            }
+#endif
 
             // pop back guidlines set
             drawingContext.Pop();
@@ -871,11 +913,11 @@ namespace AnnoDesigner
 
                     drawingContext.DrawText(text, textLocation);
                 }
-
+#if DEBUG
                 if (debugModeIsEnabled && debugShowObjectPositions)
                 {
                     var text = new FormattedText(obj.Position.ToString(), Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                    TYPEFACE, 12, Brushes.DarkBlue,
+                    TYPEFACE, 12, _debugBrush,
                     null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
                     {
                         MaxTextWidth = objRect.Width,
@@ -887,7 +929,8 @@ namespace AnnoDesigner
                     textLocation.Y -= text.Height;
 
                     drawingContext.DrawText(text, textLocation);
-                } 
+                }
+#endif
             }
         }
 
@@ -1494,11 +1537,7 @@ namespace AnnoDesigner
                                 // adjust rect
                                 _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                                 // select intersecting objects
-                                var top = _coordinateHelper.ScreenToGrid(_selectionRect.Top, GridSize);
-                                var left = _coordinateHelper.ScreenToGrid(_selectionRect.Left, GridSize);
-                                var height = _coordinateHelper.ScreenToGrid(_selectionRect.Size.Height, GridSize);
-                                var width = _coordinateHelper.ScreenToGrid(_selectionRect.Size.Width, GridSize);
-                                var _selectionRectGrid = new Rect(top, left, width, height);
+                                var _selectionRectGrid = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
                                 var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(_selectionRectGrid).ToList();
                                 AddSelectedObjects(possibleItems.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)),
                                                    ShouldAffectObjectsWithIdentifier());
@@ -1985,6 +2024,7 @@ namespace AnnoDesigner
                 if (layout != null)
                 {
                     SelectedObjects.Clear();
+                    PlacedObjectsQuadTree.Clear();
 
                     var layoutObjects = new List<LayoutObject>(layout.Count);
                     foreach (var curObj in layout)
@@ -2035,6 +2075,8 @@ namespace AnnoDesigner
         /// Holds event handlers for command executions.
         /// </summary>
         private static readonly Dictionary<ICommand, Action<AnnoCanvas>> CommandExecuteMappings;
+
+        public HotkeyCommandManager HotkeyCommandManager { get; set; }
 
         /// <summary>
         /// Creates event handlers for command executions and registers them at the CommandManager.

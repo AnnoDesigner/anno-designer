@@ -51,6 +51,27 @@ namespace AnnoDesigner.Helper
         }
 
         /// <summary>
+        /// Converts a length given in (pixel-)units to a length given in grid cells.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="gridStep"></param>
+        public Rect ScreenToGrid(Rect rect, int gridStep)
+        {
+            return new Rect(rect.Location.X / gridStep, rect.Location.Y / gridStep, rect.Width / gridStep, rect.Height / gridStep);
+        }
+
+
+        /// <summary>
+        /// Convert a grid coordinate to a screen coordinate.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="gridStep"></param>
+        public Rect GridToScreen(Rect rect, int gridStep)
+        {
+            return new Rect(rect.Location.X * gridStep, rect.Location.Y * gridStep, rect.Width * gridStep, rect.Height * gridStep);
+        }
+
+        /// <summary>
         /// Convert a grid coordinate to a screen coordinate.
         /// </summary>
         /// <param name="gridPoint"></param>

@@ -217,6 +217,32 @@ namespace AnnoDesigner.Core.DataStructures
                 itemCache = newItems;
                 isDirty = false;
             }
+
+#if DEBUG
+            internal void GetQuadrantRects(List<Rect> rects)
+            {
+                if (topLeft != null)
+                {
+                    rects.Add(topLeftBounds);
+                    topLeft.GetQuadrantRects(rects);
+                }
+                if (topRight != null)
+                {
+                    rects.Add(topRightBounds);
+                    topRight.GetQuadrantRects(rects);
+                }
+                if (bottomLeft != null)
+                {
+                    rects.Add(bottomLeftBounds);
+                    bottomLeft.GetQuadrantRects(rects);
+                }
+                if (bottomRight != null)
+                {
+                    rects.Add(bottomRightBounds);
+                    bottomRight.GetQuadrantRects(rects);
+                }
+            }
+#endif
         }
 
         /// <summary>
@@ -365,5 +391,14 @@ namespace AnnoDesigner.Core.DataStructures
         {
             return root.All().GetEnumerator();
         }
+#if DEBUG
+        public List<Rect> GetQuadrantRects()
+        {
+            var rects = new List<Rect>(20);
+            rects.Add(root.Extent);
+            root.GetQuadrantRects(rects);
+            return rects;
+        }
+#endif
     }
 }
