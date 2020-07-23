@@ -10,15 +10,19 @@ using Newtonsoft.Json;
 
 namespace AnnoDesigner.Core.DataStructures
 {
+    /// <summary>
+    /// Creates a new <see cref="QuadTree{T}"/>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class QuadTree<T> : IEnumerable<T>
     {
         public class Quadrant
         {
             /// <summary>
-            /// Represents if a new item has been added between updating metadata.
-            /// If false and metadata is accessed, the metadata needs to be refreshed.
+            /// Indicates if current cached data (<see cref="count"/> and <see cref="itemCache"/>) is up to date.
+            /// Returns <see langword="true"/> when cached data is up to date.
             /// </summary>
-            bool isDirty = false;
+            bool isDirty;
 
             Quadrant topRight;
             Quadrant topLeft;
@@ -47,14 +51,14 @@ namespace AnnoDesigner.Core.DataStructures
             /// <summary>
             /// Stored as a list of items as we could have multiple items that overlap child quadrants
             /// </summary>
-            readonly List<(T item, Rect bounds)> items;
+            public List<(T item, Rect bounds)> Items { get; }
 
             public Rect Extent { get; set; }
 
             public Quadrant(Rect extent)
             {
                 Extent = extent;
-                items = new List<(T, Rect)>();
+                Items = new List<(T, Rect)>();
                 itemCache = new List<T>();
                 isDirty = false;
 
@@ -98,7 +102,7 @@ namespace AnnoDesigner.Core.DataStructures
 
                 if (childQuadrant is null)
                 {
-                    items.Add((item, bounds));
+                    Items.Add((item, bounds));
                 }
                 else
                 {
@@ -109,11 +113,20 @@ namespace AnnoDesigner.Core.DataStructures
                 isDirty = true;
             }
 
-            public void MarkAsDirty()
+            internal void Remove((T item, Rect bounds) item)
+            {
+                //TODO: PR: Tidy this
+                //Maybe keep track of if we've removed the final item from a quad?
+                //How to we stop cascading count()
+                Items.Remove(item);
+                MarkAncestorsAsDirty(); //make sure all ancestors are now marked as requiring an update.
+            }
+
+            internal void MarkAncestorsAsDirty()
             {
                 if (Parent != null)
                 {
-                    Parent.MarkAsDirty();
+                    Parent.MarkAncestorsAsDirty();
                 }
                 isDirty = true;
             }
@@ -143,11 +156,40 @@ namespace AnnoDesigner.Core.DataStructures
                 }
             }
 
+            /// <summary>
+            /// Retrieves the <see cref="Quadrant"/> containing the given bounds
+            /// </summary>
+            /// <param name="bounds"></param>
+            /// <returns></returns>
+            internal Quadrant GetContainingQuadrant(Rect bounds)
+            {
+                if (topRight != null && topRight.Extent.Contains(bounds))
+                {
+                    return topRight.GetContainingQuadrant(bounds);
+                }
+                else if (topLeft != null && topLeft.Extent.Contains(bounds))
+                {
+                    return topLeft.GetContainingQuadrant(bounds);
+                }
+                else if (bottomRight != null && bottomRight.Extent.Contains(bounds))
+                {
+                    return bottomRight.GetContainingQuadrant(bounds);
+                }
+                else if (bottomLeft != null && bottomLeft.Extent.Contains(bounds))
+                {
+                    return bottomLeft.GetContainingQuadrant(bounds);
+                }
+                else
+                {
+                    return this;
+                }
+            }
+
             public int Count()
             {
                 if (isDirty)
                 {
-                    UpdateMetadata();
+                    UpdateCachedData();
                 }
                 return count;
             }
@@ -156,31 +198,23 @@ namespace AnnoDesigner.Core.DataStructures
             {
                 if (isDirty)
                 {
-                    UpdateMetadata();
+                    UpdateCachedData();
                 }
                 return itemCache;
             }
 
-            public void AddRange(IEnumerable<(T item, Rect bounds)> collection)
-            {
-                foreach (var item in collection)
-                {
-                    Insert(item.item, item.bounds);
-                }
-            }
-
-            public void UpdateMetadata()
+            private void UpdateCachedData()
             {
                 //initialise with the outdated count value
-                var items = new List<T>(count);
+                var newItems = new List<T>(count);
                 var empty = new List<T>(0);
-                    items.AddRange(topLeft?.All() ?? empty);
-                    items.AddRange(topRight?.All() ?? empty);
-                    items.AddRange(bottomRight?.All() ?? empty);
-                    items.AddRange(bottomLeft?.All() ?? empty);
-                items.AddRange(this.items.Select(obj => obj.item));
-                count = items.Count;
-                itemCache = items;
+                newItems.AddRange(topLeft?.All() ?? empty);
+                newItems.AddRange(topRight?.All() ?? empty);
+                newItems.AddRange(bottomRight?.All() ?? empty);
+                newItems.AddRange(bottomLeft?.All() ?? empty);
+                newItems.AddRange(Items.Select(obj => obj.item));
+                count = newItems.Count;
+                itemCache = newItems;
                 isDirty = false;
             }
         }
@@ -223,8 +257,10 @@ namespace AnnoDesigner.Core.DataStructures
             root.Insert(item, bounds);
         }
 
-        public void Remove(T item)
+        public void Remove(T item, Rect bounds)
         {
+            var quadrant = root.GetContainingQuadrant(bounds);
+            quadrant.Remove((item, bounds));
             //TODO: Implement this
             //no-op
         }

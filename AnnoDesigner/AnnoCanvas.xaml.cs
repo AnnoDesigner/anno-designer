@@ -557,6 +557,17 @@ namespace AnnoDesigner
         /// </summary>
         private readonly Brush _influencedBrush;
 
+
+        #region Debug options
+
+        private bool debugModeIsEnabled = true;
+        private bool debugShowObjectPositions = true;
+        private bool debugShowQuadTreeViz = true;
+        private bool debugShowSelectionRectCoordinates = true;
+        private bool debugShowSelectionRectCoordinatesAsScreen = true;
+
+        #endregion
+
         #endregion
 
         /// <summary>
@@ -929,6 +940,23 @@ namespace AnnoDesigner
 
                     drawingContext.DrawText(text, textLocation);
                 }
+
+                if (debugModeIsEnabled && debugShowObjectPositions)
+                {
+                    var text = new FormattedText(obj.Position.ToString(), Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                    TYPEFACE, 12, Brushes.DarkBlue,
+                    null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                    {
+                        MaxTextWidth = objRect.Width,
+                        MaxTextHeight = objRect.Width,
+                        TextAlignment = TextAlignment.Left
+                    };
+                    var textLocation = objRect.BottomRight;
+                    textLocation.X -= text.Width;
+                    textLocation.Y -= text.Height;
+
+                    drawingContext.DrawText(text, textLocation);
+                } 
             }
         }
 
@@ -1464,8 +1492,14 @@ namespace AnnoDesigner
                                 var height = _coordinateHelper.ScreenToGrid(_selectionRect.Size.Height, GridSize);
                                 var width = _coordinateHelper.ScreenToGrid(_selectionRect.Size.Width, GridSize);
                                 var _selectionRectGrid = new Rect(top, left, width, height);
-                                AddSelectedObjects(PlacedObjectsQuadTree.GetItemsIntersecting(_selectionRectGrid).ToList(),
+                                var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(_selectionRectGrid).ToList();
+                                AddSelectedObjects(possibleItems.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)),
                                                    ShouldAffectObjectsWithIdentifier());
+                                var possibleItems2 = PlacedObjectsQuadTree.All().ToList().FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
+                                if (possibleItems.Count == 0 && possibleItems2.Count() > 0)
+                                {
+
+                                } 
 
                                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                                 break;
@@ -1609,7 +1643,7 @@ namespace AnnoDesigner
                                 else
                                 {
                                     // Remove object, only ever remove a single object this way.
-                                    PlacedObjectsQuadTree.Remove(obj);
+                                    PlacedObjectsQuadTree.Remove(obj, new Rect(obj.Position, obj.Size));
                                     RemoveSelectedObject(obj, false);
                                 }
                             }
@@ -1666,10 +1700,18 @@ namespace AnnoDesigner
             //When an InputBinding is added to the InputBindingsCollection, the  `Matches` method is fired for every event - KeyUp,
             //KeyDown, MouseUp, MouseMove, MouseWheel etc.
             HotkeyCommandManager.HandleCommand(e);
+
+            if (e.Key == Key.D && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
+            {
+                debugModeIsEnabled = !debugModeIsEnabled;
+                e.Handled = true;
+            }
+
             if (e.Handled)
             {
                 InvalidateVisual();
             }
+
         }
 
         /// <summary>
@@ -2064,7 +2106,7 @@ namespace AnnoDesigner
         private void ExecuteDelete(object param)
         {
             // remove all currently selected objects from the grid and clear selection
-            SelectedObjects.ForEach(_ => PlacedObjectsQuadTree.Remove(_));
+            SelectedObjects.ForEach(_ => PlacedObjectsQuadTree.Remove(_, new Rect(_.Position, _.Size)));
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
