@@ -17,11 +17,13 @@ namespace AnnoDesigner.Models
     public class Hotkey : Notify
     {
         private Hotkey() { }
-        public Hotkey(string hotkeyId, InputBinding binding):this(hotkeyId, binding, null) { }
-        public Hotkey(string hotkeyId, InputBinding binding, string description)
+        public Hotkey(string hotkeyId, InputBinding binding):this(hotkeyId, binding, null, null) { }
+        public Hotkey(string hotkeyId, InputBinding binding, string localizationKey):this(hotkeyId, binding, localizationKey, null) { }
+        public Hotkey(string hotkeyId, InputBinding binding, string localizationKey, string description)
         {
             HotkeyId = hotkeyId;
             Binding = binding;
+            LocalizationKey = localizationKey;
             Description = description;
 
             if (binding.Gesture is PolyGesture gesture)
@@ -64,6 +66,13 @@ namespace AnnoDesigner.Models
         {
             get => _description;
             set => UpdateProperty(ref _description, value);
+        }
+
+        private string _localizationKey;
+        public string LocalizationKey
+        {
+            get => _localizationKey;
+            set => UpdateProperty(ref _localizationKey, value);
         }
 
         /// <summary>

@@ -37,14 +37,16 @@ namespace AnnoDesigner
     public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        //Important: These match the values in the Localization.Localization.Translations dictionary
-        public const string ROTATE_COMMAND_KEY = "Rotate";
-        public const string COPY_COMMAND_KEY = "Copy";
-        public const string PASTE_COMMAND_KEY = "Paste";
-        public const string DELETE_COMMAND_KEY = "Delete";
+
+        //Important: These match values in the translations dictionary (e.g "Rotate" matches "Rotate" in the localization dictionary)
+        public const string ROTATE_LOCALIZATION_KEY = "Rotate";
+        public const string COPY_LOCALIZATION_KEY = "Copy";
+        public const string PASTE_LOCALIZATION_KEY = "Paste";
+        public const string DELETE_LOCALIZATION_KEY = "Delete";
+        public const string DUPLICATE_LOCALIZATION_KEY = "Duplicate";
         //not implmented yet
-        public const string UNDO_COMMAND_KEY = "Undo";
-        public const string ROTATE_ALL_COMMAND_KEY = "RotateAll";
+        public const string UNDO_LOCALIZATION_KEY = "Undo";
+        public const string ROTATE_ALL_LOCALIZATION_KEY = "RotateAll";
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
@@ -336,6 +338,7 @@ namespace AnnoDesigner
 
         #region Privates and constructor
 
+        #region private members
         private const int DPI_FACTOR = 1;
 
         private readonly ILayoutLoader _layoutLoader;
@@ -423,97 +426,8 @@ namespace AnnoDesigner
         /// </summary>
         public List<LayoutObject> SelectedObjects { get; set; }
 
-        public HotkeyCommandManager HotkeyCommandManager { get; set; }
-
-        /// <summary>
-        /// Add the objects to SelectedObjects, optionally also add all objects which match one of their identifiers.
-        /// </summary>
-        /// <param name="includeSameObjects"> 
-        /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToAdd">.
-        /// </param>
-        private void AddSelectedObjects(List<LayoutObject> objectsToAdd, bool includeSameObjects)
-        {
-            if (includeSameObjects)
-            {
-                // Add all placed objects whose identifier matches any of those in the objectsToAdd.
-                SelectedObjects.AddRange(PlacedObjectsQuadTree.FindAll(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase))));
-
-            }
-            else
-            {
-                SelectedObjects.AddRange(objectsToAdd);
-            }
-
-            // This can lead to some objects being selected multiple times, so only keep distinct objects.
-            SelectedObjects = SelectedObjects.Distinct().ToList();
-        }
-
-        /// <summary>
-        /// Remove the objects from SelectedObjects, optionally also remove all objects which match one of their identifiers.
-        /// </summary>
-        /// <param name="includeSameObjects"> 
-        /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToRemove">.
-        /// </param>
-        private void RemoveSelectedObjects(List<LayoutObject> objectsToRemove, bool includeSameObjects)
-        {
-            if (includeSameObjects)
-            {
-                // Exclude any selected objects whose identifier matches any of those in the objectsToRemove.
-                SelectedObjects = SelectedObjects.Except(SelectedObjects.FindAll(placed => objectsToRemove.Any(toRemove => toRemove.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase)))).ToList();
-            }
-            else
-            {
-                SelectedObjects = SelectedObjects.Except(objectsToRemove).ToList();
-            }
-        }
-
-        /// <summary>
-        /// Add a single object to SelectedObjects, optionally also add all objects with the same identifier.
-        /// </summary>
-        /// <param name="includeSameObjects"> 
-        /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToAdd">.
-        /// </param>
-        private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects)
-        {
-            AddSelectedObjects(new List<LayoutObject>() { objectToAdd }, includeSameObjects);
-        }
-
-        /// <summary>
-        /// Remove a single object from SelectedObjects, optionally also remove all objects with the same identifier.
-        /// </summary>
-        /// <param name="includeSameObjects"> 
-        /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToRemove">.
-        /// </param>
-        private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects)
-        {
-            RemoveSelectedObjects(new List<LayoutObject>() { objectToRemove }, includeSameObjects);
-        }
-
-        /// <summary>
-        /// Used to load current color for grid lines from settings.
-        /// </summary>
-        /// <remarks>Also calls <see cref="UIElement.InvalidateVisual()"/></remarks>
-        public void LoadGridLineColor()
-        {
-            var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorGridLines);//explicit variable to make debugging easier
-            _gridLinePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson.Color), DPI_FACTOR * 1);
-
-            InvalidateVisual();
-        }
-
-        /// <summary>
-        /// Used to load current color for object border lines from settings.
-        /// </summary>
-        /// <remarks>Also calls <see cref="UIElement.InvalidateVisual()"/></remarks>
-        public void LoadObjectBorderLineColor()
-        {
-            var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorObjectBorderLines);//explicit variable to make debugging easier
-            _linePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson.Color), DPI_FACTOR * 1);
-
-            InvalidateVisual();
-        }
-
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
+        #endregion
 
         #region Pens and Brushes
 
@@ -568,8 +482,7 @@ namespace AnnoDesigner
 
         #endregion
 
-        #endregion
-
+        #region Constructor
         /// <summary>
         /// Constructor
         /// </summary>
@@ -607,28 +520,44 @@ namespace AnnoDesigner
             PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-10_000d, -10_000d, 20_000d, 20_000d));
             SelectedObjects = new List<LayoutObject>();
 
+            #region Hotkeys/Commands
             //Commands
             rotateCommand = new RelayCommand(ExecuteRotate);
+            rotateAllCommand = new RelayCommand(ExecuteRotateAll);
             copyCommand = new RelayCommand(ExecuteCopy);
             pasteCommand = new RelayCommand(ExecutePaste);
             deleteCommand = new RelayCommand(ExecuteDelete);
+            duplicateCommand = new RelayCommand(ExecuteDuplicate);
 
             //Set up default keybindings
-            var rotateBinding = new InputBinding(rotateCommand, new PolyGesture(Key.R, ModifierKeys.None));
-            rotateHotkey = new Hotkey(ROTATE_COMMAND_KEY, rotateBinding);
+
+            //for rotation with the r key.
+            var rotateBinding1 = new InputBinding(rotateCommand, new PolyGesture(Key.R, ModifierKeys.None));
+            rotateHotkey1 = new Hotkey("Rotate_1", rotateBinding1, ROTATE_LOCALIZATION_KEY);
+
+            //for rotation with middle click
+            var rotateBinding2 = new InputBinding(rotateCommand, new PolyGesture(ExtendedMouseAction.MiddleClick));
+            rotateHotkey2 = new Hotkey("Rotate_2", rotateBinding2, ROTATE_LOCALIZATION_KEY);
+
+            var rotateAllBinding = new InputBinding(rotateAllCommand, new PolyGesture(Key.R, ModifierKeys.Shift));
+            rotateAllHotkey = new Hotkey("RotateAll", rotateAllBinding, ROTATE_ALL_LOCALIZATION_KEY);
 
             var copyBinding = new InputBinding(copyCommand, new PolyGesture(Key.C, ModifierKeys.Control));
-            copyHotkey = new Hotkey(COPY_COMMAND_KEY, copyBinding);
+            copyHotkey = new Hotkey(COPY_LOCALIZATION_KEY, copyBinding, COPY_LOCALIZATION_KEY);
 
             var pasteBinding = new InputBinding(pasteCommand, new PolyGesture(Key.V, ModifierKeys.Control));
-            pasteHotkey = new Hotkey(PASTE_COMMAND_KEY, pasteBinding);
+            pasteHotkey = new Hotkey(PASTE_LOCALIZATION_KEY, pasteBinding, PASTE_LOCALIZATION_KEY);
 
             var deleteBinding = new InputBinding(deleteCommand, new PolyGesture(Key.Delete, ModifierKeys.None));
-            deleteHotkey = new Hotkey(DELETE_COMMAND_KEY, deleteBinding);
+            deleteHotkey = new Hotkey(DELETE_LOCALIZATION_KEY, deleteBinding, DELETE_LOCALIZATION_KEY);
+
+            var duplicateBinding = new InputBinding(duplicateCommand, new PolyGesture(ExtendedMouseAction.LeftDoubleClick, ModifierKeys.None));
+            duplicateHotkey = new Hotkey(DUPLICATE_LOCALIZATION_KEY, duplicateBinding, DUPLICATE_LOCALIZATION_KEY);
 
             //We specifically do not add the `InputBinding`s to the `InputBindingCollection` of `AnnoCanvas`, as if we did that,
             //`InputBinding.Gesture.Matches()` would be fired for *every* event - MouseWheel, MouseDown, KeyUp, KeyDown, MouseMove etc
             //which we don't want, as it produces a noticeable performance impact.
+            #endregion
 
             LoadGridLineColor();
             LoadObjectBorderLineColor();
@@ -711,6 +640,8 @@ namespace AnnoDesigner
 
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
+
+        #endregion
 
         private void AppSettings_SettingsChanged(object sender, EventArgs e)
         {
@@ -1247,11 +1178,91 @@ namespace AnnoDesigner
             //Shape should be complete by this point.
         }
 
-        private List<LayoutObject> CloneList(List<LayoutObject> list)
+        /// <summary>
+        /// Add the objects to SelectedObjects, optionally also add all objects which match one of their identifiers.
+        /// </summary>
+        /// <param name="includeSameObjects"> 
+        /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToAdd">.
+        /// </param>
+        private void AddSelectedObjects(List<LayoutObject> objectsToAdd, bool includeSameObjects)
         {
-            var newList = new List<LayoutObject>(list.Capacity);
-            list.ForEach(_ => newList.Add(new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)));
-            return newList;
+            if (includeSameObjects)
+            {
+                // Add all placed objects whose identifier matches any of those in the objectsToAdd.
+                SelectedObjects.AddRange(PlacedObjects.FindAll(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase))));
+            }
+            else
+            {
+                SelectedObjects.AddRange(objectsToAdd);
+            }
+
+            // This can lead to some objects being selected multiple times, so only keep distinct objects.
+            SelectedObjects = SelectedObjects.Distinct().ToList();
+        }
+
+        /// <summary>
+        /// Remove the objects from SelectedObjects, optionally also remove all objects which match one of their identifiers.
+        /// </summary>
+        /// <param name="includeSameObjects"> 
+        /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToRemove">.
+        /// </param>
+        private void RemoveSelectedObjects(List<LayoutObject> objectsToRemove, bool includeSameObjects)
+        {
+            if (includeSameObjects)
+            {
+                // Exclude any selected objects whose identifier matches any of those in the objectsToRemove.
+                SelectedObjects = SelectedObjects.Except(SelectedObjects.FindAll(placed => objectsToRemove.Any(toRemove => toRemove.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase)))).ToList();
+            }
+            else
+            {
+                SelectedObjects = SelectedObjects.Except(objectsToRemove).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Add a single object to SelectedObjects, optionally also add all objects with the same identifier.
+        /// </summary>
+        /// <param name="includeSameObjects"> 
+        /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToAdd">.
+        /// </param>
+        private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects)
+        {
+            AddSelectedObjects(new List<LayoutObject>() { objectToAdd }, includeSameObjects);
+        }
+
+        /// <summary>
+        /// Remove a single object from SelectedObjects, optionally also remove all objects with the same identifier.
+        /// </summary>
+        /// <param name="includeSameObjects"> 
+        /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToRemove">.
+        /// </param>
+        private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects)
+        {
+            RemoveSelectedObjects(new List<LayoutObject>() { objectToRemove }, includeSameObjects);
+        }
+
+        /// <summary>
+        /// Used to load current color for grid lines from settings.
+        /// </summary>
+        /// <remarks>Also calls <see cref="UIElement.InvalidateVisual()"/></remarks>
+        private void LoadGridLineColor()
+        {
+            var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorGridLines);//explicit variable to make debugging easier
+            _gridLinePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson.Color), DPI_FACTOR * 1);
+
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Used to load current color for object border lines from settings.
+        /// </summary>
+        /// <remarks>Also calls <see cref="UIElement.InvalidateVisual()"/></remarks>
+        private void LoadObjectBorderLineColor()
+        {
+            var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorObjectBorderLines);//explicit variable to make debugging easier
+            _linePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson.Color), DPI_FACTOR * 1);
+
+            InvalidateVisual();
         }
 
         #endregion
@@ -1316,22 +1327,23 @@ namespace AnnoDesigner
         /// <param name="e"></param>
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
+            //We subtract from ZoomSensitivitySliderMaximum here to get the inverse of the value (e.g 100(%) becomes 1(%), and 1(%) becomes 100(%))
+            var zoomFactor = (((Constants.ZoomSensitivitySliderMaximum + 1) - _appSettings.ZoomSensitivityPercentage) * Constants.ZoomSensitivityCoefficient) + Constants.ZoomSensitivityMinimum;
+            var change = (int)(e.Delta / zoomFactor);
+            //change by at least 1
+            if (change == 0)
+            {
+                change = e.Delta > 0 ? 1 : -1;
+            }
             if (!_appSettings.UseZoomToPoint)
             {
-                GridSize += e.Delta / 100;
+                GridSize += change;
             }
             else
             {
                 var mousePosition = e.GetPosition(this);
                 var preZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
-
-                var diffGridSize = GridSize * e.Delta / 1000;
-                if (diffGridSize == 0)
-                {
-                    diffGridSize = e.Delta > 0 ? 1 : -1;// change by at least 1
-                }
-
-                GridSize += diffGridSize;
+                GridSize += change;
 
                 var postZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
                 var diff = postZoomPosition - preZoomPosition;
@@ -1365,15 +1377,10 @@ namespace AnnoDesigner
 
             HandleMouse(e);
 
-            if (e.ClickCount > 1)
+            HotkeyCommandManager.HandleCommand(e);
+            if (e.Handled)
             {
-                var obj = GetObjectAt(_mousePosition);
-                if (obj != null)
-                {
-                    CurrentObjects.Clear();
-                    CurrentObjects.Add(new LayoutObject(new AnnoObject(obj.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache));
-                    OnCurrentObjectChanged(obj);
-                }
+                logger.Info("Click command handled");
                 return;
             }
 
@@ -1672,16 +1679,6 @@ namespace AnnoDesigner
                         }
                 }
             }
-            // rotate current object
-            else if (e.ChangedButton == MouseButton.Middle)
-            {
-                if (CurrentObjects.Count == 0 && SelectedObjects.Count != 0)
-                {
-                    CurrentObjects = CloneList(SelectedObjects);
-                }
-
-                Rotate(CurrentObjects);
-            }
 
             InvalidateVisual();
         }
@@ -1877,6 +1874,23 @@ namespace AnnoDesigner
             InvalidateVisual();
         }
 
+        /// <summary>
+        /// Registers hotkeys with the <see cref="HotkeyCommandManager"/>.
+        /// </summary>
+        /// <param name="manager"></param>
+        public void RegisterHotkeys(HotkeyCommandManager manager)
+        {
+            HotkeyCommandManager = manager;
+            manager.AddHotkey(rotateHotkey1);
+            manager.AddHotkey(rotateHotkey2);
+            manager.AddHotkey(rotateAllHotkey);
+            manager.AddHotkey(copyHotkey);
+            manager.AddHotkey(pasteHotkey);
+            manager.AddHotkey(deleteHotkey);
+            manager.AddHotkey(duplicateHotkey);
+        }
+
+
         #endregion
 
         #region New/Save/Load/Export methods
@@ -1986,12 +2000,12 @@ namespace AnnoDesigner
                     ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
                 }
             }
-            catch (LayoutFileVersionMismatchException layoutEx)
+            catch (LayoutFileUnsupportedFormatException layoutEx)
             {
-                logger.Warn(layoutEx, "Version of layout does not match.");
+                logger.Warn(layoutEx, "Version of layout file is not supported.");
 
                 if (_messageBoxService.ShowQuestion("Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
-                        "File version mismatch"))
+                        "File version unsupported"))
                 {
                     OpenFile(filename, true);
                 }
@@ -2057,8 +2071,14 @@ namespace AnnoDesigner
         }
 
 
-
-        private readonly Hotkey rotateHotkey;
+        /// <summary>
+        /// R key rotate
+        /// </summary>
+        private readonly Hotkey rotateHotkey1;
+        /// <summary>
+        /// MiddleClick rotate
+        /// </summary>
+        private readonly Hotkey rotateHotkey2;
         private readonly ICommand rotateCommand;
         private void ExecuteRotate(object param)
         {
@@ -2077,6 +2097,16 @@ namespace AnnoDesigner
                 CurrentObjects = CloneList(SelectedObjects);
                 Rotate(CurrentObjects);
             }
+            InvalidateVisual();
+        }
+
+        private readonly Hotkey rotateAllHotkey;
+        private readonly ICommand rotateAllCommand;
+        private void ExecuteRotateAll(object param)
+        {
+            Rotate(PlacedObjects);
+            //Objects tend to go offscreen when we rotate everything, so normalise the canvas after a rotate.
+            Normalize(1);
             InvalidateVisual();
         }
 
@@ -2110,17 +2140,30 @@ namespace AnnoDesigner
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
-
-
-        public void RegisterHotkeys(HotkeyCommandManager manager)
+        
+        private readonly Hotkey duplicateHotkey;
+        private readonly ICommand duplicateCommand;
+        private void ExecuteDuplicate(object param)
         {
-            HotkeyCommandManager = manager;
-            manager.AddHotkey(rotateHotkey);
-            manager.AddHotkey(copyHotkey);
-            manager.AddHotkey(pasteHotkey);
-            manager.AddHotkey(deleteHotkey);
+            var obj = GetObjectAt(_mousePosition);
+            if (obj != null)
+            {
+                CurrentObjects.Clear();
+                CurrentObjects.Add(new LayoutObject(new AnnoObject(obj.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache));
+                OnCurrentObjectChanged(obj);
+            }
         }
 
+        #endregion
+
+        #region Helper methods
+
+        private List<LayoutObject> CloneList(List<LayoutObject> list)
+        {
+            var newList = new List<LayoutObject>(list.Capacity);
+            list.ForEach(_ => newList.Add(new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)));
+            return newList;
+        }
 
         #endregion
     }

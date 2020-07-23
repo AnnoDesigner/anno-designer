@@ -9,6 +9,7 @@
       xmlns:l="clr-namespace:AnnoDesigner.Localization"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:converters="clr-namespace:AnnoDesigner.Converters"
+      xmlns:annoDesigner="clr-namespace:AnnoDesigner"
       mc:Ignorable="d"
       d:DesignHeight="450"
       d:DesignWidth="800"
@@ -73,10 +74,12 @@
                               Visibility="{Binding IsGridLineColorPickerVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
         </Grid>
 
-        <Grid Margin="20,0,0,10">
+        <Grid Margin="20,0,0,10"
+              Grid.IsSharedSizeScope="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="180"
-                                  Width="Auto" />
+                                  Width="Auto"
+                                  SharedSizeGroup="PreferenceLabel" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -117,6 +120,32 @@
                               Visibility="{Binding IsObjectBorderLineColorPickerVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
         </Grid>
 
+        <Grid Margin="20,0,0,10"
+              Grid.IsSharedSizeScope="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="180"
+                                  Width="Auto"
+                                  SharedSizeGroup="PreferenceLabel" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="{l:Localize GeneralPreferencesZoomSensitivity, StringFormat='{}{0}:'}" />
+            <Slider Grid.Column="1"
+                    Name="ZoomSlider"
+                    Value="{Binding ZoomSensitivityPercentage}"
+                    Maximum="{x:Static annoDesigner:Constants.ZoomSensitivitySliderMaximum}"
+                    Minimum="1"
+                    Width="150"
+                    TickFrequency="1"
+                    IsSnapToTickEnabled="True"
+                    TickPlacement="None"/>
+            <TextBlock Grid.Column="2"
+                       Margin="5,0,0,0"
+                       Text="{Binding ElementName=ZoomSlider, Path=Value, StringFormat='{}{0}%'}" />
+        </Grid>
+
         <StackPanel Margin="20,0,0,10">
             <CheckBox IsChecked="{Binding UseZoomToPoint}"
                       Content="{l:Localize GeneralPreferencesUseZoomToPoint}"
@@ -125,7 +154,6 @@
                       Content="{l:Localize GeneralPreferencesHideInfluenceOnSelection}" />
 
         </StackPanel>
-
         <!--#endregion-->
     </StackPanel>
 </Page>
