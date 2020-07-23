@@ -115,9 +115,6 @@ namespace AnnoDesigner.Core.DataStructures
 
             internal void Remove((T item, Rect bounds) item)
             {
-                //TODO: PR: Tidy this
-                //Maybe keep track of if we've removed the final item from a quad?
-                //How to we stop cascading count()
                 Items.Remove(item);
                 MarkAncestorsAsDirty(); //make sure all ancestors are now marked as requiring an update.
             }
@@ -287,8 +284,6 @@ namespace AnnoDesigner.Core.DataStructures
         {
             var quadrant = root.GetContainingQuadrant(bounds);
             quadrant.Remove((item, bounds));
-            //TODO: Implement this
-            //no-op
         }
 
         /// <summary>

@@ -413,7 +413,7 @@ namespace AnnoDesigner
         /// </summary>
         public QuadTree<LayoutObject> PlacedObjectsQuadTree { get; set; }
 
-        //TODO: For testing only, eventually, remove PlacedObjectsQuadTree, and just use this instead
+        //TODO: PR: For testing only, eventually, just rename PlacedObjectsQuadTree to PlacedObjects
         public List<LayoutObject> PlacedObjects
         {
             get => PlacedObjectsQuadTree.ToList();
@@ -471,20 +471,21 @@ namespace AnnoDesigner
         /// </summary>
         private readonly Brush _influencedBrush;
 
-        /// <summary>
-        /// Brush used for filling and drawing debug-related information.
-        /// </summary>
-        private readonly Brush _debugBrush;
 
         #endregion
 
 #if DEBUG
         #region Debug options
 
+        /// <summary>
+        /// Brush used for filling and drawing debug-related information.
+        /// </summary>
+        private readonly Brush _debugBrush;
+
         private bool debugModeIsEnabled = true;
-        private bool debugShowObjectPositions = true;
+        private bool debugShowObjectPositions = false;
         private bool debugShowQuadTreeViz = true;
-        private bool debugShowSelectionRectCoordinates = true;
+        private bool debugShowSelectionRectCoordinates = false;
 
         #endregion
 #endif
@@ -521,11 +522,11 @@ namespace AnnoDesigner
             var sw = new Stopwatch();
             sw.Start();
 
-            // initialize
+            //initialize
             CurrentMode = MouseMode.Standard;
 
-            //PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-10_000d, -10_000d, 20_000d, 20_000d));
-            PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(0,0, 200, 200));
+            //create
+            PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-1000d, -1000d, 2000d, 2000d));
             SelectedObjects = new List<LayoutObject>();
 
             #region Hotkeys/Commands
@@ -580,8 +581,9 @@ namespace AnnoDesigner
             color = Colors.LawnGreen;
             color.A = 32;
             _influencedBrush = _brushCache.GetSolidBrush(color);
+#if DEBUG
             _debugBrush = Brushes.DarkBlue;
-
+#endif
             sw.Stop();
             logger.Trace($"init variables took: {sw.ElapsedMilliseconds}ms");
 
@@ -1538,15 +1540,13 @@ namespace AnnoDesigner
                                 _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                                 // select intersecting objects
                                 var _selectionRectGrid = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
+                                //Prevent accidentally traversing down into smaller sub quadrant. See the AnnoCanvas.GetObjectAt() method
+                                //for a more detailed explaination.
+                                _selectionRectGrid.Height = Math.Max(20, _selectionRectGrid.Height);
+                                _selectionRectGrid.Width = Math.Max(20, _selectionRectGrid.Width);
                                 var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(_selectionRectGrid).ToList();
                                 AddSelectedObjects(possibleItems.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)),
                                                    ShouldAffectObjectsWithIdentifier());
-                                var possibleItems2 = PlacedObjectsQuadTree.All().ToList().FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
-                                if (possibleItems.Count == 0 && possibleItems2.Count() > 0)
-                                {
-
-                                } 
-
                                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                                 break;
                             }
@@ -1849,18 +1849,37 @@ namespace AnnoDesigner
         private LayoutObject GetObjectAt(Point position)
         {
             var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
-            //Search a 20x20 grid area around the mouse
+            //Search a 20x20 grid area around the mouse. This minimum size should be larger than the largest possible building.
+            //It stops us traversing down into an even smaller quadrant that does not actually contain any buildings. Example:
+            /*
+
+              +---+---+-------+
+              | Q1|   |       |
+              | [A1]  |       |
+              +---+   |       |
+              |   Q2  |       |
+              |       |       |
+              +---------------+
+              |       |       |
+              |       |       |
+              |       |       |
+              |       |       |
+              |       |       |
+              +-------+-------+
+
+            */
+            //A1 covers 2 sub-quadrants, so is placed in Q2. If we hover over the left side of A1, and we only have a rect 1x1
+            //in size,the bounds of the rect end up being completely contained within the Quadrant Q1, so we find no objects within
+            //the region.
+            //Extending the boundaries of the rect prevents this behaviour.
+
             var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(new Rect(new Point(gridPosition.X - 10, gridPosition.Y - 10), new Size(20, 20)));
-            //TODO: PR: Clean up 
-            //logger.Debug(possibleItems.Count());
-            //var layoutObject = PlacedObjectsQuadTree.Find(_ => _.CollisionRect.Contains(gridPosition)); 
-            //return PlacedObjectsQuadTree.Find(_ => _.CollisionRect.Contains(gridPosition));
             return possibleItems.ToList().Find(_ => _.CollisionRect.Contains(gridPosition));
         }
 
         #endregion
-
         #region API
+
 
         /// <summary>
         /// Sets the current object, i.e. the object which the user can place.
