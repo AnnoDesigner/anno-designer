@@ -208,7 +208,9 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesZoomSensitivity" , "Zoom sensitivity" },
                         { "ColorTypeDefault" , "Default" },
                         { "ColorTypeLight" , "Light" },
-                        { "ColorTypeCustom" , "Custom" }
+                        { "ColorTypeCustom" , "Custom" },
+                        { "Warning" , "Warning" },
+                        { "FileNotFound" , "The file was not found." },
                     }
                 },
                 {
@@ -365,7 +367,9 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesZoomSensitivity" , "Zoom-Empfindlichkeit" },
                         { "ColorTypeDefault" , "Standard" },
                         { "ColorTypeLight" , "Heller" },
-                        { "ColorTypeCustom" , "Benutzerdefiniert" }
+                        { "ColorTypeCustom" , "Benutzerdefiniert" },
+                        { "Warning" , "Warnung" },
+                        { "FileNotFound" , "Die Datei wurde nicht gefunden." },
                     }
                 },
                 {
@@ -522,7 +526,9 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesZoomSensitivity" , "Sensibilité du zoom" },
                         { "ColorTypeDefault" , "Défaut" },
                         { "ColorTypeLight" , "Lumière" },
-                        { "ColorTypeCustom" , "Personnalisation" }
+                        { "ColorTypeCustom" , "Personnalisation" },
+                        { "Warning" , "Avertissement" },
+                        { "FileNotFound" , "Le fichier n'a pas été retrouvé." },
                     }
                 },
                 {
@@ -679,7 +685,9 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesZoomSensitivity" , "Wrażliwość na zoom" },
                         { "ColorTypeDefault" , "Domyślnie" },
                         { "ColorTypeLight" , "Światło" },
-                        { "ColorTypeCustom" , "Niestandardowy" }
+                        { "ColorTypeCustom" , "Niestandardowy" },
+                        { "Warning" , "Ostrzeżenie" },
+                        { "FileNotFound" , "Plik nie został znaleziony." },
                     }
                 },
                 {
@@ -836,7 +844,9 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesZoomSensitivity" , "Чувствительность к увеличению" },
                         { "ColorTypeDefault" , "По умолчанию" },
                         { "ColorTypeLight" , "Свет" },
-                        { "ColorTypeCustom" , "Пользовательский" }
+                        { "ColorTypeCustom" , "Пользовательский" },
+                        { "Warning" , "Предупреждение" },
+                        { "FileNotFound" , "Файл не был найден." },
                     }
                 },
             };

@@ -1366,7 +1366,10 @@ namespace AnnoDesigner.ViewModels
             }
             else
             {
-                _recentFilesHelper.RemoveFile(new RecentFile(recentFile.Path, DateTime.UtcNow));
+                _recentFilesHelper.RemoveFile(new RecentFile(recentFile.Path, recentFile.LastUsed));
+                _messageBoxService.ShowWarning(Application.Current.MainWindow,
+                    _localizationHelper.GetLocalization("FileNotFound"),
+                    _localizationHelper.GetLocalization("Warning"));
             }
         }
 
