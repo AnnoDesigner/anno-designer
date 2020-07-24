@@ -50,6 +50,8 @@ namespace AnnoDesigner.Models
         private int _lastGridSizeForScreenRadius;
         private SerializableColor _color;
 
+        //TODO: PR: Cache GridRect here.
+
         /// <summary>
         /// Creates a new instance of a wrapper for <see cref="AnnoObject"/>.
         /// </summary>

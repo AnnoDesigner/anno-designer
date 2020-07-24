@@ -242,6 +242,24 @@ namespace AnnoDesigner
         }
 
         /// <summary>
+        /// List of all currently placed objects.
+        /// </summary>
+        public QuadTree<LayoutObject> PlacedObjectsQuadTree { get; set; }
+
+        //TODO: PR: For testing only, eventually, just rename PlacedObjectsQuadTree to PlacedObjects
+        public List<LayoutObject> PlacedObjects
+        {
+            get => PlacedObjectsQuadTree.ToList();
+            set => PlacedObjectsQuadTree.AddRange(value.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+        }
+
+        /// <summary>
+        /// List of all currently selected objects.
+        /// All of them must also be contained in the _placedObjects list.
+        /// </summary>
+        public List<LayoutObject> SelectedObjects { get; set; }
+
+        /// <summary>
         /// Event which is fired when the current object is changed
         /// </summary>
         public event Action<LayoutObject> OnCurrentObjectChanged;
@@ -409,22 +427,10 @@ namespace AnnoDesigner
         private Rect _selectionRect;
 
         /// <summary>
-        /// List of all currently placed objects.
+        /// A list of object position <see cref="Rect"/>s. Used when dragging selected objects (when MouseMode is <see cref="MouseMode.DragSelection"/>).
+        /// Holds a Rect that represents the object's previous position prior to dragging.
         /// </summary>
-        public QuadTree<LayoutObject> PlacedObjectsQuadTree { get; set; }
-
-        //TODO: PR: For testing only, eventually, just rename PlacedObjectsQuadTree to PlacedObjects
-        public List<LayoutObject> PlacedObjects
-        {
-            get => PlacedObjectsQuadTree.ToList();
-            set => PlacedObjectsQuadTree.AddRange(value.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
-        }
-
-        /// <summary>
-        /// List of all currently selected objects.
-        /// All of them must also be contained in the _placedObjects list.
-        /// </summary>
-        public List<LayoutObject> SelectedObjects { get; set; }
+        private List<(LayoutObject Item, Rect OldGridRect)> _oldObjectPositions;
 
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
         #endregion
@@ -528,6 +534,7 @@ namespace AnnoDesigner
             //create
             PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-1000d, -1000d, 2000d, 2000d));
             SelectedObjects = new List<LayoutObject>();
+            _oldObjectPositions = new List<(LayoutObject Item, Rect OldBounds)>();
 
             #region Hotkeys/Commands
             //Commands
@@ -1310,6 +1317,30 @@ namespace AnnoDesigner
             InvalidateVisual();
         }
 
+        /// <summary>
+        /// Removes and then re-adds the given objects to the <see cref="PlacedObjectsQuadTree"/>.
+        /// </summary>
+        /// <remarks>
+        /// <paramref name="newPositions"/> is left as a <see cref="IEnumerable{(LayoutObject, Rect)}"/> as we'd need to do a transform
+        /// on the values anyway, and theres a chance they could already be in this desired form before before used in this method.
+        /// </remarks>
+        /// <param name="oldPositions"></param>
+        /// <param name="newPositions"></param>
+        private void UpdateObjectPositions(IEnumerable<(LayoutObject, Rect)> oldPositions, IEnumerable<(LayoutObject, Rect)> newPositions)
+        {
+            //The IEnumerable sequences passed in as parameters sometimes get GC'd between calls when using MouseMode.DragAll, 
+            //as the objects are not referenced anywhere between the end of the foreach loop and the AddRange call (the variables
+            //themselves do not count as references due to IEnumerable lazy evaluation).
+            //By materializing the lists early, we ensure that references are maintained.
+            var priorPositions = oldPositions.ToList();
+            var updatedPositions = newPositions.ToList();
+            foreach (var item in priorPositions)
+            {
+                PlacedObjectsQuadTree.Remove(item.Item1, item.Item2);
+            }
+            //add
+            PlacedObjectsQuadTree.AddRange(updatedPositions);
+        }
         #endregion
 
         #region Coordinate and rectangle conversions
@@ -1386,7 +1417,7 @@ namespace AnnoDesigner
             }
             else
             {
-                var mousePosition = e.GetPosition(this);
+                var mousePosition = _mousePosition;
                 var preZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
                 GridSize += change;
 
@@ -1493,23 +1524,31 @@ namespace AnnoDesigner
 
             if (CurrentMode == MouseMode.DragAll)
             {
+                if (_oldObjectPositions.Count == 0)
+                {
+                    _oldObjectPositions.AddRange(PlacedObjectsQuadTree.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                }
                 // move all selected objects
                 var dx = (int)_coordinateHelper.ScreenToGrid(_mousePosition.X - _mouseDragStart.X, GridSize);
                 var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
-                // check if the mouse has moved at least one grid cell in any direction
-                if (dx != 0 || dy != 0)
-                {
-                    foreach (var curLayoutObject in PlacedObjectsQuadTree)
-                    {
-                        curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
-                    }
-                    // adjust the drag start to compensate the amount we already moved
-                    _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
-                    _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
 
-                    //all is moved -> no need to update statistics
-                    //StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                if (dx == 0 && dy == 0)
+                {
+                    //no relevant mouse move -> no further action                                    
+                    return;
                 }
+
+                // check if the mouse has moved at least one grid cell in any direction
+                foreach (var curLayoutObject in PlacedObjectsQuadTree)
+                {
+                    curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
+                }
+                // adjust the drag start to compensate the amount we already moved
+                _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
+                _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
+
+                //all is moved -> no need to update statistics
+                //StatisticsUpdated?.Invoke(this, EventArgs.Empty);
             }
             else if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -1552,6 +1591,11 @@ namespace AnnoDesigner
                             }
                         case MouseMode.DragSelection:
                             {
+                                if (_oldObjectPositions.Count == 0)
+                                {
+                                    _oldObjectPositions.AddRange(SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                                }
+
                                 // move all selected objects
                                 var dx = (int)_coordinateHelper.ScreenToGrid(_mousePosition.X - _mouseDragStart.X, GridSize);
                                 var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
@@ -1559,12 +1603,14 @@ namespace AnnoDesigner
                                 if (dx == 0 && dy == 0)
                                 {
                                     //no relevant mouse move -> no further action                                    
+
                                     break;
                                 }
 
                                 if (_unselectedObjects == null)
                                 {
                                     _unselectedObjects = new List<LayoutObject>();
+                                    //TODO: PR: Investigate
                                     //This feels like a very expensive operation - is there something we can do to not need this?
                                     _unselectedObjects = PlacedObjectsQuadTree.FindAll(_ => !SelectedObjects.Contains(_)).ToList();
                                 }
@@ -1619,8 +1665,12 @@ namespace AnnoDesigner
 
             if (CurrentMode == MouseMode.DragAll)
             {
+                //TODO: PR: Is this the correct behaviour? Do we want && or || here?
                 if (e.LeftButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Released)
                 {
+                    UpdateObjectPositions(_oldObjectPositions, PlacedObjectsQuadTree.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                    _oldObjectPositions.Clear();
+
                     CurrentMode = MouseMode.Standard;
                 }
 
@@ -1665,6 +1715,8 @@ namespace AnnoDesigner
                         break;
                     case MouseMode.DragSelection:
                         // stop dragging of selected objects
+                        UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                        _oldObjectPositions.Clear();
                         CurrentMode = MouseMode.Standard;
                         break;
                 }
@@ -1704,7 +1756,9 @@ namespace AnnoDesigner
                         }
                     case MouseMode.DragSelection:
                         {
-                            //clear selection
+                            UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                            _oldObjectPositions.Clear();
+                            //clear selection after potentially modifying QuadTree
                             SelectedObjects.Clear();
 
                             if (CurrentObjects.Count != 0)
@@ -1777,11 +1831,11 @@ namespace AnnoDesigner
             return IsShiftPressed() && IsControlPressed();
         }
 
-#endregion
+        #endregion
 
-#endregion
+        #endregion
 
-#region Collision handling
+        #region Collision handling
 
         /// <summary>
         /// Checks if there is a collision between given objects a and b.
@@ -1805,8 +1859,6 @@ namespace AnnoDesigner
             return a.Exists(_ => _.CollisionRect.IntersectsWith(b.CollisionRect));
         }
 
-        int placedobjects = 0;
-
         /// <summary>
         /// Tries to place the current object on the grid.
         /// Fails if there are any collisions.
@@ -1817,17 +1869,12 @@ namespace AnnoDesigner
         {
             if (CurrentObjects.Count != 0 && !PlacedObjectsQuadTree.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
             {
-                placedobjects++;
-                if (PlacedObjectsQuadTree.Count() + 1 != placedobjects)
-                {
-
-                }
                 PlacedObjectsQuadTree.AddRange(CloneList(CurrentObjects).Select(obj => (obj, new Rect(obj.Position, obj.Size))));
                 // sort the objects because borderless objects should be drawn first
                 //TODO: PR: Solve sorting  before PR.
                 //PlacedObjects.Sort((a, b) => b.WrappedAnnoObject.Borderless.CompareTo(a.WrappedAnnoObject.Borderless));
 
-                //StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+                StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
 
                 //no need to update colors if drawing the same object(s)
                 if (!isContinuousDrawing)
@@ -1877,8 +1924,8 @@ namespace AnnoDesigner
             return possibleItems.ToList().Find(_ => _.CollisionRect.Contains(gridPosition));
         }
 
-#endregion
-#region API
+        #endregion
+        #region API
 
 
         /// <summary>
@@ -1949,9 +1996,9 @@ namespace AnnoDesigner
         }
 
 
-#endregion
+        #endregion
 
-#region New/Save/Load/Export methods
+        #region New/Save/Load/Export methods
 
         /// <summary>
         /// Removes all objects from the grid.
@@ -2086,9 +2133,9 @@ namespace AnnoDesigner
             _messageBoxService.ShowError(e.Message, "Something went wrong while saving/loading file.");
         }
 
-#endregion
+        #endregion
 
-#region Commands
+        #region Commands
 
         /// <summary>
         /// Holds event handlers for command executions.
@@ -2165,6 +2212,7 @@ namespace AnnoDesigner
         private readonly ICommand rotateAllCommand;
         private void ExecuteRotateAll(object param)
         {
+            //TODO: PR: Implement this to work with the QuadTree
             Rotate(PlacedObjects);
             //Objects tend to go offscreen when we rotate everything, so normalise the canvas after a rotate.
             Normalize(1);
@@ -2201,7 +2249,7 @@ namespace AnnoDesigner
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
-        
+
         private readonly Hotkey duplicateHotkey;
         private readonly ICommand duplicateCommand;
         private void ExecuteDuplicate(object param)
@@ -2215,9 +2263,9 @@ namespace AnnoDesigner
             }
         }
 
-#endregion
+        #endregion
 
-#region Helper methods
+        #region Helper methods
 
         private List<LayoutObject> CloneList(List<LayoutObject> list)
         {
@@ -2226,6 +2274,6 @@ namespace AnnoDesigner
             return newList;
         }
 
-#endregion
+        #endregion
     }
 }
