@@ -437,8 +437,6 @@ namespace AnnoDesigner
         /// </summary>
         private Rect _collisionRect;
 
-
-
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
         #endregion
 

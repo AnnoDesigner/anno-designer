@@ -122,6 +122,9 @@ namespace AnnoDesigner.Core.DataStructures
             /// <param name="item"></param>
             internal void Remove((T item, Rect bounds) item)
             {
+                //TODO: PR: Deletion bug - items are not removed from placed objects when deleted.
+                //Currently cannot reliably reproduce
+
                 Items.Remove(item);
                 MarkAncestorsAsDirty(); //make sure all ancestors are now marked as requiring an update.
             }
@@ -143,36 +146,26 @@ namespace AnnoDesigner.Core.DataStructures
             /// </summary>
             /// <param name="bounds"></param>
             /// <returns></returns>
-            public IEnumerable<T> GetItemsIntersecting(Rect bounds)
+            public void GetItemsIntersecting(List<T> items, Rect bounds)
             {
-                //TODO: PR: Currently bugged when object rects span more than the width of the parent.
-                //Fix: Build up the items list recursively upwards from the lowest quadrant level, until
-                //we reach a quadrant that has no intersecting items.
-
-                if (topRight != null && topRight.Extent.Contains(bounds))
+                if (topRight != null && topRight.Extent.IntersectsWith(bounds))
                 {
-                    return topRight.GetItemsIntersecting(bounds);
+                    topRight.GetItemsIntersecting(items, bounds);
                 }
-                else if (topLeft != null && topLeft.Extent.Contains(bounds))
+                if (topLeft != null && topLeft.Extent.IntersectsWith(bounds))
                 {
-                    return topLeft.GetItemsIntersecting(bounds);
+                    topLeft.GetItemsIntersecting(items, bounds);
                 }
-                else if (bottomRight != null && bottomRight.Extent.Contains(bounds))
+                if (bottomRight != null && bottomRight.Extent.IntersectsWith(bounds))
                 {
-                    return bottomRight.GetItemsIntersecting(bounds);
+                    bottomRight.GetItemsIntersecting(items, bounds);
                 }
-                else if (bottomLeft != null && bottomLeft.Extent.Contains(bounds))
+                if (bottomLeft != null && bottomLeft.Extent.IntersectsWith(bounds))
                 {
-                    return bottomLeft.GetItemsIntersecting(bounds);
+                    bottomLeft.GetItemsIntersecting(items, bounds);
                 }
-                else
-                {
-                    //Only add all items if the bounds are not completely within a sub quadrant
-                    var items = All();
-                    //also add parent items if they also intersect with the current bounds, as there could be items that span several quadrants.
-                    items = items.Concat(Parent?.Items?.Where(_ => _.bounds.IntersectsWith(bounds))?.Select(_ => _.item) ?? new List<T>(0));
-                    return items;
-                }
+                //add all the items in this quadrant that intersect the given bounds
+                items.AddRange(Items.Where(_ => _.bounds.IntersectsWith(bounds)).Select(_ => _.item));
             }
 
             /// <summary>
@@ -343,7 +336,11 @@ namespace AnnoDesigner.Core.DataStructures
         /// <returns></returns>
         public IEnumerable<T> GetItemsIntersecting(Rect bounds)
         {
-            return root.GetItemsIntersecting(bounds) ?? new List<T>();
+            //TODO: PR: Experiment with this value. Maybe keep the previous allocated size to smooth out performance when
+            //calling this many times.
+            var items = new List<T>(32);
+            root.GetItemsIntersecting(items, bounds);
+            return items;
         }
 
         /// <summary>
@@ -406,6 +403,10 @@ namespace AnnoDesigner.Core.DataStructures
 
         public void AddRange(IEnumerable<(T item, Rect bounds)> collection)
         {
+            //TODO: PR: Optimise allocations by setting Items.Capacity ahead of time for each quadrant
+            //then check if the extra processing to "pre-allocate" is worth it.
+            //Will require different insert logic (as we've already figured out where everything should go).
+
             foreach (var item in collection)
             {
                 Insert(item.item, item.bounds);
