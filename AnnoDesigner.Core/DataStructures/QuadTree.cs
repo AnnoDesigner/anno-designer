@@ -40,7 +40,7 @@ namespace AnnoDesigner.Core.DataStructures
             public Quadrant Parent { get; set; }
 
             /// <summary>
-            /// A count of all items in this Quadrant
+            /// A count of all items in this Quadrant and under it.
             /// </summary>
             int count;
             /// <summary>
@@ -49,8 +49,11 @@ namespace AnnoDesigner.Core.DataStructures
             IEnumerable<T> itemCache;
 
             /// <summary>
-            /// Stored as a list of items as we could have multiple items that overlap child quadrants
+            /// Holds a list of all the items in this quadrant.
             /// </summary>
+            /// <remarks>
+            /// Stored as a list as items as any items that overlap multiple child quadrants will be stored here.
+            /// </remarks>
             public List<(T item, Rect bounds)> Items { get; }
 
             public Rect Extent { get; set; }
@@ -113,12 +116,19 @@ namespace AnnoDesigner.Core.DataStructures
                 isDirty = true;
             }
 
+            /// <summary>
+            /// Removes an item from this Quadrant
+            /// </summary>
+            /// <param name="item"></param>
             internal void Remove((T item, Rect bounds) item)
             {
                 Items.Remove(item);
                 MarkAncestorsAsDirty(); //make sure all ancestors are now marked as requiring an update.
             }
 
+            /// <summary>
+            /// Marks this quadrant and all parent quadrants as dirty.
+            /// </summary>
             internal void MarkAncestorsAsDirty()
             {
                 if (Parent != null)
@@ -128,8 +138,17 @@ namespace AnnoDesigner.Core.DataStructures
                 isDirty = true;
             }
 
+            /// <summary>
+            /// Retrieves the items that intersect with the given bounds.
+            /// </summary>
+            /// <param name="bounds"></param>
+            /// <returns></returns>
             public IEnumerable<T> GetItemsIntersecting(Rect bounds)
             {
+                //TODO: PR: Currently bugged when object rects span more than the width of the parent.
+                //Fix: Build up the items list recursively upwards from the lowest quadrant level, until
+                //we reach a quadrant that has no intersecting items.
+
                 if (topRight != null && topRight.Extent.Contains(bounds))
                 {
                     return topRight.GetItemsIntersecting(bounds);
@@ -149,7 +168,10 @@ namespace AnnoDesigner.Core.DataStructures
                 else
                 {
                     //Only add all items if the bounds are not completely within a sub quadrant
-                    return All();
+                    var items = All();
+                    //also add parent items if they also intersect with the current bounds, as there could be items that span several quadrants.
+                    items = items.Concat(Parent?.Items?.Where(_ => _.bounds.IntersectsWith(bounds))?.Select(_ => _.item) ?? new List<T>(0));
+                    return items;
                 }
             }
 
@@ -182,6 +204,10 @@ namespace AnnoDesigner.Core.DataStructures
                 }
             }
 
+            /// <summary>
+            /// Retrieves the count of all items in this quadrant and beneath it.
+            /// </summary>
+            /// <returns></returns>
             public int Count()
             {
                 if (isDirty)
@@ -191,8 +217,14 @@ namespace AnnoDesigner.Core.DataStructures
                 return count;
             }
 
+            /// <summary>
+            /// Retrieves a list of all items in this quadrant and beneath it.
+            /// </summary>
+            /// <returns></returns>
             public IEnumerable<T> All()
             {
+                //TODO: PR: Make this lazy - then we can effectively keep a specific framerate and and keep track of how much we rendered last frame
+                //Might not make it into this PR - could just be a goal for a future PR.
                 if (isDirty)
                 {
                     UpdateCachedData();
@@ -200,6 +232,9 @@ namespace AnnoDesigner.Core.DataStructures
                 return itemCache;
             }
 
+            /// <summary>
+            /// Updates the cahced data for this quadrant.
+            /// </summary>
             private void UpdateCachedData()
             {
                 //initialise with the outdated count value
@@ -216,6 +251,11 @@ namespace AnnoDesigner.Core.DataStructures
             }
 
 #if DEBUG
+            /// <summary>
+            /// Retrieves a list of Rects that make up this quadrant and the quadrants beneath it.
+            /// Used when debugging to draw quadrants to a canvas.
+            /// </summary>
+            /// <param name="rects"></param>
             internal void GetQuadrantRects(List<Rect> rects)
             {
                 if (topLeft != null)
@@ -271,6 +311,11 @@ namespace AnnoDesigner.Core.DataStructures
             root = new Quadrant(extent);
         }
 
+        /// <summary>
+        /// Insert a <typeparamref name="T"/> item into the QuadTree.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="bounds"></param>
         public void Insert(T item, Rect bounds)
         {
             if (!root.Extent.Contains(bounds))
@@ -280,6 +325,11 @@ namespace AnnoDesigner.Core.DataStructures
             root.Insert(item, bounds);
         }
 
+        /// <summary>
+        /// Remove a <typeparamref name="T"/> item from the QuadTree.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="bounds"></param>
         public void Remove(T item, Rect bounds)
         {
             var quadrant = root.GetContainingQuadrant(bounds);
@@ -362,9 +412,13 @@ namespace AnnoDesigner.Core.DataStructures
             }
         }
 
+        /// <summary>
+        /// Removes all items from the QuadTree.
+        /// </summary>
         public void Clear()
         {
             root = new Quadrant(Extent);
+            //TODO: PR: See if this is necessary.
             GC.Collect();
         }
 
@@ -387,6 +441,11 @@ namespace AnnoDesigner.Core.DataStructures
             return root.All().GetEnumerator();
         }
 #if DEBUG
+        /// <summary>
+        /// Retrieves a list of Rects that make up the Quadrants in this QuadTree.
+        /// Used when debugging to draw the QuadTree quadrants to a canvas.
+        /// </summary>
+        /// <returns></returns>
         public List<Rect> GetQuadrantRects()
         {
             var rects = new List<Rect>(20);

@@ -432,6 +432,13 @@ namespace AnnoDesigner
         /// </summary>
         private List<(LayoutObject Item, Rect OldGridRect)> _oldObjectPositions;
 
+        /// <summary>
+        /// The collision rect derived from the current selection.
+        /// </summary>
+        private Rect _collisionRect;
+
+
+
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
         #endregion
 
@@ -489,9 +496,11 @@ namespace AnnoDesigner
         private readonly Brush _debugBrush;
 
         private bool debugModeIsEnabled = true;
-        private bool debugShowObjectPositions = false;
+        private bool debugShowObjectPositions = true;
         private bool debugShowQuadTreeViz = true;
         private bool debugShowSelectionRectCoordinates = false;
+        private bool debugShowSelectionCollisionRect = true;
+        private bool debugPersistCollisionRect = true;
 
         #endregion
 #endif
@@ -677,6 +686,8 @@ namespace AnnoDesigner
         /// <param name="drawingContext">context used for rendering</param>
         protected override void OnRender(DrawingContext drawingContext)
         {
+            //TODO: PR: Add proper viewport
+
             //needed?
             base.OnRender(drawingContext);
 
@@ -778,6 +789,15 @@ namespace AnnoDesigner
                     location.Y -= text.Height;
                     drawingContext.DrawText(text, location);
                 }
+
+                if (debugModeIsEnabled && debugShowSelectionCollisionRect && !debugPersistCollisionRect)
+                {
+                    //Dark blue = 0x00008B;
+                    var brush = _brushCache.GetSolidBrush(Color.FromArgb(0x08, 0, 0, 0x8B));
+                    var pen = _penCache.GetPen(_debugBrush, 1);
+                    drawingContext.DrawRectangle(brush, pen, _collisionRect);
+                }
+
 #endif
             }
 
@@ -791,6 +811,14 @@ namespace AnnoDesigner
                 {
                     drawingContext.DrawRectangle(brush, pen, _coordinateHelper.GridToScreen(rect, GridSize));
                 }
+            }
+
+            if (debugModeIsEnabled && debugShowSelectionCollisionRect && debugPersistCollisionRect)
+            {
+                //Dark blue = 0x00008B;
+                var brush = _brushCache.GetSolidBrush(Color.FromArgb(0x08, 0, 0, 0x8B));
+                var pen = _penCache.GetPen(_debugBrush, 1);
+                drawingContext.DrawRectangle(brush, pen, _collisionRect);
             }
 #endif
 
@@ -965,6 +993,8 @@ namespace AnnoDesigner
         /// <param name="obj">object which's influence is rendered</param>
         private void RenderObjectInfluenceRadius(DrawingContext drawingContext, List<LayoutObject> objects)
         {
+            //TODO: PR: Rewrite to take advantage of QuadTree
+
             foreach (var curLayoutObject in objects)
             {
                 if (curLayoutObject.WrappedAnnoObject.Radius >= 0.5)
@@ -1002,6 +1032,10 @@ namespace AnnoDesigner
         /// </summary>
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
+            //TODO: PR: See if there are some quadtree optimisations that can be done. 
+            //E.g computing bounding rectangle from max influence range and only passing those to the BFS.
+
+
             AnnoObject[][] gridDictionary = null;
             if (RenderTrueInfluenceRange && PlacedObjectsQuadTree.Count() > 0)
             {
@@ -1524,6 +1558,9 @@ namespace AnnoDesigner
 
             if (CurrentMode == MouseMode.DragAll)
             {
+                //TODO: PR: Theres a bug in here somewhere, that causing each dx/dy movement to move 2 cells each step, rather than 1
+                //Not sure whats causing it. Not yet sure how to reproduce effectively.
+
                 if (_oldObjectPositions.Count == 0)
                 {
                     _oldObjectPositions.AddRange(PlacedObjectsQuadTree.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
@@ -1579,18 +1616,18 @@ namespace AnnoDesigner
                                 _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                                 // select intersecting objects
                                 var _selectionRectGrid = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
-                                //Prevent accidentally traversing down into smaller sub quadrant. See the AnnoCanvas.GetObjectAt() method
-                                //for a more detailed explaination.
-                                _selectionRectGrid.Height = Math.Max(20, _selectionRectGrid.Height);
-                                _selectionRectGrid.Width = Math.Max(20, _selectionRectGrid.Width);
                                 var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(_selectionRectGrid).ToList();
                                 AddSelectedObjects(possibleItems.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)),
                                                    ShouldAffectObjectsWithIdentifier());
+
+                                //TODO: PR: To allow for Ctrl || Shift click selections, compute a collision rect from the min/max x/y points (top left corner, bottom right corner)
+
                                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                                 break;
                             }
                         case MouseMode.DragSelection:
                             {
+                                //if Count == 0, then this is the first time this has been done in the current mouse move, as we reset this on mouse up
                                 if (_oldObjectPositions.Count == 0)
                                 {
                                     _oldObjectPositions.AddRange(SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
@@ -1610,11 +1647,11 @@ namespace AnnoDesigner
                                 if (_unselectedObjects == null)
                                 {
                                     _unselectedObjects = new List<LayoutObject>();
-                                    //TODO: PR: Investigate
-                                    //This feels like a very expensive operation - is there something we can do to not need this?
-                                    _unselectedObjects = PlacedObjectsQuadTree.FindAll(_ => !SelectedObjects.Contains(_)).ToList();
                                 }
-
+                                //TODO: PR: Investigate
+                                //This feels like a very expensive operation - is there something we can do to not need this?
+                                //Recompute _unselectedObjects
+                                _unselectedObjects = PlacedObjectsQuadTree.GetItemsIntersecting(_collisionRect).ToList().FindAll(_ => !SelectedObjects.Contains(_)).ToList();
                                 var collisionsExist = false;
                                 // temporarily move each object and check if collisions with unselected objects exist
                                 foreach (var curLayoutObject in SelectedObjects)
@@ -1642,6 +1679,10 @@ namespace AnnoDesigner
                                     // adjust the drag start to compensate the amount we already moved
                                     _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
                                     _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
+
+                                    //update collision rect, so that collisions are correctly computed on next run
+                                    _collisionRect.X += dx;
+                                    _collisionRect.Y += dy;
 
                                     //position change -> update
                                     StatisticsUpdated?.Invoke(this, new UpdateStatisticsEventArgs(UpdateMode.NoBuildingList));
@@ -1896,31 +1937,7 @@ namespace AnnoDesigner
         private LayoutObject GetObjectAt(Point position)
         {
             var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
-            //Search a 20x20 grid area around the mouse. This minimum size should be larger than the largest possible building.
-            //It stops us traversing down into an even smaller quadrant that does not actually contain any buildings. Example:
-            /*
-
-              +---+---+-------+
-              | Q1|   |       |
-              | [A1]  |       |
-              +---+   |       |
-              |   Q2  |       |
-              |       |       |
-              +---------------+
-              |       |       |
-              |       |       |
-              |       |       |
-              |       |       |
-              |       |       |
-              +-------+-------+
-
-            */
-            //A1 covers 2 sub-quadrants, so is placed in Q2. If we hover over the left side of A1, and we only have a rect 1x1
-            //in size,the bounds of the rect end up being completely contained within the Quadrant Q1, so we find no objects within
-            //the region.
-            //Extending the boundaries of the rect prevents this behaviour.
-
-            var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(new Rect(new Point(gridPosition.X - 10, gridPosition.Y - 10), new Size(20, 20)));
+            var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(new Rect(gridPosition, new Size(1, 1)));
             return possibleItems.ToList().Find(_ => _.CollisionRect.Contains(gridPosition));
         }
 
@@ -2177,7 +2194,6 @@ namespace AnnoDesigner
                 e.Handled = true;
             }
         }
-
 
         /// <summary>
         /// R key rotate
