@@ -10,10 +10,11 @@ namespace AnnoDesigner.Core.Layout.Models
     [DataContract]
     public class SavedLayout : LayoutVersionContainer
     {
-        [DataMember(Order = 1)]
+        [DataMember(Order = 99)]
         public List<AnnoObject> Objects { get; set; }
 
-        public SavedLayout():this(null) { }
+        public SavedLayout() : this(null) { }
+
         public SavedLayout(List<AnnoObject> objects)
         {
             FileVersion = CoreConstants.LayoutFileVersion;
