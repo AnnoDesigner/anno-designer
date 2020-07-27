@@ -595,7 +595,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Theory]
-        [InlineData("id", Key.A, ModifierKeys.Alt, Key.S, ModifierKeys.Control | ModifierKeys.Shift, @"{""id"":{""Key"":62,""MouseAction"":0,""Modifiers"":6,""Type"":1}}")]
+        [InlineData("id", Key.A, ModifierKeys.Alt, Key.S, ModifierKeys.Control | ModifierKeys.Shift, @"{""id"":{""Key"":""S"",""MouseAction"":""None"",""Modifiers"":""Control, Shift"",""Type"":""KeyGesture""}}")]
         [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, "{}")]
         public void SaveSettings_IsCalled_ShouldSaveRemappedHotkeys(string id, Key key, ModifierKeys modifiers, Key newKey, ModifierKeys newModifiers, string expectedJsonString)
         {
