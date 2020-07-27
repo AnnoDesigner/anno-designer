@@ -213,6 +213,7 @@ namespace AnnoDesigner.Localization
                         { "FileNotFound" , "The file was not found." },
                         { "ItemsCopied" , " items copied" },
                         { "ItemCopied" , " item copied" },
+                        { "Default" , "Default" },
                     }
                 },
                 {
@@ -374,6 +375,7 @@ namespace AnnoDesigner.Localization
                         { "FileNotFound" , "Die Datei wurde nicht gefunden." },
                         { "ItemsCopied" , " Elemente kopiert" },
                         { "ItemCopied" , " Element kopiert" },
+                        { "Default" , "Standard" },
                     }
                 },
                 {
@@ -535,6 +537,7 @@ namespace AnnoDesigner.Localization
                         { "FileNotFound" , "Le fichier n'a pas été retrouvé." },
                         { "ItemsCopied" , " éléments copiés" },
                         { "ItemCopied" , " élément copié" },
+                        { "Default" , "Défaut" },
                     }
                 },
                 {
@@ -696,6 +699,7 @@ namespace AnnoDesigner.Localization
                         { "FileNotFound" , "Plik nie został znaleziony." },
                         { "ItemsCopied" , " skopiowane elementy" },
                         { "ItemCopied" , " skopiowany przedmiot" },
+                        { "Default" , "Domyślnie" },
                     }
                 },
                 {
@@ -857,6 +861,7 @@ namespace AnnoDesigner.Localization
                         { "FileNotFound" , "Файл не был найден." },
                         { "ItemsCopied" , " списанные предметы" },
                         { "ItemCopied" , " скопированный элемент" },
+                        { "Default" , "По умолчанию" },
                     }
                 },
             };
