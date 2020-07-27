@@ -430,12 +430,22 @@ namespace AnnoDesigner
         /// A list of object position <see cref="Rect"/>s. Used when dragging selected objects (when MouseMode is <see cref="MouseMode.DragSelection"/>).
         /// Holds a Rect that represents the object's previous position prior to dragging.
         /// </summary>
-        private List<(LayoutObject Item, Rect OldGridRect)> _oldObjectPositions;
+        private readonly List<(LayoutObject Item, Rect OldGridRect)> _oldObjectPositions;
 
         /// <summary>
         /// The collision rect derived from the current selection.
         /// </summary>
         private Rect _collisionRect;
+
+        //TODO: PR: add comments for these
+
+        private double _offsetX;
+        private double _offsetY;
+
+        private Rect _viewport;
+
+        private TranslateTransform _viewportTransform;
+        private GuidelineSet _guidelineSet;
 
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
         #endregion
@@ -482,7 +492,6 @@ namespace AnnoDesigner
         /// </summary>
         private readonly Brush _influencedBrush;
 
-
         #endregion
 
 #if DEBUG
@@ -494,11 +503,11 @@ namespace AnnoDesigner
         private readonly Brush _debugBrush;
 
         private bool debugModeIsEnabled = true;
-        private bool debugShowObjectPositions = true;
-        private bool debugShowQuadTreeViz = true;
-        private bool debugShowSelectionRectCoordinates = false;
-        private bool debugShowSelectionCollisionRect = true;
-        private bool debugPersistCollisionRect = true;
+        private readonly bool debugShowObjectPositions = true;
+        private readonly bool debugShowQuadTreeViz = true;
+        private readonly bool debugShowSelectionRectCoordinates = true;
+        private readonly bool debugShowSelectionCollisionRect = true;
+        private readonly bool debugShowViewportRectCoordinates = true;
 
         #endregion
 #endif
@@ -539,6 +548,7 @@ namespace AnnoDesigner
             CurrentMode = MouseMode.Standard;
 
             //create
+            //TODO: PR: Handle when extent needs to be increased in size.
             PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-1000d, -1000d, 2000d, 2000d));
             SelectedObjects = new List<LayoutObject>();
             _oldObjectPositions = new List<(LayoutObject Item, Rect OldBounds)>();
@@ -598,6 +608,8 @@ namespace AnnoDesigner
 #if DEBUG
             _debugBrush = Brushes.DarkBlue;
 #endif
+            _viewportTransform = new TranslateTransform(0, 0);
+
             sw.Stop();
             logger.Trace($"init variables took: {sw.ElapsedMilliseconds}ms");
 
@@ -689,19 +701,25 @@ namespace AnnoDesigner
             //needed?
             base.OnRender(drawingContext);
 
-            //var m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
-            //var dpiFactor = 1 / m.M11;
-
-            // assure pixel perfect drawing
-            var halfPenWidth = _gridLinePen.Thickness / 2;
-            var guidelines = new GuidelineSet();
-            guidelines.GuidelinesX.Add(halfPenWidth);
-            guidelines.GuidelinesY.Add(halfPenWidth);
-            guidelines.Freeze();
-            drawingContext.PushGuidelineSet(guidelines);
-
             var width = RenderSize.Width;
             var height = RenderSize.Height;
+            var widthOffset = _coordinateHelper.GridToScreen(_offsetX, GridSize);
+            var heightOffset = _coordinateHelper.GridToScreen(_offsetY, GridSize);
+
+            //translate by offset
+            _viewportTransform.X = widthOffset;
+            _viewportTransform.Y = heightOffset;
+
+            //as we translate by X/Y, the _viewport rect needs to reflect the new position of 0,0 in relation to the offset. This position is
+            //the negative of the current X/Y offset.
+            //e.g with no translation, the top left corner of the viewport is 0,0.
+            //if we've shifted everything 5 units in the X direction and 5 units in the y direction, the top left corner of the viewpory
+            //is -5, -5.
+            _viewport = new Rect(-_offsetX, -_offsetY, _coordinateHelper.ScreenToGrid(width, GridSize), _coordinateHelper.ScreenToGrid(height, GridSize));
+
+            // assure pixel perfect drawing using guidelines.
+            // this value is cached and refreshed in LoadGridLineColor();
+            drawingContext.PushGuidelineSet(_guidelineSet);
 
             // draw background
             drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(new Point(), RenderSize));
@@ -719,11 +737,33 @@ namespace AnnoDesigner
                 }
             }
 
-            // draw mouse grid position highlight
-            //drawingContext.DrawRectangle(_lightBrush, _highlightPen, new Rect(GridToScreen(ScreenToGrid(_mousePosition)), new Size(_gridStep, _gridStep)));
+#if DEBUG
+            if (debugModeIsEnabled && debugShowViewportRectCoordinates)
+            {
+                //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
+                if (App.DpiScale.PixelsPerDip != 0)
+                {
+                    var top = _viewport.Top;
+                    var left = _viewport.Left;
+                    var h = _viewport.Height;
+                    var w = _viewport.Width;
+                    var text = new FormattedText($"{top:F2}, {left:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                 TYPEFACE, 12, _debugBrush, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                    {
+                        TextAlignment = TextAlignment.Left
+                    };
+                    drawingContext.DrawText(text, new Point(10, 10));
+                }
+            }
+#endif
+
+            //Push the transform after rendering everything that should not be translated.
+            drawingContext.PushTransform(_viewportTransform);
+
+            var objectsInViewport = PlacedObjectsQuadTree.GetItemsIntersecting(_viewport).ToList();
 
             // draw placed objects            
-            RenderObjectList(drawingContext, PlacedObjectsQuadTree.All().ToList(), useTransparency: false); ;
+            RenderObjectList(drawingContext, objectsInViewport, useTransparency: false);
             RenderObjectSelection(drawingContext, SelectedObjects);
 
             if (!RenderInfluences)
@@ -736,8 +776,9 @@ namespace AnnoDesigner
             }
             else
             {
-                RenderObjectInfluenceRadius(drawingContext, PlacedObjectsQuadTree.All().ToList());
-                RenderObjectInfluenceRange(drawingContext, PlacedObjectsQuadTree.All().ToList());
+                //TODO: PR: Handle offscreen influence ranges
+                RenderObjectInfluenceRadius(drawingContext, objectsInViewport);
+                RenderObjectInfluenceRange(drawingContext, objectsInViewport);
             }
 
             if (CurrentObjects.Count == 0)
@@ -763,6 +804,8 @@ namespace AnnoDesigner
                     RenderObjectList(drawingContext, CurrentObjects, useTransparency: true);
                 }
             }
+            //pop viewport transform
+            drawingContext.Pop();
 
             // draw selection rect while dragging the mouse
             if (CurrentMode == MouseMode.SelectionRect)
@@ -787,19 +830,11 @@ namespace AnnoDesigner
                     location.Y -= text.Height;
                     drawingContext.DrawText(text, location);
                 }
-
-                if (debugModeIsEnabled && debugShowSelectionCollisionRect && !debugPersistCollisionRect)
-                {
-                    //Dark blue = 0x00008B;
-                    var brush = _brushCache.GetSolidBrush(Color.FromArgb(0x08, 0, 0, 0x8B));
-                    var pen = _penCache.GetPen(_debugBrush, 1);
-                    drawingContext.DrawRectangle(brush, pen, _collisionRect);
-                }
-
 #endif
             }
 
 #if DEBUG
+            drawingContext.PushTransform(_viewportTransform);
             if (debugModeIsEnabled && debugShowQuadTreeViz)
             {
                 var brush = Brushes.Transparent;
@@ -811,13 +846,17 @@ namespace AnnoDesigner
                 }
             }
 
-            if (debugModeIsEnabled && debugShowSelectionCollisionRect && debugPersistCollisionRect)
+
+            if (debugModeIsEnabled && debugShowSelectionCollisionRect)
             {
                 //Dark blue = 0x00008B;
                 var brush = _brushCache.GetSolidBrush(Color.FromArgb(0x08, 0, 0, 0x8B));
                 var pen = _penCache.GetPen(_debugBrush, 1);
                 drawingContext.DrawRectangle(brush, pen, _collisionRect);
             }
+
+            //pop viewport transform
+            drawingContext.Pop();
 #endif
 
             // pop back guidlines set
@@ -1333,7 +1372,12 @@ namespace AnnoDesigner
         {
             var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorGridLines);//explicit variable to make debugging easier
             _gridLinePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson.Color), DPI_FACTOR * 1);
-
+            var halfPenWidth = _gridLinePen.Thickness / 2;
+            var guidelines = new GuidelineSet();
+            guidelines.GuidelinesX.Add(halfPenWidth);
+            guidelines.GuidelinesY.Add(halfPenWidth);
+            guidelines.Freeze();
+            _guidelineSet = guidelines;
             InvalidateVisual();
         }
 
@@ -1360,18 +1404,38 @@ namespace AnnoDesigner
         /// <param name="newPositions"></param>
         private void UpdateObjectPositions(IEnumerable<(LayoutObject, Rect)> oldPositions, IEnumerable<(LayoutObject, Rect)> newPositions)
         {
+
+            //TODO: PR: Duplication bug repro steps
+            //Place a building.
+            //Left click on the building (hold left click).
+            //Move the building
+            //Hold right click (now holding both buttons) and drag.
+            //Fixing this bug should also fix the bug in Remove, and the movement bug.
+
+            //TODO: PR: Bug - all *other* items are being deleted
+            //DragAll, (maybe a negative direction?).
+            //Draw a selection rect.
+
             //The IEnumerable sequences passed in as parameters sometimes get GC'd between calls when using MouseMode.DragAll, 
             //as the objects are not referenced anywhere between the end of the foreach loop and the AddRange call (the variables
             //themselves do not count as references due to IEnumerable lazy evaluation).
             //By materializing the lists early, we ensure that references are maintained.
-            var priorPositions = oldPositions.ToList();
-            var updatedPositions = newPositions.ToList();
-            foreach (var item in priorPositions)
+            var materialisedOld = oldPositions.ToList();
+            var materialisedNew = newPositions.ToList();
+
+            logger.Debug($"Update Positions: {materialisedOld.Count}, {materialisedNew.Count}");
+            if (materialisedOld.Count != materialisedNew.Count)
+            {
+
+            }
+
+            foreach (var item in materialisedOld)
             {
                 PlacedObjectsQuadTree.Remove(item.Item1, item.Item2);
             }
             //add
-            PlacedObjectsQuadTree.AddRange(updatedPositions);
+            PlacedObjectsQuadTree.AddRange(materialisedNew);
+
         }
         #endregion
 
@@ -1443,6 +1507,7 @@ namespace AnnoDesigner
             {
                 change = e.Delta > 0 ? 1 : -1;
             }
+            //TODO: PR: get this working with viewport.
             if (!_appSettings.UseZoomToPoint)
             {
                 GridSize += change;
@@ -1559,25 +1624,31 @@ namespace AnnoDesigner
                 //TODO: PR: Theres a bug in here somewhere, that causing each dx/dy movement to move 2 cells each step, rather than 1
                 //Not sure whats causing it. Not yet sure how to reproduce effectively.
 
-                if (_oldObjectPositions.Count == 0)
-                {
-                    _oldObjectPositions.AddRange(PlacedObjectsQuadTree.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
-                }
+                //if (_oldObjectPositions.Count == 0)
+                //{
+                logger.Debug("OnMouseMove: DragAll - Updated object positions");
+                _oldObjectPositions.AddRange(PlacedObjectsQuadTree.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                //}
                 // move all selected objects
                 var dx = (int)_coordinateHelper.ScreenToGrid(_mousePosition.X - _mouseDragStart.X, GridSize);
                 var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
 
+                // check if the mouse has moved at least one grid cell in any direction
                 if (dx == 0 && dy == 0)
                 {
                     //no relevant mouse move -> no further action                                    
                     return;
                 }
+                logger.Debug("OnMouseMove: DragAll");
 
-                // check if the mouse has moved at least one grid cell in any direction
-                foreach (var curLayoutObject in PlacedObjectsQuadTree)
-                {
-                    curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
-                }
+                //foreach (var curLayoutObject in PlacedObjectsQuadTree)
+                //{
+                //    curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
+                //}
+
+                _offsetX += dx;
+                _offsetY += dy;
+
                 // adjust the drag start to compensate the amount we already moved
                 _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
                 _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
@@ -1614,8 +1685,8 @@ namespace AnnoDesigner
                                 _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                                 // select intersecting objects
                                 var _selectionRectGrid = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
-                                var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(_selectionRectGrid).ToList();
-                                AddSelectedObjects(possibleItems.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)),
+                                _selectionRectGrid.Offset(_offsetX, _offsetY);
+                                AddSelectedObjects(PlacedObjectsQuadTree.GetItemsIntersecting(_selectionRectGrid).ToList(),
                                                    ShouldAffectObjectsWithIdentifier());
 
                                 //TODO: PR: To allow for Ctrl || Shift click selections, compute a collision rect from the min/max x/y points (top left corner, bottom right corner)
@@ -1628,6 +1699,8 @@ namespace AnnoDesigner
                                 //if Count == 0, then this is the first time this has been done in the current mouse move, as we reset this on mouse up
                                 if (_oldObjectPositions.Count == 0)
                                 {
+
+                                    logger.Debug("OnMouseMove: DragSelection - Updated object positions");
                                     _oldObjectPositions.AddRange(SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
                                 }
 
@@ -1641,12 +1714,13 @@ namespace AnnoDesigner
 
                                     break;
                                 }
+                                logger.Debug("OnMouseMove: DragSelection");
 
                                 if (_unselectedObjects == null)
                                 {
                                     _unselectedObjects = new List<LayoutObject>();
                                 }
-                                //TODO: PR: Investigate
+                                //TODO: PR: Investigate - feels expensive
                                 //This feels like a very expensive operation - is there something we can do to not need this?
                                 //Recompute _unselectedObjects
                                 _unselectedObjects = PlacedObjectsQuadTree.GetItemsIntersecting(_collisionRect).ToList().FindAll(_ => !SelectedObjects.Contains(_)).ToList();
@@ -1666,6 +1740,8 @@ namespace AnnoDesigner
                                         break;
                                     }
                                 }
+
+                                //TODO: PR: Implement collisions
 
                                 // if no collisions were found, permanently move all selected objects
                                 if (!collisionsExist)
@@ -1704,11 +1780,11 @@ namespace AnnoDesigner
 
             if (CurrentMode == MouseMode.DragAll)
             {
-                //TODO: PR: Is this the correct behaviour? Do we want && or || here?
                 if (e.LeftButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Released)
                 {
-                    UpdateObjectPositions(_oldObjectPositions, PlacedObjectsQuadTree.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
-                    _oldObjectPositions.Clear();
+                    //        logger.Debug("OnMouseUp: DragAll2");
+                    //UpdateObjectPositions(_oldObjectPositions, PlacedObjectsQuadTree.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                    //_oldObjectPositions.Clear();
 
                     CurrentMode = MouseMode.Standard;
                 }
@@ -1754,6 +1830,7 @@ namespace AnnoDesigner
                         break;
                     case MouseMode.DragSelection:
                         // stop dragging of selected objects
+                        logger.Debug("OnMouseUp: DragSelection");
                         UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
                         _oldObjectPositions.Clear();
                         CurrentMode = MouseMode.Standard;
@@ -1935,6 +2012,7 @@ namespace AnnoDesigner
         private LayoutObject GetObjectAt(Point position)
         {
             var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
+            gridPosition.Offset(-_offsetX, -_offsetY);
             var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(new Rect(gridPosition, new Size(1, 1)));
             return possibleItems.ToList().Find(_ => _.CollisionRect.Contains(gridPosition));
         }
@@ -1979,6 +2057,7 @@ namespace AnnoDesigner
         /// <param name="border"></param>
         public void Normalize(int border)
         {
+            //TODO: PR: QuadTree doesn't work with this at the moment
             if (PlacedObjectsQuadTree.Count() == 0)
             {
                 return;
