@@ -211,6 +211,8 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Custom" },
                         { "Warning" , "Warning" },
                         { "FileNotFound" , "The file was not found." },
+                        { "ItemsCopied" , " items copied" },
+                        { "ItemCopied" , " item copied" },
                     }
                 },
                 {
@@ -370,6 +372,8 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Benutzerdefiniert" },
                         { "Warning" , "Warnung" },
                         { "FileNotFound" , "Die Datei wurde nicht gefunden." },
+                        { "ItemsCopied" , " Elemente kopiert" },
+                        { "ItemCopied" , " Element kopiert" },
                     }
                 },
                 {
@@ -529,6 +533,8 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Personnalisation" },
                         { "Warning" , "Avertissement" },
                         { "FileNotFound" , "Le fichier n'a pas été retrouvé." },
+                        { "ItemsCopied" , " éléments copiés" },
+                        { "ItemCopied" , " élément copié" },
                     }
                 },
                 {
@@ -688,6 +694,8 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Niestandardowy" },
                         { "Warning" , "Ostrzeżenie" },
                         { "FileNotFound" , "Plik nie został znaleziony." },
+                        { "ItemsCopied" , " skopiowane elementy" },
+                        { "ItemCopied" , " skopiowany przedmiot" },
                     }
                 },
                 {
@@ -847,6 +855,8 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Пользовательский" },
                         { "Warning" , "Предупреждение" },
                         { "FileNotFound" , "Файл не был найден." },
+                        { "ItemsCopied" , " списанные предметы" },
+                        { "ItemCopied" , " скопированный элемент" },
                     }
                 },
             };
