@@ -211,6 +211,7 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Custom" },
                         { "Warning" , "Warning" },
                         { "FileNotFound" , "The file was not found." },
+                        { "Default" , "Default" },
                     }
                 },
                 {
@@ -370,6 +371,7 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Benutzerdefiniert" },
                         { "Warning" , "Warnung" },
                         { "FileNotFound" , "Die Datei wurde nicht gefunden." },
+                        { "Default" , "Standard" },
                     }
                 },
                 {
@@ -529,6 +531,7 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Personnalisation" },
                         { "Warning" , "Avertissement" },
                         { "FileNotFound" , "Le fichier n'a pas été retrouvé." },
+                        { "Default" , "Défaut" },
                     }
                 },
                 {
@@ -688,6 +691,7 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Niestandardowy" },
                         { "Warning" , "Ostrzeżenie" },
                         { "FileNotFound" , "Plik nie został znaleziony." },
+                        { "Default" , "Domyślnie" },
                     }
                 },
                 {
@@ -847,6 +851,7 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Пользовательский" },
                         { "Warning" , "Предупреждение" },
                         { "FileNotFound" , "Файл не был найден." },
+                        { "Default" , "По умолчанию" },
                     }
                 },
             };
