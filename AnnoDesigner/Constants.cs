@@ -50,6 +50,11 @@ namespace AnnoDesigner
         public const double ZoomSensitivitySliderMaximum = 100d;
 
         /// <summary>
+        /// The default zoom sensitivity value.
+        /// </summary>
+        public const double ZoomSensitivityPercentageDefault = 50d;
+
+        /// <summary>
         /// The value that affects the rendering sizes of icons on the anno canvas. 1 produces an icon of the biggest size.
         /// </summary>
         public const double IconSizeFactor = 1.1;
