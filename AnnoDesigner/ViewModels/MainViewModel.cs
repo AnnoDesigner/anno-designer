@@ -969,7 +969,7 @@ namespace AnnoDesigner.ViewModels
                             AnnoCanvas.SelectedObjects.Clear();
 
                             AnnoCanvas.PlacedObjects.Clear();
-                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)));
+                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)));
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 
@@ -1205,7 +1205,8 @@ namespace AnnoDesigner.ViewModels
                 using (var ms = new MemoryStream())
                 {
                     AnnoCanvas.Normalize(1);
-                    _layoutLoader.SaveLayout(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList(), ms);
+                    var layoutToSave = new SavedLayout(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
+                    _layoutLoader.SaveLayout(layoutToSave, ms);
 
                     var jsonString = Encoding.UTF8.GetString(ms.ToArray());
 

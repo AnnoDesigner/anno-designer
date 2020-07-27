@@ -1840,7 +1840,8 @@ namespace AnnoDesigner
             try
             {
                 Normalize(1);
-                _layoutLoader.SaveLayout(PlacedObjects.Select(x => x.WrappedAnnoObject).ToList(), LoadedFile);
+                var layoutToSave = new SavedLayout(PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
+                _layoutLoader.SaveLayout(layoutToSave, LoadedFile);
             }
             catch (Exception e)
             {
@@ -1909,8 +1910,8 @@ namespace AnnoDesigner
                 {
                     SelectedObjects.Clear();
 
-                    var layoutObjects = new List<LayoutObject>(layout.Count);
-                    foreach (var curObj in layout)
+                    var layoutObjects = new List<LayoutObject>(layout.Objects.Count);
+                    foreach (var curObj in layout.Objects)
                     {
                         layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
                     }
@@ -2065,7 +2066,7 @@ namespace AnnoDesigner
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
-        
+
         private readonly Hotkey duplicateHotkey;
         private readonly ICommand duplicateCommand;
         private void ExecuteDuplicate(object param)
