@@ -437,13 +437,24 @@ namespace AnnoDesigner
         /// </summary>
         private Rect _collisionRect;
 
-        //TODO: PR: add comments for these
+        /// <summary>
+        /// Current left alignment of the viewport.
+        /// </summary>
+        private double _viewportLeft;
 
-        private double _offsetX;
-        private double _offsetY;
+        /// <summary>
+        /// Current top alignment of the viewport.
+        /// </summary>
+        private double _viewportTop;
 
+        /// <summary>
+        /// A rect that represents the current viewport.
+        /// </summary>
         private Rect _viewport;
 
+        /// <summary>
+        /// A transform used to translate items within the viewport.
+        /// </summary>
         private TranslateTransform _viewportTransform;
         private GuidelineSet _guidelineSet;
 
@@ -703,8 +714,8 @@ namespace AnnoDesigner
 
             var width = RenderSize.Width;
             var height = RenderSize.Height;
-            var widthOffset = _coordinateHelper.GridToScreen(_offsetX, GridSize);
-            var heightOffset = _coordinateHelper.GridToScreen(_offsetY, GridSize);
+            var widthOffset = _coordinateHelper.GridToScreen(_viewportLeft, GridSize);
+            var heightOffset = _coordinateHelper.GridToScreen(_viewportTop, GridSize);
 
             //translate by offset
             _viewportTransform.X = widthOffset;
@@ -715,7 +726,7 @@ namespace AnnoDesigner
             //e.g with no translation, the top left corner of the viewport is 0,0.
             //if we've shifted everything 5 units in the X direction and 5 units in the y direction, the top left corner of the viewpory
             //is -5, -5.
-            _viewport = new Rect(-_offsetX, -_offsetY, _coordinateHelper.ScreenToGrid(width, GridSize), _coordinateHelper.ScreenToGrid(height, GridSize));
+            _viewport = new Rect(-_viewportLeft, -_viewportTop, _coordinateHelper.ScreenToGrid(width, GridSize), _coordinateHelper.ScreenToGrid(height, GridSize));
 
             // assure pixel perfect drawing using guidelines.
             // this value is cached and refreshed in LoadGridLineColor();
@@ -1423,12 +1434,6 @@ namespace AnnoDesigner
             var materialisedOld = oldPositions.ToList();
             var materialisedNew = newPositions.ToList();
 
-            logger.Debug($"Update Positions: {materialisedOld.Count}, {materialisedNew.Count}");
-            if (materialisedOld.Count != materialisedNew.Count)
-            {
-
-            }
-
             foreach (var item in materialisedOld)
             {
                 PlacedObjectsQuadTree.Remove(item.Item1, item.Item2);
@@ -1632,8 +1637,8 @@ namespace AnnoDesigner
                 var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
 
                 //shift the viewport;
-                _offsetX += dx;
-                _offsetY += dy;
+                _viewportLeft += dx;
+                _viewportTop += dy;
 
                 // adjust the drag start to compensate the amount we already moved
                 _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
@@ -1668,7 +1673,7 @@ namespace AnnoDesigner
                                 _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                                 // select intersecting objects
                                 var selectionRectGrid = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
-                                selectionRectGrid.Offset(-_offsetX, -_offsetY);
+                                selectionRectGrid.Offset(-_viewportLeft, -_viewportTop);
                                 AddSelectedObjects(PlacedObjectsQuadTree.GetItemsIntersecting(selectionRectGrid).ToList(),
                                                    ShouldAffectObjectsWithIdentifier());
 
@@ -1682,8 +1687,6 @@ namespace AnnoDesigner
                                 //if Count == 0, then this is the first time this has been done in the current mouse move, as we reset this on mouse up
                                 if (_oldObjectPositions.Count == 0)
                                 {
-
-                                    logger.Debug("OnMouseMove: DragSelection - Updated object positions");
                                     _oldObjectPositions.AddRange(SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
                                 }
 
@@ -1693,11 +1696,9 @@ namespace AnnoDesigner
                                 // check if the mouse has moved at least one grid cell in any direction
                                 if (dx == 0 && dy == 0)
                                 {
-                                    //no relevant mouse move -> no further action                                    
-
+                                    //no relevant mouse move -> no further action
                                     break;
                                 }
-                                logger.Debug("OnMouseMove: DragSelection");
 
                                 if (_unselectedObjects == null)
                                 {
@@ -1818,7 +1819,6 @@ namespace AnnoDesigner
                         break;
                     case MouseMode.DragSelection:
                         // stop dragging of selected objects
-                        logger.Debug("OnMouseUp: DragSelection");
                         UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
                         _oldObjectPositions.Clear();
                         CurrentMode = MouseMode.Standard;
@@ -2000,7 +2000,7 @@ namespace AnnoDesigner
         private LayoutObject GetObjectAt(Point position)
         {
             var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
-            gridPosition.Offset(-_offsetX, -_offsetY);
+            gridPosition.Offset(-_viewportLeft, -_viewportTop);
             var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(new Rect(gridPosition, new Size(1, 1)));
             return possibleItems.ToList().Find(_ => _.CollisionRect.Contains(gridPosition));
         }
