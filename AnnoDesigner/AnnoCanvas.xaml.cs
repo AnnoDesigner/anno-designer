@@ -1623,38 +1623,21 @@ namespace AnnoDesigner
             {
                 //TODO: PR: Theres a bug in here somewhere, that causing each dx/dy movement to move 2 cells each step, rather than 1
                 //Not sure whats causing it. Not yet sure how to reproduce effectively.
+                //Adding viewport may have fixed this.
 
-                //if (_oldObjectPositions.Count == 0)
-                //{
-                logger.Debug("OnMouseMove: DragAll - Updated object positions");
-                _oldObjectPositions.AddRange(PlacedObjectsQuadTree.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
-                //}
+                //TODO: PR: Bug - All positions got shifted by 1 square
+
                 // move all selected objects
                 var dx = (int)_coordinateHelper.ScreenToGrid(_mousePosition.X - _mouseDragStart.X, GridSize);
                 var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
 
-                // check if the mouse has moved at least one grid cell in any direction
-                if (dx == 0 && dy == 0)
-                {
-                    //no relevant mouse move -> no further action                                    
-                    return;
-                }
-                logger.Debug("OnMouseMove: DragAll");
-
-                //foreach (var curLayoutObject in PlacedObjectsQuadTree)
-                //{
-                //    curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
-                //}
-
+                //shift the viewport;
                 _offsetX += dx;
                 _offsetY += dy;
 
                 // adjust the drag start to compensate the amount we already moved
                 _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
                 _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
-
-                //all is moved -> no need to update statistics
-                //StatisticsUpdated?.Invoke(this, EventArgs.Empty);
             }
             else if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -1684,9 +1667,9 @@ namespace AnnoDesigner
                                 // adjust rect
                                 _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                                 // select intersecting objects
-                                var _selectionRectGrid = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
-                                _selectionRectGrid.Offset(_offsetX, _offsetY);
-                                AddSelectedObjects(PlacedObjectsQuadTree.GetItemsIntersecting(_selectionRectGrid).ToList(),
+                                var selectionRectGrid = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
+                                selectionRectGrid.Offset(-_offsetX, -_offsetY);
+                                AddSelectedObjects(PlacedObjectsQuadTree.GetItemsIntersecting(selectionRectGrid).ToList(),
                                                    ShouldAffectObjectsWithIdentifier());
 
                                 //TODO: PR: To allow for Ctrl || Shift click selections, compute a collision rect from the min/max x/y points (top left corner, bottom right corner)
@@ -1785,6 +1768,11 @@ namespace AnnoDesigner
                     //        logger.Debug("OnMouseUp: DragAll2");
                     //UpdateObjectPositions(_oldObjectPositions, PlacedObjectsQuadTree.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
                     //_oldObjectPositions.Clear();
+
+                    //TODO: PR: Implement position updates on DragAll (as we could have moved some objects via DragSelection before dragging all
+                    //retrieve collision rects
+                    //select intersecting items from placed objects.
+                    //call UpdateObjectPositions with old and new placements.
 
                     CurrentMode = MouseMode.Standard;
                 }

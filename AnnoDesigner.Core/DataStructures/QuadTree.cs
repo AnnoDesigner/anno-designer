@@ -225,6 +225,18 @@ namespace AnnoDesigner.Core.DataStructures
                 return itemCache;
             }
 
+            internal IEnumerable<(T Item, Rect Bounds)> AllWithBounds()
+            {
+                var items = new List<(T Item, Rect Bounds)>(count);
+                var empty = new List<(T Item, Rect Bounds)>(0);
+                items.AddRange(topLeft?.AllWithBounds() ?? empty);
+                items.AddRange(topRight?.AllWithBounds() ?? empty);
+                items.AddRange(bottomRight?.AllWithBounds() ?? empty);
+                items.AddRange(bottomLeft?.AllWithBounds() ?? empty);
+                items.AddRange(Items);
+                return items;
+            }
+
             /// <summary>
             /// Updates the cahced data for this quadrant.
             /// </summary>
@@ -279,18 +291,27 @@ namespace AnnoDesigner.Core.DataStructures
         /// The root of the <see cref="QuadTree{T}"/>
         /// </summary>
         Quadrant root;
-        Rect _extent;
+
+        /// <summary>
+        /// A value representing the size of the list returned from methods on this QuadTree.
+        /// Used in a list initialisation to pre-allocate a certain amount of values.
+        /// </summary>
+        private int previousCount = 32;
 
         /// <summary>
         /// Get the bounds of this QuadTree;
         /// </summary>
         public Rect Extent
         {
-            get => _extent;
+            get => root.Extent;
             set
             {
-                _extent = value;
-                //TODO: PR: perform reindex
+                if (root != null)
+                {
+                    var oldRoot = root;
+                    root = new Quadrant(value);
+                    AddRange(oldRoot.AllWithBounds());
+                }
             }
         }
 
@@ -336,10 +357,11 @@ namespace AnnoDesigner.Core.DataStructures
         /// <returns></returns>
         public IEnumerable<T> GetItemsIntersecting(Rect bounds)
         {
-            //TODO: PR: Experiment with this value. Maybe keep the previous allocated size to smooth out performance when
-            //calling this many times.
-            var items = new List<T>(32);
+            var items = new List<T>(previousCount);
             root.GetItemsIntersecting(items, bounds);
+            //using Count() here is fine as the underlying collection is a List, which implements ICollection
+            //https://referencesource.microsoft.com/#System.Core/System/Linq/Enumerable.cs,1314
+            previousCount = items.Count(); 
             return items;
         }
 
@@ -403,10 +425,6 @@ namespace AnnoDesigner.Core.DataStructures
 
         public void AddRange(IEnumerable<(T item, Rect bounds)> collection)
         {
-            //TODO: PR: Optimise allocations by setting Items.Capacity ahead of time for each quadrant
-            //then check if the extra processing to "pre-allocate" is worth it.
-            //Will require different insert logic (as we've already figured out where everything should go).
-
             foreach (var item in collection)
             {
                 Insert(item.item, item.bounds);
