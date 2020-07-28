@@ -437,7 +437,6 @@ namespace AnnoDesigner.Core.DataStructures
         public void Clear()
         {
             root = new Quadrant(Extent);
-            //TODO: PR: See if this is necessary.
             GC.Collect();
         }
 
