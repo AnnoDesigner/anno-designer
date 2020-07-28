@@ -264,7 +264,8 @@ namespace AnnoDesigner
                 if (value != null)
                 {
                     _clipboardObjects = value;
-                    StatusMessage = value.Count + " items copied";
+                    var localizedMessage = value.Count == 1 ? _localizationHelper.GetLocalization("ItemCopied") : _localizationHelper.GetLocalization("ItemsCopied");
+                    StatusMessage = $"{value.Count} {localizedMessage}";
                     OnClipboardChanged?.Invoke(value);
                 }
             }
