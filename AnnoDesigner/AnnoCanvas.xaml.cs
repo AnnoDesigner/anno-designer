@@ -15,7 +15,6 @@ using AnnoDesigner.Core;
 using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout;
-using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
@@ -49,6 +48,11 @@ namespace AnnoDesigner
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
+        /// <summary>
+        /// Event which is fired when the status message should be changed.
+        /// </summary>
+        public event EventHandler<FileLoadedEventArgs> OnLoadedFileChanged;
+        public event EventHandler<OpenFileEventArgs> OpenFileRequested;
 
         #region Properties
 
@@ -103,10 +107,7 @@ namespace AnnoDesigner
         /// </summary>
         public bool RenderGrid
         {
-            get
-            {
-                return _renderGrid;
-            }
+            get { return _renderGrid; }
             set
             {
                 if (_renderGrid != value)
@@ -127,10 +128,7 @@ namespace AnnoDesigner
         /// </summary>
         public bool RenderInfluences
         {
-            get
-            {
-                return _renderInfluences;
-            }
+            get { return _renderInfluences; }
             set
             {
                 if (_renderInfluences != value)
@@ -151,10 +149,7 @@ namespace AnnoDesigner
         /// </summary>
         public bool RenderLabel
         {
-            get
-            {
-                return _renderLabel;
-            }
+            get { return _renderLabel; }
             set
             {
                 if (_renderLabel != value)
@@ -175,10 +170,7 @@ namespace AnnoDesigner
         /// </summary>
         public bool RenderIcon
         {
-            get
-            {
-                return _renderIcon;
-            }
+            get { return _renderIcon; }
             set
             {
                 if (_renderIcon != value)
@@ -199,10 +191,7 @@ namespace AnnoDesigner
         /// </summary>
         public bool RenderTrueInfluenceRange
         {
-            get
-            {
-                return _renderTrueInfluenceRange;
-            }
+            get { return _renderTrueInfluenceRange; }
             set
             {
                 if (_renderTrueInfluenceRange != value)
@@ -223,10 +212,7 @@ namespace AnnoDesigner
         /// </summary>
         public List<LayoutObject> CurrentObjects
         {
-            get
-            {
-                return _currentObjects;
-            }
+            get { return _currentObjects; }
             private set
             {
                 if (_currentObjects != value)
@@ -255,10 +241,7 @@ namespace AnnoDesigner
         /// </summary>
         public List<LayoutObject> ClipboardObjects
         {
-            get
-            {
-                return _clipboardObjects;
-            }
+            get { return _clipboardObjects; }
             private set
             {
                 if (value != null)
@@ -286,10 +269,7 @@ namespace AnnoDesigner
         /// </summary>
         public string StatusMessage
         {
-            get
-            {
-                return _statusMessage;
-            }
+            get { return _statusMessage; }
             private set
             {
                 if (_statusMessage != value)
@@ -315,24 +295,16 @@ namespace AnnoDesigner
         /// </summary>
         public string LoadedFile
         {
-            get
-            {
-                return _loadedFile;
-            }
+            get { return _loadedFile; }
             set
             {
                 if (_loadedFile != value)
                 {
                     _loadedFile = value;
-                    OnLoadedFileChanged?.Invoke(value);
+                    OnLoadedFileChanged?.Invoke(this, new FileLoadedEventArgs(value));
                 }
             }
         }
-
-        /// <summary>
-        /// Event which is fired when the status message should be changed.
-        /// </summary>
-        public event Action<string> OnLoadedFileChanged;
 
         #endregion
 
@@ -377,10 +349,7 @@ namespace AnnoDesigner
         /// </summary>
         private MouseMode CurrentMode
         {
-            get
-            {
-                return _currentMode;
-            }
+            get { return _currentMode; }
             set
             {
                 _currentMode = value;
@@ -1895,51 +1864,7 @@ namespace AnnoDesigner
 
             if (dialog.ShowDialog() == true)
             {
-                OpenFile(dialog.FileName);
-            }
-        }
-
-        /// <summary>
-        /// Loads a new layout from file.
-        /// </summary>
-        public void OpenFile(string filename, bool forceLoad = false)
-        {
-            try
-            {
-                var layout = _layoutLoader.LoadLayout(filename, forceLoad);
-                if (layout != null)
-                {
-                    SelectedObjects.Clear();
-
-                    var layoutObjects = new List<LayoutObject>(layout.Objects.Count);
-                    foreach (var curObj in layout.Objects)
-                    {
-                        layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
-                    }
-
-                    PlacedObjects = layoutObjects;
-                    LoadedFile = filename;
-                    Normalize(1);
-
-                    StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-                    ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
-                }
-            }
-            catch (LayoutFileUnsupportedFormatException layoutEx)
-            {
-                logger.Warn(layoutEx, "Version of layout file is not supported.");
-
-                if (_messageBoxService.ShowQuestion("Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
-                        "File version unsupported"))
-                {
-                    OpenFile(filename, true);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Error loading layout from JSON.");
-
-                IOErrorMessageBox(ex);
+                OpenFileRequested?.Invoke(this, new OpenFileEventArgs(dialog.FileName));
             }
         }
 
@@ -1976,6 +1901,7 @@ namespace AnnoDesigner
                 { ApplicationCommands.Save, _ => _.Save() },
                 { ApplicationCommands.SaveAs, _ => _.SaveAs() }
             };
+
             // register event handlers for the specified commands
             foreach (var action in CommandExecuteMappings)
             {
@@ -2093,5 +2019,15 @@ namespace AnnoDesigner
         }
 
         #endregion
+
+        public void RaiseStatisticsUpdated(UpdateStatisticsEventArgs args)
+        {
+            StatisticsUpdated?.Invoke(this, args);
+        }
+
+        public void RaiseColorsInLayoutUpdated()
+        {
+            ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

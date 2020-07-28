@@ -14,9 +14,10 @@ namespace AnnoDesigner.Models
         event EventHandler<EventArgs> ColorsInLayoutUpdated;
         event Action<List<LayoutObject>> OnClipboardChanged;
         event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
-        event Action<string> OnLoadedFileChanged;
+        event EventHandler<FileLoadedEventArgs> OnLoadedFileChanged;
         event Action<string> OnStatusMessageChanged;
         event Action<LayoutObject> OnCurrentObjectChanged;
+        event EventHandler<OpenFileEventArgs> OpenFileRequested;
 
         List<LayoutObject> PlacedObjects { get; set; }
         List<LayoutObject> SelectedObjects { get; set; }
@@ -37,6 +38,7 @@ namespace AnnoDesigner.Models
         void ResetZoom();
         void Normalize();
         void Normalize(int border);
-        void OpenFile(string filename, bool forceLoad = false);
+        void RaiseStatisticsUpdated(UpdateStatisticsEventArgs args);
+        void RaiseColorsInLayoutUpdated();
     }
 }

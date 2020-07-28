@@ -518,12 +518,28 @@ namespace AnnoDesigner.ViewModels
             logger.Trace($"Status message changed: {message}");
         }
 
-        private void AnnoCanvas_LoadedFileChanged(string filePath)
+        private void AnnoCanvas_LoadedFileChanged(object sender, FileLoadedEventArgs args)
         {
-            MainWindowTitle = string.IsNullOrEmpty(filePath) ? "Anno Designer" : string.Format("{0} - Anno Designer", Path.GetFileName(filePath));
-            logger.Info($"Loaded file: {(string.IsNullOrEmpty(filePath) ? "(none)" : filePath)}");
+            var fileName = string.Empty;
+            if (!string.IsNullOrWhiteSpace(args.FilePath) && args.Layout?.LayoutVersion != default)
+            {
+                fileName = $"{Path.GetFileName(args.FilePath)} ({args.Layout.LayoutVersion})";
+            }
+            else if (!string.IsNullOrWhiteSpace(args.FilePath))
+            {
+                fileName = Path.GetFileName(args.FilePath);
+            }
 
-            _recentFilesHelper.AddFile(new RecentFile(filePath, DateTime.UtcNow));
+            MainWindowTitle = string.IsNullOrEmpty(fileName) ? "Anno Designer" : string.Format("{0} - Anno Designer", fileName);
+
+            logger.Info($"Loaded file: {(string.IsNullOrEmpty(args.FilePath) ? "(none)" : args.FilePath)}");
+
+            _recentFilesHelper.AddFile(new RecentFile(args.FilePath, DateTime.UtcNow));
+        }
+
+        private void AnnoCanvas_OpenFileRequested(object sender, OpenFileEventArgs args)
+        {
+            OpenFile(args.FilePath);
         }
 
         public Task UpdateStatisticsAsync(UpdateMode mode)
@@ -697,6 +713,61 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
+        /// <summary>
+        /// Loads a new layout from file.
+        /// </summary>
+        public void OpenFile(string filePath, bool forceLoad = false)
+        {
+            try
+            {
+                var layout = _layoutLoader.LoadLayout(filePath, forceLoad);
+                if (layout != null)
+                {
+                    AnnoCanvas.SelectedObjects.Clear();
+
+                    var layoutObjects = new List<LayoutObject>(layout.Objects.Count);
+                    foreach (var curObj in layout.Objects)
+                    {
+                        layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
+                    }
+
+                    AnnoCanvas.PlacedObjects = layoutObjects;
+                    AnnoCanvas.LoadedFile = filePath;
+                    AnnoCanvas.Normalize(1);
+
+                    AnnoCanvas_LoadedFileChanged(this, new FileLoadedEventArgs(filePath, layout));
+
+                    AnnoCanvas.RaiseStatisticsUpdated(UpdateStatisticsEventArgs.All);
+                    AnnoCanvas.RaiseColorsInLayoutUpdated();
+                }
+            }
+            catch (LayoutFileUnsupportedFormatException layoutEx)
+            {
+                logger.Warn(layoutEx, "Version of layout file is not supported.");
+
+                if (_messageBoxService.ShowQuestion("Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
+                        "File version unsupported"))
+                {
+                    OpenFile(filePath, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error loading layout from JSON.");
+
+                IOErrorMessageBox(ex);
+            }
+        }
+
+        /// <summary>
+        /// Displays a message box containing some error information.
+        /// </summary>
+        /// <param name="e">exception containing error information</param>
+        private void IOErrorMessageBox(Exception e)
+        {
+            _messageBoxService.ShowError(e.Message, "Something went wrong while saving/loading file.");
+        }
+
         #region properties
 
         public IAnnoCanvas AnnoCanvas
@@ -715,6 +786,7 @@ namespace AnnoDesigner.ViewModels
                 _annoCanvas.OnCurrentObjectChanged += UpdateUIFromObject;
                 _annoCanvas.OnStatusMessageChanged += AnnoCanvas_StatusMessageChanged;
                 _annoCanvas.OnLoadedFileChanged += AnnoCanvas_LoadedFileChanged;
+                _annoCanvas.OpenFileRequested += AnnoCanvas_OpenFileRequested;
                 BuildingSettingsViewModel.AnnoCanvasToUse = _annoCanvas;
             }
         }
@@ -1361,7 +1433,7 @@ namespace AnnoDesigner.ViewModels
 
             if (_fileSystem.File.Exists(recentFile.Path))
             {
-                AnnoCanvas.OpenFile(recentFile.Path);
+                OpenFile(recentFile.Path);
 
                 _recentFilesHelper.AddFile(new RecentFile(recentFile.Path, DateTime.UtcNow));
             }

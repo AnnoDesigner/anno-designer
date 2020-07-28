@@ -80,7 +80,7 @@ namespace AnnoDesigner
             // load file given by argument
             if (!string.IsNullOrEmpty(App.FilenameArgument))
             {
-                annoCanvas.OpenFile(App.FilenameArgument);
+                _mainViewModel.OpenFile(App.FilenameArgument);
             }
         }
 
