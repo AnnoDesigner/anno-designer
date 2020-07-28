@@ -189,7 +189,7 @@ namespace AnnoDesigner.Core.Tests
             var listToSave = new List<AnnoObject> { new AnnoObject { Identifier = "Lorem" } };
 
             // Act
-            loader.SaveLayout(new SavedLayout(listToSave), savedStream);
+            loader.SaveLayout(new LayoutFile(listToSave), savedStream);
 
             savedStream.Position = 0;
 
@@ -215,7 +215,7 @@ namespace AnnoDesigner.Core.Tests
             var listToSave = new List<AnnoObject> { new AnnoObject { Identifier = "Lorem", Color = new SerializableColor(expectedA, expectedR, expectedG, expectedB) } };
 
             // Act
-            loader.SaveLayout(new SavedLayout(listToSave), savedStream);
+            loader.SaveLayout(new LayoutFile(listToSave), savedStream);
 
             savedStream.Position = 0;
 

@@ -1840,7 +1840,7 @@ namespace AnnoDesigner
             try
             {
                 Normalize(1);
-                var layoutToSave = new SavedLayout(PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
+                var layoutToSave = new LayoutFile(PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
                 _layoutLoader.SaveLayout(layoutToSave, LoadedFile);
             }
             catch (Exception e)

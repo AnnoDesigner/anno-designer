@@ -13,7 +13,7 @@ namespace AnnoDesigner.Tests
 {
     public class RoadSearchHelperTests
     {
-        private static readonly SavedLayout defaultObjectList;
+        private static readonly LayoutFile defaultObjectList;
 
         static RoadSearchHelperTests()
         {

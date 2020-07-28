@@ -1205,7 +1205,7 @@ namespace AnnoDesigner.ViewModels
                 using (var ms = new MemoryStream())
                 {
                     AnnoCanvas.Normalize(1);
-                    var layoutToSave = new SavedLayout(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
+                    var layoutToSave = new LayoutFile(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
                     _layoutLoader.SaveLayout(layoutToSave, ms);
 
                     var jsonString = Encoding.UTF8.GetString(ms.ToArray());

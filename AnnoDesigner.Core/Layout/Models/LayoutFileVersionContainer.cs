@@ -4,12 +4,12 @@ using System.Runtime.Serialization;
 namespace AnnoDesigner.Core.Layout.Models
 {
     /// <summary>
-    /// Container with just the file version number
+    /// Container with just the version information.
     /// </summary>
     [DataContract]
-    public class LayoutVersionContainer
+    public class LayoutFileVersionContainer
     {
-        public LayoutVersionContainer()
+        public LayoutFileVersionContainer()
         {
             LayoutVersion = new Version(1, 0, 0, 0);
             Modified = DateTime.UtcNow;
