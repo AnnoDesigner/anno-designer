@@ -1515,7 +1515,6 @@ namespace AnnoDesigner
             {
                 change = e.Delta > 0 ? 1 : -1;
             }
-            //TODO: PR: get this working with viewport.
             if (!_appSettings.UseZoomToPoint)
             {
                 GridSize += change;
@@ -1528,13 +1527,8 @@ namespace AnnoDesigner
 
                 var postZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
                 var diff = postZoomPosition - preZoomPosition;
-                if (diff.LengthSquared > 0)
-                {
-                    foreach (var placedObject in PlacedObjectsQuadTree)
-                    {
-                        placedObject.Position += diff;
-                    }
-                }
+                _viewport.Left += diff.X;
+                _viewport.Top += diff.Y;
             }
         }
 
