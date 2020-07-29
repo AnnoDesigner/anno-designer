@@ -1420,12 +1420,9 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Removes and then re-adds the given objects to the <see cref="PlacedObjectsQuadTree"/>.
+        /// Removes and then re-adds the given objects to the <see cref="PlacedObjectsQuadTree"/>. This is potentially a very expensive
+        /// operation.
         /// </summary>
-        /// <remarks>
-        /// <paramref name="newPositions"/> is left as a <see cref="IEnumerable{(LayoutObject, Rect)}"/> as we'd need to do a transform
-        /// on the values anyway, and theres a chance they could already be in this desired form before before used in this method.
-        /// </remarks>
         /// <param name="oldPositions"></param>
         /// <param name="newPositions"></param>
         private void UpdateObjectPositions(IEnumerable<(LayoutObject, Rect)> oldPositions, IEnumerable<(LayoutObject, Rect)> newPositions)
@@ -2057,19 +2054,26 @@ namespace AnnoDesigner
         /// <param name="border"></param>
         public void Normalize(int border)
         {
-            //TODO: PR: QuadTree doesn't work with this at the moment
             if (PlacedObjectsQuadTree.Count() == 0)
             {
                 return;
             }
 
+            _viewport.Left = 0;
+            _viewport.Top = 0;
+
             var dx = PlacedObjectsQuadTree.Min(_ => _.Position.X) - border;
             var dy = PlacedObjectsQuadTree.Min(_ => _.Position.Y) - border;
+
+            //its important to materialize the IEnumerable, or we'll end up modifying the Position property below before we actually
+            //create the sequence, which would result in oldPositions == newPositions, which we do not want.
+            var oldPositions = PlacedObjectsQuadTree.Select(obj => (obj, new Rect(obj.Position, obj.Size))).ToList();
             foreach (var item in PlacedObjectsQuadTree)
             {
                 item.Position = new Point(item.Position.X - dx, item.Position.Y - dy);
             }
-
+            var newPositions = PlacedObjectsQuadTree.Select(obj => (obj, new Rect(obj.Position, obj.Size)));
+            UpdateObjectPositions(oldPositions, newPositions);
             InvalidateVisual();
         }
 
