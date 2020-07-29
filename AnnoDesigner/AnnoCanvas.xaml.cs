@@ -1633,12 +1633,6 @@ namespace AnnoDesigner
 
             if (CurrentMode == MouseMode.DragAll)
             {
-                //TODO: PR: Theres a bug in here somewhere, that causing each dx/dy movement to move 2 cells each step, rather than 1
-                //Not sure whats causing it. Not yet sure how to reproduce effectively.
-                //Adding viewport may have fixed this.
-
-                //TODO: PR: Bug - All positions got shifted by 1 square
-
                 // move all selected objects
                 var dx = (int)_coordinateHelper.ScreenToGrid(_mousePosition.X - _mouseDragStart.X, GridSize);
                 var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
@@ -1732,9 +1726,6 @@ namespace AnnoDesigner
                                         break;
                                     }
                                 }
-
-                                //TODO: PR: Implement collisions
-
                                 // if no collisions were found, permanently move all selected objects
                                 if (!collisionsExist)
                                 {
@@ -1975,25 +1966,10 @@ namespace AnnoDesigner
             //TODO: PR: Bug after clicking to place then dragging all
             if (CurrentObjects.Count != 0)
             {
-                //var objects = CloneList(CurrentObjects).Select(obj =>
-                //{
-                //    obj.Position = _viewport.OriginToViewport(obj.Position);
-                //    return obj;
-                //}).ToList();
+                var boundingRect = ComputeBoundingRect(CurrentObjects);
+                var objects = PlacedObjectsQuadTree.GetItemsIntersecting(boundingRect).ToList();
 
-                //var hasCollisions = false;
-                //foreach (var obj in objects)
-                //{
-                //    //TODO: PR: Add HasIntersectingItems method so we avoid allocation of a list, and call this in a loop
-                //    if (PlacedObjectsQuadTree.GetItemsIntersecting(obj.CollisionRect).Count() > 0)
-                //    {
-                //        hasCollisions = true;
-                //        break;
-                //    }
-                //}
-
-                //if (!hasCollisions)
-                if (CurrentObjects.Count != 0 && !PlacedObjectsQuadTree.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
+                if (CurrentObjects.Count != 0 && !objects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
                 {
                     PlacedObjectsQuadTree.AddRange(CloneList(CurrentObjects).Select(obj => (obj, new Rect(obj.Position, obj.Size))));
                     // sort the objects because borderless objects should be drawn first

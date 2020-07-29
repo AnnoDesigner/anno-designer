@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnnoDesigner.Core.Layout.Models
 {
+    //TODO: PR: make this a struct to avoid an allocation?
     public class StatisticsCalculationResult
     {
         public double MinX { get; set; }
