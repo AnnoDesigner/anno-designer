@@ -913,10 +913,10 @@ namespace AnnoDesigner
                 dx = _coordinateHelper.GridToScreen(_coordinateHelper.RoundScreenToGrid(dx, GridSize), GridSize);
                 dy = _coordinateHelper.GridToScreen(_coordinateHelper.RoundScreenToGrid(dy, GridSize), GridSize);
 
-                for (var i = 0; i < CurrentObjects.Count; i++)
+                foreach (var obj in CurrentObjects)
                 {
-                    var pos = _coordinateHelper.GridToScreen(CurrentObjects[i].Position, GridSize);
-                    CurrentObjects[i].Position = _coordinateHelper.RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy), GridSize);
+                    var pos = _coordinateHelper.GridToScreen(obj.Position, GridSize);
+                    obj.Position = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy), GridSize));
                 }
             }
             else
