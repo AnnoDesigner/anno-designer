@@ -60,7 +60,6 @@ namespace AnnoDesigner.Helper
             return new Rect(rect.Location.X / gridStep, rect.Location.Y / gridStep, rect.Width / gridStep, rect.Height / gridStep);
         }
 
-
         /// <summary>
         /// Convert a grid coordinate to a screen coordinate.
         /// </summary>

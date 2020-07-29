@@ -122,10 +122,12 @@ namespace AnnoDesigner.Core.DataStructures
             /// <param name="item"></param>
             internal void Remove((T item, Rect bounds) item)
             {
-                //TODO: PR: Deletion bug - items are not removed from placed objects when deleted.
-                //Currently cannot reliably reproduce
-
-                Items.Remove(item);
+                //TODO: PR: Cleanup
+                //Items.Remove(item);
+                if (Items.Remove(item))
+                {
+                    NLog.LogManager.GetCurrentClassLogger().Debug($"Removed 1 item at {item.bounds}");
+                }
                 MarkAncestorsAsDirty(); //make sure all ancestors are now marked as requiring an update.
             }
 
@@ -216,8 +218,6 @@ namespace AnnoDesigner.Core.DataStructures
             /// <returns></returns>
             public IEnumerable<T> All()
             {
-                //TODO: PR: Make this lazy - then we can effectively keep a specific framerate and and keep track of how much we rendered last frame
-                //Might not make it into this PR - could just be a goal for a future PR.
                 if (isDirty)
                 {
                     UpdateCachedData();
