@@ -228,7 +228,7 @@ namespace AnnoDesigner.Localization
                         { "17IndustrialOrnaments", "17 Industrielle Verzierungen" },
                         { "18IndustrialFences", "18 Industriezäune" },
                         { "19AmusementPark", "19 Vergnügungspark" },
-                        { "PalaceBuildings", "Palast Gebäude" }
+                        { "PalaceBuildings", "Palastgebäude" }
                     }
                     },
                  {
