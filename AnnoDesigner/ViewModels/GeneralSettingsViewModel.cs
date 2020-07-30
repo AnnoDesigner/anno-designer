@@ -37,6 +37,7 @@ namespace AnnoDesigner.ViewModels
 
             UseZoomToPoint = _appSettings.UseZoomToPoint;
             ZoomSensitivityPercentage = _appSettings.ZoomSensitivityPercentage;
+            HideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;
 
             ResetZoomSensitivityCommand = new RelayCommand(ExecuteResetZoomSensitivity, CanExecuteResetZoomSensitivity);
 
