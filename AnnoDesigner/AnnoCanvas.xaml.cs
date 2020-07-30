@@ -53,6 +53,7 @@ namespace AnnoDesigner
         /// </summary>
         public event EventHandler<FileLoadedEventArgs> OnLoadedFileChanged;
         public event EventHandler<OpenFileEventArgs> OpenFileRequested;
+        public event EventHandler<SaveFileEventArgs> SaveFileRequested;
 
         #region Properties
 
@@ -1803,23 +1804,6 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Writes layout to file.
-        /// </summary>
-        private void SaveFile()
-        {
-            try
-            {
-                Normalize(1);
-                var layoutToSave = new LayoutFile(PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
-                _layoutLoader.SaveLayout(layoutToSave, LoadedFile);
-            }
-            catch (Exception e)
-            {
-                IOErrorMessageBox(e);
-            }
-        }
-
-        /// <summary>
         /// Saves the current layout to file.
         /// </summary>
         public void Save()
@@ -1830,7 +1814,7 @@ namespace AnnoDesigner
             }
             else
             {
-                SaveFile();
+                SaveFileRequested?.Invoke(this, new SaveFileEventArgs(LoadedFile));
             }
         }
 
@@ -1844,10 +1828,11 @@ namespace AnnoDesigner
                 DefaultExt = Constants.SavedLayoutExtension,
                 Filter = Constants.SaveOpenDialogFilter
             };
+
             if (dialog.ShowDialog() == true)
             {
                 LoadedFile = dialog.FileName;
-                SaveFile();
+                SaveFileRequested?.Invoke(this, new SaveFileEventArgs(LoadedFile));
             }
         }
 
@@ -1866,15 +1851,6 @@ namespace AnnoDesigner
             {
                 OpenFileRequested?.Invoke(this, new OpenFileEventArgs(dialog.FileName));
             }
-        }
-
-        /// <summary>
-        /// Displays a message box containing some error information.
-        /// </summary>
-        /// <param name="e">exception containing error information</param>
-        private void IOErrorMessageBox(Exception e)
-        {
-            _messageBoxService.ShowError(e.Message, "Something went wrong while saving/loading file.");
         }
 
         #endregion

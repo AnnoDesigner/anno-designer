@@ -537,9 +537,14 @@ namespace AnnoDesigner.ViewModels
             _recentFilesHelper.AddFile(new RecentFile(args.FilePath, DateTime.UtcNow));
         }
 
-        private void AnnoCanvas_OpenFileRequested(object sender, OpenFileEventArgs args)
+        private void AnnoCanvas_OpenFileRequested(object sender, OpenFileEventArgs e)
         {
-            OpenFile(args.FilePath);
+            OpenFile(e.FilePath);
+        }
+
+        private void AnnoCanvas_SaveFileRequested(object sender, SaveFileEventArgs e)
+        {
+            SaveFile(e.FilePath);
         }
 
         public Task UpdateStatisticsAsync(UpdateMode mode)
@@ -760,6 +765,23 @@ namespace AnnoDesigner.ViewModels
         }
 
         /// <summary>
+        /// Writes layout to file.
+        /// </summary>
+        private void SaveFile(string filePath)
+        {
+            try
+            {
+                AnnoCanvas.Normalize(1);
+                var layoutToSave = new LayoutFile(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
+                _layoutLoader.SaveLayout(layoutToSave, filePath);
+            }
+            catch (Exception e)
+            {
+                IOErrorMessageBox(e);
+            }
+        }
+
+        /// <summary>
         /// Displays a message box containing some error information.
         /// </summary>
         /// <param name="e">exception containing error information</param>
@@ -787,6 +809,7 @@ namespace AnnoDesigner.ViewModels
                 _annoCanvas.OnStatusMessageChanged += AnnoCanvas_StatusMessageChanged;
                 _annoCanvas.OnLoadedFileChanged += AnnoCanvas_LoadedFileChanged;
                 _annoCanvas.OpenFileRequested += AnnoCanvas_OpenFileRequested;
+                _annoCanvas.SaveFileRequested += AnnoCanvas_SaveFileRequested;
                 BuildingSettingsViewModel.AnnoCanvasToUse = _annoCanvas;
             }
         }

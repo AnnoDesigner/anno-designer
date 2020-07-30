@@ -18,6 +18,7 @@ namespace AnnoDesigner.Models
         event Action<string> OnStatusMessageChanged;
         event Action<LayoutObject> OnCurrentObjectChanged;
         event EventHandler<OpenFileEventArgs> OpenFileRequested;
+        event EventHandler<SaveFileEventArgs> SaveFileRequested;
 
         List<LayoutObject> PlacedObjects { get; set; }
         List<LayoutObject> SelectedObjects { get; set; }
