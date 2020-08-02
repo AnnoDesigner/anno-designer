@@ -49,8 +49,9 @@ namespace AnnoDesigner.Models
         private double _screenRadius;
         private int _lastGridSizeForScreenRadius;
         private SerializableColor _color;
-
-        //TODO: PR: Cache GridRect here.
+        private Rect _gridRect;
+        private Rect _gridInfluenceRadiusRect;
+        private Rect _gridInfluenceRangeRect;
 
         /// <summary>
         /// Creates a new instance of a wrapper for <see cref="AnnoObject"/>.
@@ -159,6 +160,9 @@ namespace AnnoDesigner.Models
                 _screenRectCenterPoint = default;
                 _lastScreenRectForIcon = default;
                 _lastScreenRectForCenterPoint = default;
+                _gridRect = default;
+                _gridInfluenceRadiusRect = default;
+                _gridInfluenceRangeRect = default;
             }
         }
 
@@ -271,6 +275,9 @@ namespace AnnoDesigner.Models
                 _collisionSize = default;
                 _screenRect = default;
                 _iconRect = default;
+                _gridRect = default;
+                _gridInfluenceRadiusRect = default;
+                _gridInfluenceRangeRect = default;
             }
         }
 
@@ -328,7 +335,7 @@ namespace AnnoDesigner.Models
             return _iconRect;
         }
 
-        //I was really just checking to see if there was a built in function, but this works
+        //Calculates the Nth root of a number.
         //https://stackoverflow.com/questions/18657508/c-sharp-find-nth-root
         private static double NthRoot(double A, double N)
         {
@@ -400,6 +407,51 @@ namespace AnnoDesigner.Models
                 _transparentBrush = null;
                 _renderColor = null;
                 _renderBrush = null;
+            }
+        }
+
+        public Rect GridRect
+        {
+            get
+            {
+                if (_gridRect == default)
+                {
+                    _gridRect = new Rect(Position, Size);
+                }
+                return _gridRect;
+            }
+        }
+
+        public Rect GridInfluenceRadiusRect
+        {
+            get
+            {
+                if (_gridInfluenceRadiusRect == default)
+                {
+                    var centerPoint = _coordinateHelper.GetCenterPoint(GridRect);
+                    _gridInfluenceRadiusRect = new Rect(centerPoint.X - WrappedAnnoObject.Radius, centerPoint.Y - WrappedAnnoObject.Radius, WrappedAnnoObject.Radius * 2, WrappedAnnoObject.Radius * 2);
+                }
+                return _gridInfluenceRadiusRect;
+            }
+        }
+
+        public Rect GridInfluenceRangeRect
+        {
+            get
+            {
+                if (_gridInfluenceRangeRect == default)
+                {
+                    if (WrappedAnnoObject.InfluenceRange == 0)
+                    {
+                        _gridInfluenceRangeRect = new Rect(Position, default(Size));
+                    }
+                    else
+                    {
+                        //influence range is computed from the edge of the building, not the center
+                        _gridInfluenceRangeRect = new Rect(Position.X - WrappedAnnoObject.InfluenceRange, Position.Y - WrappedAnnoObject.InfluenceRange, WrappedAnnoObject.InfluenceRange + Size.Width, WrappedAnnoObject.InfluenceRange + Size.Height);
+                    }
+                }
+                return _gridInfluenceRangeRect;
             }
         }
     }

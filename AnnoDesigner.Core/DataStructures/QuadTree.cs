@@ -61,7 +61,7 @@ namespace AnnoDesigner.Core.DataStructures
             public Quadrant(Rect extent)
             {
                 Extent = extent;
-                Items = new List<(T, Rect)>();
+                Items = new List<(T, Rect)>(4);
                 itemCache = new List<T>();
                 isDirty = false;
 
@@ -122,12 +122,7 @@ namespace AnnoDesigner.Core.DataStructures
             /// <param name="item"></param>
             internal void Remove((T item, Rect bounds) item)
             {
-                //TODO: PR: Cleanup
-                //Items.Remove(item);
-                if (Items.Remove(item))
-                {
-                    NLog.LogManager.GetCurrentClassLogger().Debug($"Removed 1 item at {item.bounds}");
-                }
+                Items.Remove(item);
                 MarkAncestorsAsDirty(); //make sure all ancestors are now marked as requiring an update.
             }
 
@@ -306,12 +301,34 @@ namespace AnnoDesigner.Core.DataStructures
             get => root.Extent;
             set
             {
-                if (root != null)
-                {
-                    var oldRoot = root;
-                    root = new Quadrant(value);
-                    AddRange(oldRoot.AllWithBounds());
-                }
+                ReIndex();
+            }
+        }
+
+        /// <summary>
+        /// Reindexes the entire quadtree. Very expensive operation.
+        /// </summary>
+        public void ReIndex()
+        {
+            if (root != null)
+            {
+                var oldRoot = root;
+                root = new Quadrant(Extent);
+                AddRange(oldRoot.AllWithBounds());
+            }
+        }
+
+        /// <summary>
+        /// Reindexes the entire quadtree. Very expensive operation.
+        /// </summary>
+        /// <param name="boundsSelector">A function used to generate bounds from the item itself</param>
+        public void ReIndex(Func<T, Rect> boundsSelector)
+        {
+            if (root != null)
+            {
+                var oldRoot = root;
+                root = new Quadrant(Extent);
+                AddRange(oldRoot.All().Select(item => (item, boundsSelector(item))));
             }
         }
 
