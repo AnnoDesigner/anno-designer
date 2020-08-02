@@ -726,7 +726,7 @@ namespace AnnoDesigner
             _viewportTransform.Y = _coordinateHelper.GridToScreen(_viewport.Top, GridSize);
 
             // assure pixel perfect drawing using guidelines.
-            // this value is cached and refreshed in LoadGridLineColor();
+            // this value is cached and refreshed in LoadGridLineColor(), as it uses pen thickness in its calculation;
             drawingContext.PushGuidelineSet(_guidelineSet);
 
             // draw background
@@ -769,9 +769,14 @@ namespace AnnoDesigner
             drawingContext.PushTransform(_viewportTransform);
 
             var objectsToDraw = PlacedObjectsQuadTree.GetItemsIntersecting(_viewport.Relative).ToList();
+            //borderless objects should be drawn first.
+            var borderlessObjects = objectsToDraw.Where(_ => _.WrappedAnnoObject.Borderless).ToList();
+            var borderedObjects = objectsToDraw.Where(_ => !_.WrappedAnnoObject.Borderless).ToList();
 
             // draw placed objects            
-            RenderObjectList(drawingContext, objectsToDraw, useTransparency: false);
+            RenderObjectList(drawingContext, borderlessObjects, useTransparency: false);
+            RenderObjectList(drawingContext, borderedObjects, useTransparency: false);
+            //RenderObjectList(drawingContext, objectsToDraw, useTransparency: false);
             RenderObjectSelection(drawingContext, SelectedObjects);
 
             if (!RenderInfluences)
@@ -1498,6 +1503,12 @@ namespace AnnoDesigner
             CurrentMode = MouseMode.Standard;
             _selectionRect = Rect.Empty;
 
+            //update object positions if dragging
+            if (_oldObjectPositions.Count > 0)
+            {
+                UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                _oldObjectPositions.Clear();
+            }
             InvalidateVisual();
         }
 
@@ -1964,10 +1975,6 @@ namespace AnnoDesigner
                 if (CurrentObjects.Count != 0 && !objects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
                 {
                     PlacedObjectsQuadTree.AddRange(CloneList(CurrentObjects).Select(obj => (obj, new Rect(obj.Position, obj.Size))));
-                    // sort the objects because borderless objects should be drawn first
-                    //TODO: PR: Solve sorting  before PR.
-                    //PlacedObjects.Sort((a, b) => b.WrappedAnnoObject.Borderless.CompareTo(a.WrappedAnnoObject.Borderless));
-
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
 
                     //no need to update colors if drawing the same object(s)
@@ -2101,6 +2108,8 @@ namespace AnnoDesigner
         /// </summary>
         public void NewFile()
         {
+            _viewport.Top = 0;
+            _viewport.Left = 0;
             PlacedObjectsQuadTree.Clear();
             SelectedObjects.Clear();
             LoadedFile = "";
