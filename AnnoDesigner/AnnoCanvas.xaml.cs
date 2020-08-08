@@ -29,13 +29,14 @@ using AnnoDesigner.Services;
 using Microsoft.Win32;
 using NLog;
 using AnnoDesigner.Core.Layout.Helper;
+using System.Windows.Controls.Primitives;
 
 namespace AnnoDesigner
 {
     /// <summary>
     /// Interaction logic for AnnoCanvas.xaml
     /// </summary>
-    public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource
+    public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource, IScrollInfo
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -568,6 +569,7 @@ namespace AnnoDesigner
             //are using, and we can use that for the height and width of the scroll bars.
             //This could be computed via statistics (min/max x/y coords).
             PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-1000d, -1000d, 2000d, 2000d));
+            //PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-100d, -100d, 200d, 200d));
             SelectedObjects = new List<LayoutObject>();
             _oldObjectPositions = new List<(LayoutObject Item, Rect OldBounds)>();
             _statisticsCalculationHelper = new StatisticsCalculationHelper();
@@ -731,7 +733,7 @@ namespace AnnoDesigner
 
             // draw background
             drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(new Point(), RenderSize));
-
+            //TODO: PR: Need to align grid to viewport - scrolling via scroll bars can mean decimal increments.
             // draw grid
             if (RenderGrid)
             {
@@ -769,6 +771,12 @@ namespace AnnoDesigner
             drawingContext.PushTransform(_viewportTransform);
 
             var objectsToDraw = PlacedObjectsQuadTree.GetItemsIntersecting(_viewport.Relative).ToList();
+
+            //if (CurrentMode == MouseMode.DragAll)
+            //{
+            //    //TODO: PR: Add this as a setting
+            //    objectsToDraw = objectsToDraw.Take(3000).ToList();
+            //}
             //borderless objects should be drawn first.
             var borderlessObjects = objectsToDraw.Where(_ => _.WrappedAnnoObject.Borderless).ToList();
             var borderedObjects = objectsToDraw.Where(_ => !_.WrappedAnnoObject.Borderless).ToList();
@@ -909,7 +917,7 @@ namespace AnnoDesigner
             {
                 return;
             }
-
+            //TODO: PR: Need to align objects to grid based on viewport - scrolling via scroll bars can mean decimal increments of the grid
             if (CurrentObjects.Count > 1)
             {
                 //Get the center of the current selection
@@ -1541,10 +1549,13 @@ namespace AnnoDesigner
                 _viewport.Left += diff.X;
                 _viewport.Top += diff.Y;
             }
+            //update scroll bars
+            ScrollOwner?.InvalidateScrollInfo();
         }
 
         private void HandleMouse(MouseEventArgs e)
         {
+            Focus();
             // refresh retrieved mouse position
             _mousePosition = e.GetPosition(this);
             MoveCurrentObjectsToMouse();
@@ -1652,10 +1663,12 @@ namespace AnnoDesigner
                 //shift the viewport;
                 _viewport.Left += dx;
                 _viewport.Top += dy;
-
                 // adjust the drag start to compensate the amount we already moved
                 _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
                 _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
+
+                //TODO: Scroll bar positions are not correctly update during dragAll
+                ScrollOwner?.InvalidateScrollInfo();
             }
             else if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -2056,29 +2069,22 @@ namespace AnnoDesigner
         /// <param name="border"></param>
         public void Normalize(int border)
         {
+            _viewport.Left = 0;
+            _viewport.Top = 0;
+
             if (PlacedObjectsQuadTree.Count() == 0)
             {
                 return;
             }
 
-            _viewport.Left = 0;
-            _viewport.Top = 0;
-
             var dx = PlacedObjectsQuadTree.Min(_ => _.Position.X) - border;
             var dy = PlacedObjectsQuadTree.Min(_ => _.Position.Y) - border;
-
-            ////its important to materialize the IEnumerable, or we'll end up modifying the Position property below before we actually
-            ////create the sequence, which would result in oldPositions == newPositions, which we do not want.
-            //var oldPositions = PlacedObjectsQuadTree.Select(obj => (obj, new Rect(obj.Position, obj.Size))).ToList();
             foreach (var item in PlacedObjectsQuadTree)
             {
                 item.Position = new Point(item.Position.X - dx, item.Position.Y - dy);
             }
-            //var newPositions = PlacedObjectsQuadTree.Select(obj => (obj, new Rect(obj.Position, obj.Size)));
-            //UpdateObjectPositions(oldPositions, newPositions);
 
             PlacedObjectsQuadTree.ReIndex(obj => new Rect(obj.Position, obj.Size));
-
             InvalidateVisual();
         }
 
@@ -2248,7 +2254,6 @@ namespace AnnoDesigner
         private static readonly Dictionary<ICommand, Action<AnnoCanvas>> CommandExecuteMappings;
 
         public HotkeyCommandManager HotkeyCommandManager { get; set; }
-
         /// <summary>
         /// Creates event handlers for command executions and registers them at the CommandManager.
         /// </summary>
@@ -2377,5 +2382,114 @@ namespace AnnoDesigner
         }
 
         #endregion
+
+        #region IScrollInfo
+        //TODO: PR: Using grid to screen ensures scroll bars update if we scroll without changing the viewport (which happens when we scroll
+        //without using zoom to point. Investigate if there is a better way to do this.
+        public double ExtentWidth { get => _coordinateHelper.GridToScreen(PlacedObjectsQuadTree.Extent.Width, GridSize); }
+        public double ExtentHeight { get => _coordinateHelper.GridToScreen(PlacedObjectsQuadTree.Extent.Height, GridSize); }
+        public double ViewportWidth { get => _coordinateHelper.GridToScreen(_viewport.Width, GridSize); }
+        public double ViewportHeight { get => _coordinateHelper.GridToScreen(_viewport.Height, GridSize); }
+        //public double ExtentWidth { get => PlacedObjectsQuadTree.Extent.Width; }
+        //public double ExtentHeight { get => PlacedObjectsQuadTree.Extent.Height; }
+        //public double ViewportWidth { get => _viewport.Width; }
+        //public double ViewportHeight { get => _viewport.Height; }
+
+        public double HorizontalOffset { get; private set; }
+        public double VerticalOffset { get; private set; }
+
+        public ScrollViewer ScrollOwner { get; set; }
+        //TODO: PR:  Add setting for these (enable/disable scrolling)
+        public bool CanVerticallyScroll { get; set; }
+        public bool CanHorizontallyScroll { get; set; }
+        //TODO: PR: Verify these work as expected.
+        public void LineUp()
+        {
+            _viewport.Top += 1;
+        }
+
+        public void LineDown()
+        {
+            _viewport.Top -= 1;
+        }
+
+        public void LineLeft()
+        {
+            _viewport.Left -= 1;
+        }
+
+        public void LineRight()
+        {
+            _viewport.Left += 1;
+        }
+
+        public void PageUp()
+        {
+            _viewport.Top += _viewport.Height;
+        }
+
+        public void PageDown()
+        {
+            _viewport.Top -= _viewport.Height;
+        }
+
+        public void PageLeft()
+        {
+            _viewport.Left -= _viewport.Width;
+        }
+
+        public void PageRight()
+        {
+            _viewport.Left += _viewport.Width;
+        }
+
+        public void MouseWheelUp()
+        {
+            //Will zoom the canvas
+            //throw new NotImplementedException();
+        }
+
+        public void MouseWheelDown()
+        {
+            //Will zoom the canvas
+            //throw new NotImplementedException();
+        }
+
+        public void MouseWheelLeft()
+        {
+           // throw new NotImplementedException();
+        }
+
+        public void MouseWheelRight()
+        {
+            //throw new NotImplementedException();
+        }
+
+        public void SetHorizontalOffset(double offset)
+        {
+            //TODO: PR: Add invert scrolling option
+            HorizontalOffset = offset;
+            _viewport.Left = -_coordinateHelper.ScreenToGrid(HorizontalOffset, GridSize);
+            //_viewport.Left = HorizontalOffset;
+            InvalidateVisual();
+        }
+
+        public void SetVerticalOffset(double offset)
+        {
+            VerticalOffset = offset;
+            _viewport.Top = -_coordinateHelper.ScreenToGrid(VerticalOffset, GridSize);
+            //_viewport.Top = VerticalOffset;
+            InvalidateVisual();
+        }
+
+        public Rect MakeVisible(Visual visual, Rect rectangle)
+        {
+            //TODO: PR: Do we need to implement this?
+            //throw new NotImplementedException();
+            return _viewport.Absolute;
+        }
+
+        #endregion
+
     }
 }
