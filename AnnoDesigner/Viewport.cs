@@ -34,18 +34,6 @@ namespace AnnoDesigner
         public double Height { get; set; }
 
         /// <summary>
-        /// Retrieve a <see cref="Rect"/> that represents the current viewport, relative to the origin.
-        /// </summary>
-        public Rect Relative
-        {
-            //the viewport-relative rect needs to reflect the new position of 0,0 in relation to the Top and Left properties. 
-            //e.g with no translation, the top left corner of the viewport is 0,0.
-            //if we've shifted everything 5 units in the X direction and 5 units in the y direction, the top left corner of the viewport
-            //is -5, -5.
-            get => new Rect(-Left, -Top, Width, Height);
-        }
-        
-        /// <summary>
         /// Retrieve a <see cref="Rect"/> that represents the current viewport.
         /// </summary>
         public Rect Absolute
@@ -60,7 +48,7 @@ namespace AnnoDesigner
         /// <returns></returns>
         public Rect OriginToViewport(Rect rect)
         {
-            return new Rect(rect.X - Left, rect.Y - Top, rect.Width, rect.Height);
+            return new Rect(rect.X + Left, rect.Y + Top, rect.Width, rect.Height);
         }
 
         /// <summary>
@@ -70,7 +58,7 @@ namespace AnnoDesigner
         /// <returns></returns>
         public Point OriginToViewport(Point point)
         {
-            return new Point(point.X - Left, point.Y - Top);
+            return new Point(point.X + Left, point.Y + Top);
         }
     }
 }

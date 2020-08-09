@@ -310,6 +310,7 @@ namespace AnnoDesigner.Core.DataStructures
         /// </summary>
         public void ReIndex()
         {
+            //TODO: PR: IComputableBounds instead of overload?
             if (root != null)
             {
                 var oldRoot = root;

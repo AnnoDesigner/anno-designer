@@ -459,7 +459,27 @@ namespace AnnoDesigner
         /// </summary>
         private GuidelineSet _guidelineSet;
 
+        /// <summary>
+        /// A flag representing if <see cref="ScrollViewer.InvalidateScrollInfo"/> needs to be called on the next render.
+        /// </summary>
+        private bool _invalidateScrollInfo;
+
+        /// <summary>
+        /// A Rect representing the true space the current layout takes up.
+        /// </summary>
+        /// TODO: PR: Change how statistics works, as we are now computing this value in multiple places (in the statistics window and here)
+        private Rect _layoutBounds;
+
+        /// <summary>
+        /// A Rect representing the scrollable area of the canvas.
+        /// </summary>
+        private Rect _scrollableBounds;
+
+        /// <summary>
+        /// The typeface used when rendering text on the canvas.
+        /// </summary>
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
+
         #endregion
 
         #region Pens and Brushes
@@ -524,6 +544,8 @@ namespace AnnoDesigner
         private readonly bool debugShowSelectionRectCoordinates = true;
         private readonly bool debugShowSelectionCollisionRect = true;
         private readonly bool debugShowViewportRectCoordinates = true;
+        private readonly bool debugShowScrollableRectCoordinates = true;
+        private readonly bool debugShowLayoutRectCoordinates = true;
 
         #endregion
 #endif
@@ -565,7 +587,6 @@ namespace AnnoDesigner
 
             //create
             //TODO: PR: Handle when extent needs to be increased in size.
-            //TODO: PR: for ScrollViewer support, we need to keep track of the "real" extent - e.g how much non-empty space we 
             //are using, and we can use that for the height and width of the scroll bars.
             //This could be computed via statistics (min/max x/y coords).
             PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-1000d, -1000d, 2000d, 2000d));
@@ -712,20 +733,48 @@ namespace AnnoDesigner
         #endregion
 
         #region Rendering
-
         /// <summary>
         /// Renders the whole scene including grid, placed objects, current object, selection highlights, influence radii and selection rectangle.
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         protected override void OnRender(DrawingContext drawingContext)
         {
+            //TODO: PR: Scroll bar heights/widths do not update during a resize or after it has completed.
             var width = RenderSize.Width;
             var height = RenderSize.Height;
             _viewport.Width = _coordinateHelper.ScreenToGrid(width, GridSize);
             _viewport.Height = _coordinateHelper.ScreenToGrid(height, GridSize);
 
-            _viewportTransform.X = _coordinateHelper.GridToScreen(_viewport.Left, GridSize);
-            _viewportTransform.Y = _coordinateHelper.GridToScreen(_viewport.Top, GridSize);
+            if (_invalidateScrollInfo)
+            {
+                ScrollOwner?.InvalidateScrollInfo();
+                _invalidateScrollInfo = false;
+            }
+
+            //use the negated value for the transform, as when we move the viewport (for example, if Top gets
+            //increased by 1) we want the items to "shift" in the opposite direction to the movement of the viewport:
+            /*
+             |  +=+ = viewport
+             |  [] = object
+             |
+             |  Object on edge of viewport.
+             |
+             |  1 +==[]=+
+             |  2 |     |
+             |  3 +=====+
+             |  4
+             |
+             |  Viewport shifts down
+             |
+             |  1    []
+             |  2 +=====+
+             |  3 |     |
+             |  4 +=====+
+             |
+             |  Relative to the viewport, the object has been shifted "up".
+             */
+            _viewportTransform.X = _coordinateHelper.GridToScreen(-_viewport.Left, GridSize);
+            _viewportTransform.Y = _coordinateHelper.GridToScreen(-_viewport.Top, GridSize);
 
             // assure pixel perfect drawing using guidelines.
             // this value is cached and refreshed in LoadGridLineColor(), as it uses pen thickness in its calculation;
@@ -746,8 +795,10 @@ namespace AnnoDesigner
                     drawingContext.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
                 }
             }
-
+            #region DebugInfo
 #if DEBUG
+            var debugText = new List<FormattedText>(3);
+
             if (debugModeIsEnabled && debugShowViewportRectCoordinates)
             {
                 //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
@@ -757,20 +808,61 @@ namespace AnnoDesigner
                     var left = _viewport.Left;
                     var h = _viewport.Height;
                     var w = _viewport.Width;
-                    var text = new FormattedText($"Viewport: {top:F2}, {left:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                    var text = new FormattedText($"Viewport: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
                                                  TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
                     {
                         TextAlignment = TextAlignment.Left
                     };
-                    drawingContext.DrawText(text, new Point(5, 5));
+                    debugText.Add(text);
                 }
             }
-#endif
 
+            if (debugModeIsEnabled && debugShowScrollableRectCoordinates)
+            {
+                //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
+                if (App.DpiScale.PixelsPerDip != 0)
+                {
+                    var top = _scrollableBounds.Top;
+                    var left = _scrollableBounds.Left;
+                    var h = _scrollableBounds.Height;
+                    var w = _scrollableBounds.Width;
+                    var text = new FormattedText($"Scrolllable: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                 TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                    {
+                        TextAlignment = TextAlignment.Left
+                    };
+                    debugText.Add(text);
+                }
+            }
+
+            if (debugModeIsEnabled && debugShowLayoutRectCoordinates)
+            {
+                //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
+                if (App.DpiScale.PixelsPerDip != 0)
+                {
+                    var top = _layoutBounds.Top;
+                    var left = _layoutBounds.Left;
+                    var h = _layoutBounds.Height;
+                    var w = _layoutBounds.Width;
+                    var text = new FormattedText($"Layout: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                 TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                    {
+                        TextAlignment = TextAlignment.Left
+                    };
+                    debugText.Add(text);
+                }
+            }
+
+            for (var i = 0; i < debugText.Count; i++)
+            {
+                drawingContext.DrawText(debugText[i], new Point(5, (i * 15) + 5));
+            }
+#endif
+            #endregion
             //Push the transform after rendering everything that should not be translated.
             drawingContext.PushTransform(_viewportTransform);
 
-            var objectsToDraw = PlacedObjectsQuadTree.GetItemsIntersecting(_viewport.Relative).ToList();
+            var objectsToDraw = PlacedObjectsQuadTree.GetItemsIntersecting(_viewport.Absolute).ToList();
 
             //if (CurrentMode == MouseMode.DragAll)
             //{
@@ -802,8 +894,8 @@ namespace AnnoDesigner
                 //Retrieve objects outside the viewport that have an influence range which affects objects
                 //within the viewport.
                 var offscreenObjects = PlacedObjectsQuadTree
-                .Where(_ => !_viewport.Relative.Contains(_.GridRect) &&
-                            (_viewport.Relative.IntersectsWith(_.GridInfluenceRadiusRect) || _viewport.Relative.IntersectsWith(_.GridInfluenceRangeRect))
+                .Where(_ => !_viewport.Absolute.Contains(_.GridRect) &&
+                            (_viewport.Absolute.IntersectsWith(_.GridInfluenceRadiusRect) || _viewport.Absolute.IntersectsWith(_.GridInfluenceRangeRect))
                  ).ToList();
                 RenderObjectInfluenceRadius(drawingContext, offscreenObjects);
                 RenderObjectInfluenceRange(drawingContext, offscreenObjects);
@@ -862,7 +954,7 @@ namespace AnnoDesigner
                     var left = rect.Left;
                     var h = rect.Height;
                     var w = rect.Width;
-                    var text = new FormattedText($"{top:F2}, {left:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                    var text = new FormattedText($"{left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
                    TYPEFACE, 12, _debugBrushLight,
                    null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
                     {
@@ -1458,6 +1550,30 @@ namespace AnnoDesigner
             PlacedObjectsQuadTree.AddRange(materialisedNew);
 
         }
+
+        /// <summary>
+        /// Forces an update to the parent <see cref="ScrollViewer"/> on the next render (if necessary), and
+        /// recomputes <see cref="_scrollableBounds"/>, which represents the currently scrollable area.
+        /// This computation relies on <see cref="_layoutBounds"/> being up to date.
+        /// </summary>
+        private void InvalidateScroll()
+        {
+            //make sure the scrollable area encompasses the current viewport plus the bounding rect of the current layout
+            var r = _viewport.Absolute;
+            r.Union(_layoutBounds);
+            _scrollableBounds = r;
+            //update scroll viewer on next render
+            _invalidateScrollInfo = true;
+        }
+
+        /// <summary>
+        /// Computes the bounds of the current layout
+        /// </summary>
+        private void InvalidateBounds()
+        {
+            _layoutBounds = ComputeBoundingRect(PlacedObjectsQuadTree);
+
+        }
         #endregion
 
         #region Coordinate and rectangle conversions
@@ -1490,7 +1606,6 @@ namespace AnnoDesigner
                 objects[i].Position = new Point(xPrime, yPrime);
             }
         }
-
         #endregion
 
         #region Event handling
@@ -1546,11 +1661,18 @@ namespace AnnoDesigner
 
                 var postZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
                 var diff = postZoomPosition - preZoomPosition;
-                _viewport.Left += diff.X;
-                _viewport.Top += diff.Y;
+                if (PlacedObjectsQuadTree.Count() != 0)
+                {
+                    _viewport.Left += diff.X;
+                    _viewport.Top += diff.Y;
+                }
             }
-            //update scroll bars
-            ScrollOwner?.InvalidateScrollInfo();
+            if (PlacedObjectsQuadTree.Count() == 0)
+            {
+                _viewport.Left = 0;
+                _viewport.Top = 0;
+            }
+            InvalidateScroll();
         }
 
         private void HandleMouse(MouseEventArgs e)
@@ -1667,8 +1789,8 @@ namespace AnnoDesigner
                 _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
                 _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
 
-                //TODO: Scroll bar positions are not correctly update during dragAll
-                ScrollOwner?.InvalidateScrollInfo();
+                //invalidate scroll info on next render;
+                InvalidateScroll();
             }
             else if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -1760,6 +1882,14 @@ namespace AnnoDesigner
 
                                     //position change -> update
                                     StatisticsUpdated?.Invoke(this, new UpdateStatisticsEventArgs(UpdateMode.NoBuildingList));
+                                    if (!_layoutBounds.Contains(_collisionRect))
+                                    {
+                                        InvalidateBounds();
+                                    }
+                                    if (!_scrollableBounds.Contains(_collisionRect))
+                                    {
+                                        InvalidateScroll();
+                                    }
                                 }
 
                                 break;
@@ -1995,19 +2125,28 @@ namespace AnnoDesigner
                     {
                         ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
                     }
+                    if (!_layoutBounds.Contains(boundingRect))
+                    {
+                        InvalidateBounds();
+                    }
+                    if (!_scrollableBounds.Contains(boundingRect))
+                    {
+                        InvalidateScroll();
+                    }
                     return true;
 
                 }
                 return false;
             }
             return true;
+
         }
 
         /// <summary>
         /// Retrieves the object at the given position given in screen coordinates.
         /// </summary>
         /// <param name="position">position given in screen coordinates</param>
-        /// <returns>object at the position, if there is no object null</returns>
+        /// <returns>object at the position, <see langword="null"/> if no object could be found</returns>
         private LayoutObject GetObjectAt(Point position)
         {
             var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
@@ -2032,14 +2171,13 @@ namespace AnnoDesigner
 
         #region API
 
-
         /// <summary>
         /// Sets the current object, i.e. the object which the user can place.
         /// </summary>
         /// <param name="obj">object to apply</param>
         public void SetCurrentObject(LayoutObject obj)
         {
-            obj.Position =  _mousePosition;
+            obj.Position = _mousePosition;
             // note: setting of the backing field doesn't fire the changed event
             _currentObjects.Clear();
             _currentObjects.Add(obj);
@@ -2086,6 +2224,8 @@ namespace AnnoDesigner
 
             PlacedObjectsQuadTree.ReIndex(obj => new Rect(obj.Position, obj.Size));
             InvalidateVisual();
+            InvalidateBounds();
+            InvalidateScroll();
         }
 
         /// <summary>
@@ -2104,7 +2244,6 @@ namespace AnnoDesigner
             manager.AddHotkey(duplicateHotkey);
         }
 
-
         #endregion
 
         #region New/Save/Load/Export methods
@@ -2114,11 +2253,13 @@ namespace AnnoDesigner
         /// </summary>
         public void NewFile()
         {
-            _viewport.Top = 0;
             _viewport.Left = 0;
+            _viewport.Top = 0;
             PlacedObjectsQuadTree.Clear();
             SelectedObjects.Clear();
             LoadedFile = "";
+            InvalidateBounds();
+            InvalidateScroll();
             InvalidateVisual();
 
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
@@ -2384,80 +2525,123 @@ namespace AnnoDesigner
         #endregion
 
         #region IScrollInfo
-        //TODO: PR: Using grid to screen ensures scroll bars update if we scroll without changing the viewport (which happens when we scroll
-        //without using zoom to point. Investigate if there is a better way to do this.
-        public double ExtentWidth { get => _coordinateHelper.GridToScreen(PlacedObjectsQuadTree.Extent.Width, GridSize); }
-        public double ExtentHeight { get => _coordinateHelper.GridToScreen(PlacedObjectsQuadTree.Extent.Height, GridSize); }
-        public double ViewportWidth { get => _coordinateHelper.GridToScreen(_viewport.Width, GridSize); }
-        public double ViewportHeight { get => _coordinateHelper.GridToScreen(_viewport.Height, GridSize); }
-        //public double ExtentWidth { get => PlacedObjectsQuadTree.Extent.Width; }
-        //public double ExtentHeight { get => PlacedObjectsQuadTree.Extent.Height; }
-        //public double ViewportWidth { get => _viewport.Width; }
-        //public double ViewportHeight { get => _viewport.Height; }
 
-        public double HorizontalOffset { get; private set; }
-        public double VerticalOffset { get; private set; }
+        public double ExtentWidth { get => _scrollableBounds.Width; }
+        public double ExtentHeight { get => _scrollableBounds.Height; }
+        public double ViewportWidth { get => _viewport.Width; }
+        public double ViewportHeight { get => _viewport.Height; }
+
+        public double HorizontalOffset
+        {
+            get => _viewport.Left - _scrollableBounds.Left;
+            private set => _viewport.Left = _scrollableBounds.Left + value;
+        }
+
+        public double VerticalOffset
+        {
+            get => _viewport.Top - _scrollableBounds.Top;
+            private set => _viewport.Top = _scrollableBounds.Top + value;
+        }
 
         public ScrollViewer ScrollOwner { get; set; }
         //TODO: PR:  Add setting for these (enable/disable scrolling)
         public bool CanVerticallyScroll { get; set; }
         public bool CanHorizontallyScroll { get; set; }
-        //TODO: PR: Verify these work as expected.
         public void LineUp()
         {
-            _viewport.Top += 1;
+            _viewport.Top -= 1;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
         }
 
         public void LineDown()
         {
-            _viewport.Top -= 1;
+            _viewport.Top += 1;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
         }
 
         public void LineLeft()
         {
             _viewport.Left -= 1;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
         }
 
         public void LineRight()
         {
             _viewport.Left += 1;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
         }
 
         public void PageUp()
         {
-            _viewport.Top += _viewport.Height;
+            _viewport.Top -= _viewport.Height;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
         }
 
         public void PageDown()
         {
-            _viewport.Top -= _viewport.Height;
+            _viewport.Top += _viewport.Height;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
         }
 
         public void PageLeft()
         {
             _viewport.Left -= _viewport.Width;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
         }
 
         public void PageRight()
         {
             _viewport.Left += _viewport.Width;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
         }
 
         public void MouseWheelUp()
         {
-            //Will zoom the canvas
+            //Will zoom the canvas, rather than scroll the canvas
             //throw new NotImplementedException();
         }
 
         public void MouseWheelDown()
         {
-            //Will zoom the canvas
+            //Will zoom the canvas, rather than scroll the canvas
             //throw new NotImplementedException();
         }
 
         public void MouseWheelLeft()
         {
-           // throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public void MouseWheelRight()
@@ -2467,18 +2651,22 @@ namespace AnnoDesigner
 
         public void SetHorizontalOffset(double offset)
         {
-            //TODO: PR: Add invert scrolling option
+            //TODO: PR: Add invert scrolling option - this may have to be handled by the viewport translation transform
+            //handle when offset is +/- infinity (when scrolling to top/bottom using the end and home keys)
+            offset = Math.Max(offset, 0d);
+            offset = Math.Min(offset, _scrollableBounds.Width);
             HorizontalOffset = offset;
-            _viewport.Left = -_coordinateHelper.ScreenToGrid(HorizontalOffset, GridSize);
-            //_viewport.Left = HorizontalOffset;
+            InvalidateScroll();
             InvalidateVisual();
         }
 
         public void SetVerticalOffset(double offset)
         {
+            //handle when offset is +/- infinity (when scrolling to top/bottom using the end and home keys)
+            offset = Math.Max(offset, 0d);
+            offset = Math.Min(offset, _scrollableBounds.Height);
             VerticalOffset = offset;
-            _viewport.Top = -_coordinateHelper.ScreenToGrid(VerticalOffset, GridSize);
-            //_viewport.Top = VerticalOffset;
+            InvalidateScroll();
             InvalidateVisual();
         }
 
