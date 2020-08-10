@@ -511,7 +511,6 @@ namespace AnnoDesigner.ViewModels
         private void AnnoCanvas_StatusMessageChanged(string message)
         {
             StatusMessage = message;
-            logger.Trace($"Status message changed: {message}");
         }
 
         private void AnnoCanvas_LoadedFileChanged(string filePath)

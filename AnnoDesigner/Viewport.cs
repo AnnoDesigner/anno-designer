@@ -13,15 +13,44 @@ namespace AnnoDesigner
     /// </summary>
     public class Viewport
     {
+        private double _left;
+        private double _top;
+
         /// <summary>
         /// The top offset of the viewport.
         /// </summary>
-        public double Top { get; set; }
+        public double Top
+        {
+            get => _top;
+            set
+            {
+                _top = value;
+                VerticalAlignmentValue = -FractionalValue(_top);
+            }
+        }
 
         /// <summary>
         /// The Left offset of the viewport.
         /// </summary>
-        public double Left { get; set; }
+        public double Left
+        {
+            get => _left;
+            set
+            {
+                _left = value;
+                HorizontalAlignmentValue = -FractionalValue(_left);
+            }
+        }
+
+        /// <summary>
+        /// Fractional value between -1 and 1 used to align the edge of the viewport to an integer value.
+        /// </summary>
+        public double HorizontalAlignmentValue { get; private set; }
+
+        /// <summary>
+        /// Fractional value between -1 and 1 used to align the edge of the viewport to an integer value.
+        /// </summary>
+        public double VerticalAlignmentValue { get; private set; }
 
         /// <summary>
         /// The Width of the viewport.
@@ -32,6 +61,15 @@ namespace AnnoDesigner
         /// The Height of the viewport.
         /// </summary>
         public double Height { get; set; }
+
+        //TODO: PR: Move this somewhere
+        /// <summary>
+        /// Return the fractional value of a <see cref="double"/>.
+        /// This value will always be between -0.99 recurring and 0.99 recurring.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static double FractionalValue(double value) => value - Math.Truncate(value);
 
         /// <summary>
         /// Retrieve a <see cref="Rect"/> that represents the current viewport.

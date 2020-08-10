@@ -786,11 +786,11 @@ namespace AnnoDesigner
             // draw grid
             if (RenderGrid)
             {
-                for (var i = -FractionalValue(HorizontalOffset) * GridSize; i < width; i += _gridStep)
+                for (var i = _viewport.HorizontalAlignmentValue * GridSize; i < width; i += _gridStep)
                 {
                     drawingContext.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
                 }
-                for (var i = -FractionalValue(VerticalOffset) * GridSize; i < height; i += _gridStep)
+                for (var i = _viewport.VerticalAlignmentValue * GridSize; i < height; i += _gridStep)
                 {
                     drawingContext.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
                 }
@@ -1032,7 +1032,10 @@ namespace AnnoDesigner
                 foreach (var obj in CurrentObjects)
                 {
                     var pos = _coordinateHelper.GridToScreen(obj.Position, GridSize);
-                    obj.Position = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy), GridSize));
+                    pos.X += _viewport.HorizontalAlignmentValue;
+                    pos.Y += _viewport.VerticalAlignmentValue;
+                    pos = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy), GridSize));
+                    obj.Position = pos;
                 }
             }
             else
@@ -1041,8 +1044,10 @@ namespace AnnoDesigner
                 var size = _coordinateHelper.GridToScreen(CurrentObjects[0].Size, GridSize);
                 pos.X -= size.Width / 2;
                 pos.Y -= size.Height / 2;
-                CurrentObjects[0].Position = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(pos, GridSize));
-                CurrentObjects[0].Position = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(pos, GridSize));
+                pos = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(pos, GridSize));
+                pos.X += _viewport.HorizontalAlignmentValue;
+                pos.Y += _viewport.VerticalAlignmentValue;
+                CurrentObjects[0].Position = pos;
             }
         }
 
@@ -1610,13 +1615,6 @@ namespace AnnoDesigner
             }
         }
 
-        /// <summary>
-        /// Return the fractional value of a <see cref="double"/>.
-        /// This value will always be between -0.99 recurring and 0.99 recurring.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static double FractionalValue(double value) => value - Math.Truncate(value);
         #endregion
 
         #region Event handling
