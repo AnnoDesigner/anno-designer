@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Models
@@ -318,7 +319,7 @@ namespace AnnoDesigner.Models
                     var minSize = Math.Min(Size.Width, Size.Height);
                     //minSize = minSize == 1 ? minSize : Math.Floor(NthRoot(minSize, Constants.IconSizeFactor) + 1);
                     var iconSize = _coordinateHelper.GridToScreen(new Size(minSize, minSize), gridSize);
-                    iconSize = minSize == 1 ? iconSize : new Size(NthRoot(iconSize.Width, Constants.IconSizeFactor), NthRoot(iconSize.Height, Constants.IconSizeFactor));
+                    iconSize = minSize == 1 ? iconSize : new Size(MathHelper.NthRoot(iconSize.Width, Constants.IconSizeFactor), MathHelper.NthRoot(iconSize.Height, Constants.IconSizeFactor));
 
                     // center icon within the object
                     var iconPos = objRect.TopLeft;
@@ -335,12 +336,6 @@ namespace AnnoDesigner.Models
             return _iconRect;
         }
 
-        //Calculates the Nth root of a number.
-        //https://stackoverflow.com/questions/18657508/c-sharp-find-nth-root
-        private static double NthRoot(double A, double N)
-        {
-            return Math.Pow(A, 1.0 / N);
-        }
 
         public Point GetScreenRectCenterPoint(int gridSize)
         {

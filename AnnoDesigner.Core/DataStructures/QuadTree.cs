@@ -479,8 +479,10 @@ namespace AnnoDesigner.Core.DataStructures
         /// <returns></returns>
         public List<Rect> GetQuadrantRects()
         {
-            var rects = new List<Rect>(20);
-            rects.Add(root.Extent);
+            var rects = new List<Rect>(20)
+            {
+                root.Extent
+            };
             root.GetQuadrantRects(rects);
             return rects;
         }

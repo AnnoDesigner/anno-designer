@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using AnnoDesigner.Core.Helper;
 
 namespace AnnoDesigner
 {
@@ -25,7 +26,7 @@ namespace AnnoDesigner
             set
             {
                 _top = value;
-                VerticalAlignmentValue = -FractionalValue(_top);
+                VerticalAlignmentValue = -MathHelper.FractionalValue(_top);
             }
         }
 
@@ -38,7 +39,7 @@ namespace AnnoDesigner
             set
             {
                 _left = value;
-                HorizontalAlignmentValue = -FractionalValue(_left);
+                HorizontalAlignmentValue = -MathHelper.FractionalValue(_left);
             }
         }
 
@@ -61,15 +62,6 @@ namespace AnnoDesigner
         /// The Height of the viewport.
         /// </summary>
         public double Height { get; set; }
-
-        //TODO: PR: Move this somewhere
-        /// <summary>
-        /// Return the fractional value of a <see cref="double"/>.
-        /// This value will always be between -0.99 recurring and 0.99 recurring.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private static double FractionalValue(double value) => value - Math.Truncate(value);
 
         /// <summary>
         /// Retrieve a <see cref="Rect"/> that represents the current viewport.

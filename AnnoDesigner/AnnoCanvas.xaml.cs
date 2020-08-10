@@ -733,13 +733,20 @@ namespace AnnoDesigner
         #endregion
 
         #region Rendering
+
+        protected override Size ArrangeOverride(Size arrangeBounds)
+        {
+            //force scroll bars to update when we resize the window
+            InvalidateScroll();
+            return base.ArrangeOverride(arrangeBounds);
+        }
+
         /// <summary>
         /// Renders the whole scene including grid, placed objects, current object, selection highlights, influence radii and selection rectangle.
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         protected override void OnRender(DrawingContext drawingContext)
         {
-            //TODO: PR: Scroll bar heights/widths do not update during a resize or after it has completed.
             var width = RenderSize.Width;
             var height = RenderSize.Height;
             _viewport.Width = _coordinateHelper.ScreenToGrid(width, GridSize);
@@ -782,7 +789,6 @@ namespace AnnoDesigner
 
             // draw background
             drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(new Point(), RenderSize));
-            //TODO: PR: Need to align grid to viewport - scrolling via scroll bars can mean decimal increments.
             // draw grid
             if (RenderGrid)
             {
@@ -1011,7 +1017,6 @@ namespace AnnoDesigner
             {
                 return;
             }
-            //TODO: PR: Need to align objects to grid based on viewport - scrolling via scroll bars can mean decimal increments of the grid
             if (CurrentObjects.Count > 1)
             {
                 //Get the center of the current selection
@@ -1032,6 +1037,7 @@ namespace AnnoDesigner
                 foreach (var obj in CurrentObjects)
                 {
                     var pos = _coordinateHelper.GridToScreen(obj.Position, GridSize);
+                    //remove any decimal offset caused from scrolling
                     pos.X += _viewport.HorizontalAlignmentValue;
                     pos.Y += _viewport.VerticalAlignmentValue;
                     pos = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy), GridSize));
@@ -2556,6 +2562,7 @@ namespace AnnoDesigner
 
         public ScrollViewer ScrollOwner { get; set; }
         //TODO: PR:  Add setting for these (enable/disable scrolling)
+        //TODO: PR: See if manually computing these help with flickering issues
         public bool CanVerticallyScroll { get; set; }
         public bool CanHorizontallyScroll { get; set; }
         public void LineUp()
@@ -2663,6 +2670,7 @@ namespace AnnoDesigner
         public void SetHorizontalOffset(double offset)
         {
             //TODO: PR: Add invert scrolling option - this may have to be handled by the viewport translation transform
+
             //handle when offset is +/- infinity (when scrolling to top/bottom using the end and home keys)
             offset = Math.Max(offset, 0d);
             offset = Math.Min(offset, _scrollableBounds.Width);
@@ -2683,8 +2691,6 @@ namespace AnnoDesigner
 
         public Rect MakeVisible(Visual visual, Rect rectangle)
         {
-            //TODO: PR: Do we need to implement this?
-            //throw new NotImplementedException();
             return _viewport.Absolute;
         }
 
