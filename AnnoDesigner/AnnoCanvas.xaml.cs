@@ -786,79 +786,16 @@ namespace AnnoDesigner
             // draw grid
             if (RenderGrid)
             {
-                for (var i = 0; i < width; i += _gridStep)
+                for (var i = -FractionalValue(HorizontalOffset) * GridSize; i < width; i += _gridStep)
                 {
                     drawingContext.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
                 }
-                for (var i = 0; i < height; i += _gridStep)
+                for (var i = -FractionalValue(VerticalOffset) * GridSize; i < height; i += _gridStep)
                 {
                     drawingContext.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
                 }
             }
-            #region DebugInfo
-#if DEBUG
-            var debugText = new List<FormattedText>(3);
 
-            if (debugModeIsEnabled && debugShowViewportRectCoordinates)
-            {
-                //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
-                if (App.DpiScale.PixelsPerDip != 0)
-                {
-                    var top = _viewport.Top;
-                    var left = _viewport.Left;
-                    var h = _viewport.Height;
-                    var w = _viewport.Width;
-                    var text = new FormattedText($"Viewport: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                                 TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
-                    {
-                        TextAlignment = TextAlignment.Left
-                    };
-                    debugText.Add(text);
-                }
-            }
-
-            if (debugModeIsEnabled && debugShowScrollableRectCoordinates)
-            {
-                //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
-                if (App.DpiScale.PixelsPerDip != 0)
-                {
-                    var top = _scrollableBounds.Top;
-                    var left = _scrollableBounds.Left;
-                    var h = _scrollableBounds.Height;
-                    var w = _scrollableBounds.Width;
-                    var text = new FormattedText($"Scrolllable: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                                 TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
-                    {
-                        TextAlignment = TextAlignment.Left
-                    };
-                    debugText.Add(text);
-                }
-            }
-
-            if (debugModeIsEnabled && debugShowLayoutRectCoordinates)
-            {
-                //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
-                if (App.DpiScale.PixelsPerDip != 0)
-                {
-                    var top = _layoutBounds.Top;
-                    var left = _layoutBounds.Left;
-                    var h = _layoutBounds.Height;
-                    var w = _layoutBounds.Width;
-                    var text = new FormattedText($"Layout: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                                                 TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
-                    {
-                        TextAlignment = TextAlignment.Left
-                    };
-                    debugText.Add(text);
-                }
-            }
-
-            for (var i = 0; i < debugText.Count; i++)
-            {
-                drawingContext.DrawText(debugText[i], new Point(5, (i * 15) + 5));
-            }
-#endif
-            #endregion
             //Push the transform after rendering everything that should not be translated.
             drawingContext.PushTransform(_viewportTransform);
 
@@ -946,56 +883,121 @@ namespace AnnoDesigner
             if (CurrentMode == MouseMode.SelectionRect)
             {
                 drawingContext.DrawRectangle(_lightBrush, _highlightPen, _selectionRect);
+            }
 #if DEBUG
-                if (debugModeIsEnabled && debugShowSelectionRectCoordinates)
+            #region Draw debug information
+            if (debugModeIsEnabled)
+            {
+                drawingContext.PushTransform(_viewportTransform);
+                if (debugShowQuadTreeViz)
                 {
-                    var rect = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
-                    var top = rect.Top;
-                    var left = rect.Left;
-                    var h = rect.Height;
-                    var w = rect.Width;
-                    var text = new FormattedText($"{left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
-                   TYPEFACE, 12, _debugBrushLight,
-                   null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                    var brush = Brushes.Transparent;
+                    var pen = _penCache.GetPen(_debugBrushDark, 1);
+                    var rects = PlacedObjectsQuadTree.GetQuadrantRects();
+                    foreach (var rect in rects)
                     {
-                        TextAlignment = TextAlignment.Left
-                    };
-                    var location = _selectionRect.BottomRight;
-                    location.X -= text.Width;
-                    location.Y -= text.Height;
-                    drawingContext.DrawText(text, location);
+                        drawingContext.DrawRectangle(brush, pen, _coordinateHelper.GridToScreen(rect, GridSize));
+                    }
                 }
-#endif
-            }
 
-#if DEBUG
-            drawingContext.PushTransform(_viewportTransform);
-            if (debugModeIsEnabled && debugShowQuadTreeViz)
-            {
-                var brush = Brushes.Transparent;
-                var pen = _penCache.GetPen(_debugBrushDark, 1);
-                var rects = PlacedObjectsQuadTree.GetQuadrantRects();
-                foreach (var rect in rects)
+                if (debugShowSelectionCollisionRect)
                 {
-                    drawingContext.DrawRectangle(brush, pen, _coordinateHelper.GridToScreen(rect, GridSize));
+                    var color = _debugBrushLight.Color;
+                    color.A = 0x08;
+                    var brush = _brushCache.GetSolidBrush(color);
+                    var pen = _penCache.GetPen(_debugBrushLight, 1);
+                    var collisionRectScreen = _coordinateHelper.GridToScreen(_collisionRect, GridSize);
+                    drawingContext.DrawRectangle(brush, pen, collisionRectScreen);
+                }
+
+                //pop viewport transform
+                drawingContext.Pop();
+                var debugText = new List<FormattedText>(3);
+
+                if (debugShowViewportRectCoordinates)
+                {
+                    //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
+                    if (App.DpiScale.PixelsPerDip != 0)
+                    {
+                        var top = _viewport.Top;
+                        var left = _viewport.Left;
+                        var h = _viewport.Height;
+                        var w = _viewport.Width;
+                        var text = new FormattedText($"Viewport: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                     TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                        {
+                            TextAlignment = TextAlignment.Left
+                        };
+                        debugText.Add(text);
+                    }
+                }
+
+                if (debugShowScrollableRectCoordinates)
+                {
+                    //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
+                    if (App.DpiScale.PixelsPerDip != 0)
+                    {
+                        var top = _scrollableBounds.Top;
+                        var left = _scrollableBounds.Left;
+                        var h = _scrollableBounds.Height;
+                        var w = _scrollableBounds.Width;
+                        var text = new FormattedText($"Scrolllable: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                     TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                        {
+                            TextAlignment = TextAlignment.Left
+                        };
+                        debugText.Add(text);
+                    }
+                }
+
+                if (debugShowLayoutRectCoordinates)
+                {
+                    //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
+                    if (App.DpiScale.PixelsPerDip != 0)
+                    {
+                        var top = _layoutBounds.Top;
+                        var left = _layoutBounds.Left;
+                        var h = _layoutBounds.Height;
+                        var w = _layoutBounds.Width;
+                        var text = new FormattedText($"Layout: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                     TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                        {
+                            TextAlignment = TextAlignment.Left
+                        };
+                        debugText.Add(text);
+                    }
+                }
+
+                for (var i = 0; i < debugText.Count; i++)
+                {
+                    drawingContext.DrawText(debugText[i], new Point(5, (i * 15) + 5));
+                }
+
+                //draw selection rect coords last so they draw over the top of everything else
+                if (CurrentMode == MouseMode.SelectionRect)
+                {
+                    if (debugShowSelectionRectCoordinates)
+                    {
+                        var rect = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
+                        var top = rect.Top;
+                        var left = rect.Left;
+                        var h = rect.Height;
+                        var w = rect.Width;
+                        var text = new FormattedText($"{left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                       TYPEFACE, 12, _debugBrushLight,
+                       null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                        {
+                            TextAlignment = TextAlignment.Left
+                        };
+                        var location = _selectionRect.BottomRight;
+                        location.X -= text.Width;
+                        location.Y -= text.Height;
+                        drawingContext.DrawText(text, location);
+                    }
                 }
             }
-
-
-            if (debugModeIsEnabled && debugShowSelectionCollisionRect)
-            {
-                var color = _debugBrushLight.Color;
-                color.A = 0x08;
-                var brush = _brushCache.GetSolidBrush(color);
-                var pen = _penCache.GetPen(_debugBrushLight, 1);
-                var collisionRectScreen = _coordinateHelper.GridToScreen(_collisionRect, GridSize);
-                drawingContext.DrawRectangle(brush, pen, collisionRectScreen);
-            }
-
-            //pop viewport transform
-            drawingContext.Pop();
+            #endregion
 #endif
-
             // pop back guidlines set
             drawingContext.Pop();
         }
@@ -1039,6 +1041,7 @@ namespace AnnoDesigner
                 var size = _coordinateHelper.GridToScreen(CurrentObjects[0].Size, GridSize);
                 pos.X -= size.Width / 2;
                 pos.Y -= size.Height / 2;
+                CurrentObjects[0].Position = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(pos, GridSize));
                 CurrentObjects[0].Position = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(pos, GridSize));
             }
         }
@@ -1606,6 +1609,14 @@ namespace AnnoDesigner
                 objects[i].Position = new Point(xPrime, yPrime);
             }
         }
+
+        /// <summary>
+        /// Return the fractional value of a <see cref="double"/>.
+        /// This value will always be between -0.99 recurring and 0.99 recurring.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static double FractionalValue(double value) => value - Math.Truncate(value);
         #endregion
 
         #region Event handling
@@ -2110,6 +2121,7 @@ namespace AnnoDesigner
         /// <returns>true if placement succeeded, otherwise false</returns>
         private bool TryPlaceCurrentObjects(bool isContinuousDrawing)
         {
+            //TODO: PR: Expand bounds if required
             if (CurrentObjects.Count != 0)
             {
                 var boundingRect = ComputeBoundingRect(CurrentObjects);
@@ -2222,7 +2234,7 @@ namespace AnnoDesigner
                 item.Position = new Point(item.Position.X - dx, item.Position.Y - dy);
             }
 
-            PlacedObjectsQuadTree.ReIndex(obj => new Rect(obj.Position, obj.Size));
+            PlacedObjectsQuadTree.ReIndex();
             InvalidateVisual();
             InvalidateBounds();
             InvalidateScroll();
@@ -2496,6 +2508,7 @@ namespace AnnoDesigner
             SelectedObjects.ForEach(_ => PlacedObjectsQuadTree.Remove(_, new Rect(_.Position, _.Size)));
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+            InvalidateBounds();
         }
 
         private readonly Hotkey duplicateHotkey;

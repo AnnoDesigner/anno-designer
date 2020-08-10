@@ -43,10 +43,11 @@ namespace AnnoDesigner.Core.DataStructures
             /// A count of all items in this Quadrant and under it.
             /// </summary>
             int count;
+
             /// <summary>
             /// A list of all the items in the Quadrant and under it.
             /// </summary>
-            IEnumerable<T> itemCache;
+            IEnumerable<(T Item, Rect Bounds)> itemCache;
 
             /// <summary>
             /// Holds a list of all the items in this quadrant.
@@ -54,7 +55,7 @@ namespace AnnoDesigner.Core.DataStructures
             /// <remarks>
             /// Stored as a list as items as any items that overlap multiple child quadrants will be stored here.
             /// </remarks>
-            public List<(T item, Rect bounds)> Items { get; }
+            public List<(T Item, Rect Bounds)> Items { get; }
 
             public Rect Extent { get; set; }
 
@@ -62,7 +63,7 @@ namespace AnnoDesigner.Core.DataStructures
             {
                 Extent = extent;
                 Items = new List<(T, Rect)>(4);
-                itemCache = new List<T>();
+                itemCache = new List<(T Items, Rect Bounds)>();
                 isDirty = false;
 
                 var w = Extent.Width / 2;
@@ -74,6 +75,11 @@ namespace AnnoDesigner.Core.DataStructures
                 bottomLeftBounds = new Rect(Extent.Left, Extent.Top + h, w, h);
             }
 
+            /// <summary>
+            /// Insert a new item into the Quad Tree.
+            /// </summary>
+            /// <param name="item">The item to insert</param>
+            /// <param name="bounds">The bounds of the item</param>
             public void Insert(T item, Rect bounds)
             {
                 if (!Extent.IntersectsWith(bounds))
@@ -162,7 +168,7 @@ namespace AnnoDesigner.Core.DataStructures
                     bottomLeft.GetItemsIntersecting(items, bounds);
                 }
                 //add all the items in this quadrant that intersect the given bounds
-                items.AddRange(Items.Where(_ => _.bounds.IntersectsWith(bounds)).Select(_ => _.item));
+                items.AddRange(Items.Where(_ => _.Bounds.IntersectsWith(bounds)).Select(_ => _.Item));
             }
 
             /// <summary>
@@ -217,10 +223,14 @@ namespace AnnoDesigner.Core.DataStructures
                 {
                     UpdateCachedData();
                 }
-                return itemCache;
+                return itemCache.Select(_ => _.Item);
             }
 
-            internal IEnumerable<(T Item, Rect Bounds)> AllWithBounds()
+            /// <summary>
+            /// Returns all the items in this quadrant and beneath it, including the bounds of the item.
+            /// </summary>
+            /// <returns></returns>
+            public IEnumerable<(T Item, Rect Bounds)> AllWithBounds()
             {
                 var items = new List<(T Item, Rect Bounds)>(count);
                 var empty = new List<(T Item, Rect Bounds)>(0);
@@ -238,13 +248,13 @@ namespace AnnoDesigner.Core.DataStructures
             private void UpdateCachedData()
             {
                 //initialise with the outdated count value
-                var newItems = new List<T>(count);
-                var empty = new List<T>(0);
-                newItems.AddRange(topLeft?.All() ?? empty);
-                newItems.AddRange(topRight?.All() ?? empty);
-                newItems.AddRange(bottomRight?.All() ?? empty);
-                newItems.AddRange(bottomLeft?.All() ?? empty);
-                newItems.AddRange(Items.Select(obj => obj.item));
+                var newItems = new List<(T Item, Rect Bounds)>(count);
+                var empty = new List<(T Item, Rect Bounds)>(0);
+                newItems.AddRange(topLeft?.AllWithBounds() ?? empty);
+                newItems.AddRange(topRight?.AllWithBounds() ?? empty);
+                newItems.AddRange(bottomRight?.AllWithBounds() ?? empty);
+                newItems.AddRange(bottomLeft?.AllWithBounds() ?? empty);
+                newItems.AddRange(Items);
                 count = newItems.Count;
                 itemCache = newItems;
                 isDirty = false;
@@ -310,26 +320,11 @@ namespace AnnoDesigner.Core.DataStructures
         /// </summary>
         public void ReIndex()
         {
-            //TODO: PR: IComputableBounds instead of overload?
             if (root != null)
             {
                 var oldRoot = root;
                 root = new Quadrant(Extent);
                 AddRange(oldRoot.AllWithBounds());
-            }
-        }
-
-        /// <summary>
-        /// Reindexes the entire quadtree. Very expensive operation.
-        /// </summary>
-        /// <param name="boundsSelector">A function used to generate bounds from the item itself</param>
-        public void ReIndex(Func<T, Rect> boundsSelector)
-        {
-            if (root != null)
-            {
-                var oldRoot = root;
-                root = new Quadrant(Extent);
-                AddRange(oldRoot.All().Select(item => (item, boundsSelector(item))));
             }
         }
 
