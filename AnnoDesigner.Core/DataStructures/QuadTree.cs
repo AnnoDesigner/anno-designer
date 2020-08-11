@@ -311,6 +311,7 @@ namespace AnnoDesigner.Core.DataStructures
             get => root.Extent;
             set
             {
+                root.Extent = value;
                 ReIndex();
             }
         }
@@ -320,12 +321,9 @@ namespace AnnoDesigner.Core.DataStructures
         /// </summary>
         public void ReIndex()
         {
-            if (root != null)
-            {
                 var oldRoot = root;
                 root = new Quadrant(Extent);
                 AddRange(oldRoot.AllWithBounds());
-            }
         }
 
         /// <summary>
@@ -334,8 +332,8 @@ namespace AnnoDesigner.Core.DataStructures
         /// <param name="extent">The bounds of the <see cref="QuadTree{T}"/></param>
         public QuadTree(Rect extent)
         {
-            Extent = extent;
             root = new Quadrant(extent);
+            Extent = extent;
         }
 
         /// <summary>

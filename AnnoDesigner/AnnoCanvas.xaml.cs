@@ -584,13 +584,7 @@ namespace AnnoDesigner
 
             //initialize
             CurrentMode = MouseMode.Standard;
-
-            //create
-            //TODO: PR: Handle when extent needs to be increased in size.
-            //are using, and we can use that for the height and width of the scroll bars.
-            //This could be computed via statistics (min/max x/y coords).
-            PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-1000d, -1000d, 2000d, 2000d));
-            //PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-100d, -100d, 200d, 200d));
+            PlacedObjectsQuadTree = new QuadTree<LayoutObject>(new Rect(-100d, -100d, 200d, 200d));
             SelectedObjects = new List<LayoutObject>();
             _oldObjectPositions = new List<(LayoutObject Item, Rect OldBounds)>();
             _statisticsCalculationHelper = new StatisticsCalculationHelper();
@@ -1588,6 +1582,22 @@ namespace AnnoDesigner
             _layoutBounds = ComputeBoundingRect(PlacedObjectsQuadTree);
 
         }
+
+        /// <summary>
+        /// Ensures the <see cref="PlacedObjectsQuadTree"/> can include the specified bounds. This call can be very expensive
+        /// as it can cause a full re-index of the quad tree.
+        /// </summary>
+        /// <param name="additionalBounds"></param>
+        private void EnsureBounds(Rect additionalBounds)
+        {
+            if (!PlacedObjectsQuadTree.Extent.Contains(additionalBounds))
+            {
+                var newExtent = PlacedObjectsQuadTree.Extent;
+                newExtent.Union(additionalBounds);
+                newExtent.Inflate(newExtent.Width * 2, newExtent.Height * 2);
+                PlacedObjectsQuadTree.Extent = newExtent;
+            }
+        }
         #endregion
 
         #region Coordinate and rectangle conversions
@@ -1895,6 +1905,9 @@ namespace AnnoDesigner
                                     _collisionRect.X += dx;
                                     _collisionRect.Y += dy;
 
+                                    //TODO: PR: do this here or in UpdateObjectPositions();
+                                    EnsureBounds(_collisionRect);
+
                                     //position change -> update
                                     StatisticsUpdated?.Invoke(this, new UpdateStatisticsEventArgs(UpdateMode.NoBuildingList));
                                     if (!_layoutBounds.Contains(_collisionRect))
@@ -2125,7 +2138,6 @@ namespace AnnoDesigner
         /// <returns>true if placement succeeded, otherwise false</returns>
         private bool TryPlaceCurrentObjects(bool isContinuousDrawing)
         {
-            //TODO: PR: Expand bounds if required
             if (CurrentObjects.Count != 0)
             {
                 var boundingRect = ComputeBoundingRect(CurrentObjects);
@@ -2133,6 +2145,7 @@ namespace AnnoDesigner
 
                 if (CurrentObjects.Count != 0 && !objects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
                 {
+                    EnsureBounds(boundingRect);
                     PlacedObjectsQuadTree.AddRange(CloneList(CurrentObjects).Select(obj => (obj, new Rect(obj.Position, obj.Size))));
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
 
@@ -2365,7 +2378,8 @@ namespace AnnoDesigner
                     {
                         layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
                     }
-
+                    var bounds = ComputeBoundingRect(layoutObjects);
+                    EnsureBounds(bounds);
                     PlacedObjectsQuadTree.AddRange(layoutObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
                     LoadedFile = filename;
                     Normalize(1);
