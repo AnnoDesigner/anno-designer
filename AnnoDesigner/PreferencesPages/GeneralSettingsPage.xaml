@@ -150,6 +150,12 @@
             <CheckBox IsChecked="{Binding UseZoomToPoint}"
                       Content="{l:Localize GeneralPreferencesUseZoomToPoint}"
                       Margin="0,0,0,10" />
+            <CheckBox IsChecked="{Binding InvertPanningDirection}"
+                      Content="{l:Localize GeneralPreferencesInvertPanningDirection}"
+                      Margin="0,0,0,10" />
+            <CheckBox IsChecked="{Binding InvertScrollingDirection}"
+                      Content="{l:Localize GeneralPreferencesInvertScrollingDirection}"
+                      Margin="0,0,0,10" />
             <CheckBox IsChecked="{Binding HideInfluenceOnSelection}"
                       Content="{l:Localize GeneralPreferencesHideInfluenceOnSelection}" />
 

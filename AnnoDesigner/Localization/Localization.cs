@@ -206,9 +206,16 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesGridLinesColor" , "Grid line color" },
                         { "GeneralPreferencesObjectBorderLinesColor" , "Border color" },
                         { "GeneralPreferencesZoomSensitivity" , "Zoom sensitivity" },
+                        { "GeneralPreferencesInvertScrollingDirection" , "Invert scrolling direction" },
+                        { "GeneralPreferencesInvertPanningDirection" , "Invert panning direction" },
                         { "ColorTypeDefault" , "Default" },
                         { "ColorTypeLight" , "Light" },
-                        { "ColorTypeCustom" , "Custom" }
+                        { "ColorTypeCustom" , "Custom" },
+                        { "Warning" , "Warning" },
+                        { "FileNotFound" , "The file was not found." },
+                        { "Default" , "Default" },
+                        { "ItemsCopied" , "items copied" },
+                        { "ItemCopied" , "item copied" }
                     }
                 },
                 {
@@ -363,9 +370,16 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesGridLinesColor" , "Raster-/Gitterlinienfarbe" },
                         { "GeneralPreferencesObjectBorderLinesColor" , "Randfarbe" },
                         { "GeneralPreferencesZoomSensitivity" , "Zoom-Empfindlichkeit" },
+                        { "GeneralPreferencesInvertScrollingDirection" , "Scroll-Richtung umkehren" },
+                        { "GeneralPreferencesInvertPanningDirection" , "Schwenkrichtung umkehren" },
                         { "ColorTypeDefault" , "Standard" },
                         { "ColorTypeLight" , "Heller" },
-                        { "ColorTypeCustom" , "Benutzerdefiniert" }
+                        { "ColorTypeCustom" , "Benutzerdefiniert" },
+                        { "Warning" , "Warnung" },
+                        { "FileNotFound" , "Die Datei wurde nicht gefunden." },
+                        { "Default" , "Standard" },
+                        { "ItemsCopied" , "Elemente kopiert" },
+                        { "ItemCopied" , "Element kopiert" }
                     }
                 },
                 {
@@ -520,9 +534,16 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesGridLinesColor" , "Couleur des lignes de la grille" },
                         { "GeneralPreferencesObjectBorderLinesColor" , "Couleur de la bordure" },
                         { "GeneralPreferencesZoomSensitivity" , "Sensibilité du zoom" },
+                        { "GeneralPreferencesInvertScrollingDirection" , "Inverser le sens de défilement" },
+                        { "GeneralPreferencesInvertPanningDirection" , "Inverser le sens de rotation" },
                         { "ColorTypeDefault" , "Défaut" },
                         { "ColorTypeLight" , "Lumière" },
-                        { "ColorTypeCustom" , "Personnalisation" }
+                        { "ColorTypeCustom" , "Personnalisation" },
+                        { "Warning" , "Avertissement" },
+                        { "FileNotFound" , "Le fichier n'a pas été retrouvé." },
+                        { "Default" , "Défaut" },
+                        { "ItemsCopied" , "éléments copiés" },
+                        { "ItemCopied" , "élément copié" }
                     }
                 },
                 {
@@ -677,9 +698,16 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesGridLinesColor" , "Kolor linii siatki" },
                         { "GeneralPreferencesObjectBorderLinesColor" , "Kolor granicy" },
                         { "GeneralPreferencesZoomSensitivity" , "Wrażliwość na zoom" },
+                        { "GeneralPreferencesInvertScrollingDirection" , "Odwrócenie kierunku przewijania" },
+                        { "GeneralPreferencesInvertPanningDirection" , "Odwrócenie kierunku przesuwania" },
                         { "ColorTypeDefault" , "Domyślnie" },
                         { "ColorTypeLight" , "Światło" },
-                        { "ColorTypeCustom" , "Niestandardowy" }
+                        { "ColorTypeCustom" , "Niestandardowy" },
+                        { "Warning" , "Ostrzeżenie" },
+                        { "FileNotFound" , "Plik nie został znaleziony." },
+                        { "Default" , "Domyślnie" },
+                        { "ItemsCopied" , "skopiowane elementy" },
+                        { "ItemCopied" , "skopiowany przedmiot" }
                     }
                 },
                 {
@@ -834,12 +862,20 @@ namespace AnnoDesigner.Localization
                         { "GeneralPreferencesGridLinesColor" , "Цвет линии сетки" },
                         { "GeneralPreferencesObjectBorderLinesColor" , "Цвет границы" },
                         { "GeneralPreferencesZoomSensitivity" , "Чувствительность к увеличению" },
+                        { "GeneralPreferencesInvertScrollingDirection" , "Инвертировать направление прокрутки" },
+                        { "GeneralPreferencesInvertPanningDirection" , "Инвертировать направление панорамирования" },
                         { "ColorTypeDefault" , "По умолчанию" },
                         { "ColorTypeLight" , "Свет" },
-                        { "ColorTypeCustom" , "Пользовательский" }
+                        { "ColorTypeCustom" , "Пользовательский" },
+                        { "Warning" , "Предупреждение" },
+                        { "FileNotFound" , "Файл не был найден." },
+                        { "Default" , "По умолчанию" },
+                        { "ItemsCopied" , "списанные предметы" },
+                        { "ItemCopied" , "скопированный элемент" }
                     }
                 },
             };
+
             Instance._commons = commons;
             Instance.Commons_SelectedLanguageChanged(null, null);
             commons.SelectedLanguageChanged += Instance.Commons_SelectedLanguageChanged;
