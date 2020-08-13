@@ -539,7 +539,7 @@ namespace AnnoDesigner
         /// </summary>
         private readonly SolidColorBrush _debugBrushLight;
 
-        private bool debugModeIsEnabled = true;
+        private bool debugModeIsEnabled = false;
         private readonly bool debugShowObjectPositions = true;
         private readonly bool debugShowQuadTreeViz = true;
         private readonly bool debugShowSelectionRectCoordinates = true;
