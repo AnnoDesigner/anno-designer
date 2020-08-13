@@ -128,6 +128,7 @@
                                   SharedSizeGroup="PreferenceLabel" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0"
@@ -140,10 +141,15 @@
                     Width="150"
                     TickFrequency="1"
                     IsSnapToTickEnabled="True"
-                    TickPlacement="None"/>
+                    TickPlacement="None" />
             <TextBlock Grid.Column="2"
                        Margin="5,0,0,0"
                        Text="{Binding ElementName=ZoomSlider, Path=Value, StringFormat='{}{0}%'}" />
+            <Button Grid.Column="3"
+                    Content="{l:Localize Default}"
+                    Command="{Binding ResetZoomSensitivityCommand}"
+                    Padding="5,2"
+                    Margin="20,0,0,0" />
         </Grid>
 
         <StackPanel Margin="20,0,0,10">

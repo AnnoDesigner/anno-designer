@@ -125,7 +125,8 @@ namespace AnnoDesigner.Localization
                         { "16AgriculturalFences", "16 Agricultural Fences" },
                         { "17IndustrialOrnaments", "17 Industrial Ornaments" },
                         { "18IndustrialFences", "18 Industrial Fences" },
-                        { "19AmusementPark", "19 Amusement Park" }
+                        { "19AmusementPark", "19 Amusement Park" },
+                        { "PalaceBuildings", "Palace Buildings" }
                     }
                     },
                 {
@@ -226,7 +227,8 @@ namespace AnnoDesigner.Localization
                         { "16AgriculturalFences", "16 Landwirtschaftszäune" },
                         { "17IndustrialOrnaments", "17 Industrielle Verzierungen" },
                         { "18IndustrialFences", "18 Industriezäune" },
-                        { "19AmusementPark", "19 Vergnügungspark" }
+                        { "19AmusementPark", "19 Vergnügungspark" },
+                        { "PalaceBuildings", "Palastgebäude" }
                     }
                     },
                  {
@@ -327,7 +329,8 @@ namespace AnnoDesigner.Localization
                         { "16AgriculturalFences", "16 Clôtures Agricoles" },
                         { "17IndustrialOrnaments", "17 Ornements Industriels" },
                         { "18IndustrialFences", "18 Clôtures Industrielles" },
-                        { "19AmusementPark", "19 Parc d'attractions" }
+                        { "19AmusementPark", "19 Parc d'attractions" },
+                        { "PalaceBuildings", "Bâtiments du Palais" }
                     }
                     },
                 {
@@ -428,7 +431,8 @@ namespace AnnoDesigner.Localization
                         { "16AgriculturalFences", "16 Ogrodzenia Rolnicze" },
                         { "17IndustrialOrnaments", "17 Ornamenty Przemysłowe" },
                         { "18IndustrialFences", "18 Ogrodzenia Przemysłowe" },
-                        { "19AmusementPark", "19 Park Rozrywki" }
+                        { "19AmusementPark", "19 Park Rozrywki" },
+                        { "PalaceBuildings", "Budynki Pałacowe" }
                     }
                     },
                 {
@@ -529,7 +533,8 @@ namespace AnnoDesigner.Localization
                         { "16AgriculturalFences", "16 Сельскохозяйственных Заборов" },
                         { "17IndustrialOrnaments", "17 промышленных украшений" },
                         { "18IndustrialFences", "18 промышленных заборов" },
-                        { "19AmusementPark", "19 Парк развлечений" }
+                        { "19AmusementPark", "19 Парк развлечений" },
+                        { "PalaceBuildings", "Дворцовые здания" }
                     }
                     },
             };

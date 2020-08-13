@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Models;
@@ -38,6 +39,9 @@ namespace AnnoDesigner.ViewModels
 
             UseZoomToPoint = _appSettings.UseZoomToPoint;
             ZoomSensitivityPercentage = _appSettings.ZoomSensitivityPercentage;
+            HideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;
+
+            ResetZoomSensitivityCommand = new RelayCommand(ExecuteResetZoomSensitivity, CanExecuteResetZoomSensitivity);
 
             GridLineColors = new ObservableCollection<UserDefinedColor>();
             RefreshGridLineColors();
@@ -342,6 +346,18 @@ namespace AnnoDesigner.ViewModels
                     _appSettings.Save();
                 }
             }
+        }
+
+        public ICommand ResetZoomSensitivityCommand { get; private set; }
+
+        private void ExecuteResetZoomSensitivity(object param)
+        {
+            ZoomSensitivityPercentage = Constants.ZoomSensitivityPercentageDefault;
+        }
+
+        private bool CanExecuteResetZoomSensitivity(object param)
+        {
+            return ZoomSensitivityPercentage != Constants.ZoomSensitivityPercentageDefault;
         }
     }
 }
