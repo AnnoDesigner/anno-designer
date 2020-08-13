@@ -48,5 +48,7 @@ namespace AnnoDesigner.Core.Models
         bool UseZoomToPoint { get; set; }
         bool HideInfluenceOnSelection { get; set; }
         double ZoomSensitivityPercentage { get; set; }
+        bool InvertPanningDirection { get; set; }
+        bool InvertScrollingDirection { get; set; }
     }
 }

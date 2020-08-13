@@ -1570,6 +1570,7 @@ namespace AnnoDesigner
             var r = _viewport.Absolute;
             r.Union(_layoutBounds);
             _scrollableBounds = r;
+
             //update scroll viewer on next render
             _invalidateScrollInfo = true;
         }
@@ -1724,7 +1725,6 @@ namespace AnnoDesigner
             HotkeyCommandManager.HandleCommand(e);
             if (e.Handled)
             {
-                logger.Info("Click command handled");
                 return;
             }
 
@@ -1808,8 +1808,17 @@ namespace AnnoDesigner
                 var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
 
                 //shift the viewport;
-                _viewport.Left += dx;
-                _viewport.Top += dy;
+                if (_appSettings.InvertPanningDirection)
+                {
+                    _viewport.Left -= dx;
+                    _viewport.Top -= dy;
+                }
+                else
+                {
+                    _viewport.Left += dx;
+                    _viewport.Top += dy;
+                }
+
                 // adjust the drag start to compensate the amount we already moved
                 _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
                 _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
@@ -1873,6 +1882,8 @@ namespace AnnoDesigner
                                 //Recompute _unselectedObjects
                                 var offsetCollisionRect = _collisionRect;
                                 offsetCollisionRect.Offset(dx, dy);
+                                //TODO: PR: Cache this value somehow, maybe check object counts? 
+                                //Its causing slowdowns when dragging large numbers of objects
                                 _unselectedObjects = PlacedObjectsQuadTree.GetItemsIntersecting(offsetCollisionRect).ToList().FindAll(_ => !SelectedObjects.Contains(_)).ToList();
                                 var collisionsExist = false;
                                 // temporarily move each object and check if collisions with unselected objects exist
@@ -1910,11 +1921,10 @@ namespace AnnoDesigner
 
                                     //position change -> update
                                     StatisticsUpdated?.Invoke(this, new UpdateStatisticsEventArgs(UpdateMode.NoBuildingList));
-                                    if (!_layoutBounds.Contains(_collisionRect))
-                                    {
-                                        InvalidateBounds();
-                                    }
-                                    if (!_scrollableBounds.Contains(_collisionRect))
+                                    //always recompute bounds when moving, as we may be moving an item in from the edge of the layout
+                                    var oldLayoutBounds = _layoutBounds;
+                                    InvalidateBounds();
+                                    if (oldLayoutBounds != _layoutBounds)
                                     {
                                         InvalidateScroll();
                                     }
@@ -2178,6 +2188,7 @@ namespace AnnoDesigner
         /// <returns>object at the position, <see langword="null"/> if no object could be found</returns>
         private LayoutObject GetObjectAt(Point position)
         {
+            //TODD: PR: Still a bug in here somewhere
             var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
             gridPosition = _viewport.OriginToViewport(gridPosition);
             var possibleItems = PlacedObjectsQuadTree.GetItemsIntersecting(new Rect(gridPosition, new Size(1, 1)));
@@ -2557,22 +2568,40 @@ namespace AnnoDesigner
 
         #region IScrollInfo
 
-        public double ExtentWidth { get => _scrollableBounds.Width; }
-        public double ExtentHeight { get => _scrollableBounds.Height; }
-        public double ViewportWidth { get => _viewport.Width; }
-        public double ViewportHeight { get => _viewport.Height; }
-
+        public double ExtentWidth => _scrollableBounds.Width;
+        public double ExtentHeight => _scrollableBounds.Height;
+        public double ViewportWidth => _viewport.Width;
+        public double ViewportHeight => _viewport.Height;
+        
         public double HorizontalOffset
         {
-            get => _viewport.Left - _scrollableBounds.Left;
-            private set => _viewport.Left = _scrollableBounds.Left + value;
+            get
+            {
+                if (_appSettings.InvertScrollingDirection)
+                {
+                    return (_scrollableBounds.Left - _viewport.Left) + (_scrollableBounds.Width - _viewport.Width);
+                }
+                else
+                {
+                    return _viewport.Left - _scrollableBounds.Left;
+                }
+            }
         }
 
-        public double VerticalOffset
-        {
-            get => _viewport.Top - _scrollableBounds.Top;
-            private set => _viewport.Top = _scrollableBounds.Top + value;
+        public double VerticalOffset {
+            get
+            {
+                if (_appSettings.InvertScrollingDirection)
+                {
+                    return (_scrollableBounds.Top - _viewport.Top) + (_scrollableBounds.Height - _viewport.Height);
+                }
+                else
+                {
+                    return _viewport.Top - _scrollableBounds.Top;
+                }
+            }
         }
+
 
         public ScrollViewer ScrollOwner { get; set; }
         //TODO: PR:  Add setting for these (enable/disable scrolling)
@@ -2683,12 +2712,18 @@ namespace AnnoDesigner
 
         public void SetHorizontalOffset(double offset)
         {
-            //TODO: PR: Add invert scrolling option - this may have to be handled by the viewport translation transform
-
             //handle when offset is +/- infinity (when scrolling to top/bottom using the end and home keys)
             offset = Math.Max(offset, 0d);
             offset = Math.Min(offset, _scrollableBounds.Width);
-            HorizontalOffset = offset;
+            if (_appSettings.InvertScrollingDirection)
+            {
+                _viewport.Left = (_scrollableBounds.Left - offset) + (_scrollableBounds.Width - _viewport.Width);
+            }
+            else
+            {
+                _viewport.Left = _scrollableBounds.Left + offset;
+            }
+            _viewport.Left = _scrollableBounds.Left + offset;
             InvalidateScroll();
             InvalidateVisual();
         }
@@ -2698,7 +2733,14 @@ namespace AnnoDesigner
             //handle when offset is +/- infinity (when scrolling to top/bottom using the end and home keys)
             offset = Math.Max(offset, 0d);
             offset = Math.Min(offset, _scrollableBounds.Height);
-            VerticalOffset = offset;
+            if (_appSettings.InvertScrollingDirection)
+            {
+                _viewport.Top = (_scrollableBounds.Top - offset) + (_scrollableBounds.Height - _viewport.Height);
+            }
+            else
+            {
+                _viewport.Top = _scrollableBounds.Top + offset;
+            }
             InvalidateScroll();
             InvalidateVisual();
         }
