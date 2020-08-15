@@ -159,6 +159,9 @@
             <CheckBox IsChecked="{Binding InvertPanningDirection}"
                       Content="{l:Localize GeneralPreferencesInvertPanningDirection}"
                       Margin="0,0,0,10" />
+            <CheckBox IsChecked="{Binding ShowScrollbars}"
+                      Content="{l:Localize GeneralPreferencesShowScrollbars}"
+                      Margin="0,0,0,10" />
             <CheckBox IsChecked="{Binding InvertScrollingDirection}"
                       Content="{l:Localize GeneralPreferencesInvertScrollingDirection}"
                       Margin="0,0,0,10" />

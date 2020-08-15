@@ -232,8 +232,8 @@
                 as the event will still bubble up to the scroll viewer as its not handled in AnnoCanvas -->
                 <ScrollViewer Grid.Column="0"
                               Grid.ColumnSpan="2"
-                              VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="{Binding ShowScrollbars}"
+                              HorizontalScrollBarVisibility="{Binding ShowScrollbars}"
                               CanContentScroll="True"
                               Focusable="False">
                     <my:AnnoCanvas x:Name="annoCanvas" />

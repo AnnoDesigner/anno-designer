@@ -29,6 +29,7 @@ namespace AnnoDesigner.ViewModels
         private Color? _selectedCustomObjectBorderLineColor;
         private double _zoomSensitivityPercentage;
         private bool _invertPanningDirection;
+        private bool _showScrollbars;
         private bool _invertScrollingDirection;
 
         public GeneralSettingsViewModel(IAppSettings appSettingsToUse, ICommons commonsToUse)
@@ -343,6 +344,19 @@ namespace AnnoDesigner.ViewModels
                 if (UpdateProperty(ref _invertPanningDirection, value))
                 {
                     _appSettings.InvertPanningDirection = value;
+                    _appSettings.Save();
+                }
+            }
+        }
+        
+        public bool ShowScrollbars
+        {
+            get { return _showScrollbars; }
+            set
+            {
+                if (UpdateProperty(ref _showScrollbars, value))
+                {
+                    _appSettings.ShowScrollbars = value;
                     _appSettings.Save();
                 }
             }

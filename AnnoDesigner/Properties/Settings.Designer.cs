@@ -487,5 +487,17 @@ namespace AnnoDesigner.Properties {
                 this["InvertScrollingDirection"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowScrollbars {
+            get {
+                return ((bool)(this["ShowScrollbars"]));
+            }
+            set {
+                this["ShowScrollbars"] = value;
+            }
+        }
     }
 }

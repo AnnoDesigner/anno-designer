@@ -50,5 +50,6 @@ namespace AnnoDesigner.Core.Models
         double ZoomSensitivityPercentage { get; set; }
         bool InvertPanningDirection { get; set; }
         bool InvertScrollingDirection { get; set; }
+        bool ShowScrollbars { get; set; }
     }
 }

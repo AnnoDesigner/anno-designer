@@ -469,6 +469,11 @@ namespace AnnoDesigner
         private Rect _scrollableBounds;
 
         /// <summary>
+        /// A Size representing the area the AnnoCanvas control is currently allowed to take up.
+        /// </summary>
+        private Size _oldArrangeBounds;
+
+        /// <summary>
         /// The typeface used when rendering text on the canvas.
         /// </summary>
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
@@ -724,7 +729,11 @@ namespace AnnoDesigner
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
             //force scroll bars to update when we resize the window
-            InvalidateScroll();
+            if (_oldArrangeBounds != arrangeBounds)
+            {
+                _oldArrangeBounds = arrangeBounds;
+                InvalidateScroll();
+            }
             return base.ArrangeOverride(arrangeBounds);
         }
 
@@ -739,10 +748,25 @@ namespace AnnoDesigner
             _viewport.Width = _coordinateHelper.ScreenToGrid(width, GridSize);
             _viewport.Height = _coordinateHelper.ScreenToGrid(height, GridSize);
 
-            if (_invalidateScrollInfo)
+            if (ScrollOwner != null)
             {
-                ScrollOwner?.InvalidateScrollInfo();
-                _invalidateScrollInfo = false;
+                //SCrollbar visibility should probably be managed by the owner of the the scrollviewer itself, not here...
+                if (_appSettings.ShowScrollbars)
+                {
+                        ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                        ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+                }
+                else
+                {
+                    ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+                    ScrollOwner.HorizontalScrollBarVisibility= ScrollBarVisibility.Hidden;
+                }
+
+                if (_invalidateScrollInfo)
+                {
+                    ScrollOwner?.InvalidateScrollInfo();
+                    _invalidateScrollInfo = false;
+                }
             }
 
             //use the negated value for the transform, as when we move the viewport (for example, if Top gets
@@ -2558,7 +2582,7 @@ namespace AnnoDesigner
         public double ExtentHeight => _scrollableBounds.Height;
         public double ViewportWidth => _viewport.Width;
         public double ViewportHeight => _viewport.Height;
-        
+
         public double HorizontalOffset
         {
             get
@@ -2574,7 +2598,8 @@ namespace AnnoDesigner
             }
         }
 
-        public double VerticalOffset {
+        public double VerticalOffset
+        {
             get
             {
                 if (_appSettings.InvertScrollingDirection)
@@ -2588,10 +2613,10 @@ namespace AnnoDesigner
             }
         }
 
-
         public ScrollViewer ScrollOwner { get; set; }
         public bool CanVerticallyScroll { get; set; }
         public bool CanHorizontallyScroll { get; set; }
+
         public void LineUp()
         {
             _viewport.Top -= 1;

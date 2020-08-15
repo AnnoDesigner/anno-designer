@@ -698,7 +698,7 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
-        #region properties
+        #region Properties
 
         public IAnnoCanvas AnnoCanvas
         {
@@ -912,7 +912,6 @@ namespace AnnoDesigner.ViewModels
         {
             get { return RecentFiles.Count > 0; }
         }
-
         #endregion
 
         #region Commands

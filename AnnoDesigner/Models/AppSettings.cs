@@ -257,6 +257,12 @@ namespace AnnoDesigner.Models
             get => Settings.Default.InvertScrollingDirection;
             set => Settings.Default.InvertScrollingDirection = value;
         }
+
+        public bool ShowScrollbars
+        {
+            get => Settings.Default.ShowScrollbars;
+            set => Settings.Default.ShowScrollbars = value;
+        }
     }
 }
 
