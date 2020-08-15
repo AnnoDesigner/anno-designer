@@ -14,10 +14,12 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core;
+using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Exceptions;
+using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Helper;
@@ -528,7 +530,7 @@ namespace AnnoDesigner.ViewModels
         public Task UpdateStatisticsAsync(UpdateMode mode)
         {
             return StatisticsViewModel.UpdateStatisticsAsync(mode,
-                AnnoCanvas.PlacedObjects,
+                AnnoCanvas.PlacedObjects.All().ToList(),
                 AnnoCanvas.SelectedObjects,
                 AnnoCanvas.BuildingPresets);
         }
@@ -558,7 +560,7 @@ namespace AnnoDesigner.ViewModels
 
         public void LoadSettings()
         {
-            StatisticsViewModel.ToggleBuildingList(_appSettings.StatsShowBuildingCount, AnnoCanvas.PlacedObjects, AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
+            StatisticsViewModel.ToggleBuildingList(_appSettings.StatsShowBuildingCount, AnnoCanvas.PlacedObjects.All().ToList(), AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
 
             PreferencesUpdateViewModel.AutomaticUpdateCheck = _appSettings.EnableAutomaticUpdateCheck;
             PreferencesUpdateViewModel.UpdateSupportsPrerelease = _appSettings.UpdateSupportsPrerelease;
@@ -968,7 +970,7 @@ namespace AnnoDesigner.ViewModels
                             AnnoCanvas.SelectedObjects.Clear();
 
                             AnnoCanvas.PlacedObjects.Clear();
-                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)));
+                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)).Select(obj => (obj, obj.GridRect)));
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 
@@ -1085,7 +1087,7 @@ namespace AnnoDesigner.ViewModels
         /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
         private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection, bool renderStatistics)
         {
-            if (AnnoCanvas.PlacedObjects.Count == 0)
+            if (AnnoCanvas.PlacedObjects.Count() == 0)
             {
                 return;
             }
@@ -1110,10 +1112,15 @@ namespace AnnoDesigner.ViewModels
                     icons.Add(curIcon.Key, new IconImage(curIcon.Value.Name, curIcon.Value.Localizations, curIcon.Value.IconPath));
                 }
 
+                var stats = new StatisticsCalculationHelper();
+                var result = stats.CalculateStatistics(allObjects.Select(x => x.WrappedAnnoObject));
+                var bounds = new Rect(result.MinX, result.MinY, result.UsedAreaWidth, result.UsedAreaHeight);
+                var quadTree = new QuadTree<LayoutObject>(bounds);
+                quadTree.AddRange(allObjects.Select(obj => (obj, obj.GridRect)));
                 // initialize output canvas
                 var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _appSettings, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
                 {
-                    PlacedObjects = allObjects,
+                    PlacedObjects = quadTree,
                     RenderGrid = AnnoCanvas.RenderGrid,
                     RenderIcon = AnnoCanvas.RenderIcon,
                     RenderLabel = AnnoCanvas.RenderLabel
@@ -1149,7 +1156,7 @@ namespace AnnoDesigner.ViewModels
                     };
                     exportStatisticsView.DataContext = exportStatisticsViewModel;
 
-                    exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects, target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult(); ;
+                    exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.All().ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult(); ;
                     exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 
                     target.StatisticsPanel.Children.Add(exportStatisticsView);
@@ -1285,7 +1292,7 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteShowStatisticsBuildingCount(object param)
         {
-            StatisticsViewModel.ToggleBuildingList(StatisticsViewModel.ShowStatisticsBuildingCount, AnnoCanvas.PlacedObjects, AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
+            StatisticsViewModel.ToggleBuildingList(StatisticsViewModel.ShowStatisticsBuildingCount, AnnoCanvas.PlacedObjects.All().ToList(), AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
         }
 
         public ICommand PlaceBuildingCommand { get; private set; }
