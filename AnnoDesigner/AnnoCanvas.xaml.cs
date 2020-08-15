@@ -461,7 +461,6 @@ namespace AnnoDesigner
         /// <summary>
         /// A Rect representing the true space the current layout takes up.
         /// </summary>
-        /// TODO: Change how statistics works, as we are now computing this value in multiple places (in the statistics window and here)
         private Rect _layoutBounds;
 
         /// <summary>
@@ -1870,7 +1869,7 @@ namespace AnnoDesigner
                                 //Recompute _unselectedObjects
                                 var offsetCollisionRect = _collisionRect;
                                 offsetCollisionRect.Offset(dx, dy);
-                                //TODO: PR: Cache this value somehow, maybe check object counts? 
+
                                 //Its causing slowdowns when dragging large numbers of objects
                                 _unselectedObjects = PlacedObjects.GetItemsIntersecting(offsetCollisionRect).ToList().FindAll(_ => !SelectedObjects.Contains(_)).ToList();
                                 var collisionsExist = false;
