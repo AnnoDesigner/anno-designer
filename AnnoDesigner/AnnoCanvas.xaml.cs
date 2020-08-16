@@ -1064,10 +1064,10 @@ namespace AnnoDesigner
                 foreach (var obj in CurrentObjects)
                 {
                     var pos = _coordinateHelper.GridToScreen(obj.Position, GridSize);
-                    //remove any decimal offset caused from scrolling
+                    ////remove any decimal offset caused from scrolling
+                    pos = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy), GridSize));
                     pos.X += _viewport.HorizontalAlignmentValue;
                     pos.Y += _viewport.VerticalAlignmentValue;
-                    pos = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy), GridSize));
                     obj.Position = pos;
                 }
             }
