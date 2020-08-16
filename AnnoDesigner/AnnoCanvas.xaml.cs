@@ -537,13 +537,14 @@ namespace AnnoDesigner
         private readonly SolidColorBrush _debugBrushLight;
 
         private bool debugModeIsEnabled = false;
-        private readonly bool debugShowObjectPositions = false;
+        private readonly bool debugShowObjectPositions = true;
         private readonly bool debugShowQuadTreeViz = true;
         private readonly bool debugShowSelectionRectCoordinates = true;
         private readonly bool debugShowSelectionCollisionRect = true;
         private readonly bool debugShowViewportRectCoordinates = true;
         private readonly bool debugShowScrollableRectCoordinates = true;
         private readonly bool debugShowLayoutRectCoordinates = true;
+        private readonly bool debugShowMouseGridCoordinates = true;
 
         #endregion
 #endif
@@ -753,13 +754,13 @@ namespace AnnoDesigner
                 //SCrollbar visibility should probably be managed by the owner of the the scrollviewer itself, not here...
                 if (_appSettings.ShowScrollbars)
                 {
-                        ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-                        ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+                    ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                    ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
                 }
                 else
                 {
                     ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-                    ScrollOwner.HorizontalScrollBarVisibility= ScrollBarVisibility.Hidden;
+                    ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
                 }
 
                 if (_invalidateScrollInfo)
@@ -984,6 +985,27 @@ namespace AnnoDesigner
                     drawingContext.DrawText(debugText[i], new Point(5, (i * 15) + 5));
                 }
 
+                if (debugShowMouseGridCoordinates)
+                {
+                    //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
+                    if (App.DpiScale.PixelsPerDip != 0)
+                    {
+                        var gridPosition = _coordinateHelper.ScreenToFractionalGrid(_mousePosition, GridSize);
+                        gridPosition = _viewport.OriginToViewport(gridPosition);
+                        var x = gridPosition.X;
+                        var y = gridPosition.Y;
+                        var text = new FormattedText($"{x:F2}, {y:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                     TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                        {
+                            TextAlignment = TextAlignment.Left
+                        };
+                        var pos = _mousePosition;
+                        pos.X -= 5;
+                        pos.Y += 15;
+                        drawingContext.DrawText(text, pos);
+                    }
+                }
+
                 //draw selection rect coords last so they draw over the top of everything else
                 if (CurrentMode == MouseMode.SelectionRect)
                 {
@@ -1058,6 +1080,7 @@ namespace AnnoDesigner
                 pos = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(pos, GridSize));
                 pos.X += _viewport.HorizontalAlignmentValue;
                 pos.Y += _viewport.VerticalAlignmentValue;
+                logger.Debug(pos);
                 CurrentObjects[0].Position = pos;
             }
         }
@@ -1693,21 +1716,18 @@ namespace AnnoDesigner
             else
             {
                 var mousePosition = _mousePosition;
-                var preZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
+                var preZoomPosition = _coordinateHelper.ScreenToFractionalGrid(mousePosition, GridSize);
                 GridSize += change;
-
-                var postZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
-                var diff = postZoomPosition - preZoomPosition;
-                if (PlacedObjects.Count() != 0)
-                {
-                    _viewport.Left += diff.X;
-                    _viewport.Top += diff.Y;
-                }
+                var postZoomPosition = _coordinateHelper.ScreenToFractionalGrid(mousePosition, GridSize);
+                var diff = preZoomPosition - postZoomPosition;
+                _viewport.Left += diff.X;
+                _viewport.Top += diff.Y;
             }
+            //if there are no objects placed down, then reset to viewport to 0,0, whilst maintaining any offsets to hide the change
             if (PlacedObjects.Count() == 0)
             {
-                _viewport.Left = 0;
-                _viewport.Top = 0;
+                _viewport.Left = _viewport.HorizontalAlignmentValue >= 0 ? 1 - _viewport.HorizontalAlignmentValue : Math.Abs(_viewport.HorizontalAlignmentValue);
+                _viewport.Top = _viewport.VerticalAlignmentValue >= 0 ? 1 - _viewport.VerticalAlignmentValue : Math.Abs(_viewport.VerticalAlignmentValue);
             }
             InvalidateScroll();
         }
@@ -2199,10 +2219,10 @@ namespace AnnoDesigner
         private LayoutObject GetObjectAt(Point position)
         {
             //TODD: PR: Still a bug in here somewhere
-            var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
+            var gridPosition = _coordinateHelper.ScreenToFractionalGrid(position, GridSize);
             gridPosition = _viewport.OriginToViewport(gridPosition);
             var possibleItems = PlacedObjects.GetItemsIntersecting(new Rect(gridPosition, new Size(1, 1)));
-            return possibleItems.ToList().Find(_ => _.CollisionRect.Contains(gridPosition));
+            return possibleItems.FirstOrDefault(_ => _.GridRect.Contains(gridPosition));
         }
 
         /// <summary>

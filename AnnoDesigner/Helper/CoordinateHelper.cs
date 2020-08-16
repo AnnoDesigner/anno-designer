@@ -21,6 +21,16 @@ namespace AnnoDesigner.Helper
         }
 
         /// <summary>
+        /// Convert a screen coordinate to a grid coordinate without flooring to the nearest full coordinate
+        /// </summary>
+        /// <param name="screenPoint"></param>
+        /// <returns></returns>
+        public Point ScreenToFractionalGrid(Point screenPoint, int gridStep)
+        {
+            return new Point(screenPoint.X / gridStep, screenPoint.Y / gridStep);
+        }
+
+        /// <summary>
         /// Converts a screen coordinate to a grid coordinate by determining which grid cell is nearest.
         /// </summary>
         /// <param name="screenPoint"></param>
