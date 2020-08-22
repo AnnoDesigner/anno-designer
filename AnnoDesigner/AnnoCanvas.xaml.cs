@@ -1047,40 +1047,32 @@ namespace AnnoDesigner
             if (CurrentObjects.Count > 1)
             {
                 //Get the center of the current selection
-                var r = CurrentObjects[0].CalculateScreenRect(GridSize);
+                var r = CurrentObjects[0].GridRect;
                 foreach (var obj in CurrentObjects.Skip(1))
                 {
-                    r.Union(obj.CalculateScreenRect(GridSize));
+                    r.Union(obj.GridRect);
                 }
 
                 var center = _coordinateHelper.GetCenterPoint(r);
-                var dx = _mousePosition.X - center.X;
-                var dy = _mousePosition.Y - center.Y;
-
-                //Ensure we move only in grid steps, to avoid rounding errors.
-                dx = _coordinateHelper.GridToScreen(_coordinateHelper.RoundScreenToGrid(dx, GridSize), GridSize);
-                dy = _coordinateHelper.GridToScreen(_coordinateHelper.RoundScreenToGrid(dy, GridSize), GridSize);
-
+                var mousePosition = _coordinateHelper.ScreenToFractionalGrid(_mousePosition, GridSize);
+                var dx = mousePosition.X - center.X;
+                var dy = mousePosition.Y - center.Y;
                 foreach (var obj in CurrentObjects)
                 {
-                    var pos = _coordinateHelper.GridToScreen(obj.Position, GridSize);
-                    ////remove any decimal offset caused from scrolling
-                    pos = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy), GridSize));
-                    pos.X += _viewport.HorizontalAlignmentValue;
-                    pos.Y += _viewport.VerticalAlignmentValue;
+                    var pos = obj.Position;
+                    pos = _viewport.OriginToViewport(new Point(pos.X + dx, pos.Y + dy));
+                    pos = new Point(Math.Round(pos.X, MidpointRounding.AwayFromZero), Math.Round(pos.Y, MidpointRounding.AwayFromZero));
                     obj.Position = pos;
                 }
             }
             else
             {
-                var pos = _mousePosition;
-                var size = _coordinateHelper.GridToScreen(CurrentObjects[0].Size, GridSize);
+                var pos = _coordinateHelper.ScreenToFractionalGrid(_mousePosition, GridSize);
+                var size = CurrentObjects[0].Size;
                 pos.X -= size.Width / 2;
                 pos.Y -= size.Height / 2;
-                pos = _viewport.OriginToViewport(_coordinateHelper.RoundScreenToGrid(pos, GridSize));
-                pos.X += _viewport.HorizontalAlignmentValue;
-                pos.Y += _viewport.VerticalAlignmentValue;
-                logger.Debug(pos);
+                pos = _viewport.OriginToViewport(pos);
+                pos = new Point(Math.Round(pos.X, MidpointRounding.AwayFromZero), Math.Round(pos.Y, MidpointRounding.AwayFromZero));
                 CurrentObjects[0].Position = pos;
             }
         }
