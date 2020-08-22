@@ -876,15 +876,10 @@ namespace AnnoDesigner
                     RenderObjectInfluenceRadius(drawingContext, CurrentObjects);
                     // draw influence range
                     RenderObjectInfluenceRange(drawingContext, CurrentObjects);
-                    //pop viewport transform when drawing currentObjects
-
                     // draw with transparency
                     RenderObjectList(drawingContext, CurrentObjects, useTransparency: true);
 
                     drawingContext.Pop();
-
-                    ////Push the transform back
-                    //drawingContext.PushTransform(_viewportTransform);
                 }
 
             }
@@ -1887,7 +1882,6 @@ namespace AnnoDesigner
                             }
                         case MouseMode.DragSelection:
                             {
-                                //if Count == 0, then this is the first time this has been done in the current mouse move, as we reset this on mouse up
                                 if (_oldObjectPositions.Count == 0)
                                 {
                                     _oldObjectPositions.AddRange(SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
