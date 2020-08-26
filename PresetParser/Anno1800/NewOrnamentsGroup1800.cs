@@ -65,7 +65,8 @@ namespace PresetParser.Anno1800
             "BH Ornament17 Shed", "BH Ornament18 Pile Iron Bars", "BH Ornament19 Pile Boxes and Barrels", "BH Ornament20 Heap", "BH Ornament21 Large Boxes", "BH Ornament22 Gangway" };
         private static readonly List<string> ChangeOrnamentToIndustrialFences_1800 = new List<string> { "BH Ornament01 Wall Straight", "BH Ornament01 Wall End", "BH Ornament01 Wall Cross", "BH Ornament01 Wall T-Cross", "BH Ornament01 Wall Corner", "BH Ornament01 Wall Gate",
             "BH Ornament01 Wall Gate 02", "BH Ornament02 Wall Straight Large", "BH Ornament02 Wall End Large", "BH Ornament02 Wall Cross Large", "BH Ornament02 Wall T-Cross Large", "BH Ornament02 Wall Corner Large", "BH Ornament02 Wall Gate Large" };
-        private static readonly List<string> ChangeOrnamentToAmusementPark_1800 = new List<string> { "" };
+        private static readonly List<string> ChangeOrnamentToAmusementPark_1800 = new List<string> { "AmusementPark FerrisWheel", "AmusementPark RollerCoaster", "AmusementPark PayBooth", "AmusementPark Icecream", "AmusementPark CottonCandy", "AmusementPark TinCanGame", "AmusementPark ShootingGame",
+            "AmusementPark Consumable01", "AmusementPark Consumable02", "AmusementPark Strongman", "AmusementPark PictureWall", "AmusementPark OrganPlayer", "AmusementPark BalloonSeller", "AmusementPark Painter", "AmusementPark GateBig", "AmusementPark BarTable" };
         /// <summary>
         /// Retuns the faction and group for an identifier.
         /// </summary>
