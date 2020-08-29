@@ -109,8 +109,11 @@ namespace AnnoDesigner.ViewModels
             {
                 if (UpdateProperty(ref _selectedGridLineColor, value))
                 {
-                    UpdateGridLineColorVisibility();
-                    SaveSelectedGridLineColor();
+                    if (value != null)
+                    {
+                        UpdateGridLineColorVisibility();
+                        SaveSelectedGridLineColor();
+                    }
                 }
             }
         }
@@ -208,8 +211,11 @@ namespace AnnoDesigner.ViewModels
             {
                 if (UpdateProperty(ref _selectedObjectBorderLineColor, value))
                 {
-                    UpdateObjectBorderLineVisibility();
-                    SaveSelectedObjectBorderLine();
+                    if (value != null)
+                    {
+                        UpdateObjectBorderLineVisibility();
+                        SaveSelectedObjectBorderLine();
+                    }
                 }
             }
         }
