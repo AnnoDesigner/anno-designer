@@ -148,17 +148,11 @@ namespace AnnoDesigner.ViewModels
                 return;
             }
 
-            switch (SelectedGridLineColor.Type)
+            IsGridLineColorPickerVisible = SelectedGridLineColor.Type switch
             {
-                case UserDefinedColorType.Custom:
-                    IsGridLineColorPickerVisible = true;
-                    break;
-                case UserDefinedColorType.Default:
-                case UserDefinedColorType.Light:
-                default:
-                    IsGridLineColorPickerVisible = false;
-                    break;
-            }
+                UserDefinedColorType.Custom => true,
+                _ => false,
+            };
         }
 
         private void SaveSelectedGridLineColor()
@@ -250,17 +244,11 @@ namespace AnnoDesigner.ViewModels
                 return;
             }
 
-            switch (SelectedObjectBorderLineColor.Type)
+            IsObjectBorderLineColorPickerVisible = SelectedObjectBorderLineColor.Type switch
             {
-                case UserDefinedColorType.Custom:
-                    IsObjectBorderLineColorPickerVisible = true;
-                    break;
-                case UserDefinedColorType.Default:
-                case UserDefinedColorType.Light:
-                default:
-                    IsObjectBorderLineColorPickerVisible = false;
-                    break;
-            }
+                UserDefinedColorType.Custom => true,
+                _ => false,
+            };
         }
 
         private void SaveSelectedObjectBorderLine()
