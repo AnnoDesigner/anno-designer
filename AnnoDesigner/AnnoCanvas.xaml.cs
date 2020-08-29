@@ -21,19 +21,22 @@ using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.Services;
+using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Models;
 using AnnoDesigner.Services;
 using Microsoft.Win32;
 using NLog;
+using AnnoDesigner.Core.Layout.Helper;
+using System.Windows.Controls.Primitives;
 
 namespace AnnoDesigner
 {
     /// <summary>
     /// Interaction logic for AnnoCanvas.xaml
     /// </summary>
-    public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource
+    public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource, IScrollInfo
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -43,9 +46,9 @@ namespace AnnoDesigner
         public const string PASTE_LOCALIZATION_KEY = "Paste";
         public const string DELETE_LOCALIZATION_KEY = "Delete";
         public const string DUPLICATE_LOCALIZATION_KEY = "Duplicate";
+        public const string ROTATE_ALL_LOCALIZATION_KEY = "RotateAll";
         //not implmented yet
         public const string UNDO_LOCALIZATION_KEY = "Undo";
-        public const string ROTATE_ALL_LOCALIZATION_KEY = "RotateAll";
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
@@ -241,6 +244,17 @@ namespace AnnoDesigner
         }
 
         /// <summary>
+        /// List of all currently placed objects.
+        /// </summary>
+        public QuadTree<LayoutObject> PlacedObjects { get; set; }
+
+        /// <summary>
+        /// List of all currently selected objects.
+        /// All of them must also be contained in the _placedObjects list.
+        /// </summary>
+        public List<LayoutObject> SelectedObjects { get; set; }
+
+        /// <summary>
         /// Event which is fired when the current object is changed
         /// </summary>
         public event Action<LayoutObject> OnCurrentObjectChanged;
@@ -409,17 +423,61 @@ namespace AnnoDesigner
         private Rect _selectionRect;
 
         /// <summary>
-        /// List of all currently placed objects.
+        /// A list of object position <see cref="Rect"/>s. Used when dragging selected objects (when MouseMode is <see cref="MouseMode.DragSelection"/>).
+        /// Holds a Rect that represents the object's previous position prior to dragging.
         /// </summary>
-        public List<LayoutObject> PlacedObjects { get; set; }
+        private readonly List<(LayoutObject Item, Rect OldGridRect)> _oldObjectPositions;
 
         /// <summary>
-        /// List of all currently selected objects.
-        /// All of them must also be contained in the _placedObjects list.
+        /// The collision rect derived from the current selection.
         /// </summary>
-        public List<LayoutObject> SelectedObjects { get; set; }
+        private Rect _collisionRect;
 
+        /// <summary>
+        /// Calculation helper used when computing the <see cref="_collisionRect"/>.
+        /// </summary>
+        private readonly StatisticsCalculationHelper _statisticsCalculationHelper;
+
+        /// <summary>
+        /// The current viewport.
+        /// </summary>
+        private readonly Viewport _viewport;
+
+        /// <summary>
+        /// A transform used to translate items within the viewport.
+        /// </summary>
+        private readonly TranslateTransform _viewportTransform;
+
+        /// <summary>
+        /// A guideline set used for pixel-aligned drawing.
+        /// </summary>
+        private GuidelineSet _guidelineSet;
+
+        /// <summary>
+        /// A flag representing if <see cref="ScrollViewer.InvalidateScrollInfo"/> needs to be called on the next render.
+        /// </summary>
+        private bool _invalidateScrollInfo;
+
+        /// <summary>
+        /// A Rect representing the true space the current layout takes up.
+        /// </summary>
+        private Rect _layoutBounds;
+
+        /// <summary>
+        /// A Rect representing the scrollable area of the canvas.
+        /// </summary>
+        private Rect _scrollableBounds;
+
+        /// <summary>
+        /// A Size representing the area the AnnoCanvas control is currently allowed to take up.
+        /// </summary>
+        private Size _oldArrangeBounds;
+
+        /// <summary>
+        /// The typeface used when rendering text on the canvas.
+        /// </summary>
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
+
         #endregion
 
         #region Pens and Brushes
@@ -466,6 +524,31 @@ namespace AnnoDesigner
 
         #endregion
 
+#if DEBUG
+        #region Debug options
+
+        /// <summary>
+        /// Brush used for filling and drawing debug-related information.
+        /// </summary>
+        private readonly SolidColorBrush _debugBrushDark;
+        /// <summary>
+        /// Brush used for filling and drawing debug-related information.
+        /// </summary>
+        private readonly SolidColorBrush _debugBrushLight;
+
+        private bool debugModeIsEnabled = false;
+        private readonly bool debugShowObjectPositions = true;
+        private readonly bool debugShowQuadTreeViz = true;
+        private readonly bool debugShowSelectionRectCoordinates = true;
+        private readonly bool debugShowSelectionCollisionRect = true;
+        private readonly bool debugShowViewportRectCoordinates = true;
+        private readonly bool debugShowScrollableRectCoordinates = true;
+        private readonly bool debugShowLayoutRectCoordinates = true;
+        private readonly bool debugShowMouseGridCoordinates = true;
+
+        #endregion
+#endif
+
         #region Constructor
         /// <summary>
         /// Constructor
@@ -498,11 +581,14 @@ namespace AnnoDesigner
             var sw = new Stopwatch();
             sw.Start();
 
-            // initialize
+            //initialize
             CurrentMode = MouseMode.Standard;
-
-            PlacedObjects = new List<LayoutObject>();
+            PlacedObjects = new QuadTree<LayoutObject>(new Rect(-100d, -100d, 200d, 200d));
             SelectedObjects = new List<LayoutObject>();
+            _oldObjectPositions = new List<(LayoutObject Item, Rect OldBounds)>();
+            _statisticsCalculationHelper = new StatisticsCalculationHelper();
+            _viewport = new Viewport();
+            _viewportTransform = new TranslateTransform(0d, 0d);
 
             #region Hotkeys/Commands
             //Commands
@@ -556,6 +642,10 @@ namespace AnnoDesigner
             color = Colors.LawnGreen;
             color.A = 32;
             _influencedBrush = _brushCache.GetSolidBrush(color);
+#if DEBUG
+            _debugBrushLight = Brushes.Blue;
+            _debugBrushDark = Brushes.DarkBlue;
+#endif
 
             sw.Stop();
             logger.Trace($"init variables took: {sw.ElapsedMilliseconds}ms");
@@ -637,50 +727,104 @@ namespace AnnoDesigner
 
         #region Rendering
 
+        protected override Size ArrangeOverride(Size arrangeBounds)
+        {
+            //force scroll bars to update when we resize the window
+            if (_oldArrangeBounds != arrangeBounds)
+            {
+                _oldArrangeBounds = arrangeBounds;
+                InvalidateScroll();
+            }
+            return base.ArrangeOverride(arrangeBounds);
+        }
+
         /// <summary>
         /// Renders the whole scene including grid, placed objects, current object, selection highlights, influence radii and selection rectangle.
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         protected override void OnRender(DrawingContext drawingContext)
         {
-            //needed?
-            base.OnRender(drawingContext);
-
-            //var m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
-            //var dpiFactor = 1 / m.M11;
-
-            // assure pixel perfect drawing
-            var halfPenWidth = _gridLinePen.Thickness / 2;
-            var guidelines = new GuidelineSet();
-            guidelines.GuidelinesX.Add(halfPenWidth);
-            guidelines.GuidelinesY.Add(halfPenWidth);
-            guidelines.Freeze();
-            drawingContext.PushGuidelineSet(guidelines);
-
             var width = RenderSize.Width;
             var height = RenderSize.Height;
+            _viewport.Width = _coordinateHelper.ScreenToGrid(width, GridSize);
+            _viewport.Height = _coordinateHelper.ScreenToGrid(height, GridSize);
+
+            if (ScrollOwner != null)
+            {
+                //SCrollbar visibility should probably be managed by the owner of the the scrollviewer itself, not here...
+                if (_appSettings.ShowScrollbars)
+                {
+                    ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                    ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+                }
+                else
+                {
+                    ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+                    ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+                }
+
+                if (_invalidateScrollInfo)
+                {
+                    ScrollOwner?.InvalidateScrollInfo();
+                    _invalidateScrollInfo = false;
+                }
+            }
+
+            //use the negated value for the transform, as when we move the viewport (for example, if Top gets
+            //increased by 1) we want the items to "shift" in the opposite direction to the movement of the viewport:
+            /*
+             |  +=+ = viewport
+             |  [] = object
+             |
+             |  Object on edge of viewport.
+             |
+             |  1 +==[]=+
+             |  2 |     |
+             |  3 +=====+
+             |  4
+             |
+             |  Viewport shifts down
+             |
+             |  1    []
+             |  2 +=====+
+             |  3 |     |
+             |  4 +=====+
+             |
+             |  Relative to the viewport, the object has been shifted "up".
+             */
+            _viewportTransform.X = _coordinateHelper.GridToScreen(-_viewport.Left, GridSize);
+            _viewportTransform.Y = _coordinateHelper.GridToScreen(-_viewport.Top, GridSize);
+
+            // assure pixel perfect drawing using guidelines.
+            // this value is cached and refreshed in LoadGridLineColor(), as it uses pen thickness in its calculation;
+            drawingContext.PushGuidelineSet(_guidelineSet);
 
             // draw background
             drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(new Point(), RenderSize));
-
             // draw grid
             if (RenderGrid)
             {
-                for (var i = 0; i < width; i += _gridStep)
+                for (var i = _viewport.HorizontalAlignmentValue * GridSize; i < width; i += _gridStep)
                 {
                     drawingContext.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
                 }
-                for (var i = 0; i < height; i += _gridStep)
+                for (var i = _viewport.VerticalAlignmentValue * GridSize; i < height; i += _gridStep)
                 {
                     drawingContext.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
                 }
             }
 
-            // draw mouse grid position highlight
-            //drawingContext.DrawRectangle(_lightBrush, _highlightPen, new Rect(GridToScreen(ScreenToGrid(_mousePosition)), new Size(_gridStep, _gridStep)));
+            //Push the transform after rendering everything that should not be translated.
+            drawingContext.PushTransform(_viewportTransform);
+
+            var objectsToDraw = PlacedObjects.GetItemsIntersecting(_viewport.Absolute).ToList();
+            //borderless objects should be drawn first.
+            var borderlessObjects = objectsToDraw.Where(_ => _.WrappedAnnoObject.Borderless).ToList();
+            var borderedObjects = objectsToDraw.Where(_ => !_.WrappedAnnoObject.Borderless).ToList();
 
             // draw placed objects            
-            RenderObjectList(drawingContext, PlacedObjects, useTransparency: false);
+            RenderObjectList(drawingContext, borderlessObjects, useTransparency: false);
+            RenderObjectList(drawingContext, borderedObjects, useTransparency: false);
             RenderObjectSelection(drawingContext, SelectedObjects);
 
             if (!RenderInfluences)
@@ -693,8 +837,17 @@ namespace AnnoDesigner
             }
             else
             {
-                RenderObjectInfluenceRadius(drawingContext, PlacedObjects);
-                RenderObjectInfluenceRange(drawingContext, PlacedObjects);
+                RenderObjectInfluenceRadius(drawingContext, objectsToDraw);
+                RenderObjectInfluenceRange(drawingContext, objectsToDraw);
+                //Retrieve objects outside the viewport that have an influence range which affects objects
+                //within the viewport.
+                var offscreenObjects = PlacedObjects
+                .Where(_ => !_viewport.Absolute.Contains(_.GridRect) &&
+                            (_viewport.Absolute.IntersectsWith(_.GridInfluenceRadiusRect) || _viewport.Absolute.IntersectsWith(_.GridInfluenceRangeRect))
+                 ).ToList();
+                RenderObjectInfluenceRadius(drawingContext, offscreenObjects);
+                RenderObjectInfluenceRange(drawingContext, offscreenObjects);
+
             }
 
             if (CurrentObjects.Count == 0)
@@ -711,6 +864,12 @@ namespace AnnoDesigner
                 // draw current object
                 if (_mouseWithinControl)
                 {
+                    //Push a tranform to reverse the effects, as objects should be positioned correctly
+                    //on the canvas with the included viewport offset, but we want them to render without the offset.
+                    //If we just did drawingContext.Pop() here, the items would appear offset compared to where the mouse is, 
+                    //as the Position of the objects have already been set to values relative to the viewport.
+                    drawingContext.PushTransform(_viewportTransform.Inverse as TranslateTransform);
+
                     MoveCurrentObjectsToMouse();
                     // draw influence radius
                     RenderObjectInfluenceRadius(drawingContext, CurrentObjects);
@@ -718,15 +877,154 @@ namespace AnnoDesigner
                     RenderObjectInfluenceRange(drawingContext, CurrentObjects);
                     // draw with transparency
                     RenderObjectList(drawingContext, CurrentObjects, useTransparency: true);
+
+                    drawingContext.Pop();
                 }
+
             }
+            //pop viewport transform
+            drawingContext.Pop();
 
             // draw selection rect while dragging the mouse
             if (CurrentMode == MouseMode.SelectionRect)
             {
                 drawingContext.DrawRectangle(_lightBrush, _highlightPen, _selectionRect);
             }
+#if DEBUG
+            #region Draw debug information
+            if (debugModeIsEnabled)
+            {
+                drawingContext.PushTransform(_viewportTransform);
+                if (debugShowQuadTreeViz)
+                {
+                    var brush = Brushes.Transparent;
+                    var pen = _penCache.GetPen(_debugBrushDark, 1);
+                    var rects = PlacedObjects.GetQuadrantRects();
+                    foreach (var rect in rects)
+                    {
+                        drawingContext.DrawRectangle(brush, pen, _coordinateHelper.GridToScreen(rect, GridSize));
+                    }
+                }
 
+                if (debugShowSelectionCollisionRect)
+                {
+                    var color = _debugBrushLight.Color;
+                    color.A = 0x08;
+                    var brush = _brushCache.GetSolidBrush(color);
+                    var pen = _penCache.GetPen(_debugBrushLight, 1);
+                    var collisionRectScreen = _coordinateHelper.GridToScreen(_collisionRect, GridSize);
+                    drawingContext.DrawRectangle(brush, pen, collisionRectScreen);
+                }
+
+                //pop viewport transform
+                drawingContext.Pop();
+                var debugText = new List<FormattedText>(3);
+
+                if (debugShowViewportRectCoordinates)
+                {
+                    //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
+                    if (App.DpiScale.PixelsPerDip != 0)
+                    {
+                        var top = _viewport.Top;
+                        var left = _viewport.Left;
+                        var h = _viewport.Height;
+                        var w = _viewport.Width;
+                        var text = new FormattedText($"Viewport: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                     TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                        {
+                            TextAlignment = TextAlignment.Left
+                        };
+                        debugText.Add(text);
+                    }
+                }
+
+                if (debugShowScrollableRectCoordinates)
+                {
+                    //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
+                    if (App.DpiScale.PixelsPerDip != 0)
+                    {
+                        var top = _scrollableBounds.Top;
+                        var left = _scrollableBounds.Left;
+                        var h = _scrollableBounds.Height;
+                        var w = _scrollableBounds.Width;
+                        var text = new FormattedText($"Scrolllable: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                     TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                        {
+                            TextAlignment = TextAlignment.Left
+                        };
+                        debugText.Add(text);
+                    }
+                }
+
+                if (debugShowLayoutRectCoordinates)
+                {
+                    //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
+                    if (App.DpiScale.PixelsPerDip != 0)
+                    {
+                        var top = _layoutBounds.Top;
+                        var left = _layoutBounds.Left;
+                        var h = _layoutBounds.Height;
+                        var w = _layoutBounds.Width;
+                        var text = new FormattedText($"Layout: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                     TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                        {
+                            TextAlignment = TextAlignment.Left
+                        };
+                        debugText.Add(text);
+                    }
+                }
+
+                for (var i = 0; i < debugText.Count; i++)
+                {
+                    drawingContext.DrawText(debugText[i], new Point(5, (i * 15) + 5));
+                }
+
+                if (debugShowMouseGridCoordinates)
+                {
+                    //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
+                    if (App.DpiScale.PixelsPerDip != 0)
+                    {
+                        var gridPosition = _coordinateHelper.ScreenToFractionalGrid(_mousePosition, GridSize);
+                        gridPosition = _viewport.OriginToViewport(gridPosition);
+                        var x = gridPosition.X;
+                        var y = gridPosition.Y;
+                        var text = new FormattedText($"{x:F2}, {y:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                     TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                        {
+                            TextAlignment = TextAlignment.Left
+                        };
+                        var pos = _mousePosition;
+                        pos.X -= 5;
+                        pos.Y += 15;
+                        drawingContext.DrawText(text, pos);
+                    }
+                }
+
+                //draw selection rect coords last so they draw over the top of everything else
+                if (CurrentMode == MouseMode.SelectionRect)
+                {
+                    if (debugShowSelectionRectCoordinates)
+                    {
+                        var rect = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
+                        var top = rect.Top;
+                        var left = rect.Left;
+                        var h = rect.Height;
+                        var w = rect.Width;
+                        var text = new FormattedText($"{left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                       TYPEFACE, 12, _debugBrushLight,
+                       null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                        {
+                            TextAlignment = TextAlignment.Left
+                        };
+                        var location = _selectionRect.BottomRight;
+                        location.X -= text.Width;
+                        location.Y -= text.Height;
+                        drawingContext.DrawText(text, location);
+                    }
+                }
+            }
+            #endregion
+#endif
             // pop back guidlines set
             drawingContext.Pop();
         }
@@ -740,37 +1038,36 @@ namespace AnnoDesigner
             {
                 return;
             }
-
             if (CurrentObjects.Count > 1)
             {
                 //Get the center of the current selection
-                var r = CurrentObjects[0].CalculateScreenRect(GridSize);
+                var r = CurrentObjects[0].GridRect;
                 foreach (var obj in CurrentObjects.Skip(1))
                 {
-                    r.Union(obj.CalculateScreenRect(GridSize));
+                    r.Union(obj.GridRect);
                 }
 
                 var center = _coordinateHelper.GetCenterPoint(r);
-                var dx = _mousePosition.X - center.X;
-                var dy = _mousePosition.Y - center.Y;
-
-                //Ensure we move only in grid steps, to avoid rounding errors.
-                dx = _coordinateHelper.GridToScreen(_coordinateHelper.RoundScreenToGrid(dx, GridSize), GridSize);
-                dy = _coordinateHelper.GridToScreen(_coordinateHelper.RoundScreenToGrid(dy, GridSize), GridSize);
-
-                for (var i = 0; i < CurrentObjects.Count; i++)
+                var mousePosition = _coordinateHelper.ScreenToFractionalGrid(_mousePosition, GridSize);
+                var dx = mousePosition.X - center.X;
+                var dy = mousePosition.Y - center.Y;
+                foreach (var obj in CurrentObjects)
                 {
-                    var pos = _coordinateHelper.GridToScreen(CurrentObjects[i].Position, GridSize);
-                    CurrentObjects[i].Position = _coordinateHelper.RoundScreenToGrid(new Point(pos.X + dx, pos.Y + dy), GridSize);
+                    var pos = obj.Position;
+                    pos = _viewport.OriginToViewport(new Point(pos.X + dx, pos.Y + dy));
+                    pos = new Point(Math.Round(pos.X, MidpointRounding.AwayFromZero), Math.Round(pos.Y, MidpointRounding.AwayFromZero));
+                    obj.Position = pos;
                 }
             }
             else
             {
-                var pos = _mousePosition;
-                var size = _coordinateHelper.GridToScreen(CurrentObjects[0].Size, GridSize);
+                var pos = _coordinateHelper.ScreenToFractionalGrid(_mousePosition, GridSize);
+                var size = CurrentObjects[0].Size;
                 pos.X -= size.Width / 2;
                 pos.Y -= size.Height / 2;
-                CurrentObjects[0].Position = _coordinateHelper.RoundScreenToGrid(pos, GridSize);
+                pos = _viewport.OriginToViewport(pos);
+                pos = new Point(Math.Round(pos.X, MidpointRounding.AwayFromZero), Math.Round(pos.Y, MidpointRounding.AwayFromZero));
+                CurrentObjects[0].Position = pos;
             }
         }
 
@@ -855,6 +1152,24 @@ namespace AnnoDesigner
 
                     drawingContext.DrawText(text, textLocation);
                 }
+#if DEBUG
+                if (debugModeIsEnabled && debugShowObjectPositions)
+                {
+                    var text = new FormattedText(obj.Position.ToString(), Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                    TYPEFACE, 12, _debugBrushLight,
+                    null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                    {
+                        MaxTextWidth = objRect.Width,
+                        MaxTextHeight = objRect.Width,
+                        TextAlignment = TextAlignment.Left
+                    };
+                    var textLocation = objRect.BottomRight;
+                    textLocation.X -= text.Width;
+                    textLocation.Y -= text.Height;
+
+                    drawingContext.DrawText(text, textLocation);
+                }
+#endif
             }
         }
 
@@ -891,7 +1206,9 @@ namespace AnnoDesigner
                     var circleCenterX = circle.Center.X;
                     var circleCenterY = circle.Center.Y;
 
-                    foreach (var curPlacedObject in PlacedObjects)
+                    var influenceGridRect = curLayoutObject.GridInfluenceRadiusRect;
+
+                    foreach (var curPlacedObject in PlacedObjects.GetItemsIntersecting(influenceGridRect))
                     {
                         var distance = curPlacedObject.GetScreenRectCenterPoint(GridSize);
                         distance.X -= circleCenterX;
@@ -901,7 +1218,6 @@ namespace AnnoDesigner
                         {
                             drawingContext.DrawRectangle(_influencedBrush, _influencedPen, curPlacedObject.CalculateScreenRect(GridSize));
                         }
-                        //o.Label = (Math.Sqrt(distance.X*distance.X + distance.Y*distance.Y) - Math.Sqrt(radius*radius)).ToString();
                     }
 
                     // draw circle
@@ -918,7 +1234,7 @@ namespace AnnoDesigner
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
             AnnoObject[][] gridDictionary = null;
-            if (RenderTrueInfluenceRange && PlacedObjects.Count > 0)
+            if (RenderTrueInfluenceRange && PlacedObjects.Count() > 0)
             {
                 var placedObjects = PlacedObjects.Concat(objects).ToHashSet();
                 var placedAnnoObjects = placedObjects.Select(o => o.WrappedAnnoObject).ToList();
@@ -1216,7 +1532,12 @@ namespace AnnoDesigner
         {
             var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorGridLines);//explicit variable to make debugging easier
             _gridLinePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson.Color), DPI_FACTOR * 1);
-
+            var halfPenWidth = _gridLinePen.Thickness / 2;
+            var guidelines = new GuidelineSet();
+            guidelines.GuidelinesX.Add(halfPenWidth);
+            guidelines.GuidelinesY.Add(halfPenWidth);
+            guidelines.Freeze();
+            _guidelineSet = guidelines;
             InvalidateVisual();
         }
 
@@ -1232,6 +1553,74 @@ namespace AnnoDesigner
             InvalidateVisual();
         }
 
+        /// <summary>
+        /// Removes and then re-adds the given objects to the <see cref="PlacedObjects"/>. This is potentially a very expensive
+        /// operation.
+        /// Calling this method when the LayoutObjects in <paramref name="newPositions"/> and <paramref name="oldPositions"/> do not
+        /// match can cause object duplication.
+        /// </summary>
+        /// <remarks>
+        /// When the parameter types were IEnumerable, sequences passed in sometimes got GC'd between calls when using MouseMode.DragAll, 
+        /// as the objects were not referenced anywhere between the end of the foreach loop and the AddRange call (the variables
+        /// themselves did not count as references due to IEnumerable lazy evaluation).
+        /// By making sure the parameters are lists, we avoid this issues.
+        /// </remarks>
+        /// <param name="oldPositions"></param>
+        /// <param name="newPositions"></param>
+        private void UpdateObjectPositions(List<(LayoutObject, Rect)> oldPositions, List<(LayoutObject, Rect)> newPositions)
+        {
+            var materialisedOld = oldPositions.ToList();
+            var materialisedNew = newPositions.ToList();
+
+            foreach (var item in oldPositions)
+            {
+                PlacedObjects.Remove(item.Item1, item.Item2);
+            }
+            //add
+            PlacedObjects.AddRange(newPositions);
+
+        }
+
+        /// <summary>
+        /// Forces an update to the parent <see cref="ScrollViewer"/> on the next render (if necessary), and
+        /// recomputes <see cref="_scrollableBounds"/>, which represents the currently scrollable area.
+        /// This computation relies on <see cref="_layoutBounds"/> being up to date.
+        /// </summary>
+        private void InvalidateScroll()
+        {
+            //make sure the scrollable area encompasses the current viewport plus the bounding rect of the current layout
+            var r = _viewport.Absolute;
+            r.Union(_layoutBounds);
+            _scrollableBounds = r;
+
+            //update scroll viewer on next render
+            _invalidateScrollInfo = true;
+        }
+
+        /// <summary>
+        /// Computes the bounds of the current layout
+        /// </summary>
+        private void InvalidateBounds()
+        {
+            _layoutBounds = ComputeBoundingRect(PlacedObjects);
+
+        }
+
+        /// <summary>
+        /// Ensures the <see cref="PlacedObjects"/> can include the specified bounds. This call can be very expensive
+        /// as it can cause a full re-index of the quad tree.
+        /// </summary>
+        /// <param name="additionalBounds"></param>
+        private void EnsureBounds(Rect additionalBounds)
+        {
+            if (!PlacedObjects.Extent.Contains(additionalBounds))
+            {
+                var newExtent = PlacedObjects.Extent;
+                newExtent.Union(additionalBounds);
+                newExtent.Inflate(newExtent.Width * 2, newExtent.Height * 2);
+                PlacedObjects.Extent = newExtent;
+            }
+        }
         #endregion
 
         #region Coordinate and rectangle conversions
@@ -1285,6 +1674,12 @@ namespace AnnoDesigner
             CurrentMode = MouseMode.Standard;
             _selectionRect = Rect.Empty;
 
+            //update object positions if dragging
+            if (_oldObjectPositions.Count > 0)
+            {
+                UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
+                _oldObjectPositions.Clear();
+            }
             InvalidateVisual();
         }
 
@@ -1308,24 +1703,26 @@ namespace AnnoDesigner
             }
             else
             {
-                var mousePosition = e.GetPosition(this);
-                var preZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
+                var mousePosition = _mousePosition;
+                var preZoomPosition = _coordinateHelper.ScreenToFractionalGrid(mousePosition, GridSize);
                 GridSize += change;
-
-                var postZoomPosition = _coordinateHelper.ScreenToGrid(mousePosition, GridSize);
-                var diff = postZoomPosition - preZoomPosition;
-                if (diff.LengthSquared > 0)
-                {
-                    foreach (var placedObject in PlacedObjects)
-                    {
-                        placedObject.Position += diff;
-                    }
-                }
+                var postZoomPosition = _coordinateHelper.ScreenToFractionalGrid(mousePosition, GridSize);
+                var diff = preZoomPosition - postZoomPosition;
+                _viewport.Left += diff.X;
+                _viewport.Top += diff.Y;
             }
+            //if there are no objects placed down, then reset to viewport to 0,0, whilst maintaining any offsets to hide the change
+            if (PlacedObjects.Count() == 0)
+            {
+                _viewport.Left = _viewport.HorizontalAlignmentValue >= 0 ? 1 - _viewport.HorizontalAlignmentValue : Math.Abs(_viewport.HorizontalAlignmentValue);
+                _viewport.Top = _viewport.VerticalAlignmentValue >= 0 ? 1 - _viewport.VerticalAlignmentValue : Math.Abs(_viewport.VerticalAlignmentValue);
+            }
+            InvalidateScroll();
         }
 
         private void HandleMouse(MouseEventArgs e)
         {
+            Focus();
             // refresh retrieved mouse position
             _mousePosition = e.GetPosition(this);
             MoveCurrentObjectsToMouse();
@@ -1347,7 +1744,6 @@ namespace AnnoDesigner
             HotkeyCommandManager.HandleCommand(e);
             if (e.Handled)
             {
-                logger.Info("Click command handled");
                 return;
             }
 
@@ -1355,17 +1751,25 @@ namespace AnnoDesigner
 
             if (e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Pressed)
             {
+                //If the previous mode was DragSelection, we may have moved an object
+                //UpdateObjectPositions is usually called on MouseUp, which will not fire if the current MouseMode is
+                //DragAll, so we fire it here instead, to prevent objects being incorrectly represented within the QuadTree.
+                if (CurrentMode == MouseMode.DragSelection)
+                {
+                    UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
+                    _oldObjectPositions.Clear();
+                }
                 CurrentMode = MouseMode.DragAllStart;
             }
             else if (e.LeftButton == MouseButtonState.Pressed && CurrentObjects.Count != 0)
             {
                 // place new object
-                TryPlaceCurrentObject(isContinuousDrawing: false);
+                TryPlaceCurrentObjects(isContinuousDrawing: false);
             }
             else if (e.LeftButton == MouseButtonState.Pressed && CurrentObjects.Count == 0)
             {
                 var obj = GetObjectAt(_mousePosition);
-                if (obj == null)
+                if (obj is null)
                 {
                     // user clicked nothing: start dragging the selection rect
                     CurrentMode = MouseMode.SelectionRectStart;
@@ -1404,7 +1808,10 @@ namespace AnnoDesigner
                         break;
                     case MouseMode.DragSingleStart:
                         SelectedObjects.Clear();
-                        AddSelectedObject(GetObjectAt(_mouseDragStart), ShouldAffectObjectsWithIdentifier());
+                        var obj = GetObjectAt(_mouseDragStart);
+                        AddSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
+                        //after adding the object, compute the collision rect
+                        _collisionRect = obj.GridRect;
                         CurrentMode = MouseMode.DragSelection;
                         break;
                     case MouseMode.DragAllStart:
@@ -1418,27 +1825,32 @@ namespace AnnoDesigner
                 // move all selected objects
                 var dx = (int)_coordinateHelper.ScreenToGrid(_mousePosition.X - _mouseDragStart.X, GridSize);
                 var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
-                // check if the mouse has moved at least one grid cell in any direction
-                if (dx != 0 || dy != 0)
-                {
-                    foreach (var curLayoutObject in PlacedObjects)
-                    {
-                        curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
-                    }
-                    // adjust the drag start to compensate the amount we already moved
-                    _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
-                    _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
 
-                    //all is moved -> no need to update statistics
-                    //StatisticsUpdated?.Invoke(this, EventArgs.Empty);
+                //shift the viewport;
+                if (_appSettings.InvertPanningDirection)
+                {
+                    _viewport.Left -= dx;
+                    _viewport.Top -= dy;
                 }
+                else
+                {
+                    _viewport.Left += dx;
+                    _viewport.Top += dy;
+                }
+
+                // adjust the drag start to compensate the amount we already moved
+                _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
+                _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
+
+                //invalidate scroll info on next render;
+                InvalidateScroll();
             }
             else if (e.LeftButton == MouseButtonState.Pressed)
             {
                 if (CurrentObjects.Count != 0)
                 {
                     // place new object
-                    TryPlaceCurrentObject(isContinuousDrawing: true);
+                    TryPlaceCurrentObjects(isContinuousDrawing: true);
                 }
                 else
                 {
@@ -1461,7 +1873,9 @@ namespace AnnoDesigner
                                 // adjust rect
                                 _selectionRect = new Rect(_mouseDragStart, _mousePosition);
                                 // select intersecting objects
-                                AddSelectedObjects(PlacedObjects.FindAll(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)),
+                                var selectionRectGrid = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
+                                selectionRectGrid = _viewport.OriginToViewport(selectionRectGrid);
+                                AddSelectedObjects(PlacedObjects.GetItemsIntersecting(selectionRectGrid).ToList(),
                                                    ShouldAffectObjectsWithIdentifier());
 
                                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
@@ -1469,21 +1883,26 @@ namespace AnnoDesigner
                             }
                         case MouseMode.DragSelection:
                             {
+                                if (_oldObjectPositions.Count == 0)
+                                {
+                                    _oldObjectPositions.AddRange(SelectedObjects.Select(obj => (obj, obj.GridRect)));
+                                }
+
                                 // move all selected objects
                                 var dx = (int)_coordinateHelper.ScreenToGrid(_mousePosition.X - _mouseDragStart.X, GridSize);
                                 var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
                                 // check if the mouse has moved at least one grid cell in any direction
                                 if (dx == 0 && dy == 0)
                                 {
-                                    //no relevant mouse move -> no further action                                    
+                                    //no relevant mouse move -> no further action
                                     break;
                                 }
+                                //Recompute _unselectedObjects
+                                var offsetCollisionRect = _collisionRect;
+                                offsetCollisionRect.Offset(dx, dy);
 
-                                if (_unselectedObjects == null)
-                                {
-                                    _unselectedObjects = PlacedObjects.FindAll(_ => !SelectedObjects.Contains(_));
-                                }
-
+                                //Its causing slowdowns when dragging large numbers of objects
+                                _unselectedObjects = PlacedObjects.GetItemsIntersecting(offsetCollisionRect).ToList().FindAll(_ => !SelectedObjects.Contains(_)).ToList();
                                 var collisionsExist = false;
                                 // temporarily move each object and check if collisions with unselected objects exist
                                 foreach (var curLayoutObject in SelectedObjects)
@@ -1500,7 +1919,6 @@ namespace AnnoDesigner
                                         break;
                                     }
                                 }
-
                                 // if no collisions were found, permanently move all selected objects
                                 if (!collisionsExist)
                                 {
@@ -1512,8 +1930,21 @@ namespace AnnoDesigner
                                     _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
                                     _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
 
+                                    //update collision rect, so that collisions are correctly computed on next run
+                                    _collisionRect.X += dx;
+                                    _collisionRect.Y += dy;
+
+                                    EnsureBounds(_collisionRect);
+
                                     //position change -> update
                                     StatisticsUpdated?.Invoke(this, new UpdateStatisticsEventArgs(UpdateMode.NoBuildingList));
+                                    //always recompute bounds when moving, as we may be moving an item in from the edge of the layout
+                                    var oldLayoutBounds = _layoutBounds;
+                                    InvalidateBounds();
+                                    if (oldLayoutBounds != _layoutBounds)
+                                    {
+                                        InvalidateScroll();
+                                    }
                                 }
 
                                 break;
@@ -1569,17 +2000,21 @@ namespace AnnoDesigner
                                 }
                             }
 
+                            _collisionRect = ComputeBoundingRect(SelectedObjects);
                             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                             // return to standard mode, i.e. clear any drag-start modes
                             CurrentMode = MouseMode.Standard;
                             break;
                         }
                     case MouseMode.SelectionRect:
+                        _collisionRect = ComputeBoundingRect(SelectedObjects);
                         // cancel dragging of selection rect
                         CurrentMode = MouseMode.Standard;
                         break;
                     case MouseMode.DragSelection:
                         // stop dragging of selected objects
+                        UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
+                        _oldObjectPositions.Clear();
                         CurrentMode = MouseMode.Standard;
                         break;
                 }
@@ -1604,7 +2039,7 @@ namespace AnnoDesigner
                                 else
                                 {
                                     // Remove object, only ever remove a single object this way.
-                                    PlacedObjects.Remove(obj);
+                                    PlacedObjects.Remove(obj, obj.GridRect);
                                     RemoveSelectedObject(obj, false);
                                 }
                             }
@@ -1619,7 +2054,9 @@ namespace AnnoDesigner
                         }
                     case MouseMode.DragSelection:
                         {
-                            //clear selection
+                            UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
+                            _oldObjectPositions.Clear();
+                            //clear selection after potentially modifying QuadTree
                             SelectedObjects.Clear();
 
                             if (CurrentObjects.Count != 0)
@@ -1651,6 +2088,18 @@ namespace AnnoDesigner
             //When an InputBinding is added to the InputBindingsCollection, the  `Matches` method is fired for every event - KeyUp,
             //KeyDown, MouseUp, MouseMove, MouseWheel etc.
             HotkeyCommandManager.HandleCommand(e);
+#if DEBUG
+            if (e.Key == Key.D && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
+            {
+                debugModeIsEnabled = !debugModeIsEnabled;
+                e.Handled = true;
+            }
+#endif
+            if (e.Handled)
+            {
+                InvalidateVisual();
+            }
+
         }
 
         /// <summary>
@@ -1709,41 +2158,69 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Tries to place the current object on the grid.
+        /// Tries to place current objects on the grid.
         /// Fails if there are any collisions.
         /// </summary>
         /// <param name="isContinuousDrawing"><c>true</c> if drawing the same object(s) over and over</param>
         /// <returns>true if placement succeeded, otherwise false</returns>
-        private bool TryPlaceCurrentObject(bool isContinuousDrawing)
+        private bool TryPlaceCurrentObjects(bool isContinuousDrawing)
         {
-            if (CurrentObjects.Count != 0 && !PlacedObjects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
+            if (CurrentObjects.Count != 0)
             {
-                PlacedObjects.AddRange(CloneList(CurrentObjects));
-                // sort the objects because borderless objects should be drawn first
-                PlacedObjects.Sort((a, b) => b.WrappedAnnoObject.Borderless.CompareTo(a.WrappedAnnoObject.Borderless));
+                var boundingRect = ComputeBoundingRect(CurrentObjects);
+                var objects = PlacedObjects.GetItemsIntersecting(boundingRect).ToList();
 
-                StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-                //no need to update colors if drawing the same object(s)
-                if (!isContinuousDrawing)
+                if (CurrentObjects.Count != 0 && !objects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
                 {
-                    ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
+                    EnsureBounds(boundingRect);
+                    PlacedObjects.AddRange(CloneList(CurrentObjects).Select(obj => (obj, obj.GridRect)));
+                    StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+
+                    //no need to update colors if drawing the same object(s)
+                    if (!isContinuousDrawing)
+                    {
+                        ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
+                    }
+                    if (!_layoutBounds.Contains(boundingRect))
+                    {
+                        InvalidateBounds();
+                    }
+                    if (!_scrollableBounds.Contains(boundingRect))
+                    {
+                        InvalidateScroll();
+                    }
+                    return true;
+
                 }
-
-                return true;
+                return false;
             }
+            return true;
 
-            return false;
         }
 
         /// <summary>
         /// Retrieves the object at the given position given in screen coordinates.
         /// </summary>
         /// <param name="position">position given in screen coordinates</param>
-        /// <returns>object at the position, if there is no object null</returns>
+        /// <returns>object at the position, <see langword="null"/> if no object could be found</returns>
         private LayoutObject GetObjectAt(Point position)
         {
-            var gridPosition = _coordinateHelper.ScreenToGrid(position, GridSize);
-            return PlacedObjects.Find(_ => _.CollisionRect.Contains(gridPosition));
+            var gridPosition = _coordinateHelper.ScreenToFractionalGrid(position, GridSize);
+            gridPosition = _viewport.OriginToViewport(gridPosition);
+            var possibleItems = PlacedObjects.GetItemsIntersecting(new Rect(gridPosition, new Size(1, 1)));
+            return possibleItems.FirstOrDefault(_ => _.GridRect.Contains(gridPosition));
+        }
+
+        /// <summary>
+        /// Computes a <see cref="Rect"/> that encompasses the given objects
+        /// </summary>
+        /// <param name="objects"></param>
+        /// <returns></returns>
+        private Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects)
+        {
+            //compute bouding box for given objects
+            var result = _statisticsCalculationHelper.CalculateStatistics(objects.Select(_ => _.WrappedAnnoObject), includeRoads: true);
+            return new Rect(result.MinX, result.MinY, result.UsedAreaWidth, result.UsedAreaHeight);
         }
 
         #endregion
@@ -1757,7 +2234,7 @@ namespace AnnoDesigner
         public void SetCurrentObject(LayoutObject obj)
         {
             obj.Position = _mousePosition;
-            // note: setting of the backing field doens't fire the changed event
+            // note: setting of the backing field doesn't fire the changed event
             _currentObjects.Clear();
             _currentObjects.Add(obj);
             InvalidateVisual();
@@ -1786,16 +2263,25 @@ namespace AnnoDesigner
         /// <param name="border"></param>
         public void Normalize(int border)
         {
-            if (PlacedObjects.Count == 0)
+            _viewport.Left = 0;
+            _viewport.Top = 0;
+
+            if (PlacedObjects.Count() == 0)
             {
                 return;
             }
 
             var dx = PlacedObjects.Min(_ => _.Position.X) - border;
             var dy = PlacedObjects.Min(_ => _.Position.Y) - border;
-            PlacedObjects.ForEach(_ => _.Position = new Point(_.Position.X - dx, _.Position.Y - dy));
+            foreach (var item in PlacedObjects)
+            {
+                item.Position = new Point(item.Position.X - dx, item.Position.Y - dy);
+            }
 
+            PlacedObjects.ReIndex();
             InvalidateVisual();
+            InvalidateBounds();
+            InvalidateScroll();
         }
 
         /// <summary>
@@ -1814,7 +2300,6 @@ namespace AnnoDesigner
             manager.AddHotkey(duplicateHotkey);
         }
 
-
         #endregion
 
         #region New/Save/Load/Export methods
@@ -1824,9 +2309,13 @@ namespace AnnoDesigner
         /// </summary>
         public void NewFile()
         {
+            _viewport.Left = 0;
+            _viewport.Top = 0;
             PlacedObjects.Clear();
             SelectedObjects.Clear();
             LoadedFile = "";
+            InvalidateBounds();
+            InvalidateScroll();
             InvalidateVisual();
 
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
@@ -1909,14 +2398,16 @@ namespace AnnoDesigner
                 if (layout != null)
                 {
                     SelectedObjects.Clear();
+                    PlacedObjects.Clear();
 
                     var layoutObjects = new List<LayoutObject>(layout.Count);
                     foreach (var curObj in layout)
                     {
                         layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
                     }
-
-                    PlacedObjects = layoutObjects;
+                    var bounds = ComputeBoundingRect(layoutObjects);
+                    EnsureBounds(bounds);
+                    PlacedObjects.AddRange(layoutObjects.Select(obj => (obj, obj.GridRect)));
                     LoadedFile = filename;
                     Normalize(1);
 
@@ -1961,7 +2452,6 @@ namespace AnnoDesigner
         private static readonly Dictionary<ICommand, Action<AnnoCanvas>> CommandExecuteMappings;
 
         public HotkeyCommandManager HotkeyCommandManager { get; set; }
-
         /// <summary>
         /// Creates event handlers for command executions and registers them at the CommandManager.
         /// </summary>
@@ -1996,7 +2486,6 @@ namespace AnnoDesigner
             }
         }
 
-
         /// <summary>
         /// R key rotate
         /// </summary>
@@ -2030,8 +2519,7 @@ namespace AnnoDesigner
         private readonly ICommand rotateAllCommand;
         private void ExecuteRotateAll(object param)
         {
-            Rotate(PlacedObjects);
-            //Objects tend to go offscreen when we rotate everything, so normalise the canvas after a rotate.
+            Rotate(PlacedObjects.All().ToList());
             Normalize(1);
             InvalidateVisual();
         }
@@ -2062,9 +2550,10 @@ namespace AnnoDesigner
         private void ExecuteDelete(object param)
         {
             // remove all currently selected objects from the grid and clear selection
-            SelectedObjects.ForEach(_ => PlacedObjects.Remove(_));
+            SelectedObjects.ForEach(_ => PlacedObjects.Remove(_, new Rect(_.Position, _.Size)));
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+            InvalidateBounds();
         }
 
         private readonly Hotkey duplicateHotkey;
@@ -2092,5 +2581,191 @@ namespace AnnoDesigner
         }
 
         #endregion
+
+        #region IScrollInfo
+
+        public double ExtentWidth => _scrollableBounds.Width;
+        public double ExtentHeight => _scrollableBounds.Height;
+        public double ViewportWidth => _viewport.Width;
+        public double ViewportHeight => _viewport.Height;
+
+        public double HorizontalOffset
+        {
+            get
+            {
+                if (_appSettings.InvertScrollingDirection)
+                {
+                    return (_scrollableBounds.Left - _viewport.Left) + (_scrollableBounds.Width - _viewport.Width);
+                }
+                else
+                {
+                    return _viewport.Left - _scrollableBounds.Left;
+                }
+            }
+        }
+
+        public double VerticalOffset
+        {
+            get
+            {
+                if (_appSettings.InvertScrollingDirection)
+                {
+                    return (_scrollableBounds.Top - _viewport.Top) + (_scrollableBounds.Height - _viewport.Height);
+                }
+                else
+                {
+                    return _viewport.Top - _scrollableBounds.Top;
+                }
+            }
+        }
+
+        public ScrollViewer ScrollOwner { get; set; }
+        public bool CanVerticallyScroll { get; set; }
+        public bool CanHorizontallyScroll { get; set; }
+
+        public void LineUp()
+        {
+            _viewport.Top -= 1;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
+        }
+
+        public void LineDown()
+        {
+            _viewport.Top += 1;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
+        }
+
+        public void LineLeft()
+        {
+            _viewport.Left -= 1;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
+        }
+
+        public void LineRight()
+        {
+            _viewport.Left += 1;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
+        }
+
+        public void PageUp()
+        {
+            _viewport.Top -= _viewport.Height;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
+        }
+
+        public void PageDown()
+        {
+            _viewport.Top += _viewport.Height;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
+        }
+
+        public void PageLeft()
+        {
+            _viewport.Left -= _viewport.Width;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
+        }
+
+        public void PageRight()
+        {
+            _viewport.Left += _viewport.Width;
+            if (!_scrollableBounds.Contains(_viewport.Absolute))
+            {
+                InvalidateScroll();
+            }
+            InvalidateVisual();
+        }
+
+        public void MouseWheelUp()
+        {
+            //Will zoom the canvas, rather than scroll the canvas
+            //throw new NotImplementedException();
+        }
+
+        public void MouseWheelDown()
+        {
+            //Will zoom the canvas, rather than scroll the canvas
+            //throw new NotImplementedException();
+        }
+
+        public void MouseWheelLeft()
+        {
+            //throw new NotImplementedException();
+        }
+
+        public void MouseWheelRight()
+        {
+            //throw new NotImplementedException();
+        }
+
+        public void SetHorizontalOffset(double offset)
+        {
+            //handle when offset is +/- infinity (when scrolling to top/bottom using the end and home keys)
+            offset = Math.Max(offset, 0d);
+            offset = Math.Min(offset, _scrollableBounds.Width);
+            if (_appSettings.InvertScrollingDirection)
+            {
+                _viewport.Left = (_scrollableBounds.Left - offset) + (_scrollableBounds.Width - _viewport.Width);
+            }
+            else
+            {
+                _viewport.Left = _scrollableBounds.Left + offset;
+            }
+            _viewport.Left = _scrollableBounds.Left + offset;
+            InvalidateScroll();
+            InvalidateVisual();
+        }
+
+        public void SetVerticalOffset(double offset)
+        {
+            //handle when offset is +/- infinity (when scrolling to top/bottom using the end and home keys)
+            offset = Math.Max(offset, 0d);
+            offset = Math.Min(offset, _scrollableBounds.Height);
+            if (_appSettings.InvertScrollingDirection)
+            {
+                _viewport.Top = (_scrollableBounds.Top - offset) + (_scrollableBounds.Height - _viewport.Height);
+            }
+            else
+            {
+                _viewport.Top = _scrollableBounds.Top + offset;
+            }
+            InvalidateScroll();
+            InvalidateVisual();
+        }
+
+        public Rect MakeVisible(Visual visual, Rect rectangle)
+        {
+            return _viewport.Absolute;
+        }
+
+        #endregion
+
     }
 }

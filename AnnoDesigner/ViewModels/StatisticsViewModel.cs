@@ -161,7 +161,7 @@ namespace AnnoDesigner.ViewModels
 
             var calculatedStatistics = await calculateStatisticsTask;
 
-            UsedArea = string.Format("{0}x{1}", calculatedStatistics.UsedAreaX, calculatedStatistics.UsedAreaY);
+            UsedArea = string.Format("{0}x{1}", calculatedStatistics.UsedAreaWidth, calculatedStatistics.UsedAreaHeight);
             UsedTiles = calculatedStatistics.UsedTiles;
             MinTiles = calculatedStatistics.MinTiles;
             Efficiency = string.Format("{0}%", calculatedStatistics.Efficiency);

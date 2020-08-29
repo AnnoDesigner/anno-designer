@@ -245,6 +245,24 @@ namespace AnnoDesigner.Models
             get => Settings.Default.ZoomSensitivityPercentage;
             set => Settings.Default.ZoomSensitivityPercentage = value;
         }
+
+        public bool InvertPanningDirection
+        {
+            get => Settings.Default.InvertPanningDirection;
+            set => Settings.Default.InvertPanningDirection = value;
+        }
+
+        public bool InvertScrollingDirection
+        {
+            get => Settings.Default.InvertScrollingDirection;
+            set => Settings.Default.InvertScrollingDirection = value;
+        }
+
+        public bool ShowScrollbars
+        {
+            get => Settings.Default.ShowScrollbars;
+            set => Settings.Default.ShowScrollbars = value;
+        }
     }
 }
 

@@ -227,16 +227,17 @@
                     <ColumnDefinition x:Name="colStatisticsView"
                                       Width="Auto"
                                       MinWidth="100" />
-                    <!-- 
-                                  MinWidth="100" -->
                 </Grid.ColumnDefinitions>
-
-                <my:AnnoCanvas x:Name="annoCanvas"
-                               Grid.Column="0"
-                               RenderGrid="True"
-                               RenderIcon="True"
-                               RenderLabel="True"
-                               Grid.ColumnSpan="2" />
+                <!-- ScrollViewer steals focus (all key events) unless `Focusable` is set to false. Scrolling via arrow keys and page up/down stil works
+                as the event will still bubble up to the scroll viewer as its not handled in AnnoCanvas -->
+                <ScrollViewer Grid.Column="0"
+                              Grid.ColumnSpan="2"
+                              VerticalScrollBarVisibility="{Binding ShowScrollbars}"
+                              HorizontalScrollBarVisibility="{Binding ShowScrollbars}"
+                              CanContentScroll="True"
+                              Focusable="False">
+                    <my:AnnoCanvas x:Name="annoCanvas" />
+                </ScrollViewer>
 
                 <GridSplitter x:Name="splitterStatisticsView"
                               Grid.Column="2"
