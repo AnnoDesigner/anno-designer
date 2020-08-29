@@ -181,6 +181,7 @@ namespace AnnoDesigner.Localization
                         { "Delete" , "Delete" },
                         { "Duplicate" , "Duplicate" },
                         { "RotateAll" , "Rotate all" },
+                        { "DeleteHovered" , "Delete hovered object" },
                         { "Licenses" , "Licenses" },
                         { "ViewLicenses" , "View open source licenses" },
                         { "ExternalLinkConfirmationMessage" , "This will open a new tab in your default web browser. Continue?" },
@@ -211,9 +212,9 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Custom" },
                         { "Warning" , "Warning" },
                         { "FileNotFound" , "The file was not found." },
-                        { "ItemsCopied" , "items copied" },
-                        { "ItemCopied" , "item copied" },
                         { "Default" , "Default" },
+                        { "ItemsCopied" , "items copied" },
+                        { "ItemCopied" , "item copied" }
                     }
                 },
                 {
@@ -343,6 +344,7 @@ namespace AnnoDesigner.Localization
                         { "Delete" , "Löschen" },
                         { "Duplicate" , "Duplikat" },
                         { "RotateAll" , "Alle drehen" },
+                        { "DeleteHovered" , "Schwebeobjekt löschen" },
                         { "Licenses" , "Lizenzen" },
                         { "ViewLicenses" , "Open-Source-Lizenzen anzeigen" },
                         { "ExternalLinkConfirmationMessage" , "Dadurch wird ein neuer Tab in Ihrem Standard-Webbrowser geöffnet. Fortfahren?" },
@@ -373,9 +375,9 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Benutzerdefiniert" },
                         { "Warning" , "Warnung" },
                         { "FileNotFound" , "Die Datei wurde nicht gefunden." },
-                        { "ItemsCopied" , "Elemente kopiert" },
-                        { "ItemCopied" , "Element kopiert" },
                         { "Default" , "Standard" },
+                        { "ItemsCopied" , "Elemente kopiert" },
+                        { "ItemCopied" , "Element kopiert" }
                     }
                 },
                 {
@@ -505,6 +507,7 @@ namespace AnnoDesigner.Localization
                         { "Delete" , "Supprimer" },
                         { "Duplicate" , "Dupliquer" },
                         { "RotateAll" , "Faire pivoter tout" },
+                        { "DeleteHovered" , "Supprimer l'objet survolé" },
                         { "Licenses" , "Licences" },
                         { "ViewLicenses" , "Voir les licences open source" },
                         { "ExternalLinkConfirmationMessage" , "Cela ouvrira un nouvel onglet dans votre navigateur web par défaut. Continuer ?" },
@@ -535,9 +538,9 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Personnalisation" },
                         { "Warning" , "Avertissement" },
                         { "FileNotFound" , "Le fichier n'a pas été retrouvé." },
-                        { "ItemsCopied" , "éléments copiés" },
-                        { "ItemCopied" , "élément copié" },
                         { "Default" , "Défaut" },
+                        { "ItemsCopied" , "éléments copiés" },
+                        { "ItemCopied" , "élément copié" }
                     }
                 },
                 {
@@ -667,6 +670,7 @@ namespace AnnoDesigner.Localization
                         { "Delete" , "Skreślić" },
                         { "Duplicate" , "Duplikat" },
                         { "RotateAll" , "Obróć wszystko" },
+                        { "DeleteHovered" , "Usuń zawieszony przedmiot" },
                         { "Licenses" , "Licencje" },
                         { "ViewLicenses" , "Oglądaj licencje open source" },
                         { "ExternalLinkConfirmationMessage" , "Spowoduje to otwarcie nowej karty w Twojej domyślnej przeglądarce internetowej. Kontynuować?" },
@@ -697,9 +701,9 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Niestandardowy" },
                         { "Warning" , "Ostrzeżenie" },
                         { "FileNotFound" , "Plik nie został znaleziony." },
-                        { "ItemsCopied" , "skopiowane elementy" },
-                        { "ItemCopied" , "skopiowany przedmiot" },
                         { "Default" , "Domyślnie" },
+                        { "ItemsCopied" , "skopiowane elementy" },
+                        { "ItemCopied" , "skopiowany przedmiot" }
                     }
                 },
                 {
@@ -829,6 +833,7 @@ namespace AnnoDesigner.Localization
                         { "Delete" , "Удалить" },
                         { "Duplicate" , "Дублировать" },
                         { "RotateAll" , "Повернуть все" },
+                        { "DeleteHovered" , "Удалить навесной объект" },
                         { "Licenses" , "Лицензии" },
                         { "ViewLicenses" , "Просмотреть лицензии с открытым исходным кодом" },
                         { "ExternalLinkConfirmationMessage" , "При этом откроется новая вкладка в вашем веб-браузере по умолчанию. Продолжить?" },
@@ -859,9 +864,9 @@ namespace AnnoDesigner.Localization
                         { "ColorTypeCustom" , "Пользовательский" },
                         { "Warning" , "Предупреждение" },
                         { "FileNotFound" , "Файл не был найден." },
-                        { "ItemsCopied" , "списанные предметы" },
-                        { "ItemCopied" , "скопированный элемент" },
                         { "Default" , "По умолчанию" },
+                        { "ItemsCopied" , "списанные предметы" },
+                        { "ItemCopied" , "скопированный элемент" }
                     }
                 },
             };
