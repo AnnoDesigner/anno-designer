@@ -13,7 +13,7 @@
 
 ## How to optimize all images
 
-1. Cretae a new directory `optimized` in `AnnoDesigner\icons`.
+1. Create a new directory `optimized` in `AnnoDesigner\icons`.
 2. Open command line at the location of the downloaded zopfliPNG binary.
 3. Paste command
 
