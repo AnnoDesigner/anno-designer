@@ -19,7 +19,7 @@ namespace AnnoDesigner.Core.DataStructures
         private class Quadrant
         {
             /// <summary>
-            /// Indicates if current cached data (<see cref="count"/> and <see cref="itemCache"/>) is up to date.
+            /// Indicates if current cached data (<see cref="count"/> and <see cref="itemsInQuadrantAndSubQuadrants"/>) is up to date.
             /// Returns <see langword="true"/> when cached data is up to date.
             /// </summary>
             private bool isDirty;
@@ -45,9 +45,9 @@ namespace AnnoDesigner.Core.DataStructures
             private int count;
 
             /// <summary>
-            /// A list of all the items in the Quadrant and the items under it.
+            /// A list of all the items in the Quadrant and the items under it (all recursive sub-quadrants).
             /// </summary>
-            private IEnumerable<(T Item, Rect Bounds)> itemCache;
+            private IEnumerable<(T Item, Rect Bounds)> itemsInQuadrantAndSubQuadrants;
 
             /// <summary>
             /// Holds a list of all the items in this quadrant.
@@ -56,15 +56,15 @@ namespace AnnoDesigner.Core.DataStructures
             /// Stored as a list of items as any item that overlaps multiple child quadrants will be stored here.
             /// This list differs to the itemCache, as this only contains items that do not fit completely into a child quadrant.
             /// </remarks>
-            public List<(T Item, Rect Bounds)> Items { get; }
+            public List<(T Item, Rect Bounds)> ItemsInQuadrant { get; }
 
             public Rect Extent { get; set; }
 
             public Quadrant(Rect extent)
             {
                 Extent = extent;
-                Items = new List<(T, Rect)>(4);
-                itemCache = new List<(T Items, Rect Bounds)>();
+                ItemsInQuadrant = new List<(T, Rect)>(4);
+                itemsInQuadrantAndSubQuadrants = new List<(T Items, Rect Bounds)>();
                 isDirty = false;
 
                 var w = Extent.Width / 2;
@@ -112,7 +112,7 @@ namespace AnnoDesigner.Core.DataStructures
 
                 if (childQuadrant is null)
                 {
-                    Items.Add((item, bounds));
+                    ItemsInQuadrant.Add((item, bounds));
                 }
                 else
                 {
@@ -129,7 +129,7 @@ namespace AnnoDesigner.Core.DataStructures
             /// <param name="item"></param>
             internal void Remove((T item, Rect bounds) item)
             {
-                Items.Remove(item);
+                ItemsInQuadrant.Remove(item);
                 MarkAncestorsAsDirty(); //make sure all ancestors are now marked as requiring an update.
             }
 
@@ -169,7 +169,7 @@ namespace AnnoDesigner.Core.DataStructures
                     bottomLeft.GetItemsIntersecting(items, bounds);
                 }
                 //add all the items in this quadrant that intersect the given bounds
-                items.AddRange(Items.Where(_ => _.Bounds.IntersectsWith(bounds)).Select(_ => _.Item));
+                items.AddRange(ItemsInQuadrant.Where(_ => _.Bounds.IntersectsWith(bounds)).Select(_ => _.Item));
             }
 
             /// <summary>
@@ -224,7 +224,7 @@ namespace AnnoDesigner.Core.DataStructures
                 {
                     UpdateCachedData();
                 }
-                return itemCache.Select(_ => _.Item);
+                return itemsInQuadrantAndSubQuadrants.Select(_ => _.Item);
             }
 
             /// <summary>
@@ -239,7 +239,7 @@ namespace AnnoDesigner.Core.DataStructures
                 items.AddRange(topRight?.AllWithBounds() ?? empty);
                 items.AddRange(bottomRight?.AllWithBounds() ?? empty);
                 items.AddRange(bottomLeft?.AllWithBounds() ?? empty);
-                items.AddRange(Items);
+                items.AddRange(ItemsInQuadrant);
                 return items;
             }
 
@@ -255,9 +255,9 @@ namespace AnnoDesigner.Core.DataStructures
                 newItems.AddRange(topRight?.AllWithBounds() ?? empty);
                 newItems.AddRange(bottomRight?.AllWithBounds() ?? empty);
                 newItems.AddRange(bottomLeft?.AllWithBounds() ?? empty);
-                newItems.AddRange(Items);
+                newItems.AddRange(ItemsInQuadrant);
                 count = newItems.Count;
-                itemCache = newItems;
+                itemsInQuadrantAndSubQuadrants = newItems;
                 isDirty = false;
             }
 
