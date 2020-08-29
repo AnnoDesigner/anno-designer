@@ -208,6 +208,7 @@ namespace AnnoDesigner
             IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(recentFilesSerializer, _fileSystem);
             var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper, _messageBoxService, _updateHelper, _localizationHelper, _fileSystem);
 
+            //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
             MainWindow = new MainWindow(_appSettings);
             MainWindow.DataContext = mainVM;
 
