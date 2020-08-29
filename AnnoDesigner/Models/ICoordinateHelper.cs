@@ -21,5 +21,11 @@ namespace AnnoDesigner.Models
         double ScreenToGrid(double screenLength, int gridStep);
 
         Point ScreenToGrid(Point screenPoint, int gridStep);
+
+        Point ScreenToFractionalGrid(Point screenPoint, int gridStep);
+
+        public Rect ScreenToGrid(Rect rect, int gridStep);
+
+        public Rect GridToScreen(Rect rect, int gridStep);
     }
 }

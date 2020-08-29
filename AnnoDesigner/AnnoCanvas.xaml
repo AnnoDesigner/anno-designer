@@ -8,6 +8,7 @@
              d:DesignWidth="200"
              Focusable="True"
              ClipToBounds="True">
+    <!-- This statistics panel is used when exporting images only -->
     <Grid Name="StatisticsPanel"
           HorizontalAlignment="Right"
           Background="White">

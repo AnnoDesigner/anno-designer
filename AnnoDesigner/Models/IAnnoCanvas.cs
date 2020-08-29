@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.CustomEventArgs;
@@ -18,7 +19,7 @@ namespace AnnoDesigner.Models
         event Action<string> OnStatusMessageChanged;
         event Action<LayoutObject> OnCurrentObjectChanged;
 
-        List<LayoutObject> PlacedObjects { get; set; }
+        QuadTree<LayoutObject> PlacedObjects { get; set; }
         List<LayoutObject> SelectedObjects { get; set; }
         List<LayoutObject> ClipboardObjects { get; }
         BuildingPresets BuildingPresets { get; }

@@ -8,9 +8,13 @@ namespace AnnoDesigner.Core.Layout.Models
 {
     public class StatisticsCalculationResult
     {
-        public double UsedAreaX { get; set; }
+        public double MinX { get; set; }
 
-        public double UsedAreaY { get; set; }
+        public double MinY { get; set; }
+
+        public double UsedAreaWidth { get; set; }
+
+        public double UsedAreaHeight { get; set; }
 
         public double UsedTiles { get; set; }
 
