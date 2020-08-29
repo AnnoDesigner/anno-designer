@@ -44,7 +44,7 @@ namespace AnnoDesigner
         public const string PASTE_LOCALIZATION_KEY = "Paste";
         public const string DELETE_LOCALIZATION_KEY = "Delete";
         public const string DUPLICATE_LOCALIZATION_KEY = "Duplicate";
-        public const string DELETE_HOVERED_OBJECT_LOCALIZATION_KEY = "DeleteHovered";
+        public const string DELETE_OBJECT_UNDER_CURSOR_LOCALIZATION_KEY = "DeleteObjectUnderCursor";
         //not implmented yet
         public const string UNDO_LOCALIZATION_KEY = "Undo";
 
@@ -513,7 +513,7 @@ namespace AnnoDesigner
             pasteCommand = new RelayCommand(ExecutePaste);
             deleteCommand = new RelayCommand(ExecuteDelete);
             duplicateCommand = new RelayCommand(ExecuteDuplicate);
-            deleteHoveredObjectCommand = new RelayCommand(ExecuteDeleteHoveredObject);
+            deleteObjectUnderCursorCommand = new RelayCommand(ExecuteDeleteObjectUnderCursor);
 
             //Set up default keybindings
 
@@ -540,8 +540,8 @@ namespace AnnoDesigner
             var duplicateBinding = new InputBinding(duplicateCommand, new PolyGesture(ExtendedMouseAction.LeftDoubleClick, ModifierKeys.None));
             duplicateHotkey = new Hotkey(DUPLICATE_LOCALIZATION_KEY, duplicateBinding, DUPLICATE_LOCALIZATION_KEY);
 
-            var deleteHoveredOjectBinding = new InputBinding(deleteHoveredObjectCommand, new PolyGesture(ExtendedMouseAction.RightClick, ModifierKeys.None));
-            deleteHoveredObjectHotkey = new Hotkey(DELETE_HOVERED_OBJECT_LOCALIZATION_KEY, deleteHoveredOjectBinding, DELETE_HOVERED_OBJECT_LOCALIZATION_KEY);
+            var deleteHoveredOjectBinding = new InputBinding(deleteObjectUnderCursorCommand, new PolyGesture(ExtendedMouseAction.RightClick, ModifierKeys.None));
+            deleteObjectUnderCursorHotkey = new Hotkey(DELETE_OBJECT_UNDER_CURSOR_LOCALIZATION_KEY, deleteHoveredOjectBinding, DELETE_OBJECT_UNDER_CURSOR_LOCALIZATION_KEY);
 
             //We specifically do not add the `InputBinding`s to the `InputBindingCollection` of `AnnoCanvas`, as if we did that,
             //`InputBinding.Gesture.Matches()` would be fired for *every* event - MouseWheel, MouseDown, KeyUp, KeyDown, MouseMove etc
@@ -1588,31 +1588,11 @@ namespace AnnoDesigner
                 {
                     case MouseMode.Standard:
                         {
-                            if (CurrentObjects.Count == 0)
-                            {
-                                var obj = GetObjectAt(_mousePosition);
-                                if (obj == null)
-                                {
-                                    if (!(IsControlPressed() || IsShiftPressed()))
-                                    {
-                                        // clear selection
-                                        SelectedObjects.Clear();
-                                    }
-                                }
-                                else
-                                {
-                                    // Remove object, only ever remove a single object this way.
-                                    PlacedObjects.Remove(obj);
-                                    RemoveSelectedObject(obj, false);
-                                }
-                            }
-                            else
+                            if (CurrentObjects.Count != 0)
                             {
                                 // cancel placement of object
                                 CurrentObjects.Clear();
                             }
-
-                            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                             break;
                         }
                     case MouseMode.DragSelection:
@@ -1810,7 +1790,7 @@ namespace AnnoDesigner
             manager.AddHotkey(pasteHotkey);
             manager.AddHotkey(deleteHotkey);
             manager.AddHotkey(duplicateHotkey);
-            manager.AddHotkey(deleteHoveredObjectHotkey);
+            manager.AddHotkey(deleteObjectUnderCursorHotkey);
         }
 
 
@@ -2079,16 +2059,17 @@ namespace AnnoDesigner
             }
         }
 
-        private readonly Hotkey deleteHoveredObjectHotkey;
-        private readonly ICommand deleteHoveredObjectCommand;
-        private void ExecuteDeleteHoveredObject(object param)
+        private readonly Hotkey deleteObjectUnderCursorHotkey;
+        private readonly ICommand deleteObjectUnderCursorCommand;
+        private void ExecuteDeleteObjectUnderCursor(object param)
         {
             var obj = GetObjectAt(_mousePosition);
-            if (obj == null)
+            if (obj != null)
             {
                 // Remove object, only ever remove a single object this way.
                 PlacedObjects.Remove(obj);
                 RemoveSelectedObject(obj, false);
+                StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
             }
         }
 
