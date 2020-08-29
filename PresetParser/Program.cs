@@ -31,7 +31,7 @@ namespace PresetParser
         public static bool isExcludedGUID = false; /*only for Anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-        private const string BUILDING_PRESETS_VERSION = "3.4";
+        private const string BUILDING_PRESETS_VERSION = "3.5";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -92,7 +92,7 @@ namespace PresetParser
             "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding",
             "CultureModule","Palace","BuffFactory", "BuildPermitBuilding", "BuildPermitModules", "OrnamentalModule"};
         private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358", "1010462",
-            "1010463", "1010464", "1010275", "1010271","1010516"};
+            "1010463", "1010464", "1010275", "1010271", "1010516", "1010517"};
         private static readonly List<string> ExcludeBuildingsGUID1800 = new List<string> { "269850", "269851" };
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System",
             "module_01_birds", "module_02_peacock", "(Warehouse II)", "(Warehouse III)", "logistic_colony01_01 (Warehouse I)", "Kontor_main_02", "Kontor_main_03", "kontor_main_colony01",
@@ -102,7 +102,8 @@ namespace PresetParser
             "Culture_01_module_06_empty","Culture_02_module_06_empty", "AnarchyBanner", "Culture_props_system_all_nohedge", "Monument_arctic_01_01", "Monument_arctic_01_02", "Monument_arctic_01_03",
             "Active fertility","- Decree","Ministry of Public Services","Ministry of Productivity","Arctic Shepherd","fertility","Arctic Cook","Arctic Builder","Arctic Hunter","Arctic Sewer"," Buff"," Seeds",
             "PropagandaTower Merciers Version","tractor_module_02 (Harvester)", "Culture_1x1_statue", "Culture_prop_system_1x1_10", "Culture_prop_system_1x1_01", "Logistic_05 (Warehouse IV)", "Park_1x1_hedgeentrance",
-            "Harbour Slot (Ghost) Arctic", "Tractor_module_01 (GASOLINE TEST)", "Fuel_station_01 (GASOLINE TEST)", "Kontor_main_04", "Kontor_imperial_04", "Culture_1x1_plaza" };
+            "Harbour Slot (Ghost) Arctic", "Tractor_module_01 (GASOLINE TEST)", "Fuel_station_01 (GASOLINE TEST)", "Kontor_main_04", "Kontor_imperial_04", "Culture_1x1_plaza","Harbor_12 (Coal Harbor)",
+            "Harbor_13 (Coal Storage)", "Kontor_main_arctic_01", "Kontor_imperial_arctic_01" };
         //Skip the following icons to put in the presets for anno 1800, to avoid double Ornamentalbuildings
         public static List<string> ExcludeOrnamentsIcons_1800 = new List<string> { "A7_bush03.png", "A7_park_props_1x1_01.png", "A7_park_props_1x1_07.png", "A7_bush01.png", "A7_col_props_1x1_13_back.png", "A7_bush05.png", "A7_park_props_1x1_08.png",
             "A7_bush02.png", "A7_bush04.png", "A7_col_props_1x1_11_bac.pngk", "A7_col_props_1x1_01_back.png", "A7_col_props_1x1_07_back.png","A7_park_1x1_06.png","A7_park_1x1_02.png","A7_park_1x1_03.png","A7_col_park_props_system_1x1_21_back.png",
@@ -1193,6 +1194,7 @@ namespace PresetParser
                 case "Palace": { templateName = "PalaceBuilding"; factionName = "(05) Investors"; groupName = "Palace Buildings"; break; }
                 case "PalaceMinistry": { templateName = "PalaceBuilding"; factionName = "All Worlds"; groupName = "Special Buildings"; break; }
                 case "1010516": { templateName = "ArcticLodge"; factionName = "(11) Technicians"; groupName = "Special Buildings"; break; }
+                case "1010517": { templateName = "SkyTradingPost"; factionName = "(11) Technicians"; groupName = "Special Buildings"; break; }
                 default: { groupName = templateName.FirstCharToUpper(); break; }
             }
 
@@ -1343,7 +1345,11 @@ namespace PresetParser
                     case "102142": { icon = replaceName + "park_props_1x1_30.png"; break; } //Path Corecting Icon
                     case "102143": { icon = replaceName + "park_props_1x1_31.png"; break; } //Path Corecting Icon 
                     case "102131": { icon = replaceName + "park_props_1x1_17.png"; break; } //Cypress corecting Icon
-                    case "101284": { icon = replaceName = "community_lodge.png"; break; } //corecting Arctic Lodge Icon
+                    case "101284": { icon = replaceName + "community_lodge.png"; break; } //corecting Arctic Lodge Icon
+                }
+                switch(b.Identifier)
+                {
+                    case "AmusementPark CottonCandy": { icon = replaceName + "cotton_candy.png"; break; } // faulty naming fix icn_ instead of icon_
                 }
 
                 b.IconFileName = icon;
@@ -1436,6 +1442,8 @@ namespace PresetParser
                 case "Agriculture_colony01_06 (Timber Yard)": b.InfluenceRadius = 9; break;
                 case "Heavy_colony01_01 (Oil Heavy Industry)": b.InfluenceRadius = 12; break;
                 case "Town hall": b.InfluenceRadius = 20; break;
+                case "Guild_house_arctic": b.InfluenceRadius = 15; break;
+                case "Mining_arctic_01 (Gas Mine)": b.InfluenceRadius = 10; break;
             }
 
             #endregion
