@@ -39,13 +39,14 @@ namespace AnnoDesigner
 
         //Important: These match values in the translations dictionary (e.g "Rotate" matches "Rotate" in the localization dictionary)
         public const string ROTATE_LOCALIZATION_KEY = "Rotate";
+        public const string ROTATE_ALL_LOCALIZATION_KEY = "RotateAll";
         public const string COPY_LOCALIZATION_KEY = "Copy";
         public const string PASTE_LOCALIZATION_KEY = "Paste";
         public const string DELETE_LOCALIZATION_KEY = "Delete";
         public const string DUPLICATE_LOCALIZATION_KEY = "Duplicate";
+        public const string DELETE_HOVERED_OBJECT_LOCALIZATION_KEY = "DeleteHovered";
         //not implmented yet
         public const string UNDO_LOCALIZATION_KEY = "Undo";
-        public const string ROTATE_ALL_LOCALIZATION_KEY = "RotateAll";
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
@@ -512,6 +513,7 @@ namespace AnnoDesigner
             pasteCommand = new RelayCommand(ExecutePaste);
             deleteCommand = new RelayCommand(ExecuteDelete);
             duplicateCommand = new RelayCommand(ExecuteDuplicate);
+            deleteHoveredObjectCommand = new RelayCommand(ExecuteDeleteHoveredObject);
 
             //Set up default keybindings
 
@@ -524,7 +526,7 @@ namespace AnnoDesigner
             rotateHotkey2 = new Hotkey("Rotate_2", rotateBinding2, ROTATE_LOCALIZATION_KEY);
 
             var rotateAllBinding = new InputBinding(rotateAllCommand, new PolyGesture(Key.R, ModifierKeys.Shift));
-            rotateAllHotkey = new Hotkey("RotateAll", rotateAllBinding, ROTATE_ALL_LOCALIZATION_KEY);
+            rotateAllHotkey = new Hotkey(ROTATE_ALL_LOCALIZATION_KEY, rotateAllBinding, ROTATE_ALL_LOCALIZATION_KEY);
 
             var copyBinding = new InputBinding(copyCommand, new PolyGesture(Key.C, ModifierKeys.Control));
             copyHotkey = new Hotkey(COPY_LOCALIZATION_KEY, copyBinding, COPY_LOCALIZATION_KEY);
@@ -537,6 +539,9 @@ namespace AnnoDesigner
 
             var duplicateBinding = new InputBinding(duplicateCommand, new PolyGesture(ExtendedMouseAction.LeftDoubleClick, ModifierKeys.None));
             duplicateHotkey = new Hotkey(DUPLICATE_LOCALIZATION_KEY, duplicateBinding, DUPLICATE_LOCALIZATION_KEY);
+
+            var deleteHoveredOjectBinding = new InputBinding(deleteHoveredObjectCommand, new PolyGesture(ExtendedMouseAction.RightClick, ModifierKeys.None));
+            deleteHoveredObjectHotkey = new Hotkey(DELETE_HOVERED_OBJECT_LOCALIZATION_KEY, deleteHoveredOjectBinding, DELETE_HOVERED_OBJECT_LOCALIZATION_KEY);
 
             //We specifically do not add the `InputBinding`s to the `InputBindingCollection` of `AnnoCanvas`, as if we did that,
             //`InputBinding.Gesture.Matches()` would be fired for *every* event - MouseWheel, MouseDown, KeyUp, KeyDown, MouseMove etc
@@ -1343,14 +1348,7 @@ namespace AnnoDesigner
             }
 
             HandleMouse(e);
-
             HotkeyCommandManager.HandleCommand(e);
-            if (e.Handled)
-            {
-                logger.Info("Click command handled");
-                return;
-            }
-
             _mouseDragStart = _mousePosition;
 
             if (e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Pressed)
@@ -1812,6 +1810,7 @@ namespace AnnoDesigner
             manager.AddHotkey(pasteHotkey);
             manager.AddHotkey(deleteHotkey);
             manager.AddHotkey(duplicateHotkey);
+            manager.AddHotkey(deleteHoveredObjectHotkey);
         }
 
 
@@ -2077,6 +2076,19 @@ namespace AnnoDesigner
                 CurrentObjects.Clear();
                 CurrentObjects.Add(new LayoutObject(new AnnoObject(obj.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache));
                 OnCurrentObjectChanged(obj);
+            }
+        }
+
+        private readonly Hotkey deleteHoveredObjectHotkey;
+        private readonly ICommand deleteHoveredObjectCommand;
+        private void ExecuteDeleteHoveredObject(object param)
+        {
+            var obj = GetObjectAt(_mousePosition);
+            if (obj == null)
+            {
+                // Remove object, only ever remove a single object this way.
+                PlacedObjects.Remove(obj);
+                RemoveSelectedObject(obj, false);
             }
         }
 
