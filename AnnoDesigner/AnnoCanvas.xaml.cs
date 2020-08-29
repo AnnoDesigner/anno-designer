@@ -825,7 +825,6 @@ namespace AnnoDesigner
             // draw placed objects            
             RenderObjectList(drawingContext, borderlessObjects, useTransparency: false);
             RenderObjectList(drawingContext, borderedObjects, useTransparency: false);
-            //RenderObjectList(drawingContext, objectsToDraw, useTransparency: false);
             RenderObjectSelection(drawingContext, SelectedObjects);
 
             if (!RenderInfluences)
@@ -1560,23 +1559,25 @@ namespace AnnoDesigner
         /// Calling this method when the LayoutObjects in <paramref name="newPositions"/> and <paramref name="oldPositions"/> do not
         /// match can cause object duplication.
         /// </summary>
+        /// <remarks>
+        /// When the parameter types were IEnumerable, sequences passed in sometimes got GC'd between calls when using MouseMode.DragAll, 
+        /// as the objects were not referenced anywhere between the end of the foreach loop and the AddRange call (the variables
+        /// themselves did not count as references due to IEnumerable lazy evaluation).
+        /// By making sure the parameters are lists, we avoid this issues.
+        /// </remarks>
         /// <param name="oldPositions"></param>
         /// <param name="newPositions"></param>
-        private void UpdateObjectPositions(IEnumerable<(LayoutObject, Rect)> oldPositions, IEnumerable<(LayoutObject, Rect)> newPositions)
+        private void UpdateObjectPositions(List<(LayoutObject, Rect)> oldPositions, List<(LayoutObject, Rect)> newPositions)
         {
-            //The IEnumerable sequences passed in as parameters sometimes get GC'd between calls when using MouseMode.DragAll, 
-            //as the objects are not referenced anywhere between the end of the foreach loop and the AddRange call (the variables
-            //themselves do not count as references due to IEnumerable lazy evaluation).
-            //By materializing the lists early, we ensure that references are maintained.
             var materialisedOld = oldPositions.ToList();
             var materialisedNew = newPositions.ToList();
 
-            foreach (var item in materialisedOld)
+            foreach (var item in oldPositions)
             {
                 PlacedObjects.Remove(item.Item1, item.Item2);
             }
             //add
-            PlacedObjects.AddRange(materialisedNew);
+            PlacedObjects.AddRange(newPositions);
 
         }
 
@@ -1676,7 +1677,7 @@ namespace AnnoDesigner
             //update object positions if dragging
             if (_oldObjectPositions.Count > 0)
             {
-                UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
                 _oldObjectPositions.Clear();
             }
             InvalidateVisual();
@@ -1755,7 +1756,7 @@ namespace AnnoDesigner
                 //DragAll, so we fire it here instead, to prevent objects being incorrectly represented within the QuadTree.
                 if (CurrentMode == MouseMode.DragSelection)
                 {
-                    UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                    UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
                     _oldObjectPositions.Clear();
                 }
                 CurrentMode = MouseMode.DragAllStart;
@@ -1810,7 +1811,7 @@ namespace AnnoDesigner
                         var obj = GetObjectAt(_mouseDragStart);
                         AddSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
                         //after adding the object, compute the collision rect
-                        _collisionRect = new Rect(obj.Position, obj.Size);
+                        _collisionRect = obj.GridRect;
                         CurrentMode = MouseMode.DragSelection;
                         break;
                     case MouseMode.DragAllStart:
@@ -1884,7 +1885,7 @@ namespace AnnoDesigner
                             {
                                 if (_oldObjectPositions.Count == 0)
                                 {
-                                    _oldObjectPositions.AddRange(SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                                    _oldObjectPositions.AddRange(SelectedObjects.Select(obj => (obj, obj.GridRect)));
                                 }
 
                                 // move all selected objects
@@ -2012,7 +2013,7 @@ namespace AnnoDesigner
                         break;
                     case MouseMode.DragSelection:
                         // stop dragging of selected objects
-                        UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                        UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
                         _oldObjectPositions.Clear();
                         CurrentMode = MouseMode.Standard;
                         break;
@@ -2038,7 +2039,7 @@ namespace AnnoDesigner
                                 else
                                 {
                                     // Remove object, only ever remove a single object this way.
-                                    PlacedObjects.Remove(obj, new Rect(obj.Position, obj.Size));
+                                    PlacedObjects.Remove(obj, obj.GridRect);
                                     RemoveSelectedObject(obj, false);
                                 }
                             }
@@ -2053,7 +2054,7 @@ namespace AnnoDesigner
                         }
                     case MouseMode.DragSelection:
                         {
-                            UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                            UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
                             _oldObjectPositions.Clear();
                             //clear selection after potentially modifying QuadTree
                             SelectedObjects.Clear();
@@ -2172,7 +2173,7 @@ namespace AnnoDesigner
                 if (CurrentObjects.Count != 0 && !objects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
                 {
                     EnsureBounds(boundingRect);
-                    PlacedObjects.AddRange(CloneList(CurrentObjects).Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                    PlacedObjects.AddRange(CloneList(CurrentObjects).Select(obj => (obj, obj.GridRect)));
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
 
                     //no need to update colors if drawing the same object(s)
@@ -2204,7 +2205,6 @@ namespace AnnoDesigner
         /// <returns>object at the position, <see langword="null"/> if no object could be found</returns>
         private LayoutObject GetObjectAt(Point position)
         {
-            //TODD: PR: Still a bug in here somewhere
             var gridPosition = _coordinateHelper.ScreenToFractionalGrid(position, GridSize);
             gridPosition = _viewport.OriginToViewport(gridPosition);
             var possibleItems = PlacedObjects.GetItemsIntersecting(new Rect(gridPosition, new Size(1, 1)));
@@ -2407,7 +2407,7 @@ namespace AnnoDesigner
                     }
                     var bounds = ComputeBoundingRect(layoutObjects);
                     EnsureBounds(bounds);
-                    PlacedObjects.AddRange(layoutObjects.Select(obj => (obj, new Rect(obj.Position, obj.Size))));
+                    PlacedObjects.AddRange(layoutObjects.Select(obj => (obj, obj.GridRect)));
                     LoadedFile = filename;
                     Normalize(1);
 

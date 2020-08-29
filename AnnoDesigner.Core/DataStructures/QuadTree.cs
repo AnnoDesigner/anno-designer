@@ -16,23 +16,23 @@ namespace AnnoDesigner.Core.DataStructures
     /// <typeparam name="T"></typeparam>
     public class QuadTree<T> : IEnumerable<T>
     {
-        public class Quadrant
+        private class Quadrant
         {
             /// <summary>
             /// Indicates if current cached data (<see cref="count"/> and <see cref="itemCache"/>) is up to date.
             /// Returns <see langword="true"/> when cached data is up to date.
             /// </summary>
-            bool isDirty;
+            private bool isDirty;
 
-            Quadrant topRight;
-            Quadrant topLeft;
-            Quadrant bottomRight;
-            Quadrant bottomLeft;
+            private Quadrant topRight;
+            private Quadrant topLeft;
+            private Quadrant bottomRight;
+            private Quadrant bottomLeft;
 
-            readonly Rect topRightBounds;
-            readonly Rect topLeftBounds;
-            readonly Rect bottomRightBounds;
-            readonly Rect bottomLeftBounds;
+            private readonly Rect topRightBounds;
+            private readonly Rect topLeftBounds;
+            private readonly Rect bottomRightBounds;
+            private readonly Rect bottomLeftBounds;
 
             /// <summary>
             /// A reference to the parent <see cref="Quadrant"/> for this Quadrant.
@@ -42,18 +42,19 @@ namespace AnnoDesigner.Core.DataStructures
             /// <summary>
             /// A count of all items in this Quadrant and under it.
             /// </summary>
-            int count;
+            private int count;
 
             /// <summary>
-            /// A list of all the items in the Quadrant and under it.
+            /// A list of all the items in the Quadrant and the items under it.
             /// </summary>
-            IEnumerable<(T Item, Rect Bounds)> itemCache;
+            private IEnumerable<(T Item, Rect Bounds)> itemCache;
 
             /// <summary>
             /// Holds a list of all the items in this quadrant.
             /// </summary>
             /// <remarks>
-            /// Stored as a list as items as any items that overlap multiple child quadrants will be stored here.
+            /// Stored as a list of items as any item that overlaps multiple child quadrants will be stored here.
+            /// This list differs to the itemCache, as this only contains items that do not fit completely into a child quadrant.
             /// </remarks>
             public List<(T Item, Rect Bounds)> Items { get; }
 
@@ -295,7 +296,7 @@ namespace AnnoDesigner.Core.DataStructures
         /// <summary>
         /// The root of the <see cref="QuadTree{T}"/>
         /// </summary>
-        Quadrant root;
+        private Quadrant root;
 
         /// <summary>
         /// A value representing the size of the list returned from methods on this QuadTree.
@@ -370,9 +371,7 @@ namespace AnnoDesigner.Core.DataStructures
         {
             var items = new List<T>(previousCount);
             root.GetItemsIntersecting(items, bounds);
-            //using Count() here is fine as the underlying collection is a List, which implements ICollection
-            //https://referencesource.microsoft.com/#System.Core/System/Linq/Enumerable.cs,1314
-            previousCount = items.Count(); 
+            previousCount = items.Count; 
             return items;
         }
 
