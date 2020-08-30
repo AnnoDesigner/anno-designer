@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
+using System.Windows;
 using System.Windows.Input;
 using AnnoDesigner.Core;
 using AnnoDesigner.Core.Helper;
@@ -49,6 +50,8 @@ namespace AnnoDesigner.Tests
 
             var annoCanvasMock = new Mock<IAnnoCanvas>();
             annoCanvasMock.SetupAllProperties();
+            //The QuadTree does not have a default constructor, so we need to explicitly set up the property
+            annoCanvasMock.Setup(x => x.PlacedObjects).Returns(new Core.DataStructures.QuadTree<LayoutObject>(new Rect(-100, -100, 200, 200)));
             _mockedAnnoCanvas = annoCanvasMock.Object;
 
             _inMemoryRecentFilesHelper = new RecentFilesHelper(new RecentFilesInMemorySerializer(), new MockFileSystem());
