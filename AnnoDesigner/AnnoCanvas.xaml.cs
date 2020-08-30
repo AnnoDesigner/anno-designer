@@ -2254,7 +2254,7 @@ namespace AnnoDesigner
                 item.Position = new Point(item.Position.X - dx, item.Position.Y - dy);
             }
 
-            PlacedObjects.ReIndex();
+            PlacedObjects.ReIndex(_ => _.GridRect);
             InvalidateVisual();
             InvalidateBounds();
             InvalidateScroll();
