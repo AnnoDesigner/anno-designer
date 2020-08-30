@@ -54,11 +54,12 @@ namespace AnnoDesigner
             { "English", "eng" },
             { "Deutsch", "ger" },
             { "Français","fra" },
-            { "Español", "esp" },
-            { "Italiano", "ita" },
             { "Polski", "pol" },
             { "Русский", "rus" },
-            { "český", "cze" },
+            /* We currently do not support these languages */
+            //{ "Español", "esp" },
+            //{ "Italiano", "ita" },
+            //{ "český", "cze" },
         };
 
         public bool CanWriteInFolder(string folderPathToCheck = null)
