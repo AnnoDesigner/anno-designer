@@ -112,7 +112,7 @@ namespace AnnoDesigner.Export
             exportString = addBuildingInfo(exportString, placedObjects, buildingPresets, wikiBuildingInfoPresets);
 
             exportString.Append(TEMPLATE_LINE_START).Append(HEADER_LAYOUT_DESCRIPTION).AppendLine(TEMPLATE_ENTRY_DELIMITER)
-                .Append(TEMPLATE_LINE_START).Append(HEADER_SIZE).Append(TEMPLATE_ENTRY_DELIMITER).Append(calculatedStatistics.UsedAreaX).Append(TEMPLATE_SIZE_ENTRY_DELIMITER).AppendLine(calculatedStatistics.UsedAreaY.ToString())
+                .Append(TEMPLATE_LINE_START).Append(HEADER_SIZE).Append(TEMPLATE_ENTRY_DELIMITER).Append(calculatedStatistics.UsedAreaWidth.ToString()).Append(TEMPLATE_SIZE_ENTRY_DELIMITER).AppendLine(calculatedStatistics.UsedAreaHeight.ToString())
                 .Append(TEMPLATE_LINE_START).Append(HEADER_TILES).Append(TEMPLATE_ENTRY_DELIMITER).AppendLine(calculatedStatistics.UsedTiles.ToString())
                 .Append(TEMPLATE_LINE_START).Append(HEADER_AUTHOR).AppendLine(TEMPLATE_ENTRY_DELIMITER)
                 .Append(TEMPLATE_LINE_START).Append(HEADER_SOURCE).AppendLine(TEMPLATE_ENTRY_DELIMITER);

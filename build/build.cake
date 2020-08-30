@@ -274,7 +274,9 @@ var copyFilesTask = Task("Copy-Files")
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/NLog.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Octokit.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/presets.json", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Xceed.Wpf.Toolkit.dll", $"{outDirectory}");
+	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Xceed.Wpf.Toolkit.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/System.IO.Abstractions.dll", $"{outDirectory}");
+	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Newtonsoft.Json.dll", $"{outDirectory}");
 
     Information("");
 });
