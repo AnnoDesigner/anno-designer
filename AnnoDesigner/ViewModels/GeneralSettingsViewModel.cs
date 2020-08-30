@@ -41,6 +41,9 @@ namespace AnnoDesigner.ViewModels
             UseZoomToPoint = _appSettings.UseZoomToPoint;
             ZoomSensitivityPercentage = _appSettings.ZoomSensitivityPercentage;
             HideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;
+            ShowScrollbars = _appSettings.ShowScrollbars;
+            InvertPanningDirection = _appSettings.InvertPanningDirection;
+            InvertScrollingDirection = _appSettings.InvertScrollingDirection;
 
             ResetZoomSensitivityCommand = new RelayCommand(ExecuteResetZoomSensitivity, CanExecuteResetZoomSensitivity);
 
