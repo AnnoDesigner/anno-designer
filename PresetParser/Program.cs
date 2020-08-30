@@ -31,7 +31,7 @@ namespace PresetParser
         public static bool isExcludedGUID = false; /*only for Anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-        private const string BUILDING_PRESETS_VERSION = "3.5";
+        private const string BUILDING_PRESETS_VERSION = "3.5.1";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -1679,6 +1679,10 @@ namespace PresetParser
             #endregion
 
             #endregion
+            // Remove CUltureModules Menu that Appeared in version 3.5
+            // this is a quick fix for verion 3.5.1, and will be real solved in next verion 3.6
+            if (b.Header == "(A7) Anno 1800" && b.Faction == "All Worlds" && b.Group == "CultureModule") { return; }
+
             // Remove the Not Placed yet Ornamental Buildings from the list
             /// commentout the line below if you make a new preset after update of the game 'ANNO 1800', or when a new 'ANNO 1800 DLC' is released 
             if ((b.Faction == "Not Placed Yet -Moderate" || b.Faction == "Not Placed Yet -Colony01") && b.Template == "OrnamentalBuilding") { return; }
