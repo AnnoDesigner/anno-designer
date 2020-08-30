@@ -76,6 +76,22 @@ namespace AnnoDesigner.ViewModels
                     IsAppUpToDate = !IsUpdateAvailable && !IsPresetUpdateAvailable;
                 }
 
+                if (isAutomaticUpdateCheck)
+                {
+                    //If not already prompted
+                    if (!_appSettings.PromptedForAutoUpdateCheck)
+                    {
+                        _appSettings.PromptedForAutoUpdateCheck = true;
+
+                        if (!_messageBoxService.ShowQuestion(Application.Current.MainWindow,
+                            "Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.",
+                            "Continue checking for updates?"))
+                        {
+                            AutomaticUpdateCheck = false;
+                        }
+                    }
+                }
+
                 IsBusy = false;
             }
             catch (Exception ex)
@@ -106,34 +122,13 @@ namespace AnnoDesigner.ViewModels
             if (double.Parse(dowloadedContent, CultureInfo.InvariantCulture) > Constants.Version)
             {
                 IsUpdateAvailable = true;
+                _messageBoxService.ShowMessage(Application.Current.MainWindow,
+                    _localizationHelper.GetLocalization("UpdatePreferencesNewAppUpdateAvailable") + Environment.NewLine + Environment.NewLine + "https://github.com/AnnoDesigner/anno-designer/releases/",
+                    _localizationHelper.GetLocalization("UpdatePreferencesUpdates"));
             }
             else
             {
-                if (isAutomaticUpdateCheck)
-                {
-                    //show messagebox ?
-                }
-                else
-                {
-                    IsUpdateAvailable = false;
-                    //StatusMessage = "Version is up to date.";
-                }
-            }
-
-            if (isAutomaticUpdateCheck)
-            {
-                //If not already prompted
-                if (!_appSettings.PromptedForAutoUpdateCheck)
-                {
-                    _appSettings.PromptedForAutoUpdateCheck = true;
-
-                    if (!_messageBoxService.ShowQuestion(Application.Current.MainWindow,
-                        "Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.",
-                        "Continue checking for updates?"))
-                    {
-                        AutomaticUpdateCheck = false;
-                    }
-                }
+                IsUpdateAvailable = false;
             }
         }
 
