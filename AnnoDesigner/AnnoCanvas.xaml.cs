@@ -2550,13 +2550,16 @@ namespace AnnoDesigner
         private readonly ICommand deleteObjectUnderCursorCommand;
         private void ExecuteDeleteObjectUnderCursor(object param)
         {
-            var obj = GetObjectAt(_mousePosition);
-            if (obj != null)
+            if (CurrentObjects.Count == 0)
             {
-                // Remove object, only ever remove a single object this way.
-                PlacedObjects.Remove(obj, obj.GridRect);
-                RemoveSelectedObject(obj, false);
-                StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+                var obj = GetObjectAt(_mousePosition);
+                if (obj != null)
+                {
+                    // Remove object, only ever remove a single object this way.
+                    PlacedObjects.Remove(obj, obj.GridRect);
+                    RemoveSelectedObject(obj, false);
+                    StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+                }
             }
         }
 
