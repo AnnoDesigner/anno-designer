@@ -328,6 +328,18 @@ namespace AnnoDesigner.Core.DataStructures
         }
 
         /// <summary>
+        /// Re-index the <see cref="QuadTree{T}"/> with the given func to derive bounds from <typeparamref name="T"/>. This allows us to
+        /// combine a re-index operation whilst refreshing the bounds of all the items in the QuadTree.
+        /// </summary>
+        /// <param name="boundsSelector"></param>
+        public void ReIndex(Func<T, Rect> boundsSelector)
+        {
+            var oldRoot = root;
+            root = new Quadrant(Extent);
+            AddRange(oldRoot.All().Select(_ => (_, boundsSelector(_))));
+        }
+
+        /// <summary>
         /// Create a <see cref="QuadTree{T}"/>
         /// </summary>
         /// <param name="extent">The bounds of the <see cref="QuadTree{T}"/></param>
