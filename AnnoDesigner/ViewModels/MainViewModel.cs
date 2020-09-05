@@ -1071,7 +1071,7 @@ namespace AnnoDesigner.ViewModels
                 {
                     logger.Error(ex, "Error exporting image.");
                     _messageBoxService.ShowError(Application.Current.MainWindow,
-                        "Something went wrong while exporting the image.",
+                        _localizationHelper.GetLocalization("ExportImageError"),
                         _localizationHelper.GetLocalization("Error"));
                 }
             }
