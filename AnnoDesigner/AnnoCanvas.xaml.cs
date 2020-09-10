@@ -1060,7 +1060,7 @@ namespace AnnoDesigner
                 {
                     var pos = obj.Position;
                     pos = _viewport.OriginToViewport(new Point(pos.X + dx, pos.Y + dy));
-                    pos = new Point(Math.Round(pos.X, MidpointRounding.AwayFromZero), Math.Round(pos.Y, MidpointRounding.AwayFromZero));
+                    pos = new Point(Math.Floor(pos.X), Math.Floor(pos.Y));
                     obj.Position = pos;
                 }
             }
@@ -1532,7 +1532,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Used to load current color for grid lines from settings.
         /// </summary>
-        /// <remarks>Also calls <see cref="UIElement.InvalidateVisual()"/></remarks>
+        /// <remarks>As this method can be called when AppSettings are updated, we make sure to not call anything that relies on the UI thread from here.</remarks>
         private void LoadGridLineColor()
         {
             var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorGridLines);//explicit variable to make debugging easier
@@ -1543,19 +1543,16 @@ namespace AnnoDesigner
             guidelines.GuidelinesY.Add(halfPenWidth);
             guidelines.Freeze();
             _guidelineSet = guidelines;
-            InvalidateVisual();
         }
 
         /// <summary>
         /// Used to load current color for object border lines from settings.
         /// </summary>
-        /// <remarks>Also calls <see cref="UIElement.InvalidateVisual()"/></remarks>
+        /// <remarks>As this method can be called when AppSettings are updated, we make sure to not call anything that relies on the UI thread from here.</remarks>
         private void LoadObjectBorderLineColor()
         {
             var colorFromJson = SerializationHelper.LoadFromJsonString<UserDefinedColor>(_appSettings.ColorObjectBorderLines);//explicit variable to make debugging easier
             _linePen = _penCache.GetPen(_brushCache.GetSolidBrush(colorFromJson.Color), DPI_FACTOR * 1);
-
-            InvalidateVisual();
         }
 
         /// <summary>
