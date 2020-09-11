@@ -312,7 +312,8 @@ namespace AnnoDesigner.ViewModels
             catch (Exception ex)
             {
                 logger.Error(ex, "Error applying preset.");
-                _messageBoxService.ShowError("Something went wrong while applying the preset.",
+                _messageBoxService.ShowError(
+                    _localizationHelper.GetLocalization("LayoutLoadingError"),
                    _localizationHelper.GetLocalization("Error"));
             }
         }
@@ -982,8 +983,9 @@ namespace AnnoDesigner.ViewModels
             {
                 logger.Warn(layoutEx, "Version of layout does not match.");
 
-                if (_messageBoxService.ShowQuestion("Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
-                        "File version mismatch"))
+                if (_messageBoxService.ShowQuestion(
+                        _localizationHelper.GetLocalization("FileVersionMismatchMessage"),
+                        _localizationHelper.GetLocalization("FileVersionMismatchTitle")))
                 {
                     ExecuteLoadLayoutFromJsonSub(jsonString, true);
                 }
@@ -991,7 +993,7 @@ namespace AnnoDesigner.ViewModels
             catch (Exception ex)
             {
                 logger.Error(ex, "Error loading layout from JSON.");
-                _messageBoxService.ShowError("Something went wrong while loading the layout.",
+                _messageBoxService.ShowError(_localizationHelper.GetLocalization("LayoutLoadingError"),
                         _localizationHelper.GetLocalization("Error"));
             }
         }
@@ -1223,7 +1225,7 @@ namespace AnnoDesigner.ViewModels
             catch (Exception ex)
             {
                 logger.Error(ex, "Error saving layout to JSON.");
-                _messageBoxService.ShowError(ex.Message, "Something went wrong while saving the layout.");
+                _messageBoxService.ShowError(ex.Message, _localizationHelper.GetLocalization("LayoutSavingError"));
             }
         }
 
@@ -1304,7 +1306,8 @@ namespace AnnoDesigner.ViewModels
             }
             catch (Exception)
             {
-                _messageBoxService.ShowError("Error: Invalid building configuration.",
+                _messageBoxService.ShowError(
+                    _localizationHelper.GetLocalization("InvalidBuildingConfiguration"),
                    _localizationHelper.GetLocalization("Error"));
             }
         }

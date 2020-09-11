@@ -222,7 +222,19 @@ namespace AnnoDesigner.Localization
                         { "FileNotFound" , "The file was not found." },
                         { "Default" , "Default" },
                         { "ItemsCopied" , "items copied" },
-                        { "ItemCopied" , "item copied" }
+                        { "ItemCopied" , "item copied" },
+                        { "LoadingPresetsFailed" , "Loading of the building presets failed." },
+                        { "LoadingIconNamesFailed" , "Loading of the icon names failed." },
+                        { "FileVersionUnsupportedMessage" , $"Try loading anyway?{Environment.NewLine}This is very likely to fail or result in strange things happening." },
+                        { "FileVersionUnsupportedTitle" , "File version unsupported" },
+                        { "IOErrorMessage" , "Something went wrong while saving/loading file." },
+                        { "AnotherInstanceIsAlreadyRunning" , "Another instance of the app is already running." },
+                        { "ErrorUpgradingSettings" , "The settings file has become corrupted. We must reset your settings." },
+                        { "FileVersionMismatchMessage" , $"Try loading anyway?{Environment.NewLine}This is very likely to fail or result in strange things happening." },
+                        { "FileVersionMismatchTItle" , "File version mismatch" },
+                        { "LayoutLoadingError" , "Something went wrong while loading the layout." },
+                        { "LayoutSavingError" , "Something went wrong while saving the layout." },
+                        { "InvalidBuildingConfiguration" , "Invalid building configuration." }
                     }
                 },
                 {
@@ -260,7 +272,7 @@ namespace AnnoDesigner.Localization
                         { "VersionCheckErrorTitle" , "Updateprüfung fehlgeschlagen." },
                         { "EnableAutomaticUpdateCheck" , "Automatische Updateprüfung beim Start aktivieren" },
                         { "ContinueCheckingForUpdates" , $"Möchten Sie beim Start weiterhin nach einer neuen Version suchen?{Environment.NewLine}{Environment.NewLine}Diese Option kann über Werkzeuge -> Einstellungen -> Updates geändert werden." },
-                        { "ContinueCheckingForUpdatesTitle" , "Weiter nach Updates suchen?" },
+                        { "ContinueCheckingForUpdatesTitle" , "Weiter nach Aktualisierungen suchen?" },
                         { "GoToProjectHomepage" , "Gehe zu Projekt Webseite" },
                         { "OpenWelcomePage" , "Willkommensseite öffnen" },
                         { "AboutAnnoDesigner" , "über Anno Designer" },
@@ -393,7 +405,19 @@ namespace AnnoDesigner.Localization
                         { "FileNotFound" , "Die Datei wurde nicht gefunden." },
                         { "Default" , "Standard" },
                         { "ItemsCopied" , "Elemente kopiert" },
-                        { "ItemCopied" , "Element kopiert" }
+                        { "ItemCopied" , "Element kopiert" },
+                        { "LoadingPresetsFailed" , "Laden der Gebäudevoreinstellungen fehlgeschlagen." },
+                        { "LoadingIconNamesFailed" , "Das Laden der Symbolnamen ist fehlgeschlagen." },
+                        { "FileVersionUnsupportedMessage" , $"Versuchen Sie trotzdem zu laden?{Environment.NewLine}Dies wird sehr wahrscheinlich fehlschlagen oder dazu führen, dass seltsame Dinge passieren." },
+                        { "FileVersionUnsupportedTitle" , "Dateiversion nicht unterstützt" },
+                        { "IOErrorMessage" , "Etwas ist beim Speichern/Laden der Datei schiefgegangen." },
+                        { "AnotherInstanceIsAlreadyRunning" , "Eine andere Instanz der App läuft bereits." },
+                        { "ErrorUpgradingSettings" , "Die Einstellungsdatei ist beschädigt worden. Wir müssen Ihre Einstellungen zurücksetzen." },
+                        { "FileVersionMismatchMessage" , $"Versuchen Sie trotzdem zu laden?{Environment.NewLine}Dies wird sehr wahrscheinlich fehlschlagen oder dazu führen, dass seltsame Dinge passieren." },
+                        { "FileVersionMismatchTItle" , "Unstimmigkeit der Dateiversion" },
+                        { "LayoutLoadingError" , "Beim Laden des Layouts ging etwas schief." },
+                        { "LayoutSavingError" , "Beim Speichern des Layouts ist etwas schiefgegangen." },
+                        { "InvalidBuildingConfiguration" , "Ungültige Gebäudekonfiguration." }
                     }
                 },
                 {
@@ -564,7 +588,19 @@ namespace AnnoDesigner.Localization
                         { "FileNotFound" , "Le fichier n'a pas été retrouvé." },
                         { "Default" , "Défaut" },
                         { "ItemsCopied" , "éléments copiés" },
-                        { "ItemCopied" , "élément copié" }
+                        { "ItemCopied" , "élément copié" },
+                        { "LoadingPresetsFailed" , "Le chargement des présélections du bâtiment a échoué." },
+                        { "LoadingIconNamesFailed" , "Le chargement des noms d'icônes a échoué." },
+                        { "FileVersionUnsupportedMessage" , $"Essayez de charger quand même?{Environment.NewLine}Il est très probable que cela échoue ou que des choses étranges se produisent." },
+                        { "FileVersionUnsupportedTitle" , "Version du fichier non prise en charge" },
+                        { "IOErrorMessage" , "Quelque chose s'est mal passé pendant l'enregistrement et le chargement du fichier." },
+                        { "AnotherInstanceIsAlreadyRunning" , "Une autre instance de l'application est déjà en cours d'exécution." },
+                        { "ErrorUpgradingSettings" , "Le fichier de configuration est corrompu. Nous devons réinitialiser vos paramètres." },
+                        { "FileVersionMismatchMessage" , $"Essayez quand même de charger?{Environment.NewLine}Il est très probable que cela échoue ou que des choses étranges se produisent." },
+                        { "FileVersionMismatchTItle" , "Mauvaise concordance des versions des fichiers" },
+                        { "LayoutLoadingError" , "Quelque chose s'est mal passé lors du chargement de la mise en page." },
+                        { "LayoutSavingError" , "Quelque chose s'est mal passé lors de la sauvegarde de la mise en page." },
+                        { "InvalidBuildingConfiguration" , "Configuration du bâtiment incorrecte." }
                     }
                 },
                 {
@@ -735,7 +771,19 @@ namespace AnnoDesigner.Localization
                         { "FileNotFound" , "Plik nie został znaleziony." },
                         { "Default" , "Domyślnie" },
                         { "ItemsCopied" , "skopiowane elementy" },
-                        { "ItemCopied" , "skopiowany przedmiot" }
+                        { "ItemCopied" , "skopiowany przedmiot" },
+                        { "LoadingPresetsFailed" , "Załadowanie ustawień budynku nie powiodło się." },
+                        { "LoadingIconNamesFailed" , "Wczytywanie nazw ikon nie powiodło się." },
+                        { "FileVersionUnsupportedMessage" , $"Spróbujesz załadować?{Environment.NewLine}Jest bardzo prawdopodobne, że to się nie uda lub doprowadzi do dziwnych rzeczy." },
+                        { "FileVersionUnsupportedTitle" , "Wersja pliku nieobsługiwana" },
+                        { "IOErrorMessage" , "Coś poszło nie tak podczas zapisywania/ładowania pliku." },
+                        { "AnotherInstanceIsAlreadyRunning" , "Inny przykład aplikacji jest już uruchomiony." },
+                        { "ErrorUpgradingSettings" , "Plik z ustawieniami został uszkodzony. Musimy zresetować Twoje ustawienia." },
+                        { "FileVersionMismatchMessage" , $"Próbujesz załadować aplikację?{Environment.NewLine}Jest bardzo prawdopodobne, że to się nie uda lub doprowadzi do dziwnych rzeczy." },
+                        { "FileVersionMismatchTItle" , "Niedopasowanie wersji pliku" },
+                        { "LayoutLoadingError" , "Coś poszło nie tak podczas ładowania układu." },
+                        { "LayoutSavingError" , "Coś poszło nie tak podczas zapisywania układu." },
+                        { "InvalidBuildingConfiguration" , "Nieprawidłowa konfiguracja budynku." }
                     }
                 },
                 {
@@ -906,7 +954,19 @@ namespace AnnoDesigner.Localization
                         { "FileNotFound" , "Файл не был найден." },
                         { "Default" , "По умолчанию" },
                         { "ItemsCopied" , "списанные предметы" },
-                        { "ItemCopied" , "скопированный элемент" }
+                        { "ItemCopied" , "скопированный элемент" },
+                        { "LoadingPresetsFailed" , "Загрузка строительных предустановок не удалась." },
+                        { "LoadingIconNamesFailed" , "Загрузка имен иконок не удалась." },
+                        { "FileVersionUnsupportedMessage" , $"Попробуешь загрузить?{Environment.NewLine}Это очень вероятно приведет к неудаче или к странным вещам." },
+                        { "FileVersionUnsupportedTitle" , "Версия файла не поддерживается" },
+                        { "IOErrorMessage" , "Что-то пошло не так при сохранении/загрузке файла." },
+                        { "AnotherInstanceIsAlreadyRunning" , "Другой экземпляр приложения уже запущен." },
+                        { "ErrorUpgradingSettings" , "Файл настроек поврежден. Мы должны сбросить ваши настройки." },
+                        { "FileVersionMismatchMessage" , $"Попробуйте загрузить?{Environment.NewLine}Скорее всего, это приведет к ошибке или странным вещам." },
+                        { "FileVersionMismatchTItle" , "Несоответствие версии файла" },
+                        { "LayoutLoadingError" , "Что-то пошло не так во время загрузки макета." },
+                        { "LayoutSavingError" , "Что-то пошло не так во время сохранения макета." },
+                        { "InvalidBuildingConfiguration" , "Неверная конфигурация здания." }
                     }
                 },
             };
