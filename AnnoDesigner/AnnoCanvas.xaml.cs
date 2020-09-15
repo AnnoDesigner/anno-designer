@@ -674,7 +674,8 @@ namespace AnnoDesigner
                 }
                 catch (Exception ex)
                 {
-                    _messageBoxService.ShowError(ex.Message, "Loading of the building presets failed");
+                    _messageBoxService.ShowError(ex.Message,
+                          _localizationHelper.GetLocalization("LoadingPresetsFailed"));
                 }
 
                 sw.Stop();
@@ -695,7 +696,7 @@ namespace AnnoDesigner
                     {
                         logger.Error(ex, "Loading of the icon names failed.");
 
-                        _messageBoxService.ShowError("Loading of the icon names failed",
+                        _messageBoxService.ShowError(_localizationHelper.GetLocalization("LoadingIconNamesFailed"),
                             _localizationHelper.GetLocalization("Error"));
                     }
 
@@ -2393,8 +2394,9 @@ namespace AnnoDesigner
             {
                 logger.Warn(layoutEx, "Version of layout file is not supported.");
 
-                if (_messageBoxService.ShowQuestion("Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
-                        "File version unsupported"))
+                if (_messageBoxService.ShowQuestion(
+                        _localizationHelper.GetLocalization("FileVersionUnsupportedMessage"),
+                        _localizationHelper.GetLocalization("FileVersionUnsupportedTitle")))
                 {
                     OpenFile(filename, true);
                 }
@@ -2413,7 +2415,7 @@ namespace AnnoDesigner
         /// <param name="e">exception containing error information</param>
         private void IOErrorMessageBox(Exception e)
         {
-            _messageBoxService.ShowError(e.Message, "Something went wrong while saving/loading file.");
+            _messageBoxService.ShowError(e.Message, _localizationHelper.GetLocalization("IOErrorMessage"));
         }
 
         #endregion
