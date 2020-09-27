@@ -150,7 +150,7 @@ namespace AnnoDesigner
 
                     if (!createdNewMutex)
                     {
-                        _messageBoxService.ShowMessage("Another instance of the app is already running.");
+                        _messageBoxService.ShowMessage(Localization.Localization.Instance.GetLocalization("AnotherInstanceIsAlreadyRunning"));
                         Environment.Exit(-1);
                     }
                 }
@@ -177,7 +177,7 @@ namespace AnnoDesigner
             {
                 logger.Error(ex, "Error upgrading settings.");
 
-                _messageBoxService.ShowError("The settings file has become corrupted. We must reset your settings.");
+                _messageBoxService.ShowError(_localizationHelper.GetLocalization("ErrorUpgradingSettings"));
 
                 var fileName = "";
                 if (!string.IsNullOrEmpty(ex.Filename))

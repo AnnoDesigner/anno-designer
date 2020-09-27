@@ -84,8 +84,8 @@ namespace AnnoDesigner.ViewModels
                         _appSettings.PromptedForAutoUpdateCheck = true;
 
                         if (!_messageBoxService.ShowQuestion(Application.Current.MainWindow,
-                            "Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.",
-                            "Continue checking for updates?"))
+                            _localizationHelper.GetLocalization("ContinueCheckingForUpdates"),
+                            _localizationHelper.GetLocalization("ContinueCheckingForUpdatesTitle")))
                         {
                             AutomaticUpdateCheck = false;
                         }
@@ -105,8 +105,8 @@ namespace AnnoDesigner.ViewModels
                 if (isAutomaticUpdateCheck)
                 {
                     _messageBoxService.ShowError(Application.Current.MainWindow,
-                        $"Error checking version.{Environment.NewLine}{Environment.NewLine}More information is found in the log.",
-                        "Version check failed");
+                        _localizationHelper.GetLocalization("VersionCheckErrorMessage"),
+                        _localizationHelper.GetLocalization("VersionCheckErrorTitle"));
                 }
             }
         }
