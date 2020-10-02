@@ -31,7 +31,7 @@ namespace PresetParser
         public static bool isExcludedGUID = false; /*only for Anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-        private const string BUILDING_PRESETS_VERSION = "3.5.1";
+        private const string BUILDING_PRESETS_VERSION = "3.6";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -915,9 +915,20 @@ namespace PresetParser
 
             #region Get/Set InfluenceRange information
 
-            //because this number does not exist yet, we set this to zero
-            b.InfluenceRange = 0;
-
+            // New 29-09-2020 : Head shield generation into radius parameter, on request #296
+            // Read the xml key : <ShieldGenerator> / <ShieldedRadius> for heating arctic buildings (raw number)
+            //                    and Moon Shield Generators
+            b.InfluenceRadius = Convert.ToInt32(values?["ShieldGenerator"]?["ShieldedRadius"]?.InnerText);
+            // read the xml key : <Energy> / <RadiusUsed> and then devide by 4096 for the training centers
+            if (string.IsNullOrEmpty(Convert.ToString(b.InfluenceRadius)) || b.InfluenceRadius == 0)
+            {
+                b.InfluenceRadius = (Convert.ToInt32(values?["Energy"]?["RadiusUsed"]?.InnerText) / 4096);
+            }
+            // Set influenceRadius to 0, if it is still Null/Empty
+            if (string.IsNullOrEmpty(Convert.ToString(b.InfluenceRadius)))
+            {
+                b.InfluenceRadius = 0;
+            }
             #endregion
 
             #region Get BuildBlockers information
