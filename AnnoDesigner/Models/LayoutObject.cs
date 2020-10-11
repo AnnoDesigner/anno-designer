@@ -16,7 +16,7 @@ namespace AnnoDesigner.Models
     /// This class is mainly for performance and a wrapper for <see cref="AnnoObject"/>.
     /// It caches all kinds of Visuals (e.g. Brushes, Pens) and calculations (e.g. CollisionRect).
     /// </summary>
-    public class LayoutObject
+    public class LayoutObject : Core.Models.Undoable.Freezable, IBounded
     {
         private AnnoObject _wrappedAnnoObject;
         private readonly ICoordinateHelper _coordinateHelper;
@@ -139,6 +139,13 @@ namespace AnnoDesigner.Models
             return _borderlessPen;
         }
 
+        private static HashSet<string> trackedProperties = new HashSet<string>()
+        {
+            nameof(Position)
+        };
+
+        protected override HashSet<string> TrackedProperties => trackedProperties;
+
         public Point Position
         {
             get
@@ -153,7 +160,8 @@ namespace AnnoDesigner.Models
             set
             {
                 WrappedAnnoObject.Position = value;
-                _position = value;
+                Set(ref _position, value, nameof(Position));
+
                 _screenRect = default;
                 _collisionRect = default;
                 _influenceCircle = null;
