@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using AnnoDesigner.Core.Models;
+using AnnoDesigner.Core.Models.Undoable;
 
 namespace AnnoDesigner.Core.DataStructures
 {
@@ -11,7 +12,7 @@ namespace AnnoDesigner.Core.DataStructures
     /// Creates a new <see cref="QuadTree{T}"/>.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class QuadTree<T> : ICollection<T>
+    public class QuadTree<T> : ICollection<T>, IUndoableCollection<T>
         where T : IBounded
     {
         public enum ResizeDirection
@@ -304,6 +305,7 @@ namespace AnnoDesigner.Core.DataStructures
         public QuadTree(Rect extent)
         {
             root = new Quadrant(extent);
+            ReportedActions = UndoableCollectionActions.All;
         }
 
         /// <summary>
@@ -320,6 +322,14 @@ namespace AnnoDesigner.Core.DataStructures
             {
                 notify.PropertyChanged += Item_PropertyChanged;
             }
+            if (ReportedActions.HasFlag(UndoableCollectionActions.Items) && item is IUndoable undoable)
+            {
+                undoable.UndoableAction += Item_UndoableAction;
+            }
+            if (ReportedActions.HasFlag(UndoableCollectionActions.Add))
+            {
+                OnUndoableAction(UndoableCollectionActions.Add, item);
+            }
         }
 
         /// <summary>
@@ -335,6 +345,14 @@ namespace AnnoDesigner.Core.DataStructures
                 {
                     notify.PropertyChanged -= Item_PropertyChanged;
                 }
+                if (ReportedActions.HasFlag(UndoableCollectionActions.Items) && item is IUndoable undoable)
+                {
+                    undoable.UndoableAction -= Item_UndoableAction;
+                }
+                if (ReportedActions.HasFlag(UndoableCollectionActions.Remove))
+                {
+                    OnUndoableAction(UndoableCollectionActions.Remove, item);
+                }
             }
             return removed;
         }
@@ -344,10 +362,13 @@ namespace AnnoDesigner.Core.DataStructures
         /// </summary>
         public void Clear()
         {
-            foreach (var item in this.ToList())
+            AtomicAction(() =>
             {
-                Remove(item);
-            }
+                foreach (var item in this.ToList())
+                {
+                    Remove(item);
+                }
+            });
         }
 
         public bool Contains(T item) => root.Contains(item);
@@ -432,6 +453,17 @@ namespace AnnoDesigner.Core.DataStructures
         }
 
         /// <summary>
+        /// Handles undoable actions of collection items.
+        /// </summary>
+        private void Item_UndoableAction(UndoEventArgs e)
+        {
+            if (ReportedActions.HasFlag(UndoableCollectionActions.Items))
+            {
+                PropagateUndoableAction(e);
+            }
+        }
+
+        /// <summary>
         /// Reindexes item.
         /// </summary>
         public void Reindex(T item, Rect oldBounds)
@@ -455,10 +487,13 @@ namespace AnnoDesigner.Core.DataStructures
 
         public void AddRange(IEnumerable<T> collection)
         {
-            foreach (var item in collection)
+            AtomicAction(() =>
             {
-                Add(item);
-            }
+                foreach (var item in collection)
+                {
+                    Add(item);
+                }
+            });
         }
 
 #if DEBUG
@@ -472,5 +507,70 @@ namespace AnnoDesigner.Core.DataStructures
             return root.GetQuadrantRects();
         }
 #endif
+
+        #region Undo/Redo
+
+        public event UndoEventHandler UndoableAction;
+
+        private bool recordEvents;
+        private UndoEventArgs recordedEventArgs;
+
+        public UndoableCollectionActions ReportedActions { get; set; }
+        public bool Undoing { get; set; }
+        public bool RecordEvents
+        {
+            get => recordEvents;
+            set
+            {
+                recordEvents = value;
+                if (!recordEvents && recordedEventArgs != null)
+                {
+                    PropagateUndoableAction(recordedEventArgs);
+                }
+            }
+        }
+
+        protected void OnUndoableAction(UndoableCollectionActions action, T item)
+        {
+            PropagateUndoableAction(new CollectionUndoEventArgs<T>()
+            {
+                RefObject = this,
+                Item = item,
+                ItemWasAdded = action == UndoableCollectionActions.Add
+            });
+        }
+
+        protected void PropagateUndoableAction(UndoEventArgs e)
+        {
+            if (!Undoing)
+            {
+                if (RecordEvents)
+                {
+                    if (recordedEventArgs != null)
+                    {
+                        recordedEventArgs.AddToChain(e);
+                    }
+                    else
+                    {
+                        recordedEventArgs = e;
+                    }
+                }
+                else
+                {
+                    UndoableAction?.Invoke(e);
+                    recordedEventArgs = null;
+                }
+            }
+        }
+
+        public void AtomicAction(Action action)
+        {
+            var flag = RecordEvents;
+            RecordEvents = true;
+            action();
+            RecordEvents = flag;
+        }
+
+        #endregion
     }
 }

@@ -30,6 +30,7 @@ using Microsoft.Win32;
 using NLog;
 using AnnoDesigner.Core.Layout.Helper;
 using System.Windows.Controls.Primitives;
+using AnnoDesigner.Core.Models.Undoable;
 
 namespace AnnoDesigner
 {
@@ -48,8 +49,8 @@ namespace AnnoDesigner
         public const string DELETE_LOCALIZATION_KEY = "Delete";
         public const string DUPLICATE_LOCALIZATION_KEY = "Duplicate";
         public const string DELETE_OBJECT_UNDER_CURSOR_LOCALIZATION_KEY = "DeleteObjectUnderCursor";
-        //not implmented yet
         public const string UNDO_LOCALIZATION_KEY = "Undo";
+        public const string REDO_LOCALIZATION_KEY = "Redo";
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
@@ -244,10 +245,31 @@ namespace AnnoDesigner
             }
         }
 
+        private QuadTree<LayoutObject> _placedObjects;
+
         /// <summary>
         /// List of all currently placed objects.
         /// </summary>
-        public QuadTree<LayoutObject> PlacedObjects { get; set; }
+        public QuadTree<LayoutObject> PlacedObjects
+        {
+            get { return _placedObjects; }
+            set
+            {
+                if (_placedObjects != null)
+                {
+                    _placedObjects.UndoableAction -= PlacedObjects_UndoableAction;
+                }
+
+                _placedObjects = value;
+                UndoStack.Clear();
+                RedoStack.Clear();
+
+                if (_placedObjects != null)
+                {
+                    _placedObjects.UndoableAction += PlacedObjects_UndoableAction;
+                }
+            }
+        }
 
         /// <summary>
         /// List of all currently selected objects.
@@ -259,6 +281,10 @@ namespace AnnoDesigner
         /// Event which is fired when the current object is changed
         /// </summary>
         public event Action<LayoutObject> OnCurrentObjectChanged;
+
+        public Stack<UndoEventArgs> UndoStack { get; set; } = new Stack<UndoEventArgs>();
+
+        public Stack<UndoEventArgs> RedoStack { get; set; } = new Stack<UndoEventArgs>();
 
         /// <summary>
         /// backing field of the ObjectClipboard property
@@ -379,7 +405,9 @@ namespace AnnoDesigner
             DragSingleStart,
             DragSelection,
             DragAllStart,
-            DragAll
+            DragAll,
+            // used for placing multiple objects with one stroke
+            PlaceMultipleObjects
         }
 
         /// <summary>
@@ -593,6 +621,8 @@ namespace AnnoDesigner
             deleteCommand = new RelayCommand(ExecuteDelete);
             duplicateCommand = new RelayCommand(ExecuteDuplicate);
             deleteObjectUnderCursorCommand = new RelayCommand(ExecuteDeleteObjectUnderCursor);
+            undoCommand = new RelayCommand(ExecuteUndo);
+            redoCommand = new RelayCommand(ExecuteRedo);
 
             //Set up default keybindings
 
@@ -621,6 +651,12 @@ namespace AnnoDesigner
 
             var deleteHoveredOjectBinding = new InputBinding(deleteObjectUnderCursorCommand, new PolyGesture(ExtendedMouseAction.RightClick, ModifierKeys.None));
             deleteObjectUnderCursorHotkey = new Hotkey(DELETE_OBJECT_UNDER_CURSOR_LOCALIZATION_KEY, deleteHoveredOjectBinding, DELETE_OBJECT_UNDER_CURSOR_LOCALIZATION_KEY);
+
+            var undoBinding = new InputBinding(undoCommand, new PolyGesture(Key.Z, ModifierKeys.Control));
+            undoHotkey = new Hotkey(UNDO_LOCALIZATION_KEY, undoBinding, UNDO_LOCALIZATION_KEY);
+
+            var redoBinding = new InputBinding(redoCommand, new PolyGesture(Key.Y, ModifierKeys.Control));
+            redoHotkey = new Hotkey(REDO_LOCALIZATION_KEY, redoBinding, REDO_LOCALIZATION_KEY);
 
             //We specifically do not add the `InputBinding`s to the `InputBindingCollection` of `AnnoCanvas`, as if we did that,
             //`InputBinding.Gesture.Matches()` would be fired for *every* event - MouseWheel, MouseDown, KeyUp, KeyDown, MouseMove etc
@@ -1503,10 +1539,13 @@ namespace AnnoDesigner
 
         private void UnfreezePlacedObjects()
         {
-            foreach (var item in PlacedObjects.ToList())
+            PlacedObjects.AtomicAction(() =>
             {
-                item.FreezeUpdates = false;
-            }
+                foreach (var item in PlacedObjects.ToList())
+                {
+                    item.FreezeUpdates = false;
+                }
+            });
         }
 
         /// <summary>
@@ -1711,6 +1750,8 @@ namespace AnnoDesigner
             else if (e.LeftButton == MouseButtonState.Pressed && CurrentObjects.Count != 0)
             {
                 // place new object
+                PlacedObjects.RecordEvents = true;
+                CurrentMode = MouseMode.PlaceMultipleObjects;
                 TryPlaceCurrentObjects(isContinuousDrawing: false);
             }
             else if (e.LeftButton == MouseButtonState.Pressed && CurrentObjects.Count == 0)
@@ -1910,6 +1951,13 @@ namespace AnnoDesigner
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             HandleMouse(e);
+
+            if (CurrentMode == MouseMode.PlaceMultipleObjects)
+            {
+                CurrentMode = MouseMode.Standard;
+                PlacedObjects.RecordEvents = false;
+                return;
+            }
 
             if (CurrentMode == MouseMode.DragAll)
             {
@@ -2198,10 +2246,13 @@ namespace AnnoDesigner
 
             var dx = PlacedObjects.Min(_ => _.Position.X) - border;
             var dy = PlacedObjects.Min(_ => _.Position.Y) - border;
-            foreach (var item in PlacedObjects.ToList())
+            PlacedObjects.AtomicAction(() =>
             {
-                item.Position = new Point(item.Position.X - dx, item.Position.Y - dy);
-            }
+                foreach (var item in PlacedObjects.ToList())
+                {
+                    item.Position = new Point(item.Position.X - dx, item.Position.Y - dy);
+                }
+            });
 
             InvalidateVisual();
             InvalidateBounds();
@@ -2223,6 +2274,8 @@ namespace AnnoDesigner
             manager.AddHotkey(deleteHotkey);
             manager.AddHotkey(duplicateHotkey);
             manager.AddHotkey(deleteObjectUnderCursorHotkey);
+            manager.AddHotkey(undoHotkey);
+            manager.AddHotkey(redoHotkey);
         }
 
         #endregion
@@ -2323,12 +2376,15 @@ namespace AnnoDesigner
                 if (layout != null)
                 {
                     SelectedObjects.Clear();
-                    PlacedObjects.Clear();
-
-                    foreach (var curObj in layout)
+                    PlacedObjects.AtomicAction(() =>
                     {
-                        PlacedObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
-                    }
+                        PlacedObjects.Clear();
+                        foreach (var curObj in layout)
+                        {
+                            PlacedObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
+                        }
+                    });
+
                     LoadedFile = filename;
                     Normalize(1);
 
@@ -2441,8 +2497,11 @@ namespace AnnoDesigner
         private readonly ICommand rotateAllCommand;
         private void ExecuteRotateAll(object param)
         {
-            Rotate(PlacedObjects.ToList());
-            Normalize(1);
+            PlacedObjects.AtomicAction(() =>
+            {
+                Rotate(PlacedObjects.ToList());
+                Normalize(1);
+            });
             InvalidateVisual();
         }
 
@@ -2472,7 +2531,10 @@ namespace AnnoDesigner
         private void ExecuteDelete(object param)
         {
             // remove all currently selected objects from the grid and clear selection
-            SelectedObjects.ForEach(item => PlacedObjects.Remove(item));
+            PlacedObjects.AtomicAction(() =>
+            {
+                SelectedObjects.ForEach(item => PlacedObjects.Remove(item));
+            });
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
             InvalidateBounds();
@@ -2506,6 +2568,22 @@ namespace AnnoDesigner
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                 }
             }
+        }
+
+        private readonly Hotkey undoHotkey;
+        private readonly ICommand undoCommand;
+        private void ExecuteUndo(object param)
+        {
+            if (UndoStack.Count > 0)
+                Undo();
+        }
+
+        private readonly Hotkey redoHotkey;
+        private readonly ICommand redoCommand;
+        private void ExecuteRedo(object param)
+        {
+            if (RedoStack.Count > 0)
+                Redo();
         }
 
         #endregion
@@ -2706,5 +2784,34 @@ namespace AnnoDesigner
 
         #endregion
 
+        #region Undo/Redo
+
+        private void PlacedObjects_UndoableAction(UndoEventArgs e)
+        {
+            UndoStack.Push(e);
+            RedoStack.Clear();
+        }
+
+        public void Undo()
+        {
+            var top = UndoStack.Pop();
+            top.Undo();
+            RedoStack.Push(top);
+
+            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+            InvalidateBounds();
+        }
+
+        public void Redo()
+        {
+            var top = RedoStack.Pop();
+            top.Redo();
+            UndoStack.Push(top);
+
+            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+            InvalidateBounds();
+        }
+
+        #endregion
     }
 }

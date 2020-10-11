@@ -969,8 +969,11 @@ namespace AnnoDesigner.ViewModels
                         {
                             AnnoCanvas.SelectedObjects.Clear();
 
-                            AnnoCanvas.PlacedObjects.Clear();
-                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)));
+                            AnnoCanvas.PlacedObjects.AtomicAction(() =>
+                            {
+                                AnnoCanvas.PlacedObjects.Clear();
+                                AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)));
+                            });
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 

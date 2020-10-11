@@ -37,7 +37,7 @@ namespace AnnoDesigner.Core.Models.Undoable
                 }
                 else if (flag && !value)
                 {
-                    Unfreeze();
+                    AtomicAction(Unfreeze);
                 }
             }
         }
@@ -45,6 +45,34 @@ namespace AnnoDesigner.Core.Models.Undoable
         private Dictionary<string, FreezedProperty> ChangedProperties { get; } = new Dictionary<string, FreezedProperty>();
 
         protected abstract HashSet<string> TrackedProperties { get; }
+
+        protected override void OnUndoableAction<T>(T oldValue, T newValue, string propertyName)
+        {
+            if (!FreezeUpdates)
+            {
+                base.OnUndoableAction(oldValue, newValue, propertyName);
+            }
+            else if (TrackedProperties == null || TrackedProperties.Contains(propertyName))
+            {
+                lock (ChangedProperties)
+                {
+                    if (ChangedProperties.ContainsKey(propertyName))
+                    {
+                        ChangedProperties[propertyName].NewValue = newValue;
+                        ChangedProperties[propertyName].Undoable = true;
+                    }
+                    else
+                    {
+                        ChangedProperties[propertyName] = new FreezedProperty
+                        {
+                            OldValue = oldValue,
+                            NewValue = newValue,
+                            Undoable = true
+                        };
+                    }
+                }
+            }
+        }
 
         protected override void OnPropertyChanged<T>(T oldValue, T newValue, string propertyName)
         {
@@ -87,6 +115,10 @@ namespace AnnoDesigner.Core.Models.Undoable
             {
                 foreach (var changedProperty in ChangedProperties)
                 {
+                    if (changedProperty.Value.Undoable)
+                    {
+                        OnUndoableAction(changedProperty.Value.OldValue, changedProperty.Value.NewValue, changedProperty.Key);
+                    }
                     if (changedProperty.Value.OldValue != null && changedProperty.Value.NewValue != null)
                     {
                         OnPropertyChanged(changedProperty.Value.OldValue, changedProperty.Value.NewValue, changedProperty.Key);
