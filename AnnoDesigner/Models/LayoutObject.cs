@@ -436,7 +436,7 @@ namespace AnnoDesigner.Models
             {
                 if (_gridInfluenceRangeRect == default)
                 {
-                    if (WrappedAnnoObject.InfluenceRange == 0)
+                    if (WrappedAnnoObject.InfluenceRange <= 0)
                     {
                         _gridInfluenceRangeRect = new Rect(Position, default(Size));
                     }
