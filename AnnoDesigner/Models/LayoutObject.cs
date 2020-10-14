@@ -374,8 +374,19 @@ namespace AnnoDesigner.Models
         {
             if (_screenRadius == default || _lastGridSizeForScreenRadius != gridSize)
             {
-                _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius, gridSize);
-
+                // Anno 1404 odd number buildings (3x3/3x5 etc) the Circle range draw a +0.5 grid circles, this is notcorrect and need to be adjust
+                // to get the right Circle Range for those buildings.
+                // Because of this change it will also work on 2070, and 1800 circle range buildings if this will cause problems on the right grid size range
+                // then wee need an WrapperAnnoObject.Header label (that where Anno 1404 is stand) to get this right
+                // Issue #299
+                if ((WrappedAnnoObject.Size.Width == 3 || WrappedAnnoObject.Size.Width == 5 || WrappedAnnoObject.Size.Width == 7 || WrappedAnnoObject.Size.Width == 9) && (WrappedAnnoObject.Size.Height == 3 || WrappedAnnoObject.Size.Height == 5 || WrappedAnnoObject.Size.Height == 7 || WrappedAnnoObject.Size.Height == 9))
+                {
+                    _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius - 0.5, gridSize);
+                }
+                else
+                {
+                    _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius, gridSize);
+                }
                 _lastGridSizeForScreenRadius = gridSize;
             }
 
