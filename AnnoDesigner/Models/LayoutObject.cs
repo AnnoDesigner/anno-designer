@@ -374,10 +374,10 @@ namespace AnnoDesigner.Models
         {
             if (_screenRadius == default || _lastGridSizeForScreenRadius != gridSize)
             {
-                // Anno odd number buildings (3x3/3x5 etc) draw the Circle range with a +0.5 grid circles, this is not correct vs and need
+                // Anno odd number buildings (3x3/3x5 etc) draw the Circle range with a +0.5 grid, this is not correct vs Game and need
                 // to be adjust to get the right Circle Range in the tool for those buildings.
                 // Because of this change it will also work on 2070, and 1800 circle range buildings. If this will cause problems on the
-                //  right grid size range then wee need an WrapperAnnoObject.Header label (that where Anno 1404 is stand) to get this right
+                // right grid size range then wee need an WrapperAnnoObject.Header label (that where Anno 1404 is stand) to get this right
                 // Issue #299 (13-10-2020) 
 
                 // To get Round up numbers, like 1.5 becomes 1.0 , 2.25 becomes 2.00
