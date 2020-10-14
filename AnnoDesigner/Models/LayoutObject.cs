@@ -374,12 +374,18 @@ namespace AnnoDesigner.Models
         {
             if (_screenRadius == default || _lastGridSizeForScreenRadius != gridSize)
             {
-                // Anno 1404 odd number buildings (3x3/3x5 etc) the Circle range draw a +0.5 grid circles, this is notcorrect and need to be adjust
-                // to get the right Circle Range for those buildings.
-                // Because of this change it will also work on 2070, and 1800 circle range buildings if this will cause problems on the right grid size range
-                // then wee need an WrapperAnnoObject.Header label (that where Anno 1404 is stand) to get this right
-                // Issue #299
-                if ((WrappedAnnoObject.Size.Width == 3 || WrappedAnnoObject.Size.Width == 5 || WrappedAnnoObject.Size.Width == 7 || WrappedAnnoObject.Size.Width == 9) && (WrappedAnnoObject.Size.Height == 3 || WrappedAnnoObject.Size.Height == 5 || WrappedAnnoObject.Size.Height == 7 || WrappedAnnoObject.Size.Height == 9))
+                // Anno odd number buildings (3x3/3x5 etc) draw the Circle range with a +0.5 grid circles, this is not correct vs and need
+                // to be adjust to get the right Circle Range in the tool for those buildings.
+                // Because of this change it will also work on 2070, and 1800 circle range buildings. If this will cause problems on the
+                //  right grid size range then wee need an WrapperAnnoObject.Header label (that where Anno 1404 is stand) to get this right
+                // Issue #299 (13-10-2020) 
+
+                // To get Round up numbers, like 1.5 becomes 1.0 , 2.25 becomes 2.00
+                double tempMathX = Math.Floor(WrappedAnnoObject.Size.Width / 2);
+                double tempMathY = Math.Floor(WrappedAnnoObject.Size.Height / 2);
+
+                // check if Object Width and Height are odd numbers or not, if both are, adjust the circle size with -0.5
+                if ((WrappedAnnoObject.Size.Width /2 > tempMathX) && (WrappedAnnoObject.Size.Height/2 > tempMathY)) 
                 {
                     _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius - 0.5, gridSize);
                 }
