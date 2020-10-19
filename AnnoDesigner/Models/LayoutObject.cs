@@ -387,7 +387,7 @@ namespace AnnoDesigner.Models
                 // check if Object Width and Height are odd numbers or not, if both are, adjust the circle size with -0.5
                 if ((WrappedAnnoObject.Size.Width /2 > tempMathX) && (WrappedAnnoObject.Size.Height/2 > tempMathY)) 
                 {
-                    _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius - 0.5, gridSize);
+                    _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius - 0.1, gridSize);
                 }
                 else
                 {
@@ -453,7 +453,7 @@ namespace AnnoDesigner.Models
             {
                 if (_gridInfluenceRangeRect == default)
                 {
-                    if (WrappedAnnoObject.InfluenceRange == 0)
+                    if (WrappedAnnoObject.InfluenceRange <= 0)
                     {
                         _gridInfluenceRangeRect = new Rect(Position, default(Size));
                     }
