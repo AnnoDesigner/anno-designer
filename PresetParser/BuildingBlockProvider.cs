@@ -66,7 +66,22 @@ namespace PresetParser
                 {
                     xf = 3; zf = 3;
                 }
-
+                if (building.Identifier == "Harbor_arctic_01 (Depot)")
+                {
+                    xf = 11; zf = 4;
+                }
+                if (building.Identifier == "River_colony02_01 (Clay Harvester)")
+                {
+                    xf = 9; zf = 5;
+                }
+                if (building.Identifier == "River_colony02_02 (Paper Mill)")
+                {
+                    xf = 9; zf = 5;
+                }
+                if (building.Identifier == "River_colony02_03 (Water Pump)")
+                {
+                    xf = 9; zf = 5;
+                }
                 //if both values are zero, then skip building
                 if (xf < 1 && zf < 1)
                 {

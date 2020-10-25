@@ -126,7 +126,15 @@ namespace AnnoDesigner.Localization
                         { "17IndustrialOrnaments", "17 Industrial Ornaments" },
                         { "18IndustrialFences", "18 Industrial Fences" },
                         { "19AmusementPark", "19 Amusement Park" },
-                        { "PalaceBuildings", "Palace Buildings" }
+                        { "PalaceBuildings", "Palace Buildings" },
+                        { "(13)Scholars", "(13) Scholars" },
+                        { "(14)Shepherds", "(14) Shepherds" },
+                        { "(15)Elders", "(15) Elders" },
+                        { "(16)EnbesaFarmFields", "(16) Enbesa Farm Fields" },
+                        { "20CityLights", "20 City Lights" },
+                        { "21EnbesaOrnaments", "21 Enbesa Ornaments" },
+                        { "RiverBuildings", "River Buildings" },
+                        { "PermittedBuildings", "Permitted Buildings" }
                     }
                     },
                 {
@@ -228,7 +236,15 @@ namespace AnnoDesigner.Localization
                         { "17IndustrialOrnaments", "17 Industrielle Verzierungen" },
                         { "18IndustrialFences", "18 Industriezäune" },
                         { "19AmusementPark", "19 Vergnügungspark" },
-                        { "PalaceBuildings", "Palastgebäude" }
+                        { "PalaceBuildings", "Palastgebäude" },
+                        { "(13)Scholars", "(13) Stipendiaten" },
+                        { "(14)Shepherds", "(14) Hirten" },
+                        { "(15)Elders", "(15) Anderswo" },
+                        { "(16)EnbesaFarmFields", "(16) Enbesa Farm-Felder" },
+                        { "20CityLights", "20 Stadtlichter" },
+                        { "21EnbesaOrnaments", "21 Enbesa-Ornamente" },
+                        { "RiverBuildings", "Fluss-Gebäude" },
+                        { "PermittedBuildings", "Erlaubte Gebäude" }
                     }
                     },
                  {
@@ -330,7 +346,15 @@ namespace AnnoDesigner.Localization
                         { "17IndustrialOrnaments", "17 Ornements Industriels" },
                         { "18IndustrialFences", "18 Clôtures Industrielles" },
                         { "19AmusementPark", "19 Parc d'attractions" },
-                        { "PalaceBuildings", "Bâtiments du Palais" }
+                        { "PalaceBuildings", "Bâtiments du Palais" },
+                        { "(13)Scholars", "(13) Étudiants" },
+                        { "(14)Shepherds", "(14) Les bergers" },
+                        { "(15)Elders", "(15) Ailleurs" },
+                        { "(16)EnbesaFarmFields", "(16) Champs agricoles d'Enbesa" },
+                        { "20CityLights", "20 Lumières de la ville" },
+                        { "21EnbesaOrnaments", "21 Ornements d'Enbesa" },
+                        { "RiverBuildings", "Bâtiments fluviaux" },
+                        { "PermittedBuildings", "Bâtiments autorisés" }
                     }
                     },
                 {
@@ -432,7 +456,15 @@ namespace AnnoDesigner.Localization
                         { "17IndustrialOrnaments", "17 Ornamenty Przemysłowe" },
                         { "18IndustrialFences", "18 Ogrodzenia Przemysłowe" },
                         { "19AmusementPark", "19 Park Rozrywki" },
-                        { "PalaceBuildings", "Budynki Pałacowe" }
+                        { "PalaceBuildings", "Budynki Pałacowe" },
+                        { "(13)Scholars", "(13) Uczniowie" },
+                        { "(14)Shepherds", "(14) Pasterze" },
+                        { "(15)Elders", "(15) Gdzie indziej" },
+                        { "(16)EnbesaFarmFields", "(16) Enbesa uprawne arktycznej" },
+                        { "20CityLights", "20 Światła miejskie" },
+                        { "21EnbesaOrnaments", "21 Ornamenty Enbesa" },
+                        { "RiverBuildings", "Budynki nadrzeczne" },
+                        { "PermittedBuildings", "Dozwolone budynki" }
                     }
                     },
                 {
@@ -534,7 +566,15 @@ namespace AnnoDesigner.Localization
                         { "17IndustrialOrnaments", "17 промышленных украшений" },
                         { "18IndustrialFences", "18 промышленных заборов" },
                         { "19AmusementPark", "19 Парк развлечений" },
-                        { "PalaceBuildings", "Дворцовые здания" }
+                        { "PalaceBuildings", "Дворцовые здания" },
+                        { "(13)Scholars", "(13) Ученые" },
+                        { "(14)Shepherds", "(14) Пастухи" },
+                        { "(15)Elders", "(15) В другом месте" },
+                        { "(16)EnbesaFarmFields", "(16) Ферма Энбеза Фарм Филдс." },
+                        { "20CityLights", "20 Огни города" },
+                        { "21EnbesaOrnaments", "21 Энбеза Орнаменты" },
+                        { "RiverBuildings", "Речные здания" },
+                        { "PermittedBuildings", "Разрешенные здания" }
                     }
                     },
             };
