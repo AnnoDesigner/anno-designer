@@ -854,6 +854,7 @@ namespace AnnoDesigner
                 RenderObjectInfluenceRadius(drawingContext, offscreenObjects);
                 RenderObjectInfluenceRange(drawingContext, offscreenObjects);
 
+                RenderIrrigatedRange(drawingContext);
             }
 
             if (CurrentObjects.Count == 0)
@@ -1465,6 +1466,45 @@ namespace AnnoDesigner
             }
 
             //Shape should be complete by this point.
+        }
+
+        private void RenderIrrigatedRange(DrawingContext drawingContext)
+        {
+            if (!PlacedObjects.Any(p => p.WrappedAnnoObject.Road))
+            {
+                return;
+            }
+
+            var minX = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Min(p => (int)p.Position.X - 5);
+            var maxX = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Max(p => (int)(p.Position.X + p.Size.Width + 5));
+            var minY = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Min(p => (int)p.Position.Y - 5);
+            var maxY = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Max(p => (int)(p.Position.Y + p.Size.Height + 5));
+
+            var irrigatedCells = Enumerable.Range(0, maxX - minX).Select(i => new bool[maxY - minY]).ToArray();
+            foreach (var item in PlacedObjects.Where(p => p.WrappedAnnoObject.Road))
+                for (var i = -4; i < 5; i++)
+                    for (var j = -4; j < 5; j++)
+                        irrigatedCells[(int)(item.Position.X + i - minX)][(int)(item.Position.Y + j - minY)] = true;
+
+            var points = PolygonBoundaryFinderHelper.GetBoundaryPoints(irrigatedCells);
+            if (points.Count < 1)
+            {
+                return;
+            }
+
+            var sg = new StreamGeometry();
+
+            using (var sgc = sg.Open())
+            {
+                sgc.BeginFigure(_coordinateHelper.GridToScreen(new Point(points[0].x + minX, points[0].y + minY), GridSize), true, true);
+                for (var i = 1; i < points.Count; i++)
+                {
+                    sgc.LineTo(_coordinateHelper.GridToScreen(new Point(points[i].x + minX, points[i].y + minY), GridSize), true, true);
+                }
+            }
+
+            sg.Freeze();
+            drawingContext.DrawGeometry(_lightBrush, _radiusPen, sg);
         }
 
         /// <summary>
