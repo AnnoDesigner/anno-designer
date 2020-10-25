@@ -1281,7 +1281,7 @@ namespace PresetParser
                 factionName = "Ornaments"; groupName = "21 Enbesa Ornaments";
             }
             //Set the right Colors to the Enbesa Ornament Group
-            groupInfo = NewEnbesaColorTemplates1800.GetNewOrnamentsGroup1800(identifierName, factionName, groupName, templateName);
+            groupInfo = MapToTemplateName1800.GetNewOrnamentsGroup1800(identifierName, factionName, groupName, templateName);
             factionName = groupInfo.Faction;
             groupName = groupInfo.Group;
             templateName = groupInfo.Template;

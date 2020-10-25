@@ -69,8 +69,6 @@ namespace PresetParser.Anno1800
             "BH Ornament01 Wall Gate 02", "BH Ornament02 Wall Straight Large", "BH Ornament02 Wall End Large", "BH Ornament02 Wall Cross Large", "BH Ornament02 Wall T-Cross Large", "BH Ornament02 Wall Corner Large", "BH Ornament02 Wall Gate Large" };
         private static readonly List<string> ChangeOrnamentToAmusementPark_1800 = new List<string> { "AmusementPark FerrisWheel", "AmusementPark RollerCoaster", "AmusementPark PayBooth", "AmusementPark Icecream", "AmusementPark CottonCandy", "AmusementPark TinCanGame", "AmusementPark ShootingGame",
             "AmusementPark Consumable01", "AmusementPark Consumable02", "AmusementPark Strongman", "AmusementPark PictureWall", "AmusementPark OrganPlayer", "AmusementPark BalloonSeller", "AmusementPark Painter", "AmusementPark GateBig", "AmusementPark BarTable" };
-        //private static readonly List<string> ChangeOrnamentToCityLights_1800 = new List<string> { "" };
-        //private static readonly List<string> ChangeOrnamentToEnbesaOrnaments_1800 = new List<string> { "" };
 
         /// <summary>
         /// Retuns the faction and group for an identifier.
@@ -107,8 +105,6 @@ namespace PresetParser.Anno1800
             if (identifierName.IsPartOf(ChangeOrnamentToIndustrialOrnaments_1800)) { factionName = "Ornaments"; groupName = "17 Industrial Ornaments"; templateName = "OrnamentalBuilding_Industrial"; }
             if (identifierName.IsPartOf(ChangeOrnamentToIndustrialFences_1800)) { factionName = "Ornaments"; groupName = "18 IndustrialFences"; templateName = "OrnamentalBuilding_Industrial"; }
             if (identifierName.IsPartOf(ChangeOrnamentToAmusementPark_1800)) { factionName = "Ornaments"; groupName = "19 Amusement Park"; }
-            //if (identifierName.IsPartOf(ChangeOrnamentToAmusementPark_1800)) { factionName = "Ornaments"; groupName = "20 City Lights"; }
-            //if (identifierName.IsPartOf(ChangeOrnamentToAmusementPark_1800)) { factionName = "Ornaments"; groupName = "21 Enbesa Ornaments"; }
             return (factionName, groupName, templateName);
         }
     }

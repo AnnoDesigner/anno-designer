@@ -62,25 +62,13 @@ namespace PresetParser
 
                 //In case buildings have wrong size change it here.
                 //Check by identifier. *Caps Sensetive*
-                if (building.Identifier == "Palace_Module_05 (gate)")
+                switch (building.Identifier)
                 {
-                    xf = 3; zf = 3;
-                }
-                if (building.Identifier == "Harbor_arctic_01 (Depot)")
-                {
-                    xf = 11; zf = 4;
-                }
-                if (building.Identifier == "River_colony02_01 (Clay Harvester)")
-                {
-                    xf = 9; zf = 5;
-                }
-                if (building.Identifier == "River_colony02_02 (Paper Mill)")
-                {
-                    xf = 9; zf = 5;
-                }
-                if (building.Identifier == "River_colony02_03 (Water Pump)")
-                {
-                    xf = 9; zf = 5;
+                    case "Palace_Module_05 (gate)": xf = 3; zf = 3; break;
+                    case "Harbor_arctic_01 (Depot)": xf = 11; zf = 4; break;
+                    case "River_colony02_01 (Clay Harvester)": xf = 9; zf = 5; break;
+                    case "River_colony02_02 (Paper Mill)": xf = 9; zf = 5; break;
+                    case "River_colony02_03 (Water Pump)":  xf = 9; zf = 5; break;
                 }
                 //if both values are zero, then skip building
                 if (xf < 1 && zf < 1)

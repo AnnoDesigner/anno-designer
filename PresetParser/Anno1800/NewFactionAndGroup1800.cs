@@ -57,9 +57,7 @@ namespace PresetParser.Anno1800
         private static readonly List<string> ChangeBuildingsToOW1_FarmBuilding_1800 = new List<string> { "Agriculture_04 (Potato Farm)", "Agriculture_06 (Sheep Farm)", };
         private static readonly List<string> ChangeBuildingsToOW2_FarmBuilding_1800 = new List<string> { "Agriculture_08 (Pig Farm)", "Agriculture_03 (Hop Farm)", "Agriculture_01 (Grain Farm)" };
         private static readonly List<string> ChangeBuildingsToOW3_FarmBuilding_1800 = new List<string> { "Agriculture_11 (Bell Pepper Farm)", "Agriculture_02 (Cattle Farm)" };
-        //private static readonly List<string> ChangeBuildingsToOW4_FarmBuilding_1800 = new List<string> { "" };
         private static readonly List<string> ChangeBuildingsToOW5_FarmBuilding_1800 = new List<string> { "Agriculture_10 (Vineyard)" };
-        //private static readonly List<string> ChangeBuildingsToOW6_FarmBuilding_1800 = new List<string> { "" };
         private static readonly List<string> ChangeBuildingsToNW1_FarmBuilding_1800 = new List<string> { "Agriculture_colony01_11 (Alpaca Farm)", "Agriculture_colony01_08 (Banana Farm)", "Agriculture_colony01_03 (Cotton Farm)", "Agriculture_colony01_01 (Sugar Cane Farm)", "Agriculture_colony01_05 (Caoutchouc Farm)" };
         private static readonly List<string> ChangeBuildingsToNW2_FarmBuilding_1800 = new List<string> { "Agriculture_colony01_09 (Cattle Farm)", "Agriculture_colony01_04 (Cocoa Farm)", "Agriculture_colony01_02 (Tobacco Farm)", "Agriculture_colony01_07 (Coffee Beans Farm)", "Agriculture_colony01_10 (Corn Farm)" };
         private static readonly List<string> ChangeBuildingsToAT1_FarmBuilding_1800 = new List<string> { "Agriculture_arctic_03 (Goose Farm)" };
@@ -126,9 +124,7 @@ namespace PresetParser.Anno1800
             if (identifierName.IsPartOf(ChangeBuildingsToOW1_FarmBuilding_1800)) { factionName = "(01) Farmers"; groupName = "Farm Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToOW2_FarmBuilding_1800)) { factionName = "(02) Workers"; groupName = "Farm Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToOW3_FarmBuilding_1800)) { factionName = "(03) Artisans"; groupName = "Farm Buildings"; }
-            //if (identifierName.IsPartOf(ChangeBuildingsToOW4_FarmBuilding_1800)) { factionName = "(04) Engineers"; groupName = "Farm Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToOW5_FarmBuilding_1800)) { factionName = "(05) Investors"; groupName = "Farm Buildings"; }
-            //if (identifierName.IsPartOf(ChangeBuildingsToOW6_FarmBuilding_1800)) { factionName = "(13) Scholars"; groupName = "Farm Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToNW1_FarmBuilding_1800)) { factionName = "(07) Jornaleros"; groupName = "Farm Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToNW2_FarmBuilding_1800)) { factionName = "(08) Obreros"; groupName = "Farm Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToAT1_FarmBuilding_1800)) { factionName = "(10) Explorers"; groupName = "Farm Buildings"; }
