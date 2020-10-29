@@ -422,10 +422,10 @@ namespace AnnoDesigner.Core.DataStructures
                 switch (e.PropertyName)
                 {
                     case nameof(IBounded.Position):
-                        Reindex(item, new Rect((Point)e.OldValue, item.Size));
+                        ReIndex(item, new Rect((Point)e.OldValue, item.Size));
                         break;
                     case nameof(IBounded.Size):
-                        Reindex(item, new Rect(item.Position, (Point)e.OldValue));
+                        ReIndex(item, new Rect(item.Position, (Point)e.OldValue));
                         break;
                 }
             }
@@ -434,7 +434,7 @@ namespace AnnoDesigner.Core.DataStructures
         /// <summary>
         /// Reindexes item.
         /// </summary>
-        public void Reindex(T item, Rect oldBounds)
+        public void ReIndex(T item, Rect oldBounds)
         {
             if (root.GetContainingQuadrant(item.GetBounds()) != root.GetContainingQuadrant(oldBounds))
             {
