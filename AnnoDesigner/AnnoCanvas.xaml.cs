@@ -1475,10 +1475,31 @@ namespace AnnoDesigner
                 return;
             }
 
-            var minX = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Min(p => (int)p.Position.X - 5);
-            var maxX = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Max(p => (int)(p.Position.X + p.Size.Width + 5));
-            var minY = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Min(p => (int)p.Position.Y - 5);
-            var maxY = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Max(p => (int)(p.Position.Y + p.Size.Height + 5));
+            var minX = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Min(p => (int)p.Position.X);
+            var maxX = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Max(p => (int)(p.Position.X + p.Size.Width));
+            var minY = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Min(p => (int)p.Position.Y);
+            var maxY = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Max(p => (int)(p.Position.Y + p.Size.Height));
+            var cells = Enumerable.Range(0, maxX - minX).Select(i => new bool[maxY - minY]).ToArray();
+            foreach (var item in PlacedObjects.Where(p => p.WrappedAnnoObject.Road))
+                for (int i = 0; i < item.Size.Width; i++)
+                    for (int j = 0; j < item.Size.Height; j++)
+                        cells[(int)(item.Position.X + i - minX)][(int)(item.Position.Y + j - minY)] = true;
+
+            var topLeftVector = new Vector(-4, -4);
+            foreach (var group in new AdjacentCellGrouper().GroupAdjacentCells(cells, true))
+            {
+                group.Offset(minX, minY);
+                var rect = new Rect(
+                    _coordinateHelper.GridToScreen(group.TopLeft + topLeftVector, GridSize),
+                    _coordinateHelper.GridToScreen(group.BottomRight - topLeftVector, GridSize));
+
+                drawingContext.DrawRectangle(_lightBrush, _radiusPen, rect);
+            }
+
+            /*var minX = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Min(p => (int)p.Position.X);
+            var maxX = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Max(p => (int)(p.Position.X + p.Size.Width));
+            var minY = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Min(p => (int)p.Position.Y);
+            var maxY = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Max(p => (int)(p.Position.Y + p.Size.Height));
 
             var irrigatedCells = Enumerable.Range(0, maxX - minX).Select(i => new bool[maxY - minY]).ToArray();
             foreach (var item in PlacedObjects.Where(p => p.WrappedAnnoObject.Road))
@@ -1504,7 +1525,7 @@ namespace AnnoDesigner
             }
 
             sg.Freeze();
-            drawingContext.DrawGeometry(_lightBrush, _radiusPen, sg);
+            drawingContext.DrawGeometry(_lightBrush, _radiusPen, sg);*/
         }
 
         /// <summary>
