@@ -378,7 +378,7 @@ namespace AnnoDesigner.Models
                 // this is not correct and needs to be adjusted to produce the correct radius for those buildings.
                 // See https://github.com/AnnoDesigner/anno-designer/issues/299 for an explanation of the issue.
 
-                // check if Object Width and Height are odd numbers or not, if both are, adjust the circle size with -0.5
+                // check if Object Width and Height are odd numbers or not, if both are, adjust the circle size with -0.1
                 if ((WrappedAnnoObject.Size.Width %2 != 0 ) && (WrappedAnnoObject.Size.Height %2 != 0)) 
                 {
                     _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius - 0.1, gridSize);
