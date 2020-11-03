@@ -60,13 +60,18 @@ namespace PresetParser
                 var xf = ParseBuildingBlockerNumber(xfNormal);
                 var zf = ParseBuildingBlockerNumber(zfNormal);
 
-                //In case buildings have wrong size change it here.
-                //Check by identifier. *Caps Sensetive*
-                if (building.Identifier == "Palace_Module_05 (gate)")
+                //Adjust size of buildings.
+                //Some buildings have wrong values in the game data.
+                //So those values are adjusted to the real values from inside the game.                
+                //The check is performed by the identifier of a building (CASE SENSITIVE).
+                switch (building.Identifier)
                 {
-                    xf = 3; zf = 3;
+                    case "Palace_Module_05 (gate)": xf = 3; zf = 3; break;
+                    case "Harbor_arctic_01 (Depot)": xf = 11; zf = 4; break;
+                    case "River_colony02_01 (Clay Harvester)":
+                    case "River_colony02_02 (Paper Mill)":
+                    case "River_colony02_03 (Water Pump)": xf = 9; zf = 5; break;
                 }
-
                 //if both values are zero, then skip building
                 if (xf < 1 && zf < 1)
                 {
