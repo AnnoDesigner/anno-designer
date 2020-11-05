@@ -145,6 +145,9 @@ namespace AnnoDesigner.ViewModels
             var isNewReleaseAvailable = foundRelease.Version > new Version(PresetsVersionValue);
             if (isNewReleaseAvailable)
             {
+                IsPresetUpdateAvailable = true;
+                FoundPresetRelease = foundRelease;
+
                 if (isAutomaticUpdateCheck)
                 {
                     if (_messageBoxService.ShowQuestion(Application.Current.MainWindow,
@@ -153,11 +156,6 @@ namespace AnnoDesigner.ViewModels
                     {
                         ExecuteDownloadPresets(null);
                     }
-                }
-                else
-                {
-                    IsPresetUpdateAvailable = true;
-                    FoundPresetRelease = foundRelease;
                 }
             }
         }
