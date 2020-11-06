@@ -113,13 +113,13 @@ namespace AnnoDesigner.ViewModels
 
         private async Task CheckForNewAppVersionAsync(bool isAutomaticUpdateCheck)
         {
-            var dowloadedContent = "0.1";
+            var downloadedContent = "0.1";
             using (var webClient = new WebClient())
             {
-                dowloadedContent = await webClient.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/AnnoDesigner/anno-designer/master/version.txt"));
+                downloadedContent = await webClient.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/AnnoDesigner/anno-designer/master/version.txt"));
             }
 
-            if (double.Parse(dowloadedContent, CultureInfo.InvariantCulture) > Constants.Version)
+            if (Version.TryParse(downloadedContent, out var parsedVersion) && parsedVersion > Constants.Version)
             {
                 IsUpdateAvailable = true;
                 _messageBoxService.ShowMessage(Application.Current.MainWindow,

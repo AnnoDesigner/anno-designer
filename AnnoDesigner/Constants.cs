@@ -11,8 +11,8 @@ namespace AnnoDesigner
         /// <summary>
         /// Version number of the application.
         /// Will be increased with each release.
-        /// </summary>
-        public const double Version = 8.81;
+        /// </summary>        
+        public static readonly Version Version = new Version(8, 81);
 
         /// <summary>
         /// The minimal grid size to which the user can zoom out.

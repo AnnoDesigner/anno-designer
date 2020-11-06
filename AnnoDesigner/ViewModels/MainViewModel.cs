@@ -186,7 +186,7 @@ namespace AnnoDesigner.ViewModels
             MainWindowTitle = "Anno Designer";
             PresetsSectionHeader = "Building presets - not loaded";
 
-            PreferencesUpdateViewModel.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
+            PreferencesUpdateViewModel.VersionValue = Constants.Version.ToString();
             PreferencesUpdateViewModel.FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
 
             RecentFilesHelper_Updated(this, EventArgs.Empty);
