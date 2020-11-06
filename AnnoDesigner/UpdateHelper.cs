@@ -296,6 +296,19 @@ namespace AnnoDesigner
             }
         }
 
+        public async Task<bool> IsNewAppVersionAvailableAsync()
+        {
+            var downloadedContent = "0.1";
+            using (var webClient = new WebClient())
+            {
+                downloadedContent = await webClient.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/AnnoDesigner/anno-designer/master/version.txt"));
+            }
+
+            var isNewVersionAvailable = Version.TryParse(downloadedContent, out var parsedVersion) && parsedVersion > Constants.Version;
+
+            return isNewVersionAvailable;
+        }
+
         #endregion
 
         private async Task<IReadOnlyList<Release>> GetAllAvailableReleases()

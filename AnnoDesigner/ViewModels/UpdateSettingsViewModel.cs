@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -67,7 +65,7 @@ namespace AnnoDesigner.ViewModels
                 BusyContent = _localizationHelper.GetLocalization("UpdatePreferencesBusyCheckUpdates");
                 IsBusy = true;
 
-                await CheckForNewAppVersionAsync(isAutomaticUpdateCheck);
+                await CheckForNewAppVersionAsync();
 
                 await CheckForPresetsAsync(isAutomaticUpdateCheck);
 
@@ -111,15 +109,9 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
-        private async Task CheckForNewAppVersionAsync(bool isAutomaticUpdateCheck)
+        private async Task CheckForNewAppVersionAsync()
         {
-            var downloadedContent = "0.1";
-            using (var webClient = new WebClient())
-            {
-                downloadedContent = await webClient.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/AnnoDesigner/anno-designer/master/version.txt"));
-            }
-
-            if (Version.TryParse(downloadedContent, out var parsedVersion) && parsedVersion > Constants.Version)
+            if (await _updateHelper.IsNewAppVersionAvailableAsync())
             {
                 IsUpdateAvailable = true;
                 _messageBoxService.ShowMessage(Application.Current.MainWindow,
