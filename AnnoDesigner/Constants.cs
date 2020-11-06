@@ -11,7 +11,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Version number of the application.
         /// Will be increased with each release.
-        /// </summary>        
+        /// </summary>
         public static readonly Version Version = new Version(8, 81);
 
         /// <summary>
