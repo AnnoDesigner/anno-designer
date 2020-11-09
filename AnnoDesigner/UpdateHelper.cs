@@ -306,6 +306,8 @@ namespace AnnoDesigner
 
             var isNewVersionAvailable = Version.TryParse(downloadedContent, out var parsedVersion) && parsedVersion > Constants.Version;
 
+            logger.Info($"Found new App version: {isNewVersionAvailable} ({Constants.Version} -> {parsedVersion})");
+
             return isNewVersionAvailable;
         }
 
