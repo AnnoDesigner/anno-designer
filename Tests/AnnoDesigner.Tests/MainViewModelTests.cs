@@ -132,7 +132,7 @@ namespace AnnoDesigner.Tests
             Assert.NotNull(viewModel.MainWindowTitle);
             Assert.NotNull(viewModel.PresetsSectionHeader);
 
-            Assert.Equal(Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture), viewModel.PreferencesUpdateViewModel.VersionValue);
+            Assert.Equal(Constants.Version.ToString(), viewModel.PreferencesUpdateViewModel.VersionValue);
             Assert.Equal(CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture), viewModel.PreferencesUpdateViewModel.FileVersionValue);
         }
 

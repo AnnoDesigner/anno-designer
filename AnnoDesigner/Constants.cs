@@ -12,7 +12,10 @@ namespace AnnoDesigner
         /// Version number of the application.
         /// Will be increased with each release.
         /// </summary>
-        public const double Version = 8.81;
+        /// <remarks>To support old(er) versions of the app, there should be an agreement to just use major.minor for the version and just increment the minor value.
+        /// At least for some time.
+        /// This limits the possible versions to 255.255.</remarks>
+        public static readonly Version Version = new Version(8, 81);
 
         /// <summary>
         /// The minimal grid size to which the user can zoom out.

@@ -13,5 +13,7 @@ namespace AnnoDesigner.Models
         Task<string> DownloadReleaseAsync(AvailableRelease releaseToDownload);
 
         Task ReplaceUpdatedPresetsFilesAsync();
+
+        Task<bool> IsNewAppVersionAvailableAsync();
     }
 }
