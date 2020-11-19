@@ -39,7 +39,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void WholeArray()
+        public void MergeItems_WholeArray_OneBigObject()
         {
             // Arrange
             var cells = ParseGrid(
@@ -58,7 +58,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void Chestboard()
+        public void MergeItems_ChestboardWithoutSingleCellMerge_NothingFound()
         {
             // Arrange
             var cells = ParseGrid(
@@ -75,7 +75,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void Chestboard_WithSingleCells()
+        public void MergeItems_ChestboardWithSingleCells_LotOfSmallObjects()
         {
             // Arrange
             var cells = ParseGrid(
@@ -93,7 +93,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void Pyramid()
+        public void MergeItems_Pyramid()
         {
             // Arrange
             var cells = ParseGrid(
@@ -114,7 +114,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void Corners()
+        public void MergeItems_Corners_FirstMatchReturnedFirst()
         {
             // Arrange
             var cells = ParseGrid(
@@ -144,7 +144,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void Random_WithSpacesBetween()
+        public void MergeItems_RandomWithSpacesBetween_ReturnsMatchesFromLargestAreaFirst()
         {
             // Arrange
             var cells = ParseGrid(
@@ -168,7 +168,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void Random_WithoutSpacesBetween()
+        public void MergeItems_RandomWithoutSpacesBetween_ItemsAreNotUsedMultipleTimes()
         {
             // Arrange
             var cells = ParseGrid(
@@ -194,7 +194,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void GroupedItemsAreSet()
+        public void MergeItems_MultipleSameReferences_ReferenceIsUsedOnlyOnce()
         {
             // Arrange
             var item1 = new Item() { Value = 1 }; // X

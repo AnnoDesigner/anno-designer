@@ -950,40 +950,48 @@ namespace AnnoDesigner.ViewModels
 
         /// <summary>
         /// Filters all roads in current layout, finds largest groups of them and replaces them with merged variants.
+        /// Respects road color during merging.
         /// </summary>
         private void MergeRoads(object param)
         {
-            var minX = AnnoCanvas.PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Min(p => (int)p.Position.X);
-            var maxX = AnnoCanvas.PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Max(p => (int)(p.Position.X + p.Size.Width));
-            var minY = AnnoCanvas.PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Min(p => (int)p.Position.Y);
-            var maxY = AnnoCanvas.PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Max(p => (int)(p.Position.Y + p.Size.Height));
-            var cells = Enumerable.Range(0, maxX - minX).Select(i => new LayoutObject[maxY - minY]).ToArray();
-            foreach (var item in AnnoCanvas.PlacedObjects.Where(p => p.WrappedAnnoObject.Road))
-                for (var i = 0; i < item.Size.Width; i++)
-                    for (var j = 0; j < item.Size.Height; j++)
-                        cells[(int)(item.Position.X + i - minX)][(int)(item.Position.Y + j - minY)] = item;
+            var roadColorGroups = AnnoCanvas.PlacedObjects.Where(p => p.WrappedAnnoObject.Road).GroupBy(p => (p.WrappedAnnoObject.Borderless, p.Color));
+            foreach (var roadColorGroup in roadColorGroups)
+            {
+                var bounds = (Rect) new StatisticsCalculationHelper().CalculateStatistics(roadColorGroup.Select(p => p.WrappedAnnoObject));
 
-            var offset = new Vector(minX, minY);
-            var groups = new AdjacentCellGrouper().GroupAdjacentCells(cells, true);
-            AnnoCanvas.PlacedObjects.AddRange(groups
-                .Select(g =>
+                var cells = Enumerable.Range(0, (int)bounds.Width).Select(i => new LayoutObject[(int)bounds.Height]).ToArray();
+                foreach (var item in roadColorGroup)
                 {
-                    foreach (var item in g.Items)
+                    for (var i = 0; i < item.Size.Width; i++)
                     {
-                        AnnoCanvas.PlacedObjects.Remove(item, item.GridRect);
-                    }
-
-                    return new LayoutObject(
-                        new AnnoObject(g.Items.First().WrappedAnnoObject)
+                        for (var j = 0; j < item.Size.Height; j++)
                         {
-                            Position = g.Bounds.TopLeft + offset,
-                            Size = g.Bounds.Size
-                        },
-                        _coordinateHelper,
-                        _brushCache,
-                        _penCache);
-                })
-                .Select(o => (o, o.GridRect)));
+                            cells[(int)(item.Position.X + i - bounds.Left)][(int)(item.Position.Y + j - bounds.Top)] = item;
+                        }
+                    }
+                }
+
+                var groups = new AdjacentCellGrouper().GroupAdjacentCells(cells, true);
+                AnnoCanvas.PlacedObjects.AddRange(groups
+                    .Select(g =>
+                    {
+                        foreach (var item in g.Items)
+                        {
+                            AnnoCanvas.PlacedObjects.Remove(item, item.GridRect);
+                        }
+
+                        return new LayoutObject(
+                            new AnnoObject(g.Items.First().WrappedAnnoObject)
+                            {
+                                Position = g.Bounds.TopLeft + (Vector)bounds.TopLeft,
+                                Size = g.Bounds.Size
+                            },
+                            _coordinateHelper,
+                            _brushCache,
+                            _penCache);
+                    })
+                    .Select(o => (o, o.GridRect)));
+            }
         }
 
         public ICommand LoadLayoutFromJsonCommand { get; private set; }
