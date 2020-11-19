@@ -135,6 +135,7 @@ namespace AnnoDesigner.ViewModels
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
             CanvasResetZoomCommand = new RelayCommand(CanvasResetZoom);
             CanvasNormalizeCommand = new RelayCommand(CanvasNormalize);
+            MergeRoadsCommand = new RelayCommand(MergeRoads);
             LoadLayoutFromJsonCommand = new RelayCommand(ExecuteLoadLayoutFromJson);
             UnregisterExtensionCommand = new RelayCommand(UnregisterExtension);
             RegisterExtensionCommand = new RelayCommand(RegisterExtension);
@@ -943,6 +944,13 @@ namespace AnnoDesigner.ViewModels
         private void CanvasNormalize(object param)
         {
             AnnoCanvas.Normalize(1);
+        }
+
+        public ICommand MergeRoadsCommand { get; private set; }
+
+        private void MergeRoads(object param)
+        {
+            AnnoCanvas.MergeRoads();
         }
 
         public ICommand LoadLayoutFromJsonCommand { get; private set; }

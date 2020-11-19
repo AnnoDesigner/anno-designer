@@ -94,6 +94,7 @@ namespace AnnoDesigner.Tests
             Assert.NotNull(viewModel.CloseWindowCommand);
             Assert.NotNull(viewModel.CanvasResetZoomCommand);
             Assert.NotNull(viewModel.CanvasNormalizeCommand);
+            Assert.NotNull(viewModel.MergeRoadsCommand);
             Assert.NotNull(viewModel.LoadLayoutFromJsonCommand);
             Assert.NotNull(viewModel.UnregisterExtensionCommand);
             Assert.NotNull(viewModel.RegisterExtensionCommand);

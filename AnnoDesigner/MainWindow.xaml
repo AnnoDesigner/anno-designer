@@ -167,6 +167,8 @@
                               Command="{Binding CanvasNormalizeCommand}" />
                     <MenuItem Header="{l:Localize ResetZoom}"
                               Command="{Binding CanvasResetZoomCommand}" />
+                    <MenuItem Header="{l:Localize MergeRoads}"
+                              Command="{Binding MergeRoadsCommand}" />
                     <Separator />
                     <MenuItem Header="{l:Localize RegisterFileExtension}"
                               Command="{Binding RegisterExtensionCommand}" />
