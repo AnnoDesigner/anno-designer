@@ -2259,44 +2259,6 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Filters all roads in current layout, finds largest groups of them and replaces them with merged variants.
-        /// </summary>
-        public void MergeRoads()
-        {
-            var minX = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Min(p => (int)p.Position.X);
-            var maxX = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Max(p => (int)(p.Position.X + p.Size.Width));
-            var minY = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Min(p => (int)p.Position.Y);
-            var maxY = PlacedObjects.Where(p => p.WrappedAnnoObject.Road).Max(p => (int)(p.Position.Y + p.Size.Height));
-            var cells = Enumerable.Range(0, maxX - minX).Select(i => new LayoutObject[maxY - minY]).ToArray();
-            foreach (var item in PlacedObjects.Where(p => p.WrappedAnnoObject.Road))
-                for (var i = 0; i < item.Size.Width; i++)
-                    for (var j = 0; j < item.Size.Height; j++)
-                        cells[(int)(item.Position.X + i - minX)][(int)(item.Position.Y + j - minY)] = item;
-
-            var offset = new Vector(minX, minY);
-            var groups = new AdjacentCellGrouper().GroupAdjacentCells(cells, true);
-            PlacedObjects.AddRange(groups
-                .Select(g =>
-                {
-                    foreach (var item in g.Items)
-                    {
-                        PlacedObjects.Remove(item, item.GridRect);
-                    }
-
-                    return new LayoutObject(
-                        new AnnoObject(g.Items.First().WrappedAnnoObject)
-                        {
-                            Position = g.Bounds.TopLeft + offset,
-                            Size = g.Bounds.Size
-                        },
-                        _coordinateHelper,
-                        _brushCache,
-                        _penCache);
-                })
-                .Select(o => (o, o.GridRect)));
-        }
-
-        /// <summary>
         /// Registers hotkeys with the <see cref="HotkeyCommandManager"/>.
         /// </summary>
         /// <param name="manager"></param>

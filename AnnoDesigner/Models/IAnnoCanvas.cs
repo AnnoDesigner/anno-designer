@@ -38,7 +38,6 @@ namespace AnnoDesigner.Models
         void ResetZoom();
         void Normalize();
         void Normalize(int border);
-        void MergeRoads();
         void OpenFile(string filename, bool forceLoad = false);
     }
 }
