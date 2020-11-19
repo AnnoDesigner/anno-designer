@@ -125,7 +125,7 @@ namespace AnnoDesigner.Helper
             var stack = new Stack<int>(column.Length);
             var y = 0;
 
-            /*void CalculateAreaAndUpdate()
+            void CalculateAreaAndUpdate()
             {
                 var peak = stack.Pop();
 
@@ -138,7 +138,7 @@ namespace AnnoDesigner.Helper
                     maxWidth = width;
                     maxHeight = height;
                 }
-            }*/
+            }
 
             while (y < column.Length)
             {
@@ -148,33 +148,13 @@ namespace AnnoDesigner.Helper
                 }
                 else
                 {
-                    var peak = stack.Pop();
-
-                    var width = column[peak];
-                    var height = stack.Count > 0 ? y - stack.Peek() - 1 : y;
-
-                    if (maxWidth * maxHeight < width * height)
-                    {
-                        maxY = y - height;
-                        maxWidth = width;
-                        maxHeight = height;
-                    }
+                    CalculateAreaAndUpdate();
                 }
             }
 
             while (stack.Count > 0)
             {
-                var peak = stack.Pop();
-
-                var width = column[peak];
-                var height = stack.Count > 0 ? y - stack.Peek() - 1 : y;
-
-                if (maxWidth * maxHeight < width * height)
-                {
-                    maxY = y - height;
-                    maxWidth = width;
-                    maxHeight = height;
-                }
+                CalculateAreaAndUpdate();
             }
 
             return (maxY, maxWidth, maxHeight);
