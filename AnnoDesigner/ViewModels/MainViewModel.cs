@@ -44,6 +44,7 @@ namespace AnnoDesigner.ViewModels
         private readonly ICoordinateHelper _coordinateHelper;
         private readonly IBrushCache _brushCache;
         private readonly IPenCache _penCache;
+        private readonly IAdjacentCellGrouper _adjacentCellGrouper;
         private readonly IRecentFilesHelper _recentFilesHelper;
         private readonly IMessageBoxService _messageBoxService;
         private readonly IUpdateHelper _updateHelper;
@@ -92,7 +93,8 @@ namespace AnnoDesigner.ViewModels
             ILayoutLoader layoutLoaderToUse = null,
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
-            IPenCache penCacheToUse = null)
+            IPenCache penCacheToUse = null,
+            IAdjacentCellGrouper adjacentCellGrouper = null)
         {
             _commons = commonsToUse;
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
@@ -108,6 +110,7 @@ namespace AnnoDesigner.ViewModels
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
+            _adjacentCellGrouper = adjacentCellGrouper ?? new AdjacentCellGrouper();
 
             HotkeyCommandManager = new HotkeyCommandManager(_localizationHelper);
 
@@ -952,11 +955,13 @@ namespace AnnoDesigner.ViewModels
         /// Filters all roads in current layout, finds largest groups of them and replaces them with merged variants.
         /// Respects road color during merging.
         /// </summary>
-        private void MergeRoads(object param)
+        public void MergeRoads(object param)
         {
             var roadColorGroups = AnnoCanvas.PlacedObjects.Where(p => p.WrappedAnnoObject.Road).GroupBy(p => (p.WrappedAnnoObject.Borderless, p.Color));
             foreach (var roadColorGroup in roadColorGroups)
             {
+                if (roadColorGroup.Count() <= 1) continue;
+
                 var bounds = (Rect) new StatisticsCalculationHelper().CalculateStatistics(roadColorGroup.Select(p => p.WrappedAnnoObject));
 
                 var cells = Enumerable.Range(0, (int)bounds.Width).Select(i => new LayoutObject[(int)bounds.Height]).ToArray();
@@ -971,7 +976,7 @@ namespace AnnoDesigner.ViewModels
                     }
                 }
 
-                var groups = new AdjacentCellGrouper().GroupAdjacentCells(cells, true);
+                var groups = _adjacentCellGrouper.GroupAdjacentCells(cells, true);
                 AnnoCanvas.PlacedObjects.AddRange(groups
                     .Select(g =>
                     {

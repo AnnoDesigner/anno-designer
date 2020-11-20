@@ -58,7 +58,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void MergeItems_ChestboardWithoutSingleCellMerge_NothingFound()
+        public void MergeItems_ChessboardWithoutSingleCellMerge_NothingFound()
         {
             // Arrange
             var cells = ParseGrid(
@@ -75,7 +75,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void MergeItems_ChestboardWithSingleCells_LotOfSmallObjects()
+        public void MergeItems_ChessboardWithSingleCells_LotOfSmallObjects()
         {
             // Arrange
             var cells = ParseGrid(

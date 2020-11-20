@@ -1,24 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using AnnoDesigner.Models;
 
 namespace AnnoDesigner.Helper
 {
-    public class AdjacentCellGrouper
+    public class AdjacentCellGrouper : IAdjacentCellGrouper
     {
-        public class CellGroup<T>
-        {
-            public Rect Bounds { get; set; }
-            public ISet<T> Items { get; set; }
-
-            public CellGroup(Rect bounds, ISet<T> items)
-            {
-                Bounds = bounds;
-                Items = items;
-            }
-        }
-
         /// <summary>
         /// Searches input 2D generic array for clusters of adjacent cells.
         /// Cells with non-default value are considered to be occupied.
