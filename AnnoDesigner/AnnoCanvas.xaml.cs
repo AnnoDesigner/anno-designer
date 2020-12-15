@@ -1298,7 +1298,7 @@ namespace AnnoDesigner
             var smoothJoin = true;
 
             var geometryFill = true;
-            var geometryStroke = true;
+            var geometryClosed = true;
 
             var startObjects = new AnnoObject[1]
             {
@@ -1311,16 +1311,18 @@ namespace AnnoDesigner
                 o => (int)o.InfluenceRange,
                 gridDictionary);
 
-            var points = PolygonBoundaryFinderHelper.GetBoundaryPoints(cellsInInfluenceRange);
-            if (points.Count < 1)
+            foreach (var points in PolygonBoundaryFinderHelper.GetBoundaryPointsWithHoles(cellsInInfluenceRange))
             {
-                return;
-            }
+                if (points.Count < 1)
+                {
+                    continue;
+                }
 
-            sgc.BeginFigure(_coordinateHelper.GridToScreen(new Point(points[0].x, points[0].y), GridSize), geometryFill, geometryStroke);
-            for (var i = 1; i < points.Count; i++)
-            {
-                sgc.LineTo(_coordinateHelper.GridToScreen(new Point(points[i].x, points[i].y), GridSize), stroked, smoothJoin);
+                sgc.BeginFigure(_coordinateHelper.GridToScreen(new Point(points[0].x, points[0].y), GridSize), geometryFill, geometryClosed);
+                for (var i = 1; i < points.Count; i++)
+                {
+                    sgc.LineTo(_coordinateHelper.GridToScreen(new Point(points[i].x, points[i].y), GridSize), stroked, smoothJoin);
+                }
             }
         }
 
