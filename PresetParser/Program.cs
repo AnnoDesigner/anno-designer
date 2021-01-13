@@ -31,7 +31,7 @@ namespace PresetParser
         public static bool isExcludedGUID = false; /*only for Anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-        private const string BUILDING_PRESETS_VERSION = "3.7";
+        private const string BUILDING_PRESETS_VERSION = "3.8";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -1209,7 +1209,7 @@ namespace PresetParser
                 case "PalaceMinistry": { templateName = "PalaceBuilding"; factionName = "All Worlds"; groupName = "Special Buildings"; break; }
                 case "1010516": { templateName = "ArcticLodge"; factionName = "(11) Technicians"; groupName = "Special Buildings"; break; }
                 case "1010517": { templateName = "SkyTradingPost"; factionName = "(11) Technicians"; groupName = "Special Buildings"; break; }
-                case "FactoryBuilding7_BuildPermit": { factionName = "(13) Scholars"; groupName = "Permitted Buildings"; break;  }
+                case "FactoryBuilding7_BuildPermit": { factionName = "(13) Scholars"; groupName = "Permitted Buildings"; break; }
                 default: { groupName = templateName.FirstCharToUpper(); break; }
             }
 
@@ -1243,7 +1243,7 @@ namespace PresetParser
                 case "Coastal_03 (Quartz Sand Coast Building)": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
                 case "Electricity_03 (Gas Power Plant)": { factionName = "(11) Technicians"; groupName = "Public Buildings"; break; }
                 case "Event_ornament_historyedition": { factionName = "Ornaments"; groupName = "11 Special Ornaments"; break; }
-                case "Harbor_arctic_01 (Depot)": { factionName = "Harbor"; groupName = "Depots";break; }
+                case "Harbor_arctic_01 (Depot)": { factionName = "Harbor"; groupName = "Depots"; break; }
             }
 
             // Place the rest of the buildings in the right Faction > Group menu
@@ -1256,7 +1256,7 @@ namespace PresetParser
 
             #endregion
 
-            if (factionName?.Length == 0 || factionName == "Moderate" || factionName == "Colony01" || factionName == "Arctic" || factionName == "Africa" )
+            if (factionName?.Length == 0 || factionName == "Moderate" || factionName == "Colony01" || factionName == "Arctic" || factionName == "Africa")
             {
                 factionName = "Not Placed Yet -" + factionName;
                 // Because the Culture_03 (BotanicalGarden) is in the xPath that i normaly skipp, i must skipp this group here now.
@@ -1275,11 +1275,20 @@ namespace PresetParser
             groupName = groupInfo.Group;
             templateName = groupInfo.Template;
 
+            //Set right group to the City Lights DLC (just need a Faction and Group change by starting identifiername) (10-01-2021)
+            if (templateName == "OrnamentalBuilding" && factionName == "Not Placed Yet -Moderate") { 
+                if (identifierName.Contains("CityOrnament "))
+                {
+                    factionName = "Ornaments"; groupName = "20 City Lights";
+                }
+            }
+
             //set right Group on the ornamentals of Enbesa (just need a Faction and Group change)
             if (templateName == "OrnamentalBuilding" && factionName == "Not Placed Yet -Africa")
             {
                 factionName = "Ornaments"; groupName = "21 Enbesa Ornaments";
             }
+
             //Set the right Colors to the Enbesa Ornament Group
             groupInfo = MapToTemplateName1800.GetNewOrnamentsGroup1800(identifierName, factionName, groupName, templateName);
             factionName = groupInfo.Faction;
@@ -1494,6 +1503,10 @@ namespace PresetParser
             if (b.Template == "CityInstitutionBuilding")
             {
                 b.InfluenceRange = 26; //Police - Fire stations and Hospiitals
+                if (b.Identifier== "Institution_arctic_01 (Ranger Station)")
+                {
+                    b.InfluenceRange = 50; //fix Ranger Station InfluencRange as this is separated from mormal ones (10-01-2021) 
+                }
             }
             else if (!string.IsNullOrEmpty(values?["PublicService"]?["FullSatisfactionDistance"]?.InnerText))
             {
@@ -1745,7 +1758,7 @@ namespace PresetParser
             if (b.Header == "(A7) Anno 1800" && b.Faction == "All Worlds" && b.Group == "CultureModule") { return; }
 
             // Remove the Not Placed Buildings
-            /// commentout the line below if you make a new preset after update of the game 'ANNO 1800', or when a new 'ANNO 1800 DLC' is released 
+            /// comment out the line below if you make a new preset after update of the game 'ANNO 1800', or when a new 'ANNO 1800 DLC' is released 
             if (b.Faction == "Not Placed Yet -Moderate" || b.Faction == "Not Placed Yet -Arctic" || b.Faction == "Not Placed Yet -Africa" || b.Faction == "Not Placed Yet -Colony01" || b.Faction == "Not Placed Yet -All Worlds") { return; }
 
             // add building to the list

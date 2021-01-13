@@ -129,7 +129,12 @@ namespace PresetParser
                     Console.WriteLine("-'X' and 'Z' are both 0 - Building will skipped!");
                     return false;
                 }
-
+                //correcting measurement of anno 2205 building: Cybernetics Factory (file say 6x7, in game it is 6x8) (10-01-2021)
+                if (variationFilenameWithoutExtension == "production_biotech_moon_facility_02")
+                {
+                    x = 6;
+                    z = 8; 
+                }
                 if (x > 0)
                 {
                     //Console.WriteLine("{0}", Path.GetFileNameWithoutExtension(variationFilename));
