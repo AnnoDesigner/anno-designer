@@ -2,7 +2,7 @@
 const string xunitRunnerVersion = "2.4.1";
 #tool nuget:?package=xunit.runner.console&version=2.4.1
 #tool nuget:?package=OpenCover&version=4.7.922
-#tool nuget:?package=ReportGenerator&version=4.6.1
+#tool nuget:?package=ReportGenerator&version=4.7.1
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -125,16 +125,27 @@ var updateAssemblyInfoTask = Task("Update-Assembly-Info")
                         "(?<=AssemblyFileVersion\\(\")(.+?)(?=\"\\))",
                         $"{versionNumber}.0.0");
 
+    ReplaceRegexInFiles("./../AnnoDesigner.Core/Properties/AssemblyInfo.cs",
+                        "(?<=AssemblyVersion\\(\")(.+?)(?=\"\\))",
+                        $"{versionNumber}.0.0");
+    ReplaceRegexInFiles("./../AnnoDesigner.Core/Properties/AssemblyInfo.cs",
+                        "(?<=AssemblyFileVersion\\(\")(.+?)(?=\"\\))",
+                        $"{versionNumber}.0.0");
+
     ReplaceRegexInFiles("./../PresetParser/Properties/AssemblyInfo.cs",
                         "(?<=AssemblyVersion\\(\")(.+?)(?=\"\\))",
                         $"{versionNumber}.0.0");
     ReplaceRegexInFiles("./../PresetParser/Properties/AssemblyInfo.cs",
                         "(?<=AssemblyFileVersion\\(\")(.+?)(?=\"\\))",
                         $"{versionNumber}.0.0");
-    
+
     ReplaceRegexInFiles("./../AnnoDesigner/Constants.cs",
-                        "(?<=double Version = )(\\d.\\d)",
+                        "(?<= new Version\\()(.+?)(?=\\);)",
                         $"{versionNumber}");
+    //Replace dot (.) with comma (,)
+    ReplaceRegexInFiles("./../AnnoDesigner/Constants.cs",
+                        "(?<=new Version\\([1-9]{1})([.])(?=[0-9]+\\);)",
+                        ", ");
 });
 
 var buildTask = Task("Build")
