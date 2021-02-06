@@ -469,6 +469,12 @@
                                      Text="{Binding BuildingSettingsViewModel.BuildingIdentifier}"
                                      Visibility="Collapsed"
                                      Width="140" />
+                            <TextBox DockPanel.Dock="Right"
+                                     Height="10"
+                                     IsEnabled="False"
+                                     Text="{Binding BuildingSettingsViewModel.BuildingRealName}"
+                                     Visibility="Collapsed"
+                                     Width="140" />
                         </DockPanel>
                         <DockPanel LastChildFill="False"
                                    Height="46">

@@ -26,6 +26,7 @@ namespace AnnoDesigner.ViewModels
         private int _buildingWidth;
         private string _buildingTemplate;
         private string _buildingName;
+        private string _buildingRealName;
         private string _buildingIdentifier;
         private double _buildingRadius;
         private double _buildingInfluenceRange;
@@ -126,6 +127,12 @@ namespace AnnoDesigner.ViewModels
         {
             get { return _buildingName; }
             set { UpdateProperty(ref _buildingName, value); }
+        }
+
+        public string BuildingRealName
+        {
+            get { return _buildingRealName; }
+            set { UpdateProperty(ref _buildingRealName, value); }
         }
 
         public string BuildingIdentifier

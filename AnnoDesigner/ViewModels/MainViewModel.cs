@@ -321,6 +321,7 @@ namespace AnnoDesigner.ViewModels
         private void ApplyCurrentObject()
         {
             // parse user inputs and create new object
+            string RenameBuildingIdentifier = BuildingSettingsViewModel.BuildingName;
             var obj = new AnnoObject
             {
                 Size = new Size(BuildingSettingsViewModel.BuildingWidth, BuildingSettingsViewModel.BuildingHeight),
@@ -366,20 +367,36 @@ namespace AnnoDesigner.ViewModels
                             || (obj.Size.Height == buildingInfo.BuildBlocker["x"] && obj.Size.Width == buildingInfo.BuildBlocker["z"]))
                         {
                             //if sizes match and icon is a existing building in the presets, call it that object
-                            if (obj.Identifier != "Residence_New_World")
+                            //Exception are all other Residences of Anno 1800, that change back to Farmer Resident names
+                            if (obj.Identifier != "Residence_New_World" && obj.Identifier != "Residence_Arctic_World" && obj.Identifier != "Residence_Africa_World")
                             {
                                 obj.Identifier = buildingInfo.Identifier;
+                                if (BuildingSettingsViewModel.BuildingRealName != RenameBuildingIdentifier)
+                                {
+                                    obj.Identifier = RenameBuildingIdentifier;
+                                    obj.Template = RenameBuildingIdentifier;
+                                }
+                            }
+                            //If one of the other world residents then the OW Residents in Anno 1800 are renamed to other tiers names rename them. 
+                            if ((obj.Identifier == "Residence_New_World" || obj.Identifier == "Residence_Arctic_World" || obj.Identifier == "Residence_Africa_World") && BuildingSettingsViewModel.BuildingRealName != RenameBuildingIdentifier)
+                            {
+                                obj.Identifier = RenameBuildingIdentifier;
+                                obj.Template = RenameBuildingIdentifier;
                             }
                         }
                         else
                         {
                             //Sizes and icon do not match
-                            obj.Identifier = "Unknown Object";
+                            //obj.Identifier = "Unknown Object";
+                            obj.Identifier = RenameBuildingIdentifier;
+                            obj.Template = RenameBuildingIdentifier;
                         }
                     }
                     else if (!BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase)) //check if the icon is removed from a template field
                     {
-                        obj.Identifier = "Unknown Object";
+                        //obj.Identifier = "Unknown Object";
+                        obj.Identifier = RenameBuildingIdentifier;
+                        obj.Template = RenameBuildingIdentifier;
                     }
                 }
                 else if (!string.IsNullOrWhiteSpace(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck))
@@ -403,12 +420,16 @@ namespace AnnoDesigner.ViewModels
                     }
                     else
                     {
-                        obj.Identifier = "Unknown Object";
+                        //obj.Identifier = "Unknown Object";
+                        obj.Identifier = RenameBuildingIdentifier;
+                        obj.Template = RenameBuildingIdentifier;
                     }
                 }
                 if (string.IsNullOrEmpty(obj.Icon) && !BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase))
                 {
-                    obj.Identifier = "Unknown Object";
+                    //obj.Identifier = "Unknown Object";
+                    obj.Identifier = RenameBuildingIdentifier;
+                    obj.Template = RenameBuildingIdentifier;
                 }
 
                 AnnoCanvas.SetCurrentObject(new LayoutObject(obj, _coordinateHelper, _brushCache, _penCache));
@@ -438,6 +459,7 @@ namespace AnnoDesigner.ViewModels
             BuildingSettingsViewModel.SelectedColor = layoutObject.Color;
             // label
             BuildingSettingsViewModel.BuildingName = obj.Label;
+            BuildingSettingsViewModel.BuildingRealName = obj.Label;
             // Identifier
             BuildingSettingsViewModel.BuildingIdentifier = layoutObject.Identifier;
             // Template
