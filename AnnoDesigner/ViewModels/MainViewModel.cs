@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core;
@@ -322,6 +323,7 @@ namespace AnnoDesigner.ViewModels
         {
             // parse user inputs and create new object
             string RenameBuildingIdentifier = BuildingSettingsViewModel.BuildingName;
+            string TextBoxText = "TextBox";
             var obj = new AnnoObject
             {
                 Size = new Size(BuildingSettingsViewModel.BuildingWidth, BuildingSettingsViewModel.BuildingHeight),
@@ -373,8 +375,23 @@ namespace AnnoDesigner.ViewModels
                                 obj.Identifier = buildingInfo.Identifier;
                                 if (BuildingSettingsViewModel.BuildingRealName != RenameBuildingIdentifier)
                                 {
-                                    obj.Identifier = RenameBuildingIdentifier;
-                                    obj.Template = RenameBuildingIdentifier;
+                                    if (BuildingSettingsViewModel.IsEnableLabelChecked)
+                                    {
+                                        if (RenameBuildingIdentifier.Length > 30)
+                                        {
+                                            obj.Identifier = TextBoxText;
+                                            obj.Template = TextBoxText;
+                                        }
+                                        else
+                                        {
+                                            //Keep label, tempate and identifiername
+                                        }
+                                    }
+                                    else
+                                    {
+                                        obj.Identifier = RenameBuildingIdentifier;
+                                        obj.Template = RenameBuildingIdentifier;
+                                    }
                                 }
                             }
                             //If one of the other world residents then the OW Residents in Anno 1800 are renamed to other tiers names rename them. 
@@ -427,9 +444,25 @@ namespace AnnoDesigner.ViewModels
                 }
                 if (string.IsNullOrEmpty(obj.Icon) && !BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase))
                 {
-                    //obj.Identifier = "Unknown Object";
-                    obj.Identifier = RenameBuildingIdentifier;
-                    obj.Template = RenameBuildingIdentifier;
+                    if (BuildingSettingsViewModel.IsEnableLabelChecked)
+                    {
+                        if (RenameBuildingIdentifier.Length > 30)
+                        {
+                            obj.Identifier = TextBoxText;
+                            obj.Template = TextBoxText;
+                        }
+                        else
+                        {
+                            obj.Identifier = RenameBuildingIdentifier;
+                            obj.Template = RenameBuildingIdentifier;
+                        }
+                    } 
+                    else
+                    {
+                        //obj.Identifier = "Unknown Object";
+                        obj.Identifier = RenameBuildingIdentifier;
+                        obj.Template = RenameBuildingIdentifier;
+                    }
                 }
 
                 AnnoCanvas.SetCurrentObject(new LayoutObject(obj, _coordinateHelper, _brushCache, _penCache));
