@@ -247,8 +247,8 @@ namespace AnnoDesigner.Localization
                         { "21EnbesaOrnaments", "21 Enbesa-Ornamente" },
                         { "RiverBuildings", "Flussgebäude" },
                         { "PermittedBuildings", "Erlaubte Gebäude" },
-                        { "22DocklandsOrnaments","22 Docklands-Ornamente" },
-                        { "DocklandsModules", "Docklands-Module" }
+                        { "22DocklandsOrnaments","22 Speicherstadt Verzierungen" },
+                        { "DocklandsModules", "Speicherstadt Module" }
                     }
                     },
                  {
