@@ -134,7 +134,9 @@ namespace AnnoDesigner.Localization
                         { "20CityLights", "20 City Lights" },
                         { "21EnbesaOrnaments", "21 Enbesa Ornaments" },
                         { "RiverBuildings", "River Buildings" },
-                        { "PermittedBuildings", "Permitted Buildings" }
+                        { "PermittedBuildings", "Permitted Buildings" },
+                        { "22DocklandsOrnaments", "22 Docklands Ornaments" },
+                        { "DocklandsModules", "Docklands Modules" }
                     }
                     },
                 {
@@ -244,7 +246,9 @@ namespace AnnoDesigner.Localization
                         { "20CityLights", "20 Stadtlichter" },
                         { "21EnbesaOrnaments", "21 Enbesa-Ornamente" },
                         { "RiverBuildings", "Flussgebäude" },
-                        { "PermittedBuildings", "Erlaubte Gebäude" }
+                        { "PermittedBuildings", "Erlaubte Gebäude" },
+                        { "22DocklandsOrnaments","22 Docklands-Ornamente" },
+                        { "DocklandsModules", "Docklands-Module" }
                     }
                     },
                  {
@@ -354,7 +358,9 @@ namespace AnnoDesigner.Localization
                         { "20CityLights", "20 Lumières de la ville" },
                         { "21EnbesaOrnaments", "21 Ornements d'Enbesa" },
                         { "RiverBuildings", "Bâtiments fluviaux" },
-                        { "PermittedBuildings", "Bâtiments autorisés" }
+                        { "PermittedBuildings", "Bâtiments autorisés" },
+                        { "22DocklandsOrnaments", "22 Ornements de Docklands" },
+                        { "DocklandsModules", "Modules Docklands" }
                     }
                     },
                 {
@@ -464,7 +470,9 @@ namespace AnnoDesigner.Localization
                         { "20CityLights", "20 Światła miejskie" },
                         { "21EnbesaOrnaments", "21 Ornamenty Enbesa" },
                         { "RiverBuildings", "Budynki nadrzeczne" },
-                        { "PermittedBuildings", "Dozwolone budynki" }
+                        { "PermittedBuildings", "Dozwolone budynki" },
+                        { "22DocklandsOrnaments", "22 Ornamenty Docklands" },
+                        { "DocklandsModules", "Moduły Docklands" }
                     }
                     },
                 {
@@ -574,7 +582,9 @@ namespace AnnoDesigner.Localization
                         { "20CityLights", "20 Огни города" },
                         { "21EnbesaOrnaments", "21 Энбеза Орнаменты" },
                         { "RiverBuildings", "Речные здания" },
-                        { "PermittedBuildings", "Разрешенные здания" }
+                        { "PermittedBuildings", "Разрешенные здания" },
+                        { "22DocklandsOrnaments", "22 Докленды Украшения" },
+                        { "DocklandsModules", "Модули Доклендов" }
                     }
                     },
             };

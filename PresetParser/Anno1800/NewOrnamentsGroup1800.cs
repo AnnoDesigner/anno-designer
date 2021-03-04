@@ -31,6 +31,7 @@ namespace PresetParser.Anno1800
     ///              AmusementPark
     ///              City Lights
     ///              <reservered>EnbesaOrnaments</reservered>
+    ///              <reservered>DocklandsOrnaments</reservered>
     /// </summary>
     public static class NewOrnamentsGroup1800
     {
@@ -48,11 +49,13 @@ namespace PresetParser.Anno1800
         private static readonly List<string> ChangeOrnamentToCityFences_1800 = new List<string> { "Culture_prop_system_1x1_03", "Culture_prop_system_1x1_04", "Culture_prop_system_1x1_05", "Culture_prop_system_1x1_06", "Culture_prop_system_1x1_07", "Culture_prop_system_1x1_08",
             "Culture_prop_system_1x1_09", "Culture_prop_system_1x1_11", "Culture_prop_system_1x1_12", "Culture_prop_system_1x1_13", "Culture_prop_system_1x1_14", "Culture_1x1_hedgegate", "Culture_1x1_hedgestraight" };
         private static readonly List<string> ChangeOrnamentToCityStatues_1800 = new List<string> { "Park_1x1_statue", "City_prop_system_2x2_03", "Culture_prop_system_1x1_10" };
-        private static readonly List<string> ChangeOrnamentToCityDecorations_1800 = new List<string> { "PropagandaTower Players Version", "PropagandaFlag Players Version", "Botanica Ornament 01", "Botanica Ornament 02", "Botanica Ornament 03", "Culture_1x1_benches", "Culture_1x1_stand" };
+        private static readonly List<string> ChangeOrnamentToCityDecorations_1800 = new List<string> { "PropagandaTower Players Version", "PropagandaFlag Players Version", "Botanica Ornament 01", "Botanica Ornament 02", "Botanica Ornament 03", "Culture_1x1_benches", "Culture_1x1_stand",
+            "Palace Ornament06 Set01 statue", "Palace Ornament01 Set02 promenade" };
         private static readonly List<string> ChangeOrnamentToSpecialOrnaments_1800 = new List<string> { "Event_ornament_halloween_2019", "Event_ornament_christmas_2019", "Event_ornament_onemio", "Twitchdrops_ornament_billboard_annoholic", "Twitchdrops_ornament_billboard_anno_union",
             "Twitchdrops_ornament_billboard_anarchy","Twitchdrops_ornament_billboard_sunken_treasures","Twitchdrops_ornament_botanical_garden","Twitchdrops_ornament_flag_banner_annoholic","Twitchdrops_ornament_flag_banner_anno_union","Twitchdrops_ornament_billboard_the_passage",
             "Twitchdrops_ornament_morris_column_annoholic","Twitchdrops_ornament_flag_seat_of_power","Twitchdrops_ornament_billboard_seat_of_power","Twitchdrops_ornament_flag_bright_harvest","Twitchdrops_ornament_billboard_bright_harvest","Twitchdrops_ornament_flag_land_of_lions",
-            "Twitchdrops_ornament_billboard_land_of_lions","Season 2 - Fountain Elephant","Season 2 - Statue Tractor","Season 2 - Pillar"};
+            "Twitchdrops_ornament_billboard_land_of_lions","Season 2 - Fountain Elephant","Season 2 - Statue Tractor","Season 2 - Pillar", "Season 3 - Kiosk", "Season 3 - Anchor", "Season 3 - Skyscraper", "Twitchdrops_ornament_Flag_Dock", "Twitchdrops_ornament_Lamp_Dock",
+            "Twitchdrops_ornament_Flag_Tourist", "Twitchdrops_ornament_Lamp_Tourist", "Twitchdrops_ornament_Flag_HighL", "Twitchdrops_ornament_Lamp_HighL"};
         private static readonly List<string> ChangeOrnamentToChristmasDecorations_1800 = new List<string> { "Xmas City Tree Small 01", "Xmas City Tree Big 01","Xmas Parksystem Ornament Straight", "Xmas Parksystem Ornament Corner", "Xmas Parksystem Ornament End", "Xmas City Snowman Ornament 01",
             "Xmas City Lightpost Ornament 01","Xmas Citysystem Ornament T","Xmas Citysystem Ornament Straight","Xmas Citysystem Ornament Gap","Xmas Citysystem Ornament Cross","Xmas Citysystem Ornament End","Xmas Citysystem Ornament Corner","Xmas Parksystem Ornament Gap","Xmas Market 1",
             "Xmas Parksystem Ornament Cross","Xmas Parksystem Ornament T","Xmas Lightpost Ornament 02","Xmas Market 2","XMas Market 3","Xmas Carousel","Xmas presents","Xmas Santa Chair"};
@@ -66,9 +69,10 @@ namespace PresetParser.Anno1800
         private static readonly List<string> ChangeOrnamentToIndustrialOrnaments_1800 = new List<string> { "BH Ornament24 Empty Groundplane", "BH Ornament11 Pipes", "BH Ornament12 Barrel Pile", "BH Ornament13 WoddenBoxes", "BH Ornament14 Tanks", "BH Ornament15 Water Tower",
             "BH Ornament17 Shed", "BH Ornament18 Pile Iron Bars", "BH Ornament19 Pile Boxes and Barrels", "BH Ornament20 Heap", "BH Ornament21 Large Boxes", "BH Ornament22 Gangway" };
         private static readonly List<string> ChangeOrnamentToIndustrialFences_1800 = new List<string> { "BH Ornament01 Wall Straight", "BH Ornament01 Wall End", "BH Ornament01 Wall Cross", "BH Ornament01 Wall T-Cross", "BH Ornament01 Wall Corner", "BH Ornament01 Wall Gate",
-            "BH Ornament01 Wall Gate 02", "BH Ornament02 Wall Straight Large", "BH Ornament02 Wall End Large", "BH Ornament02 Wall Cross Large", "BH Ornament02 Wall T-Cross Large", "BH Ornament02 Wall Corner Large", "BH Ornament02 Wall Gate Large" };
+            "BH Ornament01 Wall Gate 02", "BH Ornament02 Wall Straight Large", "BH Ornament02 Wall End Large", "BH Ornament02 Wall Cross Large", "BH Ornament02 Wall T-Cross Large", "BH Ornament02 Wall Corner Large", "BH Ornament02 Wall Gate Large", "BH Ornament02 Wall Large" };
         private static readonly List<string> ChangeOrnamentToAmusementPark_1800 = new List<string> { "AmusementPark FerrisWheel", "AmusementPark RollerCoaster", "AmusementPark PayBooth", "AmusementPark Icecream", "AmusementPark CottonCandy", "AmusementPark TinCanGame", "AmusementPark ShootingGame",
-            "AmusementPark Consumable01", "AmusementPark Consumable02", "AmusementPark Strongman", "AmusementPark PictureWall", "AmusementPark OrganPlayer", "AmusementPark BalloonSeller", "AmusementPark Painter", "AmusementPark GateBig", "AmusementPark BarTable" };
+            "AmusementPark Consumable01", "AmusementPark Consumable02", "AmusementPark Strongman", "AmusementPark PictureWall", "AmusementPark OrganPlayer", "AmusementPark BalloonSeller", "AmusementPark Painter", "AmusementPark GateBig", "AmusementPark BarTable", "AmusementPark DrinkStand",
+            "AmusementPark FoodStand" };
 
         /// <summary>
         /// Retuns the faction and group for an identifier.
