@@ -45,6 +45,7 @@ namespace AnnoDesigner.ViewModels
         private readonly ICoordinateHelper _coordinateHelper;
         private readonly IBrushCache _brushCache;
         private readonly IPenCache _penCache;
+        private readonly IAdjacentCellGrouper _adjacentCellGrouper;
         private readonly IRecentFilesHelper _recentFilesHelper;
         private readonly IMessageBoxService _messageBoxService;
         private readonly IUpdateHelper _updateHelper;
@@ -93,7 +94,8 @@ namespace AnnoDesigner.ViewModels
             ILayoutLoader layoutLoaderToUse = null,
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
-            IPenCache penCacheToUse = null)
+            IPenCache penCacheToUse = null,
+            IAdjacentCellGrouper adjacentCellGrouper = null)
         {
             _commons = commonsToUse;
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
@@ -109,6 +111,7 @@ namespace AnnoDesigner.ViewModels
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
+            _adjacentCellGrouper = adjacentCellGrouper ?? new AdjacentCellGrouper();
 
             HotkeyCommandManager = new HotkeyCommandManager(_localizationHelper);
 
@@ -136,6 +139,7 @@ namespace AnnoDesigner.ViewModels
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
             CanvasResetZoomCommand = new RelayCommand(CanvasResetZoom);
             CanvasNormalizeCommand = new RelayCommand(CanvasNormalize);
+            MergeRoadsCommand = new RelayCommand(MergeRoads);
             LoadLayoutFromJsonCommand = new RelayCommand(ExecuteLoadLayoutFromJson);
             UnregisterExtensionCommand = new RelayCommand(UnregisterExtension);
             RegisterExtensionCommand = new RelayCommand(RegisterExtension);
@@ -998,6 +1002,56 @@ namespace AnnoDesigner.ViewModels
         private void CanvasNormalize(object param)
         {
             AnnoCanvas.Normalize(1);
+        }
+
+        public ICommand MergeRoadsCommand { get; private set; }
+
+        /// <summary>
+        /// Filters all roads in current layout, finds largest groups of them and replaces them with merged variants.
+        /// Respects road color during merging.
+        /// </summary>
+        public void MergeRoads(object param)
+        {
+            var roadColorGroups = AnnoCanvas.PlacedObjects.Where(p => p.WrappedAnnoObject.Road).GroupBy(p => (p.WrappedAnnoObject.Borderless, p.Color));
+            foreach (var roadColorGroup in roadColorGroups)
+            {
+                if (roadColorGroup.Count() <= 1) continue;
+
+                var bounds = (Rect) new StatisticsCalculationHelper().CalculateStatistics(roadColorGroup.Select(p => p.WrappedAnnoObject));
+
+                var cells = Enumerable.Range(0, (int)bounds.Width).Select(i => new LayoutObject[(int)bounds.Height]).ToArray();
+                foreach (var item in roadColorGroup)
+                {
+                    for (var i = 0; i < item.Size.Width; i++)
+                    {
+                        for (var j = 0; j < item.Size.Height; j++)
+                        {
+                            cells[(int)(item.Position.X + i - bounds.Left)][(int)(item.Position.Y + j - bounds.Top)] = item;
+                        }
+                    }
+                }
+
+                var groups = _adjacentCellGrouper.GroupAdjacentCells(cells, true);
+                AnnoCanvas.PlacedObjects.AddRange(groups
+                    .Select(g =>
+                    {
+                        foreach (var item in g.Items)
+                        {
+                            AnnoCanvas.PlacedObjects.Remove(item, item.GridRect);
+                        }
+
+                        return new LayoutObject(
+                            new AnnoObject(g.Items.First().WrappedAnnoObject)
+                            {
+                                Position = g.Bounds.TopLeft + (Vector)bounds.TopLeft,
+                                Size = g.Bounds.Size
+                            },
+                            _coordinateHelper,
+                            _brushCache,
+                            _penCache);
+                    })
+                    .Select(o => (o, o.GridRect)));
+            }
         }
 
         public ICommand LoadLayoutFromJsonCommand { get; private set; }
