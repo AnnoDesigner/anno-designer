@@ -128,6 +128,7 @@
                           ItemsSource="{Binding Languages}">
                     <MenuItem.Resources>
                         <Image x:Key="flagImage"
+                               Height="22"
                                Source="{Binding FlagPath}"
                                x:Shared="False" />
                     </MenuItem.Resources>

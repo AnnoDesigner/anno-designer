@@ -5,15 +5,113 @@ namespace AnnoDesigner.Helper
 {
     public static class PolygonBoundaryFinderHelper
     {
-        private enum Direction
+        public enum Direction
         {
-            Up,
-            Left,
-            Down,
-            Right
+            None = 0,
+            Up = 1 << 0,
+            Left = 1 << 1,
+            Down = 1 << 2,
+            Right = 1 << 3
         }
 
+        /// <summary>
+        /// Gets the starting point (corner of pixel) based on pixel position and side where the search should start.
+        /// 
+        /// Returns the top left corner (X) in the given direction (the entire box is one pixel).
+        /// X---
+        /// | ^ |
+        /// | | |
+        /// |   |
+        ///  ---
+        /// </summary>
+        public static (int x, int y) GetStartPoint((int x, int y) pixel, Direction side)
+        {
+            switch (side)
+            {
+                case Direction.Up:
+                    return pixel;
+                case Direction.Left:
+                    return (pixel.x, pixel.y + 1);
+                case Direction.Down:
+                    return (pixel.x + 1, pixel.y + 1);
+                default:
+                    return (pixel.x + 1, pixel.y);
+            }
+        }
+
+        /// <summary>
+        /// Gets the start direction from the side where the search will start.
+        /// </summary>
+        public static Direction GetStartDirection(Direction side)
+        {
+            return RotateCounterClockwise(side);
+        }
+
+        private static Direction RotateClockwise(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up: return Direction.Right;
+                case Direction.Left: return Direction.Up;
+                case Direction.Down: return Direction.Left;
+                default: return Direction.Down;
+            }
+        }
+
+        private static Direction RotateCounterClockwise(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up: return Direction.Left;
+                case Direction.Left: return Direction.Down;
+                case Direction.Down: return Direction.Right;
+                default: return Direction.Up;
+            }
+        }
+
+        /// <summary>
+        /// Returns coordinate of L cell from the supplied direction based on following illustration.
+        /// 
+        /// If input <paramref name="direction"/> is "Up" (rotate accordingly), then:
+        /// 
+        /// F | R
+        ///   |
+        /// --X--
+        ///   ^
+        /// L |
+        /// 
+        /// X = point
+        /// </summary>
         private static (int x, int y) GetLeftCell((int X, int Y) point, Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up:
+                    return (point.X - 1, point.Y);
+                case Direction.Left:
+                    return point;
+                case Direction.Down:
+                    return (point.X, point.Y - 1);
+                default:
+                    return (point.X - 1, point.Y - 1);
+            }
+        }
+
+
+        /// <summary>
+        /// Returns coordinate of F cell from the supplied direction based on following illustration.
+        /// 
+        /// If input <paramref name="direction"/> is "Up" (rotate accordingly), then:
+        /// 
+        /// F | R
+        ///   |
+        /// --X--
+        ///   ^
+        /// L |
+        /// 
+        /// X = point
+        /// </summary>
+        private static (int x, int y) GetForwardCell((int X, int Y) point, Direction direction)
         {
             switch (direction)
             {
@@ -28,6 +126,20 @@ namespace AnnoDesigner.Helper
             }
         }
 
+
+        /// <summary>
+        /// Returns coordinate of R cell from the supplied direction based on following illustration.
+        /// 
+        /// If input <paramref name="direction"/> is "Up" (rotate accordingly), then:
+        /// 
+        /// F | R
+        ///   |
+        /// --X--
+        ///   ^
+        /// L |
+        /// 
+        /// X = point
+        /// </summary>
         private static (int x, int y) GetRightCell((int X, int Y) point, Direction direction)
         {
             switch (direction)
@@ -58,25 +170,47 @@ namespace AnnoDesigner.Helper
             }
         }
 
-        private static (int x, int y) FindMin(bool[][] insidePoints)
+        /// <summary>
+        /// Finds the starting position and direction of the boundary search.
+        /// If <paramref name="boundarySides"/> is supplied, it will be searched for first cell which has some boundary.
+        /// Else first encountered pixel will be returned.
+        /// </summary>
+        private static ((int x, int y), Direction) FindStart(bool[][] insidePoints, Direction[][] boundarySides)
         {
-            for (int i = 0; i < insidePoints.Length; i++)
+            if (boundarySides != null)
             {
-                for (int j = 0; j < insidePoints[i].Length; j++)
+                for (var x = 0; x < boundarySides.Length; x++)
                 {
-                    if (insidePoints[i][j])
+                    for (var y = 0; y < boundarySides[x].Length; y++)
                     {
-                        return (i, j);
+                        if (boundarySides[x][y] != Direction.None)
+                        {
+                            var side = Direction.Up;
+                            for (var i = 0; i < 4; i++)
+                            {
+                                if (boundarySides[x][y].HasFlag(side))
+                                    return (GetStartPoint((x, y), side), GetStartDirection(side));
+
+                                side = RotateClockwise(side);
+                            }
+                        }
                     }
                 }
             }
-            return (-1, -1);
+            else
+            {
+                for (var x = 0; x < insidePoints.Length; x++)
+                    for (var y = 0; y < insidePoints[x].Length; y++)
+                        if (insidePoints[x][y])
+                            return ((x, y), Direction.Left);
+            }
+            return ((0, 0), Direction.None);
         }
 
         /// <summary>
-        /// Finds bounding polygon of input set of points.
-        /// Starts at min point of input set of points (most top left point) and starts moving down.
+        /// Finds bounding polygon of input set of cells.
         /// Traversal is being done "between" cells.
+        /// Boundaries will be removed from <paramref name="boundarySides"/> if it is supplied during the traversal.
         /// 
         /// At every step the cells to the right and left of the current direction are checked.
         /// If there not cell to the left, direction rotates to the left and stores current point.
@@ -88,52 +222,137 @@ namespace AnnoDesigner.Helper
         /// Traversal stops when algorithm enters starting point.
         /// This will cause find bounding polygon of set of points, in counter-clockwise direction.
         /// 
-        /// Holes inside set of points are not found (not needed for drawing influence ranges), only outer most polygon is found.
-        /// HINT:
-        /// In order to draw holes inside, the map of boundary edges would have to be constructed and then cleared during the traversal.
-        /// Then traversal would restart from any remaining boundary edge until there are non left. Returning list of list of points.
+        /// Holes inside set of points are not found (if <paramref name="boundarySides"/> is not supplied), only outer most polygon is found.
         /// </summary>
-        public static IList<(int x, int y)> GetBoundaryPoints(bool[][] insidePoints)
+        public static IReadOnlyList<(int x, int y)> GetBoundaryPoints(bool[][] insidePoints, Direction[][] boundarySides = null)
         {
             var result = new List<(int, int)>();
 
-            if (insidePoints.Sum(column => column.Count()) == 0)
-                return result;
+            if (insidePoints.Sum(column => column.Count()) == 0) return result;
 
             var maxX = insidePoints.Length;
             var maxY = insidePoints[0].Length;
-            var startPoint = FindMin(insidePoints);
+            var (startPoint, startDirection) = FindStart(insidePoints, boundarySides);
             var point = startPoint;
-            var direction = Direction.Down;
-            result.Add(point);
+            var direction = startDirection;
+
+            if (startDirection == Direction.None) return result;
 
             do
             {
-                var (leftX, leftY) = GetLeftCell(point, direction);
+                var (forwardX, forwardY) = GetForwardCell(point, direction);
                 var (rightX, rightY) = GetRightCell(point, direction);
 
-                if (leftX >= 0 && leftX < maxX && leftY >= 0 && leftY < maxY && insidePoints[leftX][leftY])
+                if (forwardX >= 0 && forwardX < maxX && forwardY >= 0 && forwardY < maxY && insidePoints[forwardX][forwardY])
                 {
-                    if (rightX >= 0 && rightX < maxX && rightY >= 0 && rightY < maxY && insidePoints[rightX][rightY])// turn right
+                    if (rightX >= 0 && rightX < maxX && rightY >= 0 && rightY < maxY && insidePoints[rightX][rightY]) // turn right
                     {
                         result.Add(point);
 
-                        direction = (Direction)(((int)direction + 3) % 4);
+                        direction = RotateClockwise(direction);
+
+                        if (boundarySides != null) boundarySides[rightX][rightY] &= ~RotateClockwise(direction);
                     }
-                    // else keep moving forward
+                    else // go straight
+                    {
+                        // don't record point
+
+                        // direction doesn't change
+
+                        if (boundarySides != null) boundarySides[forwardX][forwardY] &= ~RotateClockwise(direction);
+                    }
                 }
-                else// turn left
+                else // turn left
                 {
+
+                    if (boundarySides != null)
+                    {
+                        var (leftX, leftY) = GetLeftCell(point, direction);
+                        if (leftX >= 0 && leftX < maxX && leftY >= 0 && leftY < maxY)
+                        {
+                            boundarySides[leftX][leftY] &= ~direction;
+                        }
+                    }
+
                     result.Add(point);
 
-                    direction = (Direction)(((int)direction + 1) % 4);
+                    direction = RotateCounterClockwise(direction);
                 }
 
                 point = MoveForward(point, direction);
             }
-            while (point != startPoint);
+            while (point != startPoint || direction != startDirection);
 
             return result;
+        }
+
+        /// <summary>
+        /// Finds bounding polygons of input set of cells.
+        /// Traversal is being done "between" cells.
+        /// Also returns holes in polygon.
+        /// 
+        /// Builds boundary map and then uses <see cref="GetBoundarySides(bool[][])"/> to return all polygons.
+        /// Returns the outer boundary first, then holes from left to right (primary sort) and then top to bottom (secondary sort).
+        /// </summary>
+        public static IEnumerable<IReadOnlyList<(int x, int y)>> GetBoundaryPointsWithHoles(bool[][] insidePoints)
+        {
+            var boundarySides = GetBoundarySides(insidePoints);
+
+            IReadOnlyList<(int x, int y)> points;
+            while (true)
+            {
+                points = GetBoundaryPoints(insidePoints, boundarySides);
+                if (points.Count == 0) yield break;
+
+                yield return points;
+            }
+        }
+
+        /// <summary>
+        /// Builds boundary map of input cells.
+        /// For every inside cell checks adjacent cells and if cell not also inside, the boundary is added.
+        /// </summary>
+        /// <returns>
+        /// 2D array of what boundaries specific cell has.
+        /// </returns>
+        private static Direction[][] GetBoundarySides(bool[][] insidePoints)
+        {
+            var boundarySides = insidePoints.Select(x => x.Select(y => Direction.None).ToArray()).ToArray();
+
+            for (var x = 0; x < insidePoints.Length; x++)
+            {
+                for (var y = 0; y < insidePoints[x].Length; y++)
+                {
+                    if (insidePoints[x][y])
+                    {
+                        // up pixel
+                        if (y == 0 || !insidePoints[x][y - 1])
+                        {
+                            boundarySides[x][y] |= Direction.Up;
+                        }
+
+                        // left pixel
+                        if (x == 0 || !insidePoints[x - 1][y])
+                        {
+                            boundarySides[x][y] |= Direction.Left;
+                        }
+
+                        // down pixel
+                        if (y + 1 == insidePoints[x].Length  || !insidePoints[x][y + 1])
+                        {
+                            boundarySides[x][y] |= Direction.Down;
+                        }
+
+                        // right side
+                        if (x + 1 == insidePoints.Length || !insidePoints[x + 1][y])
+                        {
+                            boundarySides[x][y] |= Direction.Right;
+                        }
+                    }
+                }
+            }
+
+            return boundarySides;
         }
     }
 }
