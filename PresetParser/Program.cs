@@ -31,7 +31,7 @@ namespace PresetParser
         public static bool isExcludedGUID = false; /*only for Anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-        private const string BUILDING_PRESETS_VERSION = "3.8";
+        private const string BUILDING_PRESETS_VERSION = "3.9";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -90,7 +90,7 @@ namespace PresetParser
         private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding",
             "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding",
-            "CultureModule","Palace","BuffFactory", "BuildPermitBuilding", "BuildPermitModules", "OrnamentalModule", "IrrigationPropagationSource", "ResearchCenter" };
+            "CultureModule","Palace","BuffFactory", "BuildPermitBuilding", "BuildPermitModules", "OrnamentalModule", "IrrigationPropagationSource", "ResearchCenter", "Dockland", "HarborOrnament"};
         private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358", "1010462",
             "1010463", "1010464", "1010275", "1010271", "1010516", "1010517", "1010519"};
         private static readonly List<string> ExcludeBuildingsGUID1800 = new List<string> { "269850", "269851" };
@@ -582,6 +582,7 @@ namespace PresetParser
 
         #endregion
 
+        // Parsing Buildings Info 
         #region Parsing Buildngs for Anno 1404/2070
 
         private static void ParseAssetsFile(string filename, string xPathToBuildingsNode, string YPath, List<IBuildingInfo> buildings,
@@ -1147,6 +1148,17 @@ namespace PresetParser
                 return;
             }
 
+            // Skip the Double list creating Docklands Ornaments, as they can placed in New world as well
+            if (identifierName.Contains("SA_Docklands_Orna_")) { return; }
+
+            // Because Game Dev's removed some items (DEPRECATED) and we still want them in AD,
+            // so i remove this word from the identifierName strings (since Game Update 10) Chanhe made 03-03-2021
+            if (identifierName.Contains("DEPRECATED_"))
+            {
+                identifierName = identifierName.Replace("DEPRECATED_", "");
+                Console.WriteLine("--> Removed 'DEPRECATED_' to get object still in AD: ");
+            }
+                       
             // Setting the factionname, thats the first menu after header
             string associatedRegion = "";
             associatedRegion = values?["Building"]?["AssociatedRegions"]?.InnerText;
@@ -1171,7 +1183,7 @@ namespace PresetParser
             {
                 return;
             }
-
+            
             switch (templateName)
             {
                 case "BuildPermitBuilding": { factionName = "Ornaments"; groupName = "13 World's Fair Rewards"; break; }
@@ -1210,6 +1222,7 @@ namespace PresetParser
                 case "1010516": { templateName = "ArcticLodge"; factionName = "(11) Technicians"; groupName = "Special Buildings"; break; }
                 case "1010517": { templateName = "SkyTradingPost"; factionName = "(11) Technicians"; groupName = "Special Buildings"; break; }
                 case "FactoryBuilding7_BuildPermit": { factionName = "(13) Scholars"; groupName = "Permitted Buildings"; break; }
+                case "HarborOrnament": { factionName = "Ornaments"; groupName = "22 Docklands Ornaments"; break; }
                 default: { groupName = templateName.FirstCharToUpper(); break; }
             }
 
@@ -1254,8 +1267,6 @@ namespace PresetParser
             groupName = groupInfo.Group;
             templateName = groupInfo.Template;
 
-            #endregion
-
             if (factionName?.Length == 0 || factionName == "Moderate" || factionName == "Colony01" || factionName == "Arctic" || factionName == "Africa")
             {
                 factionName = "Not Placed Yet -" + factionName;
@@ -1267,6 +1278,8 @@ namespace PresetParser
                 factionName = "Not Placed Yet -All Worlds";
             }
 
+            #endregion
+
             #region Sorting the Ornaments for the new Ornaments Menu (11/05/2020)
 
             //Sorting to the new menu
@@ -1275,8 +1288,27 @@ namespace PresetParser
             groupName = groupInfo.Group;
             templateName = groupInfo.Template;
 
+
+            //Bring all Docklands Modules in to 1 menu, Template is adjusted for Color Preset
+            if (templateName.Contains("Dockland"))
+            {
+                if (templateName != "DocklandMain")
+                {
+                    factionName = "Harbor";
+                    groupName = "Docklands Modules";
+                    templateName = "DocklandsHarbor";
+                }
+                else
+                {
+                    factionName = "Harbor";
+                    groupName = null;
+                    templateName = "DocklandsHarbor";
+                }
+            }
+
             //Set right group to the City Lights DLC (just need a Faction and Group change by starting identifiername) (10-01-2021)
-            if (templateName == "OrnamentalBuilding" && factionName == "Not Placed Yet -Moderate") { 
+            //if (templateName == "OrnamentalBuilding" && factionName == "Not Placed Yet -Moderate") {
+            if (templateName == "OrnamentalBuilding") {
                 if (identifierName.Contains("CityOrnament "))
                 {
                     factionName = "Ornaments"; groupName = "20 City Lights";
@@ -1345,13 +1377,13 @@ namespace PresetParser
                 }
                 else
                 {
-                    Console.WriteLine("-BuildBlocker not found, skipping: Missing Object File");
+                    Console.WriteLine("-BuildBlocker not found, skipping: Missing Object File (B)");
                     return;
                 }
             }
             else
             {
-                Console.WriteLine("-BuildBlocker not found, skipping: Object Informaion not found");
+                Console.WriteLine("-BuildBlocker not found, skipping: Object Informaion not found (A)");
                 return;
             }
 
@@ -1505,7 +1537,7 @@ namespace PresetParser
                 b.InfluenceRange = 26; //Police - Fire stations and Hospiitals
                 if (b.Identifier== "Institution_arctic_01 (Ranger Station)")
                 {
-                    b.InfluenceRange = 50; //fix Ranger Station InfluencRange as this is separated from mormal ones (10-01-2021) 
+                    b.InfluenceRange = 50; //fix Ranger Station InfluencRange as this is separated from normal ones (10-01-2021) 
                 }
             }
             else if (!string.IsNullOrEmpty(values?["PublicService"]?["FullSatisfactionDistance"]?.InnerText))
