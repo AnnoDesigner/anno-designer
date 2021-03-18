@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-	 <RootNamespace>ColorPresetsDesigner</RootNamespace>
+    <RootNamespace>ColorPresetsDesigner</RootNamespace>
     <AssemblyName>ColorPresetsDesigner</AssemblyName>
     <OutputType>WinExe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -18,23 +18,13 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Extended.Wpf.Toolkit">
-      <Version>3.8.1</Version>
-    </PackageReference>
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="3.8.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
-      <Version>1.1.19</Version>
-    </PackageReference>
-    <PackageReference Include="NLog">
-      <Version>4.7.1</Version>
-    </PackageReference>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
+    <PackageReference Include="NLog" Version="4.7.8" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="WindowsAPICodePack-Core">
-      <Version>1.1.2</Version>
-    </PackageReference>
-    <PackageReference Include="WindowsAPICodePack-Shell">
-      <Version>1.1.1</Version>
-    </PackageReference>
+    <PackageReference Include="WindowsAPICodePack-Core" Version="1.1.2" />
+    <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="cpd-icon.ico" />
