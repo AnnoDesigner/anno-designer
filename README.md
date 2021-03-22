@@ -1,4 +1,4 @@
-[![GitHub](https://img.shields.io/github/license/AnnoDesigner/anno-designer)](https://github.com/AnnoDesigner/anno-designer/blob/master/LICENSE) [![version](https://img.shields.io/badge/latest--version-8.8.1-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv8.8.1) [![presets version](https://img.shields.io/badge/presets--version-3.9-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/Presetsv3.9) [![Discord](https://img.shields.io/discord/571011757317947406?label=help%2Fdiscord)](https://discord.gg/JJpHWRB)
+[![GitHub](https://img.shields.io/github/license/AnnoDesigner/anno-designer)](https://github.com/AnnoDesigner/anno-designer/blob/master/LICENSE) [![version](https://img.shields.io/badge/latest--version-9.0-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.0) [![presets version](https://img.shields.io/badge/presets--version-3.9-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/Presetsv3.9) [![Discord](https://img.shields.io/discord/571011757317947406?label=help%2Fdiscord)](https://discord.gg/JJpHWRB)
 
 # Anno Designer
 A building layout designer for Ubisoft's Anno-series
@@ -7,8 +7,8 @@ This is a fork of the project created by JcBernack - https://github.com/JcBernac
 
 ## Latest Releases
 
-### [Anno Designer 8.8 Hotfix 1](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv8.8hotfix1)
-#### [Latest Presets file release](https://github.com/AnnoDesigner/anno-designer/releases/tag/Presetsv3.8)
+### [Anno Designer 9.0](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.0)
+#### [Latest Presets file release](https://github.com/AnnoDesigner/anno-designer/releases/tag/Presetsv3.9)
 The presets update can be downloaded automatically by the application.
 
 ## Discord
