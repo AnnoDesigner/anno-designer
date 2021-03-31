@@ -13,6 +13,10 @@ namespace AnnoDesigner.Core.Layout.Models
 
         public double MinY { get; set; }
 
+        public double MaxX { get; set; }
+
+        public double MaxY { get; set; }
+
         public double UsedAreaWidth { get; set; }
 
         public double UsedAreaHeight { get; set; }

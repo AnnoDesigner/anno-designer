@@ -72,6 +72,8 @@ namespace AnnoDesigner.Core.Layout.Helper
 
             result.MinX = minX;
             result.MinY = minY;
+            result.MaxX = maxX;
+            result.MaxY = maxY;
 
             result.UsedAreaWidth = boxX;
             result.UsedAreaHeight = boxY;

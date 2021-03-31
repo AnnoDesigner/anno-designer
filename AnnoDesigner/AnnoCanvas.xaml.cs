@@ -1239,7 +1239,7 @@ namespace AnnoDesigner
         /// </summary>
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
-            AnnoObject[][] gridDictionary = null;
+            Moved2DArray<AnnoObject> gridDictionary = null;
             if (RenderTrueInfluenceRange && PlacedObjects.Count() > 0)
             {
                 var placedObjects = PlacedObjects.Concat(objects).ToHashSet();
@@ -1292,7 +1292,7 @@ namespace AnnoDesigner
             }
         }
 
-        private void DrawTrueInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc, AnnoObject[][] gridDictionary)
+        private void DrawTrueInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc, Moved2DArray<AnnoObject> gridDictionary)
         {
             var stroked = true;
             var smoothJoin = true;
@@ -1317,10 +1317,10 @@ namespace AnnoDesigner
                 return;
             }
 
-            sgc.BeginFigure(_coordinateHelper.GridToScreen(new Point(points[0].x, points[0].y), GridSize), geometryFill, geometryStroke);
+            sgc.BeginFigure(_coordinateHelper.GridToScreen(new Point(points[0].x + gridDictionary.Offset.x, points[0].y + gridDictionary.Offset.y), GridSize), geometryFill, geometryStroke);
             for (var i = 1; i < points.Count; i++)
             {
-                sgc.LineTo(_coordinateHelper.GridToScreen(new Point(points[i].x, points[i].y), GridSize), stroked, smoothJoin);
+                sgc.LineTo(_coordinateHelper.GridToScreen(new Point(points[i].x + gridDictionary.Offset.x, points[i].y + gridDictionary.Offset.y), GridSize), stroked, smoothJoin);
             }
         }
 

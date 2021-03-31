@@ -39,6 +39,9 @@
     <None Update="TestData\RoadSearchHelper\BreadthFirstSearch_FindObjectsInInfluenceRange.ad">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestData\RoadSearchHelper\PrepareGridDictionary_MultipleObjectsWithNegativeCoordinates.ad">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\RoadSearchHelper\PrepareGridDictionary_MultipleObjects.ad">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
