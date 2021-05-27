@@ -136,7 +136,11 @@ namespace AnnoDesigner.Localization
                         { "RiverBuildings", "River Buildings" },
                         { "PermittedBuildings", "Permitted Buildings" },
                         { "22DocklandsOrnaments", "22 Docklands Ornaments" },
-                        { "DocklandsModules", "Docklands Modules" }
+                        { "DocklandsModules", "Docklands Modules" },
+                        { "Orchard", "Orchard" },
+                        { "Restaurant", "Restaurant" },
+                        { "(17)Tourists", "(17) Tourists"},
+                        { "23TouristOrnaments", "23 Tourist Ornaments"}
                     }
                     },
                 {
@@ -248,7 +252,11 @@ namespace AnnoDesigner.Localization
                         { "RiverBuildings", "Flussgebäude" },
                         { "PermittedBuildings", "Erlaubte Gebäude" },
                         { "22DocklandsOrnaments","22 Speicherstadt Verzierungen" },
-                        { "DocklandsModules", "Speicherstadt Module" }
+                        { "DocklandsModules", "Speicherstadt Module" },
+                        { "Orchard", "Baumschule" },
+                        { "Restaurant", "Restaurant" },
+                        { "(17)Tourists", "(17) Touristen"},
+                        { "23TouristOrnaments", "23 Touristische Ornamente"}
                     }
                     },
                  {
@@ -360,7 +368,11 @@ namespace AnnoDesigner.Localization
                         { "RiverBuildings", "Bâtiments fluviaux" },
                         { "PermittedBuildings", "Bâtiments autorisés" },
                         { "22DocklandsOrnaments", "22 Ornements de Docklands" },
-                        { "DocklandsModules", "Modules Docklands" }
+                        { "DocklandsModules", "Modules Docklands" },
+                        { "Orchard", "Verger"},
+                        { "Restaurant", "Restaurant" },
+                        { "(17)Tourists", "(17) Touristes"},
+                        { "23TouristOrnaments", "23 Ornements Touristiques"}
                     }
                     },
                 {
@@ -472,7 +484,11 @@ namespace AnnoDesigner.Localization
                         { "RiverBuildings", "Budynki nadrzeczne" },
                         { "PermittedBuildings", "Dozwolone budynki" },
                         { "22DocklandsOrnaments", "22 Ornamenty Docklands" },
-                        { "DocklandsModules", "Moduły Docklands" }
+                        { "DocklandsModules", "Moduły Docklands" },
+                        { "Orchard", "Sad" },
+                        { "Restaurant", "Restauracja" },
+                        { "(17)Tourists", "(17) Turyści"},
+                        { "23TouristOrnaments", "22 Ozdoby Turystyczne"}
                     }
                     },
                 {
@@ -584,7 +600,11 @@ namespace AnnoDesigner.Localization
                         { "RiverBuildings", "Речные здания" },
                         { "PermittedBuildings", "Разрешенные здания" },
                         { "22DocklandsOrnaments", "22 Докленды Украшения" },
-                        { "DocklandsModules", "Модули Доклендов" }
+                        { "DocklandsModules", "Модули Доклендов" },
+                        { "Orchard", "Сад"},
+                        { "Restaurant", "Ресторан" },
+                        { "(17)Tourists", "(17) Туристы"},
+                        { "23TouristOrnaments", "23 Туристические орнаменты"}
                     }
                     },
             };
