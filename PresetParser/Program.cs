@@ -1160,7 +1160,7 @@ namespace PresetParser
                 identifierName = identifierName.Replace("DEPRECATED_", "");
                 Console.WriteLine("--> Removed 'DEPRECATED_' to get object still in AD: ");
             }
-                       
+
             // Setting the factionname, thats the first menu after header
             string associatedRegion = "";
             associatedRegion = values?["Building"]?["AssociatedRegions"]?.InnerText;
@@ -1185,7 +1185,7 @@ namespace PresetParser
             {
                 return;
             }
-            
+
             switch (templateName)
             {
                 case "BuildPermitBuilding": { factionName = "Ornaments"; groupName = "13 World's Fair Rewards"; break; }
@@ -1219,7 +1219,6 @@ namespace PresetParser
                 case "101331": { templateName = "HeavyFactoryBuilding"; break; }
                 case "FarmBuilding_Arctic": { templateName = "FarmBuilding"; break; }
                 case "PalaceModule": { templateName = "PalaceBuilding"; factionName = "(05) Investors"; groupName = "Palace Buildings"; break; }
-                case "Palace": { templateName = "PalaceBuilding"; factionName = "(05) Investors"; groupName = "Palace Buildings"; break; }
                 case "PalaceMinistry": { templateName = "PalaceBuilding"; factionName = "All Worlds"; groupName = "Special Buildings"; break; }
                 case "1010516": { templateName = "ArcticLodge"; factionName = "(11) Technicians"; groupName = "Special Buildings"; break; }
                 case "1010517": { templateName = "SkyTradingPost"; factionName = "(11) Technicians"; groupName = "Special Buildings"; break; }
@@ -1308,6 +1307,11 @@ namespace PresetParser
             groupName = groupInfo.Group;
             templateName = groupInfo.Template;
 
+            //to keep Palace on his place where it belongs
+            if (identifierName == "Palace")
+            {
+                templateName = "PalaceBuilding"; factionName = "(05) Investors"; groupName = "Palace Buildings";
+            }
 
             //Bring all Docklands Modules in to 1 menu, Template is adjusted for Color Preset
             if (templateName.Contains("Dockland"))
