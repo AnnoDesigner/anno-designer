@@ -253,7 +253,7 @@ namespace AnnoDesigner.Localization
                         { "PermittedBuildings", "Erlaubte Gebäude" },
                         { "22DocklandsOrnaments","22 Speicherstadt Verzierungen" },
                         { "DocklandsModules", "Speicherstadt Module" },
-                        { "Orchard", "Baumschule" },
+                        { "Orchard", "Obstgarten" },
                         { "Restaurant", "Restaurant" },
                         { "(17)Tourists", "(17) Touristen"},
                         { "23TouristOrnaments", "23 Touristische Ornamente"}
