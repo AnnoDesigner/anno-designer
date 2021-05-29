@@ -96,7 +96,7 @@ namespace PresetParser.Anno1800
             if (identifierName.IsPartOf(ChangeOrnamentToParkFountains_1800)) { factionName = "Ornaments"; groupName = "04 Park Fountains"; templateName = "OrnamentalBuilding_Park"; }
             if (identifierName.IsPartOf(ChangeOrnamentToParkStatues_1800)) { factionName = "Ornaments"; groupName = "05 Park Statues"; templateName = "OrnamentalBuilding_Park"; }
             if (identifierName.IsPartOf(ChangeOrnamentToParkDecorations_1800)) { factionName = "Ornaments"; groupName = "06 Park Decorations"; templateName = "OrnamentalBuilding_Park"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToCityPaths_1800) && identifierName != "Palace") { factionName = "Ornaments"; groupName = "07 City Paths"; }
+            if (identifierName.IsPartOf(ChangeOrnamentToCityPaths_1800)) { factionName = "Ornaments"; groupName = "07 City Paths"; }
             if (identifierName.IsPartOf(ChangeOrnamentToCityFences_1800)) { factionName = "Ornaments"; groupName = "08 City Fences"; }
             if (identifierName.IsPartOf(ChangeOrnamentToCityStatues_1800)) { factionName = "Ornaments"; groupName = "09 City Statues"; }
             if (identifierName.IsPartOf(ChangeOrnamentToCityDecorations_1800)) { factionName = "Ornaments"; groupName = "10 City Decorations"; }

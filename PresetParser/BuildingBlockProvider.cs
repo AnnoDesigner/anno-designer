@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -44,10 +46,20 @@ namespace PresetParser
         {
             try
             {
-                XmlNode node = ifoDocument.FirstChild?[BUILDBLOCKER].FirstChild;
+                var xf = 0;
+                var zf = 0;
+                string xc, zc = ""; // just information for checking line calculated mode
 
-                //check of the node contains data
-                if (string.IsNullOrEmpty(node?.InnerText))
+                // Change since 25-05-2021 - Fixing measurements of Buildings Buildblockers. 
+                // Insttead of taking one XF * 2 and ZF * 2, it will check now the differences between 2 given XF's and ZF's
+                // Get all 4 [Position] childs from xml .ifo document
+                XmlNode node1 = ifoDocument.FirstChild?[BUILDBLOCKER].FirstChild;
+                XmlNode node2 = ifoDocument.FirstChild?[BUILDBLOCKER].FirstChild.NextSibling;
+                XmlNode node3 = ifoDocument.FirstChild?[BUILDBLOCKER].FirstChild.NextSibling.NextSibling;
+                XmlNode node4 = ifoDocument.FirstChild?[BUILDBLOCKER].FirstChild.NextSibling.NextSibling.NextSibling;
+
+                //check of the nodes contains data
+                if (string.IsNullOrEmpty(node1?.InnerText) || string.IsNullOrEmpty(node2?.InnerText) || string.IsNullOrEmpty(node3?.InnerText) || string.IsNullOrEmpty(node4?.InnerText))
                 {
                     Console.WriteLine("-'X' and 'Z' are both 'Null' - Building will be skipped!");
                     return false;
@@ -55,23 +67,67 @@ namespace PresetParser
 
                 building.BuildBlocker = new SerializableDictionary<int>();
 
-                string xfNormal = node["xf"].InnerText;
-                string zfNormal = node["zf"].InnerText;
-                var xf = ParseBuildingBlockerNumber(xfNormal);
-                var zf = ParseBuildingBlockerNumber(zfNormal);
+                //Convert the strings to a Variable and replace the "." for a "," to keep calculatable numbers 
+                var xfNormal1 = Convert.ToDouble(node1["xf"].InnerText.Replace(".", ","));
+                var zfNormal1 = Convert.ToDouble(node1["zf"].InnerText.Replace(".", ","));
+                var xfNormal2 = Convert.ToDouble(node2["xf"].InnerText.Replace(".", ","));
+                var zfNormal2 = Convert.ToDouble(node2["zf"].InnerText.Replace(".", ","));
+                var xfNormal3 = Convert.ToDouble(node3["xf"].InnerText.Replace(".", ","));
+                var zfNormal3 = Convert.ToDouble(node3["zf"].InnerText.Replace(".", ","));
+                var xfNormal4 = Convert.ToDouble(node4["xf"].InnerText.Replace(".", ","));
+                var zfNormal4 = Convert.ToDouble(node4["zf"].InnerText.Replace(".", ","));
 
-                //Adjust size of buildings.
-                //Some buildings have wrong values in the game data.
-                //So those values are adjusted to the real values from inside the game.                
-                //The check is performed by the identifier of a building (CASE SENSITIVE).
-                switch (building.Identifier)
+                // Calculation mode check highest number minus lowest number
+                // example 1:  9 - -2 = 11
+                // example 2: 2,5 - -2,5 = 5
+                // This will give the right BuildBlocker[X] and BuildBlocker[Y] for all buildings from anno 1800
+
+                // XF Calculation 
+                if (xfNormal1 > xfNormal3)
                 {
-                    case "Palace_Module_05 (gate)": xf = 3; zf = 3; break;
-                    case "Harbor_arctic_01 (Depot)": xf = 11; zf = 4; break;
-                    case "River_colony02_01 (Clay Harvester)":
-                    case "River_colony02_02 (Paper Mill)":
-                    case "River_colony02_03 (Water Pump)": xf = 9; zf = 5; break;
+                    xf = Convert.ToInt32(xfNormal1 - xfNormal3);
+                    xc = "MA";// just information for checking line calculated mode
+                } else
+                {
+                    xf = Convert.ToInt32(xfNormal3 - xfNormal1);
+                    xc = "MB";// just information for checking line calculated mode
                 }
+
+                // zf Calculation 
+                if (zfNormal1 > zfNormal2)
+                {
+                    zf = Convert.ToInt32(zfNormal1 - zfNormal2);
+                    zc = "MA";// just information for checking line calculated mode
+                }
+                else if (zfNormal1 == zfNormal2)
+                {
+                    if (zfNormal1 > zfNormal3)
+                    {
+                        zf = Convert.ToInt32(zfNormal1 - zfNormal3);
+                        zc = "MB";// just information for checking line calculated mode
+                    }
+                    else
+                    {
+                        zf = Convert.ToInt32(zfNormal3 - zfNormal1);
+                        zc = "MD";// just information for checking line calculated mode
+                    }
+                }
+                else
+                {
+                    zf = Convert.ToInt32(zfNormal2 - zfNormal1);
+                    zc = "MC";// just information for checking line calculated mode
+                }
+
+                
+                if ((xf == 0 || zf == 0) && building.Identifier != "Trail_05x05") {
+                    //when something goes wrong on the measurements, report and stop till a key is hit
+                    Console.WriteLine("MEASUREMENTS GOING WRONG!!! CHECK THIS BUILDING");
+                    Console.WriteLine(" Node 1 - XF: {0} | ZF: {1} ;\n Node 2 - XF: {2} | ZF: {3} ;\n Node 3 - XF: {4} | ZF: {5} ;\n Node 4 - XF: {6} | ZF: {7}", xfNormal1, zfNormal1, xfNormal2, zfNormal2, xfNormal3, zfNormal3, xfNormal4, zfNormal4);
+                    Console.WriteLine("Building measurement is : {0} x {1} (Method {2} and {3})", xf, zf, xc, zc);
+                    Console.WriteLine("Press a key to continue");
+                    //Console.ReadKey();
+                }
+
                 //if both values are zero, then skip building
                 if (xf < 1 && zf < 1)
                 {
@@ -81,7 +137,7 @@ namespace PresetParser
 
                 if (xf > 0)
                 {
-                    building.BuildBlocker[X] = xf;
+                    building.BuildBlocker[X] = Math.Abs(xf);
                 }
                 else
                 {
@@ -90,7 +146,7 @@ namespace PresetParser
 
                 if (zf > 0)
                 {
-                    building.BuildBlocker[Z] = zf;
+                    building.BuildBlocker[Z] = Math.Abs(zf);
                 }
                 else
                 {
@@ -182,42 +238,6 @@ namespace PresetParser
             }
 
             return true;
-        }
-
-        private static int ParseBuildingBlockerNumber(string number)
-        {
-            int result;
-
-            if (number.Contains(BUILDING_BLOCKER_SEPARATOR))
-            {
-                var xz = number.Split(BUILDING_BLOCKER_SEPARATOR);
-                //Console.WriteLine("1: {0}  2: {1}", xz[0], xz[1]);
-                int xz1 = Math.Abs(Convert.ToInt32(xz[0]));
-                double xz2 = Math.Abs(Convert.ToInt32(xz[1]));
-                //Console.WriteLine("xz1: {0}  xz2: {1}", xz1, xz2);
-                var countNumberLenght = xz[1].Length;
-                //Console.WriteLine("lebght= {0}", countNumberLenght);
-
-                int i = 0;
-                while (i < countNumberLenght)
-                {
-                    xz2 = xz2 / 10;
-                    //Console.WriteLine("{0}", xz2);
-                    i++;
-                }
-
-                xz1 = xz1 * 2;
-                xz2 = xz2 * 2;
-
-                result = xz1 + Convert.ToInt32(xz2);
-            }
-            else
-            {
-                result = Math.Abs(Convert.ToInt32(number));
-                result = result * 2;
-            }
-
-            return result;
         }
 
     }
