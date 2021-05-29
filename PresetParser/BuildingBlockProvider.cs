@@ -125,7 +125,7 @@ namespace PresetParser
                     Console.WriteLine(" Node 1 - XF: {0} | ZF: {1} ;\n Node 2 - XF: {2} | ZF: {3} ;\n Node 3 - XF: {4} | ZF: {5} ;\n Node 4 - XF: {6} | ZF: {7}", xfNormal1, zfNormal1, xfNormal2, zfNormal2, xfNormal3, zfNormal3, xfNormal4, zfNormal4);
                     Console.WriteLine("Building measurement is : {0} x {1} (Method {2} and {3})", xf, zf, xc, zc);
                     Console.WriteLine("Press a key to continue");
-                    Console.ReadKey();
+                    //Console.ReadKey();
                 }
 
                 //if both values are zero, then skip building

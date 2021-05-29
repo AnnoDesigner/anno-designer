@@ -275,7 +275,7 @@ namespace PresetParser.Tests
         {
             // Arrange
             var mockedDocument = new XmlDocument();
-            mockedDocument.LoadXml("<Info><BuildBlocker><Position></Position></BuildBlocker></Info>");
+            mockedDocument.LoadXml("<Info><BuildBlocker><Position></Position><Position></Position><Position></Position><Position></Position></BuildBlocker></Info>");
 
             var mockedIfoProvider = new Mock<IIfoFileProvider>();
             mockedIfoProvider.Setup(x => x.GetIfoFileContent(It.IsAny<string>(), It.IsAny<string>())).Returns(() => mockedDocument);
@@ -321,7 +321,7 @@ namespace PresetParser.Tests
         {
             // Arrange
             var mockedDocument = new XmlDocument();
-            mockedDocument.LoadXml("<Info><BuildBlocker><Position><xf>0.2</xf><zf>0.2</zf></Position></BuildBlocker></Info>");
+            mockedDocument.LoadXml("<Info><BuildBlocker><Position><xf>0.2</xf><zf>0.2</zf></Position><Position><xf>0.2</xf><zf>-0.2</zf></Position><Position><xf>-0.2</xf><zf>0.2</zf></Position><Position><xf>-0.2</xf><zf>-0.2</zf></Position></BuildBlocker></Info>");
 
             var mockedIfoProvider = new Mock<IIfoFileProvider>();
             mockedIfoProvider.Setup(x => x.GetIfoFileContent(It.IsAny<string>(), It.IsAny<string>())).Returns(() => mockedDocument);
@@ -345,7 +345,7 @@ namespace PresetParser.Tests
         {
             // Arrange
             var mockedDocument = new XmlDocument();
-            mockedDocument.LoadXml("<Info><BuildBlocker><Position><xf>0.2</xf><zf>2</zf></Position></BuildBlocker></Info>");
+            mockedDocument.LoadXml("<Info><BuildBlocker><Position><xf>0.2</xf><zf>2</zf></Position><Position><xf>0.2</xf><zf>-2</zf></Position><Position><xf>-0.2</xf><zf>2</zf></Position><Position><xf>-0.2</xf><zf>-2</zf></Position></BuildBlocker></Info>");
 
             var mockedIfoProvider = new Mock<IIfoFileProvider>();
             mockedIfoProvider.Setup(x => x.GetIfoFileContent(It.IsAny<string>(), It.IsAny<string>())).Returns(() => mockedDocument);
@@ -370,7 +370,7 @@ namespace PresetParser.Tests
         {
             // Arrange
             var mockedDocument = new XmlDocument();
-            mockedDocument.LoadXml("<Info><BuildBlocker><Position><xf>2</xf><zf>0.2</zf></Position></BuildBlocker></Info>");
+            mockedDocument.LoadXml("<Info><BuildBlocker><Position><xf>2</xf><zf>0.2</zf></Position><Position><xf>2</xf><zf>-0.2</zf></Position><Position><xf>-2</xf><zf>0.2</zf></Position><Position><xf>-2</xf><zf>-0.2</zf></Position></BuildBlocker></Info>");
 
             var mockedIfoProvider = new Mock<IIfoFileProvider>();
             mockedIfoProvider.Setup(x => x.GetIfoFileContent(It.IsAny<string>(), It.IsAny<string>())).Returns(() => mockedDocument);
@@ -395,7 +395,7 @@ namespace PresetParser.Tests
         {
             // Arrange
             var mockedDocument = new XmlDocument();
-            mockedDocument.LoadXml("<Info><BuildBlocker><Position><xf>2</xf><zf>2</zf></Position></BuildBlocker></Info>");
+            mockedDocument.LoadXml("<Info><BuildBlocker><Position><xf>1.5</xf><zf>1.5</zf></Position><Position><xf>1.5</xf><zf>-1.5</zf></Position><Position><xf>-1.5</xf><zf>0.5</zf></Position><Position><xf>-1.5</xf><zf>-1.5</zf></Position></BuildBlocker></Info>");
 
             var mockedIfoProvider = new Mock<IIfoFileProvider>();
             mockedIfoProvider.Setup(x => x.GetIfoFileContent(It.IsAny<string>(), It.IsAny<string>())).Returns(() => mockedDocument);
