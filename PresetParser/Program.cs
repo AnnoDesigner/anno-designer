@@ -87,7 +87,7 @@ namespace PresetParser
         /// </summary>
         public static IList<FarmField> farmFieldList1800 = new List<FarmField>();
         // Removed IncludeBuildingsTemplate "CultureModule" (to must to handle and thus are replaced with the Zoo Module and Museum Module
-        private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
+        private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding", "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding",
             "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding",
             "CultureModule","Palace","BuffFactory", "BuildPermitBuilding", "BuildPermitModules", "OrnamentalModule", "IrrigationPropagationSource", "ResearchCenter", "Dockland", "HarborOrnament",
@@ -1802,6 +1802,12 @@ namespace PresetParser
                             {
                                 isFieldInfoFound = true;
                                 fieldAmountValue = curFieldInfo.FieldAmount;
+                                if (Convert.ToInt32(fieldAmountValue) <= 0)
+                                {
+                                    // ERROR ? Farm without field amount found
+                                    Console.WriteLine("-- > Farm field Skipped, Zero Field counter");
+                                    return;
+                                }
                                 break;
                             }
                         }
