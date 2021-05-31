@@ -528,11 +528,27 @@ namespace AnnoDesigner.ViewModels
                 }
             }
 
-            //no child matches -> hide item
+            //no child matches -> check if header of current node is matching
             if (!anyChildMatches)
             {
-                curItem.IsVisible = false;
-                curItem.IsExpanded = false;
+                var currentHeaderMatches = curItem.Header.Contains(FilterText, StringComparison.OrdinalIgnoreCase);
+                if (currentHeaderMatches)
+                {
+                    foreach (var curChild in curItem.Children)
+                    {
+                        curChild.IsVisible = true;
+                    }
+
+                    curItem.IsVisible = true;
+                    //do not expand to avoid clutter in the view
+                    curItem.IsExpanded = false;
+                }
+                //no child matches -> hide item
+                else
+                {
+                    curItem.IsVisible = false;
+                    curItem.IsExpanded = false;
+                }
             }
             else
             {
