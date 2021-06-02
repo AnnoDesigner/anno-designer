@@ -11,7 +11,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core;
@@ -24,6 +23,8 @@ using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Helper;
+using AnnoDesigner.Core.Presets.Loader;
+using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.Services;
 using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
@@ -95,7 +96,8 @@ namespace AnnoDesigner.ViewModels
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
             IPenCache penCacheToUse = null,
-            IAdjacentCellGrouper adjacentCellGrouper = null)
+            IAdjacentCellGrouper adjacentCellGrouper = null,
+            ITreeLocalizationLoader treeLocalizationLoader = null)
         {
             _commons = commonsToUse;
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
@@ -121,7 +123,19 @@ namespace AnnoDesigner.ViewModels
 
             BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings, _messageBoxService, _localizationHelper);
 
-            PresetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization(_commons), _commons);
+            // load tree localization
+            TreeLocalizationContainer treeLocalizationContainer = null;
+            try
+            {
+                treeLocalizationContainer = treeLocalizationLoader.LoadFromFile(Path.Combine(App.ApplicationPath, CoreConstants.PresetsFiles.TreeLocalizationFile));
+            }
+            catch (Exception ex)
+            {
+                _messageBoxService.ShowError(ex.Message,
+                      _localizationHelper.GetLocalization("LoadingTreeLocalizationFailed"));
+            }
+
+            PresetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization(_commons, treeLocalizationContainer), _commons);
             PresetsTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
 
             PresetsTreeSearchViewModel = new PresetsTreeSearchViewModel();
@@ -460,7 +474,7 @@ namespace AnnoDesigner.ViewModels
                             obj.Identifier = RenameBuildingIdentifier;
                             obj.Template = RenameBuildingIdentifier;
                         }
-                    } 
+                    }
                     else
                     {
                         //obj.Identifier = "Unknown Object";
@@ -1017,7 +1031,7 @@ namespace AnnoDesigner.ViewModels
             {
                 if (roadColorGroup.Count() <= 1) continue;
 
-                var bounds = (Rect) new StatisticsCalculationHelper().CalculateStatistics(roadColorGroup.Select(p => p.WrappedAnnoObject));
+                var bounds = (Rect)new StatisticsCalculationHelper().CalculateStatistics(roadColorGroup.Select(p => p.WrappedAnnoObject));
 
                 var cells = Enumerable.Range(0, (int)bounds.Width).Select(i => new LayoutObject[(int)bounds.Height]).ToArray();
                 foreach (var item in roadColorGroup)
