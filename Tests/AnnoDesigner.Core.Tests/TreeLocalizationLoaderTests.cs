@@ -12,17 +12,33 @@ namespace AnnoDesigner.Core.Tests
         private readonly IFileSystem _mockedFileSystem;
 
         private static readonly string testData_1language_2translations;
+        private static readonly string pathToPresetLocalization;
 
         static TreeLocalizationLoaderTests()
         {
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
 
             testData_1language_2translations = System.IO.File.ReadAllText(System.IO.Path.Combine(basePath, "Testdata", "TreeLocalization", "1language_2translations.json"), Encoding.UTF8);
+            pathToPresetLocalization = System.IO.Path.Combine(basePath, "Testdata", "TreeLocalization", CoreConstants.PresetsFiles.TreeLocalizationFile);
         }
 
         public TreeLocalizationLoaderTests()
         {
             _mockedFileSystem = new MockFileSystem();
+        }
+
+        [Fact]
+        public void Load_CanLoadPresetFile()
+        {
+            // Arrange
+            var loader = new TreeLocalizationLoader(new FileSystem());
+
+            // Act
+            var result = loader.LoadFromFile(pathToPresetLocalization);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.True(result.Languages.Count > 1);
         }
 
         [Theory]
