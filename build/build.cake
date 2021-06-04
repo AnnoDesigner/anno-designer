@@ -282,12 +282,13 @@ var copyFilesTask = Task("Copy-Files")
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/colors.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/icons.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Microsoft.Xaml.Behaviors.dll", $"{outDirectory}");
+	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Newtonsoft.Json.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/NLog.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Octokit.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/presets.json", $"{outDirectory}");
+	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/System.IO.Abstractions.dll", $"{outDirectory}");
+	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/treeLocalization.json", $"{outDirectory}");
 	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Xceed.Wpf.Toolkit.dll", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/System.IO.Abstractions.dll", $"{outDirectory}");
-	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Newtonsoft.Json.dll", $"{outDirectory}");
 
     Information("");
 });
