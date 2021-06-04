@@ -1,38 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Models;
+using AnnoDesigner.Models;
 
 namespace AnnoDesigner.Helper
 {
-    /// <summary>
-    /// Holds 2D array of objects which with extra information about how offset the array is from something.
-    /// Used to hold objects on canvas in array even if their position might be negative.
-    /// </summary>
-    public class Moved2DArray<T> : IReadOnlyList<T[]>
-    {
-        public T[][] Array { get; set; }
-
-        public (int x, int y) Offset { get; set; }
-
-        public int Count => Array.Length;
-
-        public T[] this[int index] => Array[index];
-
-        public IEnumerator<T[]> GetEnumerator()
-        {
-            return Array.Cast<T[]>().GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return Array.GetEnumerator();
-        }
-    }
-
     public static class RoadSearchHelper
     {
         private static readonly StatisticsCalculationHelper _statisticsCalculationHelper = new StatisticsCalculationHelper();
@@ -67,8 +42,12 @@ namespace AnnoDesigner.Helper
                 var w = placedObject.Size.Width;
                 var h = placedObject.Size.Height;
                 for (var i = 0; i < w; i++)
+                {
                     for (var j = 0; j < h; j++)
+                    {
                         result[x + i - offset.x][y + j - offset.y] = placedObject;
+                    }
+                }
             });
 
             return new Moved2DArray<AnnoObject>()
@@ -120,7 +99,9 @@ namespace AnnoDesigner.Helper
                     if (cellObject.Road)
                     {
                         if (remainingDistance > 1)
+                        {
                             nextCells.Add((x, y));
+                        }
                     }
                     else if (visitedObjects.Add(cellObject))
                     {
@@ -184,8 +165,12 @@ namespace AnnoDesigner.Helper
                         // visit all cells under start object
                         visitedObjects.Add(startObject);
                         for (var i = 0; i < startObject.Size.Width; i++)
+                        {
                             for (var j = 0; j < startObject.Size.Height; j++)
+                            {
                                 visitedCells[startX + i][startY + j] = true;
+                            }
+                        }
                     }
                 }
 
@@ -199,10 +184,15 @@ namespace AnnoDesigner.Helper
                     {
                         ProcessCell(x + 1, y);
                         if (x > 0)
+                        {
                             ProcessCell(x - 1, y);
+                        }
+
                         ProcessCell(x, y + 1);
                         if (y > 0)
+                        {
                             ProcessCell(x, y - 1);
+                        }
                     }
                 }
                 currentCells.Clear();
