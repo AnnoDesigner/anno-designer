@@ -2,30 +2,38 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Models;
+using AnnoDesigner.Models;
 
 namespace AnnoDesigner.Helper
 {
     public static class RoadSearchHelper
     {
+        private static readonly StatisticsCalculationHelper _statisticsCalculationHelper = new StatisticsCalculationHelper();
+
         private static void DoNothing(AnnoObject objectInRange) { }
 
         /// <summary>
-        /// Creates 2D array from input AnnoObjects.
+        /// Creates offset 2D array from input AnnoObjects.
+        /// Whole array is offset so that all input AnnoObjects are fully inside the array with one empty grid on each edge.
         /// Every input AnnoObject will be accessable from every index which is covered by that AnnoObject on the grid.
         /// If object covers multiple grid cells, it will be in the array at every index, which it covers.
         /// </summary>
-        public static AnnoObject[][] PrepareGridDictionary(IEnumerable<AnnoObject> placedObjects)
+        public static Moved2DArray<AnnoObject> PrepareGridDictionary(IEnumerable<AnnoObject> placedObjects)
         {
             if (placedObjects is null || placedObjects.Count() < 1)
             {
                 return null;
             }
 
-            var maxX = Math.Max(0, (int)placedObjects.Max(o => o.Position.X + o.Size.Width) + 1);
-            var maxY = Math.Max(0, (int)placedObjects.Max(o => o.Position.Y + o.Size.Height) + 1);
+            var statistics = _statisticsCalculationHelper.CalculateStatistics(placedObjects);
+            (int x, int y) offset = ((int)statistics.MinX - 1, (int)statistics.MinY - 1);
 
-            var result = Enumerable.Range(0, maxX).Select(i => new AnnoObject[maxY]).ToArray();
+            // make an array with one free grid cell on each edge
+            var result = Enumerable.Range(0, (int)(statistics.MaxX - statistics.MinX + 2))
+                .Select(i => new AnnoObject[(int)(statistics.MaxY - statistics.MinY + 2)])
+                .ToArray();
 
             Parallel.ForEach(placedObjects, placedObject =>
             {
@@ -34,12 +42,19 @@ namespace AnnoDesigner.Helper
                 var w = placedObject.Size.Width;
                 var h = placedObject.Size.Height;
                 for (var i = 0; i < w; i++)
+                {
                     for (var j = 0; j < h; j++)
-                        if (x + i >= 0 && y + j >= 0)
-                            result[x + i][y + j] = placedObject;
+                    {
+                        result[x + i - offset.x][y + j - offset.y] = placedObject;
+                    }
+                }
             });
 
-            return result;
+            return new Moved2DArray<AnnoObject>()
+            {
+                Array = result,
+                Offset = offset
+            };
         }
 
         /// <summary>
@@ -53,7 +68,7 @@ namespace AnnoDesigner.Helper
             IEnumerable<AnnoObject> placedObjects,
             IEnumerable<AnnoObject> startObjects,
             Func<AnnoObject, int> rangeGetter,
-            AnnoObject[][] gridDictionary = null,
+            Moved2DArray<AnnoObject> gridDictionary = null,
             Action<AnnoObject> inRangeAction = null)
         {
             if (startObjects.Count() == 0)
@@ -70,7 +85,7 @@ namespace AnnoDesigner.Helper
             inRangeAction = inRangeAction ?? DoNothing;
 
             var visitedObjects = new HashSet<AnnoObject>();
-            var visitedCells = Enumerable.Range(0, gridDictionary.Length).Select(i => new bool[gridDictionary[0].Length]).ToArray();
+            var visitedCells = Enumerable.Range(0, gridDictionary.Count).Select(i => new bool[gridDictionary[0].Length]).ToArray();
 
             var distanceToStartObjects = startObjects.ToLookup(o => rangeGetter(o));
             var remainingDistance = distanceToStartObjects.Max(g => g.Key);
@@ -84,7 +99,9 @@ namespace AnnoDesigner.Helper
                     if (cellObject.Road)
                     {
                         if (remainingDistance > 1)
+                        {
                             nextCells.Add((x, y));
+                        }
                     }
                     else if (visitedObjects.Add(cellObject))
                     {
@@ -102,8 +119,8 @@ namespace AnnoDesigner.Helper
                     foreach (var startObject in distanceToStartObjects[remainingDistance])
                     {
                         var initRange = rangeGetter(startObject);
-                        var startX = (int)startObject.Position.X;
-                        var startY = (int)startObject.Position.Y;
+                        var startX = (int)startObject.Position.X - gridDictionary.Offset.x;
+                        var startY = (int)startObject.Position.Y - gridDictionary.Offset.y;
                         var leftX = startX - 1;
                         var rightX = (int)(startX + startObject.Size.Width);
                         var topY = startY - 1;
@@ -114,13 +131,13 @@ namespace AnnoDesigner.Helper
                         {
                             var x = i + startX;
 
-                            if (x >= 0 && topY >= 0 && gridDictionary[x][topY]?.Road == true)
+                            if (gridDictionary[x][topY]?.Road == true)
                             {
                                 nextCells.Add((x, topY));
                                 visitedCells[x][topY] = true;
                             }
 
-                            if (x >= 0 && bottomY >= 0 && gridDictionary[x][bottomY]?.Road == true)
+                            if (gridDictionary[x][bottomY]?.Road == true)
                             {
                                 nextCells.Add((x, bottomY));
                                 visitedCells[x][bottomY] = true;
@@ -132,13 +149,13 @@ namespace AnnoDesigner.Helper
                         {
                             var y = i + startY;
 
-                            if (leftX >= 0 && y >= 0 && gridDictionary[leftX][y]?.Road == true)
+                            if (gridDictionary[leftX][y]?.Road == true)
                             {
                                 nextCells.Add((leftX, y));
                                 visitedCells[leftX][y] = true;
                             }
 
-                            if (rightX >= 0 && y >= 0 && gridDictionary[rightX][y]?.Road == true)
+                            if (gridDictionary[rightX][y]?.Road == true)
                             {
                                 nextCells.Add((rightX, y));
                                 visitedCells[rightX][y] = true;
@@ -148,9 +165,12 @@ namespace AnnoDesigner.Helper
                         // visit all cells under start object
                         visitedObjects.Add(startObject);
                         for (var i = 0; i < startObject.Size.Width; i++)
+                        {
                             for (var j = 0; j < startObject.Size.Height; j++)
-                                if (startX + i >= 0 && startY + j >= 0)
-                                    visitedCells[startX + i][startY + j] = true;
+                            {
+                                visitedCells[startX + i][startY + j] = true;
+                            }
+                        }
                     }
                 }
 
@@ -164,10 +184,15 @@ namespace AnnoDesigner.Helper
                     {
                         ProcessCell(x + 1, y);
                         if (x > 0)
+                        {
                             ProcessCell(x - 1, y);
+                        }
+
                         ProcessCell(x, y + 1);
                         if (y > 0)
+                        {
                             ProcessCell(x, y - 1);
+                        }
                     }
                 }
                 currentCells.Clear();
