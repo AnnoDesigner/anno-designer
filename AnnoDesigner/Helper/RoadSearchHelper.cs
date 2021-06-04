@@ -35,6 +35,8 @@ namespace AnnoDesigner.Helper
 
     public static class RoadSearchHelper
     {
+        private static readonly StatisticsCalculationHelper _statisticsCalculationHelper = new StatisticsCalculationHelper();
+
         private static void DoNothing(AnnoObject objectInRange) { }
 
         /// <summary>
@@ -50,12 +52,12 @@ namespace AnnoDesigner.Helper
                 return null;
             }
 
-            var statistics = new StatisticsCalculationHelper().CalculateStatistics(placedObjects);
-            (int x, int y) offset = ((int) statistics.MinX - 1, (int) statistics.MinY - 1);
+            var statistics = _statisticsCalculationHelper.CalculateStatistics(placedObjects);
+            (int x, int y) offset = ((int)statistics.MinX - 1, (int)statistics.MinY - 1);
 
             // make an array with one free grid cell on each edge
-            var result = Enumerable.Range(0, (int) (statistics.MaxX - statistics.MinX + 2))
-                .Select(i => new AnnoObject[(int) (statistics.MaxY - statistics.MinY + 2)])
+            var result = Enumerable.Range(0, (int)(statistics.MaxX - statistics.MinX + 2))
+                .Select(i => new AnnoObject[(int)(statistics.MaxY - statistics.MinY + 2)])
                 .ToArray();
 
             Parallel.ForEach(placedObjects, placedObject =>
