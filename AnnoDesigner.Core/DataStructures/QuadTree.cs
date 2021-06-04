@@ -322,9 +322,9 @@ namespace AnnoDesigner.Core.DataStructures
         /// </summary>
         public void ReIndex()
         {
-                var oldRoot = root;
-                root = new Quadrant(Extent);
-                AddRange(oldRoot.AllWithBounds());
+            var oldRoot = root;
+            root = new Quadrant(Extent);
+            AddRange(oldRoot.AllWithBounds());
         }
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace AnnoDesigner.Core.DataStructures
         {
             var items = new List<T>(previousCount);
             root.GetItemsIntersecting(items, bounds);
-            previousCount = items.Count; 
+            previousCount = items.Count;
             return items;
         }
 

@@ -67,7 +67,6 @@ namespace AnnoDesigner.Localization
                         { "Extras" , "Extras" },
                         { "Normalize" , "Normalize" },
                         { "ResetZoom" , "Reset zoom" },
-                        { "MergeRoads" , "Merge roads" },
                         { "RegisterFileExtension" , "Register file extension" },
                         { "RegisterFileExtensionSuccessful" , "Registration of file extension was successful." },
                         { "UnregisterFileExtension" , "Unregister file extension" },
@@ -235,7 +234,11 @@ namespace AnnoDesigner.Localization
                         { "FileVersionMismatchTItle" , "File version mismatch" },
                         { "LayoutLoadingError" , "Something went wrong while loading the layout." },
                         { "LayoutSavingError" , "Something went wrong while saving the layout." },
-                        { "InvalidBuildingConfiguration" , "Invalid building configuration." }
+                        { "InvalidBuildingConfiguration" , "Invalid building configuration." },
+                        { "MergeRoads" , "Merge roads" },
+                        { "LoadingTreeLocalizationFailed" , "Loading of the localization failed." },
+                        { "Undo" , "Undo" },
+                        { "Redo" , "Redo" }
                     }
                 },
                 {
@@ -251,7 +254,6 @@ namespace AnnoDesigner.Localization
                         { "Extras" , "Extras" },
                         { "Normalize" , "Normalisieren" },
                         { "ResetZoom" , "Zoom zurücksetzen" },
-                        { "MergeRoads" , "Straßen zusammenführen" },
                         { "RegisterFileExtension" , "Dateierweiterung registrieren" },
                         { "RegisterFileExtensionSuccessful" , "Dateierweiterung wurde erfolgreich registriert." },
                         { "UnregisterFileExtension" , "Dateierweiterung entfernen" },
@@ -419,7 +421,11 @@ namespace AnnoDesigner.Localization
                         { "FileVersionMismatchTItle" , "Unstimmigkeit der Dateiversion" },
                         { "LayoutLoadingError" , "Beim Laden des Layouts ging etwas schief." },
                         { "LayoutSavingError" , "Beim Speichern des Layouts ist etwas schiefgegangen." },
-                        { "InvalidBuildingConfiguration" , "Ungültige Gebäudekonfiguration." }
+                        { "InvalidBuildingConfiguration" , "Ungültige Gebäudekonfiguration." },
+                        { "MergeRoads" , "Straßen zusammenführen" },
+                        { "LoadingTreeLocalizationFailed" , "Das Laden der Übersetzungen ist fehlgeschlagen." },
+                        { "Undo" , "Undo" },
+                        { "Redo" , "Redo" }
                     }
                 },
                 {
@@ -435,7 +441,6 @@ namespace AnnoDesigner.Localization
                         { "Extras" , "Extras" },
                         { "Normalize" , "Centrer" },
                         { "ResetZoom" , "Rénitialiser le zoom" },
-                        { "MergeRoads" , "Fusionner les routes" },
                         { "RegisterFileExtension" , "Enregistrer l'extension du fichier" },
                         { "RegisterFileExtensionSuccessful" , "L'enregistrement de l'extension du fichier est terminée" },
                         { "UnregisterFileExtension" , "Supprimer l'extension du fichier" },
@@ -603,7 +608,11 @@ namespace AnnoDesigner.Localization
                         { "FileVersionMismatchTItle" , "Mauvaise concordance des versions des fichiers" },
                         { "LayoutLoadingError" , "Quelque chose s'est mal passé lors du chargement de la mise en page." },
                         { "LayoutSavingError" , "Quelque chose s'est mal passé lors de la sauvegarde de la mise en page." },
-                        { "InvalidBuildingConfiguration" , "Configuration du bâtiment incorrecte." }
+                        { "InvalidBuildingConfiguration" , "Configuration du bâtiment incorrecte." },
+                        { "MergeRoads" , "Fusionner les routes" },
+                        { "LoadingTreeLocalizationFailed" , "Le chargement de la localisation a échoué." },
+                        { "Undo" , "Undo" },
+                        { "Redo" , "Redo" }
                     }
                 },
                 {
@@ -619,7 +628,6 @@ namespace AnnoDesigner.Localization
                         { "Extras" , "Dodatki" },
                         { "Normalize" , "Znormalizuj" },
                         { "ResetZoom" , "Resetuj powiększenie" },
-                        { "MergeRoads" , "Scal drogi" },
                         { "RegisterFileExtension" , "Zarejestruj rozszerzenie pliku" },
                         { "RegisterFileExtensionSuccessful" , "Rejestracja rozszerzenia pliku zakończyła się sukcesem." },
                         { "UnregisterFileExtension" , "Wyrejestruj rozszerzenie pliku" },
@@ -787,7 +795,11 @@ namespace AnnoDesigner.Localization
                         { "FileVersionMismatchTItle" , "Niedopasowanie wersji pliku" },
                         { "LayoutLoadingError" , "Coś poszło nie tak podczas ładowania układu." },
                         { "LayoutSavingError" , "Coś poszło nie tak podczas zapisywania układu." },
-                        { "InvalidBuildingConfiguration" , "Nieprawidłowa konfiguracja budynku." }
+                        { "InvalidBuildingConfiguration" , "Nieprawidłowa konfiguracja budynku." },
+                        { "MergeRoads" , "Scal drogi" },
+                        { "LoadingTreeLocalizationFailed" , "Ładowanie lokalizacji nie powiodło się." },
+                        { "Undo" , "Undo" },
+                        { "Redo" , "Redo" }
                     }
                 },
                 {
@@ -803,7 +815,6 @@ namespace AnnoDesigner.Localization
                         { "Extras" , "Дополнительно" },
                         { "Normalize" , "Нормализация" },
                         { "ResetZoom" , "Сбросить масштаб" },
-                        { "MergeRoads" , "Oбъединить дороги" },
                         { "RegisterFileExtension" , "Зарегистрировать расширение файла" },
                         { "RegisterFileExtensionSuccessful" , "Регистрация расширения файла прошла успешно." },
                         { "UnregisterFileExtension" , "Отмена регистрации расширения файла" },
@@ -971,7 +982,11 @@ namespace AnnoDesigner.Localization
                         { "FileVersionMismatchTItle" , "Несоответствие версии файла" },
                         { "LayoutLoadingError" , "Что-то пошло не так во время загрузки макета." },
                         { "LayoutSavingError" , "Что-то пошло не так во время сохранения макета." },
-                        { "InvalidBuildingConfiguration" , "Неверная конфигурация здания." }
+                        { "InvalidBuildingConfiguration" , "Неверная конфигурация здания." },
+                        { "MergeRoads" , "Oбъединить дороги" },
+                        { "LoadingTreeLocalizationFailed" , "Загрузка локализации не удалась." },
+                        { "Undo" , "Undo" },
+                        { "Redo" , "Redo" }
                     }
                 },
             };
