@@ -113,5 +113,14 @@
     <Setting Name="ZoomSensitivityPercentage" Type="System.Double" Scope="User">
       <Value Profile="(Default)">50</Value>
     </Setting>
+    <Setting Name="InvertPanningDirection" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="InvertScrollingDirection" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShowScrollbars" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -463,5 +463,41 @@ namespace AnnoDesigner.Properties {
                 this["ZoomSensitivityPercentage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InvertPanningDirection {
+            get {
+                return ((bool)(this["InvertPanningDirection"]));
+            }
+            set {
+                this["InvertPanningDirection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool InvertScrollingDirection {
+            get {
+                return ((bool)(this["InvertScrollingDirection"]));
+            }
+            set {
+                this["InvertScrollingDirection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowScrollbars {
+            get {
+                return ((bool)(this["ShowScrollbars"]));
+            }
+            set {
+                this["ShowScrollbars"] = value;
+            }
+        }
     }
 }

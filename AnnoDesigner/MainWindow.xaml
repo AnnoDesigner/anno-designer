@@ -128,6 +128,7 @@
                           ItemsSource="{Binding Languages}">
                     <MenuItem.Resources>
                         <Image x:Key="flagImage"
+                               Height="22"
                                Source="{Binding FlagPath}"
                                x:Shared="False" />
                     </MenuItem.Resources>
@@ -167,6 +168,8 @@
                               Command="{Binding CanvasNormalizeCommand}" />
                     <MenuItem Header="{l:Localize ResetZoom}"
                               Command="{Binding CanvasResetZoomCommand}" />
+                    <MenuItem Header="{l:Localize MergeRoads}"
+                              Command="{Binding MergeRoadsCommand}" />
                     <Separator />
                     <MenuItem Header="{l:Localize RegisterFileExtension}"
                               Command="{Binding RegisterExtensionCommand}" />
@@ -227,16 +230,17 @@
                     <ColumnDefinition x:Name="colStatisticsView"
                                       Width="Auto"
                                       MinWidth="100" />
-                    <!-- 
-                                  MinWidth="100" -->
                 </Grid.ColumnDefinitions>
-
-                <my:AnnoCanvas x:Name="annoCanvas"
-                               Grid.Column="0"
-                               RenderGrid="True"
-                               RenderIcon="True"
-                               RenderLabel="True"
-                               Grid.ColumnSpan="2" />
+                <!-- ScrollViewer steals focus (all key events) unless `Focusable` is set to false. Scrolling via arrow keys and page up/down stil works
+                as the event will still bubble up to the scroll viewer as its not handled in AnnoCanvas -->
+                <ScrollViewer Grid.Column="0"
+                              Grid.ColumnSpan="2"
+                              VerticalScrollBarVisibility="{Binding ShowScrollbars}"
+                              HorizontalScrollBarVisibility="{Binding ShowScrollbars}"
+                              CanContentScroll="True"
+                              Focusable="False">
+                    <my:AnnoCanvas x:Name="annoCanvas" />
+                </ScrollViewer>
 
                 <GridSplitter x:Name="splitterStatisticsView"
                               Grid.Column="2"
@@ -466,6 +470,12 @@
                                      Height="10"
                                      IsEnabled="False"
                                      Text="{Binding BuildingSettingsViewModel.BuildingIdentifier}"
+                                     Visibility="Collapsed"
+                                     Width="140" />
+                            <TextBox DockPanel.Dock="Right"
+                                     Height="10"
+                                     IsEnabled="False"
+                                     Text="{Binding BuildingSettingsViewModel.BuildingRealName}"
                                      Visibility="Collapsed"
                                      Width="140" />
                         </DockPanel>

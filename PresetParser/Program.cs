@@ -31,7 +31,7 @@ namespace PresetParser
         public static bool isExcludedGUID = false; /*only for Anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-        private const string BUILDING_PRESETS_VERSION = "3.5";
+        private const string BUILDING_PRESETS_VERSION = "3.10";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -87,12 +87,13 @@ namespace PresetParser
         /// </summary>
         public static IList<FarmField> farmFieldList1800 = new List<FarmField>();
         // Removed IncludeBuildingsTemplate "CultureModule" (to must to handle and thus are replaced with the Zoo Module and Museum Module
-        private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
+        private static readonly List<string> IncludeBuildingsTemplateNames1800 = new List<string> { "ResidenceBuilding", "ResidenceBuilding7", "FarmBuilding", "FreeAreaBuilding", "FactoryBuilding7", "HeavyFactoryBuilding",
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding",
             "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding",
-            "CultureModule","Palace","BuffFactory", "BuildPermitBuilding", "BuildPermitModules", "OrnamentalModule"};
+            "CultureModule","Palace","BuffFactory", "BuildPermitBuilding", "BuildPermitModules", "OrnamentalModule", "IrrigationPropagationSource", "ResearchCenter", "Dockland", "HarborOrnament",
+            "Restaurant", "Busstop","Multifactory", "FreeAreaRecipeBuilding" };
         private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358", "1010462",
-            "1010463", "1010464", "1010275", "1010271", "1010516", "1010517"};
+            "1010463", "1010464", "1010275", "1010271", "1010516", "1010517", "1010519"};
         private static readonly List<string> ExcludeBuildingsGUID1800 = new List<string> { "269850", "269851" };
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "tier02", "tier03", "tier04", "tier05", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Quay System",
             "module_01_birds", "module_02_peacock", "(Warehouse II)", "(Warehouse III)", "logistic_colony01_01 (Warehouse I)", "Kontor_main_02", "Kontor_main_03", "kontor_main_colony01",
@@ -103,7 +104,9 @@ namespace PresetParser
             "Active fertility","- Decree","Ministry of Public Services","Ministry of Productivity","Arctic Shepherd","fertility","Arctic Cook","Arctic Builder","Arctic Hunter","Arctic Sewer"," Buff"," Seeds",
             "PropagandaTower Merciers Version","tractor_module_02 (Harvester)", "Culture_1x1_statue", "Culture_prop_system_1x1_10", "Culture_prop_system_1x1_01", "Logistic_05 (Warehouse IV)", "Park_1x1_hedgeentrance",
             "Harbour Slot (Ghost) Arctic", "Tractor_module_01 (GASOLINE TEST)", "Fuel_station_01 (GASOLINE TEST)", "Kontor_main_04", "Kontor_imperial_04", "Culture_1x1_plaza","Harbor_12 (Coal Harbor)",
-            "Harbor_13 (Coal Storage)", "Kontor_main_arctic_01", "Kontor_imperial_arctic_01" };
+            "Harbor_13 (Coal Storage)", "Kontor_main_arctic_01", "Kontor_imperial_arctic_01", "ResearchCenter_02", "ResearchCenter_03", "StoryIsland01 Monastery Kontor","StoryIsland02 Military Kontor",
+            "StoryIsland03 Economy Kontor", "Diner_0", "Bar_0", "Cafe_0" , "Multifactory_Chemical_Lemonade", "Multifactory_Chemical_Shampoo", "Multifactory_Chemical_Souvenier", "TreePlanter_Moderate_Jam",
+            "TreePlanter_Moderate_Cherry", "Tourist_monument_03", "TreePlanter_Colony01_Coconut", "TreePlanter_Colony01_Camphor", "TreePlanter_Colony01_Citrus" };
         //Skip the following icons to put in the presets for anno 1800, to avoid double Ornamentalbuildings
         public static List<string> ExcludeOrnamentsIcons_1800 = new List<string> { "A7_bush03.png", "A7_park_props_1x1_01.png", "A7_park_props_1x1_07.png", "A7_bush01.png", "A7_col_props_1x1_13_back.png", "A7_bush05.png", "A7_park_props_1x1_08.png",
             "A7_bush02.png", "A7_bush04.png", "A7_col_props_1x1_11_bac.pngk", "A7_col_props_1x1_01_back.png", "A7_col_props_1x1_07_back.png","A7_park_1x1_06.png","A7_park_1x1_02.png","A7_park_1x1_03.png","A7_col_park_props_system_1x1_21_back.png",
@@ -112,12 +115,14 @@ namespace PresetParser
         /// <summary>
         /// in NewFactionAndGroup1800.cs are made the following lists
         /// ChangeBuildingTo<1>_<2>_1800 
-        /// <1> can be : AW (All Worlds) - NW1 (New World - Farmers) - NW2 (New World - Workers) - NW3 (New World - Artisans)
-        ///              NW4 (New World - Engineers) - NW5 (New World - Investors)  
-        ///              OW1 (Old World - Jornaleros) - OW2 (Old World - Obreros)
-        ///              AT1 (Arctic - Explorers) - AT2 (Arctic - Technicians)
+        /// <1> can be : OW (All Worlds) - OW1 (New World - (1) Farmers) - OW2 (New World - (2) Workers) - OW3 (New World - (3) Artisans)
+        ///              OW4 (New World - (4) Engineers  - OW5 (New World - (5) Investors) - OW6 (New World (13) Scholars)  
+        ///              NW1 (Old World - (7) Jornaleros  - NW2 (Old World - (8) Obreros)
+        ///              AT1 (Arctic - (10) Explorers)  - AT2 (Arctic - (11) Technicians)
+        ///              AF1 (Africa - (14) Shepherds)  - AF2 (Africa - (15) Elders) 
         /// <2> wil be the Group under <1>, like Production, Public, etc
-        /// </summary>
+        ///
+        /// Changed the mistake OW/NW (23-10-2020) it is as in game now OW = Old World and NW = New World
         #endregion
 
         #endregion
@@ -579,6 +584,7 @@ namespace PresetParser
 
         #endregion
 
+        // Parsing Buildings Info 
         #region Parsing Buildngs for Anno 1404/2070
 
         private static void ParseAssetsFile(string filename, string xPathToBuildingsNode, string YPath, List<IBuildingInfo> buildings,
@@ -915,9 +921,20 @@ namespace PresetParser
 
             #region Get/Set InfluenceRange information
 
-            //because this number does not exist yet, we set this to zero
-            b.InfluenceRange = 0;
-
+            // New 29-09-2020 : Head shield generation into radius parameter, on request #296
+            // Read the xml key : <ShieldGenerator> / <ShieldedRadius> for heating arctic buildings (raw number)
+            //                    and Moon Shield Generators
+            b.InfluenceRadius = Convert.ToInt32(values?["ShieldGenerator"]?["ShieldedRadius"]?.InnerText);
+            // read the xml key : <Energy> / <RadiusUsed> and then devide by 4096 for the training centers
+            if (string.IsNullOrEmpty(Convert.ToString(b.InfluenceRadius)) || b.InfluenceRadius == 0)
+            {
+                b.InfluenceRadius = (Convert.ToInt32(values?["Energy"]?["RadiusUsed"]?.InnerText) / 4096);
+            }
+            // Set influenceRadius to 0, if it is still Null/Empty
+            if (string.IsNullOrEmpty(Convert.ToString(b.InfluenceRadius)))
+            {
+                b.InfluenceRadius = 0;
+            }
             #endregion
 
             #region Get BuildBlockers information
@@ -1133,6 +1150,17 @@ namespace PresetParser
                 return;
             }
 
+            // Skip the Double list creating Docklands Ornaments, as they can placed in New world as well
+            if (identifierName.Contains("SA_Docklands_Orna_")) { return; }
+
+            // Because Game Dev's removed some items (DEPRECATED) and we still want them in AD,
+            // so i remove this word from the identifierName strings (since Game Update 10) Chanhe made 03-03-2021
+            if (identifierName.Contains("DEPRECATED_"))
+            {
+                identifierName = identifierName.Replace("DEPRECATED_", "");
+                Console.WriteLine("--> Removed 'DEPRECATED_' to get object still in AD: ");
+            }
+
             // Setting the factionname, thats the first menu after header
             string associatedRegion = "";
             associatedRegion = values?["Building"]?["AssociatedRegions"]?.InnerText;
@@ -1191,10 +1219,11 @@ namespace PresetParser
                 case "101331": { templateName = "HeavyFactoryBuilding"; break; }
                 case "FarmBuilding_Arctic": { templateName = "FarmBuilding"; break; }
                 case "PalaceModule": { templateName = "PalaceBuilding"; factionName = "(05) Investors"; groupName = "Palace Buildings"; break; }
-                case "Palace": { templateName = "PalaceBuilding"; factionName = "(05) Investors"; groupName = "Palace Buildings"; break; }
                 case "PalaceMinistry": { templateName = "PalaceBuilding"; factionName = "All Worlds"; groupName = "Special Buildings"; break; }
                 case "1010516": { templateName = "ArcticLodge"; factionName = "(11) Technicians"; groupName = "Special Buildings"; break; }
                 case "1010517": { templateName = "SkyTradingPost"; factionName = "(11) Technicians"; groupName = "Special Buildings"; break; }
+                case "FactoryBuilding7_BuildPermit": { factionName = "(13) Scholars"; groupName = "Permitted Buildings"; break; }
+                case "HarborOrnament": { factionName = "Ornaments"; groupName = "22 Docklands Ornaments"; break; }
                 default: { groupName = templateName.FirstCharToUpper(); break; }
             }
 
@@ -1203,6 +1232,7 @@ namespace PresetParser
                 if (factionName == "Moderate") { factionName = "(06) Old World Fields"; groupName = null; }
                 if (factionName == "Colony01") { factionName = "(09) New World Fields"; groupName = null; }
                 if (factionName == "Arctic") { factionName = "(12) Arctic Farm Fields"; groupName = null; }
+                if (factionName == "Africa") { factionName = "(16) Enbesa Farm Fields"; groupName = null; }
             }
 
             //Renaming the Fuel Station for Moderate (OW) site, to avoid double listsed on Obreros tree
@@ -1214,6 +1244,8 @@ namespace PresetParser
                 case "Tractor_module_01 (Tractor)": { factionName = "(06) Old World Fields"; groupName = null; break; }
                 case "Silo (Corn)": { factionName = "(09) New World Fields"; groupName = null; break; }
                 case "Colony01_tractor_module_01 (Tractor)": { factionName = "(09) New World Fields"; groupName = null; break; }
+                case "Africa_silo (Teff)": { factionName = "(16) Enbesa Farm Fields"; groupName = null; break; }
+                case "Africa_tractor_module_01 (Tractor)": { factionName = "(16) Enbesa Farm Fields"; groupName = null; break; }
                 case "Entertainment_musicpavillion_empty": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Culture_01 (Zoo)": { factionName = "Attractiveness"; groupName = null; break; }
                 case "Culture_02 (Museum)": { factionName = "Attractiveness"; groupName = null; break; }
@@ -1221,9 +1253,29 @@ namespace PresetParser
                 case "Residence_tier01": { factionName = "(01) Farmers"; identifierName = "Residence_Old_World"; groupName = "Residence"; break; }
                 case "Residence_colony01_tier01": { factionName = "(07) Jornaleros"; identifierName = "Residence_New_World"; groupName = "Residence"; templateName = "ResidenceBuilding7"; break; }
                 case "Residence_arctic_tier01": { factionName = "(10) Explorers"; identifierName = "Residence_Arctic_World"; groupName = "Residence"; break; }
+                case "Residence_colony02_tier01": { factionName = "(14) Shepherds"; identifierName = "Residence_Africa_World"; groupName = "Residence"; templateName = "ResidenceBuilding7"; break; }
                 case "Coastal_03 (Quartz Sand Coast Building)": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
                 case "Electricity_03 (Gas Power Plant)": { factionName = "(11) Technicians"; groupName = "Public Buildings"; break; }
                 case "Event_ornament_historyedition": { factionName = "Ornaments"; groupName = "11 Special Ornaments"; break; }
+                case "Hotel": { factionName = "(17) Tourists"; groupName = null; break; }
+                case "Tourist_monument_02_blank (restaurant)": { factionName = "(17) Tourists"; groupName = null; break; }
+                case "TreePlanter_Moderate_blank": { factionName = "(17) Tourists"; groupName = "Orchard"; break; }
+                case "TreePlanter_Colony01_blank": { factionName = "(17) Tourists"; groupName = "Orchard"; break; }
+                case "Multifactory_Chemical_Blank": { factionName = "(17) Tourists"; groupName = null; break; }
+                case "Bus Stop": { factionName = "(17) Tourists"; groupName = null; break; }
+            }
+
+            // Place all TouristSeason Ornament in the right Directory
+            if (identifierName.Contains("TouristSeason Ornament") || identifierName.Contains("TouristSeason FlowerBed"))
+            {
+                factionName = "Ornaments";
+                groupName = "23 Tourist Ornaments";
+            }
+
+            // Place the Tourist Restaurants in the right Menu
+            if (groupName == "Restaurant")
+            {
+                factionName = "(17) Tourists";
             }
 
             // Place the rest of the buildings in the right Faction > Group menu
@@ -1234,19 +1286,67 @@ namespace PresetParser
             groupName = groupInfo.Group;
             templateName = groupInfo.Template;
 
-            #endregion
-
-            if (factionName?.Length == 0 || factionName == "Moderate" || factionName == "Colony01")
+            if (factionName?.Length == 0 || factionName == "Moderate" || factionName == "Colony01" || factionName == "Arctic" || factionName == "Africa")
             {
                 factionName = "Not Placed Yet -" + factionName;
                 // Because the Culture_03 (BotanicalGarden) is in the xPath that i normaly skipp, i must skipp this group here now.
                 if (groupName == "CultureModule") { return; }
             }
+            if (factionName == "Meta;Moderate;Colony01;Arctic;Africa")
+            {
+                factionName = "Not Placed Yet -All Worlds";
+            }
+
+            #endregion
 
             #region Sorting the Ornaments for the new Ornaments Menu (11/05/2020)
 
             //Sorting to the new menu
             groupInfo = NewOrnamentsGroup1800.GetNewOrnamentsGroup1800(identifierName, factionName, groupName, templateName);
+            factionName = groupInfo.Faction;
+            groupName = groupInfo.Group;
+            templateName = groupInfo.Template;
+
+            //to keep Palace on his place where it belongs
+            if (identifierName == "Palace")
+            {
+                templateName = "PalaceBuilding"; factionName = "(05) Investors"; groupName = "Palace Buildings";
+            }
+
+            //Bring all Docklands Modules in to 1 menu, Template is adjusted for Color Preset
+            if (templateName.Contains("Dockland"))
+            {
+                if (templateName != "DocklandMain")
+                {
+                    factionName = "Harbor";
+                    groupName = "Docklands Modules";
+                    templateName = "DocklandsHarbor";
+                }
+                else
+                {
+                    factionName = "Harbor";
+                    groupName = null;
+                    templateName = "DocklandsHarbor";
+                }
+            }
+
+            //Set right group to the City Lights DLC (just need a Faction and Group change by starting identifiername) (10-01-2021)
+            //if (templateName == "OrnamentalBuilding" && factionName == "Not Placed Yet -Moderate") {
+            if (templateName == "OrnamentalBuilding") {
+                if (identifierName.Contains("CityOrnament "))
+                {
+                    factionName = "Ornaments"; groupName = "20 City Lights";
+                }
+            }
+
+            //set right Group on the ornamentals of Enbesa (just need a Faction and Group change)
+            if (templateName == "OrnamentalBuilding" && factionName == "Not Placed Yet -Africa")
+            {
+                factionName = "Ornaments"; groupName = "21 Enbesa Ornaments";
+            }
+
+            //Set the right Colors to the Enbesa Ornament Group
+            groupInfo = MapToTemplateName1800.GetNewOrnamentsGroup1800(identifierName, factionName, groupName, templateName);
             factionName = groupInfo.Faction;
             groupName = groupInfo.Group;
             templateName = groupInfo.Template;
@@ -1301,13 +1401,13 @@ namespace PresetParser
                 }
                 else
                 {
-                    Console.WriteLine("-BuildBlocker not found, skipping: Missing Object File");
+                    Console.WriteLine("-BuildBlocker not found, skipping: Missing Object File (B)");
                     return;
                 }
             }
             else
             {
-                Console.WriteLine("-BuildBlocker not found, skipping: Object Informaion not found");
+                Console.WriteLine("-BuildBlocker not found, skipping: Object Informaion not found (A)");
                 return;
             }
 
@@ -1358,7 +1458,7 @@ namespace PresetParser
             {
                 b.IconFileName = null;
 
-                //Buildings that came in with the BaseAssetGUID template has no icons, this will fix that;
+                //Buildings that came in with the BaseAssetGUID template has no icons or just have no icon, this will fix that;
                 switch (identifierName)
                 {
                     case "Residence_New_World": b.IconFileName = replaceName + "resident.png"; break;
@@ -1376,6 +1476,10 @@ namespace PresetParser
                     case "Institution_colony01_03 (Hospital)": b.IconFileName = replaceName + "hospital.png"; break;  //set NW Hospital Icon
                     case "Agriculture_colony01_11_field (Alpaca Pasture)": { b.IconFileName = replaceName + "general_module_01.png"; break; }
                     case "Agriculture_colony01_09_field (Cattle Pasture)": { b.IconFileName = replaceName + "general_module_01.png"; break; }
+                    case "Residence_Africa_World": { b.IconFileName = replaceName + "resident.png"; break; } //set Shepherd Residence to default resident.png (has none)
+                    case "Harbor_arctic_01 (Depot)": { b.IconFileName = replaceName + "depot.png"; break; }
+                    case "Institution_colony02_02 (Police)": { b.IconFileName = replaceName + "police.png"; break; } // Fix non icon Africa Police Station
+                    case "Institution_colony02_03 (Hospital)": { b.IconFileName = replaceName + "hospital.png"; break; } // fix non icon for Africa Hospital 
                 }
             }
 
@@ -1437,6 +1541,12 @@ namespace PresetParser
                 b.InfluenceRadius = Convert.ToInt32(values?["ItemContainer"]?["SocketScopeRadius"]?.InnerText);
             }
 
+            //Tourist DLC Restaurants, Bars and Cafe's
+            if (string.IsNullOrEmpty(Convert.ToString(b.InfluenceRadius)) || b.InfluenceRadius == 0)
+            {
+                b.InfluenceRadius = Convert.ToInt32(values?["BuffFactory"]?["ProductionBuffDistance"]?.InnerText);
+            }
+
             switch (b.Identifier)
             {
                 case "Agriculture_colony01_06 (Timber Yard)": b.InfluenceRadius = 9; break;
@@ -1455,6 +1565,10 @@ namespace PresetParser
             if (b.Template == "CityInstitutionBuilding")
             {
                 b.InfluenceRange = 26; //Police - Fire stations and Hospiitals
+                if (b.Identifier== "Institution_arctic_01 (Ranger Station)")
+                {
+                    b.InfluenceRange = 50; //fix Ranger Station InfluencRange as this is separated from normal ones (10-01-2021) 
+                }
             }
             else if (!string.IsNullOrEmpty(values?["PublicService"]?["FullSatisfactionDistance"]?.InnerText))
             {
@@ -1471,6 +1585,13 @@ namespace PresetParser
             }
 
             #endregion
+
+            // Get/Set Influence Radius and Influence Range (Dual on 1 building : Busstop)
+            //Bussttop (has an other range name)
+            if (b.Template == "Busstop") {
+                b.InfluenceRadius = Convert.ToInt32(values?["BusStop"]?["ActivationRadius"]?.InnerText);
+                b.InfluenceRange = Convert.ToInt32(values["BusStop"]["StreetConnectionRange"].InnerText);
+            }
 
             #region Get localizations
 
@@ -1618,6 +1739,28 @@ namespace PresetParser
                             case 4: { translation = "Тропинка"; break; }
                         }
                     }
+                    else if (buildingGuid == "118938")
+                    {
+                        switch (languageCount)
+                        {
+                            case 0: { translation = "Research Institute"; break; }
+                            case 1: { translation = "Forschungsinstitut"; break; }
+                            case 2: { translation = "Institut de recherche"; break; }
+                            case 3: { translation = "Instytut Badawczy"; break; }
+                            case 4: { translation = "Исследовательский институт"; break; }
+                        }
+                    }
+                    else if (buildingGuid == "112670")
+                    {
+                        switch (languageCount)
+                        {
+                            case 0: { translation = "Arctic Depot"; break; }
+                            case 1: { translation = "Arktisches Depot"; break; }
+                            case 2: { translation = "Dépôt de l'Arctique"; break; }
+                            case 3: { translation = "Skład Arktyczny"; break; }
+                            case 4: { translation = "арктическая депо"; break; }
+                        }
+                    }
                 }
                 else
                 {
@@ -1659,6 +1802,12 @@ namespace PresetParser
                             {
                                 isFieldInfoFound = true;
                                 fieldAmountValue = curFieldInfo.FieldAmount;
+                                if (Convert.ToInt32(fieldAmountValue) <= 0)
+                                {
+                                    // ERROR ? Farm without field amount found
+                                    Console.WriteLine("-- > Farm field Skipped, Zero Field counter");
+                                    return;
+                                }
                                 break;
                             }
                         }
@@ -1679,9 +1828,13 @@ namespace PresetParser
             #endregion
 
             #endregion
-            // Remove the Not Placed yet Ornamental Buildings from the list
-            /// commentout the line below if you make a new preset after update of the game 'ANNO 1800', or when a new 'ANNO 1800 DLC' is released 
-            if ((b.Faction == "Not Placed Yet -Moderate" || b.Faction == "Not Placed Yet -Colony01") && b.Template == "OrnamentalBuilding") { return; }
+
+            // Remove CultureModules Menu that Appeared
+            if (b.Header == "(A7) Anno 1800" && b.Faction == "All Worlds" && b.Group == "CultureModule") { return; }
+
+            // Remove the Not Placed Buildings
+            /// comment out the line below if you make a new preset after update of the game 'ANNO 1800', or when a new 'ANNO 1800 DLC' is released 
+            if (b.Faction == "Not Placed Yet -Moderate" || b.Faction == "Not Placed Yet -Arctic" || b.Faction == "Not Placed Yet -Africa" || b.Faction == "Not Placed Yet -Colony01" || b.Faction == "Not Placed Yet -All Worlds") { return; }
 
             // add building to the list
             annoBuildingsListCount++;//countup amount of buildings

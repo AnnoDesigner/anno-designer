@@ -88,15 +88,30 @@ namespace AnnoDesigner
             Environment.Exit(-1);
         }
 
+        private static string _executablePath;
         public static string ExecutablePath
         {
-            get { return Assembly.GetEntryAssembly().Location; }
-
+            get
+            {
+                if (_executablePath is null)
+                {
+                    _executablePath = Assembly.GetEntryAssembly().Location;
+                }
+                return _executablePath;
+            }
         }
 
+        private static string _applicationPath;
         public static string ApplicationPath
         {
-            get { return Path.GetDirectoryName(Assembly.GetEntryAssembly().Location); }
+            get 
+            {
+                if (_applicationPath is null)
+                {
+                    _applicationPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                }
+                return _applicationPath;
+            }
         }
 
         public static string FilenameArgument { get; private set; }
@@ -117,107 +132,99 @@ namespace AnnoDesigner
                 }
             }
 
-            using (var mutexAnnoDesigner = new Mutex(true, MutexHelper.MUTEX_ANNO_DESIGNER, out bool createdNewMutex))
+            using var mutexAnnoDesigner = new Mutex(true, MutexHelper.MUTEX_ANNO_DESIGNER, out var createdNewMutex);
+            //Are there other processes still running?
+            if (!createdNewMutex)
             {
-                //Are there other processes still running?
-                if (!createdNewMutex)
-                {
-                    try
-                    {
-                        var currentTry = 0;
-                        const int maxTrys = 10;
-                        while (!createdNewMutex && currentTry < maxTrys)
-                        {
-                            logger.Trace($"Waiting for other processes to finish. Try {currentTry} of {maxTrys}");
-
-                            createdNewMutex = mutexAnnoDesigner.WaitOne(TimeSpan.FromSeconds(1), true);
-                            currentTry++;
-                        }
-
-                        if (!createdNewMutex)
-                        {
-                            _messageBoxService.ShowMessage("Another instance of the app is already running.");
-                            Environment.Exit(-1);
-                        }
-                    }
-                    catch (AbandonedMutexException)
-                    {
-                        //mutex was killed
-                        createdNewMutex = true;
-                    }
-                }
-
                 try
                 {
-                    //check if file is not corrupt
-                    _appSettings.Reload();
-
-                    if (_appSettings.SettingsUpgradeNeeded)
+                    var currentTry = 0;
+                    const int maxTrys = 10;
+                    while (!createdNewMutex && currentTry < maxTrys)
                     {
-                        _appSettings.Upgrade();
-                        _appSettings.SettingsUpgradeNeeded = false;
-                        _appSettings.Save();
+                        logger.Trace($"Waiting for other processes to finish. Try {currentTry} of {maxTrys}");
+
+                        createdNewMutex = mutexAnnoDesigner.WaitOne(TimeSpan.FromSeconds(1), true);
+                        currentTry++;
+                    }
+
+                    if (!createdNewMutex)
+                    {
+                        _messageBoxService.ShowMessage(Localization.Localization.Instance.GetLocalization("AnotherInstanceIsAlreadyRunning"));
+                        Environment.Exit(-1);
                     }
                 }
-                catch (ConfigurationErrorsException ex)
+                catch (AbandonedMutexException)
                 {
-                    logger.Error(ex, "Error upgrading settings.");
-
-                    _messageBoxService.ShowError("The settings file has become corrupted. We must reset your settings.");
-
-                    var fileName = "";
-                    if (!string.IsNullOrEmpty(ex.Filename))
-                    {
-                        fileName = ex.Filename;
-                    }
-                    else
-                    {
-                        var innerException = ex.InnerException as ConfigurationErrorsException;
-                        if (innerException != null && !string.IsNullOrEmpty(innerException.Filename))
-                        {
-                            fileName = innerException.Filename;
-                        }
-                    }
-
-                    if (File.Exists(fileName))
-                    {
-                        File.Delete(fileName);
-                    }
-
-                    _appSettings.Reload();
+                    //mutex was killed
+                    createdNewMutex = true;
                 }
+            }
 
-                //var updateWindow = new UpdateWindow();                
-                await _updateHelper.ReplaceUpdatedPresetsFilesAsync();
+            try
+            {
+                //check if file is not corrupt
+                _appSettings.Reload();
 
-                var recentFilesSerializer = new RecentFilesAppSettingsSerializer(_appSettings);
-
-                IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(recentFilesSerializer, _fileSystem);
-                var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper, _messageBoxService, _updateHelper, _localizationHelper, _fileSystem);
-
-                //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
-                MainWindow = new MainWindow(_appSettings);
-                MainWindow.DataContext = mainVM;
-                //MainWindow.Loaded += (s, args) => { updateWindow.Close(); };
-
-                //updateWindow.Show();
-
-                //If language is not recognized, bring up the language selection screen
-                if (!_commons.LanguageCodeMap.ContainsKey(_appSettings.SelectedLanguage))
+                if (_appSettings.SettingsUpgradeNeeded)
                 {
-                    var w = new Welcome();
-                    w.DataContext = mainVM.WelcomeViewModel;
-                    w.ShowDialog();
+                    _appSettings.Upgrade();
+                    _appSettings.SettingsUpgradeNeeded = false;
+                    _appSettings.Save();
+                }
+            }
+            catch (ConfigurationErrorsException ex)
+            {
+                logger.Error(ex, "Error upgrading settings.");
+
+                _messageBoxService.ShowError(_localizationHelper.GetLocalization("ErrorUpgradingSettings"));
+
+                var fileName = "";
+                if (!string.IsNullOrEmpty(ex.Filename))
+                {
+                    fileName = ex.Filename;
                 }
                 else
                 {
-                    _commons.CurrentLanguage = _appSettings.SelectedLanguage;
+                    if (ex.InnerException is ConfigurationErrorsException innerException && !string.IsNullOrEmpty(innerException.Filename))
+                    {
+                        fileName = innerException.Filename;
+                    }
                 }
 
-                MainWindow.ShowDialog();
+                if (File.Exists(fileName))
+                {
+                    File.Delete(fileName);
+                }
 
-                //base.OnStartup(e);//needed?
+                _appSettings.Reload();
             }
+
+            //var updateWindow = new UpdateWindow();                
+            await _updateHelper.ReplaceUpdatedPresetsFilesAsync();
+
+            var recentFilesSerializer = new RecentFilesAppSettingsSerializer(_appSettings);
+
+            IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(recentFilesSerializer, _fileSystem);
+            var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper, _messageBoxService, _updateHelper, _localizationHelper, _fileSystem);
+
+            //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
+            MainWindow = new MainWindow(_appSettings);
+            MainWindow.DataContext = mainVM;
+
+            //If language is not recognized, bring up the language selection screen
+            if (!_commons.LanguageCodeMap.ContainsKey(_appSettings.SelectedLanguage))
+            {
+                var w = new Welcome();
+                w.DataContext = mainVM.WelcomeViewModel;
+                w.ShowDialog();
+            }
+            else
+            {
+                _commons.CurrentLanguage = _appSettings.SelectedLanguage;
+            }
+
+            MainWindow.ShowDialog();
         }
     }
 }

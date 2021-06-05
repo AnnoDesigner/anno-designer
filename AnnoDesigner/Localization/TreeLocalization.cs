@@ -126,7 +126,21 @@ namespace AnnoDesigner.Localization
                         { "17IndustrialOrnaments", "17 Industrial Ornaments" },
                         { "18IndustrialFences", "18 Industrial Fences" },
                         { "19AmusementPark", "19 Amusement Park" },
-                        { "PalaceBuildings", "Palace Buildings" }
+                        { "PalaceBuildings", "Palace Buildings" },
+                        { "(13)Scholars", "(13) Scholars" },
+                        { "(14)Shepherds", "(14) Shepherds" },
+                        { "(15)Elders", "(15) Elders" },
+                        { "(16)EnbesaFarmFields", "(16) Enbesa Farm Fields" },
+                        { "20CityLights", "20 City Lights" },
+                        { "21EnbesaOrnaments", "21 Enbesa Ornaments" },
+                        { "RiverBuildings", "River Buildings" },
+                        { "PermittedBuildings", "Permitted Buildings" },
+                        { "22DocklandsOrnaments", "22 Docklands Ornaments" },
+                        { "DocklandsModules", "Docklands Modules" },
+                        { "Orchard", "Orchard" },
+                        { "Restaurant", "Restaurant" },
+                        { "(17)Tourists", "(17) Tourists"},
+                        { "23TouristOrnaments", "23 Tourist Ornaments"}
                     }
                     },
                 {
@@ -228,7 +242,21 @@ namespace AnnoDesigner.Localization
                         { "17IndustrialOrnaments", "17 Industrielle Verzierungen" },
                         { "18IndustrialFences", "18 Industriezäune" },
                         { "19AmusementPark", "19 Vergnügungspark" },
-                        { "PalaceBuildings", "Palastgebäude" }
+                        { "PalaceBuildings", "Palastgebäude" },
+                        { "(13)Scholars", "(13) Gelehrte" },
+                        { "(14)Shepherds", "(14) Hirten" },
+                        { "(15)Elders", "(15) Älteste" },
+                        { "(16)EnbesaFarmFields", "(16) Felder in Enbesa" },
+                        { "20CityLights", "20 Stadtlichter" },
+                        { "21EnbesaOrnaments", "21 Enbesa-Ornamente" },
+                        { "RiverBuildings", "Flussgebäude" },
+                        { "PermittedBuildings", "Erlaubte Gebäude" },
+                        { "22DocklandsOrnaments","22 Speicherstadt Verzierungen" },
+                        { "DocklandsModules", "Speicherstadt Module" },
+                        { "Orchard", "Obstgarten" },
+                        { "Restaurant", "Restaurant" },
+                        { "(17)Tourists", "(17) Touristen"},
+                        { "23TouristOrnaments", "23 Touristische Ornamente"}
                     }
                     },
                  {
@@ -330,7 +358,21 @@ namespace AnnoDesigner.Localization
                         { "17IndustrialOrnaments", "17 Ornements Industriels" },
                         { "18IndustrialFences", "18 Clôtures Industrielles" },
                         { "19AmusementPark", "19 Parc d'attractions" },
-                        { "PalaceBuildings", "Bâtiments du Palais" }
+                        { "PalaceBuildings", "Bâtiments du Palais" },
+                        { "(13)Scholars", "(13) Érudits" },
+                        { "(14)Shepherds", "(14) Bergers" },
+                        { "(15)Elders", "(15) Anciens" },
+                        { "(16)EnbesaFarmFields", "(16) Champs agricoles d'Enbesa" },
+                        { "20CityLights", "20 Lumières de la ville" },
+                        { "21EnbesaOrnaments", "21 Ornements d'Enbesa" },
+                        { "RiverBuildings", "Bâtiments fluviaux" },
+                        { "PermittedBuildings", "Bâtiments autorisés" },
+                        { "22DocklandsOrnaments", "22 Ornements de Docklands" },
+                        { "DocklandsModules", "Modules Docklands" },
+                        { "Orchard", "Verger"},
+                        { "Restaurant", "Restaurant" },
+                        { "(17)Tourists", "(17) Touristes"},
+                        { "23TouristOrnaments", "23 Ornements Touristiques"}
                     }
                     },
                 {
@@ -432,7 +474,21 @@ namespace AnnoDesigner.Localization
                         { "17IndustrialOrnaments", "17 Ornamenty Przemysłowe" },
                         { "18IndustrialFences", "18 Ogrodzenia Przemysłowe" },
                         { "19AmusementPark", "19 Park Rozrywki" },
-                        { "PalaceBuildings", "Budynki Pałacowe" }
+                        { "PalaceBuildings", "Budynki Pałacowe" },
+                        { "(13)Scholars", "(13) Uczeni" },
+                        { "(14)Shepherds", "(14) Pasterze" },
+                        { "(15)Elders", "(15) Starsi" },
+                        { "(16)EnbesaFarmFields", "(16) Enbesa uprawne arktycznej" },
+                        { "20CityLights", "20 Światła miejskie" },
+                        { "21EnbesaOrnaments", "21 Ornamenty Enbesa" },
+                        { "RiverBuildings", "Budynki nadrzeczne" },
+                        { "PermittedBuildings", "Dozwolone budynki" },
+                        { "22DocklandsOrnaments", "22 Ornamenty Docklands" },
+                        { "DocklandsModules", "Moduły Docklands" },
+                        { "Orchard", "Sad" },
+                        { "Restaurant", "Restauracja" },
+                        { "(17)Tourists", "(17) Turyści"},
+                        { "23TouristOrnaments", "22 Ozdoby Turystyczne"}
                     }
                     },
                 {
@@ -534,7 +590,21 @@ namespace AnnoDesigner.Localization
                         { "17IndustrialOrnaments", "17 промышленных украшений" },
                         { "18IndustrialFences", "18 промышленных заборов" },
                         { "19AmusementPark", "19 Парк развлечений" },
-                        { "PalaceBuildings", "Дворцовые здания" }
+                        { "PalaceBuildings", "Дворцовые здания" },
+                        { "(13)Scholars", "(13) Ученые" },
+                        { "(14)Shepherds", "(14) Пастухи" },
+                        { "(15)Elders", "(15) В другом месте" },
+                        { "(16)EnbesaFarmFields", "(16) Ферма Энбеза Фарм Филдс." },
+                        { "20CityLights", "20 Огни города" },
+                        { "21EnbesaOrnaments", "21 Энбеза Орнаменты" },
+                        { "RiverBuildings", "Речные здания" },
+                        { "PermittedBuildings", "Разрешенные здания" },
+                        { "22DocklandsOrnaments", "22 Докленды Украшения" },
+                        { "DocklandsModules", "Модули Доклендов" },
+                        { "Orchard", "Сад"},
+                        { "Restaurant", "Ресторан" },
+                        { "(17)Tourists", "(17) Туристы"},
+                        { "23TouristOrnaments", "23 Туристические орнаменты"}
                     }
                     },
             };

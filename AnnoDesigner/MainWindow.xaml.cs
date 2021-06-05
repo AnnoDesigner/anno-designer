@@ -96,7 +96,6 @@ namespace AnnoDesigner
         private void MainWindow_DpiChanged(object sender, DpiChangedEventArgs e)
         {
             App.DpiScale = e.NewDpi;
-            //TODO: Redraw statistics when change is merged.
         }
 
         private void ToggleStatisticsView(bool showStatisticsView)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.CustomEventArgs;
@@ -20,7 +22,7 @@ namespace AnnoDesigner.Models
         event EventHandler<OpenFileEventArgs> OpenFileRequested;
         event EventHandler<SaveFileEventArgs> SaveFileRequested;
 
-        List<LayoutObject> PlacedObjects { get; set; }
+        QuadTree<LayoutObject> PlacedObjects { get; set; }
         List<LayoutObject> SelectedObjects { get; set; }
         List<LayoutObject> ClipboardObjects { get; }
         BuildingPresets BuildingPresets { get; }
@@ -41,5 +43,7 @@ namespace AnnoDesigner.Models
         void Normalize(int border);
         void RaiseStatisticsUpdated(UpdateStatisticsEventArgs args);
         void RaiseColorsInLayoutUpdated();
+        void EnsureBounds(Rect additionalBounds);
+        Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects);
     }
 }

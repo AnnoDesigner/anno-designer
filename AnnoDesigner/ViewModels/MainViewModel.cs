@@ -11,13 +11,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core;
+using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Exceptions;
+using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Helper;
@@ -42,6 +45,7 @@ namespace AnnoDesigner.ViewModels
         private readonly ICoordinateHelper _coordinateHelper;
         private readonly IBrushCache _brushCache;
         private readonly IPenCache _penCache;
+        private readonly IAdjacentCellGrouper _adjacentCellGrouper;
         private readonly IRecentFilesHelper _recentFilesHelper;
         private readonly IMessageBoxService _messageBoxService;
         private readonly IUpdateHelper _updateHelper;
@@ -90,7 +94,8 @@ namespace AnnoDesigner.ViewModels
             ILayoutLoader layoutLoaderToUse = null,
             ICoordinateHelper coordinateHelperToUse = null,
             IBrushCache brushCacheToUse = null,
-            IPenCache penCacheToUse = null)
+            IPenCache penCacheToUse = null,
+            IAdjacentCellGrouper adjacentCellGrouper = null)
         {
             _commons = commonsToUse;
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
@@ -106,6 +111,7 @@ namespace AnnoDesigner.ViewModels
             _coordinateHelper = coordinateHelperToUse ?? new CoordinateHelper();
             _brushCache = brushCacheToUse ?? new BrushCache();
             _penCache = penCacheToUse ?? new PenCache();
+            _adjacentCellGrouper = adjacentCellGrouper ?? new AdjacentCellGrouper();
 
             HotkeyCommandManager = new HotkeyCommandManager(_localizationHelper);
 
@@ -133,6 +139,7 @@ namespace AnnoDesigner.ViewModels
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
             CanvasResetZoomCommand = new RelayCommand(CanvasResetZoom);
             CanvasNormalizeCommand = new RelayCommand(CanvasNormalize);
+            MergeRoadsCommand = new RelayCommand(MergeRoads);
             LoadLayoutFromJsonCommand = new RelayCommand(ExecuteLoadLayoutFromJson);
             UnregisterExtensionCommand = new RelayCommand(UnregisterExtension);
             RegisterExtensionCommand = new RelayCommand(RegisterExtension);
@@ -184,7 +191,7 @@ namespace AnnoDesigner.ViewModels
             MainWindowTitle = "Anno Designer";
             PresetsSectionHeader = "Building presets - not loaded";
 
-            PreferencesUpdateViewModel.VersionValue = Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture);
+            PreferencesUpdateViewModel.VersionValue = Constants.Version.ToString();
             PreferencesUpdateViewModel.FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
 
             RecentFilesHelper_Updated(this, EventArgs.Empty);
@@ -310,7 +317,8 @@ namespace AnnoDesigner.ViewModels
             catch (Exception ex)
             {
                 logger.Error(ex, "Error applying preset.");
-                _messageBoxService.ShowError("Something went wrong while applying the preset.",
+                _messageBoxService.ShowError(
+                    _localizationHelper.GetLocalization("LayoutLoadingError"),
                    _localizationHelper.GetLocalization("Error"));
             }
         }
@@ -318,6 +326,8 @@ namespace AnnoDesigner.ViewModels
         private void ApplyCurrentObject()
         {
             // parse user inputs and create new object
+            string RenameBuildingIdentifier = BuildingSettingsViewModel.BuildingName;
+            string TextBoxText = "TextBox";
             var obj = new AnnoObject
             {
                 Size = new Size(BuildingSettingsViewModel.BuildingWidth, BuildingSettingsViewModel.BuildingHeight),
@@ -363,20 +373,51 @@ namespace AnnoDesigner.ViewModels
                             || (obj.Size.Height == buildingInfo.BuildBlocker["x"] && obj.Size.Width == buildingInfo.BuildBlocker["z"]))
                         {
                             //if sizes match and icon is a existing building in the presets, call it that object
-                            if (obj.Identifier != "Residence_New_World")
+                            //Exception are all other Residences of Anno 1800, that change back to Farmer Resident names
+                            if (obj.Identifier != "Residence_New_World" && obj.Identifier != "Residence_Arctic_World" && obj.Identifier != "Residence_Africa_World")
                             {
                                 obj.Identifier = buildingInfo.Identifier;
+                                if (BuildingSettingsViewModel.BuildingRealName != RenameBuildingIdentifier)
+                                {
+                                    if (BuildingSettingsViewModel.IsEnableLabelChecked)
+                                    {
+                                        if (RenameBuildingIdentifier.Length > 30)
+                                        {
+                                            obj.Identifier = TextBoxText;
+                                            obj.Template = TextBoxText;
+                                        }
+                                        else
+                                        {
+                                            //Keep label, tempate and identifiername
+                                        }
+                                    }
+                                    else
+                                    {
+                                        obj.Identifier = RenameBuildingIdentifier;
+                                        obj.Template = RenameBuildingIdentifier;
+                                    }
+                                }
+                            }
+                            //If one of the other world residents then the OW Residents in Anno 1800 are renamed to other tiers names rename them. 
+                            if ((obj.Identifier == "Residence_New_World" || obj.Identifier == "Residence_Arctic_World" || obj.Identifier == "Residence_Africa_World") && BuildingSettingsViewModel.BuildingRealName != RenameBuildingIdentifier)
+                            {
+                                obj.Identifier = RenameBuildingIdentifier;
+                                obj.Template = RenameBuildingIdentifier;
                             }
                         }
                         else
                         {
                             //Sizes and icon do not match
-                            obj.Identifier = "Unknown Object";
+                            //obj.Identifier = "Unknown Object";
+                            obj.Identifier = RenameBuildingIdentifier;
+                            obj.Template = RenameBuildingIdentifier;
                         }
                     }
                     else if (!BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase)) //check if the icon is removed from a template field
                     {
-                        obj.Identifier = "Unknown Object";
+                        //obj.Identifier = "Unknown Object";
+                        obj.Identifier = RenameBuildingIdentifier;
+                        obj.Template = RenameBuildingIdentifier;
                     }
                 }
                 else if (!string.IsNullOrWhiteSpace(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck))
@@ -400,12 +441,32 @@ namespace AnnoDesigner.ViewModels
                     }
                     else
                     {
-                        obj.Identifier = "Unknown Object";
+                        //obj.Identifier = "Unknown Object";
+                        obj.Identifier = RenameBuildingIdentifier;
+                        obj.Template = RenameBuildingIdentifier;
                     }
                 }
                 if (string.IsNullOrEmpty(obj.Icon) && !BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase))
                 {
-                    obj.Identifier = "Unknown Object";
+                    if (BuildingSettingsViewModel.IsEnableLabelChecked)
+                    {
+                        if (RenameBuildingIdentifier.Length > 30)
+                        {
+                            obj.Identifier = TextBoxText;
+                            obj.Template = TextBoxText;
+                        }
+                        else
+                        {
+                            obj.Identifier = RenameBuildingIdentifier;
+                            obj.Template = RenameBuildingIdentifier;
+                        }
+                    }
+                    else
+                    {
+                        //obj.Identifier = "Unknown Object";
+                        obj.Identifier = RenameBuildingIdentifier;
+                        obj.Template = RenameBuildingIdentifier;
+                    }
                 }
 
                 AnnoCanvas.SetCurrentObject(new LayoutObject(obj, _coordinateHelper, _brushCache, _penCache));
@@ -435,6 +496,7 @@ namespace AnnoDesigner.ViewModels
             BuildingSettingsViewModel.SelectedColor = layoutObject.Color;
             // label
             BuildingSettingsViewModel.BuildingName = obj.Label;
+            BuildingSettingsViewModel.BuildingRealName = obj.Label;
             // Identifier
             BuildingSettingsViewModel.BuildingIdentifier = layoutObject.Identifier;
             // Template
@@ -515,7 +577,6 @@ namespace AnnoDesigner.ViewModels
         private void AnnoCanvas_StatusMessageChanged(string message)
         {
             StatusMessage = message;
-            logger.Trace($"Status message changed: {message}");
         }
 
         private void AnnoCanvas_LoadedFileChanged(object sender, FileLoadedEventArgs args)
@@ -550,7 +611,7 @@ namespace AnnoDesigner.ViewModels
         public Task UpdateStatisticsAsync(UpdateMode mode)
         {
             return StatisticsViewModel.UpdateStatisticsAsync(mode,
-                AnnoCanvas.PlacedObjects,
+                AnnoCanvas.PlacedObjects.All().ToList(),
                 AnnoCanvas.SelectedObjects,
                 AnnoCanvas.BuildingPresets);
         }
@@ -580,7 +641,7 @@ namespace AnnoDesigner.ViewModels
 
         public void LoadSettings()
         {
-            StatisticsViewModel.ToggleBuildingList(_appSettings.StatsShowBuildingCount, AnnoCanvas.PlacedObjects, AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
+            StatisticsViewModel.ToggleBuildingList(_appSettings.StatsShowBuildingCount, AnnoCanvas.PlacedObjects.All().ToList(), AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
 
             PreferencesUpdateViewModel.AutomaticUpdateCheck = _appSettings.EnableAutomaticUpdateCheck;
             PreferencesUpdateViewModel.UpdateSupportsPrerelease = _appSettings.UpdateSupportsPrerelease;
@@ -729,6 +790,7 @@ namespace AnnoDesigner.ViewModels
                 if (layout != null)
                 {
                     AnnoCanvas.SelectedObjects.Clear();
+                    AnnoCanvas.PlacedObjects.Clear();
 
                     var layoutObjects = new List<LayoutObject>(layout.Objects.Count);
                     foreach (var curObj in layout.Objects)
@@ -736,7 +798,10 @@ namespace AnnoDesigner.ViewModels
                         layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
                     }
 
-                    AnnoCanvas.PlacedObjects = layoutObjects;
+                    var bounds = AnnoCanvas.ComputeBoundingRect(layoutObjects);
+                    AnnoCanvas.EnsureBounds(bounds);
+                    AnnoCanvas.PlacedObjects.AddRange(layoutObjects.Select(obj => (obj, obj.GridRect)));
+
                     AnnoCanvas.LoadedFile = filePath;
                     AnnoCanvas.Normalize(1);
 
@@ -1039,6 +1104,56 @@ namespace AnnoDesigner.ViewModels
             AnnoCanvas.Normalize(1);
         }
 
+        public ICommand MergeRoadsCommand { get; private set; }
+
+        /// <summary>
+        /// Filters all roads in current layout, finds largest groups of them and replaces them with merged variants.
+        /// Respects road color during merging.
+        /// </summary>
+        public void MergeRoads(object param)
+        {
+            var roadColorGroups = AnnoCanvas.PlacedObjects.Where(p => p.WrappedAnnoObject.Road).GroupBy(p => (p.WrappedAnnoObject.Borderless, p.Color));
+            foreach (var roadColorGroup in roadColorGroups)
+            {
+                if (roadColorGroup.Count() <= 1) continue;
+
+                var bounds = (Rect)new StatisticsCalculationHelper().CalculateStatistics(roadColorGroup.Select(p => p.WrappedAnnoObject));
+
+                var cells = Enumerable.Range(0, (int)bounds.Width).Select(i => new LayoutObject[(int)bounds.Height]).ToArray();
+                foreach (var item in roadColorGroup)
+                {
+                    for (var i = 0; i < item.Size.Width; i++)
+                    {
+                        for (var j = 0; j < item.Size.Height; j++)
+                        {
+                            cells[(int)(item.Position.X + i - bounds.Left)][(int)(item.Position.Y + j - bounds.Top)] = item;
+                        }
+                    }
+                }
+
+                var groups = _adjacentCellGrouper.GroupAdjacentCells(cells, true);
+                AnnoCanvas.PlacedObjects.AddRange(groups
+                    .Select(g =>
+                    {
+                        foreach (var item in g.Items)
+                        {
+                            AnnoCanvas.PlacedObjects.Remove(item, item.GridRect);
+                        }
+
+                        return new LayoutObject(
+                            new AnnoObject(g.Items.First().WrappedAnnoObject)
+                            {
+                                Position = g.Bounds.TopLeft + (Vector)bounds.TopLeft,
+                                Size = g.Bounds.Size
+                            },
+                            _coordinateHelper,
+                            _brushCache,
+                            _penCache);
+                    })
+                    .Select(o => (o, o.GridRect)));
+            }
+        }
+
         public ICommand LoadLayoutFromJsonCommand { get; private set; }
 
         private void ExecuteLoadLayoutFromJson(object param)
@@ -1064,7 +1179,7 @@ namespace AnnoDesigner.ViewModels
                             AnnoCanvas.SelectedObjects.Clear();
 
                             AnnoCanvas.PlacedObjects.Clear();
-                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)));
+                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)).Select(obj => (obj, obj.GridRect)));
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 
@@ -1077,8 +1192,9 @@ namespace AnnoDesigner.ViewModels
             {
                 logger.Warn(layoutEx, "Version of layout does not match.");
 
-                if (_messageBoxService.ShowQuestion("Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
-                        "File version mismatch"))
+                if (_messageBoxService.ShowQuestion(
+                        _localizationHelper.GetLocalization("FileVersionMismatchMessage"),
+                        _localizationHelper.GetLocalization("FileVersionMismatchTitle")))
                 {
                     ExecuteLoadLayoutFromJsonSub(jsonString, true);
                 }
@@ -1086,7 +1202,7 @@ namespace AnnoDesigner.ViewModels
             catch (Exception ex)
             {
                 logger.Error(ex, "Error loading layout from JSON.");
-                _messageBoxService.ShowError("Something went wrong while loading the layout.",
+                _messageBoxService.ShowError(_localizationHelper.GetLocalization("LayoutLoadingError"),
                         _localizationHelper.GetLocalization("Error"));
             }
         }
@@ -1166,7 +1282,7 @@ namespace AnnoDesigner.ViewModels
                 {
                     logger.Error(ex, "Error exporting image.");
                     _messageBoxService.ShowError(Application.Current.MainWindow,
-                        "Something went wrong while exporting the image.",
+                        _localizationHelper.GetLocalization("ExportImageError"),
                         _localizationHelper.GetLocalization("Error"));
                 }
             }
@@ -1181,7 +1297,7 @@ namespace AnnoDesigner.ViewModels
         /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
         private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection, bool renderStatistics)
         {
-            if (AnnoCanvas.PlacedObjects.Count == 0)
+            if (AnnoCanvas.PlacedObjects.Count() == 0)
             {
                 return;
             }
@@ -1206,10 +1322,15 @@ namespace AnnoDesigner.ViewModels
                     icons.Add(curIcon.Key, new IconImage(curIcon.Value.Name, curIcon.Value.Localizations, curIcon.Value.IconPath));
                 }
 
+                var stats = new StatisticsCalculationHelper();
+                var result = stats.CalculateStatistics(allObjects.Select(x => x.WrappedAnnoObject));
+                var bounds = new Rect(result.MinX, result.MinY, result.UsedAreaWidth, result.UsedAreaHeight);
+                var quadTree = new QuadTree<LayoutObject>(bounds);
+                quadTree.AddRange(allObjects.Select(obj => (obj, obj.GridRect)));
                 // initialize output canvas
                 var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _appSettings, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
                 {
-                    PlacedObjects = allObjects,
+                    PlacedObjects = quadTree,
                     RenderGrid = AnnoCanvas.RenderGrid,
                     RenderIcon = AnnoCanvas.RenderIcon,
                     RenderLabel = AnnoCanvas.RenderLabel
@@ -1245,7 +1366,7 @@ namespace AnnoDesigner.ViewModels
                     };
                     exportStatisticsView.DataContext = exportStatisticsViewModel;
 
-                    exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects, target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult(); ;
+                    exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.All().ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult(); ;
                     exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 
                     target.StatisticsPanel.Children.Add(exportStatisticsView);
@@ -1314,7 +1435,7 @@ namespace AnnoDesigner.ViewModels
             catch (Exception ex)
             {
                 logger.Error(ex, "Error saving layout to JSON.");
-                _messageBoxService.ShowError(ex.Message, "Something went wrong while saving the layout.");
+                _messageBoxService.ShowError(ex.Message, _localizationHelper.GetLocalization("LayoutSavingError"));
             }
         }
 
@@ -1382,7 +1503,7 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteShowStatisticsBuildingCount(object param)
         {
-            StatisticsViewModel.ToggleBuildingList(StatisticsViewModel.ShowStatisticsBuildingCount, AnnoCanvas.PlacedObjects, AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
+            StatisticsViewModel.ToggleBuildingList(StatisticsViewModel.ShowStatisticsBuildingCount, AnnoCanvas.PlacedObjects.All().ToList(), AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
         }
 
         public ICommand PlaceBuildingCommand { get; private set; }
@@ -1395,7 +1516,8 @@ namespace AnnoDesigner.ViewModels
             }
             catch (Exception)
             {
-                _messageBoxService.ShowError("Error: Invalid building configuration.",
+                _messageBoxService.ShowError(
+                    _localizationHelper.GetLocalization("InvalidBuildingConfiguration"),
                    _localizationHelper.GetLocalization("Error"));
             }
         }

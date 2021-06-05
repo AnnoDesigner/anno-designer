@@ -62,7 +62,7 @@ namespace AnnoDesigner
             {
                 if (_apiClient == null)
                 {
-                    _apiClient = new GitHubClient(new Octokit.ProductHeaderValue($"anno-designer-{Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture)}", "1.0"));
+                    _apiClient = new GitHubClient(new Octokit.ProductHeaderValue($"anno-designer-{Constants.Version}", "1.0"));
                 }
 
                 return _apiClient;
@@ -83,7 +83,7 @@ namespace AnnoDesigner
 
                     _httpClient = new HttpClient(handler, true);
                     _httpClient.Timeout = TimeSpan.FromSeconds(30);
-                    _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue($"anno-designer-{Constants.Version.ToString("0.0#", CultureInfo.InvariantCulture)}", "1.0"));
+                    _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue($"anno-designer-{Constants.Version}", "1.0"));
 
                     //detect DNS changes (default is infinite)
                     //ServicePointManager.FindServicePoint(new Uri(BASE_URI)).ConnectionLeaseTimeout = (int)TimeSpan.FromMinutes(1).TotalMilliseconds;
@@ -294,6 +294,21 @@ namespace AnnoDesigner
                 _messageBoxService.ShowError(_localizationHelper.GetLocalization("UpdateErrorPresetMessage"),
                     _localizationHelper.GetLocalization("Error"));
             }
+        }
+
+        public async Task<bool> IsNewAppVersionAvailableAsync()
+        {
+            var downloadedContent = "0.1";
+            using (var webClient = new WebClient())
+            {
+                downloadedContent = await webClient.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/AnnoDesigner/anno-designer/master/version.txt"));
+            }
+
+            var isNewVersionAvailable = Version.TryParse(downloadedContent, out var parsedVersion) && parsedVersion > Constants.Version;
+
+            logger.Info($"Found new App version: {isNewVersionAvailable} ({Constants.Version} -> {parsedVersion})");
+
+            return isNewVersionAvailable;
         }
 
         #endregion

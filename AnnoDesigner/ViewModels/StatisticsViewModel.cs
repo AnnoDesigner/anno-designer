@@ -161,7 +161,7 @@ namespace AnnoDesigner.ViewModels
 
             var calculatedStatistics = await calculateStatisticsTask;
 
-            UsedArea = string.Format("{0}x{1}", calculatedStatistics.UsedAreaX, calculatedStatistics.UsedAreaY);
+            UsedArea = string.Format("{0}x{1}", calculatedStatistics.UsedAreaWidth, calculatedStatistics.UsedAreaHeight);
             UsedTiles = calculatedStatistics.UsedTiles;
             MinTiles = calculatedStatistics.MinTiles;
             Efficiency = string.Format("{0}%", calculatedStatistics.Efficiency);
@@ -201,10 +201,17 @@ namespace AnnoDesigner.ViewModels
                     }
                     else
                     {
-                        item.ElementAt(0).Identifier = "";
+                        /// Ruled those 2 out to keep Building Name Changes done through the Labeling of the building
+                        /// and when the building is not in the preset. Those statisticBuildings.name will not translated to
+                        /// other luangages anymore, as users can give there own names.
+                        /// However i made it so, that if localizations get those translations, it will translated.
+                        /// 06-02-2021, on request of user(s) on Discord read this on
+                        /// https://discord.com/channels/571011757317947406/571011757317947410/800118895855665203
+                        //item.ElementAt(0).Identifier = "";
+                        //statisticBuilding.Name = _localizationHelper.GetLocalization("StatNameNotFound");
 
                         statisticBuilding.Count = item.Count();
-                        statisticBuilding.Name = _localizationHelper.GetLocalization("StatNameNotFound");
+                        statisticBuilding.Name = _localizationHelper.GetLocalization(item.ElementAt(0).Identifier);
                     }
                 }
                 else

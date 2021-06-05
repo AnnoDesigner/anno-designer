@@ -80,6 +80,8 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedResult, gridDictionary);
+            Assert.Equal(0, gridDictionary.Offset.x);
+            Assert.Equal(0, gridDictionary.Offset.y);
         }
 
         [Fact]
@@ -126,6 +128,22 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedResult, gridDictionary);
+            Assert.Equal(0, gridDictionary.Offset.x);
+            Assert.Equal(0, gridDictionary.Offset.y);
+        }
+
+        [Fact]
+        public void PrepareGridDictionary_MultipleObjectsWithNegativeCoordinates()
+        {
+            // Arrange
+            var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("PrepareGridDictionary_MultipleObjectsWithNegativeCoordinates"), true).Objects;
+
+            // Act
+            var gridDictionary = RoadSearchHelper.PrepareGridDictionary(placedObjects);
+
+            // Assert
+            Assert.Equal(-10, gridDictionary.Offset.x);
+            Assert.Equal(-5, gridDictionary.Offset.y);
         }
 
         [Fact]

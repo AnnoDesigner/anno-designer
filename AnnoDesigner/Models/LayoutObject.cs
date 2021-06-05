@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Models
@@ -49,6 +50,9 @@ namespace AnnoDesigner.Models
         private double _screenRadius;
         private int _lastGridSizeForScreenRadius;
         private SerializableColor _color;
+        private Rect _gridRect;
+        private Rect _gridInfluenceRadiusRect;
+        private Rect _gridInfluenceRangeRect;
 
         /// <summary>
         /// Creates a new instance of a wrapper for <see cref="AnnoObject"/>.
@@ -157,6 +161,9 @@ namespace AnnoDesigner.Models
                 _screenRectCenterPoint = default;
                 _lastScreenRectForIcon = default;
                 _lastScreenRectForCenterPoint = default;
+                _gridRect = default;
+                _gridInfluenceRadiusRect = default;
+                _gridInfluenceRangeRect = default;
             }
         }
 
@@ -269,6 +276,9 @@ namespace AnnoDesigner.Models
                 _collisionSize = default;
                 _screenRect = default;
                 _iconRect = default;
+                _gridRect = default;
+                _gridInfluenceRadiusRect = default;
+                _gridInfluenceRangeRect = default;
             }
         }
 
@@ -309,7 +319,7 @@ namespace AnnoDesigner.Models
                     var minSize = Math.Min(Size.Width, Size.Height);
                     //minSize = minSize == 1 ? minSize : Math.Floor(NthRoot(minSize, Constants.IconSizeFactor) + 1);
                     var iconSize = _coordinateHelper.GridToScreen(new Size(minSize, minSize), gridSize);
-                    iconSize = minSize == 1 ? iconSize : new Size(NthRoot(iconSize.Width, Constants.IconSizeFactor), NthRoot(iconSize.Height, Constants.IconSizeFactor));
+                    iconSize = minSize == 1 ? iconSize : new Size(MathHelper.NthRoot(iconSize.Width, Constants.IconSizeFactor), MathHelper.NthRoot(iconSize.Height, Constants.IconSizeFactor));
 
                     // center icon within the object
                     var iconPos = objRect.TopLeft;
@@ -326,12 +336,6 @@ namespace AnnoDesigner.Models
             return _iconRect;
         }
 
-        //I was really just checking to see if there was a built in function, but this works
-        //https://stackoverflow.com/questions/18657508/c-sharp-find-nth-root
-        private static double NthRoot(double A, double N)
-        {
-            return Math.Pow(A, 1.0 / N);
-        }
 
         public Point GetScreenRectCenterPoint(int gridSize)
         {
@@ -370,8 +374,19 @@ namespace AnnoDesigner.Models
         {
             if (_screenRadius == default || _lastGridSizeForScreenRadius != gridSize)
             {
-                _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius, gridSize);
+                // Buildings of an odd-numbered size (3x3/3x5 etc) draw their circular influence range with an additional +0.5,
+                // this is not correct and needs to be adjusted to produce the correct radius for those buildings.
+                // See https://github.com/AnnoDesigner/anno-designer/issues/299 for an explanation of the issue.
 
+                // check if Object Width and Height are odd numbers or not, if both are, adjust the circle size with -0.1
+                if ((WrappedAnnoObject.Size.Width %2 != 0 ) && (WrappedAnnoObject.Size.Height %2 != 0)) 
+                {
+                    _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius - 0.1, gridSize);
+                }
+                else
+                {
+                    _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius, gridSize);
+                }
                 _lastGridSizeForScreenRadius = gridSize;
             }
 
@@ -398,6 +413,51 @@ namespace AnnoDesigner.Models
                 _transparentBrush = null;
                 _renderColor = null;
                 _renderBrush = null;
+            }
+        }
+
+        public Rect GridRect
+        {
+            get
+            {
+                if (_gridRect == default)
+                {
+                    _gridRect = new Rect(Position, Size);
+                }
+                return _gridRect;
+            }
+        }
+
+        public Rect GridInfluenceRadiusRect
+        {
+            get
+            {
+                if (_gridInfluenceRadiusRect == default)
+                {
+                    var centerPoint = _coordinateHelper.GetCenterPoint(GridRect);
+                    _gridInfluenceRadiusRect = new Rect(centerPoint.X - WrappedAnnoObject.Radius, centerPoint.Y - WrappedAnnoObject.Radius, WrappedAnnoObject.Radius * 2, WrappedAnnoObject.Radius * 2);
+                }
+                return _gridInfluenceRadiusRect;
+            }
+        }
+
+        public Rect GridInfluenceRangeRect
+        {
+            get
+            {
+                if (_gridInfluenceRangeRect == default)
+                {
+                    if (WrappedAnnoObject.InfluenceRange <= 0)
+                    {
+                        _gridInfluenceRangeRect = new Rect(Position, default(Size));
+                    }
+                    else
+                    {
+                        //influence range is computed from the edge of the building, not the center
+                        _gridInfluenceRangeRect = new Rect(Position.X - WrappedAnnoObject.InfluenceRange, Position.Y - WrappedAnnoObject.InfluenceRange, WrappedAnnoObject.InfluenceRange + Size.Width, WrappedAnnoObject.InfluenceRange + Size.Height);
+                    }
+                }
+                return _gridInfluenceRangeRect;
             }
         }
     }

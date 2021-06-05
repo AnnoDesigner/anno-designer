@@ -28,6 +28,9 @@ namespace AnnoDesigner.ViewModels
         private Color? _selectedCustomGridLineColor;
         private Color? _selectedCustomObjectBorderLineColor;
         private double _zoomSensitivityPercentage;
+        private bool _invertPanningDirection;
+        private bool _showScrollbars;
+        private bool _invertScrollingDirection;
 
         public GeneralSettingsViewModel(IAppSettings appSettingsToUse, ICommons commonsToUse)
         {
@@ -38,6 +41,9 @@ namespace AnnoDesigner.ViewModels
             UseZoomToPoint = _appSettings.UseZoomToPoint;
             ZoomSensitivityPercentage = _appSettings.ZoomSensitivityPercentage;
             HideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;
+            ShowScrollbars = _appSettings.ShowScrollbars;
+            InvertPanningDirection = _appSettings.InvertPanningDirection;
+            InvertScrollingDirection = _appSettings.InvertScrollingDirection;
 
             ResetZoomSensitivityCommand = new RelayCommand(ExecuteResetZoomSensitivity, CanExecuteResetZoomSensitivity);
 
@@ -288,6 +294,19 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
+        public double ZoomSensitivityPercentage
+        {
+            get => _zoomSensitivityPercentage;
+            set
+            {
+                if (UpdateProperty(ref _zoomSensitivityPercentage, value))
+                {
+                    _appSettings.ZoomSensitivityPercentage = value;
+                    _appSettings.Save();
+                }
+            }
+        }
+
         public bool UseZoomToPoint
         {
             get { return _useZoomToPoint; }
@@ -301,14 +320,40 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
-        public double ZoomSensitivityPercentage
+        public bool InvertScrollingDirection
         {
-            get => _zoomSensitivityPercentage;
+            get { return _invertScrollingDirection; }
             set
             {
-                if (UpdateProperty(ref _zoomSensitivityPercentage, value))
+                if (UpdateProperty(ref _invertScrollingDirection, value))
                 {
-                    _appSettings.ZoomSensitivityPercentage = value;
+                    _appSettings.InvertScrollingDirection = value;
+                    _appSettings.Save();
+                }
+            }
+        }
+
+        public bool InvertPanningDirection
+        {
+            get { return _invertPanningDirection; }
+            set
+            {
+                if (UpdateProperty(ref _invertPanningDirection, value))
+                {
+                    _appSettings.InvertPanningDirection = value;
+                    _appSettings.Save();
+                }
+            }
+        }
+        
+        public bool ShowScrollbars
+        {
+            get { return _showScrollbars; }
+            set
+            {
+                if (UpdateProperty(ref _showScrollbars, value))
+                {
+                    _appSettings.ShowScrollbars = value;
                     _appSettings.Save();
                 }
             }

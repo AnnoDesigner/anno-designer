@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -67,13 +65,29 @@ namespace AnnoDesigner.ViewModels
                 BusyContent = _localizationHelper.GetLocalization("UpdatePreferencesBusyCheckUpdates");
                 IsBusy = true;
 
-                await CheckForNewAppVersionAsync(isAutomaticUpdateCheck);
+                await CheckForNewAppVersionAsync();
 
                 await CheckForPresetsAsync(isAutomaticUpdateCheck);
 
                 if (!isAutomaticUpdateCheck)
                 {
                     IsAppUpToDate = !IsUpdateAvailable && !IsPresetUpdateAvailable;
+                }
+
+                if (isAutomaticUpdateCheck)
+                {
+                    //If not already prompted
+                    if (!_appSettings.PromptedForAutoUpdateCheck)
+                    {
+                        _appSettings.PromptedForAutoUpdateCheck = true;
+
+                        if (!_messageBoxService.ShowQuestion(Application.Current.MainWindow,
+                            _localizationHelper.GetLocalization("ContinueCheckingForUpdates"),
+                            _localizationHelper.GetLocalization("ContinueCheckingForUpdatesTitle")))
+                        {
+                            AutomaticUpdateCheck = false;
+                        }
+                    }
                 }
 
                 IsBusy = false;
@@ -89,51 +103,24 @@ namespace AnnoDesigner.ViewModels
                 if (isAutomaticUpdateCheck)
                 {
                     _messageBoxService.ShowError(Application.Current.MainWindow,
-                        $"Error checking version.{Environment.NewLine}{Environment.NewLine}More information is found in the log.",
-                        "Version check failed");
+                        _localizationHelper.GetLocalization("VersionCheckErrorMessage"),
+                        _localizationHelper.GetLocalization("VersionCheckErrorTitle"));
                 }
             }
         }
 
-        private async Task CheckForNewAppVersionAsync(bool isAutomaticUpdateCheck)
+        private async Task CheckForNewAppVersionAsync()
         {
-            var dowloadedContent = "0.1";
-            using (var webClient = new WebClient())
-            {
-                dowloadedContent = await webClient.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/AnnoDesigner/anno-designer/master/version.txt"));
-            }
-
-            if (double.Parse(dowloadedContent, CultureInfo.InvariantCulture) > Constants.Version)
+            if (await _updateHelper.IsNewAppVersionAvailableAsync())
             {
                 IsUpdateAvailable = true;
+                _messageBoxService.ShowMessage(Application.Current.MainWindow,
+                    _localizationHelper.GetLocalization("UpdatePreferencesNewAppUpdateAvailable") + Environment.NewLine + Environment.NewLine + "https://github.com/AnnoDesigner/anno-designer/releases/",
+                    _localizationHelper.GetLocalization("UpdatePreferencesUpdates"));
             }
             else
             {
-                if (isAutomaticUpdateCheck)
-                {
-                    //show messagebox ?
-                }
-                else
-                {
-                    IsUpdateAvailable = false;
-                    //StatusMessage = "Version is up to date.";
-                }
-            }
-
-            if (isAutomaticUpdateCheck)
-            {
-                //If not already prompted
-                if (!_appSettings.PromptedForAutoUpdateCheck)
-                {
-                    _appSettings.PromptedForAutoUpdateCheck = true;
-
-                    if (!_messageBoxService.ShowQuestion(Application.Current.MainWindow,
-                        "Do you want to continue checking for a new version on startup?\n\nThis option can be changed from the help menu.",
-                        "Continue checking for updates?"))
-                    {
-                        AutomaticUpdateCheck = false;
-                    }
-                }
+                IsUpdateAvailable = false;
             }
         }
 
@@ -150,6 +137,9 @@ namespace AnnoDesigner.ViewModels
             var isNewReleaseAvailable = foundRelease.Version > new Version(PresetsVersionValue);
             if (isNewReleaseAvailable)
             {
+                IsPresetUpdateAvailable = true;
+                FoundPresetRelease = foundRelease;
+
                 if (isAutomaticUpdateCheck)
                 {
                     if (_messageBoxService.ShowQuestion(Application.Current.MainWindow,
@@ -158,11 +148,6 @@ namespace AnnoDesigner.ViewModels
                     {
                         ExecuteDownloadPresets(null);
                     }
-                }
-                else
-                {
-                    IsPresetUpdateAvailable = true;
-                    FoundPresetRelease = foundRelease;
                 }
             }
         }
