@@ -818,8 +818,9 @@ namespace AnnoDesigner.ViewModels
             {
                 logger.Warn(layoutEx, "Version of layout file is not supported.");
 
-                if (_messageBoxService.ShowQuestion("Try loading anyway?\nThis is very likely to fail or result in strange things happening.",
-                        "File version unsupported"))
+                if (_messageBoxService.ShowQuestion(
+                        _localizationHelper.GetLocalization("FileVersionUnsupportedMessage"),
+                        _localizationHelper.GetLocalization("FileVersionUnsupportedTitle")))
                 {
                     OpenFile(filePath, true);
                 }
@@ -835,7 +836,7 @@ namespace AnnoDesigner.ViewModels
         /// <summary>
         /// Writes layout to file.
         /// </summary>
-        private void SaveFile(string filePath)
+        public void SaveFile(string filePath)
         {
             try
             {
@@ -856,7 +857,7 @@ namespace AnnoDesigner.ViewModels
         /// <param name="e">exception containing error information</param>
         private void IOErrorMessageBox(Exception e)
         {
-            _messageBoxService.ShowError(e.Message, "Something went wrong while saving/loading file.");
+            _messageBoxService.ShowError(e.Message, _localizationHelper.GetLocalization("IOErrorMessage"));
         }
 
         #region properties
