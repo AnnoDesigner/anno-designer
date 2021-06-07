@@ -61,7 +61,10 @@ namespace AnnoDesigner.Undo
             finally
             {
                 GatheredOperation = null;
-                if (operation != null && operation.Operations.Count > 0) RegisterOperation(operation);
+                if (operation != null && operation.Operations.Count > 0)
+                {
+                    RegisterOperation(operation);
+                }
             }
         }
     }

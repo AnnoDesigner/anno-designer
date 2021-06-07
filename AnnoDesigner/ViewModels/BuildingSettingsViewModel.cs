@@ -382,8 +382,8 @@ namespace AnnoDesigner.ViewModels
             AnnoCanvasToUse.UndoManager.RegisterOperation(new ChangeObjectsColorOperation()
             {
                 ObjectColors = AnnoCanvasToUse.SelectedObjects
-                    .Select(obj => (obj, obj.Color, ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject)))
-                    .Where(tuple => tuple.Item3 != null && tuple.Item3.HasValue)
+                    .Select(obj => (obj, obj.Color, predefinedColor: ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject)))
+                    .Where(tuple => tuple.predefinedColor != null && tuple.predefinedColor.HasValue)
                     .ToList(),
                 RedrawAction = () =>
                 {

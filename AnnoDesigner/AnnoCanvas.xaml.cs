@@ -9,29 +9,29 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core;
+using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Exceptions;
+using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.Services;
-using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Models;
 using AnnoDesigner.Services;
-using Microsoft.Win32;
-using NLog;
-using AnnoDesigner.Core.Layout.Helper;
-using System.Windows.Controls.Primitives;
 using AnnoDesigner.Undo;
 using AnnoDesigner.Undo.Operations;
+using Microsoft.Win32;
+using NLog;
 
 namespace AnnoDesigner
 {
@@ -1769,9 +1769,11 @@ namespace AnnoDesigner
                         ObjectPositions = _oldObjectPositions.Select((pair) => (pair.Item, pair.OldGridRect.TopLeft, pair.Item.Position)).ToList(),
                         Collection = PlacedObjects
                     });
+
                     UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
                     _oldObjectPositions.Clear();
                 }
+
                 CurrentMode = MouseMode.DragAllStart;
             }
             else if (e.LeftButton == MouseButtonState.Pressed && CurrentObjects.Count != 0)
@@ -2031,6 +2033,7 @@ namespace AnnoDesigner
                             ObjectPositions = _oldObjectPositions.Select((pair) => (pair.Item, pair.OldGridRect.TopLeft, pair.Item.Position)).ToList(),
                             Collection = PlacedObjects
                         });
+
                         UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
                         _oldObjectPositions.Clear();
                         CurrentMode = MouseMode.Standard;
@@ -2057,6 +2060,7 @@ namespace AnnoDesigner
                                 ObjectPositions = _oldObjectPositions.Select((pair) => (pair.Item, pair.OldGridRect.TopLeft, pair.Item.Position)).ToList(),
                                 Collection = PlacedObjects
                             });
+
                             UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
                             _oldObjectPositions.Clear();
                             //clear selection after potentially modifying QuadTree
@@ -2182,6 +2186,7 @@ namespace AnnoDesigner
                         Objects = newObjects,
                         Collection = PlacedObjects
                     });
+
                     PlacedObjects.AddRange(newObjects.Select(obj => (obj, obj.GridRect)));
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
 
@@ -2190,21 +2195,24 @@ namespace AnnoDesigner
                     {
                         ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
                     }
+
                     if (!_layoutBounds.Contains(boundingRect))
                     {
                         InvalidateBounds();
                     }
+
                     if (!_scrollableBounds.Contains(boundingRect))
                     {
                         InvalidateScroll();
                     }
-                    return true;
 
+                    return true;
                 }
+
                 return false;
             }
-            return true;
 
+            return true;
         }
 
         /// <summary>
@@ -2283,11 +2291,13 @@ namespace AnnoDesigner
             var dx = PlacedObjects.Min(_ => _.Position.X) - border;
             var dy = PlacedObjects.Min(_ => _.Position.Y) - border;
             var diff = new Vector(dx, dy);
+
             UndoManager.RegisterOperation(new MoveObjectsOperation()
             {
                 ObjectPositions = PlacedObjects.Select(obj => (obj, obj.Position, obj.Position - diff)).ToList(),
                 Collection = PlacedObjects
             });
+
             foreach (var item in PlacedObjects)
             {
                 item.Position -= diff;
@@ -2552,6 +2562,7 @@ namespace AnnoDesigner
                 Rotate(placedObjects);
                 Normalize(1);
             });
+
             InvalidateVisual();
         }
 
@@ -2585,6 +2596,7 @@ namespace AnnoDesigner
                 Objects = SelectedObjects.ToList(),
                 Collection = PlacedObjects
             });
+
             // remove all currently selected objects from the grid and clear selection
             SelectedObjects.ForEach(_ => PlacedObjects.Remove(_, new Rect(_.Position, _.Size)));
             SelectedObjects.Clear();
@@ -2623,6 +2635,7 @@ namespace AnnoDesigner
                         },
                         Collection = PlacedObjects
                     });
+
                     PlacedObjects.Remove(obj, obj.GridRect);
                     RemoveSelectedObject(obj, false);
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);

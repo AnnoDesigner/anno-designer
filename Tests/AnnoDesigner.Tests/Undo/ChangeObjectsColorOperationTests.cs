@@ -7,7 +7,7 @@ using AnnoDesigner.Undo.Operations;
 using Moq;
 using Xunit;
 
-namespace AnnoDesigner.Tests
+namespace AnnoDesigner.Tests.Undo
 {
     public class ChangeObjectsColorOperationTests
     {
@@ -19,26 +19,33 @@ namespace AnnoDesigner.Tests
             }, Mock.Of<ICoordinateHelper>(), Mock.Of<IBrushCache>(), Mock.Of<IPenCache>());
         }
 
+        #region Undo tests
+
         [Fact]
-        public void Undo_SingleObject_ObjectsRecolored()
+        public void Undo_SingleObject_ShouldSetColor()
         {
+            // Arrange
+            var expectedColor = Colors.Black;
             var obj = CreateLayoutObject(Colors.White);
             var operation = new ChangeObjectsColorOperation()
             {
                 ObjectColors = new List<(LayoutObject, SerializableColor, Color?)>()
                 {
-                    (obj, Colors.Black, obj.Color)
+                    (obj, expectedColor, obj.Color)
                 }
             };
 
+            // Act
             operation.Undo();
 
-            Assert.Equal<SerializableColor>(Colors.Black, obj.Color);
+            // Assert
+            Assert.Equal<SerializableColor>(expectedColor, obj.Color);
         }
 
         [Fact]
-        public void Undo_RedrawActionCalled()
+        public void Undo_ShouldInvokeRedrawAction()
         {
+            // Arrange
             var actionMock = new Mock<Action>();
             var operation = new ChangeObjectsColorOperation()
             {
@@ -46,71 +53,92 @@ namespace AnnoDesigner.Tests
                 RedrawAction = actionMock.Object
             };
 
+            // Act
             operation.Undo();
 
-            actionMock.Verify(a => a());
+            // Assert
+            actionMock.Verify(action => action(), Times.Once());
         }
 
         [Fact]
-        public void Undo_MultipleObjects_ObjectsRecolored()
+        public void Undo_MultipleObjects_ShouldSetColors()
         {
+            // Arrange
+            var expectedColor1 = Colors.Black;
+            var expectedColor2 = Colors.Blue;
             var obj1 = CreateLayoutObject(Colors.White);
             var obj2 = CreateLayoutObject(Colors.Red);
             var operation = new ChangeObjectsColorOperation()
             {
                 ObjectColors = new List<(LayoutObject, SerializableColor, Color?)>()
                 {
-                    (obj1, Colors.Black, obj1.Color),
-                    (obj2, Colors.Blue, obj2.Color),
+                    (obj1, expectedColor1, obj1.Color),
+                    (obj2, expectedColor2, obj2.Color),
                 }
             };
 
+            // Act
             operation.Undo();
 
-            Assert.Equal<SerializableColor>(Colors.Black, obj1.Color);
-            Assert.Equal<SerializableColor>(Colors.Blue, obj2.Color);
+            // Assert
+            Assert.Equal<SerializableColor>(expectedColor1, obj1.Color);
+            Assert.Equal<SerializableColor>(expectedColor2, obj2.Color);
         }
 
+        #endregion
+
+        #region Redo tests
+
         [Fact]
-        public void Redo_SingleObject_ObjectsRecolored()
+        public void Redo_SingleObject_ShouldSetColor()
         {
+            // Arrange
+            var expectedColor = Colors.Black;
             var obj = CreateLayoutObject(Colors.White);
             var operation = new ChangeObjectsColorOperation()
             {
                 ObjectColors = new List<(LayoutObject, SerializableColor, Color?)>()
                 {
-                    (obj, obj.Color, Colors.Black)
+                    (obj, obj.Color, expectedColor)
                 }
             };
 
+            // Act
             operation.Redo();
 
-            Assert.Equal<SerializableColor>(Colors.Black, obj.Color);
+            // Assert
+            Assert.Equal<SerializableColor>(expectedColor, obj.Color);
         }
 
         [Fact]
-        public void Redo_MultipleObjects_ObjectsRecolored()
+        public void Redo_MultipleObjects_ShouldSetColors()
         {
+            // Arrange
+            var expectedColor1 = Colors.Black;
+            var expectedColor2 = Colors.Blue;
             var obj1 = CreateLayoutObject(Colors.White);
             var obj2 = CreateLayoutObject(Colors.Red);
             var operation = new ChangeObjectsColorOperation()
             {
                 ObjectColors = new List<(LayoutObject, SerializableColor, Color?)>()
                 {
-                    (obj1, obj1.Color, Colors.Black),
-                    (obj2, obj2.Color, Colors.Blue),
+                    (obj1, obj1.Color, expectedColor1),
+                    (obj2, obj2.Color, expectedColor2),
                 }
             };
 
+            // Act
             operation.Redo();
 
-            Assert.Equal<SerializableColor>(Colors.Black, obj1.Color);
-            Assert.Equal<SerializableColor>(Colors.Blue, obj2.Color);
+            // Assert
+            Assert.Equal<SerializableColor>(expectedColor1, obj1.Color);
+            Assert.Equal<SerializableColor>(expectedColor2, obj2.Color);
         }
 
         [Fact]
-        public void Redo_RedrawActionCalled()
+        public void Redo_ShouldInvokeRedrawAction()
         {
+            // Arrange
             var actionMock = new Mock<Action>();
             var operation = new ChangeObjectsColorOperation()
             {
@@ -118,9 +146,13 @@ namespace AnnoDesigner.Tests
                 RedrawAction = actionMock.Object
             };
 
+            // Act
             operation.Redo();
 
-            actionMock.Verify(a => a());
+            // Assert
+            actionMock.Verify(action => action(), Times.Once());
         }
+
+        #endregion
     }
 }

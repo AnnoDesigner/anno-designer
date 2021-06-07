@@ -9,17 +9,17 @@ namespace AnnoDesigner.Undo.Operations
 
         public void Redo()
         {
-            foreach (var reducer in Operations)
+            foreach (var curOperation in Operations)
             {
-                reducer.Redo();
+                curOperation.Redo();
             }
         }
 
         public void Undo()
         {
-            foreach (var reducer in Operations.Reverse())
+            foreach (var curOperation in Operations.Reverse())
             {
-                reducer.Undo();
+                curOperation.Undo();
             }
         }
     }

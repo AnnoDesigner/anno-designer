@@ -4,202 +4,245 @@ using AnnoDesigner.Undo.Operations;
 using Moq;
 using Xunit;
 
-namespace AnnoDesigner.Tests
+namespace AnnoDesigner.Tests.Undo
 {
     public class UndoManagerTests
     {
-        public UndoManager UndoManager => new UndoManager();
+        private UndoManager _undoManager;
+
+        public UndoManagerTests()
+        {
+            _undoManager = new UndoManager();
+        }
+
+        //private IUndoManager UndoManager => new UndoManager();
 
         private void DoNothing()
-        {
+        { }
 
+        #region Undo tests
+
+        [Fact]
+        public void Undo_EmptyStack_ShouldNotThrow()
+        {
+            // Arrange/Act
+            var ex = Record.Exception(() => _undoManager.Undo());
+
+            // Assert
+            Assert.Null(ex);
         }
 
         [Fact]
-        public void Undo_EmptyStack_DoesNotFail()
+        public void Undo_StackHasSingleOperation_ShouldMoveOperationToRedoStack()
         {
-            var manager = UndoManager;
+            // Arrange
+            _undoManager.UndoStack.Push(Mock.Of<IOperation>());
 
-            manager.Undo();
+            // Act
+            _undoManager.Undo();
 
-            // didn't throw exception
+            // Assert
+            Assert.Empty(_undoManager.UndoStack);
+            Assert.NotEmpty(_undoManager.RedoStack);
         }
 
         [Fact]
-        public void Undo_NotEmptyStack_MovesOperationToRedoStack()
+        public void Undo_StackHasSingleOperation_ShouldInvokeUndoOnOperation()
         {
-            var manager = UndoManager;
-            manager.UndoStack.Push(Mock.Of<IOperation>());
-
-            manager.Undo();
-
-            Assert.Empty(manager.UndoStack);
-            Assert.NotEmpty(manager.RedoStack);
-        }
-
-        [Fact]
-        public void Undo_NotEmptyStack_CallsUndoOnOperation()
-        {
-            var manager = UndoManager;
+            // Arrange
             var operationMock = new Mock<IOperation>();
-            manager.UndoStack.Push(operationMock.Object);
+            _undoManager.UndoStack.Push(operationMock.Object);
 
-            manager.Undo();
+            // Act
+            _undoManager.Undo();
 
-            operationMock.Verify(op => op.Undo(), Times.Once());
+            // Assert
+            operationMock.Verify(operation => operation.Undo(), Times.Once());
+        }
+
+        #endregion
+
+        #region Redo tests
+
+        [Fact]
+        public void Redo_EmptyStack_ShouldNotThrow()
+        {
+            // Arrange/Act
+            var ex = Record.Exception(() => _undoManager.Redo());
+
+            // Assert
+            Assert.Null(ex);
         }
 
         [Fact]
-        public void Redo_EmptyStack_DoesNotFail()
+        public void Redo_StackHasSingleOperation_ShouldMoveOperationToUndoStack()
         {
-            var manager = UndoManager;
+            // Arrange
+            _undoManager.RedoStack.Push(Mock.Of<IOperation>());
 
-            manager.Redo();
+            // Act
+            _undoManager.Redo();
 
-            // didn't throw exception
+            // Assert
+            Assert.Empty(_undoManager.RedoStack);
+            Assert.NotEmpty(_undoManager.UndoStack);
         }
 
         [Fact]
-        public void Redo_NotEmptyStack_MovesOperationToUndoStack()
+        public void Redo_StackHasSingleOperation_ShouldInvokeRedoOnOperation()
         {
-            var manager = UndoManager;
-            manager.RedoStack.Push(Mock.Of<IOperation>());
-
-            manager.Redo();
-
-            Assert.Empty(manager.RedoStack);
-            Assert.NotEmpty(manager.UndoStack);
-        }
-
-        [Fact]
-        public void Redo_NotEmptyStack_CallsRedoOnOperation()
-        {
-            var manager = UndoManager;
+            // Arrange
             var operationMock = new Mock<IOperation>();
-            manager.RedoStack.Push(operationMock.Object);
+            _undoManager.RedoStack.Push(operationMock.Object);
 
-            manager.Redo();
+            // Act
+            _undoManager.Redo();
 
-            operationMock.Verify(op => op.Redo(), Times.Once());
+            // Assert
+            operationMock.Verify(operation => operation.Redo(), Times.Once());
+        }
+
+        #endregion
+
+        #region Clear tests
+
+        [Fact]
+        public void Clear_ShouldClearUndoStack()
+        {
+            // Arrange
+            _undoManager.UndoStack.Push(Mock.Of<IOperation>());
+
+            // Act
+            _undoManager.Clear();
+
+            // Assert
+            Assert.Empty(_undoManager.UndoStack);
         }
 
         [Fact]
-        public void Clear_ClearsUndoStack()
+        public void Clear_ShouldClearRedoStack()
         {
-            var manager = UndoManager;
-            manager.UndoStack.Push(Mock.Of<IOperation>());
+            // Arrange
+            _undoManager.RedoStack.Push(Mock.Of<IOperation>());
 
-            manager.Clear();
+            // Act
+            _undoManager.Clear();
 
-            Assert.Empty(manager.UndoStack);
+            // Assert
+            Assert.Empty(_undoManager.RedoStack);
+        }
+
+        #endregion
+
+        #region RegisterOperation tests
+
+        [Fact]
+        public void RegisterOperation_NotGatheringOperations_ShouldAddToUndoStack()
+        {
+            // Arrange/Act
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
+
+            // Assert
+            Assert.NotEmpty(_undoManager.UndoStack);
         }
 
         [Fact]
-        public void Clear_ClearsRedoStack()
+        public void RegisterOperation_NotGatheringOperations_ShouldClearRedoStack()
         {
-            var manager = UndoManager;
-            manager.RedoStack.Push(Mock.Of<IOperation>());
+            // Arrange
+            _undoManager.RedoStack.Push(Mock.Of<IOperation>());
+            Assert.NotEmpty(_undoManager.RedoStack);
 
-            manager.Clear();
+            // Act
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
 
-            Assert.Empty(manager.RedoStack);
+            // Assert
+            Assert.Empty(_undoManager.RedoStack);
         }
 
         [Fact]
-        public void RegisterOperation_NotGatheringOperations_AddsToUndoStack()
+        public void RegisterOperation_GatheringOperations_ShouldNotAddToUndoStack()
         {
-            var manager = UndoManager;
+            // Arrange
+            _undoManager.GatheredOperation = new CompositeOperation();
 
-            manager.RegisterOperation(Mock.Of<IOperation>());
+            // Act
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
 
-            Assert.NotEmpty(manager.UndoStack);
+            // Assert
+            Assert.Empty(_undoManager.UndoStack);
         }
 
         [Fact]
-        public void RegisterOperation_NotGatheringOperations_ClearsRedoStack()
+        public void RegisterOperation_GatheringOperations_ShouldAddToGatheredOperation()
         {
-            var manager = UndoManager;
-            manager.RedoStack.Push(Mock.Of<IOperation>());
+            // Arrange
+            _undoManager.GatheredOperation = new CompositeOperation();
 
-            manager.RegisterOperation(Mock.Of<IOperation>());
+            // Act
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
 
-            Assert.Empty(manager.RedoStack);
+            // Assert
+            Assert.NotEmpty(_undoManager.GatheredOperation.Operations);
+        }
+
+        #endregion
+
+        #region AsSingleUndoableOperation tests
+
+        [Fact]
+        public void AsSingleUndoableOperation_NoOperationRegistered_ShouldNotAddToUndoStack()
+        {
+            // Arrange/Act
+            _undoManager.AsSingleUndoableOperation(DoNothing);
+
+            // Assert
+            Assert.Empty(_undoManager.UndoStack);
         }
 
         [Fact]
-        public void RegisterOperation_GatheringOperations_DoesNotAddToUndoStack()
+        public void AsSingleUndoableOperation_NoOperationRegistered_ShouldCleanGatheredOperation()
         {
-            var manager = UndoManager;
-            manager.GatheredOperation = new CompositeOperation();
+            // Arrange/Act
+            _undoManager.AsSingleUndoableOperation(DoNothing);
 
-            manager.RegisterOperation(Mock.Of<IOperation>());
-
-            Assert.Empty(manager.UndoStack);
+            // Assert
+            Assert.Null(_undoManager.GatheredOperation);
         }
 
         [Fact]
-        public void RegisterOperation_GatheringOperations_AddsToGatheredOperation()
+        public void AsSingleUndoableOperation_OperationRegistered_ShouldAddToUndoStack()
         {
-            var manager = UndoManager;
-            manager.GatheredOperation = new CompositeOperation();
-
-            manager.RegisterOperation(Mock.Of<IOperation>());
-
-            Assert.NotEmpty(manager.GatheredOperation.Operations);
-        }
-
-        [Fact]
-        public void AsSingleUndoableOperation_NoOperationRegistered_DoesNotAddToUndoStack()
-        {
-            var manager = UndoManager;
-
-            manager.AsSingleUndoableOperation(DoNothing);
-
-            Assert.Empty(manager.UndoStack);
-        }
-
-        [Fact]
-        public void AsSingleUndoableOperation_NoOperationRegistered_CleansAfterItself()
-        {
-            var manager = UndoManager;
-
-            manager.AsSingleUndoableOperation(DoNothing);
-
-            Assert.Null(manager.GatheredOperation);
-        }
-
-        [Fact]
-        public void AsSingleUndoableOperation_OperationRegistered_AddsToUndoStack()
-        {
-            var manager = UndoManager;
-
-            manager.AsSingleUndoableOperation(() =>
+            // Arrange/Act
+            _undoManager.AsSingleUndoableOperation(() =>
             {
-                manager.RegisterOperation(Mock.Of<IOperation>());
+                _undoManager.RegisterOperation(Mock.Of<IOperation>());
             });
 
-            Assert.NotEmpty(manager.UndoStack);
+            // Assert
+            Assert.NotEmpty(_undoManager.UndoStack);
         }
 
         [Fact]
-        public void AsSingleUndoableOperation_OperationRegistered_CleansAfterItself()
+        public void AsSingleUndoableOperation_OperationRegistered_ShouldCleanGatheredOperation()
         {
-            var manager = UndoManager;
-
-            manager.AsSingleUndoableOperation(() => {
-                manager.RegisterOperation(Mock.Of<IOperation>());
+            // Arrange/Act
+            _undoManager.AsSingleUndoableOperation(() =>
+            {
+                _undoManager.RegisterOperation(Mock.Of<IOperation>());
             });
 
-            Assert.Null(manager.GatheredOperation);
+            // Assert
+            Assert.Null(_undoManager.GatheredOperation);
         }
 
         [Fact]
-        public void AsSingleUndoableOperation_ExceptionThrown_ExceptionPassedThrough()
+        public void AsSingleUndoableOperation_ExceptionIsThrown_ShouldPassThroughException()
         {
-            var manager = UndoManager;
-
-            Assert.Throws<Exception>(() => {
-                manager.AsSingleUndoableOperation(() =>
+            // Arrange/Act/Assert
+            Assert.Throws<Exception>(() =>
+            {
+                _undoManager.AsSingleUndoableOperation(() =>
                 {
                     throw new Exception();
                 });
@@ -207,15 +250,14 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void AsSingleUndoableOperation_ExceptionThrown_DoesNotAddToUndoStack()
+        public void AsSingleUndoableOperation_ExceptionIsThrown_ShouldNotAddToUndoStack()
         {
-            var manager = UndoManager;
-
+            // Arrange/Act
             try
             {
-                manager.AsSingleUndoableOperation(() =>
+                _undoManager.AsSingleUndoableOperation(() =>
                 {
-                    manager.RegisterOperation(Mock.Of<IOperation>());
+                    _undoManager.RegisterOperation(Mock.Of<IOperation>());
                     throw new Exception();
                 });
             }
@@ -224,17 +266,17 @@ namespace AnnoDesigner.Tests
 
             }
 
-            Assert.Empty(manager.UndoStack);
+            // Assert
+            Assert.Empty(_undoManager.UndoStack);
         }
 
         [Fact]
-        public void AsSingleUndoableOperation_ExceptionThrown_CleansAfterItself()
+        public void AsSingleUndoableOperation_ExceptionIsThrown_ShouldCleanGatheredOperation()
         {
-            var manager = UndoManager;
-
+            // Arrange/Act
             try
             {
-                manager.AsSingleUndoableOperation(() =>
+                _undoManager.AsSingleUndoableOperation(() =>
                 {
                     throw new Exception();
                 });
@@ -244,7 +286,10 @@ namespace AnnoDesigner.Tests
 
             }
 
-            Assert.Null(manager.GatheredOperation);
+            // Assert
+            Assert.Null(_undoManager.GatheredOperation);
         }
+
+        #endregion
     }
 }

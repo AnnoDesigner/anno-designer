@@ -7,7 +7,7 @@ using AnnoDesigner.Undo.Operations;
 using Moq;
 using Xunit;
 
-namespace AnnoDesigner.Tests
+namespace AnnoDesigner.Tests.Undo
 {
     public class RemoveObjectsOperationTests
     {
@@ -22,10 +22,14 @@ namespace AnnoDesigner.Tests
             }, Mock.Of<ICoordinateHelper>(), Mock.Of<IBrushCache>(), Mock.Of<IPenCache>());
         }
 
+        #region Undo tests
+
         [Fact]
-        public void Undo_SingleObject_AddedObjectsToCollection()
+        public void Undo_SingleObject_ShouldAddObjectToCollection()
         {
+            // Arrange
             var collection = Collection;
+            Assert.Empty(collection);
             var obj = CreateLayoutObject(5, 5, 2, 2);
             var operation = new RemoveObjectsOperation()
             {
@@ -36,14 +40,17 @@ namespace AnnoDesigner.Tests
                 }
             };
 
+            // Act
             operation.Undo();
 
+            // Assert
             Assert.Equal(1, collection.Count());
         }
 
         [Fact]
-        public void Undo_MultipleObject_AddedObjectsToCollection()
+        public void Undo_MultipleObjects_ShouldAddObjectsToCollection()
         {
+            // Arrange
             var collection = Collection;
             var obj1 = CreateLayoutObject(5, 5, 2, 2);
             var obj2 = CreateLayoutObject(0, 0, 2, 2);
@@ -57,14 +64,21 @@ namespace AnnoDesigner.Tests
                 }
             };
 
+            // Act
             operation.Undo();
 
+            // Assert
             Assert.Equal(2, collection.Count());
         }
 
+        #endregion
+
+        #region Undo tests
+
         [Fact]
-        public void Redo_SingleObject_RemovedObjectsFromCollection()
+        public void Redo_SingleObject_ShouldRemoveObjectFromCollection()
         {
+            // Arrange
             var collection = Collection;
             var obj = CreateLayoutObject(5, 5, 2, 2);
             collection.Insert(obj, obj.GridRect);
@@ -77,14 +91,17 @@ namespace AnnoDesigner.Tests
                 }
             };
 
+            // Act
             operation.Redo();
 
+            // Assert
             Assert.Empty(collection);
         }
 
         [Fact]
-        public void Redo_MultipleObject_RemovedObjectsFromCollection()
+        public void Redo_MultipleObjects_ShouldRemoveObjectsFromCollection()
         {
+            // Arrange
             var collection = Collection;
             var obj1 = CreateLayoutObject(5, 5, 2, 2);
             var obj2 = CreateLayoutObject(0, 0, 2, 2);
@@ -100,9 +117,13 @@ namespace AnnoDesigner.Tests
                 }
             };
 
+            // Act
             operation.Redo();
 
+            // Assert
             Assert.Empty(collection);
         }
+
+        #endregion
     }
 }

@@ -7,7 +7,7 @@ using AnnoDesigner.Undo.Operations;
 using Moq;
 using Xunit;
 
-namespace AnnoDesigner.Tests
+namespace AnnoDesigner.Tests.Undo
 {
     public class RotateObjectsClockwiseOperationTests
     {
@@ -22,12 +22,16 @@ namespace AnnoDesigner.Tests
             }, Mock.Of<ICoordinateHelper>(), Mock.Of<IBrushCache>(), Mock.Of<IPenCache>());
         }
 
+        #region Undo tests
+
         [Fact]
-        public void Undo_SingleObject_ObjectsRotated()
+        public void Undo_SingleObject_ShouldRotateObject()
         {
+            // Arrange
             var collection = Collection;
             var obj = CreateLayoutObject(1, 2, 3, 4);
             collection.Insert(obj, obj.GridRect);
+
             var operation = new RotateObjectsClockwiseOperation()
             {
                 Collection = collection,
@@ -37,19 +41,23 @@ namespace AnnoDesigner.Tests
                 }
             };
 
+            // Act
             operation.Undo();
 
+            // Assert
             Assert.Equal(new Rect(2, -4, 4, 3), obj.GridRect);
         }
 
         [Fact]
-        public void Undo_MultipleObjects_ObjectsRotated()
+        public void Undo_MultipleObjects_ShouldRotateObjects()
         {
+            // Arrange
             var collection = Collection;
             var obj1 = CreateLayoutObject(1, 2, 3, 4);
             var obj2 = CreateLayoutObject(5, 6, 7, 8);
             collection.Insert(obj1, obj1.GridRect);
             collection.Insert(obj2, obj2.GridRect);
+
             var operation = new RotateObjectsClockwiseOperation()
             {
                 Collection = collection,
@@ -60,18 +68,26 @@ namespace AnnoDesigner.Tests
                 }
             };
 
+            // Act
             operation.Undo();
 
+            // Assert
             Assert.Equal(new Rect(2, -4, 4, 3), obj1.GridRect);
             Assert.Equal(new Rect(6, -12, 8, 7), obj2.GridRect);
         }
 
+        #endregion
+
+        #region Redo tests
+
         [Fact]
-        public void Redo_SingleObject_ObjectsRotated()
+        public void Redo_SingleObject_ShouldRotateObject()
         {
+            // Arrange
             var collection = Collection;
             var obj = CreateLayoutObject(1, 2, 3, 4);
             collection.Insert(obj, obj.GridRect);
+
             var operation = new RotateObjectsClockwiseOperation()
             {
                 Collection = collection,
@@ -81,19 +97,23 @@ namespace AnnoDesigner.Tests
                 }
             };
 
+            // Act
             operation.Redo();
 
+            // Assert
             Assert.Equal(new Rect(-6, 1, 4, 3), obj.GridRect);
         }
 
         [Fact]
-        public void Redo_MultipleObjects_ObjectsRotated()
+        public void Redo_MultipleObjects_ShouldRotateObjects()
         {
+            // Arrange
             var collection = Collection;
             var obj1 = CreateLayoutObject(1, 2, 3, 4);
             var obj2 = CreateLayoutObject(5, 6, 7, 8);
             collection.Insert(obj1, obj1.GridRect);
             collection.Insert(obj2, obj2.GridRect);
+
             var operation = new RotateObjectsClockwiseOperation()
             {
                 Collection = collection,
@@ -104,10 +124,14 @@ namespace AnnoDesigner.Tests
                 }
             };
 
+            // Act
             operation.Redo();
 
+            // Assert
             Assert.Equal(new Rect(-6, 1, 4, 3), obj1.GridRect);
             Assert.Equal(new Rect(-14, 5, 8, 7), obj2.GridRect);
         }
+
+        #endregion
     }
 }
