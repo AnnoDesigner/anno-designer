@@ -235,7 +235,8 @@ namespace AnnoDesigner.Localization
                         { "FileVersionMismatchTItle" , "File version mismatch" },
                         { "LayoutLoadingError" , "Something went wrong while loading the layout." },
                         { "LayoutSavingError" , "Something went wrong while saving the layout." },
-                        { "InvalidBuildingConfiguration" , "Invalid building configuration." }
+                        { "InvalidBuildingConfiguration" , "Invalid building configuration." },
+                        { "LayoutSettings", "Layout Settings" }
                     }
                 },
                 {
@@ -419,7 +420,8 @@ namespace AnnoDesigner.Localization
                         { "FileVersionMismatchTItle" , "Unstimmigkeit der Dateiversion" },
                         { "LayoutLoadingError" , "Beim Laden des Layouts ging etwas schief." },
                         { "LayoutSavingError" , "Beim Speichern des Layouts ist etwas schiefgegangen." },
-                        { "InvalidBuildingConfiguration" , "Ungültige Gebäudekonfiguration." }
+                        { "InvalidBuildingConfiguration" , "Ungültige Gebäudekonfiguration." },
+                        { "LayoutSettings", "Layout Optionen" }
                     }
                 },
                 {
@@ -603,7 +605,8 @@ namespace AnnoDesigner.Localization
                         { "FileVersionMismatchTItle" , "Mauvaise concordance des versions des fichiers" },
                         { "LayoutLoadingError" , "Quelque chose s'est mal passé lors du chargement de la mise en page." },
                         { "LayoutSavingError" , "Quelque chose s'est mal passé lors de la sauvegarde de la mise en page." },
-                        { "InvalidBuildingConfiguration" , "Configuration du bâtiment incorrecte." }
+                        { "InvalidBuildingConfiguration" , "Configuration du bâtiment incorrecte." },
+                        { "LayoutSettings", "Paramètres de mise en page" }
                     }
                 },
                 {
@@ -787,7 +790,8 @@ namespace AnnoDesigner.Localization
                         { "FileVersionMismatchTItle" , "Niedopasowanie wersji pliku" },
                         { "LayoutLoadingError" , "Coś poszło nie tak podczas ładowania układu." },
                         { "LayoutSavingError" , "Coś poszło nie tak podczas zapisywania układu." },
-                        { "InvalidBuildingConfiguration" , "Nieprawidłowa konfiguracja budynku." }
+                        { "InvalidBuildingConfiguration" , "Nieprawidłowa konfiguracja budynku." },
+                        { "LayoutSettings", "Ustawienia układu" }
                     }
                 },
                 {
@@ -971,7 +975,8 @@ namespace AnnoDesigner.Localization
                         { "FileVersionMismatchTItle" , "Несоответствие версии файла" },
                         { "LayoutLoadingError" , "Что-то пошло не так во время загрузки макета." },
                         { "LayoutSavingError" , "Что-то пошло не так во время сохранения макета." },
-                        { "InvalidBuildingConfiguration" , "Неверная конфигурация здания." }
+                        { "InvalidBuildingConfiguration" , "Неверная конфигурация здания." },
+                        { "LayoutSettings", "Настройки макета" }
                     }
                 },
             };

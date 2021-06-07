@@ -135,6 +135,8 @@ namespace AnnoDesigner.ViewModels
             PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons, _messageBoxService, _localizationHelper);
             PreferencesGeneralViewModel = new GeneralSettingsViewModel(_appSettings, _commons);
 
+            LayoutSettingsViewModel = new LayoutSettingsViewModel();
+
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
             CanvasResetZoomCommand = new RelayCommand(CanvasResetZoom);
@@ -585,6 +587,7 @@ namespace AnnoDesigner.ViewModels
             if (!string.IsNullOrWhiteSpace(args.FilePath) && args.Layout?.LayoutVersion != default)
             {
                 fileName = $"{Path.GetFileName(args.FilePath)} ({args.Layout.LayoutVersion})";
+                LayoutSettingsViewModel.LayoutVersion = args.Layout.LayoutVersion;
             }
             else if (!string.IsNullOrWhiteSpace(args.FilePath))
             {
@@ -838,6 +841,7 @@ namespace AnnoDesigner.ViewModels
             {
                 AnnoCanvas.Normalize(1);
                 var layoutToSave = new LayoutFile(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
+                layoutToSave.LayoutVersion = LayoutSettingsViewModel.LayoutVersion;
                 _layoutLoader.SaveLayout(layoutToSave, filePath);
             }
             catch (Exception e)
@@ -1612,6 +1616,8 @@ namespace AnnoDesigner.ViewModels
         public ManageKeybindingsViewModel PreferencesKeyBindingsViewModel { get; set; }
 
         public GeneralSettingsViewModel PreferencesGeneralViewModel { get; set; }
+
+        public LayoutSettingsViewModel LayoutSettingsViewModel { get; set; }
 
         #endregion    
     }

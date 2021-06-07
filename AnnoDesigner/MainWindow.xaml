@@ -265,6 +265,17 @@
                        Grid.Column="2"
                        Grid.Row="1"
                        LastChildFill="True">
+                <GroupBox Header="{l:Localize LayoutSettings}"
+                          DockPanel.Dock="Top">
+                    <DockPanel LastChildFill="False">
+                        <Label Content="{l:Localize Version}" />
+                        <TextBox DockPanel.Dock="Right"
+                                 Height="23"
+                                 IsEnabled="True"
+                                 Text="{Binding LayoutSettingsViewModel.LayoutVersionDisplayValue}"
+                                 Width="140" />
+                    </DockPanel>
+                </GroupBox>
                 <GroupBox Header="{l:Localize BuildingSettings}"
                           DockPanel.Dock="Top">
                     <StackPanel>
