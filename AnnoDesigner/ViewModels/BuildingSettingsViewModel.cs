@@ -355,6 +355,19 @@ namespace AnnoDesigner.ViewModels
                 return;
             }
 
+            AnnoCanvasToUse.UndoManager.RegisterOperation(new ChangeObjectsColorOperation()
+            {
+                ObjectColors = AnnoCanvasToUse.SelectedObjects
+                    .Select(obj => (obj, obj.Color, selectedColor: SelectedColor))
+                    .Where(tuple => tuple.selectedColor != null && tuple.selectedColor.HasValue)
+                    .ToList(),
+                RedrawAction = () =>
+                {
+                    AnnoCanvasToUse.InvalidateVisual();
+                    AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
+                }
+            });
+
             foreach (var curSelectedObject in AnnoCanvasToUse.SelectedObjects)
             {
                 curSelectedObject.Color = SelectedColor.Value;
