@@ -163,6 +163,23 @@
                               IsEnabled="{Binding StatisticsViewModel.IsVisible, Mode=OneWay}"
                               Command="{Binding ShowStatisticsBuildingCountCommand}" />
                 </MenuItem>
+                <MenuItem Header="{l:Localize View}">
+                    <MenuItem Header="{l:Localize ShowGrid}"
+                              IsCheckable="True"
+                              IsChecked="{Binding CanvasShowGrid}" />
+                    <MenuItem Header="{l:Localize ShowLabels}"
+                              IsCheckable="True"
+                              IsChecked="{Binding CanvasShowLabels}" />
+                    <MenuItem Header="{l:Localize ShowIcons}"
+                              IsCheckable="True"
+                              IsChecked="{Binding CanvasShowIcons}" />
+                    <MenuItem Header="{l:Localize ShowTrueInfluenceRange}"
+                              IsCheckable="True"
+                              IsChecked="{Binding CanvasShowTrueInfluenceRange}" />
+                    <MenuItem Header="{l:Localize ShowInfluences}"
+                              IsCheckable="True"
+                              IsChecked="{Binding CanvasShowInfluences}" />
+                </MenuItem>
                 <MenuItem Header="{l:Localize Tools}">
                     <MenuItem Header="{l:Localize Normalize}"
                               Command="{Binding CanvasNormalizeCommand}" />
@@ -196,27 +213,6 @@
                     <MenuItem Header="{l:Localize ViewLicenses}"
                               Command="{Binding ShowLicensesWindowCommand}" />
                 </MenuItem>
-                <Separator />
-                <MenuItem Header="{l:Localize ShowGrid}"
-                          IsCheckable="True"
-                          IsChecked="{Binding CanvasShowGrid}"
-                          TabIndex="26" />
-                <MenuItem Header="{l:Localize ShowLabels}"
-                          IsCheckable="True"
-                          IsChecked="{Binding CanvasShowLabels}"
-                          TabIndex="27" />
-                <MenuItem Header="{l:Localize ShowIcons}"
-                          IsCheckable="True"
-                          IsChecked="{Binding CanvasShowIcons}"
-                          TabIndex="28" />
-                <MenuItem Header="{l:Localize ShowTrueInfluenceRange}"
-                          IsCheckable="True"
-                          IsChecked="{Binding CanvasShowTrueInfluenceRange}"
-                          TabIndex="29" />
-                <MenuItem Header="{l:Localize ShowInfluences}"
-                          IsCheckable="True"
-                          IsChecked="{Binding CanvasShowInfluences}"
-                          TabIndex="30" />
             </Menu>
 
             <Grid x:Name="gridMain"
