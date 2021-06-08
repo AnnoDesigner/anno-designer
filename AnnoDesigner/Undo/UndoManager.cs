@@ -8,7 +8,7 @@ namespace AnnoDesigner.Undo
     {
         internal Stack<IOperation> UndoStack { get; set; } = new Stack<IOperation>();
         internal Stack<IOperation> RedoStack { get; set; } = new Stack<IOperation>();
-        internal CompositeOperation GatheredOperation { get; set; }
+        internal CompositeOperation CurrentCompositeOperation { get; set; }
 
         public void Undo()
         {
@@ -38,9 +38,9 @@ namespace AnnoDesigner.Undo
 
         public void RegisterOperation(IOperation operation)
         {
-            if (GatheredOperation != null)
+            if (CurrentCompositeOperation != null)
             {
-                GatheredOperation.Operations.Add(operation);
+                CurrentCompositeOperation.Operations.Add(operation);
             }
             else
             {
@@ -51,16 +51,16 @@ namespace AnnoDesigner.Undo
 
         public void AsSingleUndoableOperation(Action action)
         {
-            GatheredOperation = new CompositeOperation();
+            CurrentCompositeOperation = new CompositeOperation();
             CompositeOperation operation = null;
             try
             {
                 action();
-                operation = GatheredOperation;
+                operation = CurrentCompositeOperation;
             }
             finally
             {
-                GatheredOperation = null;
+                CurrentCompositeOperation = null;
                 if (operation != null && operation.Operations.Count > 0)
                 {
                     RegisterOperation(operation);

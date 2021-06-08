@@ -164,7 +164,7 @@ namespace AnnoDesigner.Tests.Undo
         public void RegisterOperation_GatheringOperations_ShouldNotAddToUndoStack()
         {
             // Arrange
-            _undoManager.GatheredOperation = new CompositeOperation();
+            _undoManager.CurrentCompositeOperation = new CompositeOperation();
 
             // Act
             _undoManager.RegisterOperation(Mock.Of<IOperation>());
@@ -177,13 +177,13 @@ namespace AnnoDesigner.Tests.Undo
         public void RegisterOperation_GatheringOperations_ShouldAddToGatheredOperation()
         {
             // Arrange
-            _undoManager.GatheredOperation = new CompositeOperation();
+            _undoManager.CurrentCompositeOperation = new CompositeOperation();
 
             // Act
             _undoManager.RegisterOperation(Mock.Of<IOperation>());
 
             // Assert
-            Assert.NotEmpty(_undoManager.GatheredOperation.Operations);
+            Assert.NotEmpty(_undoManager.CurrentCompositeOperation.Operations);
         }
 
         #endregion
@@ -207,7 +207,7 @@ namespace AnnoDesigner.Tests.Undo
             _undoManager.AsSingleUndoableOperation(DoNothing);
 
             // Assert
-            Assert.Null(_undoManager.GatheredOperation);
+            Assert.Null(_undoManager.CurrentCompositeOperation);
         }
 
         [Fact]
@@ -233,14 +233,14 @@ namespace AnnoDesigner.Tests.Undo
             });
 
             // Assert
-            Assert.Null(_undoManager.GatheredOperation);
+            Assert.Null(_undoManager.CurrentCompositeOperation);
         }
 
         [Fact]
         public void AsSingleUndoableOperation_ExceptionIsThrown_ShouldPassThroughException()
         {
             // Arrange/Act/Assert
-            Assert.Throws<Exception>(() =>
+            _ = Assert.Throws<Exception>(() =>
             {
                 _undoManager.AsSingleUndoableOperation(() =>
                 {
@@ -287,7 +287,7 @@ namespace AnnoDesigner.Tests.Undo
             }
 
             // Assert
-            Assert.Null(_undoManager.GatheredOperation);
+            Assert.Null(_undoManager.CurrentCompositeOperation);
         }
 
         #endregion
