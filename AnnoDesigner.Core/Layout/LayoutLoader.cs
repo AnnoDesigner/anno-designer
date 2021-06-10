@@ -21,9 +21,9 @@ namespace AnnoDesigner.Core.Layout
         /// </summary>
         /// <param name="objects">objects to save</param>
         /// <param name="pathToLayoutFile">filepath to save to</param>
-        public void SaveLayout(List<AnnoObject> objects, string pathToLayoutFile)
+        public void SaveLayout(LayoutFile layout, string pathToLayoutFile)
         {
-            SerializationHelper.SaveToFile(new SavedLayout(objects), pathToLayoutFile);
+            SerializationHelper.SaveToFile(layout, pathToLayoutFile);
         }
 
         /// <summary>
@@ -31,9 +31,9 @@ namespace AnnoDesigner.Core.Layout
         /// </summary>
         /// <param name="objects">objects to save</param>
         /// <param name="streamWithLayout">stream to save to</param>
-        public void SaveLayout(List<AnnoObject> objects, Stream streamWithLayout)
+        public void SaveLayout(LayoutFile layout, Stream streamWithLayout)
         {
-            SerializationHelper.SaveToStream(new SavedLayout(objects), streamWithLayout);
+            SerializationHelper.SaveToStream(layout, streamWithLayout);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace AnnoDesigner.Core.Layout
         /// <param name="forceLoad">ignore version of layout file and load anyway</param>
         /// <exception cref="LayoutFileUnsupportedFormatException">indicates the given layout file is in an unsupported format.</exception>
         /// <returns>list of loaded objects</returns>
-        public List<AnnoObject> LoadLayout(string pathToLayoutFile, bool forceLoad = false)
+        public LayoutFile LoadLayout(string pathToLayoutFile, bool forceLoad = false)
         {
             if (string.IsNullOrWhiteSpace(pathToLayoutFile))
             {
@@ -53,7 +53,7 @@ namespace AnnoDesigner.Core.Layout
             return Load(jsonString, forceLoad);
         }
 
-        public List<AnnoObject> LoadLayout(Stream streamWithLayout, bool forceLoad = false)
+        public LayoutFile LoadLayout(Stream streamWithLayout, bool forceLoad = false)
         {
             if (streamWithLayout == null)
             {
@@ -64,12 +64,12 @@ namespace AnnoDesigner.Core.Layout
             return Load(jsonString, forceLoad);
         }
 
-        private List<AnnoObject> Load(string jsonString, bool forceLoad)
+        private LayoutFile Load(string jsonString, bool forceLoad)
         {
-            var layoutVersion = new LayoutVersionContainer() { FileVersion = 0 };
+            var layoutVersion = new LayoutFileVersionContainer() { FileVersion = 0 };
             try
             {
-                layoutVersion = SerializationHelper.LoadFromJsonString<LayoutVersionContainer>(jsonString);
+                layoutVersion = SerializationHelper.LoadFromJsonString<LayoutFileVersionContainer>(jsonString);
             }
             catch (JsonSerializationException) { } //No file version, old layout file.
 
@@ -82,9 +82,9 @@ namespace AnnoDesigner.Core.Layout
 
             return layoutVersion.FileVersion switch
             {
-                var version when version >= 4 => SerializationHelper.LoadFromJsonString<SavedLayout>(jsonString).Objects, //file version 4+, Newtonsoft.Json format json
-                var version when version > 0 => SerializationHelper.LoadFromJsonStringLegacy<SavedLayout>(jsonString).Objects, //file version 1-3, DataContractJsonSerializer format json 
-                var version when version == 0 => SerializationHelper.LoadFromJsonStringLegacy<List<AnnoObject>>(jsonString), //no file version, DataContractJsonSerializer format json
+                var version when version >= 4 => SerializationHelper.LoadFromJsonString<LayoutFile>(jsonString), //file version 4+, Newtonsoft.Json format json
+                var version when version > 0 => SerializationHelper.LoadFromJsonStringLegacy<LayoutFile>(jsonString), //file version 1-3, DataContractJsonSerializer format json 
+                var version when version == 0 => new LayoutFile(SerializationHelper.LoadFromJsonStringLegacy<List<AnnoObject>>(jsonString)), //no file version, DataContractJsonSerializer format json
                 _ => throw new NotImplementedException()
             };
         }

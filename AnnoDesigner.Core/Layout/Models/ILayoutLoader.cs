@@ -10,12 +10,12 @@ namespace AnnoDesigner.Core.Layout.Models
 {
     public interface ILayoutLoader
     {
-        void SaveLayout(List<AnnoObject> objects, string pathToLayoutFile);
+        void SaveLayout(LayoutFile layout, string pathToLayoutFile);
 
-        void SaveLayout(List<AnnoObject> objects, Stream streamWithLayout);
+        void SaveLayout(LayoutFile layout, Stream streamWithLayout);
 
-        List<AnnoObject> LoadLayout(string pathToLayoutFile, bool forceLoad = false);
+        LayoutFile LoadLayout(string pathToLayoutFile, bool forceLoad = false);
 
-        List<AnnoObject> LoadLayout(Stream streamWithLayout, bool forceLoad = false);
+        LayoutFile LoadLayout(Stream streamWithLayout, bool forceLoad = false);
     }
 }

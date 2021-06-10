@@ -55,6 +55,12 @@ namespace AnnoDesigner
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
+        /// <summary>
+        /// Event which is fired when the status message should be changed.
+        /// </summary>
+        public event EventHandler<FileLoadedEventArgs> OnLoadedFileChanged;
+        public event EventHandler<OpenFileEventArgs> OpenFileRequested;
+        public event EventHandler<SaveFileEventArgs> SaveFileRequested;
 
         #region Properties
 
@@ -111,10 +117,7 @@ namespace AnnoDesigner
         /// </summary>
         public bool RenderGrid
         {
-            get
-            {
-                return _renderGrid;
-            }
+            get { return _renderGrid; }
             set
             {
                 if (_renderGrid != value)
@@ -135,10 +138,7 @@ namespace AnnoDesigner
         /// </summary>
         public bool RenderInfluences
         {
-            get
-            {
-                return _renderInfluences;
-            }
+            get { return _renderInfluences; }
             set
             {
                 if (_renderInfluences != value)
@@ -159,10 +159,7 @@ namespace AnnoDesigner
         /// </summary>
         public bool RenderLabel
         {
-            get
-            {
-                return _renderLabel;
-            }
+            get { return _renderLabel; }
             set
             {
                 if (_renderLabel != value)
@@ -183,10 +180,7 @@ namespace AnnoDesigner
         /// </summary>
         public bool RenderIcon
         {
-            get
-            {
-                return _renderIcon;
-            }
+            get { return _renderIcon; }
             set
             {
                 if (_renderIcon != value)
@@ -207,10 +201,7 @@ namespace AnnoDesigner
         /// </summary>
         public bool RenderTrueInfluenceRange
         {
-            get
-            {
-                return _renderTrueInfluenceRange;
-            }
+            get { return _renderTrueInfluenceRange; }
             set
             {
                 if (_renderTrueInfluenceRange != value)
@@ -231,10 +222,7 @@ namespace AnnoDesigner
         /// </summary>
         public List<LayoutObject> CurrentObjects
         {
-            get
-            {
-                return _currentObjects;
-            }
+            get { return _currentObjects; }
             private set
             {
                 if (_currentObjects != value)
@@ -274,10 +262,7 @@ namespace AnnoDesigner
         /// </summary>
         public List<LayoutObject> ClipboardObjects
         {
-            get
-            {
-                return _clipboardObjects;
-            }
+            get { return _clipboardObjects; }
             private set
             {
                 if (value != null)
@@ -305,10 +290,7 @@ namespace AnnoDesigner
         /// </summary>
         public string StatusMessage
         {
-            get
-            {
-                return _statusMessage;
-            }
+            get { return _statusMessage; }
             private set
             {
                 if (_statusMessage != value)
@@ -334,24 +316,16 @@ namespace AnnoDesigner
         /// </summary>
         public string LoadedFile
         {
-            get
-            {
-                return _loadedFile;
-            }
+            get { return _loadedFile; }
             set
             {
                 if (_loadedFile != value)
                 {
                     _loadedFile = value;
-                    OnLoadedFileChanged?.Invoke(value);
+                    OnLoadedFileChanged?.Invoke(this, new FileLoadedEventArgs(value));
                 }
             }
         }
-
-        /// <summary>
-        /// Event which is fired when the status message should be changed.
-        /// </summary>
-        public event Action<string> OnLoadedFileChanged;
 
         #endregion
 
@@ -396,10 +370,7 @@ namespace AnnoDesigner
         /// </summary>
         private MouseMode CurrentMode
         {
-            get
-            {
-                return _currentMode;
-            }
+            get { return _currentMode; }
             set
             {
                 _currentMode = value;
@@ -1258,7 +1229,7 @@ namespace AnnoDesigner
             {
                 var placedObjects = PlacedObjects.Concat(objects).ToHashSet();
                 var placedAnnoObjects = placedObjects.Select(o => o.WrappedAnnoObject).ToList();
-                var placedObjectDictionary = placedObjects.ToDictionary(o => o.WrappedAnnoObject);
+                var placedObjectDictionary = placedObjects.ToDictionaryWithCapacity(o => o.WrappedAnnoObject);
 
                 void Highlight(AnnoObject objectInRange)
                 {
@@ -1625,7 +1596,7 @@ namespace AnnoDesigner
         /// as it can cause a full re-index of the quad tree.
         /// </summary>
         /// <param name="additionalBounds"></param>
-        private void EnsureBounds(Rect additionalBounds)
+        public void EnsureBounds(Rect additionalBounds)
         {
             if (!PlacedObjects.Extent.Contains(additionalBounds))
             {
@@ -2233,7 +2204,7 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="objects"></param>
         /// <returns></returns>
-        private Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects)
+        public Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects)
         {
             //compute bouding box for given objects
             var result = _statisticsCalculationHelper.CalculateStatistics(objects.Select(_ => _.WrappedAnnoObject), includeRoads: true);
@@ -2352,22 +2323,6 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Writes layout to file.
-        /// </summary>
-        private void SaveFile()
-        {
-            try
-            {
-                Normalize(1);
-                _layoutLoader.SaveLayout(PlacedObjects.Select(x => x.WrappedAnnoObject).ToList(), LoadedFile);
-            }
-            catch (Exception e)
-            {
-                IOErrorMessageBox(e);
-            }
-        }
-
-        /// <summary>
         /// Saves the current layout to file.
         /// </summary>
         public void Save()
@@ -2378,7 +2333,7 @@ namespace AnnoDesigner
             }
             else
             {
-                SaveFile();
+                SaveFileRequested?.Invoke(this, new SaveFileEventArgs(LoadedFile));
             }
         }
 
@@ -2392,10 +2347,11 @@ namespace AnnoDesigner
                 DefaultExt = Constants.SavedLayoutExtension,
                 Filter = Constants.SaveOpenDialogFilter
             };
+
             if (dialog.ShowDialog() == true)
             {
                 LoadedFile = dialog.FileName;
-                SaveFile();
+                SaveFileRequested?.Invoke(this, new SaveFileEventArgs(LoadedFile));
             }
         }
 
@@ -2412,65 +2368,8 @@ namespace AnnoDesigner
 
             if (dialog.ShowDialog() == true)
             {
-                OpenFile(dialog.FileName);
+                OpenFileRequested?.Invoke(this, new OpenFileEventArgs(dialog.FileName));
             }
-        }
-
-        /// <summary>
-        /// Loads a new layout from file.
-        /// </summary>
-        public void OpenFile(string filename, bool forceLoad = false)
-        {
-            try
-            {
-                var layout = _layoutLoader.LoadLayout(filename, forceLoad);
-                if (layout != null)
-                {
-                    SelectedObjects.Clear();
-                    PlacedObjects.Clear();
-                    UndoManager.Clear();
-
-                    var layoutObjects = new List<LayoutObject>(layout.Count);
-                    foreach (var curObj in layout)
-                    {
-                        layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
-                    }
-                    var bounds = ComputeBoundingRect(layoutObjects);
-                    EnsureBounds(bounds);
-                    PlacedObjects.AddRange(layoutObjects.Select(obj => (obj, obj.GridRect)));
-                    LoadedFile = filename;
-                    Normalize(1);
-
-                    StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-                    ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
-                }
-            }
-            catch (LayoutFileUnsupportedFormatException layoutEx)
-            {
-                logger.Warn(layoutEx, "Version of layout file is not supported.");
-
-                if (_messageBoxService.ShowQuestion(
-                        _localizationHelper.GetLocalization("FileVersionUnsupportedMessage"),
-                        _localizationHelper.GetLocalization("FileVersionUnsupportedTitle")))
-                {
-                    OpenFile(filename, true);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Error loading layout from JSON.");
-
-                IOErrorMessageBox(ex);
-            }
-        }
-
-        /// <summary>
-        /// Displays a message box containing some error information.
-        /// </summary>
-        /// <param name="e">exception containing error information</param>
-        private void IOErrorMessageBox(Exception e)
-        {
-            _messageBoxService.ShowError(e.Message, _localizationHelper.GetLocalization("IOErrorMessage"));
         }
 
         #endregion
@@ -2496,6 +2395,7 @@ namespace AnnoDesigner
                 { ApplicationCommands.Save, _ => _.Save() },
                 { ApplicationCommands.SaveAs, _ => _.SaveAs() }
             };
+
             // register event handlers for the specified commands
             foreach (var action in CommandExecuteMappings)
             {
@@ -2669,6 +2569,16 @@ namespace AnnoDesigner
         }
 
         #endregion
+
+        public void RaiseStatisticsUpdated(UpdateStatisticsEventArgs args)
+        {
+            StatisticsUpdated?.Invoke(this, args);
+        }
+
+        public void RaiseColorsInLayoutUpdated()
+        {
+            ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
+        }
 
         #region IScrollInfo
 

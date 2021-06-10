@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
@@ -16,9 +17,11 @@ namespace AnnoDesigner.Models
         event EventHandler<EventArgs> ColorsInLayoutUpdated;
         event Action<List<LayoutObject>> OnClipboardChanged;
         event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
-        event Action<string> OnLoadedFileChanged;
+        event EventHandler<FileLoadedEventArgs> OnLoadedFileChanged;
         event Action<string> OnStatusMessageChanged;
         event Action<LayoutObject> OnCurrentObjectChanged;
+        event EventHandler<OpenFileEventArgs> OpenFileRequested;
+        event EventHandler<SaveFileEventArgs> SaveFileRequested;
 
         QuadTree<LayoutObject> PlacedObjects { get; set; }
         List<LayoutObject> SelectedObjects { get; set; }
@@ -40,6 +43,9 @@ namespace AnnoDesigner.Models
         void ResetZoom();
         void Normalize();
         void Normalize(int border);
-        void OpenFile(string filename, bool forceLoad = false);
+        void RaiseStatisticsUpdated(UpdateStatisticsEventArgs args);
+        void RaiseColorsInLayoutUpdated();
+        void EnsureBounds(Rect additionalBounds);
+        Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects);
     }
 }

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Models;
@@ -70,7 +67,7 @@ namespace AnnoDesigner.Core.Tests
             // Assert
             Assert.NotNull(result);
         }
-        
+
         [Fact]
         public void LoadLayout_LayoutHasOlderUnsupportedVersion_ShouldThrow()
         {
@@ -140,7 +137,7 @@ namespace AnnoDesigner.Core.Tests
             var result = loader.LoadLayout(streamWithLayout, true);
 
             // Assert
-            Assert.Single(result);
+            Assert.Single(result.Objects);
         }
 
         [Fact]
@@ -171,7 +168,7 @@ namespace AnnoDesigner.Core.Tests
             using var streamWithLayout = new MemoryStream(Encoding.UTF8.GetBytes(layoutContent));
 
             // Act
-            var result = loader.LoadLayout(streamWithLayout, true);
+            var result = loader.LoadLayout(streamWithLayout, true).Objects;
 
             // Assert
             Assert.Single(result);
@@ -192,14 +189,14 @@ namespace AnnoDesigner.Core.Tests
             var listToSave = new List<AnnoObject> { new AnnoObject { Identifier = "Lorem" } };
 
             // Act
-            loader.SaveLayout(listToSave, savedStream);
+            loader.SaveLayout(new LayoutFile(listToSave), savedStream);
 
             savedStream.Position = 0;
 
             var result = loader.LoadLayout(savedStream);
 
             // Assert
-            Assert.Single(result);
+            Assert.Single(result.Objects);
         }
 
         [Fact]
@@ -218,11 +215,11 @@ namespace AnnoDesigner.Core.Tests
             var listToSave = new List<AnnoObject> { new AnnoObject { Identifier = "Lorem", Color = new SerializableColor(expectedA, expectedR, expectedG, expectedB) } };
 
             // Act
-            loader.SaveLayout(listToSave, savedStream);
+            loader.SaveLayout(new LayoutFile(listToSave), savedStream);
 
             savedStream.Position = 0;
 
-            var result = loader.LoadLayout(savedStream);
+            var result = loader.LoadLayout(savedStream).Objects;
 
             // Assert
             Assert.Single(result);

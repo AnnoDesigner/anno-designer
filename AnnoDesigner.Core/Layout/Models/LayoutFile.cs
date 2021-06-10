@@ -5,16 +5,17 @@ using AnnoDesigner.Core.Models;
 namespace AnnoDesigner.Core.Layout.Models
 {
     /// <summary>
-    /// Container with file version and all objects
+    /// Container with version information and all objects.
     /// </summary>
     [DataContract]
-    public class SavedLayout : LayoutVersionContainer
+    public class LayoutFile : LayoutFileVersionContainer
     {
-        [DataMember(Order = 1)]
+        [DataMember(Order = 99)]
         public List<AnnoObject> Objects { get; set; }
 
-        public SavedLayout():this(null) { }
-        public SavedLayout(List<AnnoObject> objects)
+        public LayoutFile() : this(null) { }
+
+        public LayoutFile(List<AnnoObject> objects)
         {
             FileVersion = CoreConstants.LayoutFileVersion;
             Objects = objects;

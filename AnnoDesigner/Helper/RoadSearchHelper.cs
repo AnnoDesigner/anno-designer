@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
@@ -31,8 +32,9 @@ namespace AnnoDesigner.Helper
             (int x, int y) offset = ((int)statistics.MinX - 1, (int)statistics.MinY - 1);
 
             // make an array with one free grid cell on each edge
+            var countY = (int)(statistics.MaxY - statistics.MinY + 2);
             var result = Enumerable.Range(0, (int)(statistics.MaxX - statistics.MinX + 2))
-                .Select(i => new AnnoObject[(int)(statistics.MaxY - statistics.MinY + 2)])
+                .Select(i => new AnnoObject[countY])
                 .ToArray();
 
             Parallel.ForEach(placedObjects, placedObject =>
@@ -84,8 +86,8 @@ namespace AnnoDesigner.Helper
 
             inRangeAction = inRangeAction ?? DoNothing;
 
-            var visitedObjects = new HashSet<AnnoObject>();
-            var visitedCells = Enumerable.Range(0, gridDictionary.Count).Select(i => new bool[gridDictionary[0].Length]).ToArray();
+            var visitedObjects = new HashSet<AnnoObject>(placedObjects.Count() / 2);//inital capacity is half of all placed objecs to avoid resizing the HashSet
+            var visitedCells = Enumerable.Range(0, gridDictionary.Count).Select(i => new bool[gridDictionary[0].Length]).ToArrayWithCapacity(gridDictionary.Count);
 
             var distanceToStartObjects = startObjects.ToLookup(o => rangeGetter(o));
             var remainingDistance = distanceToStartObjects.Max(g => g.Key);
@@ -108,68 +110,67 @@ namespace AnnoDesigner.Helper
                         inRangeAction(cellObject);
                     }
                 }
+
                 visitedCells[x][y] = true;
             }
 
             do
             {
-                if (distanceToStartObjects.Contains(remainingDistance))
+                // ILookup returns empty collection if key is not found
+                // queue cells adjecent to starting objects, also sets cells inside of all start objects as visited, to exclude them from the search
+                foreach (var startObject in distanceToStartObjects[remainingDistance])
                 {
-                    // queue cells adjecent to starting objects, also sets cells inside of all start objects as visited, to exclude them from the search
-                    foreach (var startObject in distanceToStartObjects[remainingDistance])
+                    var initRange = rangeGetter(startObject);
+                    var startX = (int)startObject.Position.X - gridDictionary.Offset.x;
+                    var startY = (int)startObject.Position.Y - gridDictionary.Offset.y;
+                    var leftX = startX - 1;
+                    var rightX = (int)(startX + startObject.Size.Width);
+                    var topY = startY - 1;
+                    var bottomY = (int)(startY + startObject.Size.Height);
+
+                    // queue top and bottom edges
+                    for (var i = 0; i < startObject.Size.Width; i++)
                     {
-                        var initRange = rangeGetter(startObject);
-                        var startX = (int)startObject.Position.X - gridDictionary.Offset.x;
-                        var startY = (int)startObject.Position.Y - gridDictionary.Offset.y;
-                        var leftX = startX - 1;
-                        var rightX = (int)(startX + startObject.Size.Width);
-                        var topY = startY - 1;
-                        var bottomY = (int)(startY + startObject.Size.Height);
+                        var x = i + startX;
 
-                        // queue top and bottom edges
-                        for (var i = 0; i < startObject.Size.Width; i++)
+                        if (gridDictionary[x][topY]?.Road == true)
                         {
-                            var x = i + startX;
-
-                            if (gridDictionary[x][topY]?.Road == true)
-                            {
-                                nextCells.Add((x, topY));
-                                visitedCells[x][topY] = true;
-                            }
-
-                            if (gridDictionary[x][bottomY]?.Road == true)
-                            {
-                                nextCells.Add((x, bottomY));
-                                visitedCells[x][bottomY] = true;
-                            }
-
-                        }
-                        // queue left and right edges
-                        for (var i = 0; i < startObject.Size.Height; i++)
-                        {
-                            var y = i + startY;
-
-                            if (gridDictionary[leftX][y]?.Road == true)
-                            {
-                                nextCells.Add((leftX, y));
-                                visitedCells[leftX][y] = true;
-                            }
-
-                            if (gridDictionary[rightX][y]?.Road == true)
-                            {
-                                nextCells.Add((rightX, y));
-                                visitedCells[rightX][y] = true;
-                            }
+                            nextCells.Add((x, topY));
+                            visitedCells[x][topY] = true;
                         }
 
-                        // visit all cells under start object
-                        visitedObjects.Add(startObject);
-                        for (var i = 0; i < startObject.Size.Width; i++)
+                        if (gridDictionary[x][bottomY]?.Road == true)
                         {
-                            for (var j = 0; j < startObject.Size.Height; j++)
-                            {
-                                visitedCells[startX + i][startY + j] = true;
-                            }
+                            nextCells.Add((x, bottomY));
+                            visitedCells[x][bottomY] = true;
+                        }
+
+                    }
+                    // queue left and right edges
+                    for (var i = 0; i < startObject.Size.Height; i++)
+                    {
+                        var y = i + startY;
+
+                        if (gridDictionary[leftX][y]?.Road == true)
+                        {
+                            nextCells.Add((leftX, y));
+                            visitedCells[leftX][y] = true;
+                        }
+
+                        if (gridDictionary[rightX][y]?.Road == true)
+                        {
+                            nextCells.Add((rightX, y));
+                            visitedCells[rightX][y] = true;
+                        }
+                    }
+
+                    // visit all cells under start object
+                    visitedObjects.Add(startObject);
+                    for (var i = 0; i < startObject.Size.Width; i++)
+                    {
+                        for (var j = 0; j < startObject.Size.Height; j++)
+                        {
+                            visitedCells[startX + i][startY + j] = true;
                         }
                     }
                 }
@@ -195,6 +196,7 @@ namespace AnnoDesigner.Helper
                         }
                     }
                 }
+
                 currentCells.Clear();
                 remainingDistance--;
             } while (remainingDistance > 1);

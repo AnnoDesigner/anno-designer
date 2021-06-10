@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout.Helper;
+using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
 using FandomParser.Core.Presets.Models;
@@ -86,7 +87,7 @@ namespace AnnoDesigner.Export
             }
         }
 
-        public string StartExport(string layoutName, List<AnnoObject> placedObjects, BuildingPresets buildingPresets, WikiBuildingInfoPresets wikiBuildingInfoPresets, bool exportUnsupportedTags)
+        public string StartExport(string layoutName, LayoutFile layout, BuildingPresets buildingPresets, WikiBuildingInfoPresets wikiBuildingInfoPresets, bool exportUnsupportedTags)
         {
             //https://anno1800.fandom.com/wiki/Template:Production_layout
             //https://anno1800.fandom.com/wiki/Template:Production_layout/doc
@@ -98,7 +99,7 @@ namespace AnnoDesigner.Export
             //template only supports 1-8 for "Production x Type" and "Production x per minute"
             //TODO warn user (or exit) when layout contains buildings other than Anno 1800
 
-            var calculatedStatistics = _statisticsCalculationHelper.CalculateStatistics(placedObjects);
+            var calculatedStatistics = _statisticsCalculationHelper.CalculateStatistics(layout.Objects);
 
             var exportString = new StringBuilder(900);//best guess on minimal layout
 
@@ -109,7 +110,7 @@ namespace AnnoDesigner.Export
                 .Append(TEMPLATE_LINE_START).Append(HEADER_LAYOUT_IMAGE).AppendLine(TEMPLATE_ENTRY_DELIMITER);
 
             //add buildings
-            exportString = addBuildingInfo(exportString, placedObjects, buildingPresets, wikiBuildingInfoPresets);
+            exportString = addBuildingInfo(exportString, layout.Objects, buildingPresets, wikiBuildingInfoPresets);
 
             exportString.Append(TEMPLATE_LINE_START).Append(HEADER_LAYOUT_DESCRIPTION).AppendLine(TEMPLATE_ENTRY_DELIMITER)
                 .Append(TEMPLATE_LINE_START).Append(HEADER_SIZE).Append(TEMPLATE_ENTRY_DELIMITER).Append(calculatedStatistics.UsedAreaWidth.ToString()).Append(TEMPLATE_SIZE_ENTRY_DELIMITER).AppendLine(calculatedStatistics.UsedAreaHeight.ToString())
@@ -117,12 +118,12 @@ namespace AnnoDesigner.Export
                 .Append(TEMPLATE_LINE_START).Append(HEADER_AUTHOR).AppendLine(TEMPLATE_ENTRY_DELIMITER)
                 .Append(TEMPLATE_LINE_START).Append(HEADER_SOURCE).AppendLine(TEMPLATE_ENTRY_DELIMITER);
 
-            exportString = addProductionInfo(exportString, placedObjects, buildingPresets, wikiBuildingInfoPresets);
-            exportString = addConstructionInfo(exportString, placedObjects, buildingPresets, wikiBuildingInfoPresets);
-            exportString = addBalance(exportString, placedObjects, buildingPresets, wikiBuildingInfoPresets);
-            exportString = addWorkforceInfo(exportString, placedObjects, buildingPresets, wikiBuildingInfoPresets);
-            exportString = addInfluence(exportString, placedObjects, buildingPresets, wikiBuildingInfoPresets);
-            exportString = addAttractiveness(exportString, placedObjects, buildingPresets, wikiBuildingInfoPresets);
+            exportString = addProductionInfo(exportString, layout.Objects, buildingPresets, wikiBuildingInfoPresets);
+            exportString = addConstructionInfo(exportString, layout.Objects, buildingPresets, wikiBuildingInfoPresets);
+            exportString = addBalance(exportString, layout.Objects, buildingPresets, wikiBuildingInfoPresets);
+            exportString = addWorkforceInfo(exportString, layout.Objects, buildingPresets, wikiBuildingInfoPresets);
+            exportString = addInfluence(exportString, layout.Objects, buildingPresets, wikiBuildingInfoPresets);
+            exportString = addAttractiveness(exportString, layout.Objects, buildingPresets, wikiBuildingInfoPresets);
 
             if (exportUnsupportedTags)
             {

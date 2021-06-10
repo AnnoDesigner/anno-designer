@@ -225,7 +225,7 @@ namespace FandomTemplateExporter.ViewModels
                 var layoutTask = Task.Run(() =>
                 {
                     //load layout
-                    List<AnnoObject> localLayout = null;
+                    LayoutFile localLayout = null;
                     try
                     {
                         ILayoutLoader loader = new LayoutLoader();
