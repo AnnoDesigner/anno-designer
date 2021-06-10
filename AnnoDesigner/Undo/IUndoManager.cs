@@ -5,6 +5,8 @@ namespace AnnoDesigner.Undo
 {
     public interface IUndoManager
     {
+        bool IsDirty { get; set; }
+
         void Undo();
 
         void Redo();

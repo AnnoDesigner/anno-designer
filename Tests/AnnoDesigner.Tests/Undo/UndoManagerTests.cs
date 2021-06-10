@@ -15,10 +15,138 @@ namespace AnnoDesigner.Tests.Undo
             _undoManager = new UndoManager();
         }
 
-        //private IUndoManager UndoManager => new UndoManager();
-
         private void DoNothing()
         { }
+
+        #region IsDirty tests
+
+        [Fact]
+        public void IsDirty_SetIsDirtyToTrue_ShouldThrowException()
+        {
+            // Arrange/Act/Assert
+            Assert.Throws<ArgumentException>(() => _undoManager.IsDirty = true);
+        }
+
+        [Fact]
+        public void IsDirty_NoChanges_ShouldReturnFalse()
+        {
+            // Arrange/Act/Assert
+            Assert.False(_undoManager.IsDirty);
+        }
+
+        [Fact]
+        public void IsDirty_SetIsDirty_ShouldReturnFalse()
+        {
+            // Arrange
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
+
+            // Act
+            _undoManager.IsDirty = false;
+
+            // Assert
+            Assert.False(_undoManager.IsDirty);
+        }
+
+        [Fact]
+        public void IsDirty_UndoneAllOperations_ShouldReturnFalse()
+        {
+            // Arrange
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
+
+            // Act
+            _undoManager.Undo();
+
+            // Assert
+            Assert.False(_undoManager.IsDirty);
+        }
+
+        [Fact]
+        public void IsDirty_RedoneAllUndoneOperations_ShouldReturnFalse()
+        {
+            // Arrange
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
+            _undoManager.IsDirty = false;
+            _undoManager.Undo();
+
+            // Act
+            _undoManager.Redo();
+
+            // Assert
+            Assert.False(_undoManager.IsDirty);
+        }
+
+        [Fact]
+        public void IsDirty_UndoneAllRedoneOperations_ShouldReturnFalse()
+        {
+            // Arrange
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
+            _undoManager.Undo();
+            _undoManager.IsDirty = false;
+            _undoManager.Redo();
+
+            // Act
+            _undoManager.Undo();
+
+            // Assert
+            Assert.False(_undoManager.IsDirty);
+        }
+
+        [Fact]
+        public void IsDirty_OperationRegistered_ShouldReturnTrue()
+        {
+            // Arrange
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
+
+            // Act/Assert
+            Assert.True(_undoManager.IsDirty);
+        }
+
+        [Fact]
+        public void IsDirty_UndoneOperationAfterSaving_ShouldReturnTrue()
+        {
+            // Arrange
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
+            _undoManager.IsDirty = false;
+
+            // Act
+            _undoManager.Undo();
+
+            // Assert
+            Assert.True(_undoManager.IsDirty);
+        }
+
+        [Fact]
+        public void IsDirty_RedoneOperationAfterSaving_ShouldReturnTrue()
+        {
+            // Arrange
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
+            _undoManager.Undo();
+            _undoManager.IsDirty = false;
+
+            // Act
+            _undoManager.Redo();
+
+            // Assert
+            Assert.True(_undoManager.IsDirty);
+        }
+
+        [Fact]
+        public void IsDirty_RegisteredOperationAfterUndo_ShouldReturnTrue()
+        {
+            // Arrange
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
+            _undoManager.IsDirty = false;
+            _undoManager.Undo();
+
+            // Act
+            _undoManager.RegisterOperation(Mock.Of<IOperation>());
+
+            // Assert
+            Assert.True(_undoManager.IsDirty);
+        }
+
+        #endregion
 
         #region Undo tests
 
@@ -130,6 +258,19 @@ namespace AnnoDesigner.Tests.Undo
 
             // Assert
             Assert.Empty(_undoManager.RedoStack);
+        }
+
+        [Fact]
+        public void Clear_ShouldResetIsDirty()
+        {
+            // Arrange
+            _undoManager.RedoStack.Push(Mock.Of<IOperation>());
+
+            // Act
+            _undoManager.Clear();
+
+            // Assert
+            Assert.False(_undoManager.IsDirty);
         }
 
         #endregion
