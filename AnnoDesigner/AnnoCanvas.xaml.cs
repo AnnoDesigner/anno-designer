@@ -9,26 +9,29 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core;
+using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout;
+using AnnoDesigner.Core.Layout.Exceptions;
+using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.Services;
-using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.CustomEventArgs;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Models;
 using AnnoDesigner.Services;
+using AnnoDesigner.Undo;
+using AnnoDesigner.Undo.Operations;
 using Microsoft.Win32;
 using NLog;
-using AnnoDesigner.Core.Layout.Helper;
-using System.Windows.Controls.Primitives;
 
 namespace AnnoDesigner
 {
@@ -47,8 +50,8 @@ namespace AnnoDesigner
         public const string DELETE_LOCALIZATION_KEY = "Delete";
         public const string DUPLICATE_LOCALIZATION_KEY = "Duplicate";
         public const string DELETE_OBJECT_UNDER_CURSOR_LOCALIZATION_KEY = "DeleteObjectUnderCursor";
-        //not implmented yet
         public const string UNDO_LOCALIZATION_KEY = "Undo";
+        public const string REDO_LOCALIZATION_KEY = "Redo";
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
@@ -60,6 +63,8 @@ namespace AnnoDesigner
         public event EventHandler<SaveFileEventArgs> SaveFileRequested;
 
         #region Properties
+
+        public IUndoManager UndoManager { get; private set; }
 
         /// <summary>
         /// Contains all loaded icons as a mapping of name (the filename without extension) to loaded BitmapImage.
@@ -535,7 +540,8 @@ namespace AnnoDesigner
             IBrushCache brushCacheToUse = null,
             IPenCache penCacheToUse = null,
             IMessageBoxService messageBoxServiceToUse = null,
-            ILocalizationHelper localizationHelperToUse = null)
+            ILocalizationHelper localizationHelperToUse = null,
+            IUndoManager undoManager = null)
         {
             InitializeComponent();
 
@@ -546,6 +552,7 @@ namespace AnnoDesigner
             _penCache = penCacheToUse ?? new PenCache();
             _messageBoxService = messageBoxServiceToUse ?? new MessageBoxService();
             _localizationHelper = localizationHelperToUse ?? Localization.Localization.Instance;
+            UndoManager = undoManager ?? new UndoManager();
 
             _layoutLoader = new LayoutLoader();
 
@@ -570,6 +577,8 @@ namespace AnnoDesigner
             deleteCommand = new RelayCommand(ExecuteDelete);
             duplicateCommand = new RelayCommand(ExecuteDuplicate);
             deleteObjectUnderCursorCommand = new RelayCommand(ExecuteDeleteObjectUnderCursor);
+            undoCommand = new RelayCommand(ExecuteUndo);
+            redoCommand = new RelayCommand(ExecuteRedo);
 
             //Set up default keybindings
 
@@ -598,6 +607,12 @@ namespace AnnoDesigner
 
             var deleteHoveredOjectBinding = new InputBinding(deleteObjectUnderCursorCommand, new PolyGesture(ExtendedMouseAction.RightClick, ModifierKeys.None));
             deleteObjectUnderCursorHotkey = new Hotkey(DELETE_OBJECT_UNDER_CURSOR_LOCALIZATION_KEY, deleteHoveredOjectBinding, DELETE_OBJECT_UNDER_CURSOR_LOCALIZATION_KEY);
+
+            var undoBinding = new InputBinding(undoCommand, new PolyGesture(Key.Z, ModifierKeys.Control));
+            undoHotkey = new Hotkey(UNDO_LOCALIZATION_KEY, undoBinding, UNDO_LOCALIZATION_KEY);
+
+            var redoBinding = new InputBinding(redoCommand, new PolyGesture(Key.Y, ModifierKeys.Control));
+            redoHotkey = new Hotkey(REDO_LOCALIZATION_KEY, redoBinding, REDO_LOCALIZATION_KEY);
 
             //We specifically do not add the `InputBinding`s to the `InputBindingCollection` of `AnnoCanvas`, as if we did that,
             //`InputBinding.Gesture.Matches()` would be fired for *every* event - MouseWheel, MouseDown, KeyUp, KeyDown, MouseMove etc
@@ -1720,9 +1735,16 @@ namespace AnnoDesigner
                 //DragAll, so we fire it here instead, to prevent objects being incorrectly represented within the QuadTree.
                 if (CurrentMode == MouseMode.DragSelection)
                 {
+                    UndoManager.RegisterOperation(new MoveObjectsOperation()
+                    {
+                        ObjectPositions = _oldObjectPositions.Select((pair) => (pair.Item, pair.OldGridRect.TopLeft, pair.Item.Position)).ToList(),
+                        Collection = PlacedObjects
+                    });
+
                     UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
                     _oldObjectPositions.Clear();
                 }
+
                 CurrentMode = MouseMode.DragAllStart;
             }
             else if (e.LeftButton == MouseButtonState.Pressed && CurrentObjects.Count != 0)
@@ -1977,6 +1999,12 @@ namespace AnnoDesigner
                         break;
                     case MouseMode.DragSelection:
                         // stop dragging of selected objects
+                        UndoManager.RegisterOperation(new MoveObjectsOperation()
+                        {
+                            ObjectPositions = _oldObjectPositions.Select((pair) => (pair.Item, pair.OldGridRect.TopLeft, pair.Item.Position)).ToList(),
+                            Collection = PlacedObjects
+                        });
+
                         UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
                         _oldObjectPositions.Clear();
                         CurrentMode = MouseMode.Standard;
@@ -1998,6 +2026,12 @@ namespace AnnoDesigner
                         }
                     case MouseMode.DragSelection:
                         {
+                            UndoManager.RegisterOperation(new MoveObjectsOperation()
+                            {
+                                ObjectPositions = _oldObjectPositions.Select((pair) => (pair.Item, pair.OldGridRect.TopLeft, pair.Item.Position)).ToList(),
+                                Collection = PlacedObjects
+                            });
+
                             UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
                             _oldObjectPositions.Clear();
                             //clear selection after potentially modifying QuadTree
@@ -2117,7 +2151,14 @@ namespace AnnoDesigner
                 if (CurrentObjects.Count != 0 && !objects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
                 {
                     EnsureBounds(boundingRect);
-                    PlacedObjects.AddRange(CloneList(CurrentObjects).Select(obj => (obj, obj.GridRect)));
+                    var newObjects = CloneList(CurrentObjects);
+                    UndoManager.RegisterOperation(new AddObjectsOperation()
+                    {
+                        Objects = newObjects,
+                        Collection = PlacedObjects
+                    });
+
+                    PlacedObjects.AddRange(newObjects.Select(obj => (obj, obj.GridRect)));
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
 
                     //no need to update colors if drawing the same object(s)
@@ -2125,21 +2166,24 @@ namespace AnnoDesigner
                     {
                         ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
                     }
+
                     if (!_layoutBounds.Contains(boundingRect))
                     {
                         InvalidateBounds();
                     }
+
                     if (!_scrollableBounds.Contains(boundingRect))
                     {
                         InvalidateScroll();
                     }
-                    return true;
 
+                    return true;
                 }
+
                 return false;
             }
-            return true;
 
+            return true;
         }
 
         /// <summary>
@@ -2217,9 +2261,17 @@ namespace AnnoDesigner
 
             var dx = PlacedObjects.Min(_ => _.Position.X) - border;
             var dy = PlacedObjects.Min(_ => _.Position.Y) - border;
+            var diff = new Vector(dx, dy);
+
+            UndoManager.RegisterOperation(new MoveObjectsOperation()
+            {
+                ObjectPositions = PlacedObjects.Select(obj => (obj, obj.Position, obj.Position - diff)).ToList(),
+                Collection = PlacedObjects
+            });
+
             foreach (var item in PlacedObjects)
             {
-                item.Position = new Point(item.Position.X - dx, item.Position.Y - dy);
+                item.Position -= diff;
             }
 
             PlacedObjects.ReIndex(_ => _.GridRect);
@@ -2243,6 +2295,8 @@ namespace AnnoDesigner
             manager.AddHotkey(deleteHotkey);
             manager.AddHotkey(duplicateHotkey);
             manager.AddHotkey(deleteObjectUnderCursorHotkey);
+            manager.AddHotkey(undoHotkey);
+            manager.AddHotkey(redoHotkey);
         }
 
         #endregion
@@ -2258,6 +2312,7 @@ namespace AnnoDesigner
             _viewport.Top = 0;
             PlacedObjects.Clear();
             SelectedObjects.Clear();
+            UndoManager.Clear();
             LoadedFile = "";
             InvalidateBounds();
             InvalidateScroll();
@@ -2395,8 +2450,19 @@ namespace AnnoDesigner
         private readonly ICommand rotateAllCommand;
         private void ExecuteRotateAll(object param)
         {
-            Rotate(PlacedObjects.All().ToList());
-            Normalize(1);
+            UndoManager.AsSingleUndoableOperation(() =>
+            {
+                var placedObjects = PlacedObjects.All().ToList();
+                UndoManager.RegisterOperation(new RotateObjectsClockwiseOperation()
+                {
+                    Objects = placedObjects,
+                    Collection = PlacedObjects
+                });
+
+                Rotate(placedObjects);
+                Normalize(1);
+            });
+
             InvalidateVisual();
         }
 
@@ -2425,6 +2491,12 @@ namespace AnnoDesigner
         private readonly ICommand deleteCommand;
         private void ExecuteDelete(object param)
         {
+            UndoManager.RegisterOperation(new RemoveObjectsOperation()
+            {
+                Objects = SelectedObjects.ToList(),
+                Collection = PlacedObjects
+            });
+
             // remove all currently selected objects from the grid and clear selection
             SelectedObjects.ForEach(_ => PlacedObjects.Remove(_, new Rect(_.Position, _.Size)));
             SelectedObjects.Clear();
@@ -2455,11 +2527,34 @@ namespace AnnoDesigner
                 if (obj != null)
                 {
                     // Remove object, only ever remove a single object this way.
+                    UndoManager.RegisterOperation(new RemoveObjectsOperation()
+                    {
+                        Objects = new List<LayoutObject>()
+                        {
+                            obj
+                        },
+                        Collection = PlacedObjects
+                    });
+
                     PlacedObjects.Remove(obj, obj.GridRect);
                     RemoveSelectedObject(obj, false);
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                 }
             }
+        }
+
+        private readonly Hotkey undoHotkey;
+        private readonly ICommand undoCommand;
+        private void ExecuteUndo(object param)
+        {
+            UndoManager.Undo();
+        }
+
+        private readonly Hotkey redoHotkey;
+        private readonly ICommand redoCommand;
+        private void ExecuteRedo(object param)
+        {
+            UndoManager.Redo();
         }
 
         #endregion

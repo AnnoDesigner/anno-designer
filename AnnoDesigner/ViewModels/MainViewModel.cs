@@ -808,6 +808,7 @@ namespace AnnoDesigner.ViewModels
                 {
                     AnnoCanvas.SelectedObjects.Clear();
                     AnnoCanvas.PlacedObjects.Clear();
+                    AnnoCanvas.UndoManager.Clear();
 
                     var layoutObjects = new List<LayoutObject>(layout.Objects.Count);
                     foreach (var curObj in layout.Objects)

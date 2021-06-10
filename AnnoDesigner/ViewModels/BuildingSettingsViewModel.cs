@@ -9,6 +9,7 @@ using AnnoDesigner.Core.Presets.Helper;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.Services;
 using AnnoDesigner.Models;
+using AnnoDesigner.Undo.Operations;
 using NLog;
 
 namespace AnnoDesigner.ViewModels
@@ -354,6 +355,19 @@ namespace AnnoDesigner.ViewModels
                 return;
             }
 
+            AnnoCanvasToUse.UndoManager.RegisterOperation(new ChangeObjectsColorOperation()
+            {
+                ObjectColors = AnnoCanvasToUse.SelectedObjects
+                    .Select(obj => (obj, obj.Color, selectedColor: SelectedColor))
+                    .Where(tuple => tuple.selectedColor != null && tuple.selectedColor.HasValue)
+                    .ToList(),
+                RedrawAction = () =>
+                {
+                    AnnoCanvasToUse.InvalidateVisual();
+                    AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
+                }
+            });
+
             foreach (var curSelectedObject in AnnoCanvasToUse.SelectedObjects)
             {
                 curSelectedObject.Color = SelectedColor.Value;
@@ -377,6 +391,19 @@ namespace AnnoDesigner.ViewModels
             {
                 return;
             }
+
+            AnnoCanvasToUse.UndoManager.RegisterOperation(new ChangeObjectsColorOperation()
+            {
+                ObjectColors = AnnoCanvasToUse.SelectedObjects
+                    .Select(obj => (obj, obj.Color, predefinedColor: ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject)))
+                    .Where(tuple => tuple.predefinedColor != null && tuple.predefinedColor.HasValue)
+                    .ToList(),
+                RedrawAction = () =>
+                {
+                    AnnoCanvasToUse.InvalidateVisual();
+                    AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
+                }
+            });
 
             foreach (var curSelectedObject in AnnoCanvasToUse.SelectedObjects)
             {

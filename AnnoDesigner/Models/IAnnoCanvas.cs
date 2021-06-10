@@ -8,6 +8,7 @@ using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.CustomEventArgs;
+using AnnoDesigner.Undo;
 
 namespace AnnoDesigner.Models
 {
@@ -27,6 +28,7 @@ namespace AnnoDesigner.Models
         List<LayoutObject> ClipboardObjects { get; }
         BuildingPresets BuildingPresets { get; }
         Dictionary<string, IconImage> Icons { get; }
+        IUndoManager UndoManager { get; }
         bool RenderGrid { get; set; }
         bool RenderInfluences { get; set; }
         bool RenderTrueInfluenceRange { get; set; }
