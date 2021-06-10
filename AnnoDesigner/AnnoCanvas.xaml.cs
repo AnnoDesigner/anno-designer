@@ -1244,7 +1244,7 @@ namespace AnnoDesigner
             {
                 var placedObjects = PlacedObjects.Concat(objects).ToHashSet();
                 var placedAnnoObjects = placedObjects.Select(o => o.WrappedAnnoObject).ToList();
-                var placedObjectDictionary = placedObjects.ToDictionary(o => o.WrappedAnnoObject);
+                var placedObjectDictionary = placedObjects.ToDictionaryWithCapacity(o => o.WrappedAnnoObject);
 
                 void Highlight(AnnoObject objectInRange)
                 {

@@ -189,7 +189,9 @@ namespace AnnoDesigner.Helper
                             for (var i = 0; i < 4; i++)
                             {
                                 if (boundarySides[x][y].HasFlag(side))
+                                {
                                     return (GetStartPoint((x, y), side), GetStartDirection(side));
+                                }
 
                                 side = RotateClockwise(side);
                             }
@@ -200,10 +202,17 @@ namespace AnnoDesigner.Helper
             else
             {
                 for (var x = 0; x < insidePoints.Length; x++)
+                {
                     for (var y = 0; y < insidePoints[x].Length; y++)
+                    {
                         if (insidePoints[x][y])
+                        {
                             return ((x, y), Direction.Left);
+                        }
+                    }
+                }
             }
+
             return ((0, 0), Direction.None);
         }
 
@@ -228,7 +237,10 @@ namespace AnnoDesigner.Helper
         {
             var result = new List<(int, int)>();
 
-            if (insidePoints.Sum(column => column.Count()) == 0) return result;
+            if (insidePoints.Sum(column => column.Length) == 0)
+            {
+                return result;
+            }
 
             var maxX = insidePoints.Length;
             var maxY = insidePoints[0].Length;
@@ -236,7 +248,10 @@ namespace AnnoDesigner.Helper
             var point = startPoint;
             var direction = startDirection;
 
-            if (startDirection == Direction.None) return result;
+            if (startDirection == Direction.None)
+            {
+                return result;
+            }
 
             do
             {
@@ -251,7 +266,10 @@ namespace AnnoDesigner.Helper
 
                         direction = RotateClockwise(direction);
 
-                        if (boundarySides != null) boundarySides[rightX][rightY] &= ~RotateClockwise(direction);
+                        if (boundarySides != null)
+                        {
+                            boundarySides[rightX][rightY] &= ~RotateClockwise(direction);
+                        }
                     }
                     else // go straight
                     {
@@ -259,12 +277,14 @@ namespace AnnoDesigner.Helper
 
                         // direction doesn't change
 
-                        if (boundarySides != null) boundarySides[forwardX][forwardY] &= ~RotateClockwise(direction);
+                        if (boundarySides != null)
+                        {
+                            boundarySides[forwardX][forwardY] &= ~RotateClockwise(direction);
+                        }
                     }
                 }
                 else // turn left
                 {
-
                     if (boundarySides != null)
                     {
                         var (leftX, leftY) = GetLeftCell(point, direction);
@@ -338,7 +358,7 @@ namespace AnnoDesigner.Helper
                         }
 
                         // down pixel
-                        if (y + 1 == insidePoints[x].Length  || !insidePoints[x][y + 1])
+                        if (y + 1 == insidePoints[x].Length || !insidePoints[x][y + 1])
                         {
                             boundarySides[x][y] |= Direction.Down;
                         }
