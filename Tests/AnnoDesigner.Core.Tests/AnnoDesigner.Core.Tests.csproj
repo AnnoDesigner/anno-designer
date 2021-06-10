@@ -7,6 +7,11 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="..\..\Presets\treeLocalization.json" Link="Testdata\TreeLocalization\treeLocalization.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
@@ -29,6 +34,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="Testdata\Layout\*.ad">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Testdata\TreeLocalization\1language_2translations.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

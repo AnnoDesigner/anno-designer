@@ -51,6 +51,11 @@ namespace AnnoDesigner.Core
             /// Json encoded file containing the detailed informations for building presets.
             /// </summary>
             public const string WikiBuildingInfoPresetsFile = "wikiBuildingInfo.json";
+
+            /// <summary>
+            /// Json encoded file containing the localization for the presets tree.
+            /// </summary>
+            public const string TreeLocalizationFile = "treeLocalization.json";
         }
 
         [Flags]
