@@ -149,6 +149,8 @@ namespace AnnoDesigner.ViewModels
             PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons, _messageBoxService, _localizationHelper);
             PreferencesGeneralViewModel = new GeneralSettingsViewModel(_appSettings, _commons);
 
+            LayoutSettingsViewModel = new LayoutSettingsViewModel();
+
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
             CanvasResetZoomCommand = new RelayCommand(CanvasResetZoom);
@@ -593,12 +595,34 @@ namespace AnnoDesigner.ViewModels
             StatusMessage = message;
         }
 
-        private void AnnoCanvas_LoadedFileChanged(string filePath)
+        private void AnnoCanvas_LoadedFileChanged(object sender, FileLoadedEventArgs args)
         {
-            MainWindowTitle = string.IsNullOrEmpty(filePath) ? "Anno Designer" : string.Format("{0} - Anno Designer", Path.GetFileName(filePath));
-            logger.Info($"Loaded file: {(string.IsNullOrEmpty(filePath) ? "(none)" : filePath)}");
+            var fileName = string.Empty;
+            if (!string.IsNullOrWhiteSpace(args.FilePath) && args.Layout?.LayoutVersion != default)
+            {
+                fileName = $"{Path.GetFileName(args.FilePath)} ({args.Layout.LayoutVersion})";
+                LayoutSettingsViewModel.LayoutVersion = args.Layout.LayoutVersion;
+            }
+            else if (!string.IsNullOrWhiteSpace(args.FilePath))
+            {
+                fileName = Path.GetFileName(args.FilePath);
+            }
 
-            _recentFilesHelper.AddFile(new RecentFile(filePath, DateTime.UtcNow));
+            MainWindowTitle = string.IsNullOrEmpty(fileName) ? "Anno Designer" : string.Format("{0} - Anno Designer", fileName);
+
+            logger.Info($"Loaded file: {(string.IsNullOrEmpty(args.FilePath) ? "(none)" : args.FilePath)}");
+
+            _recentFilesHelper.AddFile(new RecentFile(args.FilePath, DateTime.UtcNow));
+        }
+
+        private void AnnoCanvas_OpenFileRequested(object sender, OpenFileEventArgs e)
+        {
+            OpenFile(e.FilePath);
+        }
+
+        private void AnnoCanvas_SaveFileRequested(object sender, SaveFileEventArgs e)
+        {
+            SaveFile(e.FilePath);
         }
 
         public Task UpdateStatisticsAsync(UpdateMode mode)
@@ -772,7 +796,85 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
-        #region Properties
+        /// <summary>
+        /// Loads a new layout from file.
+        /// </summary>
+        public void OpenFile(string filePath, bool forceLoad = false)
+        {
+            try
+            {
+                var layout = _layoutLoader.LoadLayout(filePath, forceLoad);
+                if (layout != null)
+                {
+                    AnnoCanvas.SelectedObjects.Clear();
+                    AnnoCanvas.PlacedObjects.Clear();
+
+                    var layoutObjects = new List<LayoutObject>(layout.Objects.Count);
+                    foreach (var curObj in layout.Objects)
+                    {
+                        layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
+                    }
+
+                    var bounds = AnnoCanvas.ComputeBoundingRect(layoutObjects);
+                    AnnoCanvas.EnsureBounds(bounds);
+                    AnnoCanvas.PlacedObjects.AddRange(layoutObjects.Select(obj => (obj, obj.GridRect)));
+
+                    AnnoCanvas.LoadedFile = filePath;
+                    AnnoCanvas.Normalize(1);
+
+                    AnnoCanvas_LoadedFileChanged(this, new FileLoadedEventArgs(filePath, layout));
+
+                    AnnoCanvas.RaiseStatisticsUpdated(UpdateStatisticsEventArgs.All);
+                    AnnoCanvas.RaiseColorsInLayoutUpdated();
+                }
+            }
+            catch (LayoutFileUnsupportedFormatException layoutEx)
+            {
+                logger.Warn(layoutEx, "Version of layout file is not supported.");
+
+                if (_messageBoxService.ShowQuestion(
+                        _localizationHelper.GetLocalization("FileVersionUnsupportedMessage"),
+                        _localizationHelper.GetLocalization("FileVersionUnsupportedTitle")))
+                {
+                    OpenFile(filePath, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error loading layout from JSON.");
+
+                IOErrorMessageBox(ex);
+            }
+        }
+
+        /// <summary>
+        /// Writes layout to file.
+        /// </summary>
+        public void SaveFile(string filePath)
+        {
+            try
+            {
+                AnnoCanvas.Normalize(1);
+                var layoutToSave = new LayoutFile(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
+                layoutToSave.LayoutVersion = LayoutSettingsViewModel.LayoutVersion;
+                _layoutLoader.SaveLayout(layoutToSave, filePath);
+            }
+            catch (Exception e)
+            {
+                IOErrorMessageBox(e);
+            }
+        }
+
+        /// <summary>
+        /// Displays a message box containing some error information.
+        /// </summary>
+        /// <param name="e">exception containing error information</param>
+        private void IOErrorMessageBox(Exception e)
+        {
+            _messageBoxService.ShowError(e.Message, _localizationHelper.GetLocalization("IOErrorMessage"));
+        }
+
+        #region properties
 
         public IAnnoCanvas AnnoCanvas
         {
@@ -790,6 +892,8 @@ namespace AnnoDesigner.ViewModels
                 _annoCanvas.OnCurrentObjectChanged += UpdateUIFromObject;
                 _annoCanvas.OnStatusMessageChanged += AnnoCanvas_StatusMessageChanged;
                 _annoCanvas.OnLoadedFileChanged += AnnoCanvas_LoadedFileChanged;
+                _annoCanvas.OpenFileRequested += AnnoCanvas_OpenFileRequested;
+                _annoCanvas.SaveFileRequested += AnnoCanvas_SaveFileRequested;
                 BuildingSettingsViewModel.AnnoCanvasToUse = _annoCanvas;
             }
         }
@@ -986,6 +1090,7 @@ namespace AnnoDesigner.ViewModels
         {
             get { return RecentFiles.Count > 0; }
         }
+
         #endregion
 
         #region Commands
@@ -1093,7 +1198,7 @@ namespace AnnoDesigner.ViewModels
                             AnnoCanvas.SelectedObjects.Clear();
 
                             AnnoCanvas.PlacedObjects.Clear();
-                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)).Select(obj => (obj, obj.GridRect)));
+                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)).Select(obj => (obj, obj.GridRect)));
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 
@@ -1335,7 +1440,8 @@ namespace AnnoDesigner.ViewModels
                 using (var ms = new MemoryStream())
                 {
                     AnnoCanvas.Normalize(1);
-                    _layoutLoader.SaveLayout(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList(), ms);
+                    var layoutToSave = new LayoutFile(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
+                    _layoutLoader.SaveLayout(layoutToSave, ms);
 
                     var jsonString = Encoding.UTF8.GetString(ms.ToArray());
 
@@ -1491,7 +1597,7 @@ namespace AnnoDesigner.ViewModels
 
             if (_fileSystem.File.Exists(recentFile.Path))
             {
-                AnnoCanvas.OpenFile(recentFile.Path);
+                OpenFile(recentFile.Path);
 
                 _recentFilesHelper.AddFile(new RecentFile(recentFile.Path, DateTime.UtcNow));
             }
@@ -1525,6 +1631,8 @@ namespace AnnoDesigner.ViewModels
         public ManageKeybindingsViewModel PreferencesKeyBindingsViewModel { get; set; }
 
         public GeneralSettingsViewModel PreferencesGeneralViewModel { get; set; }
+
+        public LayoutSettingsViewModel LayoutSettingsViewModel { get; set; }
 
         #endregion    
     }

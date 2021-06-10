@@ -2,11 +2,35 @@
 using System.Runtime.Serialization.Json;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace AnnoDesigner.Core.Helper
 {
     public static class SerializationHelper
     {
+        private static readonly JsonConverter[] _converter;
+
+        static SerializationHelper()
+        {
+            _converter = new JsonConverter[]
+            {
+                new VersionConverter(),
+                new IsoDateTimeConverter(),
+                new StringEnumConverter()
+            };
+        }
+
+        private static JsonSerializer GetSerializer()
+        {
+            var serializer = new JsonSerializer();
+            foreach (var curConverter in _converter)
+            {
+                serializer.Converters.Add(curConverter);
+            }
+
+            return serializer;
+        }
+
         /// <summary>
         /// Serializes the given object to JSON and writes it to the given file.
         /// </summary>
@@ -26,7 +50,7 @@ namespace AnnoDesigner.Core.Helper
         /// <param name="stream">output JSON stream</param>
         public static void SaveToStream<T>(T obj, Stream stream)
         {
-            var serializer = new JsonSerializer();
+            var serializer = GetSerializer();
             using var sw = new StreamWriter(stream, Encoding.UTF8, 1024, true);//use constructor that does not close base stream
             using var jsonWriter = new JsonTextWriter(sw);
             serializer.Serialize(jsonWriter, obj, typeof(T));
@@ -41,7 +65,7 @@ namespace AnnoDesigner.Core.Helper
         /// <param name="obj">object to serialize</param>
         public static string SaveToJsonString<T>(T obj, Formatting formatting = Formatting.None)
         {
-            return JsonConvert.SerializeObject(obj, formatting);
+            return JsonConvert.SerializeObject(obj, formatting, _converter);
         }
 
         /// <summary>
@@ -64,13 +88,11 @@ namespace AnnoDesigner.Core.Helper
         /// <returns>deserialized object</returns>
         public static T LoadFromStream<T>(Stream stream)
         {
-            var serializer = new JsonSerializer();
+            var serializer = GetSerializer();
             using var sr = new StreamReader(stream);
             using var jsonReader = new JsonTextReader(sr);
             return serializer.Deserialize<T>(jsonReader);
         }
-
-
 
         /// <summary>
         /// Deserializes the given JSON string to an object of type <typeparamref name="T"/>.
@@ -86,7 +108,8 @@ namespace AnnoDesigner.Core.Helper
             {
                 return default;
             }
-            return JsonConvert.DeserializeObject<T>(jsonString);
+
+            return JsonConvert.DeserializeObject<T>(jsonString, _converter);
         }
 
         /// <summary>

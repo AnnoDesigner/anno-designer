@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using AnnoDesigner.Core.Layout;
+using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Helper;
 using Xunit;
@@ -12,7 +13,7 @@ namespace AnnoDesigner.Tests
 {
     public class RoadSearchHelperTests
     {
-        private static readonly List<AnnoObject> defaultObjectList;
+        private static readonly LayoutFile defaultObjectList;
 
         static RoadSearchHelperTests()
         {
@@ -51,7 +52,7 @@ namespace AnnoDesigner.Tests
         public void PrepareGridDictionary_SingleObject()
         {
             // Arrange
-            var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("PrepareGridDictionary_SingleObject"), true);
+            var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("PrepareGridDictionary_SingleObject"), true).Objects;
             var expectedResult = new AnnoObject[][]
             {
                 new AnnoObject[5],
@@ -87,7 +88,7 @@ namespace AnnoDesigner.Tests
         public void PrepareGridDictionary_MultipleObjects()
         {
             // Arrange
-            var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("PrepareGridDictionary_MultipleObjects"), true);
+            var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("PrepareGridDictionary_MultipleObjects"), true).Objects;
             var placedObject1 = placedObjects.FirstOrDefault(o => o.Label == "Object1");
             var placedObject2 = placedObjects.FirstOrDefault(o => o.Label == "Object2");
             var expectedResult = new AnnoObject[][]
@@ -135,7 +136,7 @@ namespace AnnoDesigner.Tests
         public void PrepareGridDictionary_MultipleObjectsWithNegativeCoordinates()
         {
             // Arrange
-            var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("PrepareGridDictionary_MultipleObjectsWithNegativeCoordinates"), true);
+            var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("PrepareGridDictionary_MultipleObjectsWithNegativeCoordinates"), true).Objects;
 
             // Act
             var gridDictionary = RoadSearchHelper.PrepareGridDictionary(placedObjects);
@@ -149,7 +150,7 @@ namespace AnnoDesigner.Tests
         public void BreadthFirstSearch_FindObjectsInInfluenceRange()
         {
             // Arrange
-            var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("BreadthFirstSearch_FindObjectsInInfluenceRange"), true);
+            var placedObjects = new LayoutLoader().LoadLayout(GetTestDataFile("BreadthFirstSearch_FindObjectsInInfluenceRange"), true).Objects;
             var startObjects = placedObjects.Where(o => o.Label == "Start").ToList();
 
             // Act
@@ -165,7 +166,7 @@ namespace AnnoDesigner.Tests
         public void BreadthFirstSearch_FindBuildingInfluenceRange()
         {
             // Arrange
-            var placedObjects = defaultObjectList;
+            var placedObjects = defaultObjectList.Objects;
             var startObjects = placedObjects.Where(o => o.Label == "Start").ToList();
             foreach (var startObject in startObjects)
             {
@@ -183,7 +184,7 @@ namespace AnnoDesigner.Tests
         public void BreadthFirstSearch_StartObjectCountIsZero_ShouldReturnEmptyResult()
         {
             // Arrange
-            var placedObjects = defaultObjectList;
+            var placedObjects = defaultObjectList.Objects;
             var startObjects = Enumerable.Empty<AnnoObject>();
 
             var expectedResult = new bool[0][];
@@ -201,7 +202,7 @@ namespace AnnoDesigner.Tests
         {
             // Arrange
             var placedObjects = Enumerable.Empty<AnnoObject>();
-            var startObjects = defaultObjectList;
+            var startObjects = defaultObjectList.Objects;
 
             var expectedResult = new bool[0][];
 
@@ -218,7 +219,7 @@ namespace AnnoDesigner.Tests
         {
             // Arrange
             IEnumerable<AnnoObject> placedObjects = null;
-            var startObjects = defaultObjectList;
+            var startObjects = defaultObjectList.Objects;
 
             var expectedResult = new bool[0][];
 

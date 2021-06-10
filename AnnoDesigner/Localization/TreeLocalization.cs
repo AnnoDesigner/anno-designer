@@ -83,14 +83,14 @@ namespace AnnoDesigner.Localization
                 }
                 else
                 {
-                    _logger.Trace($"try to set localization to english for: : \"{valueToTranslate}\"");
+                    _logger.Trace($"try to set localization to english for: \"{valueToTranslate}\"");
                     if (Translations["eng"].TryGetValue(valueToTranslate.Replace(" ", string.Empty), out string engLocalization))
                     {
                         return engLocalization;
                     }
                     else
                     {
-                        _logger.Trace($"found no localization (\"eng\") and ({languageCode}) for : \"{valueToTranslate}\"");
+                        _logger.Trace($"found no localization (\"eng\") and ({languageCode}) for: \"{valueToTranslate}\"");
                         return valueToTranslate;
                     }
                 }
