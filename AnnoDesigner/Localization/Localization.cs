@@ -236,6 +236,7 @@ namespace AnnoDesigner.Localization
                         { "LayoutLoadingError" , "Something went wrong while loading the layout." },
                         { "LayoutSavingError" , "Something went wrong while saving the layout." },
                         { "InvalidBuildingConfiguration" , "Invalid building configuration." },
+                        { "View" , "View" },                        
                         { "LayoutSettings", "Layout Settings" }
                     }
                 },
@@ -421,6 +422,7 @@ namespace AnnoDesigner.Localization
                         { "LayoutLoadingError" , "Beim Laden des Layouts ging etwas schief." },
                         { "LayoutSavingError" , "Beim Speichern des Layouts ist etwas schiefgegangen." },
                         { "InvalidBuildingConfiguration" , "Ungültige Gebäudekonfiguration." },
+                        { "View" , "Ansicht" },                        
                         { "LayoutSettings", "Layout Optionen" }
                     }
                 },
@@ -606,6 +608,7 @@ namespace AnnoDesigner.Localization
                         { "LayoutLoadingError" , "Quelque chose s'est mal passé lors du chargement de la mise en page." },
                         { "LayoutSavingError" , "Quelque chose s'est mal passé lors de la sauvegarde de la mise en page." },
                         { "InvalidBuildingConfiguration" , "Configuration du bâtiment incorrecte." },
+                        { "View" , "Voir" },
                         { "LayoutSettings", "Paramètres de mise en page" }
                     }
                 },
@@ -791,6 +794,7 @@ namespace AnnoDesigner.Localization
                         { "LayoutLoadingError" , "Coś poszło nie tak podczas ładowania układu." },
                         { "LayoutSavingError" , "Coś poszło nie tak podczas zapisywania układu." },
                         { "InvalidBuildingConfiguration" , "Nieprawidłowa konfiguracja budynku." },
+                        { "View" , "Zobacz" },
                         { "LayoutSettings", "Ustawienia układu" }
                     }
                 },
@@ -976,6 +980,7 @@ namespace AnnoDesigner.Localization
                         { "LayoutLoadingError" , "Что-то пошло не так во время загрузки макета." },
                         { "LayoutSavingError" , "Что-то пошло не так во время сохранения макета." },
                         { "InvalidBuildingConfiguration" , "Неверная конфигурация здания." },
+                        { "View" , "Zobacz" },
                         { "LayoutSettings", "Настройки макета" }
                     }
                 },
