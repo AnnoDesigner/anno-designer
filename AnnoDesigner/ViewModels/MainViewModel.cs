@@ -31,6 +31,7 @@ using AnnoDesigner.Helper;
 using AnnoDesigner.Localization;
 using AnnoDesigner.Models;
 using AnnoDesigner.PreferencesPages;
+using AnnoDesigner.Undo.Operations;
 using Microsoft.Win32;
 using NLog;
 
@@ -1151,16 +1152,15 @@ namespace AnnoDesigner.ViewModels
                     }
                 }
 
-                var groups = _adjacentCellGrouper.GroupAdjacentCells(cells, true);
-                AnnoCanvas.PlacedObjects.AddRange(groups
-                    .Select(g =>
+                var groups = _adjacentCellGrouper.GroupAdjacentCells(cells).ToList();
+                AnnoCanvas.UndoManager.AsSingleUndoableOperation(() =>
+                {
+                    foreach (var item in groups.SelectMany(g => g.Items))
                     {
-                        foreach (var item in g.Items)
-                        {
-                            AnnoCanvas.PlacedObjects.Remove(item, item.GridRect);
-                        }
-
-                        return new LayoutObject(
+                        AnnoCanvas.PlacedObjects.Remove(item, item.GridRect);
+                    }
+                    var newObjects = groups
+                        .Select(g => new LayoutObject(
                             new AnnoObject(g.Items.First().WrappedAnnoObject)
                             {
                                 Position = g.Bounds.TopLeft + (Vector)bounds.TopLeft,
@@ -1168,9 +1168,22 @@ namespace AnnoDesigner.ViewModels
                             },
                             _coordinateHelper,
                             _brushCache,
-                            _penCache);
-                    })
-                    .Select(o => (o, o.GridRect)));
+                            _penCache
+                        ))
+                        .ToList();
+                    AnnoCanvas.PlacedObjects.AddRange(newObjects.Select(o => (o, o.GridRect)));
+
+                    AnnoCanvas.UndoManager.RegisterOperation(new RemoveObjectsOperation()
+                    {
+                        Objects = groups.SelectMany(g => g.Items).ToList(),
+                        Collection = AnnoCanvas.PlacedObjects
+                    });
+                    AnnoCanvas.UndoManager.RegisterOperation(new AddObjectsOperation()
+                    {
+                        Objects = newObjects,
+                        Collection = AnnoCanvas.PlacedObjects
+                    });
+                });
             }
         }
 
@@ -1197,8 +1210,9 @@ namespace AnnoDesigner.ViewModels
                         if (loadedLayout != null)
                         {
                             AnnoCanvas.SelectedObjects.Clear();
-
                             AnnoCanvas.PlacedObjects.Clear();
+                            AnnoCanvas.UndoManager.Clear();
+
                             AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)).Select(obj => (obj, obj.GridRect)));
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
