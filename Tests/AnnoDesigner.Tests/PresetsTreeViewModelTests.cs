@@ -381,6 +381,72 @@ namespace AnnoDesigner.Tests
             Assert.Equal(expectedGameVersion, (viewModel.Items[2] as GameHeaderTreeItem).GameVersion);
         }
 
+        [Fact]
+        public void LoadItems_BuildingHeaderIsUnknownGameVersion_ShouldGetLocalizationForHeader()
+        {
+            // Arrange
+            var expectedLocalization = "localized dummy";
+
+            var mockedLocalizationHelper = new Mock<ILocalizationHelper>();
+            mockedLocalizationHelper.Setup(x => x.GetLocalization(It.IsAny<string>())).Returns<string>(x => expectedLocalization);
+            mockedLocalizationHelper.Setup(x => x.GetLocalization(It.IsAny<string>(), It.IsAny<string>())).Returns((string value, string langauge) => expectedLocalization);
+
+            var viewModel = new PresetsTreeViewModel(mockedLocalizationHelper.Object, _mockedCommons);
+
+            var buildings = new List<BuildingInfo>
+            {
+                new BuildingInfo
+                {
+                    Header = "dummy"
+                }
+            };
+
+            var buildingPresets = new BuildingPresets();
+            buildingPresets.Buildings = buildings;
+
+            // Act
+            viewModel.LoadItems(buildingPresets);
+
+            // Assert
+            //first 2 items always the road items
+            Assert.Equal(expectedLocalization, (viewModel.Items[2] as GameHeaderTreeItem).Header);
+        }
+
+        [Theory]
+        [InlineData("(A4) Anno 1404")]
+        [InlineData("(A5) Anno 2070")]
+        [InlineData("(A6) Anno 2205")]
+        [InlineData("(A7) Anno 1800")]
+        public void LoadItems_BuildingHeaderIsKnownGameVersion_ShouldNotGetLocalizationForHeader(string headerToSet)
+        {
+            // Arrange
+            var mockedLocalizationHelper = new Mock<ILocalizationHelper>();
+            mockedLocalizationHelper.Setup(x => x.GetLocalization(headerToSet)).Returns<string>(x => x);
+            mockedLocalizationHelper.Setup(x => x.GetLocalization(headerToSet, It.IsAny<string>())).Returns((string value, string langauge) => value);
+
+            var viewModel = new PresetsTreeViewModel(mockedLocalizationHelper.Object, _mockedCommons);
+
+            var buildings = new List<BuildingInfo>
+            {
+                new BuildingInfo
+                {
+                    Header = headerToSet
+                }
+            };
+
+            var buildingPresets = new BuildingPresets();
+            buildingPresets.Buildings = buildings;
+
+            // Act
+            viewModel.LoadItems(buildingPresets);
+
+            // Assert
+            //first 2 items always the road items
+            Assert.Equal(headerToSet, (viewModel.Items[2] as GameHeaderTreeItem).Header);
+            mockedLocalizationHelper.Verify(x => x.GetLocalization(headerToSet), Times.Never());
+            mockedLocalizationHelper.Verify(x => x.GetLocalization(headerToSet, It.IsAny<string>()), Times.Never());
+        }
+
         [Theory]
         [InlineData("Ark")]
         [InlineData("Harbour")]
