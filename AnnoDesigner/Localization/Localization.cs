@@ -235,12 +235,12 @@ namespace AnnoDesigner.Localization
                         { "LayoutLoadingError" , "Something went wrong while loading the layout." },
                         { "LayoutSavingError" , "Something went wrong while saving the layout." },
                         { "InvalidBuildingConfiguration" , "Invalid building configuration." },
-                        { "View" , "View" },                        
-                        { "LayoutSettings", "Layout Settings" },
                         { "MergeRoads" , "Merge roads" },
                         { "LoadingTreeLocalizationFailed" , "Loading of the localization failed." },
                         { "Undo" , "Undo" },
-                        { "Redo" , "Redo" }
+                        { "Redo" , "Redo" },
+                        { "LayoutSettings" , "Layout Settings" },
+                        { "View" , "View" }
                     }
                 },
                 {
@@ -424,12 +424,12 @@ namespace AnnoDesigner.Localization
                         { "LayoutLoadingError" , "Beim Laden des Layouts ging etwas schief." },
                         { "LayoutSavingError" , "Beim Speichern des Layouts ist etwas schiefgegangen." },
                         { "InvalidBuildingConfiguration" , "Ungültige Gebäudekonfiguration." },
-                        { "View" , "Ansicht" },                        
-                        { "LayoutSettings", "Layout Optionen" },
                         { "MergeRoads" , "Straßen zusammenführen" },
                         { "LoadingTreeLocalizationFailed" , "Das Laden der Übersetzungen ist fehlgeschlagen." },
-                        { "Undo" , "Undo" },
-                        { "Redo" , "Redo" }
+                        { "Undo" , "Rückgängig" },
+                        { "Redo" , "Wiederherstellen" },
+                        { "LayoutSettings" , "Layout Optionen" },
+                        { "View" , "Ansicht" }
                     }
                 },
                 {
@@ -612,13 +612,13 @@ namespace AnnoDesigner.Localization
                         { "FileVersionMismatchTItle" , "Mauvaise concordance des versions des fichiers" },
                         { "LayoutLoadingError" , "Quelque chose s'est mal passé lors du chargement de la mise en page." },
                         { "LayoutSavingError" , "Quelque chose s'est mal passé lors de la sauvegarde de la mise en page." },
-                        { "InvalidBuildingConfiguration" , "Configuration du bâtiment incorrecte." },
-                        { "View" , "Voir" },
-                        { "LayoutSettings", "Paramètres de mise en page" },
+                        { "InvalidBuildingConfiguratin" , "Configuration du bâtiment incorrecte." },
                         { "MergeRoads" , "Fusionner les routes" },
                         { "LoadingTreeLocalizationFailed" , "Le chargement de la localisation a échoué." },
-                        { "Undo" , "Undo" },
-                        { "Redo" , "Redo" }
+                        { "Undo" , "Annuler" },
+                        { "Redo" , "Refaire" },
+                        { "LayoutSettings" , "Paramètres de mise en page" },
+                        { "View" , "Voir" }
                     }
                 },
                 {
@@ -802,12 +802,12 @@ namespace AnnoDesigner.Localization
                         { "LayoutLoadingError" , "Coś poszło nie tak podczas ładowania układu." },
                         { "LayoutSavingError" , "Coś poszło nie tak podczas zapisywania układu." },
                         { "InvalidBuildingConfiguration" , "Nieprawidłowa konfiguracja budynku." },
-                        { "View" , "Zobacz" },
-                        { "LayoutSettings", "Ustawienia układu" },
                         { "MergeRoads" , "Scal drogi" },
                         { "LoadingTreeLocalizationFailed" , "Ładowanie lokalizacji nie powiodło się." },
                         { "Undo" , "Undo" },
-                        { "Redo" , "Redo" }
+                        { "Redo" , "Redo" },
+                        { "LayoutSettings" , "Ustawienia układu" },
+                        { "View" , "Zobacz" }
                     }
                 },
                 {
@@ -991,12 +991,12 @@ namespace AnnoDesigner.Localization
                         { "LayoutLoadingError" , "Что-то пошло не так во время загрузки макета." },
                         { "LayoutSavingError" , "Что-то пошло не так во время сохранения макета." },
                         { "InvalidBuildingConfiguration" , "Неверная конфигурация здания." },
-                        { "View" , "Zobacz" },
-                        { "LayoutSettings", "Настройки макета" },
                         { "MergeRoads" , "Oбъединить дороги" },
                         { "LoadingTreeLocalizationFailed" , "Загрузка локализации не удалась." },
-                        { "Undo" , "Undo" },
-                        { "Redo" , "Redo" }
+                        { "Undo" , "Отменить" },
+                        { "Redo" , "Redo" },
+                        { "LayoutSettings" , "Настройки макета" },
+                        { "View" , "Посмотреть" }
                     }
                 },
             };
