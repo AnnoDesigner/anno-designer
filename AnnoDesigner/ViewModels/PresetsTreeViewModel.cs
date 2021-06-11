@@ -203,10 +203,17 @@ namespace AnnoDesigner.ViewModels
             var groupedGames = filteredBuildingList.GroupBy(x => x.Header).OrderBy(x => x.Key);
             foreach (var curGame in groupedGames)
             {
+                var gameHeader = curGame.Key;
+                var gameVersion = GetGameVersion(curGame.Key);
+                if (gameVersion == CoreConstants.GameVersion.Unknown)
+                {
+                    gameHeader = _localizationHelper.GetLocalization(curGame.Key);
+                }
+
                 var gameItem = new GameHeaderTreeItem
                 {
-                    Header = curGame.Key,
-                    GameVersion = GetGameVersion(curGame.Key),
+                    Header = gameHeader,
+                    GameVersion = gameVersion,
                     Id = ++itemId
                 };
 
