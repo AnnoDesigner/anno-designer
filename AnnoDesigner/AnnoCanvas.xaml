@@ -8,10 +8,10 @@
              d:DesignWidth="200"
              Focusable="True"
              ClipToBounds="True">
-    <!-- This statistics panel is used when exporting images only -->
-    <Grid Name="StatisticsPanel"
-          HorizontalAlignment="Right"
-          Background="White">
-
-    </Grid>
+    <!-- This dock panel is used when exporting images only -->
+    <DockPanel Name="DockPanel" Background="Transparent">
+        <Grid>
+            <!-- Empty grid to use rest of dock panel space -->
+        </Grid>
+    </DockPanel>
 </UserControl>

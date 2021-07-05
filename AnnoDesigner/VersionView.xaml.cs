@@ -4,17 +4,17 @@ using AnnoDesigner.ViewModels;
 namespace AnnoDesigner
 {
     /// <summary>
-    /// Interaction logic for StatisticsView.xaml
+    /// Interaction logic for VersionView.xaml
     /// </summary>
-    public partial class StatisticsView : UserControl
+    public partial class VersionView : UserControl
     {
-        public StatisticsViewModel Context
+        public LayoutSettingsViewModel Context
         {
-            get => DataContext as StatisticsViewModel;
+            get => DataContext as LayoutSettingsViewModel;
             set => DataContext = value;
         }
 
-        public StatisticsView()
+        public VersionView()
         {
             InitializeComponent();
         }

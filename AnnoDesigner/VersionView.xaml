@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="AnnoDesigner.VersionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:local="clr-namespace:AnnoDesigner.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"  Background="White">
+    <UserControl.DataContext>
+        <local:LayoutSettingsViewModel />
+    </UserControl.DataContext>
+    <Grid>
+        <TextBlock HorizontalAlignment="Right">
+            <Run Text="Version: "/>
+            <Run Text="{Binding LayoutVersionDisplayValue}"/>
+        </TextBlock>
+    </Grid>
+</UserControl>
