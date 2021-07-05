@@ -124,6 +124,12 @@ namespace AnnoDesigner
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
+            if (!annoCanvas.CheckUnsavedChanges())
+            {
+                e.Cancel = true;
+                return;
+            }
+
             if (WindowState == WindowState.Minimized)
             {
                 WindowState = WindowState.Normal;

@@ -10,6 +10,22 @@ namespace AnnoDesigner.Undo
         internal Stack<IOperation> RedoStack { get; set; } = new Stack<IOperation>();
         internal CompositeOperation CurrentCompositeOperation { get; set; }
 
+        private IOperation lastUndoableOperation;
+
+        public bool IsDirty
+        {
+            get { return lastUndoableOperation != (UndoStack.Count > 0 ? UndoStack.Peek() : null); }
+            set
+            {
+                if (value)
+                {
+                    throw new ArgumentException("You can only set IsDirty to false");
+                }
+
+                lastUndoableOperation = UndoStack.Count > 0 ? UndoStack.Peek() : null;
+            }
+        }
+
         public void Undo()
         {
             if (UndoStack.Count > 0)
@@ -34,6 +50,7 @@ namespace AnnoDesigner.Undo
         {
             UndoStack.Clear();
             RedoStack.Clear();
+            IsDirty = false;
         }
 
         public void RegisterOperation(IOperation operation)

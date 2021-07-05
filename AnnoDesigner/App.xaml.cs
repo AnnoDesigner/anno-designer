@@ -69,6 +69,8 @@ namespace AnnoDesigner
 
         public static void ShowMessageWithUnexpectedErrorAndExit()
         {
+            // TODO check
+
             var message = "An unhandled exception occurred.";
 
             //find loaction of log file

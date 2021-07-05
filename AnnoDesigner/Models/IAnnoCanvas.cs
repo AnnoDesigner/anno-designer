@@ -47,5 +47,6 @@ namespace AnnoDesigner.Models
         void RaiseColorsInLayoutUpdated();
         void EnsureBounds(Rect additionalBounds);
         Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects);
+        bool CheckUnsavedChanges();
     }
 }
