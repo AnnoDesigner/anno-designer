@@ -1,33 +1,34 @@
-﻿using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using AnnoDesigner.Core.DataStructures;
-using AnnoDesigner.Models;
+using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Undo.Operations
 {
-    public class MoveObjectsOperation : IOperation
+    public class MoveObjectsOperation<T> : ModifyObjectPropertiesOperation<T, Rect>
+        where T : IBounded
     {
-        public IEnumerable<(LayoutObject obj, Point startPosition, Point endPosition)> ObjectPositions { get; set; }
+        public IQuadTree<T> QuadTree { get; set; }
 
-        public QuadTree<LayoutObject> Collection { get; set; }
-
-        public void Undo()
+        public MoveObjectsOperation()
         {
-            foreach (var (obj, startPosition, _) in ObjectPositions)
+            PropertyName = nameof(IBounded.Bounds);
+            AfterUndoAction = AfterUndo;
+            AfterRedoAction = AfterRedo;
+        }
+
+        private void AfterUndo()
+        {
+            foreach (var (obj, _, newRect) in ObjectPropertyValues)
             {
-                Collection.Remove(obj, obj.GridRect);
-                obj.Position = startPosition;
-                Collection.Insert(obj, obj.GridRect);
+                QuadTree.ReIndex(obj, newRect);
             }
         }
 
-        public void Redo()
+        private void AfterRedo()
         {
-            foreach (var (obj, _, endPosition) in ObjectPositions)
+            foreach (var (obj, oldRect, _) in ObjectPropertyValues)
             {
-                Collection.Remove(obj, obj.GridRect);
-                obj.Position = endPosition;
-                Collection.Insert(obj, obj.GridRect);
+                QuadTree.ReIndex(obj, oldRect);
             }
         }
     }
