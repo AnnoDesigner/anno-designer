@@ -1357,10 +1357,7 @@ namespace AnnoDesigner.ViewModels
                     icons.Add(curIcon.Key, new IconImage(curIcon.Value.Name, curIcon.Value.Localizations, curIcon.Value.IconPath));
                 }
 
-                var stats = new StatisticsCalculationHelper();
-                var result = stats.CalculateStatistics(allObjects.Select(x => x.WrappedAnnoObject));
-                var bounds = new Rect(result.MinX, result.MinY, result.UsedAreaWidth, result.UsedAreaHeight);
-                var quadTree = new QuadTree<LayoutObject>(bounds);
+                var quadTree = new QuadTree<LayoutObject>(AnnoCanvas.PlacedObjects.Extent);
                 quadTree.AddRange(allObjects);
                 // initialize output canvas
                 var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _appSettings, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
