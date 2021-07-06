@@ -119,7 +119,7 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
-        public void ToggleBuildingList(bool showBuildingList, List<LayoutObject> placedObjects, List<LayoutObject> selectedObjects, BuildingPresets buildingPresets)
+        public void ToggleBuildingList(bool showBuildingList, IList<LayoutObject> placedObjects, List<LayoutObject> selectedObjects, BuildingPresets buildingPresets)
         {
             ShowBuildingList = showBuildingList;
             if (showBuildingList)
@@ -129,11 +129,11 @@ namespace AnnoDesigner.ViewModels
         }
 
         public async Task UpdateStatisticsAsync(UpdateMode mode,
-            List<LayoutObject> placedObjects,
+            IList<LayoutObject> placedObjects,
             List<LayoutObject> selectedObjects,
             BuildingPresets buildingPresets)
         {
-            if (!placedObjects.Any())
+            if (placedObjects.Count == 0)
             {
                 AreStatisticsAvailable = false;
                 return;

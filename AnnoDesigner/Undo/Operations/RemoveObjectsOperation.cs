@@ -1,23 +1,27 @@
 ﻿using System.Collections.Generic;
-using AnnoDesigner.Core.DataStructures;
-using AnnoDesigner.Models;
 
 namespace AnnoDesigner.Undo.Operations
 {
-    public class RemoveObjectsOperation : IOperation
+    public class RemoveObjectsOperation<T> : BaseOperation
     {
-        public IEnumerable<LayoutObject> Objects { get; set; }
+        public IEnumerable<T> Objects { get; set; }
 
-        public QuadTree<LayoutObject> Collection { get; set; }
+        public ICollection<T> Collection { get; set; }
 
-        public void Undo()
+        protected override void UndoOperation()
         {
-            OperationHelper.AddObjects(Collection, Objects);
+            foreach (var obj in Objects)
+            {
+                Collection.Add(obj);
+            }
         }
 
-        public void Redo()
+        protected override void RedoOperation()
         {
-            OperationHelper.RemoveObjects(Collection, Objects);
+            foreach (var obj in Objects)
+            {
+                Collection.Remove(obj);
+            }
         }
     }
 }

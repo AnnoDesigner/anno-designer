@@ -14,6 +14,8 @@ namespace AnnoDesigner.Models
 
         Size Rotate(Size size);
 
+        Rect Rotate(Rect rect);
+
         double RoundScreenToGrid(double screenLength, int gridStep);
 
         Point RoundScreenToGrid(Point screenPoint, int gridStep);

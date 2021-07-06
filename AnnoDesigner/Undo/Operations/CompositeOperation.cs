@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace AnnoDesigner.Undo.Operations
 {
-    public class CompositeOperation : IOperation
+    public class CompositeOperation : BaseOperation
     {
         public ICollection<IOperation> Operations { get; set; } = new List<IOperation>();
 
-        public void Redo()
+        protected override void RedoOperation()
         {
             foreach (var curOperation in Operations)
             {
@@ -15,7 +15,7 @@ namespace AnnoDesigner.Undo.Operations
             }
         }
 
-        public void Undo()
+        protected override void UndoOperation()
         {
             foreach (var curOperation in Operations.Reverse())
             {

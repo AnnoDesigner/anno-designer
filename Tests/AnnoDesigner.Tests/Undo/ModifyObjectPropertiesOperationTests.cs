@@ -9,7 +9,7 @@ using Xunit;
 
 namespace AnnoDesigner.Tests.Undo
 {
-    public class ChangeObjectsColorOperationTests
+    public class ModifyObjectPropertiesOperationTests
     {
         private LayoutObject CreateLayoutObject(Color color)
         {
@@ -27,9 +27,10 @@ namespace AnnoDesigner.Tests.Undo
             // Arrange
             var expectedColor = Colors.Black;
             var obj = CreateLayoutObject(Colors.White);
-            var operation = new ChangeObjectsColorOperation()
+            var operation = new ModifyObjectPropertiesOperation<LayoutObject, SerializableColor>()
             {
-                ObjectColors = new List<(LayoutObject, SerializableColor, Color?)>()
+                PropertyName = nameof(LayoutObject.Color),
+                ObjectPropertyValues = new List<(LayoutObject, SerializableColor, SerializableColor)>()
                 {
                     (obj, expectedColor, obj.Color)
                 }
@@ -47,10 +48,11 @@ namespace AnnoDesigner.Tests.Undo
         {
             // Arrange
             var actionMock = new Mock<Action>();
-            var operation = new ChangeObjectsColorOperation()
+            var operation = new ModifyObjectPropertiesOperation<LayoutObject, SerializableColor>()
             {
-                ObjectColors = new List<(LayoutObject, SerializableColor, Color?)>(),
-                RedrawAction = actionMock.Object
+                PropertyName = nameof(LayoutObject.Color),
+                ObjectPropertyValues = new List<(LayoutObject, SerializableColor, SerializableColor)>(),
+                AfterAction = actionMock.Object
             };
 
             // Act
@@ -68,9 +70,10 @@ namespace AnnoDesigner.Tests.Undo
             var expectedColor2 = Colors.Blue;
             var obj1 = CreateLayoutObject(Colors.White);
             var obj2 = CreateLayoutObject(Colors.Red);
-            var operation = new ChangeObjectsColorOperation()
+            var operation = new ModifyObjectPropertiesOperation<LayoutObject, SerializableColor>()
             {
-                ObjectColors = new List<(LayoutObject, SerializableColor, Color?)>()
+                PropertyName = nameof(LayoutObject.Color),
+                ObjectPropertyValues = new List<(LayoutObject, SerializableColor, SerializableColor)>()
                 {
                     (obj1, expectedColor1, obj1.Color),
                     (obj2, expectedColor2, obj2.Color),
@@ -95,9 +98,10 @@ namespace AnnoDesigner.Tests.Undo
             // Arrange
             var expectedColor = Colors.Black;
             var obj = CreateLayoutObject(Colors.White);
-            var operation = new ChangeObjectsColorOperation()
+            var operation = new ModifyObjectPropertiesOperation<LayoutObject, SerializableColor>()
             {
-                ObjectColors = new List<(LayoutObject, SerializableColor, Color?)>()
+                PropertyName = nameof(LayoutObject.Color),
+                ObjectPropertyValues = new List<(LayoutObject, SerializableColor, SerializableColor)>()
                 {
                     (obj, obj.Color, expectedColor)
                 }
@@ -118,9 +122,10 @@ namespace AnnoDesigner.Tests.Undo
             var expectedColor2 = Colors.Blue;
             var obj1 = CreateLayoutObject(Colors.White);
             var obj2 = CreateLayoutObject(Colors.Red);
-            var operation = new ChangeObjectsColorOperation()
+            var operation = new ModifyObjectPropertiesOperation<LayoutObject, SerializableColor>()
             {
-                ObjectColors = new List<(LayoutObject, SerializableColor, Color?)>()
+                PropertyName = nameof(LayoutObject.Color),
+                ObjectPropertyValues = new List<(LayoutObject, SerializableColor, SerializableColor)>()
                 {
                     (obj1, obj1.Color, expectedColor1),
                     (obj2, obj2.Color, expectedColor2),
@@ -140,10 +145,11 @@ namespace AnnoDesigner.Tests.Undo
         {
             // Arrange
             var actionMock = new Mock<Action>();
-            var operation = new ChangeObjectsColorOperation()
+            var operation = new ModifyObjectPropertiesOperation<LayoutObject, SerializableColor>()
             {
-                ObjectColors = new List<(LayoutObject, SerializableColor, Color?)>(),
-                RedrawAction = actionMock.Object
+                PropertyName = nameof(LayoutObject.Color),
+                ObjectPropertyValues = new List<(LayoutObject, SerializableColor, SerializableColor)>(),
+                AfterAction = actionMock.Object
             };
 
             // Act

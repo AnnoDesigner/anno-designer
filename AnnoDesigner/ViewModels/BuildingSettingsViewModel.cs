@@ -355,17 +355,13 @@ namespace AnnoDesigner.ViewModels
                 return;
             }
 
-            AnnoCanvasToUse.UndoManager.RegisterOperation(new ChangeObjectsColorOperation()
+            AnnoCanvasToUse.UndoManager.RegisterOperation(new ModifyObjectPropertiesOperation<LayoutObject, SerializableColor>()
             {
-                ObjectColors = AnnoCanvasToUse.SelectedObjects
-                    .Select(obj => (obj, obj.Color, selectedColor: SelectedColor))
-                    .Where(tuple => tuple.selectedColor != null && tuple.selectedColor.HasValue)
+                PropertyName = nameof(LayoutObject.Color),
+                ObjectPropertyValues = AnnoCanvasToUse.SelectedObjects
+                    .Select(obj => (obj, obj.Color, selectedColor: (SerializableColor) SelectedColor.Value))
                     .ToList(),
-                RedrawAction = () =>
-                {
-                    AnnoCanvasToUse.InvalidateVisual();
-                    AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
-                }
+                AfterAction = ColorChangeUndone
             });
 
             foreach (var curSelectedObject in AnnoCanvasToUse.SelectedObjects)
@@ -392,17 +388,14 @@ namespace AnnoDesigner.ViewModels
                 return;
             }
 
-            AnnoCanvasToUse.UndoManager.RegisterOperation(new ChangeObjectsColorOperation()
+            AnnoCanvasToUse.UndoManager.RegisterOperation(new ModifyObjectPropertiesOperation<LayoutObject, SerializableColor>()
             {
-                ObjectColors = AnnoCanvasToUse.SelectedObjects
-                    .Select(obj => (obj, obj.Color, predefinedColor: ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject)))
-                    .Where(tuple => tuple.predefinedColor != null && tuple.predefinedColor.HasValue)
+                PropertyName = nameof(LayoutObject.Color),
+                ObjectPropertyValues = AnnoCanvasToUse.SelectedObjects
+                    .Where(obj => ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject).HasValue)
+                    .Select(obj => (obj, obj.Color, (SerializableColor) ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject).Value))
                     .ToList(),
-                RedrawAction = () =>
-                {
-                    AnnoCanvasToUse.InvalidateVisual();
-                    AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
-                }
+                AfterAction = ColorChangeUndone
             });
 
             foreach (var curSelectedObject in AnnoCanvasToUse.SelectedObjects)
@@ -461,6 +454,12 @@ namespace AnnoDesigner.ViewModels
             }
 
             OnPropertyChanged(nameof(ShowColorsInLayout));
+        }
+
+        private void ColorChangeUndone()
+        {
+            AnnoCanvasToUse.InvalidateVisual();
+            AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
         }
     }
 }

@@ -1,49 +1,34 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Core.DataStructures
 {
     /// <summary>
     /// Creates a new <see cref="QuadTree{T}"/>.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class QuadTree<T> : IEnumerable<T>
+    public class QuadTree<T> : IQuadTree<T>
+        where T : IBounded
     {
-        private class Quadrant
+        private class Quadrant : ICollection<T>
         {
-            /// <summary>
-            /// Indicates if current cached data (<see cref="count"/> and <see cref="itemsInQuadrantAndSubQuadrants"/>) is up to date.
-            /// Returns <see langword="true"/> when cached data is up to date.
-            /// </summary>
-            private bool isDirty;
-
-            private Quadrant topRight;
-            private Quadrant topLeft;
-            private Quadrant bottomRight;
-            private Quadrant bottomLeft;
-
             private readonly Rect topRightBounds;
             private readonly Rect topLeftBounds;
             private readonly Rect bottomRightBounds;
             private readonly Rect bottomLeftBounds;
 
-            /// <summary>
-            /// A reference to the parent <see cref="Quadrant"/> for this Quadrant.
-            /// </summary>
-            public Quadrant Parent { get; set; }
+            public Quadrant TopRight { get; set; }
+            public Quadrant TopLeft { get; set; }
+            public Quadrant BottomRight { get; set; }
+            public Quadrant BottomLeft { get; set; }
 
             /// <summary>
             /// A count of all items in this Quadrant and under it.
             /// </summary>
-            private int count;
-
-            /// <summary>
-            /// A list of all the items in the Quadrant and the items under it (all recursive sub-quadrants).
-            /// </summary>
-            private IEnumerable<(T Item, Rect Bounds)> itemsInQuadrantAndSubQuadrants;
+            public int Count => ItemsInQuadrant.Count + (TopLeft?.Count ?? 0) + (TopRight?.Count ?? 0)
+                                                      + (BottomLeft?.Count ?? 0) + (BottomRight?.Count ?? 0);
 
             /// <summary>
             /// Holds a list of all the items in this quadrant.
@@ -52,16 +37,21 @@ namespace AnnoDesigner.Core.DataStructures
             /// Stored as a list of items as any item that overlaps multiple child quadrants will be stored here.
             /// This list differs to the itemCache, as this only contains items that do not fit completely into a child quadrant.
             /// </remarks>
-            public List<(T Item, Rect Bounds)> ItemsInQuadrant { get; }
+            public List<T> ItemsInQuadrant { get; }
 
             public Rect Extent { get; set; }
+
+            public bool IsReadOnly => false;
+
+            /// <summary>
+            /// Is this quadrant smaller or equal to 2x2 square.
+            /// </summary>
+            public bool LastLevelQuadrant => Extent.Width <= 2 && Extent.Height <= 2;
 
             public Quadrant(Rect extent)
             {
                 Extent = extent;
-                ItemsInQuadrant = new List<(T, Rect)>(4);
-                itemsInQuadrantAndSubQuadrants = new List<(T Items, Rect Bounds)>();
-                isDirty = false;
+                ItemsInQuadrant = new List<T>(4);
 
                 var w = Extent.Width / 2;
                 var h = Extent.Height / 2;
@@ -72,113 +62,205 @@ namespace AnnoDesigner.Core.DataStructures
                 bottomLeftBounds = new Rect(Extent.Left, Extent.Top + h, w, h);
             }
 
+            public void Add(T item) => Add(item, item.Bounds);
+
             /// <summary>
-            /// Insert a new item into the Quad Tree.
+            /// Adds a new item into the Quadrant.
             /// </summary>
-            /// <param name="item">The item to insert</param>
-            /// <param name="bounds">The bounds of the item</param>
-            public void Insert(T item, Rect bounds)
+            public void Add(T item, Rect bounds)
             {
-                if (!Extent.IntersectsWith(bounds))
+                if (!LastLevelQuadrant)
                 {
-                    return; //item does not belong in quadrant
-                }
-
-                Quadrant childQuadrant = null;
-                if (topRightBounds.Contains(bounds))
-                {
-                    topRight ??= new Quadrant(topRightBounds);
-                    childQuadrant = topRight;
-                }
-                else if (topLeftBounds.Contains(bounds))
-                {
-                    topLeft ??= new Quadrant(topLeftBounds);
-                    childQuadrant = topLeft;
-                }
-                else if (bottomRightBounds.Contains(bounds))
-                {
-                    bottomRight ??= new Quadrant(bottomRightBounds);
-                    childQuadrant = bottomRight;
-                }
-                else if (bottomLeftBounds.Contains(bounds))
-                {
-                    bottomLeft ??= new Quadrant(bottomLeftBounds);
-                    childQuadrant = bottomLeft;
-                }
-
-                if (childQuadrant is null)
-                {
-                    ItemsInQuadrant.Add((item, bounds));
+                    if (topRightBounds.Contains(bounds))
+                    {
+                        TopRight ??= new Quadrant(topRightBounds);
+                        TopRight.Add(item, bounds);
+                    }
+                    else if (topLeftBounds.Contains(bounds))
+                    {
+                        TopLeft ??= new Quadrant(topLeftBounds);
+                        TopLeft.Add(item, bounds);
+                    }
+                    else if (bottomRightBounds.Contains(bounds))
+                    {
+                        BottomRight ??= new Quadrant(bottomRightBounds);
+                        BottomRight.Add(item, bounds);
+                    }
+                    else if (bottomLeftBounds.Contains(bounds))
+                    {
+                        BottomLeft ??= new Quadrant(bottomLeftBounds);
+                        BottomLeft.Add(item, bounds);
+                    }
+                    else
+                    {
+                        ItemsInQuadrant.Add(item);
+                    }
                 }
                 else
                 {
-                    childQuadrant.Parent = this;
-                    childQuadrant.Insert(item, bounds);
+                    ItemsInQuadrant.Add(item);
                 }
-
-                isDirty = true;
             }
 
-            /// <summary>
-            /// Removes an item from this Quadrant
-            /// </summary>
-            /// <param name="item"></param>
-            internal void Remove((T item, Rect bounds) item)
-            {
-                ItemsInQuadrant.Remove(item);
-                MarkAncestorsAsDirty(); //make sure all ancestors are now marked as requiring an update.
-            }
+            public bool Remove(T item) => Remove(item, item.Bounds);
 
             /// <summary>
-            /// Marks this quadrant and all parent quadrants as dirty.
+            /// Removes an item from this Quadrant.
+            /// Returns true if item was found and removed, false otherwise.
             /// </summary>
-            internal void MarkAncestorsAsDirty()
+            public bool Remove(T item, Rect bounds)
             {
-                if (Parent != null)
+                bool removed;
+
+                if (TopRight != null && topRightBounds.Contains(bounds))
                 {
-                    Parent.MarkAncestorsAsDirty();
+                    removed = TopRight.Remove(item, bounds);
                 }
-                isDirty = true;
+                else if (TopLeft != null && topLeftBounds.Contains(bounds))
+                {
+                    removed = TopLeft.Remove(item, bounds);
+                }
+                else if (BottomRight != null && bottomRightBounds.Contains(bounds))
+                {
+                    removed = BottomRight.Remove(item, bounds);
+                }
+                else if (BottomLeft != null && bottomLeftBounds.Contains(bounds))
+                {
+                    removed = BottomLeft.Remove(item, bounds);
+                }
+                else
+                {
+                    removed = ItemsInQuadrant.Remove(item);
+                }
+
+                return removed;
+            }
+
+            /// <summary>
+            /// Clears this collection.
+            /// </summary>
+            public void Clear()
+            {
+                TopRight = null;
+                TopLeft = null;
+                BottomRight = null;
+                BottomLeft = null;
+                ItemsInQuadrant.Clear();
+            }
+
+            /// <summary>
+            /// Checks if specified item is inside this collection.
+            /// </summary>
+            public bool Contains(T item)
+            {
+                var bounds = item.Bounds;
+                return TopRight != null && TopRight.Extent.IntersectsWith(bounds) && TopRight.Contains(item) ||
+                       TopLeft != null && TopLeft.Extent.IntersectsWith(bounds) && TopLeft.Contains(item) ||
+                       BottomRight != null && BottomRight.Extent.IntersectsWith(bounds) && BottomRight.Contains(item) ||
+                       BottomLeft != null && BottomLeft.Extent.IntersectsWith(bounds) && BottomLeft.Contains(item) ||
+                       ItemsInQuadrant.Contains(item);
+            }
+
+            /// <summary>
+            /// Copies items from this collection to target array.
+            /// </summary>
+            public void CopyTo(T[] array, int arrayIndex)
+            {
+                foreach (var item in this)
+                {
+                    array[arrayIndex++] = item;
+                }
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+            /// <summary>
+            /// Returns enumerator for iterating all items in this collection.
+            /// </summary>
+            public IEnumerator<T> GetEnumerator()
+            {
+                if (TopRight != null)
+                {
+                    foreach (var item in TopRight)
+                    {
+                        yield return item;
+                    }
+                }
+
+                if (TopLeft != null)
+                {
+                    foreach (var item in TopLeft)
+                    {
+                        yield return item;
+                    }
+                }
+
+                if (BottomRight != null)
+                {
+                    foreach (var item in BottomRight)
+                    {
+                        yield return item;
+                    }
+                }
+
+                if (BottomLeft != null)
+                {
+                    foreach (var item in BottomLeft)
+                    {
+                        yield return item;
+                    }
+                }
+
+                //add all the items in this quadrant that intersect the given bounds
+                foreach (var item in ItemsInQuadrant)
+                {
+                    yield return item;
+                }
             }
 
             /// <summary>
             /// Retrieves the items that intersect with the given bounds.
             /// </summary>
-            /// <param name="bounds"></param>
-            /// <returns></returns>
-            public void GetItemsIntersecting(List<T> items, Rect bounds)
+            public IEnumerable<T> GetItemsIntersecting(Rect bounds)
             {
-                if (topRight != null && topRight.Extent.IntersectsWith(bounds))
+                if (TopRight?.Extent.IntersectsWith(bounds) ?? false)
                 {
-                    topRight.GetItemsIntersecting(items, bounds);
+                    foreach (var item in TopRight.GetItemsIntersecting(bounds))
+                    {
+                        yield return item;
+                    }
                 }
 
-                if (topLeft != null && topLeft.Extent.IntersectsWith(bounds))
+                if (TopLeft?.Extent.IntersectsWith(bounds) ?? false)
                 {
-                    topLeft.GetItemsIntersecting(items, bounds);
+                    foreach (var item in TopLeft.GetItemsIntersecting(bounds))
+                    {
+                        yield return item;
+                    }
                 }
 
-                if (bottomRight != null && bottomRight.Extent.IntersectsWith(bounds))
+                if (BottomRight?.Extent.IntersectsWith(bounds) ?? false)
                 {
-                    bottomRight.GetItemsIntersecting(items, bounds);
+                    foreach (var item in BottomRight.GetItemsIntersecting(bounds))
+                    {
+                        yield return item;
+                    }
                 }
 
-                if (bottomLeft != null && bottomLeft.Extent.IntersectsWith(bounds))
+                if (BottomLeft?.Extent.IntersectsWith(bounds) ?? false)
                 {
-                    bottomLeft.GetItemsIntersecting(items, bounds);
+                    foreach (var item in BottomLeft.GetItemsIntersecting(bounds))
+                    {
+                        yield return item;
+                    }
                 }
 
                 //add all the items in this quadrant that intersect the given bounds
-                items.AddRange(GetIntersectingItmesInQuadrant(bounds));
-            }
-
-            private IEnumerable<T> GetIntersectingItmesInQuadrant(Rect boundsToCheck)
-            {
-                foreach (var (Item, Bounds) in ItemsInQuadrant)
+                foreach (var item in ItemsInQuadrant)
                 {
-                    if (Bounds.IntersectsWith(boundsToCheck))
+                    if (item.Bounds.IntersectsWith(bounds))
                     {
-                        yield return Item;
+                        yield return item;
                     }
                 }
             }
@@ -186,90 +268,29 @@ namespace AnnoDesigner.Core.DataStructures
             /// <summary>
             /// Retrieves the <see cref="Quadrant"/> containing the given bounds
             /// </summary>
-            /// <param name="bounds"></param>
-            /// <returns></returns>
-            internal Quadrant GetContainingQuadrant(Rect bounds)
+            public Quadrant GetContainingQuadrant(Rect bounds)
             {
-                if (topRight != null && topRight.Extent.Contains(bounds))
+                if (TopRight?.Extent.Contains(bounds) ?? false)
                 {
-                    return topRight.GetContainingQuadrant(bounds);
+                    return TopRight.GetContainingQuadrant(bounds);
                 }
-                else if (topLeft != null && topLeft.Extent.Contains(bounds))
+                else if (TopLeft?.Extent.Contains(bounds) ?? false)
                 {
-                    return topLeft.GetContainingQuadrant(bounds);
+                    return TopLeft.GetContainingQuadrant(bounds);
                 }
-                else if (bottomRight != null && bottomRight.Extent.Contains(bounds))
+                else if (BottomRight?.Extent.Contains(bounds) ?? false)
                 {
-                    return bottomRight.GetContainingQuadrant(bounds);
+                    return BottomRight.GetContainingQuadrant(bounds);
                 }
-                else if (bottomLeft != null && bottomLeft.Extent.Contains(bounds))
+                else if (BottomLeft?.Extent.Contains(bounds) ?? false)
                 {
-                    return bottomLeft.GetContainingQuadrant(bounds);
+                    return BottomLeft.GetContainingQuadrant(bounds);
                 }
-                else
+                else if (Extent.Contains(bounds))
                 {
                     return this;
                 }
-            }
-
-            /// <summary>
-            /// Retrieves the count of all items in this quadrant and beneath it.
-            /// </summary>
-            /// <returns></returns>
-            public int Count()
-            {
-                if (isDirty)
-                {
-                    UpdateCachedData();
-                }
-                return count;
-            }
-
-            /// <summary>
-            /// Retrieves a list of all items in this quadrant and beneath it.
-            /// </summary>
-            /// <returns></returns>
-            public IEnumerable<T> All()
-            {
-                if (isDirty)
-                {
-                    UpdateCachedData();
-                }
-                return itemsInQuadrantAndSubQuadrants.Select(_ => _.Item);
-            }
-
-            /// <summary>
-            /// Returns all the items in this quadrant and beneath it, including the bounds of the item.
-            /// </summary>
-            /// <returns></returns>
-            public IEnumerable<(T Item, Rect Bounds)> AllWithBounds()
-            {
-                var items = new List<(T Item, Rect Bounds)>(count);
-                var empty = new List<(T Item, Rect Bounds)>(0);
-                items.AddRange(topLeft?.AllWithBounds() ?? empty);
-                items.AddRange(topRight?.AllWithBounds() ?? empty);
-                items.AddRange(bottomRight?.AllWithBounds() ?? empty);
-                items.AddRange(bottomLeft?.AllWithBounds() ?? empty);
-                items.AddRange(ItemsInQuadrant);
-                return items;
-            }
-
-            /// <summary>
-            /// Updates the cahced data for this quadrant.
-            /// </summary>
-            private void UpdateCachedData()
-            {
-                //initialise with the outdated count value
-                var newItems = new List<(T Item, Rect Bounds)>(count);
-                var empty = new List<(T Item, Rect Bounds)>(0);
-                newItems.AddRange(topLeft?.AllWithBounds() ?? empty);
-                newItems.AddRange(topRight?.AllWithBounds() ?? empty);
-                newItems.AddRange(bottomRight?.AllWithBounds() ?? empty);
-                newItems.AddRange(bottomLeft?.AllWithBounds() ?? empty);
-                newItems.AddRange(ItemsInQuadrant);
-                count = newItems.Count;
-                itemsInQuadrantAndSubQuadrants = newItems;
-                isDirty = false;
+                return null;
             }
 
 #if DEBUG
@@ -278,27 +299,40 @@ namespace AnnoDesigner.Core.DataStructures
             /// Used when debugging to draw quadrants to a canvas.
             /// </summary>
             /// <param name="rects"></param>
-            internal void GetQuadrantRects(List<Rect> rects)
+            public IEnumerable<Rect> GetQuadrantRects()
             {
-                if (topLeft != null)
+                yield return Extent;
+
+                if (TopLeft != null)
                 {
-                    rects.Add(topLeftBounds);
-                    topLeft.GetQuadrantRects(rects);
+                    foreach (var rect in TopLeft.GetQuadrantRects())
+                    {
+                        yield return rect;
+                    }
                 }
-                if (topRight != null)
+
+                if (TopRight != null)
                 {
-                    rects.Add(topRightBounds);
-                    topRight.GetQuadrantRects(rects);
+                    foreach (var rect in TopRight.GetQuadrantRects())
+                    {
+                        yield return rect;
+                    }
                 }
-                if (bottomLeft != null)
+
+                if (BottomLeft != null)
                 {
-                    rects.Add(bottomLeftBounds);
-                    bottomLeft.GetQuadrantRects(rects);
+                    foreach (var rect in BottomLeft.GetQuadrantRects())
+                    {
+                        yield return rect;
+                    }
                 }
-                if (bottomRight != null)
+
+                if (BottomRight != null)
                 {
-                    rects.Add(bottomRightBounds);
-                    bottomRight.GetQuadrantRects(rects);
+                    foreach (var rect in BottomRight.GetQuadrantRects())
+                    {
+                        yield return rect;
+                    }
                 }
             }
 #endif
@@ -310,45 +344,13 @@ namespace AnnoDesigner.Core.DataStructures
         private Quadrant root;
 
         /// <summary>
-        /// A value representing the size of the list returned from methods on this QuadTree.
-        /// Used in a list initialisation to pre-allocate a certain amount of values.
-        /// </summary>
-        private int previousCount = 32;
-
-        /// <summary>
         /// Get the bounds of this QuadTree;
         /// </summary>
-        public Rect Extent
-        {
-            get => root.Extent;
-            set
-            {
-                root.Extent = value;
-                ReIndex();
-            }
-        }
+        public Rect Extent => root.Extent;
 
-        /// <summary>
-        /// Reindexes the entire quadtree. Very expensive operation.
-        /// </summary>
-        public void ReIndex()
-        {
-            var oldRoot = root;
-            root = new Quadrant(Extent);
-            AddRange(oldRoot.AllWithBounds());
-        }
+        public int Count => root.Count;
 
-        /// <summary>
-        /// Re-index the <see cref="QuadTree{T}"/> with the given func to derive bounds from <typeparamref name="T"/>. This allows us to
-        /// combine a re-index operation whilst refreshing the bounds of all the items in the QuadTree.
-        /// </summary>
-        /// <param name="boundsSelector"></param>
-        public void ReIndex(Func<T, Rect> boundsSelector)
-        {
-            var oldRoot = root;
-            root = new Quadrant(Extent);
-            AddRange(oldRoot.All().Select(_ => (_, boundsSelector(_))));
-        }
+        public bool IsReadOnly => false;
 
         /// <summary>
         /// Create a <see cref="QuadTree{T}"/>
@@ -357,32 +359,155 @@ namespace AnnoDesigner.Core.DataStructures
         public QuadTree(Rect extent)
         {
             root = new Quadrant(extent);
-            Extent = extent;
         }
 
         /// <summary>
         /// Insert a <typeparamref name="T"/> item into the QuadTree.
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="bounds"></param>
-        public void Insert(T item, Rect bounds)
+        public void Add(T item)
         {
-            if (!root.Extent.Contains(bounds))
-            {
-                throw new ArgumentException($"{nameof(bounds)} of {nameof(item)} is greater than the extent of the quadtree.");
-            }
-            root.Insert(item, bounds);
+            var bounds = item.Bounds;
+            EnsureBounds(bounds);
+
+            root.Add(item, bounds);
         }
 
         /// <summary>
         /// Remove a <typeparamref name="T"/> item from the QuadTree.
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="bounds"></param>
-        public void Remove(T item, Rect bounds)
+        public bool Remove(T item)
         {
-            var quadrant = root.GetContainingQuadrant(bounds);
-            quadrant.Remove((item, bounds));
+            return root.Remove(item);
+        }
+
+        /// <summary>
+        /// Removes all items from the QuadTree.
+        /// </summary>
+        public void Clear()
+        {
+            foreach (var item in this.ToList())
+            {
+                Remove(item);
+            }
+        }
+
+        public bool Contains(T item) => root.Contains(item);
+
+        public void CopyTo(T[] array, int arrayIndex) => root.CopyTo(array, arrayIndex);
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public IEnumerator<T> GetEnumerator() => root.GetEnumerator();
+
+        /// <summary>
+        /// Ensures specified bound is in Extent of this QuadTree.
+        /// Extent is inflated in direction depending on in which direction <paramref name="bounds"/> is
+        /// 
+        /// TL|TR|TR
+        /// --------
+        /// TL|  |BR
+        /// --------
+        /// BL|BL|BR
+        /// 
+        /// (middle of the grid represents old extent)
+        /// 
+        /// </summary>
+        public void EnsureBounds(Rect bounds)
+        {
+            while (!Extent.Contains(bounds))
+            {
+                var newExtent = Extent;
+                newExtent.Union(bounds);
+                var top = Extent.Top - newExtent.Top > 0;
+                var bottom = newExtent.Bottom - Extent.Bottom > 0;
+                var left = Extent.Left - newExtent.Left > 0;
+                var right = Extent.Right - newExtent.Right > 0;
+
+                if (top && !left)
+                {
+                    Inflate(ResizeDirection.TopRight);
+                }
+                else if (right)
+                {
+                    Inflate(ResizeDirection.TopRight);
+                }
+                else if (bottom)
+                {
+                    Inflate(ResizeDirection.BottomRight);
+                }
+                else
+                {
+                    Inflate(ResizeDirection.BottomLeft);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Doubles the size of QuadTree in specific direction.
+        /// </summary>
+        public void Inflate(ResizeDirection direction)
+        {
+            var oldRoot = root;
+            var oldWidth = new Vector(Extent.Width, 0);
+            var oldHeight = new Vector(0, Extent.Height);
+            var newSize = new Size(Extent.Width * 2, Extent.Height * 2);
+
+            switch (direction)
+            {
+                case ResizeDirection.TopRight:
+                    root = new Quadrant(new Rect(Extent.TopLeft - oldHeight, newSize));
+                    root.BottomLeft = oldRoot;
+                    break;
+                case ResizeDirection.TopLeft:
+                    root = new Quadrant(new Rect(Extent.TopLeft - oldHeight - oldWidth, newSize));
+                    root.BottomRight = oldRoot;
+                    break;
+                case ResizeDirection.BottomRight:
+                    root = new Quadrant(new Rect(Extent.TopLeft, newSize));
+                    root.TopLeft = oldRoot;
+                    break;
+                case ResizeDirection.BottomLeft:
+                    root = new Quadrant(new Rect(Extent.TopLeft - oldWidth, newSize));
+                    root.TopRight = oldRoot;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Reindexes item.
+        /// </summary>
+        public void ReIndex(T item, Rect oldBounds)
+        {
+            if (root.GetContainingQuadrant(item.Bounds) != root.GetContainingQuadrant(oldBounds))
+            {
+                root.Remove(item, oldBounds);
+                root.Add(item);
+            }
+        }
+
+        /// <summary>
+        /// Moves item to different position and reindexes it.
+        /// </summary>
+        public void Move(T item, Rect newBounds)
+        {
+            var oldBounds = item.Bounds;
+
+            item.Position = newBounds.TopLeft;
+            item.Size = newBounds.Size;
+
+            ReIndex(item, oldBounds);
+        }
+
+        /// <summary>
+        /// Moves item to different position and reindexes it.
+        /// </summary>
+        public void Move(T item, Vector offset)
+        {
+            var oldBounds = item.Bounds;
+
+            item.Position += offset;
+
+            ReIndex(item, oldBounds);
         }
 
         /// <summary>
@@ -392,119 +517,26 @@ namespace AnnoDesigner.Core.DataStructures
         /// <returns></returns>
         public IEnumerable<T> GetItemsIntersecting(Rect bounds)
         {
-            var items = new List<T>(previousCount);
-            root.GetItemsIntersecting(items, bounds);
-            previousCount = items.Count;
-            return items;
+            return root.GetItemsIntersecting(bounds);
         }
 
-        /// <summary>
-        /// Retrieves all the items from the <see cref="QuadTree{T}"/>
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<T> All()
-        {
-            return root.All();
-        }
-
-        public IEnumerable<T> FindAll(Predicate<T> match)
-        {
-            if (match is null)
-            {
-                throw new ArgumentNullException($"{nameof(match)}");
-            }
-            var list = new List<T>();
-            foreach (var item in this)
-            {
-                if (match(item))
-                {
-                    list.Add(item);
-                }
-            }
-            return list;
-        }
-
-        public T Find(Predicate<T> match)
-        {
-            if (match is null)
-            {
-                throw new ArgumentNullException($"{nameof(match)}");
-            }
-            foreach (var item in this)
-            {
-                if (match(item))
-                {
-                    return item;
-                }
-            }
-            return default;
-        }
-
-        public bool Exists(Predicate<T> match)
-        {
-            if (match is null)
-            {
-                throw new ArgumentNullException($"{nameof(match)}");
-            }
-            foreach (var item in this)
-            {
-                if (match(item))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public void AddRange(IEnumerable<(T item, Rect bounds)> collection)
+        public void AddRange(IEnumerable<T> collection)
         {
             foreach (var item in collection)
             {
-                Insert(item.item, item.bounds);
+                Add(item);
             }
         }
 
-        /// <summary>
-        /// Removes all items from the QuadTree.
-        /// </summary>
-        public void Clear()
-        {
-            root = new Quadrant(Extent);
-            GC.Collect();
-        }
-
-        /// <summary>
-        /// Retrieves the number of items in the QuadTree.
-        /// </summary>
-        /// <returns></returns>
-        public int Count()
-        {
-            return root.Count();
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return root.All().GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return root.All().GetEnumerator();
-        }
 #if DEBUG
         /// <summary>
         /// Retrieves a list of Rects that make up the Quadrants in this QuadTree.
         /// Used when debugging to draw the QuadTree quadrants to a canvas.
         /// </summary>
         /// <returns></returns>
-        public List<Rect> GetQuadrantRects()
+        public IEnumerable<Rect> GetQuadrantRects()
         {
-            var rects = new List<Rect>(20)
-            {
-                root.Extent
-            };
-            root.GetQuadrantRects(rects);
-            return rects;
+            return root.GetQuadrantRects();
         }
 #endif
     }
