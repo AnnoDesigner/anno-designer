@@ -31,7 +31,7 @@ namespace PresetParser
         public static bool isExcludedGUID = false; /*only for Anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-        private const string BUILDING_PRESETS_VERSION = "3.10";
+        private const string BUILDING_PRESETS_VERSION = "3.12";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
@@ -91,7 +91,7 @@ namespace PresetParser
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding",
             "HarborOffice", "HarborWarehouse7", "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding",
             "CultureModule","Palace","BuffFactory", "BuildPermitBuilding", "BuildPermitModules", "OrnamentalModule", "IrrigationPropagationSource", "ResearchCenter", "Dockland", "HarborOrnament",
-            "Restaurant", "Busstop","Multifactory", "FreeAreaRecipeBuilding" };
+            "Restaurant", "Busstop","Multifactory", "FreeAreaRecipeBuilding", "Mall"};
         private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358", "1010462",
             "1010463", "1010464", "1010275", "1010271", "1010516", "1010517", "1010519"};
         private static readonly List<string> ExcludeBuildingsGUID1800 = new List<string> { "269850", "269851" };
@@ -105,8 +105,7 @@ namespace PresetParser
             "PropagandaTower Merciers Version","tractor_module_02 (Harvester)", "Culture_1x1_statue", "Culture_prop_system_1x1_10", "Culture_prop_system_1x1_01", "Logistic_05 (Warehouse IV)", "Park_1x1_hedgeentrance",
             "Harbour Slot (Ghost) Arctic", "Tractor_module_01 (GASOLINE TEST)", "Fuel_station_01 (GASOLINE TEST)", "Kontor_main_04", "Kontor_imperial_04", "Culture_1x1_plaza","Harbor_12 (Coal Harbor)",
             "Harbor_13 (Coal Storage)", "Kontor_main_arctic_01", "Kontor_imperial_arctic_01", "ResearchCenter_02", "ResearchCenter_03", "StoryIsland01 Monastery Kontor","StoryIsland02 Military Kontor",
-            "StoryIsland03 Economy Kontor", "Diner_0", "Bar_0", "Cafe_0" , "Multifactory_Chemical_Lemonade", "Multifactory_Chemical_Shampoo", "Multifactory_Chemical_Souvenier", "TreePlanter_Moderate_Jam",
-            "TreePlanter_Moderate_Cherry", "Tourist_monument_03", "TreePlanter_Colony01_Coconut", "TreePlanter_Colony01_Camphor", "TreePlanter_Colony01_Citrus" };
+            "StoryIsland03 Economy Kontor", "Diner_0", "Bar_0", "Cafe_0", "Tourist_monument_03" };
         //Skip the following icons to put in the presets for anno 1800, to avoid double Ornamentalbuildings
         public static List<string> ExcludeOrnamentsIcons_1800 = new List<string> { "A7_bush03.png", "A7_park_props_1x1_01.png", "A7_park_props_1x1_07.png", "A7_bush01.png", "A7_col_props_1x1_13_back.png", "A7_bush05.png", "A7_park_props_1x1_08.png",
             "A7_bush02.png", "A7_bush04.png", "A7_col_props_1x1_11_bac.pngk", "A7_col_props_1x1_01_back.png", "A7_col_props_1x1_07_back.png","A7_park_1x1_06.png","A7_park_1x1_02.png","A7_park_1x1_03.png","A7_col_park_props_system_1x1_21_back.png",
@@ -1259,29 +1258,55 @@ namespace PresetParser
                 case "Event_ornament_historyedition": { factionName = "Ornaments"; groupName = "11 Special Ornaments"; break; }
                 case "Hotel": { factionName = "(17) Tourists"; groupName = null; break; }
                 case "Tourist_monument_02_blank (restaurant)": { factionName = "(17) Tourists"; groupName = null; break; }
-                case "TreePlanter_Moderate_blank": { factionName = "(17) Tourists"; groupName = "Orchard"; break; }
-                case "TreePlanter_Colony01_blank": { factionName = "(17) Tourists"; groupName = "Orchard"; break; }
                 case "Multifactory_Chemical_Blank": { factionName = "(17) Tourists"; groupName = null; break; }
                 case "Bus Stop": { factionName = "(17) Tourists"; groupName = null; break; }
+                case "HighLife_monument_03(residence)": { factionName = "(18) High Life"; groupName = null; break; }
             }
 
-            // Place all TouristSeason Ornament in the right Directory
+            // Place all TouristSeason Ornament in the right Tree Menu
             if (identifierName.Contains("TouristSeason Ornament") || identifierName.Contains("TouristSeason FlowerBed"))
             {
                 factionName = "Ornaments";
                 groupName = "23 Tourist Ornaments";
             }
 
-            // Place the Tourist Restaurants in the right Menu
+            // Place the Tourist Restaurants in the right Tree Menu
             if (groupName == "Restaurant")
             {
                 factionName = "(17) Tourists";
             }
 
+            // Place all High Life Ornament in the right Tree Menu
+            if (identifierName.Contains("HighLife Ornament") || identifierName.Contains("Fountain_system"))
+            {
+                factionName = "Ornaments";
+                groupName = "24 High Life Ornaments";
+            }
+
+            // Place all High Life Productions Buildings in the right Tree Menu
+            if (identifierName.Contains("Multifactory_SA_") || identifierName.Contains("Multifactory_Manufacturer_") || identifierName.Contains("Multifactory_Assembly_") || identifierName.Contains("Multifactory_Chemical_LaqcuerColor"))
+            {
+                factionName = "(18) High Life";
+                groupName = "Production Buildings";
+            }
+
+            // Place all High Life Malls in the right Tree Menu 
+            if (groupName=="Mall") 
+            {
+                factionName = "(18) High Life";
+            }
+
+            //Place all Orchards in the overall 'Orchards' tree menu 
+            if (identifierName.Contains("TreePlanter_"))
+            {
+                factionName = "Orchards";
+                groupName = null;
+            }
+
             // Place the rest of the buildings in the right Faction > Group menu
             #region Order the Buildings to the right tiers and factions as in the game
 
-            var groupInfo = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName, templateName);
+                var groupInfo = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName, templateName);
             factionName = groupInfo.Faction;
             groupName = groupInfo.Group;
             templateName = groupInfo.Template;
@@ -1554,6 +1579,9 @@ namespace PresetParser
                 case "Town hall": b.InfluenceRadius = 20; break;
                 case "Guild_house_arctic": b.InfluenceRadius = 15; break;
                 case "Mining_arctic_01 (Gas Mine)": b.InfluenceRadius = 10; break;
+                case "DepartmentStore_Blank": b.InfluenceRadius = 45; break;
+                case "Pharmacy_Blank": b.InfluenceRadius = 45; break;
+                case "FurnitureStore_Blank": b.InfluenceRadius = 45; break;
             }
 
             #endregion
