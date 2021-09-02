@@ -33,9 +33,9 @@ namespace PresetParser
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
         private const string BUILDING_PRESETS_VERSION = "3.12";
         // Initalisizing Language Directory's and Filenames
-        private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus" };
-        private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian" };
-        private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "french", "polish", "russian" };
+        private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus", "esp" };
+        private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian", "spanish" };
+        private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "french", "polish", "russian", "spanish" };
         // Internal Program Buildings Lists to skipp double buildings
         public static List<string> annoBuildingLists = new List<string>();
         public static List<string> anno1800IconNameLists = new List<string>();
@@ -537,6 +537,7 @@ namespace PresetParser
                 buildingToAdd.Localization["fra"] = curExtraPreset.LocaFra;
                 buildingToAdd.Localization["pol"] = curExtraPreset.LocaPol;
                 buildingToAdd.Localization["rus"] = curExtraPreset.LocaRus;
+                buildingToAdd.Localization["esp"] = curExtraPreset.LocaEsp;
 
                 annoBuildingsListCount++;
 
@@ -574,6 +575,7 @@ namespace PresetParser
                 buildingToAdd.Localization["fra"] = curExtraRoad.LocaFra;
                 buildingToAdd.Localization["pol"] = curExtraRoad.LocaPol;
                 buildingToAdd.Localization["rus"] = curExtraRoad.LocaRus;
+                buildingToAdd.Localization["esp"] = curExtraRoad.LocaEsp;
 
                 annoBuildingsListCount++;
 
@@ -1013,6 +1015,7 @@ namespace PresetParser
                         if (languageCount == 1) { translation = "Lager (4x4)"; }
                         if (languageCount == 2) { translation = "Magazyn (4x4)"; }
                         if (languageCount == 3) { translation = "Хранилище (4x4)"; }
+                        if (languageCount == 4) { translation = "Almacén de depósito (4x4)"; }
                     }
                     if (buildingGuid == "7000426")
                     {
@@ -1020,6 +1023,7 @@ namespace PresetParser
                         if (languageCount == 1) { translation = "Lager (2x2)"; }
                         if (languageCount == 2) { translation = "Magazyn (2x2)"; }
                         if (languageCount == 3) { translation = "Хранилище (2x2)"; }
+                        if (languageCount == 4) { translation = "Almacén de depósito (2x2)"; }
                     }
                     if (translation == null)
                     {
@@ -1677,6 +1681,7 @@ namespace PresetParser
                             case 2: { translation = "Haies de trottoirs"; break; }
                             case 3: { translation = "Żywopłot Chodnikowy"; break; }
                             case 4: { translation = "Боковая изгородь"; break; }
+                            case 5: { translation = "Seto de la acera"; break; }
                         }
                     }
                     else if (buildingGuid == "102166")
@@ -1688,6 +1693,7 @@ namespace PresetParser
                             case 2: { translation = "Coin de haies de trottoirs"; break; }
                             case 3: { translation = "Żywopłot Chodnikowy narożnik"; break; }
                             case 4: { translation = "Боковая изгородь (угол)"; break; }
+                            case 5: { translation = "Esquina del seto de la acera"; break; }
                         }
                     }
                     else if (buildingGuid == "102167")
@@ -1699,6 +1705,7 @@ namespace PresetParser
                             case 2: { translation = "Extrémité de haie de trottoir"; break; }
                             case 3: { translation = "Żywopłot Chodnikowy Koniec"; break; }
                             case 4: { translation = "Боковая изгородь (край)"; break; }
+                            case 5: { translation = "Acera Final de seto"; break; }
                         }
                     }
                     else if (buildingGuid == "102169")
@@ -1710,6 +1717,7 @@ namespace PresetParser
                             case 2: { translation = "Jonction de haie de trottoir"; break; }
                             case 3: { translation = "Żywopłot Chodnikowy Złącze"; break; }
                             case 4: { translation = "Боковая изгородь (Перекресток)"; break; }
+                            case 5: { translation = "Acera Seto Empalme"; break; }
                         }
                     }
                     else if (buildingGuid == "102171")
@@ -1721,6 +1729,7 @@ namespace PresetParser
                             case 2: { translation = "Traversée de haie de trottoir"; break; }
                             case 3: { translation = "Żywopłot Chodnikowy Skrzyżowanie"; break; }
                             case 4: { translation = "Боковая изгородь (образного)"; break; }
+                            case 5: { translation = "Cruce de setos en la acera"; break; }
                         }
                     }
                     else if (buildingGuid == "102161")
@@ -1732,6 +1741,7 @@ namespace PresetParser
                             case 2: { translation = "Garde-corps"; break; }
                             case 3: { translation = "Poręcze"; break; }
                             case 4: { translation = "Ограда"; break; }
+                            case 5: { translation = "Barandillas"; break; }
                         }
                     }
                     else if (buildingGuid == "102170")
@@ -1743,6 +1753,7 @@ namespace PresetParser
                             case 2: { translation = "Garde-corps Jonction"; break; }
                             case 3: { translation = "Poręcze Złącze"; break; }
                             case 4: { translation = "Ограда (Перекресток)"; break; }
+                            case 5: { translation = "Empalme de barandillas"; break; }
                         }
                     }
                     else if (buildingGuid == "102134")
@@ -1754,6 +1765,7 @@ namespace PresetParser
                             case 2: { translation = "Haie (droite)"; break; }
                             case 3: { translation = "żywopłot"; break; }
                             case 4: { translation = "изгородь"; break; }
+                            case 5: { translation = "Cobertura"; break; }
                         }
                     }
                     else if (buildingGuid == "102139")
@@ -1765,6 +1777,7 @@ namespace PresetParser
                             case 2: { translation = "Allée (droite)"; break; }
                             case 3: { translation = "ścieżka"; break; }
                             case 4: { translation = "Тропинка"; break; }
+                            case 5: { translation = "Ruta"; break; }
                         }
                     }
                     else if (buildingGuid == "118938")
@@ -1776,6 +1789,7 @@ namespace PresetParser
                             case 2: { translation = "Institut de recherche"; break; }
                             case 3: { translation = "Instytut Badawczy"; break; }
                             case 4: { translation = "Исследовательский институт"; break; }
+                            case 5: { translation = "Instituto de Investigación"; break; }
                         }
                     }
                     else if (buildingGuid == "112670")
@@ -1787,6 +1801,7 @@ namespace PresetParser
                             case 2: { translation = "Dépôt de l'Arctique"; break; }
                             case 3: { translation = "Skład Arktyczny"; break; }
                             case 4: { translation = "арктическая депо"; break; }
+                            case 5: { translation = "Depósito Ártico"; break; }
                         }
                     }
                 }

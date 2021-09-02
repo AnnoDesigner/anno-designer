@@ -17,5 +17,6 @@
         public string LocaFra { get; set; }
         public string LocaPol { get; set; }
         public string LocaRus { get; set; }
+        public string LocaEsp { get; set; }
     }
 }
