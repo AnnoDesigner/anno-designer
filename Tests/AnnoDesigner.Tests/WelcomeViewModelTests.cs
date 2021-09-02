@@ -48,7 +48,7 @@ namespace AnnoDesigner.Tests
             var viewModel = GetViewModel();
 
             // Assert
-            Assert.Equal(5, viewModel.Languages.Count);
+            Assert.Equal(6, viewModel.Languages.Count);
         }
 
         #endregion
