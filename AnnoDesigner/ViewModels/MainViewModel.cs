@@ -81,6 +81,7 @@ namespace AnnoDesigner.ViewModels
         private WindowState _minWindowWindowState;
         private HotkeyCommandManager _hotkeyCommandManager;
         private ObservableCollection<RecentFileItem> _recentFiles;
+        private TreeLocalizationContainer _treeLocalizationContainer;
 
         //for identifier checking process
         private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
@@ -124,11 +125,10 @@ namespace AnnoDesigner.ViewModels
 
             BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings, _messageBoxService, _localizationHelper);
 
-            // load tree localization
-            TreeLocalizationContainer treeLocalizationContainer = null;
+            // load tree localization            
             try
             {
-                treeLocalizationContainer = treeLocalizationLoader.LoadFromFile(Path.Combine(App.ApplicationPath, CoreConstants.PresetsFiles.TreeLocalizationFile));
+                _treeLocalizationContainer = treeLocalizationLoader.LoadFromFile(Path.Combine(App.ApplicationPath, CoreConstants.PresetsFiles.TreeLocalizationFile));
             }
             catch (Exception ex)
             {
@@ -136,7 +136,7 @@ namespace AnnoDesigner.ViewModels
                       _localizationHelper.GetLocalization("LoadingTreeLocalizationFailed"));
             }
 
-            PresetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization(_commons, treeLocalizationContainer), _commons);
+            PresetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization(_commons, _treeLocalizationContainer), _commons);
             PresetsTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
 
             PresetsTreeSearchViewModel = new PresetsTreeSearchViewModel();
@@ -735,6 +735,9 @@ namespace AnnoDesigner.ViewModels
             PresetsSectionHeader = string.Format("Building presets - loaded v{0}", presets.Version);
 
             PreferencesUpdateViewModel.PresetsVersionValue = presets.Version;
+            PreferencesUpdateViewModel.ColorPresetsVersionValue = ColorPresetsHelper.Instance.PresetsVersion;
+            PreferencesUpdateViewModel.TreeLocalizationVersionValue = _treeLocalizationContainer.Version;
+
             PresetsTreeViewModel.LoadItems(presets);
 
             RestoreSearchAndFilter();
