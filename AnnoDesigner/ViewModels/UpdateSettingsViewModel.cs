@@ -27,6 +27,8 @@ namespace AnnoDesigner.ViewModels
         private string _versionValue;
         private string _fileVersionValue;
         private string _presetsVersionValue;
+        private string _colorPresetsVersionValue;
+        private string _treeLocalizationVersionValue;
         private bool _isUpdateAvailable;
         private bool _isPresetUpdateAvailable;
         private bool _isAppUpToDate;
@@ -285,6 +287,18 @@ namespace AnnoDesigner.ViewModels
         {
             get { return _busyContent; }
             set { UpdateProperty(ref _busyContent, value); }
+        }
+
+        public string ColorPresetsVersionValue
+        {
+            get { return _colorPresetsVersionValue; }
+            set { UpdateProperty(ref _colorPresetsVersionValue, value); }
+        }
+
+        public string TreeLocalizationVersionValue
+        {
+            get { return _treeLocalizationVersionValue; }
+            set { UpdateProperty(ref _treeLocalizationVersionValue, value); }
         }
     }
 }

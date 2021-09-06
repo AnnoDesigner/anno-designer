@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Loader;
@@ -50,6 +47,11 @@ namespace AnnoDesigner.Core.Presets.Helper
         private BuildingPresets LoadedBuildingPresets
         {
             get { return _loadedBuildingPresets ?? (_loadedBuildingPresets = _buildingPresetsLoader.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), CoreConstants.PresetsFiles.BuildingPresetsFile))); }
+        }
+
+        public string PresetsVersion
+        {
+            get { return LoadedColorPresets.Version; }
         }
 
         public Color? GetPredefinedColor(AnnoObject annoObject)
