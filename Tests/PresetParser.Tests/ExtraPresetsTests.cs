@@ -36,6 +36,28 @@ namespace PresetParser.Tests
             Assert.Equal(expectedCount, result.Count);
         }
 
+        [Theory]
+        [InlineData(Constants.ANNO_VERSION_1404)]
+        [InlineData(Constants.ANNO_VERSION_2070)]
+        [InlineData(Constants.ANNO_VERSION_1800)]
+        [InlineData(Constants.ANNO_VERSION_2205)]
+        public void GetExtraPresets_EveryElement_ShouldContainValuesForAllLocalizations(string annoVersion)
+        {
+            // Arrange/Act
+            var result = ExtraPresets.GetExtraPresets(annoVersion).ToList();
+
+            // Assert
+            Assert.All(result, x =>
+            {
+                Assert.False(string.IsNullOrWhiteSpace(x.LocaEng));
+                Assert.False(string.IsNullOrWhiteSpace(x.LocaEsp));
+                Assert.False(string.IsNullOrWhiteSpace(x.LocaFra));
+                Assert.False(string.IsNullOrWhiteSpace(x.LocaGer));
+                Assert.False(string.IsNullOrWhiteSpace(x.LocaPol));
+                Assert.False(string.IsNullOrWhiteSpace(x.LocaRus));
+            });
+        }
+
         [Fact]
         public void GetExtraRoads_ShouldReturnCorrectExtraRoadsCount()
         {
@@ -47,6 +69,24 @@ namespace PresetParser.Tests
 
             // Assert
             Assert.Equal(expectedCount, result.Count);
+        }
+
+        [Fact]
+        public void GetExtraRoads_EveryElement_ShouldContainValuesForAllLocalizations()
+        {
+            // Arrange/Act
+            var result = ExtraPresets.GetExtraRoads().ToList();
+
+            // Assert
+            Assert.All(result, x =>
+            {
+                Assert.False(string.IsNullOrWhiteSpace(x.LocaEng));
+                Assert.False(string.IsNullOrWhiteSpace(x.LocaEsp));
+                Assert.False(string.IsNullOrWhiteSpace(x.LocaFra));
+                Assert.False(string.IsNullOrWhiteSpace(x.LocaGer));
+                Assert.False(string.IsNullOrWhiteSpace(x.LocaPol));
+                Assert.False(string.IsNullOrWhiteSpace(x.LocaRus));
+            });
         }
     }
 }

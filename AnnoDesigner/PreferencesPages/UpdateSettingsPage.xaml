@@ -29,10 +29,10 @@
                        FontSize="14"
                        Margin="0,10,0,10" />
 
-            <StackPanel Margin="20,0,0,10">
+            <StackPanel Margin="20,0,0,10" Grid.IsSharedSizeScope="True">                
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="125" />
+                        <ColumnDefinition Width="200" SharedSizeGroup="LocalizationColumn" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
@@ -43,7 +43,7 @@
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="125" />
+                        <ColumnDefinition SharedSizeGroup="LocalizationColumn" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
@@ -54,7 +54,29 @@
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="125" />
+                        <ColumnDefinition SharedSizeGroup="LocalizationColumn" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0"
+                               Text="{l:Localize ColorPresetsVersion, StringFormat='\{0\}:', Mode=OneWay}" />
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding ColorPresetsVersionValue}" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition SharedSizeGroup="LocalizationColumn" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0"
+                               Text="{l:Localize TreeLocalizationVersion, StringFormat='\{0\}:', Mode=OneWay}" />
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding TreeLocalizationVersionValue}" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition SharedSizeGroup="LocalizationColumn" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 

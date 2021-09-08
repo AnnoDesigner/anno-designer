@@ -15,6 +15,7 @@ namespace PresetParser.Anno1800
     ///              NW1 (Old World - (7) Jornaleros  - NW2 (Old World - (8) Obreros)
     ///              AT1 (Arctic - (10) Explorers)  - AT2 (Arctic - (11) Technicians)
     ///              AF1 (Africa - (14) Shepherds)  - AF2 (Africa - (15) Elders) 
+    ///              Tou ((17) Tourists) - HL1 ((18) High Live)
     /// <2> wil be the Group under <1>, like Production, Public, etc
     ///
     /// Changed the mistake OW/NW (23-10-2020) it is as in game now OW = Old World and NW = New World
@@ -51,7 +52,7 @@ namespace PresetParser.Anno1800
         private static readonly List<string> ChangeBuildingsToAT2_Productions_1800 = new List<string> { "Agriculture_arctic_04 (Bear Hunter)", "Factory_arctic_04 (Parka Factory)", "Agriculture_arctic_06 (Normal Fur Hunter)", "Factory_arctic_05 (Sled Frame Factory)", "Factory_arctic_06 (Husky Sled Factory)", "Mining_arctic_01 (Gas Mine)", "Mining_arctic_02 (Gold Mine)", "Mining_arctic_01_pump (Gas Pump)", "Monument_arctic_01_00" };
         private static readonly List<string> ChangeBuildingsToAF1_Productions_1800 = new List<string> { "Agriculture_colony02_01 (Wanza Woodcutter)", "Intermediate_colony02_01 (Linen Mill)", "Final_colony02_02 (Weaver)", "Coastal_colony02_01 (Salt Coast Building)", "Final_colony02_01 (Meat Dry-House)", "Final_colony02_03 (Tea Maker)" };
         private static readonly List<string> ChangeBuildingsToAF2_Productions_1800 = new List<string> { "Final_colony02_05 (Brick Dry-House)", "Final_colony02_10 (Ceramics Workshop)", "Final_colony02_04 (Tapestry Workshop)", "Intermediate_colony02_02 (Spiced Teff Mill)", "Coastal_colony02_02 (Seafood Fisher)", "Final_colony02_06 (Stew Kitchen)", "Final_colony02_07 (Pipe Maker)", "Africa_fuel_station_01 (FuelStation)", "Intermediate_colony02_03 (Candle Maker)", "Final_colony02_09 (Lanterns Maker)", "Final_colony02_08 (Scriptures Workshop)" };
-
+        private static readonly List<string> ChangeBuildingsToTou_Productions_1800 = new List<string> { "Multifactory_Chemical_Lemonade", "Multifactory_Chemical_Shampoo", "Multifactory_Chemical_Souvenier" };
         // Farm Buildings
         //private static readonly List<string> ChangeBuildingsToAW_FarmBuilding_1800 = new List<string> { "" }; // Example
         private static readonly List<string> ChangeBuildingsToOW1_FarmBuilding_1800 = new List<string> { "Agriculture_04 (Potato Farm)", "Agriculture_06 (Sheep Farm)", };
@@ -118,6 +119,7 @@ namespace PresetParser.Anno1800
             if (identifierName.IsPartOf(ChangeBuildingsToAT2_Productions_1800)) { factionName = "(11) Technicians"; groupName = "Production Buildings"; templateName = "FactoryBuilding7"; }
             if (identifierName.IsPartOf(ChangeBuildingsToAF1_Productions_1800)) { factionName = "(14) Shepherds"; groupName = "Production Buildings"; }
             if (identifierName.IsPartOf(ChangeBuildingsToAF2_Productions_1800)) { factionName = "(15) Elders"; groupName = "Production Buildings"; }
+            if (identifierName.IsPartOf(ChangeBuildingsToTou_Productions_1800)) { factionName = "(17) Tourists"; groupName = "Production Buildings"; }
 
             //Farm buildings
             //if (identifierName.IsPartOf(ChangeBuildingsToAW_FarmBuilding_1800)) { factionName = "All Worlds"; groupName = "Farm Buildings"; }
