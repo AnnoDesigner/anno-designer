@@ -690,7 +690,7 @@ namespace AnnoDesigner.Localization
                     ["Both"] = "Ambos",
                     ["PavedStreet"] = "Calle pavimentada",
                     ["PavedStreetWarningTitle"] = "Selección de calles pavimentadas",
-                    ["PavedStreetToolTip"] = $"Marcando esta opción se cambiará el alcance de influencia de los edificios,{Environment.NewLine}representando el mayor alcance que reciben al utilizar calles pavimentadas.{Environment.NewLine}Usa el botón "Colocar edificio" para colocar un objeto.",
+                    ["PavedStreetToolTip"] = $"Marcando esta opción se cambiará el alcance de influencia de los edificios,{Environment.NewLine}representando el mayor alcance que reciben al utilizar calles pavimentadas.{Environment.NewLine}Usa el botón \"Colocar edificio\" para colocar un objeto.",
                     ["Options"] = "Opciones",
                     ["EnableLabel"] = "Activar etiquetas",
                     ["Borderless"] = "Sin bordes",
