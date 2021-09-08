@@ -432,9 +432,9 @@ namespace PresetParser.Tests
         {
             // Arrange
             var basePath = "dummy";
-            var languages = new string[] { "eng", "ger", "fra", "pol", "rus", "non_existing" };
+            var languages = new string[] { "eng", "ger", "fra", "pol", "rus", "esp", "non_existing" };
             var expectedGuid = "10239";
-            var expectedLocalizations = new string[] { "Black Smoker", "Black Smoker", "Convertisseur de métal", "Komin hydrotermalny", "Черный курильщик" };
+            var expectedLocalizations = new string[] { "Black Smoker", "Black Smoker", "Convertisseur de métal", "Komin hydrotermalny", "Черный курильщик", "Fumador Negro" };
 
             var mockedFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
             {
@@ -444,6 +444,7 @@ namespace PresetParser.Tests
                 { $@"{basePath}\data\loca\{languages[3]}\txt\guids.txt", new MockFileData($"{expectedGuid}=dummy") },
                 { $@"{basePath}\data\loca\{languages[4]}\txt\guids.txt", new MockFileData($"{expectedGuid}=dummy") },
                 { $@"{basePath}\data\loca\{languages[5]}\txt\guids.txt", new MockFileData($"{expectedGuid}=dummy") },
+                { $@"{basePath}\data\loca\{languages[6]}\txt\guids.txt", new MockFileData($"{expectedGuid}=dummy") },
             });
 
             var expectedResult = new Dictionary<string, SerializableDictionary<string>>();
@@ -453,7 +454,8 @@ namespace PresetParser.Tests
             expectedResult[expectedGuid][languages[2]] = expectedLocalizations[2];
             expectedResult[expectedGuid][languages[3]] = expectedLocalizations[3];
             expectedResult[expectedGuid][languages[4]] = expectedLocalizations[4];
-            expectedResult[expectedGuid][languages[5]] = "dummy";
+            expectedResult[expectedGuid][languages[5]] = expectedLocalizations[5];
+            expectedResult[expectedGuid][languages[6]] = "dummy";
 
             var helper = new LocalizationHelper(mockedFileSystem);
 
@@ -468,6 +470,7 @@ namespace PresetParser.Tests
             Assert.Equal(expectedResult[expectedGuid][languages[3]], result[expectedGuid][languages[3]]);
             Assert.Equal(expectedResult[expectedGuid][languages[4]], result[expectedGuid][languages[4]]);
             Assert.Equal(expectedResult[expectedGuid][languages[5]], result[expectedGuid][languages[5]]);
+            Assert.Equal(expectedResult[expectedGuid][languages[6]], result[expectedGuid][languages[6]]);
         }
 
         [Fact]

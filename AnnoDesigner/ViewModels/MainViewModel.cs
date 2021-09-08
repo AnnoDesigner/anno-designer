@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core;
@@ -81,6 +82,7 @@ namespace AnnoDesigner.ViewModels
         private WindowState _minWindowWindowState;
         private HotkeyCommandManager _hotkeyCommandManager;
         private ObservableCollection<RecentFileItem> _recentFiles;
+        private TreeLocalizationContainer _treeLocalizationContainer;
 
         //for identifier checking process
         private static readonly List<string> IconFieldNamesCheck = new List<string> { "icon_116_22", "icon_27_6", "field", "general_module" };
@@ -124,11 +126,10 @@ namespace AnnoDesigner.ViewModels
 
             BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings, _messageBoxService, _localizationHelper);
 
-            // load tree localization
-            TreeLocalizationContainer treeLocalizationContainer = null;
+            // load tree localization            
             try
             {
-                treeLocalizationContainer = treeLocalizationLoader.LoadFromFile(Path.Combine(App.ApplicationPath, CoreConstants.PresetsFiles.TreeLocalizationFile));
+                _treeLocalizationContainer = treeLocalizationLoader.LoadFromFile(Path.Combine(App.ApplicationPath, CoreConstants.PresetsFiles.TreeLocalizationFile));
             }
             catch (Exception ex)
             {
@@ -136,7 +137,7 @@ namespace AnnoDesigner.ViewModels
                       _localizationHelper.GetLocalization("LoadingTreeLocalizationFailed"));
             }
 
-            PresetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization(_commons, treeLocalizationContainer), _commons);
+            PresetsTreeViewModel = new PresetsTreeViewModel(new TreeLocalization(_commons, _treeLocalizationContainer), _commons);
             PresetsTreeViewModel.ApplySelectedItem += PresetTreeViewModel_ApplySelectedItem;
 
             PresetsTreeSearchViewModel = new PresetsTreeSearchViewModel();
@@ -735,6 +736,9 @@ namespace AnnoDesigner.ViewModels
             PresetsSectionHeader = string.Format("Building presets - loaded v{0}", presets.Version);
 
             PreferencesUpdateViewModel.PresetsVersionValue = presets.Version;
+            PreferencesUpdateViewModel.ColorPresetsVersionValue = ColorPresetsHelper.Instance.PresetsVersion;
+            PreferencesUpdateViewModel.TreeLocalizationVersionValue = _treeLocalizationContainer.Version;
+
             PresetsTreeViewModel.LoadItems(presets);
 
             RestoreSearchAndFilter();
@@ -1336,7 +1340,7 @@ namespace AnnoDesigner.ViewModels
         /// <param name="border">normalization value used prior to exporting</param>
         /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
         /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
-        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection, bool renderStatistics)
+        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection, bool renderStatistics, bool renderVersion = true)
         {
             if (AnnoCanvas.PlacedObjects.Count() == 0)
             {
@@ -1363,10 +1367,7 @@ namespace AnnoDesigner.ViewModels
                     icons.Add(curIcon.Key, new IconImage(curIcon.Value.Name, curIcon.Value.Localizations, curIcon.Value.IconPath));
                 }
 
-                var stats = new StatisticsCalculationHelper();
-                var result = stats.CalculateStatistics(allObjects.Select(x => x.WrappedAnnoObject));
-                var bounds = new Rect(result.MinX, result.MinY, result.UsedAreaWidth, result.UsedAreaHeight);
-                var quadTree = new QuadTree<LayoutObject>(bounds);
+                var quadTree = new QuadTree<LayoutObject>(AnnoCanvas.PlacedObjects.Extent);
                 quadTree.AddRange(allObjects.Select(obj => (obj, obj.GridRect)));
                 // initialize output canvas
                 var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _appSettings, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
@@ -1397,20 +1398,34 @@ namespace AnnoDesigner.ViewModels
                 var width = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border, target.GridSize);//if +1 then there are weird black lines next to the statistics view
                 var height = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border, target.GridSize) + 1;//+1 for black grid line at bottom
 
+                if (renderVersion)
+                {
+                    var versionView = new VersionView()
+                    {
+                        Context = LayoutSettingsViewModel
+                    };
+
+                    target.DockPanel.Children.Insert(0, versionView);
+                    DockPanel.SetDock(versionView, Dock.Bottom);
+
+                    versionView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+                    height += versionView.DesiredSize.Height;
+                }
+
                 if (renderStatistics)
                 {
                     var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
-
-                    var exportStatisticsView = new StatisticsView
-                    {
-                        Margin = new Thickness(5, 0, 0, 0)
-                    };
-                    exportStatisticsView.DataContext = exportStatisticsViewModel;
-
                     exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.All().ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult(); ;
                     exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 
-                    target.StatisticsPanel.Children.Add(exportStatisticsView);
+                    var exportStatisticsView = new StatisticsView()
+                    {
+                        Context = exportStatisticsViewModel
+                    };
+
+                    target.DockPanel.Children.Insert(0, exportStatisticsView);
+                    DockPanel.SetDock(exportStatisticsView, Dock.Right);
 
                     //fix wrong for wrong width: https://stackoverflow.com/q/27894477
                     exportStatisticsView.Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);

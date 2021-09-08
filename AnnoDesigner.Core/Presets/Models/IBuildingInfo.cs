@@ -11,8 +11,8 @@ namespace AnnoDesigner.Core.Presets.Models
         string IconFileName { get; set; }
         SerializableDictionary<int> BuildBlocker { get; set; }
         string Template { get; set; }
-        int InfluenceRange { get; set; }
-        int InfluenceRadius { get; set; }
+        double InfluenceRange { get; set; }
+        double  InfluenceRadius { get; set; }
         bool Borderless { get; set; }
         bool Road { get; set; }
         SerializableDictionary<string> Localization { get; set; }

@@ -62,13 +62,13 @@ namespace AnnoDesigner.Core.Presets.Models
         /// The range of influence of this building.
         /// </summary>
         [DataMember(Order = 7)]
-        public int InfluenceRange { get; set; }
+        public double InfluenceRange { get; set; }
 
         /// <summary>
         /// The radius of influence of this building.
         /// </summary>
         [DataMember(Order = 8)]
-        public int InfluenceRadius { get; set; }
+        public double InfluenceRadius { get; set; }
 
         /// <summary>
         /// Is this a road?
