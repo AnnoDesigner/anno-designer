@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core;
@@ -1332,7 +1333,7 @@ namespace AnnoDesigner.ViewModels
         /// <param name="border">normalization value used prior to exporting</param>
         /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
         /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
-        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection, bool renderStatistics)
+        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection, bool renderStatistics, bool renderVersion = true)
         {
             if (AnnoCanvas.PlacedObjects.Count() == 0)
             {
@@ -1390,20 +1391,34 @@ namespace AnnoDesigner.ViewModels
                 var width = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border, target.GridSize);//if +1 then there are weird black lines next to the statistics view
                 var height = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border, target.GridSize) + 1;//+1 for black grid line at bottom
 
+                if (renderVersion)
+                {
+                    var versionView = new VersionView()
+                    {
+                        Context = LayoutSettingsViewModel
+                    };
+
+                    target.DockPanel.Children.Insert(0, versionView);
+                    DockPanel.SetDock(versionView, Dock.Bottom);
+
+                    versionView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+                    height += versionView.DesiredSize.Height;
+                }
+
                 if (renderStatistics)
                 {
                     var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
-
-                    var exportStatisticsView = new StatisticsView
-                    {
-                        Margin = new Thickness(5, 0, 0, 0)
-                    };
-                    exportStatisticsView.DataContext = exportStatisticsViewModel;
-
                     exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.All().ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult(); ;
                     exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 
-                    target.StatisticsPanel.Children.Add(exportStatisticsView);
+                    var exportStatisticsView = new StatisticsView()
+                    {
+                        Context = exportStatisticsViewModel
+                    };
+
+                    target.DockPanel.Children.Insert(0, exportStatisticsView);
+                    DockPanel.SetDock(exportStatisticsView, Dock.Right);
 
                     //fix wrong for wrong width: https://stackoverflow.com/q/27894477
                     exportStatisticsView.Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
