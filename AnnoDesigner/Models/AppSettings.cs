@@ -135,6 +135,12 @@ namespace AnnoDesigner.Models
             set => Settings.Default.ShowInfluences = value;
         }
 
+        public bool ShowHarborBlockedArea
+        {
+            get => Settings.Default.ShowHarborBlockedArea;
+            set => Settings.Default.ShowHarborBlockedArea = value;
+        }
+
         public bool IsPavedStreet
         {
             get => Settings.Default.IsPavedStreet;

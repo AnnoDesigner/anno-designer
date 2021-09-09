@@ -167,6 +167,14 @@ namespace AnnoDesigner.Models
             }
         }
 
+        public double BlockedArea => WrappedAnnoObject.BlockedArea;
+
+        public GridDirection Direction
+        {
+            get => WrappedAnnoObject.Direction;
+            set => WrappedAnnoObject.Direction = value;
+        }
+
         /// <summary>
         /// Generates the rect to which the given object is rendered.
         /// </summary>
@@ -192,6 +200,27 @@ namespace AnnoDesigner.Models
 
                 return _screenRect;
             }
+        }
+
+        public Rect? CalculateReservedScreenRect(int gridSize)
+        {
+            if (BlockedArea > 0)
+            {
+                var blockedAreaScreenLength = _coordinateHelper.GridToScreen(BlockedArea, gridSize);
+
+                switch (Direction)
+                {
+                    case GridDirection.Up:
+                        return new Rect(ScreenRect.TopLeft.X, ScreenRect.TopLeft.Y - blockedAreaScreenLength, ScreenRect.Width, blockedAreaScreenLength);
+                    case GridDirection.Right:
+                        return new Rect(ScreenRect.TopRight, new Size(blockedAreaScreenLength, ScreenRect.Height));
+                    case GridDirection.Down:
+                        return new Rect(ScreenRect.BottomLeft, new Size(ScreenRect.Width, blockedAreaScreenLength));
+                    case GridDirection.Left:
+                        return new Rect(ScreenRect.TopLeft.X - blockedAreaScreenLength, ScreenRect.TopLeft.Y, blockedAreaScreenLength, ScreenRect.Height);
+                }
+            }
+            return null;
         }
 
         /// <summary>

@@ -64,6 +64,7 @@ namespace AnnoDesigner.ViewModels
         private bool _canvasShowLabels;
         private bool _canvasShowTrueInfluenceRange;
         private bool _canvasShowInfluences;
+        private bool _canvasShowHarborBlockedArea;
         private bool _useCurrentZoomOnExportedImageValue;
         private bool _renderSelectionHighlightsOnExportedImageValue;
         private bool _isLanguageChange;
@@ -673,6 +674,7 @@ namespace AnnoDesigner.ViewModels
             CanvasShowLabels = _appSettings.ShowLabels;
             CanvasShowTrueInfluenceRange = _appSettings.ShowTrueInfluenceRange;
             CanvasShowInfluences = _appSettings.ShowInfluences;
+            CanvasShowHarborBlockedArea = _appSettings.ShowHarborBlockedArea;
 
             BuildingSettingsViewModel.IsPavedStreet = _appSettings.IsPavedStreet;
 
@@ -693,6 +695,7 @@ namespace AnnoDesigner.ViewModels
             _appSettings.ShowLabels = CanvasShowLabels;
             _appSettings.ShowTrueInfluenceRange = CanvasShowTrueInfluenceRange;
             _appSettings.ShowInfluences = CanvasShowInfluences;
+            _appSettings.ShowHarborBlockedArea = CanvasShowHarborBlockedArea;
 
             _appSettings.StatsShowStats = StatisticsViewModel.IsVisible;
             _appSettings.StatsShowBuildingCount = StatisticsViewModel.ShowStatisticsBuildingCount;
@@ -965,6 +968,19 @@ namespace AnnoDesigner.ViewModels
                 if (AnnoCanvas != null)
                 {
                     AnnoCanvas.RenderInfluences = _canvasShowInfluences;
+                }
+            }
+        }
+
+        public bool CanvasShowHarborBlockedArea
+        {
+            get { return _canvasShowHarborBlockedArea; }
+            set
+            {
+                UpdateProperty(ref _canvasShowHarborBlockedArea, value);
+                if (AnnoCanvas != null)
+                {
+                    AnnoCanvas.RenderHarborBlockedArea = _canvasShowHarborBlockedArea;
                 }
             }
         }
