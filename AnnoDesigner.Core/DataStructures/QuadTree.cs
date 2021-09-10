@@ -416,7 +416,7 @@ namespace AnnoDesigner.Core.DataStructures
                 var newExtent = Extent;
                 newExtent.Union(bounds);
 
-                // calculate on which sides the newExtent is larger than Extent (and therefor need to be inflated in that direction)
+                // calculate on which sides the newExtent is larger than Extent (and therefore need to be inflated in that direction)
                 var top = Extent.Top > newExtent.Top;
                 var bottom = newExtent.Bottom > Extent.Bottom;
                 var left = Extent.Left > newExtent.Left;
