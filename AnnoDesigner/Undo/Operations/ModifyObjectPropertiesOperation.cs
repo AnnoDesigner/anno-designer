@@ -16,10 +16,12 @@ namespace AnnoDesigner.Undo.Operations
             {
                 propertyName = value;
                 propertyInfo = typeof(TObject).GetProperty(value);
+#if DEBUG
                 if (!propertyInfo.PropertyType.IsAssignableFrom(typeof(TProperty)))
                 {
                     throw new InvalidCastException($"Type \"{typeof(TProperty)}\" can't be assigned to property \"{value}\" of type \"{typeof(TObject)}\".");
                 }
+#endif
             }
         }
 

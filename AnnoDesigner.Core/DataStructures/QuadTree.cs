@@ -385,10 +385,7 @@ namespace AnnoDesigner.Core.DataStructures
         /// </summary>
         public void Clear()
         {
-            foreach (var item in this.ToList())
-            {
-                Remove(item);
-            }
+            root = new Quadrant(root.Extent);
         }
 
         public bool Contains(T item) => root.Contains(item);
@@ -418,10 +415,12 @@ namespace AnnoDesigner.Core.DataStructures
             {
                 var newExtent = Extent;
                 newExtent.Union(bounds);
-                var top = Extent.Top - newExtent.Top > 0;
-                var bottom = newExtent.Bottom - Extent.Bottom > 0;
-                var left = Extent.Left - newExtent.Left > 0;
-                var right = Extent.Right - newExtent.Right > 0;
+
+                // calculate on which sides the newExtent is larger than Extent (and therefor need to be inflated in that direction)
+                var top = Extent.Top > newExtent.Top;
+                var bottom = newExtent.Bottom > Extent.Bottom;
+                var left = Extent.Left > newExtent.Left;
+                var right = newExtent.Right > Extent.Right;
 
                 if (top && !left)
                 {
@@ -429,15 +428,15 @@ namespace AnnoDesigner.Core.DataStructures
                 }
                 else if (right)
                 {
-                    Inflate(ResizeDirection.TopRight);
+                    Inflate(ResizeDirection.BottomRight);
                 }
                 else if (bottom)
                 {
-                    Inflate(ResizeDirection.BottomRight);
+                    Inflate(ResizeDirection.BottomLeft);
                 }
                 else
                 {
-                    Inflate(ResizeDirection.BottomLeft);
+                    Inflate(ResizeDirection.TopLeft);
                 }
             }
         }
