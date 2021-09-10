@@ -203,7 +203,10 @@ namespace AnnoDesigner.ViewModels
             {
                 FlagPath = "Flags/Russia.png"
             });
-            //Languages.Add(new SupportedLanguage("Español"));
+            Languages.Add(new SupportedLanguage("Español")
+            {
+                FlagPath = "Flags/Spain.png"
+            });            
             //Languages.Add(new SupportedLanguage("Italiano"));
             //Languages.Add(new SupportedLanguage("český"));
 

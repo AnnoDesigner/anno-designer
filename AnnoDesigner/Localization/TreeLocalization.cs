@@ -70,8 +70,10 @@ namespace AnnoDesigner.Localization
                 languageCode = _commons.CurrentLanguageCode;
             }
 
-            if (!_commons.LanguageCodeMap.ContainsValue(languageCode))
+            // use english as default language
+            if (!_commons.LanguageCodeMap.ContainsValue(languageCode) || !Translations.ContainsKey(languageCode))
             {
+                _logger.Trace($"language ({languageCode}) has no translations or is not supported");
                 languageCode = "eng";
             }
 

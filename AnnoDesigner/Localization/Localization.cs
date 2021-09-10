@@ -9,7 +9,7 @@ namespace AnnoDesigner.Localization
 {
     public class Localization : Notify, ILocalizationHelper
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private ICommons _commons;
 
@@ -1243,8 +1243,10 @@ namespace AnnoDesigner.Localization
                 languageCode = _commons.CurrentLanguageCode;
             }
 
-            if (!_commons.LanguageCodeMap.ContainsValue(languageCode))
+            // use english as default language
+            if (!_commons.LanguageCodeMap.ContainsValue(languageCode) || !TranslationsRaw.ContainsKey(languageCode))
             {
+                _logger.Trace($"language ({languageCode}) has no translations or is not supported");
                 languageCode = "eng";
             }
 
@@ -1256,21 +1258,21 @@ namespace AnnoDesigner.Localization
                 }
                 else
                 {
-                    logger.Trace($"try to set localization to english for: \"{valueToTranslate}\"");
+                    _logger.Trace($"try to set localization to english for: \"{valueToTranslate}\"");
                     if (TranslationsRaw["eng"].TryGetValue(valueToTranslate.Replace(" ", string.Empty), out string engLocalization))
                     {
                         return engLocalization;
                     }
                     else
                     {
-                        logger.Trace($"found no localization (\"eng\") and ({languageCode}) for: \"{valueToTranslate}\"");
+                        _logger.Trace($"found no localization (\"eng\") and ({languageCode}) for: \"{valueToTranslate}\"");
                         return valueToTranslate;
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex, $"error getting localization ({languageCode}) for: \"{valueToTranslate}\"");
+                _logger.Error(ex, $"error getting localization ({languageCode}) for: \"{valueToTranslate}\"");
                 return valueToTranslate;
             }
         }
