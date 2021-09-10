@@ -45,7 +45,6 @@ namespace AnnoDesigner.Models
         void Normalize(int border);
         void RaiseStatisticsUpdated(UpdateStatisticsEventArgs args);
         void RaiseColorsInLayoutUpdated();
-        void EnsureBounds(Rect additionalBounds);
         Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects);
     }
 }

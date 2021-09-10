@@ -16,7 +16,7 @@ namespace AnnoDesigner.Models
     /// This class is mainly for performance and a wrapper for <see cref="AnnoObject"/>.
     /// It caches all kinds of Visuals (e.g. Brushes, Pens) and calculations (e.g. CollisionRect).
     /// </summary>
-    public class LayoutObject
+    public class LayoutObject : IBounded
     {
         private AnnoObject _wrappedAnnoObject;
         private readonly ICoordinateHelper _coordinateHelper;
@@ -279,6 +279,16 @@ namespace AnnoDesigner.Models
                 _gridRect = default;
                 _gridInfluenceRadiusRect = default;
                 _gridInfluenceRangeRect = default;
+            }
+        }
+
+        public Rect Bounds
+        {
+            get => new Rect(Position, Size);
+            set
+            {
+                Position = value.TopLeft;
+                Size = value.Size;
             }
         }
 
