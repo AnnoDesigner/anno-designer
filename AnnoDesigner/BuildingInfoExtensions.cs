@@ -29,8 +29,10 @@ namespace AnnoDesigner
                 Size = buildingInfo.BuildBlocker == null ? new Size() : new Size(buildingInfo.BuildBlocker["x"], buildingInfo.BuildBlocker["z"]),
                 Template = buildingInfo.Template,
                 Road = buildingInfo.Road,
-                Borderless = buildingInfo.Borderless
+                Borderless = buildingInfo.Borderless,
                 //BuildCosts = BuildCost
+                BlockedArea = buildingInfo.BlockedArea,
+                Direction = buildingInfo.Direction
             };
         }
 
