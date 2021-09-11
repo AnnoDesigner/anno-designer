@@ -582,7 +582,7 @@ namespace AnnoDesigner
 
             //initialize
             CurrentMode = MouseMode.Standard;
-            PlacedObjects = new QuadTree<LayoutObject>(new Rect(-100d, -100d, 200d, 200d));
+            PlacedObjects = new QuadTree<LayoutObject>(new Rect(-128, -128, 256, 256));
             SelectedObjects = new List<LayoutObject>();
             _oldObjectPositions = new List<(LayoutObject Item, Rect OldBounds)>();
             _statisticsCalculationHelper = new StatisticsCalculationHelper();
@@ -910,9 +910,8 @@ namespace AnnoDesigner
                 if (debugShowQuadTreeViz)
                 {
                     var brush = Brushes.Transparent;
-                    var pen = _penCache.GetPen(_debugBrushDark, 1);
-                    var rects = PlacedObjects.GetQuadrantRects();
-                    foreach (var rect in rects)
+                    var pen = _penCache.GetPen(_debugBrushDark, 2);
+                    foreach (var rect in PlacedObjects.GetQuadrantRects())
                     {
                         drawingContext.DrawRectangle(brush, pen, _coordinateHelper.GridToScreen(rect, GridSize));
                     }
@@ -1254,7 +1253,7 @@ namespace AnnoDesigner
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
             Moved2DArray<AnnoObject> gridDictionary = null;
-            if (RenderTrueInfluenceRange && PlacedObjects.Count() > 0)
+            if (RenderTrueInfluenceRange && PlacedObjects.Count > 0)
             {
                 var placedObjects = PlacedObjects.Concat(objects).ToHashSet();
                 var placedAnnoObjects = placedObjects.Select(o => o.WrappedAnnoObject).ToList();
@@ -1492,7 +1491,7 @@ namespace AnnoDesigner
             if (includeSameObjects)
             {
                 // Add all placed objects whose identifier matches any of those in the objectsToAdd.
-                SelectedObjects.AddRange(PlacedObjects.FindAll(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase))));
+                SelectedObjects.AddRange(PlacedObjects.Where(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase))));
             }
             else
             {
@@ -1514,7 +1513,7 @@ namespace AnnoDesigner
             if (includeSameObjects)
             {
                 // Exclude any selected objects whose identifier matches any of those in the objectsToRemove.
-                SelectedObjects = SelectedObjects.Except(SelectedObjects.FindAll(placed => objectsToRemove.Any(toRemove => toRemove.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase)))).ToList();
+                SelectedObjects = SelectedObjects.Except(SelectedObjects.Where(placed => objectsToRemove.Any(toRemove => toRemove.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase)))).ToList();
             }
             else
             {
@@ -1571,8 +1570,7 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Removes and then re-adds the given objects to the <see cref="PlacedObjects"/>. This is potentially a very expensive
-        /// operation.
+        /// Reindexes given objects in the <see cref="PlacedObjects"/>. This is potentially a very expensive operation.
         /// Calling this method when the LayoutObjects in <paramref name="newPositions"/> and <paramref name="oldPositions"/> do not
         /// match can cause object duplication.
         /// </summary>
@@ -1582,17 +1580,13 @@ namespace AnnoDesigner
         /// themselves did not count as references due to IEnumerable lazy evaluation).
         /// By making sure the parameters are lists, we avoid this issues.
         /// </remarks>
-        /// <param name="oldPositions"></param>
-        /// <param name="newPositions"></param>
-        private void UpdateObjectPositions(List<(LayoutObject, Rect)> oldPositions, List<(LayoutObject, Rect)> newPositions)
+        private void ReindexMovedObjects()
         {
-            foreach (var item in oldPositions)
+            foreach (var (item, oldBounds) in _oldObjectPositions)
             {
-                PlacedObjects.Remove(item.Item1, item.Item2);
+                PlacedObjects.ReIndex(item, oldBounds);
             }
-            //add
-            PlacedObjects.AddRange(newPositions);
-
+            _oldObjectPositions.Clear();
         }
 
         /// <summary>
@@ -1619,53 +1613,23 @@ namespace AnnoDesigner
             _layoutBounds = ComputeBoundingRect(PlacedObjects);
 
         }
-
-        /// <summary>
-        /// Ensures the <see cref="PlacedObjects"/> can include the specified bounds. This call can be very expensive
-        /// as it can cause a full re-index of the quad tree.
-        /// </summary>
-        /// <param name="additionalBounds"></param>
-        public void EnsureBounds(Rect additionalBounds)
-        {
-            if (!PlacedObjects.Extent.Contains(additionalBounds))
-            {
-                var newExtent = PlacedObjects.Extent;
-                newExtent.Union(additionalBounds);
-                newExtent.Inflate(newExtent.Width * 2, newExtent.Height * 2);
-                PlacedObjects.Extent = newExtent;
-            }
-        }
         #endregion
 
         #region Coordinate and rectangle conversions
 
         /// <summary>
-        /// Rotates a group of objects.
+        /// Rotates a group of objects 90 degrees clockwise around point (0, 0).
         /// </summary>
         /// <param name="objects"></param>
-        private void Rotate(List<LayoutObject> objects)
+        private IEnumerable<(LayoutObject item, Rect oldRect)> Rotate(IEnumerable<LayoutObject> objects)
         {
-            for (var i = 0; i < objects.Count; i++)
+            foreach (var item in objects)
             {
-                objects[i].Size = _coordinateHelper.Rotate(objects[i].Size);
-                var position = objects[i].Position;
-                //Full formula left in for explanation
-                //var xPrime = x * Math.Cos(angle) - y * Math.Sin(angle);
-                //var yPrime = x * Math.Sin(angle) - y * Math.Cos(angle);
-
-                //Cos 90 = 0, sin 90 = 1
-                //Therefore, the below is equivalent
-                var xPrime = 0 - position.Y;
-                var yPrime = position.X;
-
-                //When the building is rotated, the xPrime and yPrime values no 
-                //longer represent the top left corner, they will represent the 
-                //top-right corner instead. We need to account for this, by 
-                //moving the xPrime position (still in grid coordinates).
-                xPrime -= objects[i].Size.Width;
-
-                objects[i].Position = new Point(xPrime, yPrime);
-                objects[i].Direction = _coordinateHelper.Rotate(CurrentObjects[i].Direction);
+                var newRect = _coordinateHelper.Rotate(item.Bounds);
+                var oldRect = item.Bounds;
+                item.Bounds = newRect;
+                item.Direction = _coordinateHelper.Rotate(item.Direction);
+                yield return (item, oldRect);
             }
         }
 
@@ -1690,11 +1654,8 @@ namespace AnnoDesigner
             _selectionRect = Rect.Empty;
 
             //update object positions if dragging
-            if (_oldObjectPositions.Count > 0)
-            {
-                UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
-                _oldObjectPositions.Clear();
-            }
+            ReindexMovedObjects();
+
             InvalidateVisual();
         }
 
@@ -1727,7 +1688,7 @@ namespace AnnoDesigner
                 _viewport.Top += diff.Y;
             }
             //if there are no objects placed down, then reset to viewport to 0,0, whilst maintaining any offsets to hide the change
-            if (PlacedObjects.Count() == 0)
+            if (PlacedObjects.Count == 0)
             {
                 _viewport.Left = _viewport.HorizontalAlignmentValue >= 0 ? 1 - _viewport.HorizontalAlignmentValue : Math.Abs(_viewport.HorizontalAlignmentValue);
                 _viewport.Top = _viewport.VerticalAlignmentValue >= 0 ? 1 - _viewport.VerticalAlignmentValue : Math.Abs(_viewport.VerticalAlignmentValue);
@@ -1765,14 +1726,13 @@ namespace AnnoDesigner
                 //DragAll, so we fire it here instead, to prevent objects being incorrectly represented within the QuadTree.
                 if (CurrentMode == MouseMode.DragSelection)
                 {
-                    UndoManager.RegisterOperation(new MoveObjectsOperation()
+                    UndoManager.RegisterOperation(new MoveObjectsOperation<LayoutObject>()
                     {
-                        ObjectPositions = _oldObjectPositions.Select((pair) => (pair.Item, pair.OldGridRect.TopLeft, pair.Item.Position)).ToList(),
-                        Collection = PlacedObjects
+                        ObjectPropertyValues = _oldObjectPositions.Select(pair => (pair.Item, pair.OldGridRect, pair.Item.Bounds)).ToList(),
+                        QuadTree = PlacedObjects
                     });
 
-                    UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
-                    _oldObjectPositions.Clear();
+                    ReindexMovedObjects();
                 }
 
                 CurrentMode = MouseMode.DragAllStart;
@@ -1918,7 +1878,7 @@ namespace AnnoDesigner
                                 offsetCollisionRect.Offset(dx, dy);
 
                                 //Its causing slowdowns when dragging large numbers of objects
-                                _unselectedObjects = PlacedObjects.GetItemsIntersecting(offsetCollisionRect).ToList().FindAll(_ => !SelectedObjects.Contains(_)).ToList();
+                                _unselectedObjects = PlacedObjects.GetItemsIntersecting(offsetCollisionRect).Where(_ => !SelectedObjects.Contains(_)).ToList();
                                 var collisionsExist = false;
                                 // temporarily move each object and check if collisions with unselected objects exist
                                 foreach (var curLayoutObject in SelectedObjects)
@@ -1949,8 +1909,6 @@ namespace AnnoDesigner
                                     //update collision rect, so that collisions are correctly computed on next run
                                     _collisionRect.X += dx;
                                     _collisionRect.Y += dy;
-
-                                    EnsureBounds(_collisionRect);
 
                                     //position change -> update
                                     StatisticsUpdated?.Invoke(this, new UpdateStatisticsEventArgs(UpdateMode.NoBuildingList));
@@ -2029,14 +1987,13 @@ namespace AnnoDesigner
                         break;
                     case MouseMode.DragSelection:
                         // stop dragging of selected objects
-                        UndoManager.RegisterOperation(new MoveObjectsOperation()
+                        UndoManager.RegisterOperation(new MoveObjectsOperation<LayoutObject>()
                         {
-                            ObjectPositions = _oldObjectPositions.Select((pair) => (pair.Item, pair.OldGridRect.TopLeft, pair.Item.Position)).ToList(),
-                            Collection = PlacedObjects
+                            ObjectPropertyValues = _oldObjectPositions.Select(pair => (pair.Item, pair.OldGridRect, pair.Item.Bounds)).ToList(),
+                            QuadTree = PlacedObjects
                         });
 
-                        UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
-                        _oldObjectPositions.Clear();
+                        ReindexMovedObjects();
                         CurrentMode = MouseMode.Standard;
                         break;
                 }
@@ -2056,14 +2013,13 @@ namespace AnnoDesigner
                         }
                     case MouseMode.DragSelection:
                         {
-                            UndoManager.RegisterOperation(new MoveObjectsOperation()
+                            UndoManager.RegisterOperation(new MoveObjectsOperation<LayoutObject>()
                             {
-                                ObjectPositions = _oldObjectPositions.Select((pair) => (pair.Item, pair.OldGridRect.TopLeft, pair.Item.Position)).ToList(),
-                                Collection = PlacedObjects
+                                ObjectPropertyValues = _oldObjectPositions.Select(pair => (pair.Item, pair.OldGridRect, pair.Item.Bounds)).ToList(),
+                                QuadTree = PlacedObjects
                             });
 
-                            UpdateObjectPositions(_oldObjectPositions, SelectedObjects.Select(obj => (obj, obj.GridRect)).ToList());
-                            _oldObjectPositions.Clear();
+                            ReindexMovedObjects();
                             //clear selection after potentially modifying QuadTree
                             SelectedObjects.Clear();
 
@@ -2176,19 +2132,18 @@ namespace AnnoDesigner
             if (CurrentObjects.Count != 0)
             {
                 var boundingRect = ComputeBoundingRect(CurrentObjects);
-                var objects = PlacedObjects.GetItemsIntersecting(boundingRect).ToList();
+                var objects = PlacedObjects.GetItemsIntersecting(boundingRect);
 
-                if (CurrentObjects.Count != 0 && !objects.Exists(_ => ObjectIntersectionExists(CurrentObjects, _)))
+                if (CurrentObjects.Count != 0 && !objects.Any(_ => ObjectIntersectionExists(CurrentObjects, _)))
                 {
-                    EnsureBounds(boundingRect);
                     var newObjects = CloneList(CurrentObjects);
-                    UndoManager.RegisterOperation(new AddObjectsOperation()
+                    UndoManager.RegisterOperation(new AddObjectsOperation<LayoutObject>()
                     {
                         Objects = newObjects,
                         Collection = PlacedObjects
                     });
 
-                    PlacedObjects.AddRange(newObjects.Select(obj => (obj, obj.GridRect)));
+                    PlacedObjects.AddRange(newObjects);
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
 
                     //no need to update colors if drawing the same object(s)
@@ -2284,7 +2239,7 @@ namespace AnnoDesigner
             _viewport.Left = 0;
             _viewport.Top = 0;
 
-            if (PlacedObjects.Count() == 0)
+            if (PlacedObjects.Count == 0)
             {
                 return;
             }
@@ -2293,18 +2248,20 @@ namespace AnnoDesigner
             var dy = PlacedObjects.Min(_ => _.Position.Y) - border;
             var diff = new Vector(dx, dy);
 
-            UndoManager.RegisterOperation(new MoveObjectsOperation()
+            UndoManager.RegisterOperation(new MoveObjectsOperation<LayoutObject>()
             {
-                ObjectPositions = PlacedObjects.Select(obj => (obj, obj.Position, obj.Position - diff)).ToList(),
-                Collection = PlacedObjects
+                ObjectPropertyValues = PlacedObjects.Select(obj => (obj, obj.Bounds, new Rect(obj.Position - diff, obj.Size))).ToList(),
+                QuadTree = PlacedObjects
             });
 
-            foreach (var item in PlacedObjects)
+            // make a copy of a list to avoid altering collection during iteration
+            var placedObjects = PlacedObjects.ToList();
+
+            foreach (var item in placedObjects)
             {
-                item.Position -= diff;
+                PlacedObjects.Move(item, -diff);
             }
 
-            PlacedObjects.ReIndex(_ => _.GridRect);
             InvalidateVisual();
             InvalidateBounds();
             InvalidateScroll();
@@ -2483,14 +2440,17 @@ namespace AnnoDesigner
         {
             UndoManager.AsSingleUndoableOperation(() =>
             {
-                var placedObjects = PlacedObjects.All().ToList();
-                UndoManager.RegisterOperation(new RotateObjectsClockwiseOperation()
+                var placedObjects = PlacedObjects.ToList();
+                UndoManager.RegisterOperation(new MoveObjectsOperation<LayoutObject>()
                 {
-                    Objects = placedObjects,
-                    Collection = PlacedObjects
+                    QuadTree = PlacedObjects,
+                    ObjectPropertyValues = PlacedObjects.Select(obj => (obj, obj.Bounds, _coordinateHelper.Rotate(obj.Bounds))).ToList()
                 });
 
-                Rotate(placedObjects);
+                foreach (var (item, oldRect) in Rotate(placedObjects))
+                {
+                    PlacedObjects.ReIndex(item, oldRect);
+                }
                 Normalize(1);
             });
 
@@ -2522,14 +2482,14 @@ namespace AnnoDesigner
         private readonly ICommand deleteCommand;
         private void ExecuteDelete(object param)
         {
-            UndoManager.RegisterOperation(new RemoveObjectsOperation()
+            UndoManager.RegisterOperation(new RemoveObjectsOperation<LayoutObject>()
             {
                 Objects = SelectedObjects.ToList(),
                 Collection = PlacedObjects
             });
 
             // remove all currently selected objects from the grid and clear selection
-            SelectedObjects.ForEach(_ => PlacedObjects.Remove(_, new Rect(_.Position, _.Size)));
+            SelectedObjects.ForEach(item => PlacedObjects.Remove(item));
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
             InvalidateBounds();
@@ -2558,7 +2518,7 @@ namespace AnnoDesigner
                 if (obj != null)
                 {
                     // Remove object, only ever remove a single object this way.
-                    UndoManager.RegisterOperation(new RemoveObjectsOperation()
+                    UndoManager.RegisterOperation(new RemoveObjectsOperation<LayoutObject>()
                     {
                         Objects = new List<LayoutObject>()
                         {
@@ -2567,7 +2527,7 @@ namespace AnnoDesigner
                         Collection = PlacedObjects
                     });
 
-                    PlacedObjects.Remove(obj, obj.GridRect);
+                    PlacedObjects.Remove(obj);
                     RemoveSelectedObject(obj, false);
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                 }

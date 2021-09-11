@@ -31,7 +31,7 @@ namespace AnnoDesigner.Tests.Undo
             var collection = Collection;
             Assert.Empty(collection);
             var obj = CreateLayoutObject(5, 5, 2, 2);
-            var operation = new RemoveObjectsOperation()
+            var operation = new RemoveObjectsOperation<LayoutObject>()
             {
                 Collection = collection,
                 Objects = new List<LayoutObject>()
@@ -44,7 +44,7 @@ namespace AnnoDesigner.Tests.Undo
             operation.Undo();
 
             // Assert
-            Assert.Equal(1, collection.Count());
+            Assert.Single(collection);
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace AnnoDesigner.Tests.Undo
             var collection = Collection;
             var obj1 = CreateLayoutObject(5, 5, 2, 2);
             var obj2 = CreateLayoutObject(0, 0, 2, 2);
-            var operation = new RemoveObjectsOperation()
+            var operation = new RemoveObjectsOperation<LayoutObject>()
             {
                 Collection = collection,
                 Objects = new List<LayoutObject>()
@@ -68,7 +68,7 @@ namespace AnnoDesigner.Tests.Undo
             operation.Undo();
 
             // Assert
-            Assert.Equal(2, collection.Count());
+            Assert.Equal(2, collection.Count);
         }
 
         #endregion
@@ -81,8 +81,8 @@ namespace AnnoDesigner.Tests.Undo
             // Arrange
             var collection = Collection;
             var obj = CreateLayoutObject(5, 5, 2, 2);
-            collection.Insert(obj, obj.GridRect);
-            var operation = new RemoveObjectsOperation()
+            collection.Add(obj);
+            var operation = new RemoveObjectsOperation<LayoutObject>()
             {
                 Collection = collection,
                 Objects = new List<LayoutObject>()
@@ -105,9 +105,9 @@ namespace AnnoDesigner.Tests.Undo
             var collection = Collection;
             var obj1 = CreateLayoutObject(5, 5, 2, 2);
             var obj2 = CreateLayoutObject(0, 0, 2, 2);
-            collection.Insert(obj1, obj1.GridRect);
-            collection.Insert(obj2, obj2.GridRect);
-            var operation = new RemoveObjectsOperation()
+            collection.Add(obj1);
+            collection.Add(obj2);
+            var operation = new RemoveObjectsOperation<LayoutObject>()
             {
                 Collection = collection,
                 Objects = new List<LayoutObject>()

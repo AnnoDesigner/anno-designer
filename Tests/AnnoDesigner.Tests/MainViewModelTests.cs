@@ -1034,7 +1034,7 @@ namespace AnnoDesigner.Tests
                         Borderless = true
                     }, null, null, null)
             };
-            _mockedAnnoCanvas.PlacedObjects.AddRange(roads.Select(r => (r, r.GridRect)));
+            _mockedAnnoCanvas.PlacedObjects.AddRange(roads);
             var cellGrouper = new Mock<IAdjacentCellGrouper>();
 
             var viewModel = GetViewModel(adjacentCellGrouperToUse: cellGrouper.Object);
