@@ -362,7 +362,10 @@ namespace AnnoDesigner.ViewModels
                 Borderless = BuildingSettingsViewModel.IsBorderlessChecked,
                 Road = BuildingSettingsViewModel.IsRoadChecked,
                 Identifier = BuildingSettingsViewModel.BuildingIdentifier,
-                Template = BuildingSettingsViewModel.BuildingTemplate
+                Template = BuildingSettingsViewModel.BuildingTemplate,
+                BlockedAreaLength = BuildingSettingsViewModel.BuildingBlockedAreaLength,
+                BlockedAreaWidth = BuildingSettingsViewModel.BuildingBlockedAreaWidth,
+                Direction = BuildingSettingsViewModel.BuildingDirection
             };
 
             var objIconFileName = "";

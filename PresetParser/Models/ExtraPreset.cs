@@ -9,7 +9,7 @@
         public string IconFileName { get; set; }
         public int BuildBlockerX { get; set; }
         public int BuildBlockerZ { get; set; }
-        public int InfluenceRadius { get; set; }
+        public double InfluenceRadius { get; set; }
         public int InfluenceRange { get; set; }
         public string Template { get; set; }
         public string LocaEng { get; set; }

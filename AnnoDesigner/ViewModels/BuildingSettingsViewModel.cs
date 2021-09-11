@@ -31,6 +31,9 @@ namespace AnnoDesigner.ViewModels
         private string _buildingIdentifier;
         private double _buildingRadius;
         private double _buildingInfluenceRange;
+        private double _buildingBlockedAreaLength;
+        private double _buildingBlockedAreaWidth;
+        private GridDirection _buildingDirection;
         private bool _isPavedStreet;
         private bool _isEnableLabelChecked;
         private bool _isBorderlessChecked;
@@ -152,6 +155,23 @@ namespace AnnoDesigner.ViewModels
         {
             get { return _buildingInfluenceRange; }
             set { UpdateProperty(ref _buildingInfluenceRange, value); }
+        }
+
+        public double BuildingBlockedAreaLength
+        {
+            get { return _buildingBlockedAreaLength; }
+            set { UpdateProperty(ref _buildingBlockedAreaLength, value); }
+        }
+        public double BuildingBlockedAreaWidth
+        {
+            get { return _buildingBlockedAreaWidth; }
+            set { UpdateProperty(ref _buildingBlockedAreaWidth, value); }
+        }
+
+        public GridDirection BuildingDirection
+        {
+            get { return _buildingDirection; }
+            set { UpdateProperty(ref _buildingDirection, value); }
         }
 
         public bool IsPavedStreet
