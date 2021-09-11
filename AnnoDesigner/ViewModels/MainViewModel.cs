@@ -389,7 +389,8 @@ namespace AnnoDesigner.ViewModels
                     var buildingInfo = AnnoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName?.Equals(objIconFileName, StringComparison.OrdinalIgnoreCase) ?? false);
                     if (buildingInfo != null)
                     {
-                        obj.BlockedArea = buildingInfo.BlockedArea;
+                        obj.BlockedAreaLength = buildingInfo.BlockedAreaLength;
+                        obj.BlockedAreaWidth = buildingInfo.BlockedAreaWidth;
                         obj.Direction = buildingInfo.Direction;
 
                         // Check X and Z Sizes of the Building Info, if one or both not right, the Object will be Unknown

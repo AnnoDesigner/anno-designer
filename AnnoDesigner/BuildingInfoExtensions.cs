@@ -31,7 +31,8 @@ namespace AnnoDesigner
                 Road = buildingInfo.Road,
                 Borderless = buildingInfo.Borderless,
                 //BuildCosts = BuildCost
-                BlockedArea = buildingInfo.BlockedArea,
+                BlockedAreaLength = buildingInfo.BlockedAreaLength,
+                BlockedAreaWidth = buildingInfo.BlockedAreaWidth,
                 Direction = buildingInfo.Direction
             };
         }

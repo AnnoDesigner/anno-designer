@@ -86,12 +86,18 @@ namespace AnnoDesigner.Core.Presets.Models
         /// Length of blocked area
         /// </summary>
         [DataMember(Order = 11)]
-        public double BlockedArea { get; set; }
+        public double BlockedAreaLength { get; set; }
+
+        /// <summary>
+        /// Length of blocked area
+        /// </summary>
+        [DataMember(Order = 12)]
+        public double BlockedAreaWidth { get; set; }
 
         /// <summary>
         /// Direction of blocked area
         /// </summary>
-        [DataMember(Order = 12)]
+        [DataMember(Order = 13)]
         public GridDirection Direction { get; set; } = GridDirection.Down;
 
         /// <summary>

@@ -1105,7 +1105,7 @@ namespace AnnoDesigner
                     var objBlockedRect = curLayoutObject.CalculateReservedScreenRect(GridSize);
                     if (objBlockedRect.HasValue)
                     {
-                        drawingContext.DrawRectangle(curLayoutObject.TransparentBrush, borderPen, objBlockedRect.Value);
+                        drawingContext.DrawRectangle(curLayoutObject.BlockedAreaBrush, borderPen, objBlockedRect.Value);
                     }
                 }
 
