@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using AnnoDesigner.Core.Helper;
@@ -16,6 +13,7 @@ namespace AnnoDesigner.Models
     /// This class is mainly for performance and a wrapper for <see cref="AnnoObject"/>.
     /// It caches all kinds of Visuals (e.g. Brushes, Pens) and calculations (e.g. CollisionRect).
     /// </summary>
+    [DebuggerDisplay("{" + nameof(Identifier) + "}")]
     public class LayoutObject : IBounded
     {
         private AnnoObject _wrappedAnnoObject;
@@ -503,7 +501,7 @@ namespace AnnoDesigner.Models
                 // See https://github.com/AnnoDesigner/anno-designer/issues/299 for an explanation of the issue.
 
                 // check if Object Width and Height are odd numbers or not, if both are, adjust the circle size with -0.1
-                if ((WrappedAnnoObject.Size.Width %2 != 0 ) && (WrappedAnnoObject.Size.Height %2 != 0)) 
+                if ((WrappedAnnoObject.Size.Width % 2 != 0) && (WrappedAnnoObject.Size.Height % 2 != 0))
                 {
                     _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius - 0.1, gridSize);
                 }
