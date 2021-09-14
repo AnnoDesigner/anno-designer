@@ -355,6 +355,48 @@ namespace PresetParser
             }
             #endregion
 
+            #region Validate list of buildings
+
+            var validator = new Validator();
+            (bool isValid, List<string> duplicateIdentifiers) = validator.CheckForUniqueIdentifiers(buildings);
+            var oldColor = Console.ForegroundColor;
+            if (!isValid)
+            {
+                try
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+                    Console.WriteLine();
+                    Console.WriteLine($"### There are duplicate identifiers ({duplicateIdentifiers.Count}) ###");
+                    foreach (var curDuplicateIndentifier in duplicateIdentifiers)
+                    {
+                        Console.WriteLine(curDuplicateIndentifier);
+                    }
+                    Console.WriteLine();
+                }
+                finally
+                {
+                    Console.ForegroundColor = oldColor;
+                }
+            }
+            else
+            {
+                try
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+
+                    Console.WriteLine();
+                    Console.WriteLine("There are no duplicate Indentifiers.");
+                    Console.WriteLine();
+                }
+                finally
+                {
+                    Console.ForegroundColor = oldColor;
+                }
+            }
+
+            #endregion
+
             #region Write preset.json and icon.json files
             BuildingPresets presets = new BuildingPresets() { Version = BUILDING_PRESETS_VERSION, Buildings = buildings.Cast<BuildingInfo>().ToList() };
 
@@ -1295,7 +1337,7 @@ namespace PresetParser
             }
 
             // Place all High Life Malls in the right Tree Menu 
-            if (groupName=="Mall") 
+            if (groupName == "Mall")
             {
                 factionName = "(18) High Life";
             }
@@ -1310,7 +1352,7 @@ namespace PresetParser
             // Place the rest of the buildings in the right Faction > Group menu
             #region Order the Buildings to the right tiers and factions as in the game
 
-                var groupInfo = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName, templateName);
+            var groupInfo = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName, templateName);
             factionName = groupInfo.Faction;
             groupName = groupInfo.Group;
             templateName = groupInfo.Template;
@@ -1361,7 +1403,8 @@ namespace PresetParser
 
             //Set right group to the City Lights DLC (just need a Faction and Group change by starting identifiername) (10-01-2021)
             //if (templateName == "OrnamentalBuilding" && factionName == "Not Placed Yet -Moderate") {
-            if (templateName == "OrnamentalBuilding") {
+            if (templateName == "OrnamentalBuilding")
+            {
                 if (identifierName.Contains("CityOrnament "))
                 {
                     factionName = "Ornaments"; groupName = "20 City Lights";
@@ -1476,7 +1519,7 @@ namespace PresetParser
                     case "102131": { icon = replaceName + "park_props_1x1_17.png"; break; } //Cypress corecting Icon
                     case "101284": { icon = replaceName + "community_lodge.png"; break; } //corecting Arctic Lodge Icon
                 }
-                switch(b.Identifier)
+                switch (b.Identifier)
                 {
                     case "AmusementPark CottonCandy": { icon = replaceName + "cotton_candy.png"; break; } // faulty naming fix icn_ instead of icon_
                 }
@@ -1597,7 +1640,7 @@ namespace PresetParser
             if (b.Template == "CityInstitutionBuilding")
             {
                 b.InfluenceRange = 26; //Police - Fire stations and Hospiitals
-                if (b.Identifier== "Institution_arctic_01 (Ranger Station)")
+                if (b.Identifier == "Institution_arctic_01 (Ranger Station)")
                 {
                     b.InfluenceRange = 50; //fix Ranger Station InfluencRange as this is separated from normal ones (10-01-2021) 
                 }
@@ -1620,7 +1663,8 @@ namespace PresetParser
 
             // Get/Set Influence Radius and Influence Range (Dual on 1 building : Busstop)
             //Bussttop (has an other range name)
-            if (b.Template == "Busstop") {
+            if (b.Template == "Busstop")
+            {
                 b.InfluenceRadius = Convert.ToInt32(values?["BusStop"]?["ActivationRadius"]?.InnerText);
                 b.InfluenceRange = Convert.ToInt32(values["BusStop"]["StreetConnectionRange"].InnerText);
             }
