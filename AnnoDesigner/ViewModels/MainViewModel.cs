@@ -396,13 +396,19 @@ namespace AnnoDesigner.ViewModels
                         obj.BlockedAreaWidth = buildingInfo.BlockedAreaWidth;
                         obj.Direction = buildingInfo.Direction;
                     }
-                    obj.Identifier = RenameBuildingIdentifier;
-                    obj.Template = RenameBuildingIdentifier;
-                } 
+                    if (BuildingSettingsViewModel.BuildingRealName != BuildingSettingsViewModel.BuildingName)
+                    {
+                        obj.Identifier = RenameBuildingIdentifier;
+                        obj.Template = RenameBuildingIdentifier;
+                    }
+                }
                 else
                 {
-                    obj.Identifier = RenameBuildingIdentifier;
-                    obj.Template = RenameBuildingIdentifier;
+                    if (String.IsNullOrWhiteSpace(BuildingSettingsViewModel.BuildingIdentifier) || BuildingSettingsViewModel.BuildingRealName != BuildingSettingsViewModel.BuildingName)
+                    { 
+                        obj.Identifier = RenameBuildingIdentifier;
+                        obj.Template = RenameBuildingIdentifier;
+                    }
                 }
                 AnnoCanvas.SetCurrentObject(new LayoutObject(obj, _coordinateHelper, _brushCache, _penCache));
             }
