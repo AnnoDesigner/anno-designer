@@ -44,6 +44,10 @@ namespace AnnoDesigner.ViewModels
             {
                 FlagPath = "Flags/Russia.png"
             });
+            Languages.Add(new SupportedLanguage("Español")
+            {
+                FlagPath = "Flags/Spain.png"
+            });
 
             ContinueCommand = new RelayCommand(Continue, CanContinue);
         }

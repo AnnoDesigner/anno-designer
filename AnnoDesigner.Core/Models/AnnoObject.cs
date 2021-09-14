@@ -41,6 +41,9 @@ namespace AnnoDesigner.Core.Models
             Road = obj.Road;
             // note: this is not really a copy, just a reference, but it is not supposed to change anyway
             //BuildCosts = obj.BuildCosts;
+            BlockedAreaLength = obj.BlockedAreaLength;
+            BlockedAreaWidth = obj.BlockedAreaWidth;
+            Direction = obj.Direction;
         }
 
         #endregion
@@ -128,5 +131,23 @@ namespace AnnoDesigner.Core.Models
 
         //[DataMember]
         //public SerializableDictionary<int> BuildCosts { get; set; }
+
+        /// <summary>
+        /// Length of blocked area
+        /// </summary>
+        [DataMember(Order = 12)]
+        public double BlockedAreaLength { get; set; }
+
+        /// <summary>
+        /// Width of blocked area
+        /// </summary>
+        [DataMember(Order = 13)]
+        public double BlockedAreaWidth { get; set; }
+
+        /// <summary>
+        /// Direction of blocked area
+        /// </summary>
+        [DataMember(Order = 14)]
+        public GridDirection Direction { get; set; } = GridDirection.Down;
     }
 }

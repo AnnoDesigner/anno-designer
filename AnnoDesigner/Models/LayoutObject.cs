@@ -16,7 +16,7 @@ namespace AnnoDesigner.Models
     /// This class is mainly for performance and a wrapper for <see cref="AnnoObject"/>.
     /// It caches all kinds of Visuals (e.g. Brushes, Pens) and calculations (e.g. CollisionRect).
     /// </summary>
-    public class LayoutObject
+    public class LayoutObject : IBounded
     {
         private AnnoObject _wrappedAnnoObject;
         private readonly ICoordinateHelper _coordinateHelper;
@@ -27,10 +27,13 @@ namespace AnnoDesigner.Models
         private SolidColorBrush _transparentBrush;
         private Color? _renderColor;
         private SolidColorBrush _renderBrush;
+        private Color? _blockedAreaColor;
+        private SolidColorBrush _blockedAreaBrush;
         private Pen _borderlessPen;
         private int _gridSizeScreenRect;
         private Point _position;
         private Rect _screenRect;
+        private Rect? _blockedAreaScreenRect;
         private Rect _collisionRect;
         private Size _collisionSize;
         private string _iconNameWithoutExtension;
@@ -129,6 +132,35 @@ namespace AnnoDesigner.Models
             }
         }
 
+        public Color BlockedAreaColor
+        {
+            get
+            {
+                if (_blockedAreaColor == null)
+                {
+                    var tmp = WrappedAnnoObject.Color.MediaColor;
+                    tmp.A = 60;
+
+                    _blockedAreaColor = tmp;
+                }
+
+                return _blockedAreaColor.Value;
+            }
+        }
+
+        public SolidColorBrush BlockedAreaBrush
+        {
+            get
+            {
+                if (_blockedAreaBrush == null)
+                {
+                    _blockedAreaBrush = _brushCache.GetSolidBrush(BlockedAreaColor);
+                }
+
+                return _blockedAreaBrush;
+            }
+        }
+
         public Pen GetBorderlessPen(Brush brush, double thickness)
         {
             if (_borderlessPen == null || _borderlessPen.Thickness != thickness || _borderlessPen.Brush != brush)
@@ -167,6 +199,33 @@ namespace AnnoDesigner.Models
             }
         }
 
+        public double BlockedAreaLength => WrappedAnnoObject.BlockedAreaLength;
+
+        public double BlockedAreaWidth
+        {
+            get
+            {
+                if (WrappedAnnoObject.BlockedAreaWidth > 0)
+                {
+                    return WrappedAnnoObject.BlockedAreaWidth;
+                }
+                switch (Direction)
+                {
+                    case GridDirection.Up:
+                    case GridDirection.Down: return Size.Width - 0.5;
+                    case GridDirection.Right:
+                    case GridDirection.Left: return Size.Height - 0.5;
+                }
+                return 0;
+            }
+        }
+
+        public GridDirection Direction
+        {
+            get => WrappedAnnoObject.Direction;
+            set => WrappedAnnoObject.Direction = value;
+        }
+
         /// <summary>
         /// Generates the rect to which the given object is rendered.
         /// </summary>
@@ -188,9 +247,64 @@ namespace AnnoDesigner.Models
                 if (_screenRect == default)
                 {
                     _screenRect = new Rect(_coordinateHelper.GridToScreen(Position, _gridSizeScreenRect), _coordinateHelper.GridToScreen(Size, _gridSizeScreenRect));
+                    _blockedAreaScreenRect = null;
                 }
 
                 return _screenRect;
+            }
+        }
+
+        public Rect? CalculateBlockedScreenRect(int gridSize)
+        {
+            if (_gridSizeScreenRect != gridSize)
+            {
+                _gridSizeScreenRect = gridSize;
+                _blockedAreaScreenRect = null;
+            }
+
+            return BlockedAreaScreenRect;
+        }
+
+        private Rect? BlockedAreaScreenRect
+        {
+            get
+            {
+                if (_blockedAreaScreenRect == null)
+                {
+                    if (BlockedAreaLength > 0)
+                    {
+                        var blockedAreaScreenWidth = _coordinateHelper.GridToScreen(BlockedAreaWidth, _gridSizeScreenRect);
+                        var blockedAreaScreenLength = _coordinateHelper.GridToScreen(BlockedAreaLength, _gridSizeScreenRect);
+
+                        switch (Direction)
+                        {
+                            case GridDirection.Up:
+                                return _blockedAreaScreenRect = new Rect(
+                                    ScreenRect.Left + (ScreenRect.Width - blockedAreaScreenWidth) / 2,
+                                    ScreenRect.Top - blockedAreaScreenLength,
+                                    blockedAreaScreenWidth,
+                                    blockedAreaScreenLength);
+                            case GridDirection.Right:
+                                return _blockedAreaScreenRect = new Rect(
+                                    ScreenRect.Right,
+                                    ScreenRect.Top + (ScreenRect.Height - blockedAreaScreenWidth) / 2,
+                                    blockedAreaScreenLength,
+                                    blockedAreaScreenWidth);
+                            case GridDirection.Down:
+                                return _blockedAreaScreenRect = new Rect(ScreenRect.Left + (ScreenRect.Width - blockedAreaScreenWidth) / 2,
+                                    ScreenRect.Bottom,
+                                    blockedAreaScreenWidth,
+                                    blockedAreaScreenLength);
+                            case GridDirection.Left:
+                                return _blockedAreaScreenRect = new Rect(ScreenRect.TopLeft.X - blockedAreaScreenLength,
+                                    ScreenRect.TopLeft.Y + (ScreenRect.Height - blockedAreaScreenWidth) / 2,
+                                    blockedAreaScreenLength,
+                                    blockedAreaScreenWidth);
+                        }
+                    }
+                }
+
+                return _blockedAreaScreenRect;
             }
         }
 
@@ -279,6 +393,16 @@ namespace AnnoDesigner.Models
                 _gridRect = default;
                 _gridInfluenceRadiusRect = default;
                 _gridInfluenceRangeRect = default;
+            }
+        }
+
+        public Rect Bounds
+        {
+            get => new Rect(Position, Size);
+            set
+            {
+                Position = value.TopLeft;
+                Size = value.Size;
             }
         }
 

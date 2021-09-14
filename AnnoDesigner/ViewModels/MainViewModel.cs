@@ -64,6 +64,7 @@ namespace AnnoDesigner.ViewModels
         private bool _canvasShowLabels;
         private bool _canvasShowTrueInfluenceRange;
         private bool _canvasShowInfluences;
+        private bool _canvasShowHarborBlockedArea;
         private bool _useCurrentZoomOnExportedImageValue;
         private bool _renderSelectionHighlightsOnExportedImageValue;
         private bool _isLanguageChange;
@@ -202,7 +203,10 @@ namespace AnnoDesigner.ViewModels
             {
                 FlagPath = "Flags/Russia.png"
             });
-            //Languages.Add(new SupportedLanguage("Español"));
+            Languages.Add(new SupportedLanguage("Español")
+            {
+                FlagPath = "Flags/Spain.png"
+            });            
             //Languages.Add(new SupportedLanguage("Italiano"));
             //Languages.Add(new SupportedLanguage("český"));
 
@@ -385,6 +389,10 @@ namespace AnnoDesigner.ViewModels
                     var buildingInfo = AnnoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName?.Equals(objIconFileName, StringComparison.OrdinalIgnoreCase) ?? false);
                     if (buildingInfo != null)
                     {
+                        obj.BlockedAreaLength = buildingInfo.BlockedAreaLength;
+                        obj.BlockedAreaWidth = buildingInfo.BlockedAreaWidth;
+                        obj.Direction = buildingInfo.Direction;
+
                         // Check X and Z Sizes of the Building Info, if one or both not right, the Object will be Unknown
                         //Building could be in rotated form - so 5x4 should be equivalent to checking for 4x5
                         if ((obj.Size.Width == buildingInfo.BuildBlocker["x"] && obj.Size.Height == buildingInfo.BuildBlocker["z"])
@@ -630,7 +638,7 @@ namespace AnnoDesigner.ViewModels
         public Task UpdateStatisticsAsync(UpdateMode mode)
         {
             return StatisticsViewModel.UpdateStatisticsAsync(mode,
-                AnnoCanvas.PlacedObjects.All().ToList(),
+                AnnoCanvas.PlacedObjects.ToList(),
                 AnnoCanvas.SelectedObjects,
                 AnnoCanvas.BuildingPresets);
         }
@@ -660,7 +668,7 @@ namespace AnnoDesigner.ViewModels
 
         public void LoadSettings()
         {
-            StatisticsViewModel.ToggleBuildingList(_appSettings.StatsShowBuildingCount, AnnoCanvas.PlacedObjects.All().ToList(), AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
+            StatisticsViewModel.ToggleBuildingList(_appSettings.StatsShowBuildingCount, AnnoCanvas.PlacedObjects.ToList(), AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
 
             PreferencesUpdateViewModel.AutomaticUpdateCheck = _appSettings.EnableAutomaticUpdateCheck;
             PreferencesUpdateViewModel.UpdateSupportsPrerelease = _appSettings.UpdateSupportsPrerelease;
@@ -673,6 +681,7 @@ namespace AnnoDesigner.ViewModels
             CanvasShowLabels = _appSettings.ShowLabels;
             CanvasShowTrueInfluenceRange = _appSettings.ShowTrueInfluenceRange;
             CanvasShowInfluences = _appSettings.ShowInfluences;
+            CanvasShowHarborBlockedArea = _appSettings.ShowHarborBlockedArea;
 
             BuildingSettingsViewModel.IsPavedStreet = _appSettings.IsPavedStreet;
 
@@ -693,6 +702,7 @@ namespace AnnoDesigner.ViewModels
             _appSettings.ShowLabels = CanvasShowLabels;
             _appSettings.ShowTrueInfluenceRange = CanvasShowTrueInfluenceRange;
             _appSettings.ShowInfluences = CanvasShowInfluences;
+            _appSettings.ShowHarborBlockedArea = CanvasShowHarborBlockedArea;
 
             _appSettings.StatsShowStats = StatisticsViewModel.IsVisible;
             _appSettings.StatsShowBuildingCount = StatisticsViewModel.ShowStatisticsBuildingCount;
@@ -822,8 +832,7 @@ namespace AnnoDesigner.ViewModels
                     }
 
                     var bounds = AnnoCanvas.ComputeBoundingRect(layoutObjects);
-                    AnnoCanvas.EnsureBounds(bounds);
-                    AnnoCanvas.PlacedObjects.AddRange(layoutObjects.Select(obj => (obj, obj.GridRect)));
+                    AnnoCanvas.PlacedObjects.AddRange(layoutObjects);
 
                     AnnoCanvas.LoadedFile = filePath;
                     AnnoCanvas.Normalize(1);
@@ -965,6 +974,19 @@ namespace AnnoDesigner.ViewModels
                 if (AnnoCanvas != null)
                 {
                     AnnoCanvas.RenderInfluences = _canvasShowInfluences;
+                }
+            }
+        }
+
+        public bool CanvasShowHarborBlockedArea
+        {
+            get { return _canvasShowHarborBlockedArea; }
+            set
+            {
+                UpdateProperty(ref _canvasShowHarborBlockedArea, value);
+                if (AnnoCanvas != null)
+                {
+                    AnnoCanvas.RenderHarborBlockedArea = _canvasShowHarborBlockedArea;
                 }
             }
         }
@@ -1159,9 +1181,10 @@ namespace AnnoDesigner.ViewModels
                 var groups = _adjacentCellGrouper.GroupAdjacentCells(cells).ToList();
                 AnnoCanvas.UndoManager.AsSingleUndoableOperation(() =>
                 {
-                    foreach (var item in groups.SelectMany(g => g.Items))
+                    var oldObjects = groups.SelectMany(g => g.Items).ToList();
+                    foreach (var item in oldObjects)
                     {
-                        AnnoCanvas.PlacedObjects.Remove(item, item.GridRect);
+                        AnnoCanvas.PlacedObjects.Remove(item);
                     }
                     var newObjects = groups
                         .Select(g => new LayoutObject(
@@ -1175,14 +1198,14 @@ namespace AnnoDesigner.ViewModels
                             _penCache
                         ))
                         .ToList();
-                    AnnoCanvas.PlacedObjects.AddRange(newObjects.Select(o => (o, o.GridRect)));
+                    AnnoCanvas.PlacedObjects.AddRange(newObjects);
 
-                    AnnoCanvas.UndoManager.RegisterOperation(new RemoveObjectsOperation()
+                    AnnoCanvas.UndoManager.RegisterOperation(new RemoveObjectsOperation<LayoutObject>()
                     {
-                        Objects = groups.SelectMany(g => g.Items).ToList(),
+                        Objects = oldObjects,
                         Collection = AnnoCanvas.PlacedObjects
                     });
-                    AnnoCanvas.UndoManager.RegisterOperation(new AddObjectsOperation()
+                    AnnoCanvas.UndoManager.RegisterOperation(new AddObjectsOperation<LayoutObject>()
                     {
                         Objects = newObjects,
                         Collection = AnnoCanvas.PlacedObjects
@@ -1215,9 +1238,10 @@ namespace AnnoDesigner.ViewModels
                         {
                             AnnoCanvas.SelectedObjects.Clear();
                             AnnoCanvas.PlacedObjects.Clear();
+                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)));
+                            
                             AnnoCanvas.UndoManager.Clear();
-
-                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)).Select(obj => (obj, obj.GridRect)));
+                            
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 
@@ -1361,7 +1385,7 @@ namespace AnnoDesigner.ViewModels
                 }
 
                 var quadTree = new QuadTree<LayoutObject>(AnnoCanvas.PlacedObjects.Extent);
-                quadTree.AddRange(allObjects.Select(obj => (obj, obj.GridRect)));
+                quadTree.AddRange(allObjects);
                 // initialize output canvas
                 var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _appSettings, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
                 {
@@ -1409,7 +1433,7 @@ namespace AnnoDesigner.ViewModels
                 if (renderStatistics)
                 {
                     var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
-                    exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.All().ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult(); ;
+                    exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult(); ;
                     exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 
                     var exportStatisticsView = new StatisticsView()
@@ -1552,7 +1576,7 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteShowStatisticsBuildingCount(object param)
         {
-            StatisticsViewModel.ToggleBuildingList(StatisticsViewModel.ShowStatisticsBuildingCount, AnnoCanvas.PlacedObjects.All().ToList(), AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
+            StatisticsViewModel.ToggleBuildingList(StatisticsViewModel.ShowStatisticsBuildingCount, AnnoCanvas.PlacedObjects.ToList(), AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
         }
 
         public ICommand PlaceBuildingCommand { get; private set; }
