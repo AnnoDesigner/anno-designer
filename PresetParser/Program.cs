@@ -38,6 +38,7 @@ namespace PresetParser
         private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "french", "polish", "russian", "spanish" };
         // Internal Program Buildings Lists to skipp double buildings
         public static List<string> annoBuildingLists = new List<string>();
+        public static List<string> validatorIntendedList = new List<string>();
         public static List<string> anno1800IconNameLists = new List<string>();
         public static List<string> TempExcludeOrnamentsFromPreset_1800 = new List<string>();
         public static int annoBuildingsListCount = 0, printTestText = 0;
@@ -356,6 +357,10 @@ namespace PresetParser
             #endregion
 
             #region Validate list of buildings
+            
+            // List of intended double identifiers, those buildings are added to different tree menu's,but has the same identifier,
+            // templatename, icon, sizes and translations, and will not couse any translation failures in statistic screen.
+            validatorIntendedList = new List<string> { "Logistic_02 (Warehouse I)" };
 
             var validator = new Validator();
             (bool isValid, List<string> duplicateIdentifiers) = validator.CheckForUniqueIdentifiers(buildings);
@@ -370,7 +375,14 @@ namespace PresetParser
                     Console.WriteLine($"### There are duplicate identifiers ({duplicateIdentifiers.Count}) ###");
                     foreach (var curDuplicateIndentifier in duplicateIdentifiers)
                     {
-                        Console.WriteLine(curDuplicateIndentifier);
+                        if (validatorIntendedList.Contains(curDuplicateIndentifier))
+                        {
+                            Console.WriteLine(curDuplicateIndentifier + " (is intended, do not change this)");
+                        }
+                        else
+                        {
+                            Console.WriteLine(curDuplicateIndentifier);
+                        }
                     }
                     Console.WriteLine();
                 }
@@ -1950,6 +1962,18 @@ namespace PresetParser
             }
 
             #endregion
+
+            #endregion
+
+            #region Rename some double Identyfiers to avoid double identifiers on the hand of Icon Files
+            switch (b.IconFileName)           
+            {
+                case "A7_col_park_props_system_1x1_24_back.png" : b.Identifier = "Park_1x1_bush_02"; break;
+                case "A7_park_props_1x1_26.png": b.Identifier = "Park_1x1_bush_03"; break;
+                case "A7_col_park_props_system_2x2_03_back.png": b.Identifier = "Park_2x2_garden_02"; break;
+                case "A7_col_park_props_system_3x3_02_front.png": b.Identifier = "Park_3x3_fountain_02"; break;
+                case "A7_col_park_props_system_3x3_03_back.png": b.Identifier = "Park_3x3_gazebo_02"; break;
+            }
 
             #endregion
 
