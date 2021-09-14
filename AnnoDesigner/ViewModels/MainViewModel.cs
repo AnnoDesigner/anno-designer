@@ -206,7 +206,7 @@ namespace AnnoDesigner.ViewModels
             Languages.Add(new SupportedLanguage("Español")
             {
                 FlagPath = "Flags/Spain.png"
-            });            
+            });
             //Languages.Add(new SupportedLanguage("Italiano"));
             //Languages.Add(new SupportedLanguage("český"));
 
@@ -396,7 +396,8 @@ namespace AnnoDesigner.ViewModels
                         obj.BlockedAreaWidth = buildingInfo.BlockedAreaWidth;
                         obj.Direction = buildingInfo.Direction;
                     }
-                    // If user give a new Label Name (as in renameing of naming own building creation) name and identifier will be renamed
+
+                    //if user entered a new Label Name (as in renaming existing building or naming own building) then name and identifier will be renamed
                     if (BuildingSettingsViewModel.BuildingRealName != BuildingSettingsViewModel.BuildingName)
                     {
                         obj.Identifier = RenameBuildingIdentifier;
@@ -405,9 +406,8 @@ namespace AnnoDesigner.ViewModels
                 }
                 else
                 {
-                    // if no Identifier is fount or if user give a new Label Name (as in renameing of naming own building creation) name and identifier will be renamed
-
-                    if (String.IsNullOrWhiteSpace(BuildingSettingsViewModel.BuildingIdentifier) || BuildingSettingsViewModel.BuildingRealName != BuildingSettingsViewModel.BuildingName)
+                    //if no Identifier is found or if user entered a new Label Name (as in renaming existing building or naming own building) then name and identifier will be renamed
+                    if (string.IsNullOrWhiteSpace(BuildingSettingsViewModel.BuildingIdentifier) || BuildingSettingsViewModel.BuildingRealName != BuildingSettingsViewModel.BuildingName)
                     {
                         if (!string.IsNullOrWhiteSpace(RenameBuildingIdentifier))
                         {
@@ -420,6 +420,7 @@ namespace AnnoDesigner.ViewModels
                         }
                     }
                 }
+
                 AnnoCanvas.SetCurrentObject(new LayoutObject(obj, _coordinateHelper, _brushCache, _penCache));
             }
             else
@@ -1164,9 +1165,9 @@ namespace AnnoDesigner.ViewModels
                             AnnoCanvas.SelectedObjects.Clear();
                             AnnoCanvas.PlacedObjects.Clear();
                             AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)));
-                            
+
                             AnnoCanvas.UndoManager.Clear();
-                            
+
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 
