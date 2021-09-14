@@ -349,7 +349,7 @@ namespace AnnoDesigner.ViewModels
         {
             // parse user inputs and create new object
             string RenameBuildingIdentifier = BuildingSettingsViewModel.BuildingName;
-            string TextBoxText = "TextBox";
+            string TextBoxText = "UnknownObject";
             var obj = new AnnoObject
             {
                 Size = new Size(BuildingSettingsViewModel.BuildingWidth, BuildingSettingsViewModel.BuildingHeight),
@@ -396,6 +396,7 @@ namespace AnnoDesigner.ViewModels
                         obj.BlockedAreaWidth = buildingInfo.BlockedAreaWidth;
                         obj.Direction = buildingInfo.Direction;
                     }
+                    // If user give a new Label Name (as in renameing of naming own building creation) name and identifier will be renamed
                     if (BuildingSettingsViewModel.BuildingRealName != BuildingSettingsViewModel.BuildingName)
                     {
                         obj.Identifier = RenameBuildingIdentifier;
@@ -404,10 +405,19 @@ namespace AnnoDesigner.ViewModels
                 }
                 else
                 {
+                    // if no Identifier is fount or if user give a new Label Name (as in renameing of naming own building creation) name and identifier will be renamed
+
                     if (String.IsNullOrWhiteSpace(BuildingSettingsViewModel.BuildingIdentifier) || BuildingSettingsViewModel.BuildingRealName != BuildingSettingsViewModel.BuildingName)
-                    { 
-                        obj.Identifier = RenameBuildingIdentifier;
-                        obj.Template = RenameBuildingIdentifier;
+                    {
+                        if (!string.IsNullOrWhiteSpace(RenameBuildingIdentifier))
+                        {
+                            obj.Identifier = RenameBuildingIdentifier;
+                            obj.Template = RenameBuildingIdentifier;
+                        }
+                        else
+                        {
+                            obj.Identifier = TextBoxText;
+                        }
                     }
                 }
                 AnnoCanvas.SetCurrentObject(new LayoutObject(obj, _coordinateHelper, _brushCache, _penCache));
