@@ -162,6 +162,7 @@ namespace AnnoDesigner.ViewModels
             get { return _buildingBlockedAreaLength; }
             set { UpdateProperty(ref _buildingBlockedAreaLength, value); }
         }
+
         public double BuildingBlockedAreaWidth
         {
             get { return _buildingBlockedAreaWidth; }
@@ -379,7 +380,7 @@ namespace AnnoDesigner.ViewModels
             {
                 PropertyName = nameof(LayoutObject.Color),
                 ObjectPropertyValues = AnnoCanvasToUse.SelectedObjects
-                    .Select(obj => (obj, obj.Color, selectedColor: (SerializableColor) SelectedColor.Value))
+                    .Select(obj => (obj, obj.Color, selectedColor: (SerializableColor)SelectedColor.Value))
                     .ToList(),
                 AfterAction = ColorChangeUndone
             });
@@ -413,7 +414,7 @@ namespace AnnoDesigner.ViewModels
                 PropertyName = nameof(LayoutObject.Color),
                 ObjectPropertyValues = AnnoCanvasToUse.SelectedObjects
                     .Where(obj => ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject).HasValue)
-                    .Select(obj => (obj, obj.Color, (SerializableColor) ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject).Value))
+                    .Select(obj => (obj, obj.Color, (SerializableColor)ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject).Value))
                     .ToList(),
                 AfterAction = ColorChangeUndone
             });
