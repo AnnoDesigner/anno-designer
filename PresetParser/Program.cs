@@ -1472,7 +1472,6 @@ namespace PresetParser
                 case "Coastal_03 (Quartz Sand Coast Building)": { b.BlockedAreaLength = 6; b.Direction = GridDirection.Right; break; }
             }
 
-
             #endregion
 
             #region Get and set new IconFilenames
@@ -1654,14 +1653,14 @@ namespace PresetParser
                 }
             }
 
-            #endregion
-
             // Get/Set Influence Radius and Influence Range (Dual on 1 building : Busstop)
             //Bussttop (has an other range name)
             if (b.Template == "Busstop") {
                 b.InfluenceRadius = Convert.ToInt32(values?["BusStop"]?["ActivationRadius"]?.InnerText);
                 b.InfluenceRange = Convert.ToInt32(values["BusStop"]["StreetConnectionRange"].InnerText);
             }
+
+            #endregion
 
             #region Get localizations
 

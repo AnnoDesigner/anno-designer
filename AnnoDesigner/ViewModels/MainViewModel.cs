@@ -385,119 +385,25 @@ namespace AnnoDesigner.ViewModels
             // do some sanity checks
             if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
             {
-                if (!string.IsNullOrWhiteSpace(obj.Icon) && !obj.Icon.Contains(IconFieldNamesCheck))
+                //gets icons and origin building info
+                var buildingInfo = AnnoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName?.Equals(objIconFileName, StringComparison.OrdinalIgnoreCase) ?? false);
+                if (buildingInfo != null)
                 {
-                    //the identifier text 'Uknown Object' is localized within the StatisticsView, which is why it's not localized here  
-                    //gets icons origin building info
-                    var buildingInfo = AnnoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName?.Equals(objIconFileName, StringComparison.OrdinalIgnoreCase) ?? false);
-                    if (buildingInfo != null)
+                    //Put in the Blocked Area if there is one
+                    if (buildingInfo.BlockedAreaLength > 0)
                     {
                         obj.BlockedAreaLength = buildingInfo.BlockedAreaLength;
                         obj.BlockedAreaWidth = buildingInfo.BlockedAreaWidth;
                         obj.Direction = buildingInfo.Direction;
-
-                        // Check X and Z Sizes of the Building Info, if one or both not right, the Object will be Unknown
-                        //Building could be in rotated form - so 5x4 should be equivalent to checking for 4x5
-                        if ((obj.Size.Width == buildingInfo.BuildBlocker["x"] && obj.Size.Height == buildingInfo.BuildBlocker["z"])
-                            || (obj.Size.Height == buildingInfo.BuildBlocker["x"] && obj.Size.Width == buildingInfo.BuildBlocker["z"]))
-                        {
-                            //if sizes match and icon is a existing building in the presets, call it that object
-                            //Exception are all other Residences of Anno 1800, that change back to Farmer Resident names
-                            if (obj.Identifier != "Residence_New_World" && obj.Identifier != "Residence_Arctic_World" && obj.Identifier != "Residence_Africa_World")
-                            {
-                                obj.Identifier = buildingInfo.Identifier;
-                                if (BuildingSettingsViewModel.BuildingRealName != RenameBuildingIdentifier)
-                                {
-                                    if (BuildingSettingsViewModel.IsEnableLabelChecked)
-                                    {
-                                        if (RenameBuildingIdentifier.Length > 30)
-                                        {
-                                            obj.Identifier = TextBoxText;
-                                            obj.Template = TextBoxText;
-                                        }
-                                        else
-                                        {
-                                            //Keep label, tempate and identifiername
-                                        }
-                                    }
-                                    else
-                                    {
-                                        obj.Identifier = RenameBuildingIdentifier;
-                                        obj.Template = RenameBuildingIdentifier;
-                                    }
-                                }
-                            }
-                            //If one of the other world residents then the OW Residents in Anno 1800 are renamed to other tiers names rename them. 
-                            if ((obj.Identifier == "Residence_New_World" || obj.Identifier == "Residence_Arctic_World" || obj.Identifier == "Residence_Africa_World") && BuildingSettingsViewModel.BuildingRealName != RenameBuildingIdentifier)
-                            {
-                                obj.Identifier = RenameBuildingIdentifier;
-                                obj.Template = RenameBuildingIdentifier;
-                            }
-                        }
-                        else
-                        {
-                            //Sizes and icon do not match
-                            //obj.Identifier = "Unknown Object";
-                            obj.Identifier = RenameBuildingIdentifier;
-                            obj.Template = RenameBuildingIdentifier;
-                        }
                     }
-                    else if (!BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase)) //check if the icon is removed from a template field
-                    {
-                        //obj.Identifier = "Unknown Object";
-                        obj.Identifier = RenameBuildingIdentifier;
-                        obj.Template = RenameBuildingIdentifier;
-                    }
-                }
-                else if (!string.IsNullOrWhiteSpace(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck))
+                    obj.Identifier = RenameBuildingIdentifier;
+                    obj.Template = RenameBuildingIdentifier;
+                } 
+                else
                 {
-                    //Check if Field Icon belongs to the field identifier, else set the official icon
-                    var buildingInfo = AnnoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == obj.Identifier);
-                    if (buildingInfo != null)
-                    {
-                        if (!string.Equals(objIconFileName, buildingInfo.IconFileName, StringComparison.OrdinalIgnoreCase))
-                        {
-                            obj.Icon = buildingInfo.IconFileName.Remove(buildingInfo.IconFileName.Length - 4, 4); //remove the .png for the combobox
-                            try
-                            {
-                                SelectedIcon = string.IsNullOrEmpty(obj.Icon) ? _noIconItem : AvailableIcons.Single(_ => _.Name == Path.GetFileNameWithoutExtension(obj.Icon));
-                            }
-                            catch (Exception)
-                            {
-                                SelectedIcon = _noIconItem;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //obj.Identifier = "Unknown Object";
-                        obj.Identifier = RenameBuildingIdentifier;
-                        obj.Template = RenameBuildingIdentifier;
-                    }
+                    obj.Identifier = RenameBuildingIdentifier;
+                    obj.Template = RenameBuildingIdentifier;
                 }
-                if (string.IsNullOrEmpty(obj.Icon) && !BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (BuildingSettingsViewModel.IsEnableLabelChecked)
-                    {
-                        if (RenameBuildingIdentifier.Length > 30)
-                        {
-                            obj.Identifier = TextBoxText;
-                            obj.Template = TextBoxText;
-                        }
-                        else
-                        {
-                            obj.Identifier = RenameBuildingIdentifier;
-                            obj.Template = RenameBuildingIdentifier;
-                        }
-                    }
-                    else
-                    {
-                        //obj.Identifier = "Unknown Object";
-                        obj.Identifier = RenameBuildingIdentifier;
-                        obj.Template = RenameBuildingIdentifier;
-                    }
-                }
-
                 AnnoCanvas.SetCurrentObject(new LayoutObject(obj, _coordinateHelper, _brushCache, _penCache));
             }
             else
