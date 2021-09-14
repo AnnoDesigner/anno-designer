@@ -33,6 +33,7 @@ namespace AnnoDesigner.Models
         private int _gridSizeScreenRect;
         private Point _position;
         private Rect _screenRect;
+        private Rect? _blockedAreaScreenRect;
         private Rect _collisionRect;
         private Size _collisionSize;
         private string _iconNameWithoutExtension;
@@ -246,46 +247,65 @@ namespace AnnoDesigner.Models
                 if (_screenRect == default)
                 {
                     _screenRect = new Rect(_coordinateHelper.GridToScreen(Position, _gridSizeScreenRect), _coordinateHelper.GridToScreen(Size, _gridSizeScreenRect));
+                    _blockedAreaScreenRect = null;
                 }
 
                 return _screenRect;
             }
         }
 
-        public Rect? CalculateReservedScreenRect(int gridSize)
+        public Rect? CalculateBlockedScreenRect(int gridSize)
         {
-            if (BlockedAreaLength > 0)
+            if (_gridSizeScreenRect != gridSize)
             {
-                var blockedAreaScreenWidth = _coordinateHelper.GridToScreen(BlockedAreaWidth, gridSize);
-                var blockedAreaScreenLength = _coordinateHelper.GridToScreen(BlockedAreaLength, gridSize);
-
-                switch (Direction)
-                {
-                    case GridDirection.Up:
-                        return new Rect(
-                            ScreenRect.Left + (ScreenRect.Width - blockedAreaScreenWidth) / 2,
-                            ScreenRect.Top - blockedAreaScreenLength,
-                            blockedAreaScreenWidth,
-                            blockedAreaScreenLength);
-                    case GridDirection.Right:
-                        return new Rect(
-                            ScreenRect.Right,
-                            ScreenRect.Top + (ScreenRect.Height - blockedAreaScreenWidth) / 2,
-                            blockedAreaScreenLength,
-                            blockedAreaScreenWidth);
-                    case GridDirection.Down:
-                        return new Rect(ScreenRect.Left + (ScreenRect.Width - blockedAreaScreenWidth) / 2,
-                            ScreenRect.Bottom,
-                            blockedAreaScreenWidth,
-                            blockedAreaScreenLength);
-                    case GridDirection.Left:
-                        return new Rect(ScreenRect.TopLeft.X - blockedAreaScreenLength,
-                            ScreenRect.TopLeft.Y + (ScreenRect.Height - blockedAreaScreenWidth) / 2,
-                            blockedAreaScreenLength,
-                            blockedAreaScreenWidth);
-                }
+                _gridSizeScreenRect = gridSize;
+                _blockedAreaScreenRect = null;
             }
-            return null;
+
+            return BlockedAreaScreenRect;
+        }
+
+        private Rect? BlockedAreaScreenRect
+        {
+            get
+            {
+                if (_blockedAreaScreenRect == null)
+                {
+                    if (BlockedAreaLength > 0)
+                    {
+                        var blockedAreaScreenWidth = _coordinateHelper.GridToScreen(BlockedAreaWidth, _gridSizeScreenRect);
+                        var blockedAreaScreenLength = _coordinateHelper.GridToScreen(BlockedAreaLength, _gridSizeScreenRect);
+
+                        switch (Direction)
+                        {
+                            case GridDirection.Up:
+                                return _blockedAreaScreenRect = new Rect(
+                                    ScreenRect.Left + (ScreenRect.Width - blockedAreaScreenWidth) / 2,
+                                    ScreenRect.Top - blockedAreaScreenLength,
+                                    blockedAreaScreenWidth,
+                                    blockedAreaScreenLength);
+                            case GridDirection.Right:
+                                return _blockedAreaScreenRect = new Rect(
+                                    ScreenRect.Right,
+                                    ScreenRect.Top + (ScreenRect.Height - blockedAreaScreenWidth) / 2,
+                                    blockedAreaScreenLength,
+                                    blockedAreaScreenWidth);
+                            case GridDirection.Down:
+                                return _blockedAreaScreenRect = new Rect(ScreenRect.Left + (ScreenRect.Width - blockedAreaScreenWidth) / 2,
+                                    ScreenRect.Bottom,
+                                    blockedAreaScreenWidth,
+                                    blockedAreaScreenLength);
+                            case GridDirection.Left:
+                                return _blockedAreaScreenRect = new Rect(ScreenRect.TopLeft.X - blockedAreaScreenLength,
+                                    ScreenRect.TopLeft.Y + (ScreenRect.Height - blockedAreaScreenWidth) / 2,
+                                    blockedAreaScreenLength,
+                                    blockedAreaScreenWidth);
+                        }
+                    }
+                }
+
+                return _blockedAreaScreenRect;
+            }
         }
 
         /// <summary>
