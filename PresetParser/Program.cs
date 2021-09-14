@@ -38,7 +38,6 @@ namespace PresetParser
         private static readonly string[] LanguagesFiles1800 = new[] { "english", "german", "french", "polish", "russian", "spanish" };
         // Internal Program Buildings Lists to skipp double buildings
         public static List<string> annoBuildingLists = new List<string>();
-        public static List<string> validatorIntendedList = new List<string>();
         public static List<string> anno1800IconNameLists = new List<string>();
         public static List<string> TempExcludeOrnamentsFromPreset_1800 = new List<string>();
         public static int annoBuildingsListCount = 0, printTestText = 0;
@@ -49,6 +48,7 @@ namespace PresetParser
         private static readonly BuildingBlockProvider _buildingBlockProvider;
         private static readonly IIfoFileProvider _ifoFileProvider;
         private static readonly LocalizationHelper _localizationHelper;
+        private static readonly IFileSystem _fileSystem;
 
         #region Initalisizing Exclude IdentifierNames, FactionNames and TemplateNames for presets.json file 
 
@@ -133,7 +133,8 @@ namespace PresetParser
             _ifoFileProvider = new IfoFileProvider();
             _buildingBlockProvider = new BuildingBlockProvider(_ifoFileProvider);
 
-            _localizationHelper = new LocalizationHelper(new FileSystem());
+            _fileSystem = new FileSystem();
+            _localizationHelper = new LocalizationHelper(_fileSystem);
 
             VersionSpecificPaths = new Dictionary<string, Dictionary<string, PathRef[]>>();
         }
@@ -152,6 +153,7 @@ namespace PresetParser
                 {
                     Environment.Exit(0);
                 }
+
                 if (annoVersion == Constants.ANNO_VERSION_1404 || annoVersion == Constants.ANNO_VERSION_2070 || annoVersion == Constants.ANNO_VERSION_2205 || annoVersion == Constants.ANNO_VERSION_1800 || annoVersion == "-ALL")
                 {
                     validVersion = true;
@@ -166,12 +168,51 @@ namespace PresetParser
                         testVersion = true;
                     }
                 }
+                else if (annoVersion == "-validate")
+                {
+                    Console.Write("Please enter path to file for validation: ");
+                    var filePathToValidate = Console.ReadLine();
+
+                    //get rid of quotes in the filepath (could contain spaces)
+                    if (!string.IsNullOrWhiteSpace(filePathToValidate))
+                    {
+                        filePathToValidate = filePathToValidate.Trim('"');
+                    }
+
+                    if (string.IsNullOrWhiteSpace(filePathToValidate) || !_fileSystem.File.Exists(filePathToValidate))
+                    {
+                        var oldColor = Console.ForegroundColor;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("The path to the file was not valid!");
+                        Console.ForegroundColor = oldColor;
+                        Environment.Exit(0);
+                    }
+
+                    try
+                    {
+                        var loadedPresets = SerializationHelper.LoadFromFile<BuildingPresets>(filePathToValidate);
+
+                        ValidateBuildings(loadedPresets.Buildings.Cast<IBuildingInfo>().ToList());
+                        Console.ReadLine();
+                        Environment.Exit(0);
+                    }
+                    catch (Exception ex)
+                    {
+                        var oldColor = Console.ForegroundColor;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("There was an error validating the file:");
+                        Console.WriteLine(ex);
+                        Console.ForegroundColor = oldColor;
+                        Environment.Exit(0);
+                    }
+                }
                 else
                 {
                     Console.WriteLine();
                     Console.WriteLine("Invalid input, please try again or enter 'quit to exit.");
                 }
             }
+
             if (annoVersion != "-ALL")
             {
                 ///Add a trailing backslash if one is not present.
@@ -184,6 +225,7 @@ namespace PresetParser
                 BASE_PATH_2205 = GetBASE_PATH(Constants.ANNO_VERSION_2205);
                 BASE_PATH_1800 = GetBASE_PATH(Constants.ANNO_VERSION_1800);
             }
+
             if (!testVersion)
             {
                 Console.WriteLine("Extracting and parsing RDA data from {0} for anno version {1}.", BASE_PATH, annoVersion);
@@ -196,6 +238,7 @@ namespace PresetParser
             {
                 Console.WriteLine("Extracting and parsing RDA data for all Anno versions");
             }
+
             #endregion
 
             #region Anno Verion Data Paths
@@ -357,55 +400,8 @@ namespace PresetParser
             #endregion
 
             #region Validate list of buildings
-            
-            // List of intended double identifiers, those buildings are added to different tree menu's,but has the same identifier,
-            // templatename, icon, sizes and translations, and will not couse any translation failures in statistic screen.
-            validatorIntendedList = new List<string> { "Logistic_02 (Warehouse I)" };
 
-            var validator = new Validator();
-            (bool isValid, List<string> duplicateIdentifiers) = validator.CheckForUniqueIdentifiers(buildings);
-            var oldColor = Console.ForegroundColor;
-            if (!isValid)
-            {
-                try
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-
-                    Console.WriteLine();
-                    Console.WriteLine($"### There are duplicate identifiers ({duplicateIdentifiers.Count}) ###");
-                    foreach (var curDuplicateIndentifier in duplicateIdentifiers)
-                    {
-                        if (validatorIntendedList.Contains(curDuplicateIndentifier))
-                        {
-                            Console.WriteLine(curDuplicateIndentifier + " (is intended, do not change this)");
-                        }
-                        else
-                        {
-                            Console.WriteLine(curDuplicateIndentifier);
-                        }
-                    }
-                    Console.WriteLine();
-                }
-                finally
-                {
-                    Console.ForegroundColor = oldColor;
-                }
-            }
-            else
-            {
-                try
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-
-                    Console.WriteLine();
-                    Console.WriteLine("There are no duplicate Indentifiers.");
-                    Console.WriteLine();
-                }
-                finally
-                {
-                    Console.ForegroundColor = oldColor;
-                }
-            }
+            ValidateBuildings(buildings);
 
             #endregion
 
@@ -432,6 +428,50 @@ namespace PresetParser
             Console.WriteLine("DONE - press enter to exit");
             Console.ReadLine();
             #endregion //End Prepare JSON Files
+        }
+
+        private static void ValidateBuildings(List<IBuildingInfo> buildingsToCheck)
+        {
+            // This list contains identifiers which are duplicated on purpose (on various places inside the preset tree) and known to not cause any errors (e.g. translation or statistics).
+            var knownDuplicates = new List<string> { "Logistic_02 (Warehouse I)" };
+
+            var validator = new Validator();
+            (bool isValid, List<string> duplicateIdentifiers) = validator.CheckForUniqueIdentifiers(buildingsToCheck, knownDuplicates);
+            var oldColor = Console.ForegroundColor;
+            if (!isValid)
+            {
+                try
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+                    Console.WriteLine();
+                    Console.WriteLine($"### There are duplicate identifiers ({duplicateIdentifiers.Count}) ###");
+                    foreach (var curDuplicateIndentifier in duplicateIdentifiers)
+                    {
+                        Console.WriteLine(curDuplicateIndentifier);
+                    }
+                    Console.WriteLine();
+                }
+                finally
+                {
+                    Console.ForegroundColor = oldColor;
+                }
+            }
+            else
+            {
+                try
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+
+                    Console.WriteLine();
+                    Console.WriteLine("There are no duplicate Indentifiers.");
+                    Console.WriteLine();
+                }
+                finally
+                {
+                    Console.ForegroundColor = oldColor;
+                }
+            }
         }
 
         // Get the BASE_PATH for the given Anno
@@ -1965,10 +2005,11 @@ namespace PresetParser
 
             #endregion
 
-            #region Rename some double Identyfiers to avoid double identifiers on the hand of Icon Files
-            switch (b.IconFileName)           
+            #region Rename some duplicate indentifiers to avoid double identifiers on the hand of Icon Files
+
+            switch (b.IconFileName)
             {
-                case "A7_col_park_props_system_1x1_24_back.png" : b.Identifier = "Park_1x1_bush_02"; break;
+                case "A7_col_park_props_system_1x1_24_back.png": b.Identifier = "Park_1x1_bush_02"; break;
                 case "A7_park_props_1x1_26.png": b.Identifier = "Park_1x1_bush_03"; break;
                 case "A7_col_park_props_system_2x2_03_back.png": b.Identifier = "Park_2x2_garden_02"; break;
                 case "A7_col_park_props_system_3x3_02_front.png": b.Identifier = "Park_3x3_fountain_02"; break;
