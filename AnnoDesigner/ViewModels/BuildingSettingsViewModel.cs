@@ -31,6 +31,9 @@ namespace AnnoDesigner.ViewModels
         private string _buildingIdentifier;
         private double _buildingRadius;
         private double _buildingInfluenceRange;
+        private double _buildingBlockedAreaLength;
+        private double _buildingBlockedAreaWidth;
+        private GridDirection _buildingDirection;
         private bool _isPavedStreet;
         private bool _isEnableLabelChecked;
         private bool _isBorderlessChecked;
@@ -152,6 +155,24 @@ namespace AnnoDesigner.ViewModels
         {
             get { return _buildingInfluenceRange; }
             set { UpdateProperty(ref _buildingInfluenceRange, value); }
+        }
+
+        public double BuildingBlockedAreaLength
+        {
+            get { return _buildingBlockedAreaLength; }
+            set { UpdateProperty(ref _buildingBlockedAreaLength, value); }
+        }
+
+        public double BuildingBlockedAreaWidth
+        {
+            get { return _buildingBlockedAreaWidth; }
+            set { UpdateProperty(ref _buildingBlockedAreaWidth, value); }
+        }
+
+        public GridDirection BuildingDirection
+        {
+            get { return _buildingDirection; }
+            set { UpdateProperty(ref _buildingDirection, value); }
         }
 
         public bool IsPavedStreet
@@ -359,7 +380,7 @@ namespace AnnoDesigner.ViewModels
             {
                 PropertyName = nameof(LayoutObject.Color),
                 ObjectPropertyValues = AnnoCanvasToUse.SelectedObjects
-                    .Select(obj => (obj, obj.Color, selectedColor: (SerializableColor) SelectedColor.Value))
+                    .Select(obj => (obj, obj.Color, selectedColor: (SerializableColor)SelectedColor.Value))
                     .ToList(),
                 AfterAction = ColorChangeUndone
             });
@@ -393,7 +414,7 @@ namespace AnnoDesigner.ViewModels
                 PropertyName = nameof(LayoutObject.Color),
                 ObjectPropertyValues = AnnoCanvasToUse.SelectedObjects
                     .Where(obj => ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject).HasValue)
-                    .Select(obj => (obj, obj.Color, (SerializableColor) ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject).Value))
+                    .Select(obj => (obj, obj.Color, (SerializableColor)ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject).Value))
                     .ToList(),
                 AfterAction = ColorChangeUndone
             });
