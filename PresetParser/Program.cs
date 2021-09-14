@@ -31,7 +31,7 @@ namespace PresetParser
         public static bool isExcludedGUID = false; /*only for Anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-        private const string BUILDING_PRESETS_VERSION = "3.12";
+        private const string BUILDING_PRESETS_VERSION = "4.0";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus", "esp" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian", "spanish" };
@@ -105,7 +105,7 @@ namespace PresetParser
             "PropagandaTower Merciers Version","tractor_module_02 (Harvester)", "Culture_1x1_statue", "Culture_prop_system_1x1_10", "Culture_prop_system_1x1_01", "Logistic_05 (Warehouse IV)", "Park_1x1_hedgeentrance",
             "Harbour Slot (Ghost) Arctic", "Tractor_module_01 (GASOLINE TEST)", "Fuel_station_01 (GASOLINE TEST)", "Kontor_main_04", "Kontor_imperial_04", "Culture_1x1_plaza","Harbor_12 (Coal Harbor)",
             "Harbor_13 (Coal Storage)", "Kontor_main_arctic_01", "Kontor_imperial_arctic_01", "ResearchCenter_02", "ResearchCenter_03", "StoryIsland01 Monastery Kontor","StoryIsland02 Military Kontor",
-            "StoryIsland03 Economy Kontor", "Diner_0", "Bar_0", "Cafe_0", "Tourist_monument_03", "Kontor_main_colony02_01", "Kontor_imperial_colony02_01", "Guild_house_africa"};
+            "StoryIsland03 Economy Kontor", "Diner_0", "Bar_0", "Cafe_0", "Tourist_monument_03", "Kontor_main_colony02_01", "Kontor_imperial_colony02_01", "Guild_house_africa", "Harbor_14d (Oil Harbor IV)"};
         //Skip the following icons to put in the presets for anno 1800, to avoid double Ornamentalbuildings
         public static List<string> ExcludeOrnamentsIcons_1800 = new List<string> { "A7_bush03.png", "A7_park_props_1x1_01.png", "A7_park_props_1x1_07.png", "A7_bush01.png", "A7_col_props_1x1_13_back.png", "A7_bush05.png", "A7_park_props_1x1_08.png",
             "A7_bush02.png", "A7_bush04.png", "A7_col_props_1x1_11_bac.pngk", "A7_col_props_1x1_01_back.png", "A7_col_props_1x1_07_back.png","A7_park_1x1_06.png","A7_park_1x1_02.png","A7_park_1x1_03.png","A7_col_park_props_system_1x1_21_back.png",
@@ -1485,6 +1485,38 @@ namespace PresetParser
 
             #endregion
 
+            #region Set the BlockedArea's and Start Direction
+            /// Set the BlockedArea's and Start Direction for Coastal buildings that have a Blocked Area
+            /// I do this by hand, as automatically is not an option for now, as the .ifo file are messy to get the
+            ///  <QuayArea> blocks from it. Read here for the complete story why 
+            ///  https://discord.com/channels/571011757317947406/571064812042321927/885817431136817162
+
+            switch (b.Identifier)
+            {
+                case "Coastal_01 (Fish Coast Building)": { b.BlockedAreaLength = 5; b.Direction = GridDirection.Right; break; }
+                case "Coastal_colony01_02 (Fish Coast Building)": { b.BlockedAreaLength = 5; b.Direction = GridDirection.Right; break; }
+                case "Coastal_arctic_02 (Seal Hunter)": { b.BlockedAreaLength = 6; b.Direction = GridDirection.Right; break; }
+                case "Coastal_colony02_01 (Salt Coast Building)": { b.BlockedAreaLength = 6; b.Direction = GridDirection.Right; break; }
+                case "Coastal_colony02_02 (Seafood Fisher)": { b.BlockedAreaLength = 6; b.Direction = GridDirection.Right; break; }
+                case "Coastal_02 (Niter Coast Building)": { b.BlockedAreaLength = 7; b.Direction = GridDirection.Right; break; }
+                case "Coastal_arctic_01 (Whale Coast Building)": { b.BlockedAreaLength = 13; b.Direction = GridDirection.Right; break; }
+                case "Harbor_16 (Commuter Pier)": { b.BlockedAreaLength = 7; b.Direction = GridDirection.Right; break; }
+                case "Dockland_Module_Storage": { b.BlockedAreaLength = 3; b.Direction = GridDirection.Right; break; }
+                case "Dockland_Module_RepairCrane": { b.BlockedAreaLength = 3; b.Direction = GridDirection.Right; break; }
+                case "Dockland_Module_SpeedUp": { b.BlockedAreaLength = 3; b.Direction = GridDirection.Right; break; }
+                case "Harbor_02 (Sailing Shipyard)": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Harbor_03 (Steam Shipyard)": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Harbor_08 (Pier)": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Harbor_09 (tourism_pier_01)": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Kontor_main_01": { b.BlockedAreaLength = 25; b.BlockedAreaWidth = 4.5; b.Direction = GridDirection.Right; break; }
+                case "Harbor_14a (Oil Harbor I)": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Dockland - Main": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Dockland_Module_Pier": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Coastal_03 (Quartz Sand Coast Building)": { b.BlockedAreaLength = 6; b.Direction = GridDirection.Right; break; }
+            }
+
+            #endregion
+
             #region Get and set new IconFilenames
 
             // find icon node in values
@@ -1522,6 +1554,7 @@ namespace PresetParser
                 switch (b.Identifier)
                 {
                     case "AmusementPark CottonCandy": { icon = replaceName + "cotton_candy.png"; break; } // faulty naming fix icn_ instead of icon_
+                    case "Coastal_colony02_01 (Salt Coast Building)": b.IconFileName = replaceName + "salt_africa.png"; break;
                 }
 
                 b.IconFileName = icon;
@@ -1629,6 +1662,10 @@ namespace PresetParser
                 case "DepartmentStore_Blank": b.InfluenceRadius = 45; break;
                 case "Pharmacy_Blank": b.InfluenceRadius = 45; break;
                 case "FurnitureStore_Blank": b.InfluenceRadius = 45; break;
+                case "Harbor_07 (Repair Crane)": b.InfluenceRadius = 20; break;
+                case "Dockland_Module_RepairCrane": b.InfluenceRadius = 20; break;
+                case "Harbor_office": b.InfluenceRadius = 20; break;
+                case "Tourist_monument_02_blank (restaurant)": b.InfluenceRadius = 107; break;
             }
 
             #endregion
@@ -1659,8 +1696,6 @@ namespace PresetParser
                 }
             }
 
-            #endregion
-
             // Get/Set Influence Radius and Influence Range (Dual on 1 building : Busstop)
             //Bussttop (has an other range name)
             if (b.Template == "Busstop")
@@ -1668,6 +1703,8 @@ namespace PresetParser
                 b.InfluenceRadius = Convert.ToInt32(values?["BusStop"]?["ActivationRadius"]?.InnerText);
                 b.InfluenceRange = Convert.ToInt32(values["BusStop"]["StreetConnectionRange"].InnerText);
             }
+
+            #endregion
 
             #region Get localizations
 
