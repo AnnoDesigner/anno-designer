@@ -213,6 +213,27 @@ namespace AnnoDesigner
         }
 
         /// <summary>
+        /// Backing field of the RenderHarborBlockedArea property.
+        /// </summary>
+        private bool _renderHarborBlockedArea;
+
+        /// <summary>
+        /// Gets or sets value indication whether the blocked harbor aread should be rendered.
+        /// </summary>
+        public bool RenderHarborBlockedArea
+        {
+            get { return _renderHarborBlockedArea; }
+            set
+            {
+                if (_renderHarborBlockedArea != value)
+                {
+                    InvalidateVisual();
+                }
+                _renderHarborBlockedArea = value;
+            }
+        }
+
+        /// <summary>
         /// Backing field of the CurrentObject property
         /// </summary>
         private List<LayoutObject> _currentObjects = new List<LayoutObject>();
@@ -1079,6 +1100,14 @@ namespace AnnoDesigner
 
                 var borderPen = obj.Borderless ? curLayoutObject.GetBorderlessPen(brush, _linePen.Thickness) : _linePen;
                 drawingContext.DrawRectangle(brush, borderPen, objRect);
+                if (RenderHarborBlockedArea)
+                {
+                    var objBlockedRect = curLayoutObject.CalculateBlockedScreenRect(GridSize);
+                    if (objBlockedRect.HasValue)
+                    {
+                        drawingContext.DrawRectangle(curLayoutObject.BlockedAreaBrush, borderPen, objBlockedRect.Value);
+                    }
+                }
 
                 // draw object icon if it is at least 2x2 cells
                 var iconRendered = false;
@@ -1599,6 +1628,7 @@ namespace AnnoDesigner
                 var newRect = _coordinateHelper.Rotate(item.Bounds);
                 var oldRect = item.Bounds;
                 item.Bounds = newRect;
+                item.Direction = _coordinateHelper.Rotate(item.Direction);
                 yield return (item, oldRect);
             }
         }
@@ -2388,6 +2418,7 @@ namespace AnnoDesigner
             if (CurrentObjects.Count == 1)
             {
                 CurrentObjects[0].Size = _coordinateHelper.Rotate(CurrentObjects[0].Size);
+                CurrentObjects[0].Direction = _coordinateHelper.Rotate(CurrentObjects[0].Direction);
             }
             else if (CurrentObjects.Count > 1)
             {

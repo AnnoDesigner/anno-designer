@@ -30,6 +30,7 @@ namespace AnnoDesigner.Core.Models
         bool ShowGrid { get; set; }
         bool ShowTrueInfluenceRange { get; set; }
         bool ShowInfluences { get; set; }
+        bool ShowHarborBlockedArea { get; set; }
         bool IsPavedStreet { get; set; }
         string TreeViewSearchText { get; set; }
         string PresetsTreeGameVersionFilter { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Models
 {
@@ -15,6 +16,8 @@ namespace AnnoDesigner.Models
         Size Rotate(Size size);
 
         Rect Rotate(Rect rect);
+
+        GridDirection Rotate(GridDirection direction);
 
         double RoundScreenToGrid(double screenLength, int gridStep);
 

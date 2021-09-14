@@ -64,6 +64,7 @@ namespace AnnoDesigner.ViewModels
         private bool _canvasShowLabels;
         private bool _canvasShowTrueInfluenceRange;
         private bool _canvasShowInfluences;
+        private bool _canvasShowHarborBlockedArea;
         private bool _useCurrentZoomOnExportedImageValue;
         private bool _renderSelectionHighlightsOnExportedImageValue;
         private bool _isLanguageChange;
@@ -388,6 +389,10 @@ namespace AnnoDesigner.ViewModels
                     var buildingInfo = AnnoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName?.Equals(objIconFileName, StringComparison.OrdinalIgnoreCase) ?? false);
                     if (buildingInfo != null)
                     {
+                        obj.BlockedAreaLength = buildingInfo.BlockedAreaLength;
+                        obj.BlockedAreaWidth = buildingInfo.BlockedAreaWidth;
+                        obj.Direction = buildingInfo.Direction;
+
                         // Check X and Z Sizes of the Building Info, if one or both not right, the Object will be Unknown
                         //Building could be in rotated form - so 5x4 should be equivalent to checking for 4x5
                         if ((obj.Size.Width == buildingInfo.BuildBlocker["x"] && obj.Size.Height == buildingInfo.BuildBlocker["z"])
@@ -676,6 +681,7 @@ namespace AnnoDesigner.ViewModels
             CanvasShowLabels = _appSettings.ShowLabels;
             CanvasShowTrueInfluenceRange = _appSettings.ShowTrueInfluenceRange;
             CanvasShowInfluences = _appSettings.ShowInfluences;
+            CanvasShowHarborBlockedArea = _appSettings.ShowHarborBlockedArea;
 
             BuildingSettingsViewModel.IsPavedStreet = _appSettings.IsPavedStreet;
 
@@ -696,6 +702,7 @@ namespace AnnoDesigner.ViewModels
             _appSettings.ShowLabels = CanvasShowLabels;
             _appSettings.ShowTrueInfluenceRange = CanvasShowTrueInfluenceRange;
             _appSettings.ShowInfluences = CanvasShowInfluences;
+            _appSettings.ShowHarborBlockedArea = CanvasShowHarborBlockedArea;
 
             _appSettings.StatsShowStats = StatisticsViewModel.IsVisible;
             _appSettings.StatsShowBuildingCount = StatisticsViewModel.ShowStatisticsBuildingCount;
@@ -967,6 +974,19 @@ namespace AnnoDesigner.ViewModels
                 if (AnnoCanvas != null)
                 {
                     AnnoCanvas.RenderInfluences = _canvasShowInfluences;
+                }
+            }
+        }
+
+        public bool CanvasShowHarborBlockedArea
+        {
+            get { return _canvasShowHarborBlockedArea; }
+            set
+            {
+                UpdateProperty(ref _canvasShowHarborBlockedArea, value);
+                if (AnnoCanvas != null)
+                {
+                    AnnoCanvas.RenderHarborBlockedArea = _canvasShowHarborBlockedArea;
                 }
             }
         }

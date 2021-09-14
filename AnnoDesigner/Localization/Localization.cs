@@ -245,7 +245,8 @@ namespace AnnoDesigner.Localization
                     ["UnsavedChanged"] = "There are unsaved changes",
                     ["UnsavedChangedBeforeCrash"] = "Program crashed but there are unsaved changes",
                     ["ColorPresetsVersion"] = "Color Presets Version",
-                    ["TreeLocalizationVersion"] = "Tree Localization Version"
+                    ["TreeLocalizationVersion"] = "Tree Localization Version",
+                    ["ShowHarborBlockedArea"] = "Show Harbor Areas"
                 },
                 ["ger"] = new Dictionary<string, string>()
                 {
@@ -438,7 +439,8 @@ namespace AnnoDesigner.Localization
                     ["UnsavedChanged"] = "Es gibt nicht gespeicherte Änderungen",
                     ["UnsavedChangedBeforeCrash"] = "Die Anwendung ist abgestürzt, aber es gibt nicht gespeicherte Änderungen.",
                     ["ColorPresetsVersion"] = "Farbvorlagenversion",
-                    ["TreeLocalizationVersion"] = "Übersetzungsversion"
+                    ["TreeLocalizationVersion"] = "Übersetzungsversion",
+                    ["ShowHarborBlockedArea"] = "Hafengebiete anzeigen"
                 },
                 ["fra"] = new Dictionary<string, string>()
                 {
@@ -631,7 +633,8 @@ namespace AnnoDesigner.Localization
                     ["UnsavedChanged"] = "Il y a des changements non sauvés",
                     ["UnsavedChangedBeforeCrash"] = "Le programme a planté mais il y a des modifications non sauvegardées.",
                     ["ColorPresetsVersion"] = "Version des préréglages de couleur",
-                    ["TreeLocalizationVersion"] = "Version de la localisation de l'arbre"
+                    ["TreeLocalizationVersion"] = "Version de la localisation de l'arbre",
+                    ["ShowHarborBlockedArea"] = "Afficher les zones portuaires"
                 },
                 ["esp"] = new Dictionary<string, string>()
                 {
@@ -690,7 +693,7 @@ namespace AnnoDesigner.Localization
                     ["Both"] = "Ambos",
                     ["PavedStreet"] = "Calle pavimentada",
                     ["PavedStreetWarningTitle"] = "Selección de calles pavimentadas",
-                    ["PavedStreetToolTip"] = $"Marcando esta opción se cambiará el alcance de influencia de los edificios,{Environment.NewLine}representando el mayor alcance que reciben al utilizar calles pavimentadas.{Environment.NewLine}Usa el botón 'Colocar edificio' para colocar un objeto.",
+                    ["PavedStreetToolTip"] = $"Marcando esta opción se cambiará el alcance de influencia de los edificios,{Environment.NewLine}representando el mayor alcance que reciben al utilizar calles pavimentadas.{Environment.NewLine}Usa el botón \"Colocar edificio\" para colocar un objeto.",
                     ["Options"] = "Opciones",
                     ["EnableLabel"] = "Activar etiquetas",
                     ["Borderless"] = "Sin bordes",
@@ -824,7 +827,8 @@ namespace AnnoDesigner.Localization
                     ["UnsavedChanged"] = "Hay cambios no guardados",
                     ["UnsavedChangedBeforeCrash"] = "El programa se ha interrumpido pero hay cambios no guardados",
                     ["ColorPresetsVersion"] = "Versión de preajustes de color",
-                    ["TreeLocalizationVersion"] = "Versión de localización del árbol"
+                    ["TreeLocalizationVersion"] = "Versión de localización del árbol",
+                    ["ShowHarborBlockedArea"] = "Mostrar zonas portuarias"
                 },
                 ["pol"] = new Dictionary<string, string>()
                 {
@@ -1017,7 +1021,8 @@ namespace AnnoDesigner.Localization
                     ["UnsavedChanged"] = "Istnieją niezbawione zmiany",
                     ["UnsavedChangedBeforeCrash"] = "Program zawiesił się, ale są niezapisane zmiany",
                     ["ColorPresetsVersion"] = "Presety kolorów Wersja",
-                    ["TreeLocalizationVersion"] = "Wersja lokalizacji drzewa"
+                    ["TreeLocalizationVersion"] = "Wersja lokalizacji drzewa",
+                    ["ShowHarborBlockedArea"] = "Pokaż obszary portowe"
                 },
                 ["rus"] = new Dictionary<string, string>()
                 {
@@ -1210,7 +1215,8 @@ namespace AnnoDesigner.Localization
                     ["UnsavedChanged"] = "Есть неспасенные изменения",
                     ["UnsavedChangedBeforeCrash"] = "Программа аварийно завершена, но есть несохраненные изменения",
                     ["ColorPresetsVersion"] = "Версия предустановок цвета",
-                    ["TreeLocalizationVersion"] = "Версия локализации деревьев"
+                    ["TreeLocalizationVersion"] = "Версия локализации деревьев",
+                    ["ShowHarborBlockedArea"] = "Показать районы гавани"
                 },
             };
 

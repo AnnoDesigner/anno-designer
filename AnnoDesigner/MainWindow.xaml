@@ -179,6 +179,9 @@
                     <MenuItem Header="{l:Localize ShowInfluences}"
                               IsCheckable="True"
                               IsChecked="{Binding CanvasShowInfluences}" />
+                    <MenuItem Header="{l:Localize ShowHarborBlockedArea}"
+                              IsCheckable="True"
+                              IsChecked="{Binding CanvasShowHarborBlockedArea}" />
                 </MenuItem>
                 <MenuItem Header="{l:Localize Tools}">
                     <MenuItem Header="{l:Localize Normalize}"

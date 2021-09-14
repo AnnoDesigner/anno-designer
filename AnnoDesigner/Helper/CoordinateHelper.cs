@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 
 namespace AnnoDesigner.Helper
@@ -156,6 +157,16 @@ namespace AnnoDesigner.Helper
             xPrime -= rect.Size.Height;
 
             return new Rect(new Point(xPrime, yPrime), Rotate(rect.Size));
+        }
+
+        /// <summary>
+        /// Rotates the given GridDirection object 90 degrees clockwise.
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <returns></returns>
+        public GridDirection Rotate(GridDirection direction)
+        {
+            return (GridDirection)((int)(direction + 1) % 4);
         }
     }
 }

@@ -33,9 +33,10 @@ namespace AnnoDesigner.Helper
 
             // make an array with one free grid cell on each edge
             var countY = (int)(statistics.MaxY - statistics.MinY + 2);
-            var result = Enumerable.Range(0, (int)(statistics.MaxX - statistics.MinX + 2))
+            var countX = (int)(statistics.MaxX - statistics.MinX + 2);
+            var result = Enumerable.Range(0, countX)
                 .Select(i => new AnnoObject[countY])
-                .ToArray();
+                .ToArrayWithCapacity(countX);
 
             Parallel.ForEach(placedObjects, placedObject =>
             {
