@@ -185,6 +185,7 @@ namespace PresetParser
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("The path to the file was not valid!");
                         Console.ForegroundColor = oldColor;
+                        Console.ReadKey();
                         Environment.Exit(0);
                     }
 
