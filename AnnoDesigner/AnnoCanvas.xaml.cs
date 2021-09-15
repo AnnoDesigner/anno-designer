@@ -750,6 +750,10 @@ namespace AnnoDesigner
             return base.ArrangeOverride(arrangeBounds);
         }
 
+        private Rect _lastViewPortAbsolute = default;
+        private List<LayoutObject> _lastObjectsToDraw = new List<LayoutObject>();
+        private QuadTree<LayoutObject> _lastPlacedObjects = null;
+
         /// <summary>
         /// Renders the whole scene including grid, placed objects, current object, selection highlights, influence radii and selection rectangle.
         /// </summary>
@@ -829,7 +833,15 @@ namespace AnnoDesigner
             //Push the transform after rendering everything that should not be translated.
             drawingContext.PushTransform(_viewportTransform);
 
-            var objectsToDraw = PlacedObjects.GetItemsIntersecting(_viewport.Absolute).ToList();
+            List<LayoutObject> objectsToDraw = _lastObjectsToDraw;
+            if (_lastViewPortAbsolute != _viewport.Absolute || _lastPlacedObjects != PlacedObjects)
+            {
+                objectsToDraw = PlacedObjects.GetItemsIntersecting(_viewport.Absolute).ToList();
+                _lastObjectsToDraw = objectsToDraw;
+                _lastPlacedObjects = PlacedObjects;
+                _lastViewPortAbsolute = _viewport.Absolute;
+            }
+
             //borderless objects should be drawn first.
             var borderlessObjects = objectsToDraw.Where(_ => _.WrappedAnnoObject.Borderless).ToList();
             var borderedObjects = objectsToDraw.Where(_ => !_.WrappedAnnoObject.Borderless).ToList();
@@ -1252,6 +1264,11 @@ namespace AnnoDesigner
         /// </summary>
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
+            if (!RenderInfluences)
+            {
+                return;
+            }
+
             Moved2DArray<AnnoObject> gridDictionary = null;
             if (RenderTrueInfluenceRange && PlacedObjects.Count > 0)
             {
