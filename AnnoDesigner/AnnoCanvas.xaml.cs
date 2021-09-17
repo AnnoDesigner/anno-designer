@@ -17,7 +17,6 @@ using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout;
-using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
@@ -1108,20 +1107,26 @@ namespace AnnoDesigner
         /// <param name="obj">object to render</param>
         private void RenderObjectList(DrawingContext drawingContext, List<LayoutObject> objects, bool useTransparency)
         {
+            var gridSize = GridSize; //hot path optimization
+            var linePenThickness = _linePen.Thickness; //hot path optimization (avoid access of DependencyProperty)
+            var renderHarborBlockedArea = RenderHarborBlockedArea; //hot path optimization
+            var renderIcon = RenderIcon; //hot path optimization
+            var renderLabel = RenderLabel; //hot path optimization
+
             foreach (var curLayoutObject in objects)
             {
                 var obj = curLayoutObject.WrappedAnnoObject;
 
                 // draw object rectangle
-                var objRect = curLayoutObject.CalculateScreenRect(GridSize);
+                var objRect = curLayoutObject.CalculateScreenRect(gridSize);
 
                 var brush = useTransparency ? curLayoutObject.TransparentBrush : curLayoutObject.RenderBrush;
 
-                var borderPen = obj.Borderless ? curLayoutObject.GetBorderlessPen(brush, _linePen.Thickness) : _linePen;
+                var borderPen = obj.Borderless ? curLayoutObject.GetBorderlessPen(brush, linePenThickness) : _linePen;
                 drawingContext.DrawRectangle(brush, borderPen, objRect);
-                if (RenderHarborBlockedArea)
+                if (renderHarborBlockedArea)
                 {
-                    var objBlockedRect = curLayoutObject.CalculateBlockedScreenRect(GridSize);
+                    var objBlockedRect = curLayoutObject.CalculateBlockedScreenRect(gridSize);
                     if (objBlockedRect.HasValue)
                     {
                         drawingContext.DrawRectangle(curLayoutObject.BlockedAreaBrush, borderPen, objBlockedRect.Value);
@@ -1130,7 +1135,7 @@ namespace AnnoDesigner
 
                 // draw object icon if it is at least 2x2 cells
                 var iconRendered = false;
-                if (RenderIcon && !string.IsNullOrEmpty(obj.Icon))
+                if (renderIcon && !string.IsNullOrEmpty(obj.Icon))
                 {
                     var iconFound = false;
 
@@ -1161,7 +1166,7 @@ namespace AnnoDesigner
 
                     if (iconFound)
                     {
-                        var iconRect = curLayoutObject.GetIconRect(GridSize);
+                        var iconRect = curLayoutObject.GetIconRect(gridSize);
 
                         drawingContext.DrawImage(curLayoutObject.Icon.Icon, iconRect);
                         iconRendered = true;
@@ -1169,7 +1174,7 @@ namespace AnnoDesigner
                 }
 
                 // draw object label
-                if (RenderLabel && !string.IsNullOrEmpty(obj.Label))
+                if (renderLabel && !string.IsNullOrEmpty(obj.Label))
                 {
                     var textAlignment = iconRendered ? TextAlignment.Left : TextAlignment.Center;
                     var text = curLayoutObject.GetFormattedText(textAlignment, Thread.CurrentThread.CurrentCulture,
