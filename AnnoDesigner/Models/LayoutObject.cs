@@ -197,16 +197,24 @@ namespace AnnoDesigner.Models
             }
         }
 
-        public double BlockedAreaLength => WrappedAnnoObject.BlockedAreaLength;
+        public double BlockedAreaLength
+        {
+            get
+            {
+                //this is a hot path: profiling showed direct access is quicker than property access (WrappedAnnoObject)
+                return _wrappedAnnoObject.BlockedAreaLength;
+            }
+        }
 
         public double BlockedAreaWidth
         {
             get
             {
-                if (WrappedAnnoObject.BlockedAreaWidth > 0)
+                if (_wrappedAnnoObject.BlockedAreaWidth > 0)
                 {
-                    return WrappedAnnoObject.BlockedAreaWidth;
+                    return _wrappedAnnoObject.BlockedAreaWidth;
                 }
+
                 switch (Direction)
                 {
                     case GridDirection.Up:
@@ -214,6 +222,7 @@ namespace AnnoDesigner.Models
                     case GridDirection.Right:
                     case GridDirection.Left: return Size.Height - 0.5;
                 }
+
                 return 0;
             }
         }

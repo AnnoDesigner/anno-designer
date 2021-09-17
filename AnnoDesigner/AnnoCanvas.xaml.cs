@@ -752,6 +752,8 @@ namespace AnnoDesigner
 
         private Rect _lastViewPortAbsolute = default;
         private List<LayoutObject> _lastObjectsToDraw = new List<LayoutObject>();
+        private List<LayoutObject> _lastBorderlessObjectsToDraw = new List<LayoutObject>();
+        private List<LayoutObject> _lastBorderedObjectsToDraw = new List<LayoutObject>();
         private QuadTree<LayoutObject> _lastPlacedObjects = null;
 
         /// <summary>
@@ -833,20 +835,25 @@ namespace AnnoDesigner
             //Push the transform after rendering everything that should not be translated.
             drawingContext.PushTransform(_viewportTransform);
 
-            List<LayoutObject> objectsToDraw = _lastObjectsToDraw;
+            var objectsToDraw = _lastObjectsToDraw;
+            var borderlessObjects = _lastBorderlessObjectsToDraw;
+            var borderedObjects = _lastBorderedObjectsToDraw;
+
             if (_lastViewPortAbsolute != _viewport.Absolute || _lastPlacedObjects != PlacedObjects)
             {
                 objectsToDraw = PlacedObjects.GetItemsIntersecting(_viewport.Absolute).ToList();
                 _lastObjectsToDraw = objectsToDraw;
                 _lastPlacedObjects = PlacedObjects;
                 _lastViewPortAbsolute = _viewport.Absolute;
+
+                borderlessObjects = objectsToDraw.Where(_ => _.WrappedAnnoObject.Borderless).ToList();
+                _lastBorderlessObjectsToDraw = borderlessObjects;
+                borderedObjects = objectsToDraw.Where(_ => !_.WrappedAnnoObject.Borderless).ToList();
+                _lastBorderedObjectsToDraw = borderedObjects;
             }
 
-            //borderless objects should be drawn first.
-            var borderlessObjects = objectsToDraw.Where(_ => _.WrappedAnnoObject.Borderless).ToList();
-            var borderedObjects = objectsToDraw.Where(_ => !_.WrappedAnnoObject.Borderless).ToList();
-
-            // draw placed objects            
+            // draw placed objects
+            //borderless objects should be drawn first; selection afterwards
             RenderObjectList(drawingContext, borderlessObjects, useTransparency: false);
             RenderObjectList(drawingContext, borderedObjects, useTransparency: false);
             RenderObjectSelection(drawingContext, SelectedObjects);
@@ -1270,10 +1277,12 @@ namespace AnnoDesigner
             }
 
             Moved2DArray<AnnoObject> gridDictionary = null;
+            List<AnnoObject> placedAnnoObjects = null;
+
             if (RenderTrueInfluenceRange && PlacedObjects.Count > 0)
             {
                 var placedObjects = PlacedObjects.Concat(objects).ToHashSet();
-                var placedAnnoObjects = placedObjects.Select(o => o.WrappedAnnoObject).ToList();
+                placedAnnoObjects = placedObjects.Select(o => o.WrappedAnnoObject).ToList();
                 var placedObjectDictionary = placedObjects.ToDictionaryWithCapacity(o => o.WrappedAnnoObject);
 
                 void Highlight(AnnoObject objectInRange)
@@ -1301,7 +1310,7 @@ namespace AnnoDesigner
                     {
                         if (RenderTrueInfluenceRange)
                         {
-                            DrawTrueInfluenceRangePolygon(curLayoutObject, sgc, gridDictionary);
+                            DrawTrueInfluenceRangePolygon(curLayoutObject, sgc, gridDictionary, placedAnnoObjects);
                         }
                         else
                         {
@@ -1316,13 +1325,14 @@ namespace AnnoDesigner
                     geometries.Add((index, sg));
                 }
             });
+
             foreach (var (_, geometry) in geometries.OrderBy(p => p.index))
             {
                 drawingContext.DrawGeometry(_lightBrush, _radiusPen, geometry);
             }
         }
 
-        private void DrawTrueInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc, Moved2DArray<AnnoObject> gridDictionary)
+        private void DrawTrueInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc, Moved2DArray<AnnoObject> gridDictionary, List<AnnoObject> placedAnnoObjects)
         {
             var stroked = true;
             var smoothJoin = true;
@@ -1336,7 +1346,7 @@ namespace AnnoDesigner
             };
 
             var cellsInInfluenceRange = RoadSearchHelper.BreadthFirstSearch(
-                PlacedObjects.Select(o => o.WrappedAnnoObject),
+                placedAnnoObjects,
                 startObjects,
                 o => (int)o.InfluenceRange,
                 gridDictionary);
