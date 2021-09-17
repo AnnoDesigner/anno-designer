@@ -30,7 +30,7 @@ namespace AnnoDesigner.Models
         private Pen _borderlessPen;
         private int _gridSizeScreenRect;
         private Point _position;
-        private Rect _screenRect;
+        private Rect? _screenRect;
         private Rect? _blockedAreaScreenRect;
         private Rect _collisionRect;
         private Size _collisionSize;
@@ -40,7 +40,7 @@ namespace AnnoDesigner.Models
         private FormattedText _formattedText;
         private CultureInfo _usedTextCulture;
         private Typeface _usedTextTypeFace;
-        private Rect _iconRect;
+        private Rect? _iconRect;
         private int _gridSizeIconRect;
         private Rect _lastScreenRectForIcon;
         private Point _screenRectCenterPoint;
@@ -54,6 +54,9 @@ namespace AnnoDesigner.Models
         private Rect _gridRect;
         private Rect _gridInfluenceRadiusRect;
         private Rect _gridInfluenceRangeRect;
+        private double _blockedAreaLength;
+        private double _borderlessPenThickness; //hot path optimization (avoid access of DependencyProperty)
+        private Brush _borderlessPenBrush; //hot path optimization (avoid access of DependencyProperty)
 
         /// <summary>
         /// Creates a new instance of a wrapper for <see cref="AnnoObject"/>.
@@ -72,7 +75,11 @@ namespace AnnoDesigner.Models
         public AnnoObject WrappedAnnoObject
         {
             get { return _wrappedAnnoObject; }
-            private set { _wrappedAnnoObject = value; }
+            private set
+            {
+                _wrappedAnnoObject = value;
+                _blockedAreaLength = _wrappedAnnoObject.BlockedAreaLength;
+            }
         }
 
         public Color TransparentColor
@@ -161,9 +168,11 @@ namespace AnnoDesigner.Models
 
         public Pen GetBorderlessPen(Brush brush, double thickness)
         {
-            if (_borderlessPen == null || _borderlessPen.Thickness != thickness || _borderlessPen.Brush != brush)
+            if (_borderlessPen == null || _borderlessPenThickness != thickness || _borderlessPenBrush != brush)
             {
                 _borderlessPen = _penCache.GetPen(brush, thickness);
+                _borderlessPenThickness = thickness;
+                _borderlessPenBrush = brush;
             }
 
             return _borderlessPen;
@@ -184,10 +193,10 @@ namespace AnnoDesigner.Models
             {
                 WrappedAnnoObject.Position = value;
                 _position = value;
-                _screenRect = default;
+                _screenRect = null;
                 _collisionRect = default;
                 _influenceCircle = null;
-                _iconRect = default;
+                _iconRect = null;
                 _screenRectCenterPoint = default;
                 _lastScreenRectForIcon = default;
                 _lastScreenRectForCenterPoint = default;
@@ -197,16 +206,15 @@ namespace AnnoDesigner.Models
             }
         }
 
-        public double BlockedAreaLength => WrappedAnnoObject.BlockedAreaLength;
-
         public double BlockedAreaWidth
         {
             get
             {
-                if (WrappedAnnoObject.BlockedAreaWidth > 0)
+                if (_wrappedAnnoObject.BlockedAreaWidth > 0)
                 {
-                    return WrappedAnnoObject.BlockedAreaWidth;
+                    return _wrappedAnnoObject.BlockedAreaWidth;
                 }
+
                 switch (Direction)
                 {
                     case GridDirection.Up:
@@ -214,6 +222,7 @@ namespace AnnoDesigner.Models
                     case GridDirection.Right:
                     case GridDirection.Left: return Size.Height - 0.5;
                 }
+
                 return 0;
             }
         }
@@ -232,7 +241,7 @@ namespace AnnoDesigner.Models
             if (_gridSizeScreenRect != gridSize)
             {
                 _gridSizeScreenRect = gridSize;
-                _screenRect = default;
+                _screenRect = null;
             }
 
             return ScreenRect;
@@ -242,13 +251,13 @@ namespace AnnoDesigner.Models
         {
             get
             {
-                if (_screenRect == default)
+                if (_screenRect == null)
                 {
                     _screenRect = new Rect(_coordinateHelper.GridToScreen(Position, _gridSizeScreenRect), _coordinateHelper.GridToScreen(Size, _gridSizeScreenRect));
                     _blockedAreaScreenRect = null;
                 }
 
-                return _screenRect;
+                return _screenRect ?? default;
             }
         }
 
@@ -267,38 +276,35 @@ namespace AnnoDesigner.Models
         {
             get
             {
-                if (_blockedAreaScreenRect == null)
+                if (_blockedAreaScreenRect == null && _blockedAreaLength > 0)
                 {
-                    if (BlockedAreaLength > 0)
-                    {
-                        var blockedAreaScreenWidth = _coordinateHelper.GridToScreen(BlockedAreaWidth, _gridSizeScreenRect);
-                        var blockedAreaScreenLength = _coordinateHelper.GridToScreen(BlockedAreaLength, _gridSizeScreenRect);
+                    var blockedAreaScreenWidth = _coordinateHelper.GridToScreen(BlockedAreaWidth, _gridSizeScreenRect);
+                    var blockedAreaScreenLength = _coordinateHelper.GridToScreen(_blockedAreaLength, _gridSizeScreenRect);
 
-                        switch (Direction)
-                        {
-                            case GridDirection.Up:
-                                return _blockedAreaScreenRect = new Rect(
-                                    ScreenRect.Left + (ScreenRect.Width - blockedAreaScreenWidth) / 2,
-                                    ScreenRect.Top - blockedAreaScreenLength,
-                                    blockedAreaScreenWidth,
-                                    blockedAreaScreenLength);
-                            case GridDirection.Right:
-                                return _blockedAreaScreenRect = new Rect(
-                                    ScreenRect.Right,
-                                    ScreenRect.Top + (ScreenRect.Height - blockedAreaScreenWidth) / 2,
-                                    blockedAreaScreenLength,
-                                    blockedAreaScreenWidth);
-                            case GridDirection.Down:
-                                return _blockedAreaScreenRect = new Rect(ScreenRect.Left + (ScreenRect.Width - blockedAreaScreenWidth) / 2,
-                                    ScreenRect.Bottom,
-                                    blockedAreaScreenWidth,
-                                    blockedAreaScreenLength);
-                            case GridDirection.Left:
-                                return _blockedAreaScreenRect = new Rect(ScreenRect.TopLeft.X - blockedAreaScreenLength,
-                                    ScreenRect.TopLeft.Y + (ScreenRect.Height - blockedAreaScreenWidth) / 2,
-                                    blockedAreaScreenLength,
-                                    blockedAreaScreenWidth);
-                        }
+                    switch (Direction)
+                    {
+                        case GridDirection.Up:
+                            return _blockedAreaScreenRect = new Rect(
+                                ScreenRect.Left + (ScreenRect.Width - blockedAreaScreenWidth) / 2,
+                                ScreenRect.Top - blockedAreaScreenLength,
+                                blockedAreaScreenWidth,
+                                blockedAreaScreenLength);
+                        case GridDirection.Right:
+                            return _blockedAreaScreenRect = new Rect(
+                                ScreenRect.Right,
+                                ScreenRect.Top + (ScreenRect.Height - blockedAreaScreenWidth) / 2,
+                                blockedAreaScreenLength,
+                                blockedAreaScreenWidth);
+                        case GridDirection.Down:
+                            return _blockedAreaScreenRect = new Rect(ScreenRect.Left + (ScreenRect.Width - blockedAreaScreenWidth) / 2,
+                                ScreenRect.Bottom,
+                                blockedAreaScreenWidth,
+                                blockedAreaScreenLength);
+                        case GridDirection.Left:
+                            return _blockedAreaScreenRect = new Rect(ScreenRect.TopLeft.X - blockedAreaScreenLength,
+                                ScreenRect.TopLeft.Y + (ScreenRect.Height - blockedAreaScreenWidth) / 2,
+                                blockedAreaScreenLength,
+                                blockedAreaScreenWidth);
                     }
                 }
 
@@ -386,8 +392,8 @@ namespace AnnoDesigner.Models
                 _size = value;
 
                 _collisionSize = default;
-                _screenRect = default;
-                _iconRect = default;
+                _screenRect = null;
+                _iconRect = null;
                 _gridRect = default;
                 _gridInfluenceRadiusRect = default;
                 _gridInfluenceRangeRect = default;
@@ -432,7 +438,7 @@ namespace AnnoDesigner.Models
 
         public Rect GetIconRect(int gridSize)
         {
-            if (_iconRect == default || _gridSizeIconRect != gridSize)
+            if (_iconRect == null || _gridSizeIconRect != gridSize)
             {
                 var objRect = CalculateScreenRect(gridSize);
                 if (_lastScreenRectForIcon != objRect)
@@ -455,7 +461,7 @@ namespace AnnoDesigner.Models
                 }
             }
 
-            return _iconRect;
+            return _iconRect ?? default;
         }
 
 
