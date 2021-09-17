@@ -64,6 +64,7 @@ namespace AnnoDesigner.ViewModels
         private bool _canvasShowLabels;
         private bool _canvasShowTrueInfluenceRange;
         private bool _canvasShowInfluences;
+        private bool _canvasShowHarborBlockedArea;
         private bool _useCurrentZoomOnExportedImageValue;
         private bool _renderSelectionHighlightsOnExportedImageValue;
         private bool _isLanguageChange;
@@ -202,7 +203,10 @@ namespace AnnoDesigner.ViewModels
             {
                 FlagPath = "Flags/Russia.png"
             });
-            //Languages.Add(new SupportedLanguage("Español"));
+            Languages.Add(new SupportedLanguage("Español")
+            {
+                FlagPath = "Flags/Spain.png"
+            });
             //Languages.Add(new SupportedLanguage("Italiano"));
             //Languages.Add(new SupportedLanguage("český"));
 
@@ -345,7 +349,7 @@ namespace AnnoDesigner.ViewModels
         {
             // parse user inputs and create new object
             string RenameBuildingIdentifier = BuildingSettingsViewModel.BuildingName;
-            string TextBoxText = "TextBox";
+            string TextBoxText = "UnknownObject";
             var obj = new AnnoObject
             {
                 Size = new Size(BuildingSettingsViewModel.BuildingWidth, BuildingSettingsViewModel.BuildingHeight),
@@ -358,7 +362,10 @@ namespace AnnoDesigner.ViewModels
                 Borderless = BuildingSettingsViewModel.IsBorderlessChecked,
                 Road = BuildingSettingsViewModel.IsRoadChecked,
                 Identifier = BuildingSettingsViewModel.BuildingIdentifier,
-                Template = BuildingSettingsViewModel.BuildingTemplate
+                Template = BuildingSettingsViewModel.BuildingTemplate,
+                BlockedAreaLength = BuildingSettingsViewModel.BuildingBlockedAreaLength,
+                BlockedAreaWidth = BuildingSettingsViewModel.BuildingBlockedAreaWidth,
+                Direction = BuildingSettingsViewModel.BuildingDirection
             };
 
             var objIconFileName = "";
@@ -378,112 +385,39 @@ namespace AnnoDesigner.ViewModels
             // do some sanity checks
             if (obj.Size.Width > 0 && obj.Size.Height > 0 && obj.Radius >= 0)
             {
-                if (!string.IsNullOrWhiteSpace(obj.Icon) && !obj.Icon.Contains(IconFieldNamesCheck))
+                //gets icons and origin building info
+                var buildingInfo = AnnoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName?.Equals(objIconFileName, StringComparison.OrdinalIgnoreCase) ?? false);
+                if (buildingInfo != null)
                 {
-                    //the identifier text 'Uknown Object' is localized within the StatisticsView, which is why it's not localized here  
-                    //gets icons origin building info
-                    var buildingInfo = AnnoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.IconFileName?.Equals(objIconFileName, StringComparison.OrdinalIgnoreCase) ?? false);
-                    if (buildingInfo != null)
+                    //Put in the Blocked Area if there is one
+                    if (buildingInfo.BlockedAreaLength > 0)
                     {
-                        // Check X and Z Sizes of the Building Info, if one or both not right, the Object will be Unknown
-                        //Building could be in rotated form - so 5x4 should be equivalent to checking for 4x5
-                        if ((obj.Size.Width == buildingInfo.BuildBlocker["x"] && obj.Size.Height == buildingInfo.BuildBlocker["z"])
-                            || (obj.Size.Height == buildingInfo.BuildBlocker["x"] && obj.Size.Width == buildingInfo.BuildBlocker["z"]))
+                        obj.BlockedAreaLength = buildingInfo.BlockedAreaLength;
+                        obj.BlockedAreaWidth = buildingInfo.BlockedAreaWidth;
+                        obj.Direction = buildingInfo.Direction;
+                    }
+
+                    //if user entered a new Label Name (as in renaming existing building or naming own building) then name and identifier will be renamed
+                    if (BuildingSettingsViewModel.BuildingRealName != BuildingSettingsViewModel.BuildingName)
+                    {
+                        obj.Identifier = RenameBuildingIdentifier;
+                        obj.Template = RenameBuildingIdentifier;
+                    }
+                }
+                else
+                {
+                    //if no Identifier is found or if user entered a new Label Name (as in renaming existing building or naming own building) then name and identifier will be renamed
+                    if (string.IsNullOrWhiteSpace(BuildingSettingsViewModel.BuildingIdentifier) || BuildingSettingsViewModel.BuildingRealName != BuildingSettingsViewModel.BuildingName)
+                    {
+                        if (!string.IsNullOrWhiteSpace(RenameBuildingIdentifier))
                         {
-                            //if sizes match and icon is a existing building in the presets, call it that object
-                            //Exception are all other Residences of Anno 1800, that change back to Farmer Resident names
-                            if (obj.Identifier != "Residence_New_World" && obj.Identifier != "Residence_Arctic_World" && obj.Identifier != "Residence_Africa_World")
-                            {
-                                obj.Identifier = buildingInfo.Identifier;
-                                if (BuildingSettingsViewModel.BuildingRealName != RenameBuildingIdentifier)
-                                {
-                                    if (BuildingSettingsViewModel.IsEnableLabelChecked)
-                                    {
-                                        if (RenameBuildingIdentifier.Length > 30)
-                                        {
-                                            obj.Identifier = TextBoxText;
-                                            obj.Template = TextBoxText;
-                                        }
-                                        else
-                                        {
-                                            //Keep label, tempate and identifiername
-                                        }
-                                    }
-                                    else
-                                    {
-                                        obj.Identifier = RenameBuildingIdentifier;
-                                        obj.Template = RenameBuildingIdentifier;
-                                    }
-                                }
-                            }
-                            //If one of the other world residents then the OW Residents in Anno 1800 are renamed to other tiers names rename them. 
-                            if ((obj.Identifier == "Residence_New_World" || obj.Identifier == "Residence_Arctic_World" || obj.Identifier == "Residence_Africa_World") && BuildingSettingsViewModel.BuildingRealName != RenameBuildingIdentifier)
-                            {
-                                obj.Identifier = RenameBuildingIdentifier;
-                                obj.Template = RenameBuildingIdentifier;
-                            }
-                        }
-                        else
-                        {
-                            //Sizes and icon do not match
-                            //obj.Identifier = "Unknown Object";
                             obj.Identifier = RenameBuildingIdentifier;
                             obj.Template = RenameBuildingIdentifier;
                         }
-                    }
-                    else if (!BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase)) //check if the icon is removed from a template field
-                    {
-                        //obj.Identifier = "Unknown Object";
-                        obj.Identifier = RenameBuildingIdentifier;
-                        obj.Template = RenameBuildingIdentifier;
-                    }
-                }
-                else if (!string.IsNullOrWhiteSpace(obj.Icon) && obj.Icon.Contains(IconFieldNamesCheck))
-                {
-                    //Check if Field Icon belongs to the field identifier, else set the official icon
-                    var buildingInfo = AnnoCanvas.BuildingPresets.Buildings.FirstOrDefault(_ => _.Identifier == obj.Identifier);
-                    if (buildingInfo != null)
-                    {
-                        if (!string.Equals(objIconFileName, buildingInfo.IconFileName, StringComparison.OrdinalIgnoreCase))
-                        {
-                            obj.Icon = buildingInfo.IconFileName.Remove(buildingInfo.IconFileName.Length - 4, 4); //remove the .png for the combobox
-                            try
-                            {
-                                SelectedIcon = string.IsNullOrEmpty(obj.Icon) ? _noIconItem : AvailableIcons.Single(_ => _.Name == Path.GetFileNameWithoutExtension(obj.Icon));
-                            }
-                            catch (Exception)
-                            {
-                                SelectedIcon = _noIconItem;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //obj.Identifier = "Unknown Object";
-                        obj.Identifier = RenameBuildingIdentifier;
-                        obj.Template = RenameBuildingIdentifier;
-                    }
-                }
-                if (string.IsNullOrEmpty(obj.Icon) && !BuildingSettingsViewModel.BuildingTemplate.Contains("field", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (BuildingSettingsViewModel.IsEnableLabelChecked)
-                    {
-                        if (RenameBuildingIdentifier.Length > 30)
+                        else
                         {
                             obj.Identifier = TextBoxText;
-                            obj.Template = TextBoxText;
                         }
-                        else
-                        {
-                            obj.Identifier = RenameBuildingIdentifier;
-                            obj.Template = RenameBuildingIdentifier;
-                        }
-                    }
-                    else
-                    {
-                        //obj.Identifier = "Unknown Object";
-                        obj.Identifier = RenameBuildingIdentifier;
-                        obj.Template = RenameBuildingIdentifier;
                     }
                 }
 
@@ -630,7 +564,7 @@ namespace AnnoDesigner.ViewModels
         public Task UpdateStatisticsAsync(UpdateMode mode)
         {
             return StatisticsViewModel.UpdateStatisticsAsync(mode,
-                AnnoCanvas.PlacedObjects.All().ToList(),
+                AnnoCanvas.PlacedObjects.ToList(),
                 AnnoCanvas.SelectedObjects,
                 AnnoCanvas.BuildingPresets);
         }
@@ -660,7 +594,7 @@ namespace AnnoDesigner.ViewModels
 
         public void LoadSettings()
         {
-            StatisticsViewModel.ToggleBuildingList(_appSettings.StatsShowBuildingCount, AnnoCanvas.PlacedObjects.All().ToList(), AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
+            StatisticsViewModel.ToggleBuildingList(_appSettings.StatsShowBuildingCount, AnnoCanvas.PlacedObjects.ToList(), AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
 
             PreferencesUpdateViewModel.AutomaticUpdateCheck = _appSettings.EnableAutomaticUpdateCheck;
             PreferencesUpdateViewModel.UpdateSupportsPrerelease = _appSettings.UpdateSupportsPrerelease;
@@ -673,6 +607,7 @@ namespace AnnoDesigner.ViewModels
             CanvasShowLabels = _appSettings.ShowLabels;
             CanvasShowTrueInfluenceRange = _appSettings.ShowTrueInfluenceRange;
             CanvasShowInfluences = _appSettings.ShowInfluences;
+            CanvasShowHarborBlockedArea = _appSettings.ShowHarborBlockedArea;
 
             BuildingSettingsViewModel.IsPavedStreet = _appSettings.IsPavedStreet;
 
@@ -693,6 +628,7 @@ namespace AnnoDesigner.ViewModels
             _appSettings.ShowLabels = CanvasShowLabels;
             _appSettings.ShowTrueInfluenceRange = CanvasShowTrueInfluenceRange;
             _appSettings.ShowInfluences = CanvasShowInfluences;
+            _appSettings.ShowHarborBlockedArea = CanvasShowHarborBlockedArea;
 
             _appSettings.StatsShowStats = StatisticsViewModel.IsVisible;
             _appSettings.StatsShowBuildingCount = StatisticsViewModel.ShowStatisticsBuildingCount;
@@ -822,8 +758,7 @@ namespace AnnoDesigner.ViewModels
                     }
 
                     var bounds = AnnoCanvas.ComputeBoundingRect(layoutObjects);
-                    AnnoCanvas.EnsureBounds(bounds);
-                    AnnoCanvas.PlacedObjects.AddRange(layoutObjects.Select(obj => (obj, obj.GridRect)));
+                    AnnoCanvas.PlacedObjects.AddRange(layoutObjects);
 
                     AnnoCanvas.LoadedFile = filePath;
                     AnnoCanvas.Normalize(1);
@@ -967,6 +902,19 @@ namespace AnnoDesigner.ViewModels
                 if (AnnoCanvas != null)
                 {
                     AnnoCanvas.RenderInfluences = _canvasShowInfluences;
+                }
+            }
+        }
+
+        public bool CanvasShowHarborBlockedArea
+        {
+            get { return _canvasShowHarborBlockedArea; }
+            set
+            {
+                UpdateProperty(ref _canvasShowHarborBlockedArea, value);
+                if (AnnoCanvas != null)
+                {
+                    AnnoCanvas.RenderHarborBlockedArea = _canvasShowHarborBlockedArea;
                 }
             }
         }
@@ -1161,9 +1109,10 @@ namespace AnnoDesigner.ViewModels
                 var groups = _adjacentCellGrouper.GroupAdjacentCells(cells).ToList();
                 AnnoCanvas.UndoManager.AsSingleUndoableOperation(() =>
                 {
-                    foreach (var item in groups.SelectMany(g => g.Items))
+                    var oldObjects = groups.SelectMany(g => g.Items).ToList();
+                    foreach (var item in oldObjects)
                     {
-                        AnnoCanvas.PlacedObjects.Remove(item, item.GridRect);
+                        AnnoCanvas.PlacedObjects.Remove(item);
                     }
                     var newObjects = groups
                         .Select(g => new LayoutObject(
@@ -1177,14 +1126,14 @@ namespace AnnoDesigner.ViewModels
                             _penCache
                         ))
                         .ToList();
-                    AnnoCanvas.PlacedObjects.AddRange(newObjects.Select(o => (o, o.GridRect)));
+                    AnnoCanvas.PlacedObjects.AddRange(newObjects);
 
-                    AnnoCanvas.UndoManager.RegisterOperation(new RemoveObjectsOperation()
+                    AnnoCanvas.UndoManager.RegisterOperation(new RemoveObjectsOperation<LayoutObject>()
                     {
-                        Objects = groups.SelectMany(g => g.Items).ToList(),
+                        Objects = oldObjects,
                         Collection = AnnoCanvas.PlacedObjects
                     });
-                    AnnoCanvas.UndoManager.RegisterOperation(new AddObjectsOperation()
+                    AnnoCanvas.UndoManager.RegisterOperation(new AddObjectsOperation<LayoutObject>()
                     {
                         Objects = newObjects,
                         Collection = AnnoCanvas.PlacedObjects
@@ -1222,9 +1171,10 @@ namespace AnnoDesigner.ViewModels
                         {
                             AnnoCanvas.SelectedObjects.Clear();
                             AnnoCanvas.PlacedObjects.Clear();
+                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)));
+
                             AnnoCanvas.UndoManager.Clear();
 
-                            AnnoCanvas.PlacedObjects.AddRange(loadedLayout.Objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)).Select(obj => (obj, obj.GridRect)));
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
 
@@ -1368,7 +1318,7 @@ namespace AnnoDesigner.ViewModels
                 }
 
                 var quadTree = new QuadTree<LayoutObject>(AnnoCanvas.PlacedObjects.Extent);
-                quadTree.AddRange(allObjects.Select(obj => (obj, obj.GridRect)));
+                quadTree.AddRange(allObjects);
                 // initialize output canvas
                 var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _appSettings, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
                 {
@@ -1416,7 +1366,7 @@ namespace AnnoDesigner.ViewModels
                 if (renderStatistics)
                 {
                     var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
-                    exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.All().ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult(); ;
+                    exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult(); ;
                     exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 
                     var exportStatisticsView = new StatisticsView()
@@ -1559,7 +1509,7 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteShowStatisticsBuildingCount(object param)
         {
-            StatisticsViewModel.ToggleBuildingList(StatisticsViewModel.ShowStatisticsBuildingCount, AnnoCanvas.PlacedObjects.All().ToList(), AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
+            StatisticsViewModel.ToggleBuildingList(StatisticsViewModel.ShowStatisticsBuildingCount, AnnoCanvas.PlacedObjects.ToList(), AnnoCanvas.SelectedObjects, AnnoCanvas.BuildingPresets);
         }
 
         public ICommand PlaceBuildingCommand { get; private set; }

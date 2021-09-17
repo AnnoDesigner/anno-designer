@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
 
 namespace AnnoDesigner.Helper
@@ -132,6 +133,40 @@ namespace AnnoDesigner.Helper
         public Size Rotate(Size size)
         {
             return new Size(size.Height, size.Width);
+        }
+
+        /// <summary>
+        /// Rotates the given Rect object 90 degrees clockwise around point (0, 0).
+        /// </summary>
+        public Rect Rotate(Rect rect)
+        {
+            var position = rect.TopLeft;
+            //Full formula left in for explanation
+            //var xPrime = x * Math.Cos(angle) - y * Math.Sin(angle);
+            //var yPrime = x * Math.Sin(angle) - y * Math.Cos(angle);
+
+            //Cos 90 = 0, sin 90 = 1
+            //Therefore, the below is equivalent
+            var xPrime = 0 - position.Y;
+            var yPrime = position.X;
+
+            //When the building is rotated, the xPrime and yPrime values no 
+            //longer represent the top left corner, they will represent the 
+            //top-right corner instead. We need to account for this, by 
+            //moving the xPrime position (still in grid coordinates).
+            xPrime -= rect.Size.Height;
+
+            return new Rect(new Point(xPrime, yPrime), Rotate(rect.Size));
+        }
+
+        /// <summary>
+        /// Rotates the given GridDirection object 90 degrees clockwise.
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <returns></returns>
+        public GridDirection Rotate(GridDirection direction)
+        {
+            return (GridDirection)((int)(direction + 1) % 4);
         }
     }
 }

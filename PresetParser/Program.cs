@@ -31,7 +31,7 @@ namespace PresetParser
         public static bool isExcludedGUID = false; /*only for Anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-        private const string BUILDING_PRESETS_VERSION = "3.12";
+        private const string BUILDING_PRESETS_VERSION = "4.0";
         // Initalisizing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus", "esp" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian", "spanish" };
@@ -48,6 +48,7 @@ namespace PresetParser
         private static readonly BuildingBlockProvider _buildingBlockProvider;
         private static readonly IIfoFileProvider _ifoFileProvider;
         private static readonly LocalizationHelper _localizationHelper;
+        private static readonly IFileSystem _fileSystem;
 
         #region Initalisizing Exclude IdentifierNames, FactionNames and TemplateNames for presets.json file 
 
@@ -105,7 +106,7 @@ namespace PresetParser
             "PropagandaTower Merciers Version","tractor_module_02 (Harvester)", "Culture_1x1_statue", "Culture_prop_system_1x1_10", "Culture_prop_system_1x1_01", "Logistic_05 (Warehouse IV)", "Park_1x1_hedgeentrance",
             "Harbour Slot (Ghost) Arctic", "Tractor_module_01 (GASOLINE TEST)", "Fuel_station_01 (GASOLINE TEST)", "Kontor_main_04", "Kontor_imperial_04", "Culture_1x1_plaza","Harbor_12 (Coal Harbor)",
             "Harbor_13 (Coal Storage)", "Kontor_main_arctic_01", "Kontor_imperial_arctic_01", "ResearchCenter_02", "ResearchCenter_03", "StoryIsland01 Monastery Kontor","StoryIsland02 Military Kontor",
-            "StoryIsland03 Economy Kontor", "Diner_0", "Bar_0", "Cafe_0", "Tourist_monument_03", "Kontor_main_colony02_01", "Kontor_imperial_colony02_01", "Guild_house_africa"};
+            "StoryIsland03 Economy Kontor", "Diner_0", "Bar_0", "Cafe_0", "Tourist_monument_03", "Kontor_main_colony02_01", "Kontor_imperial_colony02_01", "Guild_house_africa", "Harbor_14d (Oil Harbor IV)"};
         //Skip the following icons to put in the presets for anno 1800, to avoid double Ornamentalbuildings
         public static List<string> ExcludeOrnamentsIcons_1800 = new List<string> { "A7_bush03.png", "A7_park_props_1x1_01.png", "A7_park_props_1x1_07.png", "A7_bush01.png", "A7_col_props_1x1_13_back.png", "A7_bush05.png", "A7_park_props_1x1_08.png",
             "A7_bush02.png", "A7_bush04.png", "A7_col_props_1x1_11_bac.pngk", "A7_col_props_1x1_01_back.png", "A7_col_props_1x1_07_back.png","A7_park_1x1_06.png","A7_park_1x1_02.png","A7_park_1x1_03.png","A7_col_park_props_system_1x1_21_back.png",
@@ -132,7 +133,8 @@ namespace PresetParser
             _ifoFileProvider = new IfoFileProvider();
             _buildingBlockProvider = new BuildingBlockProvider(_ifoFileProvider);
 
-            _localizationHelper = new LocalizationHelper(new FileSystem());
+            _fileSystem = new FileSystem();
+            _localizationHelper = new LocalizationHelper(_fileSystem);
 
             VersionSpecificPaths = new Dictionary<string, Dictionary<string, PathRef[]>>();
         }
@@ -151,6 +153,7 @@ namespace PresetParser
                 {
                     Environment.Exit(0);
                 }
+
                 if (annoVersion == Constants.ANNO_VERSION_1404 || annoVersion == Constants.ANNO_VERSION_2070 || annoVersion == Constants.ANNO_VERSION_2205 || annoVersion == Constants.ANNO_VERSION_1800 || annoVersion == "-ALL")
                 {
                     validVersion = true;
@@ -165,12 +168,52 @@ namespace PresetParser
                         testVersion = true;
                     }
                 }
+                else if (annoVersion == "-validate")
+                {
+                    Console.Write("Please enter path to file for validation: ");
+                    var filePathToValidate = Console.ReadLine();
+
+                    //get rid of quotes in the filepath (could contain spaces)
+                    if (!string.IsNullOrWhiteSpace(filePathToValidate))
+                    {
+                        filePathToValidate = filePathToValidate.Trim('"');
+                    }
+
+                    if (string.IsNullOrWhiteSpace(filePathToValidate) || !_fileSystem.File.Exists(filePathToValidate))
+                    {
+                        var oldColor = Console.ForegroundColor;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("The path to the file was not valid!");
+                        Console.ForegroundColor = oldColor;
+                        Console.ReadKey();
+                        Environment.Exit(0);
+                    }
+
+                    try
+                    {
+                        var loadedPresets = SerializationHelper.LoadFromFile<BuildingPresets>(filePathToValidate);
+
+                        ValidateBuildings(loadedPresets.Buildings.Cast<IBuildingInfo>().ToList());
+                        Console.ReadLine();
+                        Environment.Exit(0);
+                    }
+                    catch (Exception ex)
+                    {
+                        var oldColor = Console.ForegroundColor;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("There was an error validating the file:");
+                        Console.WriteLine(ex);
+                        Console.ForegroundColor = oldColor;
+                        Environment.Exit(0);
+                    }
+                }
                 else
                 {
                     Console.WriteLine();
                     Console.WriteLine("Invalid input, please try again or enter 'quit to exit.");
                 }
             }
+
             if (annoVersion != "-ALL")
             {
                 ///Add a trailing backslash if one is not present.
@@ -183,6 +226,7 @@ namespace PresetParser
                 BASE_PATH_2205 = GetBASE_PATH(Constants.ANNO_VERSION_2205);
                 BASE_PATH_1800 = GetBASE_PATH(Constants.ANNO_VERSION_1800);
             }
+
             if (!testVersion)
             {
                 Console.WriteLine("Extracting and parsing RDA data from {0} for anno version {1}.", BASE_PATH, annoVersion);
@@ -195,6 +239,7 @@ namespace PresetParser
             {
                 Console.WriteLine("Extracting and parsing RDA data for all Anno versions");
             }
+
             #endregion
 
             #region Anno Verion Data Paths
@@ -355,6 +400,12 @@ namespace PresetParser
             }
             #endregion
 
+            #region Validate list of buildings
+
+            ValidateBuildings(buildings);
+
+            #endregion
+
             #region Write preset.json and icon.json files
             BuildingPresets presets = new BuildingPresets() { Version = BUILDING_PRESETS_VERSION, Buildings = buildings.Cast<BuildingInfo>().ToList() };
 
@@ -378,6 +429,50 @@ namespace PresetParser
             Console.WriteLine("DONE - press enter to exit");
             Console.ReadLine();
             #endregion //End Prepare JSON Files
+        }
+
+        private static void ValidateBuildings(List<IBuildingInfo> buildingsToCheck)
+        {
+            // This list contains identifiers which are duplicated on purpose (on various places inside the preset tree) and known to not cause any errors (e.g. translation or statistics).
+            var knownDuplicates = new List<string> { "Logistic_02 (Warehouse I)" };
+
+            var validator = new Validator();
+            (bool isValid, List<string> duplicateIdentifiers) = validator.CheckForUniqueIdentifiers(buildingsToCheck, knownDuplicates);
+            var oldColor = Console.ForegroundColor;
+            if (!isValid)
+            {
+                try
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+                    Console.WriteLine();
+                    Console.WriteLine($"### There are duplicate identifiers ({duplicateIdentifiers.Count}) ###");
+                    foreach (var curDuplicateIndentifier in duplicateIdentifiers)
+                    {
+                        Console.WriteLine(curDuplicateIndentifier);
+                    }
+                    Console.WriteLine();
+                }
+                finally
+                {
+                    Console.ForegroundColor = oldColor;
+                }
+            }
+            else
+            {
+                try
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+
+                    Console.WriteLine();
+                    Console.WriteLine("There are no duplicate Indentifiers.");
+                    Console.WriteLine();
+                }
+                finally
+                {
+                    Console.ForegroundColor = oldColor;
+                }
+            }
         }
 
         // Get the BASE_PATH for the given Anno
@@ -1295,7 +1390,7 @@ namespace PresetParser
             }
 
             // Place all High Life Malls in the right Tree Menu 
-            if (groupName=="Mall") 
+            if (groupName == "Mall")
             {
                 factionName = "(18) High Life";
             }
@@ -1310,7 +1405,7 @@ namespace PresetParser
             // Place the rest of the buildings in the right Faction > Group menu
             #region Order the Buildings to the right tiers and factions as in the game
 
-                var groupInfo = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName, templateName);
+            var groupInfo = NewFactionAndGroup1800.GetNewFactionAndGroup1800(identifierName, factionName, groupName, templateName);
             factionName = groupInfo.Faction;
             groupName = groupInfo.Group;
             templateName = groupInfo.Template;
@@ -1361,7 +1456,8 @@ namespace PresetParser
 
             //Set right group to the City Lights DLC (just need a Faction and Group change by starting identifiername) (10-01-2021)
             //if (templateName == "OrnamentalBuilding" && factionName == "Not Placed Yet -Moderate") {
-            if (templateName == "OrnamentalBuilding") {
+            if (templateName == "OrnamentalBuilding")
+            {
                 if (identifierName.Contains("CityOrnament "))
                 {
                     factionName = "Ornaments"; groupName = "20 City Lights";
@@ -1442,6 +1538,38 @@ namespace PresetParser
 
             #endregion
 
+            #region Set the BlockedArea's and Start Direction
+            /// Set the BlockedArea's and Start Direction for Coastal buildings that have a Blocked Area
+            /// I do this by hand, as automatically is not an option for now, as the .ifo file are messy to get the
+            ///  <QuayArea> blocks from it. Read here for the complete story why 
+            ///  https://discord.com/channels/571011757317947406/571064812042321927/885817431136817162
+
+            switch (b.Identifier)
+            {
+                case "Coastal_01 (Fish Coast Building)": { b.BlockedAreaLength = 5; b.Direction = GridDirection.Right; break; }
+                case "Coastal_colony01_02 (Fish Coast Building)": { b.BlockedAreaLength = 5; b.Direction = GridDirection.Right; break; }
+                case "Coastal_arctic_02 (Seal Hunter)": { b.BlockedAreaLength = 6; b.Direction = GridDirection.Right; break; }
+                case "Coastal_colony02_01 (Salt Coast Building)": { b.BlockedAreaLength = 6; b.Direction = GridDirection.Right; break; }
+                case "Coastal_colony02_02 (Seafood Fisher)": { b.BlockedAreaLength = 6; b.Direction = GridDirection.Right; break; }
+                case "Coastal_02 (Niter Coast Building)": { b.BlockedAreaLength = 7; b.Direction = GridDirection.Right; break; }
+                case "Coastal_arctic_01 (Whale Coast Building)": { b.BlockedAreaLength = 13; b.Direction = GridDirection.Right; break; }
+                case "Harbor_16 (Commuter Pier)": { b.BlockedAreaLength = 7; b.Direction = GridDirection.Right; break; }
+                case "Dockland_Module_Storage": { b.BlockedAreaLength = 3; b.Direction = GridDirection.Right; break; }
+                case "Dockland_Module_RepairCrane": { b.BlockedAreaLength = 3; b.Direction = GridDirection.Right; break; }
+                case "Dockland_Module_SpeedUp": { b.BlockedAreaLength = 3; b.Direction = GridDirection.Right; break; }
+                case "Harbor_02 (Sailing Shipyard)": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Harbor_03 (Steam Shipyard)": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Harbor_08 (Pier)": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Harbor_09 (tourism_pier_01)": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Kontor_main_01": { b.BlockedAreaLength = 25; b.BlockedAreaWidth = 4.5; b.Direction = GridDirection.Right; break; }
+                case "Harbor_14a (Oil Harbor I)": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Dockland - Main": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Dockland_Module_Pier": { b.BlockedAreaLength = 25; b.Direction = GridDirection.Right; break; }
+                case "Coastal_03 (Quartz Sand Coast Building)": { b.BlockedAreaLength = 6; b.Direction = GridDirection.Right; break; }
+            }
+
+            #endregion
+
             #region Get and set new IconFilenames
 
             // find icon node in values
@@ -1476,9 +1604,10 @@ namespace PresetParser
                     case "102131": { icon = replaceName + "park_props_1x1_17.png"; break; } //Cypress corecting Icon
                     case "101284": { icon = replaceName + "community_lodge.png"; break; } //corecting Arctic Lodge Icon
                 }
-                switch(b.Identifier)
+                switch (b.Identifier)
                 {
                     case "AmusementPark CottonCandy": { icon = replaceName + "cotton_candy.png"; break; } // faulty naming fix icn_ instead of icon_
+                    case "Coastal_colony02_01 (Salt Coast Building)": b.IconFileName = replaceName + "salt_africa.png"; break;
                 }
 
                 b.IconFileName = icon;
@@ -1586,6 +1715,10 @@ namespace PresetParser
                 case "DepartmentStore_Blank": b.InfluenceRadius = 45; break;
                 case "Pharmacy_Blank": b.InfluenceRadius = 45; break;
                 case "FurnitureStore_Blank": b.InfluenceRadius = 45; break;
+                case "Harbor_07 (Repair Crane)": b.InfluenceRadius = 20; break;
+                case "Dockland_Module_RepairCrane": b.InfluenceRadius = 20; break;
+                case "Harbor_office": b.InfluenceRadius = 20; break;
+                case "Tourist_monument_02_blank (restaurant)": b.InfluenceRadius = 107; break;
             }
 
             #endregion
@@ -1597,7 +1730,7 @@ namespace PresetParser
             if (b.Template == "CityInstitutionBuilding")
             {
                 b.InfluenceRange = 26; //Police - Fire stations and Hospiitals
-                if (b.Identifier== "Institution_arctic_01 (Ranger Station)")
+                if (b.Identifier == "Institution_arctic_01 (Ranger Station)")
                 {
                     b.InfluenceRange = 50; //fix Ranger Station InfluencRange as this is separated from normal ones (10-01-2021) 
                 }
@@ -1616,14 +1749,15 @@ namespace PresetParser
                 }
             }
 
-            #endregion
-
             // Get/Set Influence Radius and Influence Range (Dual on 1 building : Busstop)
             //Bussttop (has an other range name)
-            if (b.Template == "Busstop") {
+            if (b.Template == "Busstop")
+            {
                 b.InfluenceRadius = Convert.ToInt32(values?["BusStop"]?["ActivationRadius"]?.InnerText);
                 b.InfluenceRange = Convert.ToInt32(values["BusStop"]["StreetConnectionRange"].InnerText);
             }
+
+            #endregion
 
             #region Get localizations
 
@@ -1869,6 +2003,19 @@ namespace PresetParser
             }
 
             #endregion
+
+            #endregion
+
+            #region Rename some duplicate indentifiers to avoid double identifiers on the hand of Icon Files
+
+            switch (b.IconFileName)
+            {
+                case "A7_col_park_props_system_1x1_24_back.png": b.Identifier = "Park_1x1_bush_02"; break;
+                case "A7_park_props_1x1_26.png": b.Identifier = "Park_1x1_bush_03"; break;
+                case "A7_col_park_props_system_2x2_03_back.png": b.Identifier = "Park_2x2_garden_02"; break;
+                case "A7_col_park_props_system_3x3_02_front.png": b.Identifier = "Park_3x3_fountain_02"; break;
+                case "A7_col_park_props_system_3x3_03_back.png": b.Identifier = "Park_3x3_gazebo_02"; break;
+            }
 
             #endregion
 

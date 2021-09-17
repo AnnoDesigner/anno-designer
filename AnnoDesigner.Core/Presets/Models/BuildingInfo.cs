@@ -83,6 +83,24 @@ namespace AnnoDesigner.Core.Presets.Models
         public bool Borderless { get; set; }
 
         /// <summary>
+        /// Length of blocked area
+        /// </summary>
+        [DataMember(Order = 11)]
+        public double BlockedAreaLength { get; set; }
+
+        /// <summary>
+        /// Length of blocked area
+        /// </summary>
+        [DataMember(Order = 12)]
+        public double BlockedAreaWidth { get; set; }
+
+        /// <summary>
+        /// Direction of blocked area
+        /// </summary>
+        [DataMember(Order = 13)]
+        public GridDirection Direction { get; set; } = GridDirection.Down;
+
+        /// <summary>
         /// The localized names of this building.
         /// </summary>
         [DataMember(Order = 99)]

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xunit;
 using System.Windows;
 using AnnoDesigner.Helper;
+using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Tests
 {
@@ -30,6 +31,20 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedSize, result);
+        }
+
+        [Theory]
+        [InlineData(GridDirection.Up, GridDirection.Right)]
+        [InlineData(GridDirection.Right, GridDirection.Down)]
+        [InlineData(GridDirection.Down, GridDirection.Left)]
+        [InlineData(GridDirection.Left, GridDirection.Up)]
+        public void RotateDirection_ShouldReturnCorrectResult(GridDirection before, GridDirection expected)
+        {
+            // Arrange/ Act
+            var result = new CoordinateHelper().Rotate(before);
+
+            // Assert
+            Assert.Equal(expected, result);
         }
 
         #endregion

@@ -32,6 +32,7 @@ namespace AnnoDesigner.Models
         bool RenderGrid { get; set; }
         bool RenderInfluences { get; set; }
         bool RenderTrueInfluenceRange { get; set; }
+        bool RenderHarborBlockedArea { get; set; }
 
         bool RenderLabel { get; set; }
         bool RenderIcon { get; set; }
@@ -45,7 +46,6 @@ namespace AnnoDesigner.Models
         void Normalize(int border);
         void RaiseStatisticsUpdated(UpdateStatisticsEventArgs args);
         void RaiseColorsInLayoutUpdated();
-        void EnsureBounds(Rect additionalBounds);
         Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects);
         bool CheckUnsavedChanges();
     }

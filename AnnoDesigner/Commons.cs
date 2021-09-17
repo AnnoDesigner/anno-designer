@@ -21,10 +21,10 @@ namespace AnnoDesigner
         public static Commons Instance
         {
             get { return lazy.Value; }
-        }        
+        }
 
         private Commons()
-        {        }
+        { }
 
         #endregion
 
@@ -56,8 +56,8 @@ namespace AnnoDesigner
             { "Français","fra" },
             { "Polski", "pol" },
             { "Русский", "rus" },
+            { "Español", "esp" },
             /* We currently do not support these languages */
-            //{ "Español", "esp" },
             //{ "Italiano", "ita" },
             //{ "český", "cze" },
         };
