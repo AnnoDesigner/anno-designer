@@ -21,6 +21,8 @@ namespace AnnoDesigner
         private static MainViewModel _mainViewModel;
         private readonly IAppSettings _appSettings;
 
+        public new MainViewModel DataContext { get => base.DataContext as MainViewModel; set => base.DataContext = value; }
+
         #region Initialization
 
         public MainWindow(IAppSettings appSettingsToUse)
@@ -32,7 +34,7 @@ namespace AnnoDesigner
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
-            _mainViewModel = DataContext as MainViewModel;
+            _mainViewModel = DataContext;
             _mainViewModel.AnnoCanvas = annoCanvas;
             _mainViewModel.AnnoCanvas.RegisterHotkeys(_mainViewModel.HotkeyCommandManager);
 

@@ -725,8 +725,6 @@ namespace AnnoDesigner
             }
 
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-
-            AppDomain.CurrentDomain.UnhandledException += CheckUnsavedChangesBeforeCrash;
         }
 
         #endregion
@@ -2292,7 +2290,7 @@ namespace AnnoDesigner
 
         #region New/Save/Load/Export methods
 
-        private void CheckUnsavedChangesBeforeCrash(object sender, UnhandledExceptionEventArgs e)
+        public void CheckUnsavedChangesBeforeCrash()
         {
             if (UndoManager.IsDirty)
             {
