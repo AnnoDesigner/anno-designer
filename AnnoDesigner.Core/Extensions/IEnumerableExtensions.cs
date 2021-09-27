@@ -40,9 +40,9 @@ namespace AnnoDesigner.Core.Extensions
         /// this method takes the number of elements as a parameter, so that it can allocate an array of the right size
         /// from the start, hence suppressing the need for subsequent allocations and improving performance.
         /// </summary>
-        public static TSource[] ToArrayWithCapacity<TSource>(this IEnumerable<TSource> source, int capacitiy)
+        public static TSource[] ToArrayWithCapacity<TSource>(this IEnumerable<TSource> source, int capacity)
         {
-            var result = new TSource[capacitiy];
+            var result = new TSource[capacity];
 
             int i = 0;
             foreach (var item in source)
@@ -51,6 +51,29 @@ namespace AnnoDesigner.Core.Extensions
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Creates a list from the elements in the source sequence. Unlike <see cref="Enumerable.ToList{TSource}"/>,
+        /// this method takes the number of elements as a parameter, so that it can allocate an array of the right size
+        /// from the start, hence suppressing the need for subsequent allocations and improving performance.
+        /// </summary>
+        public static List<TSource> ToListWithCapacity<TSource>(this IEnumerable<TSource> source, int capacity)
+        {
+            var list = new List<TSource>(capacity);
+
+            list.AddRange(source);
+
+            return list;
+        }
+
+        /// <summary>
+        /// Iterates over each item in <paramref name="source"/>.
+        /// Use on lazily evaluated iterator to materialize each item.
+        /// </summary>
+        public static void Consume<T>(this IEnumerable<T> source)
+        {
+            foreach (var _ in source) { }
         }
     }
 }
