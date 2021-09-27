@@ -33,6 +33,7 @@ namespace AnnoDesigner.Models
         bool RenderInfluences { get; set; }
         bool RenderTrueInfluenceRange { get; set; }
         bool RenderHarborBlockedArea { get; set; }
+        bool RenderPanorama { get; set; }
 
         bool RenderLabel { get; set; }
         bool RenderIcon { get; set; }

@@ -182,6 +182,9 @@
                     <MenuItem Header="{l:Localize ShowHarborBlockedArea}"
                               IsCheckable="True"
                               IsChecked="{Binding CanvasShowHarborBlockedArea}" />
+                    <MenuItem Header="{l:Localize ShowPanorama}"
+                              IsCheckable="True"
+                              IsChecked="{Binding CanvasShowPanorama}" />
                 </MenuItem>
                 <MenuItem Header="{l:Localize Tools}">
                     <MenuItem Header="{l:Localize Normalize}"

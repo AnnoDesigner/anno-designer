@@ -141,6 +141,12 @@ namespace AnnoDesigner.Models
             set => Settings.Default.ShowHarborBlockedArea = value;
         }
 
+        public bool ShowPanorama
+        {
+            get => Settings.Default.ShowPanorama;
+            set => Settings.Default.ShowPanorama = value;
+        }
+
         public bool IsPavedStreet
         {
             get => Settings.Default.IsPavedStreet;

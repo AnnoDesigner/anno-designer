@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -229,6 +230,27 @@ namespace AnnoDesigner
                     InvalidateVisual();
                 }
                 _renderHarborBlockedArea = value;
+            }
+        }
+
+        /// <summary>
+        /// Backing field of the RenderPanorama property.
+        /// </summary>
+        private bool _renderPanorama;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the skyscraper panorama should be visible.
+        /// </summary>
+        public bool RenderPanorama
+        {
+            get { return _renderPanorama; }
+            set
+            {
+                if (_renderPanorama != value)
+                {
+                    InvalidateVisual();
+                }
+                _renderPanorama = value;
             }
         }
 
@@ -858,6 +880,43 @@ namespace AnnoDesigner
             RenderObjectList(drawingContext, borderlessObjects, useTransparency: false);
             RenderObjectList(drawingContext, borderedObjects, useTransparency: false);
             RenderObjectSelection(drawingContext, SelectedObjects);
+
+            if (RenderPanorama)
+            {
+                var regex = new Regex("A7_residence_SkyScraper_(?<tier>[45])lvl(?<level>[1-5])");
+                foreach (var placedObject in PlacedObjects)
+                {
+                    var center = _coordinateHelper.GetCenterPoint(placedObject.GridRect);
+                    if (regex.TryMatch(placedObject.Identifier, out var match))
+                    {
+                        var level = int.Parse(match.Groups["level"].Value);
+                        var radiusSquared = placedObject.WrappedAnnoObject.Radius * placedObject.WrappedAnnoObject.Radius;
+                        var panorama = level;
+
+                        foreach (var adjacentObject in PlacedObjects.GetItemsIntersecting(placedObject.GridInfluenceRadiusRect))
+                        {
+                            if (adjacentObject == placedObject) continue;
+
+                            if ((center - _coordinateHelper.GetCenterPoint(adjacentObject.GridRect)).LengthSquared <= radiusSquared)
+                            {
+                                if (regex.TryMatch(adjacentObject.Identifier, out var match2))
+                                {
+                                    var level2 = int.Parse(match2.Groups["level"].Value);
+                                    panorama += level > level2 ? 1 : -1;
+                                }
+                            }
+                        }
+
+                        // put the sign at the end of the string since it will be drawn from right to left
+                        var text = Math.Abs(panorama).ToString() + (panorama >= 0 ? "" : "-");
+                        drawingContext.DrawText(
+                            new FormattedText(text, Thread.CurrentThread.CurrentUICulture, FlowDirection.RightToLeft,
+                                TYPEFACE, FontSize, Brushes.Black, App.DpiScale.PixelsPerDip),
+                            placedObject.CalculateScreenRect(GridSize).TopRight
+                        );
+                    }
+                }
+            }
 
             if (!RenderInfluences)
             {
