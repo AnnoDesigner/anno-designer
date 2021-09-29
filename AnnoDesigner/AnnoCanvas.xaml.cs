@@ -1661,6 +1661,7 @@ namespace AnnoDesigner
         /// Rotates a group of objects 90 degrees clockwise around point (0, 0).
         /// </summary>
         /// <param name="objects"></param>
+        /// <returns>Lazily evaluated iterator which rotates each object and return tuple of the rotate item and its old rectangle.</returns>
         private IEnumerable<(LayoutObject item, Rect oldRect)> Rotate(IEnumerable<LayoutObject> objects)
         {
             foreach (var item in objects)
@@ -2471,14 +2472,14 @@ namespace AnnoDesigner
             }
             else if (CurrentObjects.Count > 1)
             {
-                Rotate(CurrentObjects);
+                Rotate(CurrentObjects).Consume();
             }
             else
             {
                 //Count == 0;
                 //Rotate from selected objects
                 CurrentObjects = CloneList(SelectedObjects);
-                Rotate(CurrentObjects);
+                Rotate(CurrentObjects).Consume();
             }
             InvalidateVisual();
         }
