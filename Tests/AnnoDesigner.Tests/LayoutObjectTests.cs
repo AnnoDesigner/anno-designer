@@ -50,9 +50,9 @@ namespace AnnoDesigner.Tests
         #region GetScreenRadius tests
 
         [Theory]
-        [InlineData(5, 5, 99)]
-        [InlineData(3, 3, 99)]
-        [InlineData(5.5, 5.5, 99)]
+        [InlineData(5, 5, 100)]
+        [InlineData(3, 3, 100)]
+        [InlineData(5.5, 5.5, 100)]
         public void GetScreenRadius_SizeHeightAndWidthAreOdd_ShouldAdjustRadius(double widthToSet, double heightToSet, double expectedRadius)
         {
             // Arrange            
