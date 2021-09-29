@@ -851,6 +851,12 @@ namespace AnnoDesigner
                 _lastBorderlessObjectsToDraw = borderlessObjects;
                 borderedObjects = objectsToDraw.Where(_ => !_.WrappedAnnoObject.Borderless).ToList();
                 _lastBorderedObjectsToDraw = borderedObjects;
+
+                //quick fix deleting objects via keyboard instead of right click
+                if (CurrentMode == MouseMode.DeleteObject)
+                {
+                    CurrentMode = MouseMode.Standard;
+                }
             }
 
             // draw placed objects
@@ -2535,7 +2541,7 @@ namespace AnnoDesigner
             SelectedObjects.ForEach(item => PlacedObjects.Remove(item));
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-            InvalidateBounds();
+            CurrentMode = MouseMode.DeleteObject;
         }
 
         private readonly Hotkey duplicateHotkey;
