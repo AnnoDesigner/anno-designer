@@ -502,19 +502,7 @@ namespace AnnoDesigner.Models
         {
             if (_screenRadius == default || _lastGridSizeForScreenRadius != gridSize)
             {
-                // Buildings of an odd-numbered size (3x3/3x5 etc) draw their circular influence range with an additional +0.5,
-                // this is not correct and needs to be adjusted to produce the correct radius for those buildings.
-                // See https://github.com/AnnoDesigner/anno-designer/issues/299 for an explanation of the issue.
-
-                // check if Object Width and Height are odd numbers or not, if both are, adjust the circle size with -0.1
-                if ((WrappedAnnoObject.Size.Width % 2 != 0) && (WrappedAnnoObject.Size.Height % 2 != 0))
-                {
-                    _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius - 0.1, gridSize);
-                }
-                else
-                {
-                    _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius, gridSize);
-                }
+                _screenRadius = _coordinateHelper.GridToScreen(WrappedAnnoObject.Radius, gridSize);
                 _lastGridSizeForScreenRadius = gridSize;
             }
 

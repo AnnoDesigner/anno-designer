@@ -873,6 +873,12 @@ namespace AnnoDesigner
                 _lastBorderlessObjectsToDraw = borderlessObjects;
                 borderedObjects = objectsToDraw.Where(_ => !_.WrappedAnnoObject.Borderless).ToList();
                 _lastBorderedObjectsToDraw = borderedObjects;
+
+                //quick fix deleting objects via keyboard instead of right click
+                if (CurrentMode == MouseMode.DeleteObject)
+                {
+                    CurrentMode = MouseMode.Standard;
+                }
             }
 
             // draw placed objects
@@ -1714,6 +1720,7 @@ namespace AnnoDesigner
         /// Rotates a group of objects 90 degrees clockwise around point (0, 0).
         /// </summary>
         /// <param name="objects"></param>
+        /// <returns>Lazily evaluated iterator which rotates each object and return tuple of the rotate item and its old rectangle.</returns>
         private IEnumerable<(LayoutObject item, Rect oldRect)> Rotate(IEnumerable<LayoutObject> objects)
         {
             foreach (var item in objects)
@@ -2524,14 +2531,14 @@ namespace AnnoDesigner
             }
             else if (CurrentObjects.Count > 1)
             {
-                Rotate(CurrentObjects);
+                Rotate(CurrentObjects).Consume();
             }
             else
             {
                 //Count == 0;
                 //Rotate from selected objects
                 CurrentObjects = CloneList(SelectedObjects);
-                Rotate(CurrentObjects);
+                Rotate(CurrentObjects).Consume();
             }
             InvalidateVisual();
         }
@@ -2594,7 +2601,7 @@ namespace AnnoDesigner
             SelectedObjects.ForEach(item => PlacedObjects.Remove(item));
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-            InvalidateBounds();
+            CurrentMode = MouseMode.DeleteObject;
         }
 
         private readonly Hotkey duplicateHotkey;
