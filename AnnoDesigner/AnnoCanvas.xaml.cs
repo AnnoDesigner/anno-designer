@@ -890,7 +890,7 @@ namespace AnnoDesigner
             if (RenderPanorama)
             {
                 var regex = new Regex("A7_residence_SkyScraper_(?<tier>[45])lvl(?<level>[1-5])");
-                foreach (var placedObject in PlacedObjects)
+                foreach (var placedObject in objectsToDraw)
                 {
                     var center = _coordinateHelper.GetCenterPoint(placedObject.GridRect);
                     if (regex.TryMatch(placedObject.Identifier, out var match))
@@ -901,7 +901,10 @@ namespace AnnoDesigner
 
                         foreach (var adjacentObject in PlacedObjects.GetItemsIntersecting(placedObject.GridInfluenceRadiusRect))
                         {
-                            if (adjacentObject == placedObject) continue;
+                            if (adjacentObject == placedObject)
+                            {
+                                continue;
+                            }
 
                             if ((center - _coordinateHelper.GetCenterPoint(adjacentObject.GridRect)).LengthSquared <= radiusSquared)
                             {
@@ -915,6 +918,7 @@ namespace AnnoDesigner
 
                         // put the sign at the end of the string since it will be drawn from right to left
                         var text = Math.Abs(panorama).ToString() + (panorama >= 0 ? "" : "-");
+
                         drawingContext.DrawText(
                             new FormattedText(text, Thread.CurrentThread.CurrentUICulture, FlowDirection.RightToLeft,
                                 TYPEFACE, FontSize, Brushes.Black, App.DpiScale.PixelsPerDip),
