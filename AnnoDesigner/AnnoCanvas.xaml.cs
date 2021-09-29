@@ -17,7 +17,6 @@ using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Layout;
-using AnnoDesigner.Core.Layout.Exceptions;
 using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
@@ -378,7 +377,9 @@ namespace AnnoDesigner
             DragSingleStart,
             DragSelection,
             DragAllStart,
-            DragAll
+            DragAll,
+            PlaceObjects,
+            DeleteObject
         }
 
         /// <summary>
@@ -750,6 +751,12 @@ namespace AnnoDesigner
             return base.ArrangeOverride(arrangeBounds);
         }
 
+        private Rect _lastViewPortAbsolute = default;
+        private List<LayoutObject> _lastObjectsToDraw = new List<LayoutObject>();
+        private List<LayoutObject> _lastBorderlessObjectsToDraw = new List<LayoutObject>();
+        private List<LayoutObject> _lastBorderedObjectsToDraw = new List<LayoutObject>();
+        private QuadTree<LayoutObject> _lastPlacedObjects = null;
+
         /// <summary>
         /// Renders the whole scene including grid, placed objects, current object, selection highlights, influence radii and selection rectangle.
         /// </summary>
@@ -829,12 +836,31 @@ namespace AnnoDesigner
             //Push the transform after rendering everything that should not be translated.
             drawingContext.PushTransform(_viewportTransform);
 
-            var objectsToDraw = PlacedObjects.GetItemsIntersecting(_viewport.Absolute).ToList();
-            //borderless objects should be drawn first.
-            var borderlessObjects = objectsToDraw.Where(_ => _.WrappedAnnoObject.Borderless).ToList();
-            var borderedObjects = objectsToDraw.Where(_ => !_.WrappedAnnoObject.Borderless).ToList();
+            var objectsToDraw = _lastObjectsToDraw;
+            var borderlessObjects = _lastBorderlessObjectsToDraw;
+            var borderedObjects = _lastBorderedObjectsToDraw;
 
-            // draw placed objects            
+            if (_lastViewPortAbsolute != _viewport.Absolute || _lastPlacedObjects != PlacedObjects || CurrentMode == MouseMode.PlaceObjects || CurrentMode == MouseMode.DeleteObject)
+            {
+                objectsToDraw = PlacedObjects.GetItemsIntersecting(_viewport.Absolute).ToList();
+                _lastObjectsToDraw = objectsToDraw;
+                _lastPlacedObjects = PlacedObjects;
+                _lastViewPortAbsolute = _viewport.Absolute;
+
+                borderlessObjects = objectsToDraw.Where(_ => _.WrappedAnnoObject.Borderless).ToList();
+                _lastBorderlessObjectsToDraw = borderlessObjects;
+                borderedObjects = objectsToDraw.Where(_ => !_.WrappedAnnoObject.Borderless).ToList();
+                _lastBorderedObjectsToDraw = borderedObjects;
+
+                //quick fix deleting objects via keyboard instead of right click
+                if (CurrentMode == MouseMode.DeleteObject)
+                {
+                    CurrentMode = MouseMode.Standard;
+                }
+            }
+
+            // draw placed objects
+            //borderless objects should be drawn first; selection afterwards
             RenderObjectList(drawingContext, borderlessObjects, useTransparency: false);
             RenderObjectList(drawingContext, borderedObjects, useTransparency: false);
             RenderObjectSelection(drawingContext, SelectedObjects);
@@ -1089,20 +1115,26 @@ namespace AnnoDesigner
         /// <param name="obj">object to render</param>
         private void RenderObjectList(DrawingContext drawingContext, List<LayoutObject> objects, bool useTransparency)
         {
+            var gridSize = GridSize; //hot path optimization
+            var linePenThickness = _linePen.Thickness; //hot path optimization (avoid access of DependencyProperty)
+            var renderHarborBlockedArea = RenderHarborBlockedArea; //hot path optimization
+            var renderIcon = RenderIcon; //hot path optimization
+            var renderLabel = RenderLabel; //hot path optimization
+
             foreach (var curLayoutObject in objects)
             {
                 var obj = curLayoutObject.WrappedAnnoObject;
 
                 // draw object rectangle
-                var objRect = curLayoutObject.CalculateScreenRect(GridSize);
+                var objRect = curLayoutObject.CalculateScreenRect(gridSize);
 
                 var brush = useTransparency ? curLayoutObject.TransparentBrush : curLayoutObject.RenderBrush;
 
-                var borderPen = obj.Borderless ? curLayoutObject.GetBorderlessPen(brush, _linePen.Thickness) : _linePen;
+                var borderPen = obj.Borderless ? curLayoutObject.GetBorderlessPen(brush, linePenThickness) : _linePen;
                 drawingContext.DrawRectangle(brush, borderPen, objRect);
-                if (RenderHarborBlockedArea)
+                if (renderHarborBlockedArea)
                 {
-                    var objBlockedRect = curLayoutObject.CalculateBlockedScreenRect(GridSize);
+                    var objBlockedRect = curLayoutObject.CalculateBlockedScreenRect(gridSize);
                     if (objBlockedRect.HasValue)
                     {
                         drawingContext.DrawRectangle(curLayoutObject.BlockedAreaBrush, borderPen, objBlockedRect.Value);
@@ -1111,7 +1143,7 @@ namespace AnnoDesigner
 
                 // draw object icon if it is at least 2x2 cells
                 var iconRendered = false;
-                if (RenderIcon && !string.IsNullOrEmpty(obj.Icon))
+                if (renderIcon && !string.IsNullOrEmpty(obj.Icon))
                 {
                     var iconFound = false;
 
@@ -1142,7 +1174,7 @@ namespace AnnoDesigner
 
                     if (iconFound)
                     {
-                        var iconRect = curLayoutObject.GetIconRect(GridSize);
+                        var iconRect = curLayoutObject.GetIconRect(gridSize);
 
                         drawingContext.DrawImage(curLayoutObject.Icon.Icon, iconRect);
                         iconRendered = true;
@@ -1150,7 +1182,7 @@ namespace AnnoDesigner
                 }
 
                 // draw object label
-                if (RenderLabel && !string.IsNullOrEmpty(obj.Label))
+                if (renderLabel && !string.IsNullOrEmpty(obj.Label))
                 {
                     var textAlignment = iconRendered ? TextAlignment.Left : TextAlignment.Center;
                     var text = curLayoutObject.GetFormattedText(textAlignment, Thread.CurrentThread.CurrentCulture,
@@ -1252,11 +1284,18 @@ namespace AnnoDesigner
         /// </summary>
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
+            if (!RenderInfluences)
+            {
+                return;
+            }
+
             Moved2DArray<AnnoObject> gridDictionary = null;
+            List<AnnoObject> placedAnnoObjects = null;
+
             if (RenderTrueInfluenceRange && PlacedObjects.Count > 0)
             {
                 var placedObjects = PlacedObjects.Concat(objects).ToHashSet();
-                var placedAnnoObjects = placedObjects.Select(o => o.WrappedAnnoObject).ToList();
+                placedAnnoObjects = placedObjects.Select(o => o.WrappedAnnoObject).ToList();
                 var placedObjectDictionary = placedObjects.ToDictionaryWithCapacity(o => o.WrappedAnnoObject);
 
                 void Highlight(AnnoObject objectInRange)
@@ -1284,7 +1323,7 @@ namespace AnnoDesigner
                     {
                         if (RenderTrueInfluenceRange)
                         {
-                            DrawTrueInfluenceRangePolygon(curLayoutObject, sgc, gridDictionary);
+                            DrawTrueInfluenceRangePolygon(curLayoutObject, sgc, gridDictionary, placedAnnoObjects);
                         }
                         else
                         {
@@ -1299,13 +1338,14 @@ namespace AnnoDesigner
                     geometries.Add((index, sg));
                 }
             });
+
             foreach (var (_, geometry) in geometries.OrderBy(p => p.index))
             {
                 drawingContext.DrawGeometry(_lightBrush, _radiusPen, geometry);
             }
         }
 
-        private void DrawTrueInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc, Moved2DArray<AnnoObject> gridDictionary)
+        private void DrawTrueInfluenceRangePolygon(LayoutObject curLayoutObject, StreamGeometryContext sgc, Moved2DArray<AnnoObject> gridDictionary, List<AnnoObject> placedAnnoObjects)
         {
             var stroked = true;
             var smoothJoin = true;
@@ -1319,7 +1359,7 @@ namespace AnnoDesigner
             };
 
             var cellsInInfluenceRange = RoadSearchHelper.BreadthFirstSearch(
-                PlacedObjects.Select(o => o.WrappedAnnoObject),
+                placedAnnoObjects,
                 startObjects,
                 o => (int)o.InfluenceRange,
                 gridDictionary);
@@ -1621,6 +1661,7 @@ namespace AnnoDesigner
         /// Rotates a group of objects 90 degrees clockwise around point (0, 0).
         /// </summary>
         /// <param name="objects"></param>
+        /// <returns>Lazily evaluated iterator which rotates each object and return tuple of the rotate item and its old rectangle.</returns>
         private IEnumerable<(LayoutObject item, Rect oldRect)> Rotate(IEnumerable<LayoutObject> objects)
         {
             foreach (var item in objects)
@@ -1825,6 +1866,7 @@ namespace AnnoDesigner
             {
                 if (CurrentObjects.Count != 0)
                 {
+                    CurrentMode = MouseMode.PlaceObjects;
                     // place new object
                     TryPlaceCurrentObjects(isContinuousDrawing: true);
                 }
@@ -1998,10 +2040,16 @@ namespace AnnoDesigner
                         break;
                 }
             }
+            else if (e.ChangedButton == MouseButton.Left && CurrentObjects.Count != 0)
+            {
+                CurrentMode = MouseMode.PlaceObjects;
+            }
             else if (e.ChangedButton == MouseButton.Right)
             {
                 switch (CurrentMode)
                 {
+                    case MouseMode.PlaceObjects:
+                    case MouseMode.DeleteObject:
                     case MouseMode.Standard:
                         {
                             if (CurrentObjects.Count != 0)
@@ -2009,6 +2057,8 @@ namespace AnnoDesigner
                                 // cancel placement of object
                                 CurrentObjects.Clear();
                             }
+
+                            CurrentMode = MouseMode.Standard;
                             break;
                         }
                     case MouseMode.DragSelection:
@@ -2129,46 +2179,46 @@ namespace AnnoDesigner
         /// <returns>true if placement succeeded, otherwise false</returns>
         private bool TryPlaceCurrentObjects(bool isContinuousDrawing)
         {
-            if (CurrentObjects.Count != 0)
+            if (CurrentObjects.Count == 0)
             {
-                var boundingRect = ComputeBoundingRect(CurrentObjects);
-                var objects = PlacedObjects.GetItemsIntersecting(boundingRect);
-
-                if (CurrentObjects.Count != 0 && !objects.Any(_ => ObjectIntersectionExists(CurrentObjects, _)))
-                {
-                    var newObjects = CloneList(CurrentObjects);
-                    UndoManager.RegisterOperation(new AddObjectsOperation<LayoutObject>()
-                    {
-                        Objects = newObjects,
-                        Collection = PlacedObjects
-                    });
-
-                    PlacedObjects.AddRange(newObjects);
-                    StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-
-                    //no need to update colors if drawing the same object(s)
-                    if (!isContinuousDrawing)
-                    {
-                        ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
-                    }
-
-                    if (!_layoutBounds.Contains(boundingRect))
-                    {
-                        InvalidateBounds();
-                    }
-
-                    if (!_scrollableBounds.Contains(boundingRect))
-                    {
-                        InvalidateScroll();
-                    }
-
-                    return true;
-                }
-
-                return false;
+                return true;
             }
 
-            return true;
+            var boundingRect = ComputeBoundingRect(CurrentObjects);
+            var objects = PlacedObjects.GetItemsIntersecting(boundingRect);
+
+            if (CurrentObjects.Count != 0 && !objects.Any(_ => ObjectIntersectionExists(CurrentObjects, _)))
+            {
+                var newObjects = CloneList(CurrentObjects);
+                UndoManager.RegisterOperation(new AddObjectsOperation<LayoutObject>()
+                {
+                    Objects = newObjects,
+                    Collection = PlacedObjects
+                });
+
+                PlacedObjects.AddRange(newObjects);
+                StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+
+                //no need to update colors if drawing the same object(s)
+                if (!isContinuousDrawing)
+                {
+                    ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
+                }
+
+                if (!_layoutBounds.Contains(boundingRect))
+                {
+                    InvalidateBounds();
+                }
+
+                if (!_scrollableBounds.Contains(boundingRect))
+                {
+                    InvalidateScroll();
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -2477,14 +2527,14 @@ namespace AnnoDesigner
             }
             else if (CurrentObjects.Count > 1)
             {
-                Rotate(CurrentObjects);
+                Rotate(CurrentObjects).Consume();
             }
             else
             {
                 //Count == 0;
                 //Rotate from selected objects
                 CurrentObjects = CloneList(SelectedObjects);
-                Rotate(CurrentObjects);
+                Rotate(CurrentObjects).Consume();
             }
             InvalidateVisual();
         }
@@ -2547,7 +2597,7 @@ namespace AnnoDesigner
             SelectedObjects.ForEach(item => PlacedObjects.Remove(item));
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-            InvalidateBounds();
+            CurrentMode = MouseMode.DeleteObject;
         }
 
         private readonly Hotkey duplicateHotkey;
@@ -2585,6 +2635,7 @@ namespace AnnoDesigner
                     PlacedObjects.Remove(obj);
                     RemoveSelectedObject(obj, false);
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+                    CurrentMode = MouseMode.DeleteObject;
                 }
             }
         }
