@@ -377,7 +377,9 @@ namespace AnnoDesigner
             DragSingleStart,
             DragSelection,
             DragAllStart,
-            DragAll
+            DragAll,
+            PlaceObjects,
+            DeleteObject
         }
 
         /// <summary>
@@ -838,7 +840,7 @@ namespace AnnoDesigner
             var borderlessObjects = _lastBorderlessObjectsToDraw;
             var borderedObjects = _lastBorderedObjectsToDraw;
 
-            if (_lastViewPortAbsolute != _viewport.Absolute || _lastPlacedObjects != PlacedObjects)
+            if (_lastViewPortAbsolute != _viewport.Absolute || _lastPlacedObjects != PlacedObjects || CurrentMode == MouseMode.PlaceObjects || CurrentMode == MouseMode.DeleteObject)
             {
                 objectsToDraw = PlacedObjects.GetItemsIntersecting(_viewport.Absolute).ToList();
                 _lastObjectsToDraw = objectsToDraw;
@@ -849,6 +851,12 @@ namespace AnnoDesigner
                 _lastBorderlessObjectsToDraw = borderlessObjects;
                 borderedObjects = objectsToDraw.Where(_ => !_.WrappedAnnoObject.Borderless).ToList();
                 _lastBorderedObjectsToDraw = borderedObjects;
+
+                //quick fix deleting objects via keyboard instead of right click
+                if (CurrentMode == MouseMode.DeleteObject)
+                {
+                    CurrentMode = MouseMode.Standard;
+                }
             }
 
             // draw placed objects
@@ -1858,6 +1866,7 @@ namespace AnnoDesigner
             {
                 if (CurrentObjects.Count != 0)
                 {
+                    CurrentMode = MouseMode.PlaceObjects;
                     // place new object
                     TryPlaceCurrentObjects(isContinuousDrawing: true);
                 }
@@ -2031,10 +2040,16 @@ namespace AnnoDesigner
                         break;
                 }
             }
+            else if (e.ChangedButton == MouseButton.Left && CurrentObjects.Count != 0)
+            {
+                CurrentMode = MouseMode.PlaceObjects;
+            }
             else if (e.ChangedButton == MouseButton.Right)
             {
                 switch (CurrentMode)
                 {
+                    case MouseMode.PlaceObjects:
+                    case MouseMode.DeleteObject:
                     case MouseMode.Standard:
                         {
                             if (CurrentObjects.Count != 0)
@@ -2042,6 +2057,8 @@ namespace AnnoDesigner
                                 // cancel placement of object
                                 CurrentObjects.Clear();
                             }
+
+                            CurrentMode = MouseMode.Standard;
                             break;
                         }
                     case MouseMode.DragSelection:
@@ -2162,46 +2179,46 @@ namespace AnnoDesigner
         /// <returns>true if placement succeeded, otherwise false</returns>
         private bool TryPlaceCurrentObjects(bool isContinuousDrawing)
         {
-            if (CurrentObjects.Count != 0)
+            if (CurrentObjects.Count == 0)
             {
-                var boundingRect = ComputeBoundingRect(CurrentObjects);
-                var objects = PlacedObjects.GetItemsIntersecting(boundingRect);
-
-                if (CurrentObjects.Count != 0 && !objects.Any(_ => ObjectIntersectionExists(CurrentObjects, _)))
-                {
-                    var newObjects = CloneList(CurrentObjects);
-                    UndoManager.RegisterOperation(new AddObjectsOperation<LayoutObject>()
-                    {
-                        Objects = newObjects,
-                        Collection = PlacedObjects
-                    });
-
-                    PlacedObjects.AddRange(newObjects);
-                    StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-
-                    //no need to update colors if drawing the same object(s)
-                    if (!isContinuousDrawing)
-                    {
-                        ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
-                    }
-
-                    if (!_layoutBounds.Contains(boundingRect))
-                    {
-                        InvalidateBounds();
-                    }
-
-                    if (!_scrollableBounds.Contains(boundingRect))
-                    {
-                        InvalidateScroll();
-                    }
-
-                    return true;
-                }
-
-                return false;
+                return true;
             }
 
-            return true;
+            var boundingRect = ComputeBoundingRect(CurrentObjects);
+            var objects = PlacedObjects.GetItemsIntersecting(boundingRect);
+
+            if (CurrentObjects.Count != 0 && !objects.Any(_ => ObjectIntersectionExists(CurrentObjects, _)))
+            {
+                var newObjects = CloneList(CurrentObjects);
+                UndoManager.RegisterOperation(new AddObjectsOperation<LayoutObject>()
+                {
+                    Objects = newObjects,
+                    Collection = PlacedObjects
+                });
+
+                PlacedObjects.AddRange(newObjects);
+                StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+
+                //no need to update colors if drawing the same object(s)
+                if (!isContinuousDrawing)
+                {
+                    ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
+                }
+
+                if (!_layoutBounds.Contains(boundingRect))
+                {
+                    InvalidateBounds();
+                }
+
+                if (!_scrollableBounds.Contains(boundingRect))
+                {
+                    InvalidateScroll();
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -2525,7 +2542,7 @@ namespace AnnoDesigner
             SelectedObjects.ForEach(item => PlacedObjects.Remove(item));
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
-            InvalidateBounds();
+            CurrentMode = MouseMode.DeleteObject;
         }
 
         private readonly Hotkey duplicateHotkey;
@@ -2563,6 +2580,7 @@ namespace AnnoDesigner
                     PlacedObjects.Remove(obj);
                     RemoveSelectedObject(obj, false);
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+                    CurrentMode = MouseMode.DeleteObject;
                 }
             }
         }
