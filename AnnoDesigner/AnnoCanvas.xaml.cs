@@ -384,8 +384,9 @@ namespace AnnoDesigner
         private readonly IMessageBoxService _messageBoxService;
         private readonly ILocalizationHelper _localizationHelper;
 
-        private readonly Regex _regex_panorama = new Regex("A7_residence_SkyScraper_(?<tier>[45])lvl(?<level>[1-5])",
-            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+        private const string IDENTIFIER_SKYSCRAPER = "A7_residence_SkyScraper_";
+        private readonly Regex _regex_panorama = new Regex($"{IDENTIFIER_SKYSCRAPER}(?<tier>[45])lvl(?<level>[1-5])",
+            RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);//RegexOptions.IgnoreCase -> slow in < .NET 5 (triggers several calls to ToLower)
 
         /// <summary>
         /// States the mode of mouse interaction.
@@ -1098,7 +1099,7 @@ namespace AnnoDesigner
 
         private void RenderPanoramaText(DrawingContext drawingContext, List<LayoutObject> placedObjects)
         {
-            foreach (var curObject in placedObjects.FindAll(_ => _.Identifier.StartsWith("A7_residence_SkyScraper_", StringComparison.OrdinalIgnoreCase))) //.Where(_ => _.Identifier.StartsWith("A7_residence_SkyScraper_", StringComparison.OrdinalIgnoreCase)))
+            foreach (var curObject in placedObjects.FindAll(_ => _.Identifier.StartsWith(IDENTIFIER_SKYSCRAPER, StringComparison.OrdinalIgnoreCase)))
             {
                 if (!_regex_panorama.TryMatch(curObject.Identifier, out var match))
                 {
