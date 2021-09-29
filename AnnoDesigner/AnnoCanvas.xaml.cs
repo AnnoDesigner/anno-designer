@@ -1112,7 +1112,9 @@ namespace AnnoDesigner
                 var radiusSquared = curObject.WrappedAnnoObject.Radius * curObject.WrappedAnnoObject.Radius;
                 var panorama = level;
 
-                foreach (var adjacentObject in PlacedObjects.GetItemsIntersecting(curObject.GridInfluenceRadiusRect))
+                //find intersecting skyscrapers
+                foreach (var adjacentObject in PlacedObjects.GetItemsIntersecting(curObject.GridInfluenceRadiusRect)
+                    .Where(_ => _.Identifier.StartsWith(IDENTIFIER_SKYSCRAPER, StringComparison.OrdinalIgnoreCase)))
                 {
                     if (adjacentObject == curObject)
                     {
