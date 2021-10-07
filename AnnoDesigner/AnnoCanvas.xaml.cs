@@ -578,6 +578,9 @@ namespace AnnoDesigner
 
             _layoutLoader = new LayoutLoader();
 
+            _showScrollBars = _appSettings.ShowScrollbars;
+            _hideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;
+
             var sw = new Stopwatch();
             sw.Start();
 
@@ -730,10 +733,17 @@ namespace AnnoDesigner
 
         #endregion
 
+        private bool _showScrollBars;
+        private bool _hideInfluenceOnSelection;
+
         private void AppSettings_SettingsChanged(object sender, EventArgs e)
         {
             LoadGridLineColor();
             LoadObjectBorderLineColor();
+            _needsRefreshAfterSettingsChanged = true;
+
+            _showScrollBars = _appSettings.ShowScrollbars;
+            _hideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;
         }
 
         #endregion
@@ -761,7 +771,8 @@ namespace AnnoDesigner
         private int _lastGridSize = -1;
         private double _lastWidth = -1;
         private double _lastHeight = -1;
-        private bool _wasInvalidateScrollInfo;
+        private bool _needsRefreshAfterScrolling;
+        private bool _needsRefreshAfterSettingsChanged;
 
         /// <summary>
         /// Renders the whole scene including grid, placed objects, current object, selection highlights, influence radii and selection rectangle.
@@ -777,7 +788,7 @@ namespace AnnoDesigner
             if (ScrollOwner != null)
             {
                 //SCrollbar visibility should probably be managed by the owner of the the scrollviewer itself, not here...
-                if (_appSettings.ShowScrollbars)
+                if (_showScrollBars)
                 {
                     ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
                     ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
@@ -790,8 +801,6 @@ namespace AnnoDesigner
 
                 if (_invalidateScrollInfo)
                 {
-                    _wasInvalidateScrollInfo = true;
-
                     ScrollOwner?.InvalidateScrollInfo();
                     _invalidateScrollInfo = false;
                 }
@@ -832,14 +841,28 @@ namespace AnnoDesigner
             // draw grid
             if (RenderGrid)
             {
-                if (GridSize != _lastGridSize || height != _lastHeight || width != _lastWidth || _wasInvalidateScrollInfo)
+                //old logic
+                //for (var i = _viewport.HorizontalAlignmentValue * GridSize; i < width; i += _gridStep)
+                //{
+                //    drawingContext.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
+                //}
+                //for (var i = _viewport.VerticalAlignmentValue * GridSize; i < height; i += _gridStep)
+                //{
+                //    drawingContext.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
+                //}
+
+                if (_needsRefreshAfterScrolling || GridSize != _lastGridSize || height != _lastHeight || width != _lastWidth || _needsRefreshAfterSettingsChanged)
                 {
                     var context = _drawingGroupGridLines.Open();
+                    //context.PushGuidelineSet(_guidelineSet);
 
+                    //vertical lines
                     for (var i = _viewport.HorizontalAlignmentValue * GridSize; i < width; i += _gridStep)
                     {
                         context.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
                     }
+
+                    //horizontal lines
                     for (var i = _viewport.VerticalAlignmentValue * GridSize; i < height; i += _gridStep)
                     {
                         context.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
@@ -850,7 +873,8 @@ namespace AnnoDesigner
                     _lastGridSize = GridSize;
                     _lastHeight = height;
                     _lastWidth = width;
-                    _wasInvalidateScrollInfo = false;
+                    _needsRefreshAfterScrolling = false;
+                    _needsRefreshAfterSettingsChanged = false;
                 }
 
                 drawingContext.DrawDrawing(_drawingGroupGridLines);
@@ -890,7 +914,7 @@ namespace AnnoDesigner
 
             if (!RenderInfluences)
             {
-                if (!_appSettings.HideInfluenceOnSelection)
+                if (!_hideInfluenceOnSelection)
                 {
                     RenderObjectInfluenceRadius(drawingContext, SelectedObjects);
                     RenderObjectInfluenceRange(drawingContext, SelectedObjects);
@@ -1138,8 +1162,13 @@ namespace AnnoDesigner
         /// <param name="obj">object to render</param>
         private void RenderObjectList(DrawingContext drawingContext, List<LayoutObject> objects, bool useTransparency)
         {
+            if (objects.Count == 0)
+            {
+                return;
+            }
+
             var gridSize = GridSize; //hot path optimization
-            var linePenThickness = _linePen.Thickness; //hot path optimization (avoid access of DependencyProperty)
+            var linePenThickness = LinePenThickness; //hot path optimization (avoid access of DependencyProperty)
             var renderHarborBlockedArea = RenderHarborBlockedArea; //hot path optimization
             var renderIcon = RenderIcon; //hot path optimization
             var renderLabel = RenderLabel; //hot path optimization
@@ -1247,6 +1276,9 @@ namespace AnnoDesigner
             }
         }
 
+        private DrawingGroup _drawingGroupObjectSelection = new DrawingGroup();
+        private List<LayoutObject> _lastSelectedObjects = new List<LayoutObject>();
+        private int _lastObjectSelectionGridSize = -1;
 
         /// <summary>
         /// Renders a selection highlight on the specified object.
@@ -1255,11 +1287,36 @@ namespace AnnoDesigner
         /// <param name="obj">object to render as selected</param>
         private void RenderObjectSelection(DrawingContext drawingContext, List<LayoutObject> objects)
         {
+            if (objects.Count == 0)
+            {
+                return;
+            }
+
+            //old logic
             foreach (var curLayoutObject in objects)
             {
                 // draw object rectangle                
                 drawingContext.DrawRectangle(null, _highlightPen, curLayoutObject.CalculateScreenRect(GridSize));
             }
+
+            //if (_lastSelectedObjects != objects || _lastObjectSelectionGridSize != GridSize)
+            //{
+            //    var context = _drawingGroupObjectSelection.Open();
+            //    context.PushGuidelineSet(_guidelineSet);
+
+            //    foreach (var curLayoutObject in objects)
+            //    {
+            //        // draw object rectangle                
+            //        drawingContext.DrawRectangle(null, _highlightPen, curLayoutObject.CalculateScreenRect(GridSize));
+            //    }
+
+            //    context.Close();
+
+            //    _lastObjectSelectionGridSize = GridSize;
+            //    _lastSelectedObjects = objects;
+            //}
+
+            //drawingContext.DrawDrawing(_drawingGroupObjectSelection);
         }
 
         /// <summary>
@@ -1269,6 +1326,11 @@ namespace AnnoDesigner
         /// <param name="obj">object which's influence is rendered</param>
         private void RenderObjectInfluenceRadius(DrawingContext drawingContext, List<LayoutObject> objects)
         {
+            if (objects.Count == 0)
+            {
+                return;
+            }
+
             foreach (var curLayoutObject in objects)
             {
                 if (curLayoutObject.WrappedAnnoObject.Radius >= 0.5)
@@ -1307,11 +1369,10 @@ namespace AnnoDesigner
         /// </summary>
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
-            if (!RenderInfluences)
+            if (objects.Count == 0 || !RenderInfluences)
             {
                 return;
             }
-
             Moved2DArray<AnnoObject> gridDictionary = null;
             List<AnnoObject> placedAnnoObjects = null;
 
@@ -1666,6 +1727,7 @@ namespace AnnoDesigner
 
             //update scroll viewer on next render
             _invalidateScrollInfo = true;
+            _needsRefreshAfterScrolling = true;
         }
 
         /// <summary>
@@ -2251,6 +2313,11 @@ namespace AnnoDesigner
         /// <returns>object at the position, <see langword="null"/> if no object could be found</returns>
         private LayoutObject GetObjectAt(Point position)
         {
+            if (PlacedObjects.Count == 0)
+            {
+                return null;
+            }
+
             var gridPosition = _coordinateHelper.ScreenToFractionalGrid(position, GridSize);
             gridPosition = _viewport.OriginToViewport(gridPosition);
             var possibleItems = PlacedObjects.GetItemsIntersecting(new Rect(gridPosition, new Size(1, 1)));
