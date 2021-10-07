@@ -757,6 +757,12 @@ namespace AnnoDesigner
         private List<LayoutObject> _lastBorderedObjectsToDraw = new List<LayoutObject>();
         private QuadTree<LayoutObject> _lastPlacedObjects = null;
 
+        private DrawingGroup _drawingGroupGridLines = new DrawingGroup();
+        private int _lastGridSize = -1;
+        private double _lastWidth = -1;
+        private double _lastHeight = -1;
+        private bool _wasInvalidateScrollInfo;
+
         /// <summary>
         /// Renders the whole scene including grid, placed objects, current object, selection highlights, influence radii and selection rectangle.
         /// </summary>
@@ -784,6 +790,8 @@ namespace AnnoDesigner
 
                 if (_invalidateScrollInfo)
                 {
+                    _wasInvalidateScrollInfo = true;
+
                     ScrollOwner?.InvalidateScrollInfo();
                     _invalidateScrollInfo = false;
                 }
@@ -820,17 +828,32 @@ namespace AnnoDesigner
 
             // draw background
             drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(new Point(), RenderSize));
+
             // draw grid
             if (RenderGrid)
             {
-                for (var i = _viewport.HorizontalAlignmentValue * GridSize; i < width; i += _gridStep)
+                if (GridSize != _lastGridSize || height != _lastHeight || width != _lastWidth || _wasInvalidateScrollInfo)
                 {
-                    drawingContext.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
+                    var context = _drawingGroupGridLines.Open();
+
+                    for (var i = _viewport.HorizontalAlignmentValue * GridSize; i < width; i += _gridStep)
+                    {
+                        context.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
+                    }
+                    for (var i = _viewport.VerticalAlignmentValue * GridSize; i < height; i += _gridStep)
+                    {
+                        context.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
+                    }
+
+                    context.Close();
+
+                    _lastGridSize = GridSize;
+                    _lastHeight = height;
+                    _lastWidth = width;
+                    _wasInvalidateScrollInfo = false;
                 }
-                for (var i = _viewport.VerticalAlignmentValue * GridSize; i < height; i += _gridStep)
-                {
-                    drawingContext.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
-                }
+
+                drawingContext.DrawDrawing(_drawingGroupGridLines);
             }
 
             //Push the transform after rendering everything that should not be translated.
