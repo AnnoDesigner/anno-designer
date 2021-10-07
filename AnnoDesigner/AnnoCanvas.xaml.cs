@@ -1293,30 +1293,30 @@ namespace AnnoDesigner
             }
 
             //old logic
-            foreach (var curLayoutObject in objects)
-            {
-                // draw object rectangle                
-                drawingContext.DrawRectangle(null, _highlightPen, curLayoutObject.CalculateScreenRect(GridSize));
-            }
-
-            //if (_lastSelectedObjects != objects || _lastObjectSelectionGridSize != GridSize)
+            //foreach (var curLayoutObject in objects)
             //{
-            //    var context = _drawingGroupObjectSelection.Open();
-            //    context.PushGuidelineSet(_guidelineSet);
-
-            //    foreach (var curLayoutObject in objects)
-            //    {
-            //        // draw object rectangle                
-            //        drawingContext.DrawRectangle(null, _highlightPen, curLayoutObject.CalculateScreenRect(GridSize));
-            //    }
-
-            //    context.Close();
-
-            //    _lastObjectSelectionGridSize = GridSize;
-            //    _lastSelectedObjects = objects;
+            //    // draw object rectangle                
+            //    drawingContext.DrawRectangle(null, _highlightPen, curLayoutObject.CalculateScreenRect(GridSize));
             //}
 
-            //drawingContext.DrawDrawing(_drawingGroupObjectSelection);
+            if (_lastSelectedObjects != objects || _lastObjectSelectionGridSize != GridSize)
+            {
+                var context = _drawingGroupObjectSelection.Open();
+                //context.PushGuidelineSet(_guidelineSet);
+
+                foreach (var curLayoutObject in objects)
+                {
+                    // draw object rectangle                
+                    context.DrawRectangle(null, _highlightPen, curLayoutObject.CalculateScreenRect(GridSize));
+                }
+
+                context.Close();
+
+                _lastObjectSelectionGridSize = GridSize;
+                _lastSelectedObjects = objects;
+            }
+
+            drawingContext.DrawDrawing(_drawingGroupObjectSelection);
         }
 
         /// <summary>
