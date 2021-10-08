@@ -16,6 +16,7 @@ namespace AnnoDesigner.ViewModels
 
         private readonly IAppSettings _appSettings;
         private readonly ICommons _commons;
+        private readonly IRecentFilesHelper _recentFilesHelper;
 
         private bool _hideInfluenceOnSelection;
         private bool _useZoomToPoint;
@@ -31,12 +32,14 @@ namespace AnnoDesigner.ViewModels
         private bool _invertPanningDirection;
         private bool _showScrollbars;
         private bool _invertScrollingDirection;
+        private int _maxRecentFiles;
 
-        public GeneralSettingsViewModel(IAppSettings appSettingsToUse, ICommons commonsToUse)
+        public GeneralSettingsViewModel(IAppSettings appSettingsToUse, ICommons commonsToUse, IRecentFilesHelper recentFilesHelperToUse)
         {
             _appSettings = appSettingsToUse;
             _commons = commonsToUse;
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
+            _recentFilesHelper = recentFilesHelperToUse;
 
             UseZoomToPoint = _appSettings.UseZoomToPoint;
             ZoomSensitivityPercentage = _appSettings.ZoomSensitivityPercentage;
@@ -44,8 +47,11 @@ namespace AnnoDesigner.ViewModels
             ShowScrollbars = _appSettings.ShowScrollbars;
             InvertPanningDirection = _appSettings.InvertPanningDirection;
             InvertScrollingDirection = _appSettings.InvertScrollingDirection;
+            MaxRecentFiles = _appSettings.MaxRecentFiles;
 
             ResetZoomSensitivityCommand = new RelayCommand(ExecuteResetZoomSensitivity, CanExecuteResetZoomSensitivity);
+            ResetMaxRecentFilesCommand = new RelayCommand(ExecuteResetMaxRecentFiles, CanExecuteResetMaxRecentFiles);
+            ClearRecentFilesCommand = new RelayCommand(ExecuteClearRecentFiles, CanExecuteClearRecentFiles);
 
             GridLineColors = new ObservableCollection<UserDefinedColor>();
             RefreshGridLineColors();
@@ -345,7 +351,7 @@ namespace AnnoDesigner.ViewModels
                 }
             }
         }
-        
+
         public bool ShowScrollbars
         {
             get { return _showScrollbars; }
@@ -355,6 +361,21 @@ namespace AnnoDesigner.ViewModels
                 {
                     _appSettings.ShowScrollbars = value;
                     _appSettings.Save();
+                }
+            }
+        }
+
+        public int MaxRecentFiles
+        {
+            get { return _maxRecentFiles; }
+            set
+            {
+                if (UpdateProperty(ref _maxRecentFiles, value))
+                {
+                    _appSettings.MaxRecentFiles = value;
+                    _appSettings.Save();
+
+                    _recentFilesHelper.MaximumItemCount = value;
                 }
             }
         }
@@ -369,6 +390,30 @@ namespace AnnoDesigner.ViewModels
         private bool CanExecuteResetZoomSensitivity(object param)
         {
             return ZoomSensitivityPercentage != Constants.ZoomSensitivityPercentageDefault;
+        }
+
+        public ICommand ResetMaxRecentFilesCommand { get; private set; }
+
+        private void ExecuteResetMaxRecentFiles(object param)
+        {
+            MaxRecentFiles = Constants.MaxRecentFiles;
+        }
+
+        private bool CanExecuteResetMaxRecentFiles(object param)
+        {
+            return MaxRecentFiles != Constants.MaxRecentFiles;
+        }
+
+        public ICommand ClearRecentFilesCommand { get; private set; }
+
+        private void ExecuteClearRecentFiles(object param)
+        {
+            _recentFilesHelper.ClearRecentFiles();
+        }
+
+        private bool CanExecuteClearRecentFiles(object param)
+        {
+            return _recentFilesHelper.RecentFiles.Count > 0;
         }
     }
 }

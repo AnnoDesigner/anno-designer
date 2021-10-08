@@ -511,5 +511,17 @@ namespace AnnoDesigner.Properties {
                 this["ShowHarborBlockedArea"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int MaxRecentFiles {
+            get {
+                return ((int)(this["MaxRecentFiles"]));
+            }
+            set {
+                this["MaxRecentFiles"] = value;
+            }
+        }
     }
 }

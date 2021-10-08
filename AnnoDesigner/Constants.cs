@@ -102,5 +102,10 @@ namespace AnnoDesigner
         /// Used to prevent endless loop on updates.
         /// </summary>
         public const string Argument_Ask_For_Admin = "-askAdmin";
+
+        /// <summary>
+        /// The default number for maximum recent files saved.
+        /// </summary>
+        public const int MaxRecentFiles = 10;
     }
 }

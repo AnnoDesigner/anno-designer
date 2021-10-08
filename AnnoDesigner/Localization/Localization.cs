@@ -191,7 +191,7 @@ namespace AnnoDesigner.Localization
                     ["ViewLicenses"] = "View open source licenses",
                     ["ExternalLinkConfirmationMessage"] = "This will open a new tab in your default web browser. Continue?",
                     ["ExternalLinkMessageTitle"] = "Opening an external link",
-                    ["RecentFiles"] = "Recent files",
+                    ["RecentFiles"] = "Recent Files",
                     ["UpdatePreferencesVersionInformation"] = "Version Information",
                     ["UpdatePreferencesSettings"] = "Settings",
                     ["UpdatePreferencesCheckPreRelease"] = "Check for pre-releases",
@@ -246,7 +246,11 @@ namespace AnnoDesigner.Localization
                     ["UnsavedChangedBeforeCrash"] = "Program crashed but there are unsaved changes",
                     ["ColorPresetsVersion"] = "Color Presets Version",
                     ["TreeLocalizationVersion"] = "Tree Localization Version",
-                    ["ShowHarborBlockedArea"] = "Show Harbor Areas"
+                    ["ShowHarborBlockedArea"] = "Show Harbor Areas",
+                    ["ShowPanorama"] = "Show Panorama",
+                    ["GeneralPreferencesRecentFilesSettings"] = "Recent Files Settings",
+                    ["GeneralPreferencesMaxRecentFiles"] = "Maximum Recent Files",
+                    ["Clear"] = "Clear"
                 },
                 ["ger"] = new Dictionary<string, string>()
                 {
@@ -440,7 +444,11 @@ namespace AnnoDesigner.Localization
                     ["UnsavedChangedBeforeCrash"] = "Die Anwendung ist abgestürzt, aber es gibt nicht gespeicherte Änderungen.",
                     ["ColorPresetsVersion"] = "Farbvorlagenversion",
                     ["TreeLocalizationVersion"] = "Übersetzungsversion",
-                    ["ShowHarborBlockedArea"] = "Hafengebiete anzeigen"
+                    ["ShowHarborBlockedArea"] = "Hafengebiete anzeigen",
+                    ["ShowPanorama"] = "Panorama zeigen",
+                    ["GeneralPreferencesRecentFilesSettings"] = "Zuletzt geöffnete Dateien",
+                    ["GeneralPreferencesMaxRecentFiles"] = "maximale Anzahl Dateien",
+                    ["Clear"] = "Leeren"
                 },
                 ["fra"] = new Dictionary<string, string>()
                 {
@@ -634,7 +642,11 @@ namespace AnnoDesigner.Localization
                     ["UnsavedChangedBeforeCrash"] = "Le programme a planté mais il y a des modifications non sauvegardées.",
                     ["ColorPresetsVersion"] = "Version des préréglages de couleur",
                     ["TreeLocalizationVersion"] = "Version de la localisation de l'arbre",
-                    ["ShowHarborBlockedArea"] = "Afficher les zones portuaires"
+                    ["ShowHarborBlockedArea"] = "Afficher les zones portuaires",
+                    ["ShowPanorama"] = "Montrer panorama",
+                    ["GeneralPreferencesRecentFilesSettings"] = "Fichiers récents",
+                    ["GeneralPreferencesMaxRecentFiles"] = "Nombre maximal de fichiers",
+                    ["Clear"] = "Supprimer"
                 },
                 ["esp"] = new Dictionary<string, string>()
                 {
@@ -828,7 +840,11 @@ namespace AnnoDesigner.Localization
                     ["UnsavedChangedBeforeCrash"] = "El programa se ha interrumpido pero hay cambios no guardados",
                     ["ColorPresetsVersion"] = "Versión de preajustes de color",
                     ["TreeLocalizationVersion"] = "Versión de localización del árbol",
-                    ["ShowHarborBlockedArea"] = "Mostrar zonas portuarias"
+                    ["ShowHarborBlockedArea"] = "Mostrar zonas portuarias",
+                    ["ShowPanorama"] = "Mostrar panorama",
+                    ["GeneralPreferencesRecentFilesSettings"] = "Archivos recientes",
+                    ["GeneralPreferencesMaxRecentFiles"] = "Número máximo de archivos",
+                    ["Clear"] = "Eliminar"
                 },
                 ["pol"] = new Dictionary<string, string>()
                 {
@@ -1022,7 +1038,11 @@ namespace AnnoDesigner.Localization
                     ["UnsavedChangedBeforeCrash"] = "Program zawiesił się, ale są niezapisane zmiany",
                     ["ColorPresetsVersion"] = "Presety kolorów Wersja",
                     ["TreeLocalizationVersion"] = "Wersja lokalizacji drzewa",
-                    ["ShowHarborBlockedArea"] = "Pokaż obszary portowe"
+                    ["ShowHarborBlockedArea"] = "Pokaż obszary portowe",
+                    ["ShowPanorama"] = "Pokaż panoramę",
+                    ["GeneralPreferencesRecentFilesSettings"] = "Ostatnie akta",
+                    ["GeneralPreferencesMaxRecentFiles"] = "Maksymalna liczba plików",
+                    ["Clear"] = "Skreślić"
                 },
                 ["rus"] = new Dictionary<string, string>()
                 {
@@ -1216,7 +1236,11 @@ namespace AnnoDesigner.Localization
                     ["UnsavedChangedBeforeCrash"] = "Программа аварийно завершена, но есть несохраненные изменения",
                     ["ColorPresetsVersion"] = "Версия предустановок цвета",
                     ["TreeLocalizationVersion"] = "Версия локализации деревьев",
-                    ["ShowHarborBlockedArea"] = "Показать районы гавани"
+                    ["ShowHarborBlockedArea"] = "Показать районы гавани",
+                    ["ShowPanorama"] = "Показать панораму",
+                    ["GeneralPreferencesRecentFilesSettings"] = "Последние Файлы",
+                    ["GeneralPreferencesMaxRecentFiles"] = "Максимальное количество файлов",
+                    ["Clear"] = "Удалить"
                 },
             };
 
