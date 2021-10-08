@@ -768,11 +768,13 @@ namespace AnnoDesigner
         private QuadTree<LayoutObject> _lastPlacedObjects = null;
 
         private DrawingGroup _drawingGroupGridLines = new DrawingGroup();
+        private DrawingGroup _drawingGroupObjects = new DrawingGroup();
         private int _lastGridSize = -1;
         private double _lastWidth = -1;
         private double _lastHeight = -1;
         private bool _needsRefreshAfterScrolling;
         private bool _needsRefreshAfterSettingsChanged;
+        private bool _isRenderingForced;
 
         /// <summary>
         /// Renders the whole scene including grid, placed objects, current object, selection highlights, influence radii and selection rectangle.
@@ -886,6 +888,7 @@ namespace AnnoDesigner
             var objectsToDraw = _lastObjectsToDraw;
             var borderlessObjects = _lastBorderlessObjectsToDraw;
             var borderedObjects = _lastBorderedObjectsToDraw;
+            bool objectsChanged = false;
 
             if (_lastViewPortAbsolute != _viewport.Absolute || _lastPlacedObjects != PlacedObjects || CurrentMode == MouseMode.PlaceObjects || CurrentMode == MouseMode.DeleteObject)
             {
@@ -904,12 +907,30 @@ namespace AnnoDesigner
                 {
                     CurrentMode = MouseMode.Standard;
                 }
+
+                objectsChanged = true;
             }
 
             // draw placed objects
-            //borderless objects should be drawn first; selection afterwards
-            RenderObjectList(drawingContext, borderlessObjects, useTransparency: false);
-            RenderObjectList(drawingContext, borderedObjects, useTransparency: false);
+            //old logic
+            ////borderless objects should be drawn first; selection afterwards
+            //RenderObjectList(drawingContext, borderlessObjects, useTransparency: false);
+            //RenderObjectList(drawingContext, borderedObjects, useTransparency: false);
+
+            if (_isRenderingForced || objectsChanged)
+            {
+                var context = _drawingGroupObjects.Open();
+                //context.PushGuidelineSet(_guidelineSet);
+
+                //borderless objects should be drawn first; selection afterwards
+                RenderObjectList(context, borderlessObjects, useTransparency: false);
+                RenderObjectList(context, borderedObjects, useTransparency: false);
+
+                context.Close();
+            }
+
+            drawingContext.DrawDrawing(_drawingGroupObjects);
+
             RenderObjectSelection(drawingContext, SelectedObjects);
 
             if (!RenderInfluences)
@@ -1111,6 +1132,8 @@ namespace AnnoDesigner
 #endif
             // pop back guidlines set
             drawingContext.Pop();
+
+            _isRenderingForced = false;
         }
 
         /// <summary>
@@ -2893,6 +2916,12 @@ namespace AnnoDesigner
         public Rect MakeVisible(Visual visual, Rect rectangle)
         {
             return _viewport.Absolute;
+        }
+
+        public void ForceRendering()
+        {
+            _isRenderingForced = true;
+            InvalidateVisual();
         }
 
         #endregion
