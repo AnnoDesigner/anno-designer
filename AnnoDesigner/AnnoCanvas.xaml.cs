@@ -142,6 +142,7 @@ namespace AnnoDesigner
             {
                 if (_renderInfluences != value)
                 {
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
                 _renderInfluences = value;
@@ -205,6 +206,7 @@ namespace AnnoDesigner
             {
                 if (_renderTrueInfluenceRange != value)
                 {
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
                 _renderTrueInfluenceRange = value;
@@ -769,6 +771,8 @@ namespace AnnoDesigner
 
         private DrawingGroup _drawingGroupGridLines = new DrawingGroup();
         private DrawingGroup _drawingGroupObjects = new DrawingGroup();
+        private DrawingGroup _drawingGroupSelectedObjectsInfluence = new DrawingGroup();
+        private DrawingGroup _drawingGroupInfluence = new DrawingGroup();
         private int _lastGridSize = -1;
         private double _lastWidth = -1;
         private double _lastHeight = -1;
@@ -931,29 +935,67 @@ namespace AnnoDesigner
 
             drawingContext.DrawDrawing(_drawingGroupObjects);
 
-            RenderObjectSelection(drawingContext, SelectedObjects);
+            var selectionWasRedrawn = RenderObjectSelection(drawingContext, SelectedObjects);
 
             if (!RenderInfluences)
             {
                 if (!_hideInfluenceOnSelection)
                 {
-                    RenderObjectInfluenceRadius(drawingContext, SelectedObjects);
-                    RenderObjectInfluenceRange(drawingContext, SelectedObjects);
+                    //old logic
+                    //RenderObjectInfluenceRadius(drawingContext, SelectedObjects);
+                    //RenderObjectInfluenceRange(drawingContext, SelectedObjects);
+
+                    if (selectionWasRedrawn || _isRenderingForced)
+                    {
+                        var context = _drawingGroupSelectedObjectsInfluence.Open();
+                        //context.PushGuidelineSet(_guidelineSet);
+
+                        RenderObjectInfluenceRadius(context, SelectedObjects);
+                        RenderObjectInfluenceRange(context, SelectedObjects);
+
+                        context.Close();
+                    }
+
+                    if (SelectedObjects.Count > 0)
+                    {
+                        drawingContext.DrawDrawing(_drawingGroupSelectedObjectsInfluence);
+                    }
                 }
             }
             else
             {
-                RenderObjectInfluenceRadius(drawingContext, objectsToDraw);
-                RenderObjectInfluenceRange(drawingContext, objectsToDraw);
-                //Retrieve objects outside the viewport that have an influence range which affects objects
-                //within the viewport.
-                var offscreenObjects = PlacedObjects
-                .Where(_ => !_viewport.Absolute.Contains(_.GridRect) &&
-                            (_viewport.Absolute.IntersectsWith(_.GridInfluenceRadiusRect) || _viewport.Absolute.IntersectsWith(_.GridInfluenceRangeRect))
-                 ).ToList();
-                RenderObjectInfluenceRadius(drawingContext, offscreenObjects);
-                RenderObjectInfluenceRange(drawingContext, offscreenObjects);
+                //old logic
+                //RenderObjectInfluenceRadius(drawingContext, objectsToDraw);
+                //RenderObjectInfluenceRange(drawingContext, objectsToDraw);
+                ////Retrieve objects outside the viewport that have an influence range which affects objects
+                ////within the viewport.
+                //var offscreenObjects = PlacedObjects
+                //.Where(_ => !_viewport.Absolute.Contains(_.GridRect) &&
+                //            (_viewport.Absolute.IntersectsWith(_.GridInfluenceRadiusRect) || _viewport.Absolute.IntersectsWith(_.GridInfluenceRangeRect))
+                // ).ToList();
+                //RenderObjectInfluenceRadius(drawingContext, offscreenObjects);
+                //RenderObjectInfluenceRange(drawingContext, offscreenObjects);
 
+                if (objectsChanged || _isRenderingForced)
+                {
+                    var context = _drawingGroupInfluence.Open();
+                    //context.PushGuidelineSet(_guidelineSet);
+
+                    RenderObjectInfluenceRadius(context, objectsToDraw);
+                    RenderObjectInfluenceRange(context, objectsToDraw);
+                    //Retrieve objects outside the viewport that have an influence range which affects objects
+                    //within the viewport.
+                    var offscreenObjects = PlacedObjects
+                    .Where(_ => !_viewport.Absolute.Contains(_.GridRect) &&
+                                (_viewport.Absolute.IntersectsWith(_.GridInfluenceRadiusRect) || _viewport.Absolute.IntersectsWith(_.GridInfluenceRangeRect))
+                     ).ToList();
+                    RenderObjectInfluenceRadius(context, offscreenObjects);
+                    RenderObjectInfluenceRange(context, offscreenObjects);
+
+                    context.Close();
+                }
+
+                drawingContext.DrawDrawing(_drawingGroupInfluence);
             }
 
             if (CurrentObjects.Count == 0)
@@ -1308,11 +1350,12 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object to render as selected</param>
-        private void RenderObjectSelection(DrawingContext drawingContext, List<LayoutObject> objects)
+        private bool RenderObjectSelection(DrawingContext drawingContext, List<LayoutObject> objects)
         {
+            bool wasRedrawn = false;
             if (objects.Count == 0)
             {
-                return;
+                return wasRedrawn;
             }
 
             //old logic
@@ -1337,9 +1380,12 @@ namespace AnnoDesigner
 
                 _lastObjectSelectionGridSize = GridSize;
                 _lastSelectedObjects = objects;
+                wasRedrawn = true;
             }
 
             drawingContext.DrawDrawing(_drawingGroupObjectSelection);
+
+            return wasRedrawn;
         }
 
         /// <summary>
@@ -1392,10 +1438,11 @@ namespace AnnoDesigner
         /// </summary>
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
-            if (objects.Count == 0 || !RenderInfluences)
+            if (objects.Count == 0 || !(SelectedObjects.Count != 0 && !RenderInfluences))
             {
                 return;
             }
+
             Moved2DArray<AnnoObject> gridDictionary = null;
             List<AnnoObject> placedAnnoObjects = null;
 
