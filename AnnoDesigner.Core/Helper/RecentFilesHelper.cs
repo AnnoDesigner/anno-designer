@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Core.Helper
@@ -17,27 +14,39 @@ namespace AnnoDesigner.Core.Helper
 
         private readonly IRecentFilesSerializer _serializer;
         private readonly IFileSystem _fileSystem;
+        private int _maximumItemCount;
 
-        public RecentFilesHelper(IRecentFilesSerializer serializerToUse, IFileSystem fileSystemToUse)
+        public RecentFilesHelper(IRecentFilesSerializer serializerToUse, IFileSystem fileSystemToUse, int maxItemCount = 10)
         {
             _serializer = serializerToUse ?? throw new ArgumentNullException(nameof(serializerToUse));
             _fileSystem = fileSystemToUse ?? throw new ArgumentNullException(nameof(fileSystemToUse));
 
             RecentFiles = new List<RecentFile>();
-            MaximumItemCount = 10;
-
+            _maximumItemCount = maxItemCount;
             Load();
         }
 
         public List<RecentFile> RecentFiles { get; private set; }
 
         /// <summary>
-        /// Gets or sets the maximum item count.
-        /// <para />
-        /// The default value is <c>10</c>.
+        /// Gets or sets the maximum item count.        
         /// </summary>
+        /// <remarks>The default value is <c>10</c>.</remarks>
         /// <value>The maximum item count.</value>
-        public int MaximumItemCount { get; set; }
+        public int MaximumItemCount
+        {
+            get { return _maximumItemCount; }
+            set
+            {
+                if (_maximumItemCount != value)
+                {
+                    _maximumItemCount = value;
+                    EnsureMaxiumItemCount();
+                    Save();
+                    Updated?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         private void Load()
         {
@@ -124,6 +133,14 @@ namespace AnnoDesigner.Core.Helper
                     i--;
                 }
             }
+        }
+
+        public void ClearRecentFiles()
+        {
+            RecentFiles.Clear();
+
+            Save();
+            Updated?.Invoke(this, EventArgs.Empty);
         }
     }
 }

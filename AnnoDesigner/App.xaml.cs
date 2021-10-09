@@ -206,7 +206,7 @@ namespace AnnoDesigner
 
             var recentFilesSerializer = new RecentFilesAppSettingsSerializer(_appSettings);
 
-            IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(recentFilesSerializer, _fileSystem);
+            IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(recentFilesSerializer, _fileSystem, _appSettings.MaxRecentFiles);
             ITreeLocalizationLoader treeLocalizationLoader = new TreeLocalizationLoader(_fileSystem);
 
             var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper, _messageBoxService, _updateHelper, _localizationHelper, _fileSystem, treeLocalizationLoader: treeLocalizationLoader);

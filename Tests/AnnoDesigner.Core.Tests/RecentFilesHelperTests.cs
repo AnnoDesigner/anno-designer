@@ -40,17 +40,19 @@ namespace AnnoDesigner.Core.Tests
         #region test data
 
         private IRecentFilesHelper GetHelper(IRecentFilesSerializer serializerToUse = null,
-            IFileSystem fileSystemToUse = null)
+            IFileSystem fileSystemToUse = null,
+            int? maxItemCountToUse = null)
         {
             var serializer = serializerToUse ?? new RecentFilesInMemorySerializer();
             var fileSystem = fileSystemToUse ?? new MockFileSystem();
+            var maxItemCount = maxItemCountToUse ?? 10;
 
             if (serializerToUse is null)
             {
                 serializer.Serialize(fileSystemWithTestData.AllFiles.Select(path => new RecentFile(path, DateTime.UtcNow)).ToList());
             }
 
-            return new RecentFilesHelper(serializer, fileSystem);
+            return new RecentFilesHelper(serializer, fileSystem, maxItemCount);
         }
 
         #endregion
@@ -251,6 +253,121 @@ namespace AnnoDesigner.Core.Tests
 
             // Act
             helper.RemoveFile(fileToRemove);
+
+            // Assert
+            Assert.True(updatedCalled);
+        }
+
+        #endregion
+
+        #region ClearRecentFiles tests
+
+        [Fact]
+        public void ClearRecentFiles_HasRecentFiles_ShouldClearListOfRecentFiles()
+        {
+            // Arrange
+            var helper = GetHelper(fileSystemToUse: fileSystemWithTestData);
+
+            Assert.NotEmpty(helper.RecentFiles);
+
+            // Act
+            helper.ClearRecentFiles();
+
+            // Assert
+            Assert.Empty(helper.RecentFiles);
+        }
+
+        [Fact]
+        public void ClearRecentFiles_HasRecentFiles_ShouldCallSerialize()
+        {
+            // Arrange
+            var mockedSerializer = new Mock<IRecentFilesSerializer>();
+            mockedSerializer.Setup(_ => _.Deserialize()).Returns(() => new List<RecentFile>());
+
+            var helper = GetHelper(serializerToUse: mockedSerializer.Object, fileSystemToUse: fileSystemWithTestData);
+
+            // Act
+            helper.ClearRecentFiles();
+
+            // Assert
+            mockedSerializer.Verify(_ => _.Serialize(It.IsAny<List<RecentFile>>()), Times.Once);
+        }
+
+        [Fact]
+        public void ClearRecentFiles_HasRecentFiles_ShouldRaiseUpdatedEvent()
+        {
+            // Arrange
+            var mockedSerializer = new Mock<IRecentFilesSerializer>();
+            mockedSerializer.Setup(_ => _.Deserialize()).Returns(() => new List<RecentFile>());
+
+            var helper = GetHelper(serializerToUse: mockedSerializer.Object, fileSystemToUse: fileSystemWithTestData);
+            var updatedCalled = false;
+            helper.Updated += (s, e) => updatedCalled = true;
+
+            // Act
+            helper.ClearRecentFiles();
+
+            // Assert
+            Assert.True(updatedCalled);
+        }
+
+        #endregion
+
+        #region MaximumItemCount tests
+
+        [Fact]
+        public void MaximumItemCount_DifferentValue_ShouldSetNewValue()
+        {
+            // Arrange
+            var maxItemCount = 5;
+            var helper = GetHelper(fileSystemToUse: fileSystemWithTestData);
+
+            Assert.True(helper.RecentFiles.Count > maxItemCount);
+            Assert.True(helper.MaximumItemCount > maxItemCount);
+
+            // Act
+            helper.MaximumItemCount = maxItemCount;
+
+            // Assert
+            Assert.Equal(maxItemCount, helper.MaximumItemCount);
+        }
+
+        [Fact]
+        public void MaximumItemCount_DifferentValue_ShouldCallSerialize()
+        {
+            // Arrange
+            var maxItemCount = 5;
+            var mockedSerializer = new Mock<IRecentFilesSerializer>();
+            mockedSerializer.Setup(_ => _.Deserialize()).Returns(() => fileSystemWithTestData.AllFiles.Select(path => new RecentFile(path, DateTime.UtcNow)).ToList());
+            var helper = GetHelper(serializerToUse: mockedSerializer.Object, fileSystemToUse: fileSystemWithTestData);
+
+            Assert.True(helper.RecentFiles.Count > maxItemCount);
+            Assert.True(helper.MaximumItemCount > maxItemCount);
+
+            // Act
+            helper.MaximumItemCount = maxItemCount;
+
+            // Assert
+            mockedSerializer.Verify(_ => _.Serialize(It.IsAny<List<RecentFile>>()), Times.Once);
+        }
+
+        [Fact]
+        public void MaximumItemCount_DifferentValue_ShouldRaiseUpdatedEvent()
+        {
+            // Arrange
+            var maxItemCount = 5;
+            var mockedSerializer = new Mock<IRecentFilesSerializer>();
+            mockedSerializer.Setup(_ => _.Deserialize()).Returns(() => fileSystemWithTestData.AllFiles.Select(path => new RecentFile(path, DateTime.UtcNow)).ToList());
+            var helper = GetHelper(serializerToUse: mockedSerializer.Object, fileSystemToUse: fileSystemWithTestData);
+
+            Assert.True(helper.RecentFiles.Count > maxItemCount);
+            Assert.True(helper.MaximumItemCount > maxItemCount);
+
+            var updatedCalled = false;
+            helper.Updated += (s, e) => updatedCalled = true;
+
+            // Act
+            helper.MaximumItemCount = maxItemCount;
 
             // Assert
             Assert.True(updatedCalled);
