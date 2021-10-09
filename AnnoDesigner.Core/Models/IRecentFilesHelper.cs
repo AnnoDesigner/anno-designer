@@ -49,5 +49,10 @@ namespace AnnoDesigner.Core.Models
         /// <param name="fileToRemove">The file.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="fileToRemove"/> is <c>null</c>.</exception>
         void RemoveFile(RecentFile fileToRemove);
+
+        /// <summary>
+        /// Clears the list of recently used files.
+        /// </summary>
+        void ClearRecentFiles();
     }
 }

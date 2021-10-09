@@ -45,6 +45,7 @@ namespace AnnoDesigner.Core.Models
         bool UpdateSupportsPrerelease { get; set; }
         string HotkeyMappings { get; set; }
         string RecentFiles { get; set; }
+        int MaxRecentFiles { get; set; }
         string ColorGridLines { get; set; }
         string ColorObjectBorderLines { get; set; }
         bool UseZoomToPoint { get; set; }

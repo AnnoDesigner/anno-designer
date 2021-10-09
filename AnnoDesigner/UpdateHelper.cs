@@ -215,7 +215,7 @@ namespace AnnoDesigner
             catch (Exception ex)
             {
                 logger.Error(ex, "Error downloading release.");
-                App.ShowMessageWithUnexpectedErrorAndExit();
+                App.ShowMessageWithUnexpectedError();
                 return null;
             }
         }
