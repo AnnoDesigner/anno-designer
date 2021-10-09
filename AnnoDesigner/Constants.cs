@@ -104,7 +104,7 @@ namespace AnnoDesigner
         public const string Argument_Ask_For_Admin = "-askAdmin";
 
         /// <summary>
-        /// The default number for maximum recent files saved.
+        /// The default number of recent files to show.
         /// </summary>
         public const int MaxRecentFiles = 10;
     }
