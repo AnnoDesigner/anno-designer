@@ -33,6 +33,8 @@ namespace AnnoDesigner
         private static readonly IUpdateHelper _updateHelper;
         private static readonly IFileSystem _fileSystem;
 
+        public new MainWindow MainWindow { get => base.MainWindow as MainWindow; set => base.MainWindow = value; }
+
         static App()
         {
             _commons = Commons.Instance;
@@ -64,10 +66,13 @@ namespace AnnoDesigner
         {
             logger.Error(ex, @event);
 
-            ShowMessageWithUnexpectedErrorAndExit();
+            ShowMessageWithUnexpectedError(false);
+            MainWindow.DataContext.AnnoCanvas.CheckUnsavedChangesBeforeCrash();
+
+            Environment.Exit(-1);
         }
 
-        public static void ShowMessageWithUnexpectedErrorAndExit()
+        public static void ShowMessageWithUnexpectedError(bool exitProgram = true)
         {
             var message = "An unhandled exception occurred.";
 
@@ -86,7 +91,10 @@ namespace AnnoDesigner
 
             _messageBoxService.ShowError(message);
 
-            Environment.Exit(-1);
+            if (exitProgram)
+            {
+                Environment.Exit(-1);
+            }
         }
 
         private static string _executablePath;
