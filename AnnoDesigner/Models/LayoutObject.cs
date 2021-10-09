@@ -422,6 +422,9 @@ namespace AnnoDesigner.Models
             }
         }
 
+        public int LastPanorama { get; set; }
+        public FormattedText PanoramaText { get; set; }
+
         public FormattedText GetFormattedText(TextAlignment textAlignment, CultureInfo culture, Typeface typeface, double pixelsPerDip, double width, double height)
         {
             if (_formattedText == null ||

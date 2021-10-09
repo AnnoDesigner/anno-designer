@@ -2,7 +2,7 @@
 
 namespace AnnoDesigner.Core.Extensions
 {
-    public static class OtherExtensions
+    public static class RegexExtensions
     {
         public static bool TryMatch(this Regex regex, string input, out Match match)
         {

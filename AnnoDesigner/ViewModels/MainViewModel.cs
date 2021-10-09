@@ -841,6 +841,14 @@ namespace AnnoDesigner.ViewModels
                 _annoCanvas.OpenFileRequested += AnnoCanvas_OpenFileRequested;
                 _annoCanvas.SaveFileRequested += AnnoCanvas_SaveFileRequested;
                 BuildingSettingsViewModel.AnnoCanvasToUse = _annoCanvas;
+
+                _annoCanvas.RenderGrid = CanvasShowGrid;
+                _annoCanvas.RenderIcon = CanvasShowIcons;
+                _annoCanvas.RenderLabel = CanvasShowLabels;
+                _annoCanvas.RenderTrueInfluenceRange = CanvasShowTrueInfluenceRange;
+                _annoCanvas.RenderInfluences = CanvasShowInfluences;
+                _annoCanvas.RenderHarborBlockedArea = CanvasShowHarborBlockedArea;
+                _annoCanvas.RenderPanorama = CanvasShowPanorama;
             }
         }
 

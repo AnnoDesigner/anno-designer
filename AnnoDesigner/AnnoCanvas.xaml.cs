@@ -1131,14 +1131,16 @@ namespace AnnoDesigner
                     }
                 }
 
-                // put the sign at the end of the string since it will be drawn from right to left
-                var text = Math.Abs(panorama).ToString() + (panorama >= 0 ? "" : "-");
+                if (curObject.LastPanorama != panorama || curObject.PanoramaText == null)
+                {
+                    // put the sign at the end of the string since it will be drawn from right to left
+                    var text = Math.Abs(panorama).ToString() + (panorama >= 0 ? "" : "-");
 
-                drawingContext.DrawText(
-                    new FormattedText(text, Thread.CurrentThread.CurrentUICulture, FlowDirection.RightToLeft,
-                        TYPEFACE, FontSize, Brushes.Black, App.DpiScale.PixelsPerDip),
-                    curObject.CalculateScreenRect(GridSize).TopRight
-                );
+                    curObject.PanoramaText = new FormattedText(text, Thread.CurrentThread.CurrentUICulture,
+                        FlowDirection.RightToLeft, TYPEFACE, FontSize, Brushes.Black, App.DpiScale.PixelsPerDip);
+                }
+
+                drawingContext.DrawText(curObject.PanoramaText, curObject.CalculateScreenRect(GridSize).TopRight);
             }
         }
 
