@@ -2388,6 +2388,8 @@ namespace AnnoDesigner
             return false;
         }
 
+        private Size _intersectingRectSize = new Size(1, 1);
+
         /// <summary>
         /// Retrieves the object at the given position given in screen coordinates.
         /// </summary>
@@ -2402,8 +2404,16 @@ namespace AnnoDesigner
 
             var gridPosition = _coordinateHelper.ScreenToFractionalGrid(position, GridSize);
             gridPosition = _viewport.OriginToViewport(gridPosition);
-            var possibleItems = PlacedObjects.GetItemsIntersecting(new Rect(gridPosition, new Size(1, 1)));
-            return possibleItems.FirstOrDefault(_ => _.GridRect.Contains(gridPosition));
+            var possibleItems = PlacedObjects.GetItemsIntersecting(new Rect(gridPosition, _intersectingRectSize));
+            foreach (var curItem in possibleItems)
+            {
+                if (curItem.GridRect.Contains(gridPosition))
+                {
+                    return curItem;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
