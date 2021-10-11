@@ -47,5 +47,6 @@ namespace AnnoDesigner.Models
         void RaiseStatisticsUpdated(UpdateStatisticsEventArgs args);
         void RaiseColorsInLayoutUpdated();
         Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects);
+        void UpdatePlacedObjectCount();
     }
 }
