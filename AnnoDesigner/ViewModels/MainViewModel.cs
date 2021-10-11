@@ -150,7 +150,7 @@ namespace AnnoDesigner.ViewModels
 
             PreferencesUpdateViewModel = new UpdateSettingsViewModel(_commons, _appSettings, _messageBoxService, _updateHelper, _localizationHelper);
             PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons, _messageBoxService, _localizationHelper);
-            PreferencesGeneralViewModel = new GeneralSettingsViewModel(_appSettings, _commons);
+            PreferencesGeneralViewModel = new GeneralSettingsViewModel(_appSettings, _commons, _recentFilesHelper);
 
             LayoutSettingsViewModel = new LayoutSettingsViewModel();
 
@@ -768,6 +768,7 @@ namespace AnnoDesigner.ViewModels
 
                     AnnoCanvas.RaiseStatisticsUpdated(UpdateStatisticsEventArgs.All);
                     AnnoCanvas.RaiseColorsInLayoutUpdated();
+                    AnnoCanvas.UndoManager.Clear();
                 }
             }
             catch (LayoutFileUnsupportedFormatException layoutEx)
@@ -800,6 +801,7 @@ namespace AnnoDesigner.ViewModels
                 var layoutToSave = new LayoutFile(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
                 layoutToSave.LayoutVersion = LayoutSettingsViewModel.LayoutVersion;
                 _layoutLoader.SaveLayout(layoutToSave, filePath);
+                AnnoCanvas.UndoManager.IsDirty = false;
             }
             catch (Exception e)
             {
@@ -1145,6 +1147,11 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteLoadLayoutFromJson(object param)
         {
+            if (!AnnoCanvas.CheckUnsavedChanges())
+            {
+                return;
+            }
+
             var input = InputWindow.Prompt(this, _localizationHelper.GetLocalization("LoadLayoutMessage"),
                 _localizationHelper.GetLocalization("LoadLayoutHeader"));
 
@@ -1578,6 +1585,11 @@ namespace AnnoDesigner.ViewModels
 
             if (_fileSystem.File.Exists(recentFile.Path))
             {
+                if (!AnnoCanvas.CheckUnsavedChanges())
+                {
+                    return;
+                }
+
                 OpenFile(recentFile.Path);
 
                 _recentFilesHelper.AddFile(new RecentFile(recentFile.Path, DateTime.UtcNow));

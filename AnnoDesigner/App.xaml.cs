@@ -33,6 +33,8 @@ namespace AnnoDesigner
         private static readonly IUpdateHelper _updateHelper;
         private static readonly IFileSystem _fileSystem;
 
+        public new MainWindow MainWindow { get => base.MainWindow as MainWindow; set => base.MainWindow = value; }
+
         static App()
         {
             _commons = Commons.Instance;
@@ -64,10 +66,13 @@ namespace AnnoDesigner
         {
             logger.Error(ex, @event);
 
-            ShowMessageWithUnexpectedErrorAndExit();
+            ShowMessageWithUnexpectedError(false);
+            MainWindow.DataContext.AnnoCanvas.CheckUnsavedChangesBeforeCrash();
+
+            Environment.Exit(-1);
         }
 
-        public static void ShowMessageWithUnexpectedErrorAndExit()
+        public static void ShowMessageWithUnexpectedError(bool exitProgram = true)
         {
             var message = "An unhandled exception occurred.";
 
@@ -86,7 +91,10 @@ namespace AnnoDesigner
 
             _messageBoxService.ShowError(message);
 
-            Environment.Exit(-1);
+            if (exitProgram)
+            {
+                Environment.Exit(-1);
+            }
         }
 
         private static string _executablePath;
@@ -206,7 +214,7 @@ namespace AnnoDesigner
 
             var recentFilesSerializer = new RecentFilesAppSettingsSerializer(_appSettings);
 
-            IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(recentFilesSerializer, _fileSystem);
+            IRecentFilesHelper recentFilesHelper = new RecentFilesHelper(recentFilesSerializer, _fileSystem, _appSettings.MaxRecentFiles);
             ITreeLocalizationLoader treeLocalizationLoader = new TreeLocalizationLoader(_fileSystem);
 
             var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper, _messageBoxService, _updateHelper, _localizationHelper, _fileSystem, treeLocalizationLoader: treeLocalizationLoader);

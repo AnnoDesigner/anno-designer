@@ -2512,11 +2512,58 @@ namespace AnnoDesigner
 
         #region New/Save/Load/Export methods
 
+        public void CheckUnsavedChangesBeforeCrash()
+        {
+            if (UndoManager.IsDirty)
+            {
+                var save = _messageBoxService.ShowQuestion(
+                    _localizationHelper.GetLocalization("SaveUnsavedChanges"),
+                    _localizationHelper.GetLocalization("UnsavedChangedBeforeCrash")
+                );
+
+                if (save)
+                {
+                    SaveAs();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks for unsaved changes. Shows Yes/No/Cancel dialog to let user decide what to do.
+        /// </summary>
+        /// <returns>True if changes were saved or discarded. False if operation should be cancelled.</returns>
+        public bool CheckUnsavedChanges()
+        {
+            if (UndoManager.IsDirty)
+            {
+                var save = _messageBoxService.ShowQuestionWithCancel(
+                    _localizationHelper.GetLocalization("SaveUnsavedChanges"),
+                    _localizationHelper.GetLocalization("UnsavedChanged")
+                );
+
+                if (save == null)
+                {
+                    return false;
+                }
+                if (save.Value)
+                {
+                    return Save();
+                }
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Removes all objects from the grid.
         /// </summary>
         public void NewFile()
         {
+            if (!CheckUnsavedChanges())
+            {
+                return;
+            }
+
             _viewport.Left = 0;
             _viewport.Top = 0;
             PlacedObjects.Clear();
@@ -2535,22 +2582,23 @@ namespace AnnoDesigner
         /// <summary>
         /// Saves the current layout to file.
         /// </summary>
-        public void Save()
+        public bool Save()
         {
             if (string.IsNullOrEmpty(LoadedFile))
             {
-                SaveAs();
+                return SaveAs();
             }
             else
             {
                 SaveFileRequested?.Invoke(this, new SaveFileEventArgs(LoadedFile));
+                return true;
             }
         }
 
         /// <summary>
         /// Opens a dialog and saves the current layout to file.
         /// </summary>
-        public void SaveAs()
+        public bool SaveAs()
         {
             var dialog = new SaveFileDialog
             {
@@ -2562,7 +2610,9 @@ namespace AnnoDesigner
             {
                 LoadedFile = dialog.FileName;
                 SaveFileRequested?.Invoke(this, new SaveFileEventArgs(LoadedFile));
+                return true;
             }
+            return false;
         }
 
         /// <summary>
@@ -2570,6 +2620,11 @@ namespace AnnoDesigner
         /// </summary>
         public void OpenFile()
         {
+            if (!CheckUnsavedChanges())
+            {
+                return;
+            }
+
             var dialog = new OpenFileDialog
             {
                 DefaultExt = Constants.SavedLayoutExtension,

@@ -97,8 +97,13 @@
                               IsEnabled="{Binding HasRecentFiles}">
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="MenuItem">
-                                <Setter Property="Header"
-                                        Value="{Binding Path}" />
+                                <Setter Property="HeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path, Mode=OneTime}" />
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
                                 <Setter Property="Command"
                                         Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenRecentFileCommand}" />
                                 <Setter Property="CommandParameter"

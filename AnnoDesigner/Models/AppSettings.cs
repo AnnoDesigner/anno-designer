@@ -222,6 +222,12 @@ namespace AnnoDesigner.Models
             set => Settings.Default.RecentFiles = value;
         }
 
+        public int MaxRecentFiles
+        {
+            get => Settings.Default.MaxRecentFiles;
+            set => Settings.Default.MaxRecentFiles = value;
+        }
+
         public string ColorGridLines
         {
             get => Settings.Default.ColorGridLines;

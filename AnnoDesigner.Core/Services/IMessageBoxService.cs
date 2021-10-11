@@ -9,5 +9,7 @@
         void ShowError(object owner, string message, string title);
 
         bool ShowQuestion(object owner, string message, string title);
+
+        bool? ShowQuestionWithCancel(object owner, string message, string title);
     }
 }
