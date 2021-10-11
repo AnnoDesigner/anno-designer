@@ -99,10 +99,9 @@ namespace AnnoDesigner
 
                 if (_gridStep != tmp)
                 {
+                    _gridStep = tmp;
                     InvalidateVisual();
                 }
-
-                _gridStep = tmp;
             }
         }
 
@@ -121,9 +120,9 @@ namespace AnnoDesigner
             {
                 if (_renderGrid != value)
                 {
+                    _renderGrid = value;
                     InvalidateVisual();
                 }
-                _renderGrid = value;
             }
         }
 
@@ -142,10 +141,10 @@ namespace AnnoDesigner
             {
                 if (_renderInfluences != value)
                 {
+                    _renderInfluences = value;
                     _isRenderingForced = true;
                     InvalidateVisual();
                 }
-                _renderInfluences = value;
             }
         }
 
@@ -164,9 +163,9 @@ namespace AnnoDesigner
             {
                 if (_renderLabel != value)
                 {
+                    _renderLabel = value;
                     InvalidateVisual();
                 }
-                _renderLabel = value;
             }
         }
 
@@ -185,9 +184,9 @@ namespace AnnoDesigner
             {
                 if (_renderIcon != value)
                 {
+                    _renderIcon = value;
                     InvalidateVisual();
                 }
-                _renderIcon = value;
             }
         }
 
@@ -206,10 +205,10 @@ namespace AnnoDesigner
             {
                 if (_renderTrueInfluenceRange != value)
                 {
+                    _renderTrueInfluenceRange = value;
                     _isRenderingForced = true;
                     InvalidateVisual();
                 }
-                _renderTrueInfluenceRange = value;
             }
         }
 
@@ -228,9 +227,9 @@ namespace AnnoDesigner
             {
                 if (_renderHarborBlockedArea != value)
                 {
+                    _renderHarborBlockedArea = value;
                     InvalidateVisual();
                 }
-                _renderHarborBlockedArea = value;
             }
         }
 
@@ -1448,9 +1447,13 @@ namespace AnnoDesigner
         /// </summary>
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
-            if (objects.Count == 0 || !(SelectedObjects.Count != 0 && !RenderInfluences))
+            if (objects.Count == 0 || !RenderInfluences)
             {
-                return;
+                //show influence for selected objects and for objects to be placed
+                if (SelectedObjects.Count == 0 && CurrentObjects.Count == 0)
+                {
+                    return;
+                }
             }
 
             Moved2DArray<AnnoObject> gridDictionary = null;
