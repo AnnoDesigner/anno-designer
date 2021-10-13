@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -234,6 +235,27 @@ namespace AnnoDesigner
         }
 
         /// <summary>
+        /// Backing field of the RenderPanorama property.
+        /// </summary>
+        private bool _renderPanorama;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the skyscraper panorama should be visible.
+        /// </summary>
+        public bool RenderPanorama
+        {
+            get { return _renderPanorama; }
+            set
+            {
+                if (_renderPanorama != value)
+                {
+                    InvalidateVisual();
+                }
+                _renderPanorama = value;
+            }
+        }
+
+        /// <summary>
         /// Backing field of the CurrentObject property
         /// </summary>
         private List<LayoutObject> _currentObjects = new List<LayoutObject>();
@@ -370,6 +392,10 @@ namespace AnnoDesigner
         private readonly IPenCache _penCache;
         private readonly IMessageBoxService _messageBoxService;
         private readonly ILocalizationHelper _localizationHelper;
+
+        private const string IDENTIFIER_SKYSCRAPER = "A7_residence_SkyScraper_";
+        private readonly Regex _regex_panorama = new Regex($"{IDENTIFIER_SKYSCRAPER}(?<tier>[45])lvl(?<level>[1-5])",
+            RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);//RegexOptions.IgnoreCase -> slow in < .NET 5 (triggers several calls to ToLower)
 
         /// <summary>
         /// States the mode of mouse interaction.
@@ -946,6 +972,11 @@ namespace AnnoDesigner
 
             var selectionWasRedrawn = RenderObjectSelection(drawingContext, SelectedObjects);
 
+            if (RenderPanorama)
+            {
+                RenderPanoramaText(drawingContext, objectsToDraw);
+            }
+
             if (!RenderInfluences)
             {
                 if (!_hideInfluenceOnSelection)
@@ -1185,6 +1216,53 @@ namespace AnnoDesigner
             drawingContext.Pop();
 
             _isRenderingForced = false;
+        }
+
+        private void RenderPanoramaText(DrawingContext drawingContext, List<LayoutObject> placedObjects)
+        {
+            foreach (var curObject in placedObjects.FindAll(_ => _.Identifier.StartsWith(IDENTIFIER_SKYSCRAPER, StringComparison.OrdinalIgnoreCase)))
+            {
+                if (!_regex_panorama.TryMatch(curObject.Identifier, out var match))
+                {
+                    continue;
+                }
+
+                var center = _coordinateHelper.GetCenterPoint(curObject.GridRect);
+
+                var level = int.Parse(match.Groups["level"].Value);
+                var radiusSquared = curObject.WrappedAnnoObject.Radius * curObject.WrappedAnnoObject.Radius;
+                var panorama = level;
+
+                //find intersecting skyscrapers
+                foreach (var adjacentObject in PlacedObjects.GetItemsIntersecting(curObject.GridInfluenceRadiusRect)
+                    .Where(_ => _.Identifier.StartsWith(IDENTIFIER_SKYSCRAPER, StringComparison.OrdinalIgnoreCase)))
+                {
+                    if (adjacentObject == curObject)
+                    {
+                        continue;
+                    }
+
+                    if ((center - _coordinateHelper.GetCenterPoint(adjacentObject.GridRect)).LengthSquared <= radiusSquared)
+                    {
+                        if (_regex_panorama.TryMatch(adjacentObject.Identifier, out var match2))
+                        {
+                            var level2 = int.Parse(match2.Groups["level"].Value);
+                            panorama += level > level2 ? 1 : -1;
+                        }
+                    }
+                }
+
+                if (curObject.LastPanorama != panorama || curObject.PanoramaText == null)
+                {
+                    // put the sign at the end of the string since it will be drawn from right to left
+                    var text = Math.Abs(panorama).ToString() + (panorama >= 0 ? "" : "-");
+
+                    curObject.PanoramaText = new FormattedText(text, Thread.CurrentThread.CurrentUICulture,
+                        FlowDirection.RightToLeft, TYPEFACE, FontSize, Brushes.Black, App.DpiScale.PixelsPerDip);
+                }
+
+                drawingContext.DrawText(curObject.PanoramaText, curObject.CalculateScreenRect(GridSize).TopRight);
+            }
         }
 
         /// <summary>
