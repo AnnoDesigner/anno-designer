@@ -65,6 +65,7 @@ namespace AnnoDesigner.ViewModels
         private bool _canvasShowTrueInfluenceRange;
         private bool _canvasShowInfluences;
         private bool _canvasShowHarborBlockedArea;
+        private bool _canvasShowPanorama;
         private bool _useCurrentZoomOnExportedImageValue;
         private bool _renderSelectionHighlightsOnExportedImageValue;
         private bool _isLanguageChange;
@@ -608,6 +609,7 @@ namespace AnnoDesigner.ViewModels
             CanvasShowTrueInfluenceRange = _appSettings.ShowTrueInfluenceRange;
             CanvasShowInfluences = _appSettings.ShowInfluences;
             CanvasShowHarborBlockedArea = _appSettings.ShowHarborBlockedArea;
+            CanvasShowPanorama = _appSettings.ShowPanorama;
 
             BuildingSettingsViewModel.IsPavedStreet = _appSettings.IsPavedStreet;
 
@@ -629,6 +631,7 @@ namespace AnnoDesigner.ViewModels
             _appSettings.ShowTrueInfluenceRange = CanvasShowTrueInfluenceRange;
             _appSettings.ShowInfluences = CanvasShowInfluences;
             _appSettings.ShowHarborBlockedArea = CanvasShowHarborBlockedArea;
+            _appSettings.ShowPanorama = CanvasShowPanorama;
 
             _appSettings.StatsShowStats = StatisticsViewModel.IsVisible;
             _appSettings.StatsShowBuildingCount = StatisticsViewModel.ShowStatisticsBuildingCount;
@@ -838,6 +841,14 @@ namespace AnnoDesigner.ViewModels
                 _annoCanvas.OpenFileRequested += AnnoCanvas_OpenFileRequested;
                 _annoCanvas.SaveFileRequested += AnnoCanvas_SaveFileRequested;
                 BuildingSettingsViewModel.AnnoCanvasToUse = _annoCanvas;
+
+                _annoCanvas.RenderGrid = CanvasShowGrid;
+                _annoCanvas.RenderIcon = CanvasShowIcons;
+                _annoCanvas.RenderLabel = CanvasShowLabels;
+                _annoCanvas.RenderTrueInfluenceRange = CanvasShowTrueInfluenceRange;
+                _annoCanvas.RenderInfluences = CanvasShowInfluences;
+                _annoCanvas.RenderHarborBlockedArea = CanvasShowHarborBlockedArea;
+                _annoCanvas.RenderPanorama = CanvasShowPanorama;
             }
         }
 
@@ -915,6 +926,19 @@ namespace AnnoDesigner.ViewModels
                 if (AnnoCanvas != null)
                 {
                     AnnoCanvas.RenderHarborBlockedArea = _canvasShowHarborBlockedArea;
+                }
+            }
+        }
+
+        public bool CanvasShowPanorama
+        {
+            get { return _canvasShowPanorama; }
+            set
+            {
+                UpdateProperty(ref _canvasShowPanorama, value);
+                if (AnnoCanvas != null)
+                {
+                    AnnoCanvas.RenderPanorama = _canvasShowPanorama;
                 }
             }
         }

@@ -523,5 +523,17 @@ namespace AnnoDesigner.Properties {
                 this["MaxRecentFiles"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowPanorama {
+            get {
+                return ((bool)(this["ShowPanorama"]));
+            }
+            set {
+                this["ShowPanorama"] = value;
+            }
+        }
     }
 }

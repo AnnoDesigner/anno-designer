@@ -57,6 +57,7 @@ namespace AnnoDesigner.Models
         private double _blockedAreaLength;
         private double _borderlessPenThickness; //hot path optimization (avoid access of DependencyProperty)
         private Brush _borderlessPenBrush; //hot path optimization (avoid access of DependencyProperty)
+        private Rect? _bounds;
 
         /// <summary>
         /// Creates a new instance of a wrapper for <see cref="AnnoObject"/>.
@@ -203,6 +204,7 @@ namespace AnnoDesigner.Models
                 _gridRect = default;
                 _gridInfluenceRadiusRect = default;
                 _gridInfluenceRangeRect = default;
+                _bounds = null;
             }
         }
 
@@ -397,18 +399,31 @@ namespace AnnoDesigner.Models
                 _gridRect = default;
                 _gridInfluenceRadiusRect = default;
                 _gridInfluenceRangeRect = default;
+                _bounds = null;
             }
         }
 
         public Rect Bounds
         {
-            get => new Rect(Position, Size);
+            get
+            {
+                if (_bounds is null)
+                {
+                    _bounds = new Rect(Position, Size);
+                }
+
+                return _bounds.Value;
+            }
             set
             {
                 Position = value.TopLeft;
                 Size = value.Size;
+                _bounds = null;
             }
         }
+
+        public int LastPanorama { get; set; }
+        public FormattedText PanoramaText { get; set; }
 
         public FormattedText GetFormattedText(TextAlignment textAlignment, CultureInfo culture, Typeface typeface, double pixelsPerDip, double width, double height)
         {
