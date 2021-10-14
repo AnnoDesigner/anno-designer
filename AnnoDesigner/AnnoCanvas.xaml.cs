@@ -882,16 +882,6 @@ namespace AnnoDesigner
             // draw grid
             if (RenderGrid)
             {
-                //old logic
-                //for (var i = _viewport.HorizontalAlignmentValue * GridSize; i < width; i += _gridStep)
-                //{
-                //    drawingContext.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
-                //}
-                //for (var i = _viewport.VerticalAlignmentValue * GridSize; i < height; i += _gridStep)
-                //{
-                //    drawingContext.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
-                //}
-
                 if (_needsRefreshAfterScrolling || GridSize != _lastGridSize || height != _lastHeight || width != _lastWidth || _needsRefreshAfterSettingsChanged)
                 {
                     var context = _drawingGroupGridLines.Open();
@@ -950,12 +940,7 @@ namespace AnnoDesigner
                 objectsChanged = true;
             }
 
-            // draw placed objects
-            //old logic
-            ////borderless objects should be drawn first; selection afterwards
-            //RenderObjectList(drawingContext, borderlessObjects, useTransparency: false);
-            //RenderObjectList(drawingContext, borderedObjects, useTransparency: false);
-
+            // draw placed objects            
             if (_isRenderingForced || objectsChanged)
             {
                 var context = _drawingGroupObjects.Open();
@@ -981,10 +966,6 @@ namespace AnnoDesigner
             {
                 if (!_hideInfluenceOnSelection)
                 {
-                    //old logic
-                    //RenderObjectInfluenceRadius(drawingContext, SelectedObjects);
-                    //RenderObjectInfluenceRange(drawingContext, SelectedObjects);
-
                     if (selectionWasRedrawn || _isRenderingForced)
                     {
                         var context = _drawingGroupSelectedObjectsInfluence.Open();
@@ -1004,18 +985,6 @@ namespace AnnoDesigner
             }
             else
             {
-                //old logic
-                //RenderObjectInfluenceRadius(drawingContext, objectsToDraw);
-                //RenderObjectInfluenceRange(drawingContext, objectsToDraw);
-                ////Retrieve objects outside the viewport that have an influence range which affects objects
-                ////within the viewport.
-                //var offscreenObjects = PlacedObjects
-                //.Where(_ => !_viewport.Absolute.Contains(_.GridRect) &&
-                //            (_viewport.Absolute.IntersectsWith(_.GridInfluenceRadiusRect) || _viewport.Absolute.IntersectsWith(_.GridInfluenceRangeRect))
-                // ).ToList();
-                //RenderObjectInfluenceRadius(drawingContext, offscreenObjects);
-                //RenderObjectInfluenceRange(drawingContext, offscreenObjects);
-
                 if (objectsChanged || _isRenderingForced)
                 {
                     var context = _drawingGroupInfluence.Open();
@@ -1444,13 +1413,6 @@ namespace AnnoDesigner
             {
                 return wasRedrawn;
             }
-
-            //old logic
-            //foreach (var curLayoutObject in objects)
-            //{
-            //    // draw object rectangle                
-            //    drawingContext.DrawRectangle(null, _highlightPen, curLayoutObject.CalculateScreenRect(GridSize));
-            //}
 
             if (_lastSelectedObjects != objects || _lastObjectSelectionGridSize != GridSize)
             {
