@@ -919,7 +919,11 @@ namespace AnnoDesigner
             var borderedObjects = _lastBorderedObjectsToDraw;
             bool objectsChanged = false;
 
-            if (_lastViewPortAbsolute != _viewport.Absolute || _lastPlacedObjects != PlacedObjects || CurrentMode == MouseMode.PlaceObjects || CurrentMode == MouseMode.DeleteObject)
+            if (_isRenderingForced ||
+                _lastViewPortAbsolute != _viewport.Absolute ||
+                _lastPlacedObjects != PlacedObjects ||
+                CurrentMode == MouseMode.PlaceObjects ||
+                CurrentMode == MouseMode.DeleteObject)
             {
                 objectsToDraw = PlacedObjects.GetItemsIntersecting(_viewport.Absolute).ToList();
                 _lastObjectsToDraw = objectsToDraw;
