@@ -820,7 +820,6 @@ namespace AnnoDesigner
         private int _lastGridSize = -1;
         private double _lastWidth = -1;
         private double _lastHeight = -1;
-        private bool _needsRefreshAfterScrolling;
         private bool _needsRefreshAfterSettingsChanged;
         private bool _isRenderingForced;
 
@@ -832,7 +831,6 @@ namespace AnnoDesigner
         {
             var width = RenderSize.Width;
             var height = RenderSize.Height;
-            var viewPortAbsolute = _viewport.Absolute; //hot path optimization
             _viewport.Width = _coordinateHelper.ScreenToGrid(width, _gridSize);
             _viewport.Height = _coordinateHelper.ScreenToGrid(height, _gridSize);
 
@@ -878,7 +876,7 @@ namespace AnnoDesigner
             if (RenderGrid)
             {
                 //check if redraw is necessary
-                if (_needsRefreshAfterScrolling ||
+                if (_isRenderingForced ||
                     _gridSize != _lastGridSize ||
                     height != _lastHeight ||
                     width != _lastWidth ||
@@ -909,7 +907,6 @@ namespace AnnoDesigner
                     _lastGridSize = _gridSize;
                     _lastHeight = height;
                     _lastWidth = width;
-                    _needsRefreshAfterScrolling = false;
                     _needsRefreshAfterSettingsChanged = false;
 
                     if (_drawingGroupGridLines.CanFreeze)
@@ -924,6 +921,7 @@ namespace AnnoDesigner
             //Push the transform after rendering everything that should not be translated.
             drawingContext.PushTransform(_viewportTransform);
 
+            var viewPortAbsolute = _viewport.Absolute; //hot path optimization
             var objectsToDraw = _lastObjectsToDraw;
             var borderlessObjects = _lastBorderlessObjectsToDraw;
             var borderedObjects = _lastBorderedObjectsToDraw;
@@ -1940,7 +1938,7 @@ namespace AnnoDesigner
 
             //update scroll viewer on next render
             _invalidateScrollInfo = true;
-            _needsRefreshAfterScrolling = true;
+            _isRenderingForced = true;
         }
 
         /// <summary>
@@ -2035,7 +2033,6 @@ namespace AnnoDesigner
             }
 
             InvalidateScroll();
-            ForceRendering();
         }
 
         private void HandleMouse(MouseEventArgs e)
