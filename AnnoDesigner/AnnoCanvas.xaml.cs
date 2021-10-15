@@ -618,6 +618,8 @@ namespace AnnoDesigner
             _showScrollBars = _appSettings.ShowScrollbars;
             _hideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;
 
+            UpdateScrollBarVisibility();
+
             var sw = new Stopwatch();
             sw.Start();
 
@@ -781,6 +783,8 @@ namespace AnnoDesigner
 
             _showScrollBars = _appSettings.ShowScrollbars;
             _hideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;
+
+            UpdateScrollBarVisibility();
         }
 
         #endregion
@@ -827,25 +831,10 @@ namespace AnnoDesigner
             _viewport.Width = _coordinateHelper.ScreenToGrid(width, _gridSize);
             _viewport.Height = _coordinateHelper.ScreenToGrid(height, _gridSize);
 
-            if (ScrollOwner != null)
+            if (ScrollOwner != null && _invalidateScrollInfo)
             {
-                //SCrollbar visibility should probably be managed by the owner of the the scrollviewer itself, not here...
-                if (_showScrollBars)
-                {
-                    ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-                    ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
-                }
-                else
-                {
-                    ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-                    ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
-                }
-
-                if (_invalidateScrollInfo)
-                {
-                    ScrollOwner?.InvalidateScrollInfo();
-                    _invalidateScrollInfo = false;
-                }
+                ScrollOwner?.InvalidateScrollInfo();
+                _invalidateScrollInfo = false;
             }
 
             //use the negated value for the transform, as when we move the viewport (for example, if Top gets
@@ -883,6 +872,7 @@ namespace AnnoDesigner
             // draw grid
             if (RenderGrid)
             {
+                //check if redraw is necessary
                 if (_needsRefreshAfterScrolling ||
                     _gridSize != _lastGridSize ||
                     height != _lastHeight ||
@@ -2960,6 +2950,23 @@ namespace AnnoDesigner
             return newList;
         }
 
+        private void UpdateScrollBarVisibility()
+        {
+            if (ScrollOwner != null)
+            {
+                if (_showScrollBars)
+                {
+                    ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                    ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+                }
+                else
+                {
+                    ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+                    ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+                }
+            }
+        }
+
         #endregion
 
         public void RaiseStatisticsUpdated(UpdateStatisticsEventArgs args)
@@ -2975,6 +2982,12 @@ namespace AnnoDesigner
         public void UpdatePlacedObjectCount()
         {
             _placedObjectCount = PlacedObjects?.Count ?? 0;
+        }
+
+        public void ForceRendering()
+        {
+            _isRenderingForced = true;
+            InvalidateVisual();
         }
 
         #region IScrollInfo
@@ -3158,12 +3171,6 @@ namespace AnnoDesigner
         public Rect MakeVisible(Visual visual, Rect rectangle)
         {
             return _viewport.Absolute;
-        }
-
-        public void ForceRendering()
-        {
-            _isRenderingForced = true;
-            InvalidateVisual();
         }
 
         #endregion
