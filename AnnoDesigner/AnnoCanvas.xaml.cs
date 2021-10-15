@@ -1362,9 +1362,13 @@ namespace AnnoDesigner
         /// </summary>
         private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
         {
-            if (!RenderInfluences)
+            if (objects.Count == 0 || !RenderInfluences)
             {
-                return;
+                //show influence for selected objects and for objects to be placed
+                if (SelectedObjects.Count == 0 && CurrentObjects.Count == 0)
+                {
+                    return;
+                }
             }
 
             Moved2DArray<AnnoObject> gridDictionary = null;
