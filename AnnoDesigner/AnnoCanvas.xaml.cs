@@ -76,7 +76,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Backing field of the GridSize property.
         /// </summary>
-        private int _gridStep = Constants.GridStepDefault;
+        private int _gridSize = Constants.GridStepDefault;
 
         /// <summary>
         /// Gets or sets the width of the grid cells.
@@ -84,7 +84,7 @@ namespace AnnoDesigner
         /// </summary>
         public int GridSize
         {
-            get { return _gridStep; }
+            get { return _gridSize; }
             set
             {
                 var tmp = value;
@@ -98,9 +98,9 @@ namespace AnnoDesigner
                     tmp = Constants.GridStepMax;
                 }
 
-                if (_gridStep != tmp)
+                if (_gridSize != tmp)
                 {
-                    _gridStep = tmp;
+                    _gridSize = tmp;
                     InvalidateVisual();
                 }
             }
@@ -823,8 +823,9 @@ namespace AnnoDesigner
         {
             var width = RenderSize.Width;
             var height = RenderSize.Height;
-            _viewport.Width = _coordinateHelper.ScreenToGrid(width, GridSize);
-            _viewport.Height = _coordinateHelper.ScreenToGrid(height, GridSize);
+            var viewPortAbsolute = _viewport.Absolute; //hot path optimization
+            _viewport.Width = _coordinateHelper.ScreenToGrid(width, _gridSize);
+            _viewport.Height = _coordinateHelper.ScreenToGrid(height, _gridSize);
 
             if (ScrollOwner != null)
             {
@@ -869,43 +870,57 @@ namespace AnnoDesigner
              |
              |  Relative to the viewport, the object has been shifted "up".
              */
-            _viewportTransform.X = _coordinateHelper.GridToScreen(-_viewport.Left, GridSize);
-            _viewportTransform.Y = _coordinateHelper.GridToScreen(-_viewport.Top, GridSize);
+            _viewportTransform.X = _coordinateHelper.GridToScreen(-_viewport.Left, _gridSize);
+            _viewportTransform.Y = _coordinateHelper.GridToScreen(-_viewport.Top, _gridSize);
 
             // assure pixel perfect drawing using guidelines.
             // this value is cached and refreshed in LoadGridLineColor(), as it uses pen thickness in its calculation;
             drawingContext.PushGuidelineSet(_guidelineSet);
 
             // draw background
-            drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(new Point(), RenderSize));
+            drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(0, 0, width, height));
 
             // draw grid
             if (RenderGrid)
             {
-                if (_needsRefreshAfterScrolling || GridSize != _lastGridSize || height != _lastHeight || width != _lastWidth || _needsRefreshAfterSettingsChanged)
+                if (_needsRefreshAfterScrolling ||
+                    _gridSize != _lastGridSize ||
+                    height != _lastHeight ||
+                    width != _lastWidth ||
+                    _needsRefreshAfterSettingsChanged)
                 {
+                    if (_drawingGroupGridLines.IsFrozen)
+                    {
+                        _drawingGroupGridLines = new DrawingGroup();
+                    }
+
                     var context = _drawingGroupGridLines.Open();
-                    //context.PushGuidelineSet(_guidelineSet);
+                    context.PushGuidelineSet(_guidelineSet);
 
                     //vertical lines
-                    for (var i = _viewport.HorizontalAlignmentValue * GridSize; i < width; i += _gridStep)
+                    for (var i = _viewport.HorizontalAlignmentValue * _gridSize; i < width; i += _gridSize)
                     {
                         context.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
                     }
 
                     //horizontal lines
-                    for (var i = _viewport.VerticalAlignmentValue * GridSize; i < height; i += _gridStep)
+                    for (var i = _viewport.VerticalAlignmentValue * _gridSize; i < height; i += _gridSize)
                     {
                         context.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
                     }
 
                     context.Close();
 
-                    _lastGridSize = GridSize;
+                    _lastGridSize = _gridSize;
                     _lastHeight = height;
                     _lastWidth = width;
                     _needsRefreshAfterScrolling = false;
                     _needsRefreshAfterSettingsChanged = false;
+
+                    if (_drawingGroupGridLines.CanFreeze)
+                    {
+                        _drawingGroupGridLines.Freeze();
+                    }
                 }
 
                 drawingContext.DrawDrawing(_drawingGroupGridLines);
@@ -920,15 +935,15 @@ namespace AnnoDesigner
             bool objectsChanged = false;
 
             if (_isRenderingForced ||
-                _lastViewPortAbsolute != _viewport.Absolute ||
+                _lastViewPortAbsolute != viewPortAbsolute ||
                 _lastPlacedObjects != PlacedObjects ||
                 CurrentMode == MouseMode.PlaceObjects ||
                 CurrentMode == MouseMode.DeleteObject)
             {
-                objectsToDraw = PlacedObjects.GetItemsIntersecting(_viewport.Absolute).ToList();
+                objectsToDraw = PlacedObjects.GetItemsIntersecting(viewPortAbsolute).ToList();
                 _lastObjectsToDraw = objectsToDraw;
                 _lastPlacedObjects = PlacedObjects;
-                _lastViewPortAbsolute = _viewport.Absolute;
+                _lastViewPortAbsolute = viewPortAbsolute;
 
                 borderlessObjects = objectsToDraw.Where(_ => _.WrappedAnnoObject.Borderless).ToList();
                 _lastBorderlessObjectsToDraw = borderlessObjects;
@@ -947,14 +962,24 @@ namespace AnnoDesigner
             // draw placed objects            
             if (_isRenderingForced || objectsChanged)
             {
+                if (_drawingGroupObjects.IsFrozen)
+                {
+                    _drawingGroupObjects = new DrawingGroup();
+                }
+
                 var context = _drawingGroupObjects.Open();
-                //context.PushGuidelineSet(_guidelineSet);
+                context.PushGuidelineSet(_guidelineSet);
 
                 //borderless objects should be drawn first; selection afterwards
                 RenderObjectList(context, borderlessObjects, useTransparency: false);
                 RenderObjectList(context, borderedObjects, useTransparency: false);
 
                 context.Close();
+
+                if (_drawingGroupObjects.CanFreeze)
+                {
+                    _drawingGroupObjects.Freeze();
+                }
             }
 
             drawingContext.DrawDrawing(_drawingGroupObjects);
@@ -972,13 +997,23 @@ namespace AnnoDesigner
                 {
                     if (selectionWasRedrawn || _isRenderingForced)
                     {
+                        if (_drawingGroupSelectedObjectsInfluence.IsFrozen)
+                        {
+                            _drawingGroupSelectedObjectsInfluence = new DrawingGroup();
+                        }
+
                         var context = _drawingGroupSelectedObjectsInfluence.Open();
-                        //context.PushGuidelineSet(_guidelineSet);
+                        context.PushGuidelineSet(_guidelineSet);
 
                         RenderObjectInfluenceRadius(context, SelectedObjects);
                         RenderObjectInfluenceRange(context, SelectedObjects);
 
                         context.Close();
+
+                        if (_drawingGroupSelectedObjectsInfluence.CanFreeze)
+                        {
+                            _drawingGroupSelectedObjectsInfluence.Freeze();
+                        }
                     }
 
                     if (SelectedObjects.Count > 0)
@@ -991,21 +1026,31 @@ namespace AnnoDesigner
             {
                 if (objectsChanged || _isRenderingForced)
                 {
+                    if (_drawingGroupInfluence.IsFrozen)
+                    {
+                        _drawingGroupInfluence = new DrawingGroup();
+                    }
+
                     var context = _drawingGroupInfluence.Open();
-                    //context.PushGuidelineSet(_guidelineSet);
+                    context.PushGuidelineSet(_guidelineSet);
 
                     RenderObjectInfluenceRadius(context, objectsToDraw);
                     RenderObjectInfluenceRange(context, objectsToDraw);
                     //Retrieve objects outside the viewport that have an influence range which affects objects
                     //within the viewport.
                     var offscreenObjects = PlacedObjects
-                    .Where(_ => !_viewport.Absolute.Contains(_.GridRect) &&
-                                (_viewport.Absolute.IntersectsWith(_.GridInfluenceRadiusRect) || _viewport.Absolute.IntersectsWith(_.GridInfluenceRangeRect))
+                    .Where(_ => !viewPortAbsolute.Contains(_.GridRect) &&
+                                (viewPortAbsolute.IntersectsWith(_.GridInfluenceRadiusRect) || viewPortAbsolute.IntersectsWith(_.GridInfluenceRangeRect))
                      ).ToList();
                     RenderObjectInfluenceRadius(context, offscreenObjects);
                     RenderObjectInfluenceRange(context, offscreenObjects);
 
                     context.Close();
+
+                    if (_drawingGroupInfluence.CanFreeze)
+                    {
+                        _drawingGroupInfluence.Freeze();
+                    }
                 }
 
                 drawingContext.DrawDrawing(_drawingGroupInfluence);
@@ -1017,7 +1062,7 @@ namespace AnnoDesigner
                 var hoveredObj = GetObjectAt(_mousePosition);
                 if (hoveredObj != null)
                 {
-                    drawingContext.DrawRectangle(null, _highlightPen, hoveredObj.CalculateScreenRect(GridSize));
+                    drawingContext.DrawRectangle(null, _highlightPen, hoveredObj.CalculateScreenRect(_gridSize));
                 }
             }
             else
@@ -1051,8 +1096,10 @@ namespace AnnoDesigner
             {
                 drawingContext.DrawRectangle(_lightBrush, _highlightPen, _selectionRect);
             }
-#if DEBUG
+
             #region Draw debug information
+
+#if DEBUG
             if (debugModeIsEnabled)
             {
                 drawingContext.PushTransform(_viewportTransform);
@@ -1062,7 +1109,7 @@ namespace AnnoDesigner
                     var pen = _penCache.GetPen(_debugBrushDark, 2);
                     foreach (var rect in PlacedObjects.GetQuadrantRects())
                     {
-                        drawingContext.DrawRectangle(brush, pen, _coordinateHelper.GridToScreen(rect, GridSize));
+                        drawingContext.DrawRectangle(brush, pen, _coordinateHelper.GridToScreen(rect, _gridSize));
                     }
                 }
 
@@ -1072,7 +1119,7 @@ namespace AnnoDesigner
                     color.A = 0x08;
                     var brush = _brushCache.GetSolidBrush(color);
                     var pen = _penCache.GetPen(_debugBrushLight, 1);
-                    var collisionRectScreen = _coordinateHelper.GridToScreen(_collisionRect, GridSize);
+                    var collisionRectScreen = _coordinateHelper.GridToScreen(_collisionRect, _gridSize);
                     drawingContext.DrawRectangle(brush, pen, collisionRectScreen);
                 }
 
@@ -1144,7 +1191,7 @@ namespace AnnoDesigner
                     //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
                     if (App.DpiScale.PixelsPerDip != 0)
                     {
-                        var gridPosition = _coordinateHelper.ScreenToFractionalGrid(_mousePosition, GridSize);
+                        var gridPosition = _coordinateHelper.ScreenToFractionalGrid(_mousePosition, _gridSize);
                         gridPosition = _viewport.OriginToViewport(gridPosition);
                         var x = gridPosition.X;
                         var y = gridPosition.Y;
@@ -1165,7 +1212,7 @@ namespace AnnoDesigner
                 {
                     if (debugShowSelectionRectCoordinates)
                     {
-                        var rect = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
+                        var rect = _coordinateHelper.ScreenToGrid(_selectionRect, _gridSize);
                         var top = rect.Top;
                         var left = rect.Left;
                         var h = rect.Height;
@@ -1183,8 +1230,10 @@ namespace AnnoDesigner
                     }
                 }
             }
-            #endregion
 #endif
+
+            #endregion
+
             // pop back guidlines set
             drawingContext.Pop();
 
@@ -1193,6 +1242,11 @@ namespace AnnoDesigner
 
         private void RenderPanoramaText(DrawingContext drawingContext, List<LayoutObject> placedObjects)
         {
+            if (placedObjects.Count == 0)
+            {
+                return;
+            }
+
             foreach (var curObject in placedObjects.FindAll(_ => _.Identifier.StartsWith(IDENTIFIER_SKYSCRAPER, StringComparison.OrdinalIgnoreCase)))
             {
                 if (!_regex_panorama.TryMatch(curObject.Identifier, out var match))
@@ -1420,8 +1474,13 @@ namespace AnnoDesigner
 
             if (_lastSelectedObjects != objects || _lastObjectSelectionGridSize != GridSize)
             {
+                if (_drawingGroupObjectSelection.IsFrozen)
+                {
+                    _drawingGroupObjectSelection = new DrawingGroup();
+                }
+
                 var context = _drawingGroupObjectSelection.Open();
-                //context.PushGuidelineSet(_guidelineSet);
+                context.PushGuidelineSet(_guidelineSet);
 
                 foreach (var curLayoutObject in objects)
                 {
@@ -1434,6 +1493,11 @@ namespace AnnoDesigner
                 _lastObjectSelectionGridSize = GridSize;
                 _lastSelectedObjects = objects;
                 wasRedrawn = true;
+
+                if (_drawingGroupObjectSelection.CanFreeze)
+                {
+                    _drawingGroupObjectSelection.Freeze();
+                }
             }
 
             drawingContext.DrawDrawing(_drawingGroupObjectSelection);
@@ -1895,7 +1959,6 @@ namespace AnnoDesigner
         protected override void OnMouseEnter(MouseEventArgs e)
         {
             _mouseWithinControl = true;
-            //  _mousePosition = e.GetPosition(this);
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)
