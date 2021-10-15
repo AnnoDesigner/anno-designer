@@ -122,6 +122,7 @@ namespace AnnoDesigner
                 if (_renderGrid != value)
                 {
                     _renderGrid = value;
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
             }
@@ -165,6 +166,7 @@ namespace AnnoDesigner
                 if (_renderLabel != value)
                 {
                     _renderLabel = value;
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
             }
@@ -186,6 +188,7 @@ namespace AnnoDesigner
                 if (_renderIcon != value)
                 {
                     _renderIcon = value;
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
             }
@@ -229,6 +232,7 @@ namespace AnnoDesigner
                 if (_renderHarborBlockedArea != value)
                 {
                     _renderHarborBlockedArea = value;
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
             }
@@ -249,9 +253,10 @@ namespace AnnoDesigner
             {
                 if (_renderPanorama != value)
                 {
+                    _renderPanorama = value;
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
-                _renderPanorama = value;
             }
         }
 
@@ -978,7 +983,7 @@ namespace AnnoDesigner
 
             if (RenderPanorama)
             {
-                RenderPanoramaText(drawingContext, objectsToDraw);
+                RenderPanoramaText(drawingContext, objectsToDraw, forceRedraw: _isRenderingForced || objectsChanged);
             }
 
             if (!RenderInfluences)
@@ -1230,12 +1235,28 @@ namespace AnnoDesigner
             _isRenderingForced = false;
         }
 
-        private void RenderPanoramaText(DrawingContext drawingContext, List<LayoutObject> placedObjects)
+        private DrawingGroup _drawingGroupPanoramaText = new DrawingGroup();
+
+        private void RenderPanoramaText(DrawingContext drawingContext, List<LayoutObject> placedObjects, bool forceRedraw)
         {
             if (placedObjects.Count == 0)
             {
                 return;
             }
+
+            if (!forceRedraw)
+            {
+                drawingContext.DrawDrawing(_drawingGroupPanoramaText);
+                return;
+            }
+
+            if (_drawingGroupPanoramaText.IsFrozen)
+            {
+                _drawingGroupPanoramaText = new DrawingGroup();
+            }
+
+            var context = _drawingGroupPanoramaText.Open();
+            context.PushGuidelineSet(_guidelineSet);
 
             foreach (var curObject in placedObjects.FindAll(_ => _.Identifier.StartsWith(IDENTIFIER_SKYSCRAPER, StringComparison.OrdinalIgnoreCase)))
             {
@@ -1271,6 +1292,8 @@ namespace AnnoDesigner
 
                 if (curObject.LastPanorama != panorama || curObject.PanoramaText == null)
                 {
+                    curObject.LastPanorama = panorama;
+
                     // put the sign at the end of the string since it will be drawn from right to left
                     var text = Math.Abs(panorama).ToString() + (panorama >= 0 ? "" : "-");
 
@@ -1278,8 +1301,17 @@ namespace AnnoDesigner
                         FlowDirection.RightToLeft, TYPEFACE, FontSize, Brushes.Black, App.DpiScale.PixelsPerDip);
                 }
 
-                drawingContext.DrawText(curObject.PanoramaText, curObject.CalculateScreenRect(GridSize).TopRight);
+                context.DrawText(curObject.PanoramaText, curObject.CalculateScreenRect(GridSize).TopRight);
             }
+
+            context.Close();
+
+            if (_drawingGroupPanoramaText.CanFreeze)
+            {
+                _drawingGroupPanoramaText.Freeze();
+            }
+
+            drawingContext.DrawDrawing(_drawingGroupPanoramaText);
         }
 
         /// <summary>
@@ -1979,6 +2011,7 @@ namespace AnnoDesigner
             {
                 change = e.Delta > 0 ? 1 : -1;
             }
+
             if (!_appSettings.UseZoomToPoint)
             {
                 GridSize += change;
@@ -1993,13 +2026,16 @@ namespace AnnoDesigner
                 _viewport.Left += diff.X;
                 _viewport.Top += diff.Y;
             }
+
             //if there are no objects placed down, then reset to viewport to 0,0, whilst maintaining any offsets to hide the change
             if (_placedObjectCount == 0)
             {
                 _viewport.Left = _viewport.HorizontalAlignmentValue >= 0 ? 1 - _viewport.HorizontalAlignmentValue : Math.Abs(_viewport.HorizontalAlignmentValue);
                 _viewport.Top = _viewport.VerticalAlignmentValue >= 0 ? 1 - _viewport.VerticalAlignmentValue : Math.Abs(_viewport.VerticalAlignmentValue);
             }
+
             InvalidateScroll();
+            ForceRendering();
         }
 
         private void HandleMouse(MouseEventArgs e)
