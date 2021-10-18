@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace AnnoDesigner.ViewModels
         private ObservableCollection<StatisticsBuilding> _buildings;
         private ObservableCollection<StatisticsBuilding> _selectedBuildings;
         private StatisticsCalculationHelper _statisticsCalculationHelper;
-        private readonly Dictionary<string, BuildingInfo> _cachedPresetsBuilding;
+        private readonly ConcurrentDictionary<string, BuildingInfo> _cachedPresetsBuilding;
         private readonly ILocalizationHelper _localizationHelper;
         private readonly ICommons _commons;
 
@@ -43,7 +44,7 @@ namespace AnnoDesigner.ViewModels
             Buildings = new ObservableCollection<StatisticsBuilding>();
             SelectedBuildings = new ObservableCollection<StatisticsBuilding>();
             _statisticsCalculationHelper = new StatisticsCalculationHelper();
-            _cachedPresetsBuilding = new Dictionary<string, BuildingInfo>(50);
+            _cachedPresetsBuilding = new ConcurrentDictionary<string, BuildingInfo>(Environment.ProcessorCount, 50);
         }
 
         public bool IsVisible
@@ -190,7 +191,7 @@ namespace AnnoDesigner.ViewModels
                     if (!_cachedPresetsBuilding.TryGetValue(identifierToCheck, out var building))
                     {
                         building = buildingPresets.Buildings.Find(_ => string.Equals(_.Identifier, identifierToCheck, StringComparison.OrdinalIgnoreCase));
-                        _cachedPresetsBuilding.Add(identifierToCheck, building);
+                        _cachedPresetsBuilding.TryAdd(identifierToCheck, building);
                     }
 
                     var isUnknownObject = string.Equals(identifierToCheck, "Unknown Object", StringComparison.OrdinalIgnoreCase);

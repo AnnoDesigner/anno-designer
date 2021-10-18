@@ -1349,7 +1349,11 @@ namespace AnnoDesigner.ViewModels
                     PlacedObjects = quadTree,
                     RenderGrid = AnnoCanvas.RenderGrid,
                     RenderIcon = AnnoCanvas.RenderIcon,
-                    RenderLabel = AnnoCanvas.RenderLabel
+                    RenderLabel = AnnoCanvas.RenderLabel,
+                    RenderHarborBlockedArea = AnnoCanvas.RenderHarborBlockedArea,
+                    RenderPanorama = AnnoCanvas.RenderPanorama,
+                    RenderTrueInfluenceRange = AnnoCanvas.RenderTrueInfluenceRange,
+                    RenderInfluences = AnnoCanvas.RenderInfluences,
                 };
 
                 sw.Stop();
@@ -1357,11 +1361,13 @@ namespace AnnoDesigner.ViewModels
 
                 // normalize layout
                 target.Normalize(border);
+
                 // set zoom level
                 if (exportZoom)
                 {
                     target.GridSize = AnnoCanvas.GridSize;
                 }
+
                 // set selection
                 if (exportSelection)
                 {
@@ -1390,7 +1396,7 @@ namespace AnnoDesigner.ViewModels
                 if (renderStatistics)
                 {
                     var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
-                    exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult(); ;
+                    exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult();
                     exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 
                     var exportStatisticsView = new StatisticsView()
