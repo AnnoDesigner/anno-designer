@@ -179,6 +179,7 @@ namespace AnnoDesigner.ViewModels
 
             var validBuildingsGrouped = groupedBuildingsByIdentifier
                         .Where(_ => !_.ElementAt(0).WrappedAnnoObject.Road && _.ElementAt(0).Identifier != null)
+                        .Where(x => !string.Equals(x.ElementAt(0).WrappedAnnoObject.Template, "Blocker", StringComparison.OrdinalIgnoreCase))
                         .OrderByDescending(_ => _.Count());
             foreach (var item in validBuildingsGrouped)
             {
