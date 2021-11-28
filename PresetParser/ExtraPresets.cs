@@ -26,6 +26,13 @@ namespace PresetParser
             return result;
         }
 
+        public static IEnumerable<BlockingTile> GetBlockingTiles()
+        {
+            var result = new List<BlockingTile>();
+            result.Add(new BlockingTile { BuildBlockerX = 1, BuildBlockerZ = 1, Identifier = "BlockTile_1x1", LocaEng = "Block Tile 1x1", LocaGer = "Block Tile 1x1", LocaFra = "Block Tile 1x1", LocaPol = "Block Tile 1x1", LocaRus = "Block Tile 1x1", LocaEsp = "Block Tile 1x1" });
+            return result;
+        }
+
         public static IEnumerable<ExtraRoads> GetExtraRoads()
         {
             var result = new List<ExtraRoads>();
