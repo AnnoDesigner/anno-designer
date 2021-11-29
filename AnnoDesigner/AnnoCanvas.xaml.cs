@@ -25,6 +25,7 @@ using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.Services;
 using AnnoDesigner.CustomEventArgs;
+using AnnoDesigner.Extensions;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Models;
 using AnnoDesigner.Services;
@@ -889,7 +890,7 @@ namespace AnnoDesigner
             //borderless objects should be drawn first; selection afterwards
             RenderObjectList(drawingContext, borderlessObjects, useTransparency: false);
             RenderObjectList(drawingContext, borderedObjects, useTransparency: false);
-            RenderObjectSelection(drawingContext, SelectedObjects.Where(x => !string.Equals(x.WrappedAnnoObject.Template, "Blocker", StringComparison.OrdinalIgnoreCase)).ToList());
+            RenderObjectSelection(drawingContext, SelectedObjects.WithoutIgnoredObjects());
 
             if (RenderPanorama)
             {
@@ -1337,7 +1338,7 @@ namespace AnnoDesigner
 
                     var influenceGridRect = curLayoutObject.GridInfluenceRadiusRect;
 
-                    foreach (var curPlacedObject in PlacedObjects.GetItemsIntersecting(influenceGridRect).Where(x => !string.Equals(x.WrappedAnnoObject.Template, "Blocker", StringComparison.OrdinalIgnoreCase)))
+                    foreach (var curPlacedObject in PlacedObjects.GetItemsIntersecting(influenceGridRect).WithoutIgnoredObjects())
                     {
                         var distance = curPlacedObject.GetScreenRectCenterPoint(GridSize);
                         distance.X -= circleCenterX;

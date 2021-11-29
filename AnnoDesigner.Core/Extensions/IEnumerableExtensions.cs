@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Core.Extensions
 {
@@ -72,6 +73,17 @@ namespace AnnoDesigner.Core.Extensions
         public static void Consume<T>(this IEnumerable<T> source)
         {
             foreach (var _ in source) { }
+        }
+
+        /// <summary>
+        /// Removes objects from a given <see cref="IEnumerable{AnnoObject}"/> based on some criteria.
+        /// </summary>
+        /// <param name="objects">The <see cref="IEnumerable{AnnoObject}"/> to filter.</param>
+        /// <returns>The filtered <see cref="IEnumerable{AnnoObject}"/>.</returns>
+        /// <remarks>Currently the logic is based only on a single "Template", but can be extended to other criteria in the future.</remarks>
+        public static IEnumerable<AnnoObject> WithoutIgnoredObjects(this IEnumerable<AnnoObject> objects)
+        {
+            return objects.Where(x => !string.Equals(x.Template, "Blocker", StringComparison.OrdinalIgnoreCase));
         }
     }
 }

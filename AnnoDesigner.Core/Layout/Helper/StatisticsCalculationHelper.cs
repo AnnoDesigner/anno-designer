@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 
@@ -21,7 +22,7 @@ namespace AnnoDesigner.Core.Layout.Helper
                 return null;
             }
 
-            if (objects.Count() == 0 || objects.Count(x => !string.Equals(x.Template, "Blocker", StringComparison.OrdinalIgnoreCase)) == 0)
+            if (objects.Count() == 0 || objects.WithoutIgnoredObjects().Count() == 0)
             {
                 return StatisticsCalculationResult.Empty;
             }
@@ -39,7 +40,7 @@ namespace AnnoDesigner.Core.Layout.Helper
             var minX = double.MaxValue;
             var minY = double.MaxValue;
             var sum = 0d;
-            foreach (var curObject in objects.Where(x => !string.Equals(x.Template, "Blocker", StringComparison.OrdinalIgnoreCase)))
+            foreach (var curObject in objects.WithoutIgnoredObjects())
             {
                 var curPosX = curObject.Position.X;
                 var curPosY = curObject.Position.Y;

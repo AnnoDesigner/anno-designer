@@ -23,7 +23,7 @@ namespace AnnoDesigner.Helper
         /// </summary>
         public static Moved2DArray<AnnoObject> PrepareGridDictionary(IEnumerable<AnnoObject> placedObjects)
         {
-            if (placedObjects is null || placedObjects.Count(x => !string.Equals(x.Template, "Blocker", StringComparison.OrdinalIgnoreCase)) < 1)
+            if (placedObjects is null || placedObjects.WithoutIgnoredObjects().Count() < 1)
             {
                 return null;
             }
@@ -38,7 +38,7 @@ namespace AnnoDesigner.Helper
                 .Select(i => new AnnoObject[countY])
                 .ToArrayWithCapacity(countX);
 
-            _ = Parallel.ForEach(placedObjects.Where(x => !string.Equals(x.Template, "Blocker", StringComparison.OrdinalIgnoreCase)), placedObject =>
+            _ = Parallel.ForEach(placedObjects.WithoutIgnoredObjects(), placedObject =>
               {
                   var x = (int)placedObject.Position.X;
                   var y = (int)placedObject.Position.Y;
