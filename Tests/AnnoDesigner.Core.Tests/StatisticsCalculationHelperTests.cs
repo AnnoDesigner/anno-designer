@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
@@ -25,7 +21,7 @@ namespace AnnoDesigner.Core.Tests
             // Arrange            
             var helper = GetHelper();
 
-            var result = new StatisticsCalculationResult();
+            var result = StatisticsCalculationResult.Empty;
 
             // Act
             var ex = Record.Exception(() => result = helper.CalculateStatistics(null));
@@ -41,7 +37,7 @@ namespace AnnoDesigner.Core.Tests
             // Arrange            
             var helper = GetHelper();
 
-            var result = new StatisticsCalculationResult();
+            var result = StatisticsCalculationResult.Empty;
 
             // Act
             var ex = Record.Exception(() => result = helper.CalculateStatistics(new List<AnnoObject>()));
@@ -49,6 +45,57 @@ namespace AnnoDesigner.Core.Tests
             // Assert
             Assert.Null(ex);
             Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void CalculateStatistics_IsCalledWithOnlyBlockTiles_ShouldReturnEmptyResult()
+        {
+            // Arrange            
+            var helper = GetHelper();
+
+            var objects = new List<AnnoObject>
+            {
+                new AnnoObject
+                {
+                    Template = "Blocker"
+                }
+            };
+
+            // Act
+            var result = helper.CalculateStatistics(objects);
+
+            // Assert
+            Assert.Equal(StatisticsCalculationResult.Empty, result);
+        }
+
+        [Fact]
+        public void CalculateStatistics_IsCalledWithAlsoBlockTiles_ShouldIgnoreBlockTilesInCalculation()
+        {
+            // Arrange            
+            var helper = GetHelper();
+
+            var expected = new StatisticsCalculationResult(minX: 42, minY: 42, maxX: 45, maxY: 45, usedAreaWidth: 3, usedAreaHeight: 3, usedTiles: 9, minTiles: 9, efficiency: 100);
+
+            var objects = new List<AnnoObject>
+            {
+                new AnnoObject
+                {
+                    Template = "Blocker"
+                },
+                new AnnoObject
+                {
+                    Template = "Dummy",
+                    Position = new System.Windows.Point(42,42),
+                    Size = new System.Windows.Size(3,3),
+                    Road = false
+                }
+            };
+
+            // Act
+            var result = helper.CalculateStatistics(objects);
+
+            // Assert
+            Assert.Equal(expected, result);
         }
 
         #endregion

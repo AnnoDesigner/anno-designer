@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 
@@ -23,11 +21,9 @@ namespace AnnoDesigner.Core.Layout.Helper
                 return null;
             }
 
-            var result = new StatisticsCalculationResult();
-
             if (objects.Count() == 0 || objects.Count(x => !string.Equals(x.Template, "Blocker", StringComparison.OrdinalIgnoreCase)) == 0)
             {
-                return result;
+                return StatisticsCalculationResult.Empty;
             }
 
             /* old logic is easier to understand, but slower
@@ -70,19 +66,10 @@ namespace AnnoDesigner.Core.Layout.Helper
             // calculate area of all buildings
             var minTiles = sum;
 
-            result.MinX = minX;
-            result.MinY = minY;
-            result.MaxX = maxX;
-            result.MaxY = maxY;
+            var usedTiles = boxX * boxY;
+            var efficiency = Math.Round(minTiles / boxX / boxY * 100);
 
-            result.UsedAreaWidth = boxX;
-            result.UsedAreaHeight = boxY;
-            result.UsedTiles = boxX * boxY;
-
-            result.MinTiles = minTiles;
-            result.Efficiency = Math.Round(minTiles / boxX / boxY * 100);
-
-            return result;
+            return new StatisticsCalculationResult(minX, minY, maxX, maxY, boxX, boxY, usedTiles, minTiles, efficiency);
         }
     }
 }
