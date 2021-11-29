@@ -889,7 +889,7 @@ namespace AnnoDesigner
             //borderless objects should be drawn first; selection afterwards
             RenderObjectList(drawingContext, borderlessObjects, useTransparency: false);
             RenderObjectList(drawingContext, borderedObjects, useTransparency: false);
-            RenderObjectSelection(drawingContext, SelectedObjects);
+            RenderObjectSelection(drawingContext, SelectedObjects.Where(x => !string.Equals(x.WrappedAnnoObject.Template, "Blocker", StringComparison.OrdinalIgnoreCase)).ToList());
 
             if (RenderPanorama)
             {
@@ -1337,7 +1337,7 @@ namespace AnnoDesigner
 
                     var influenceGridRect = curLayoutObject.GridInfluenceRadiusRect;
 
-                    foreach (var curPlacedObject in PlacedObjects.GetItemsIntersecting(influenceGridRect))
+                    foreach (var curPlacedObject in PlacedObjects.GetItemsIntersecting(influenceGridRect).Where(x => !string.Equals(x.WrappedAnnoObject.Template, "Blocker", StringComparison.OrdinalIgnoreCase)))
                     {
                         var distance = curPlacedObject.GetScreenRectCenterPoint(GridSize);
                         distance.X -= circleCenterX;
