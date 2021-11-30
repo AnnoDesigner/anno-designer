@@ -2862,7 +2862,6 @@ namespace AnnoDesigner
                 CurrentObjects = CloneList(SelectedObjects);
                 Rotate(CurrentObjects).Consume();
             }
-            InvalidateVisual();
         }
 
         private readonly Hotkey rotateAllHotkey;
@@ -2884,8 +2883,6 @@ namespace AnnoDesigner
                 }
                 Normalize(1);
             });
-
-            InvalidateVisual();
         }
 
         private readonly Hotkey copyHotkey;
@@ -2973,6 +2970,7 @@ namespace AnnoDesigner
         private void ExecuteUndo(object param)
         {
             UndoManager.Undo();
+            ForceRendering();
         }
 
         private readonly Hotkey redoHotkey;
@@ -2980,6 +2978,7 @@ namespace AnnoDesigner
         private void ExecuteRedo(object param)
         {
             UndoManager.Redo();
+            ForceRendering();
         }
 
         #endregion
