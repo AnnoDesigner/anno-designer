@@ -83,6 +83,11 @@ namespace AnnoDesigner.Core.Extensions
         /// <remarks>Currently the logic is based only on a single "Template", but can be extended to other criteria in the future.</remarks>
         public static IEnumerable<AnnoObject> WithoutIgnoredObjects(this IEnumerable<AnnoObject> objects)
         {
+            if (objects is null)
+            {
+                return null;
+            }
+
             return objects.Where(x => !string.Equals(x.Template, "Blocker", StringComparison.OrdinalIgnoreCase));
         }
     }

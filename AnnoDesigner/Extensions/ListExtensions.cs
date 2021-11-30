@@ -14,6 +14,11 @@ namespace AnnoDesigner.Extensions
         /// <returns>The filtered <see cref="List{LayoutObject}"/>.</returns>
         public static List<LayoutObject> WithoutIgnoredObjects(this List<LayoutObject> objects)
         {
+            if (objects is null)
+            {
+                return null;
+            }
+
             var annoObjectsWithoutIgnoredObjects = objects.Select(x => x.WrappedAnnoObject).WithoutIgnoredObjects();
 
             return objects.Where(x => annoObjectsWithoutIgnoredObjects.Contains(x.WrappedAnnoObject)).ToList();
