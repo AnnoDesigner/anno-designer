@@ -2338,6 +2338,10 @@ namespace AnnoDesigner
                         });
 
                         ReindexMovedObjects();
+                        if (SelectedObjects.Count == 1)
+                        {
+                            RemoveSelectedObjects(SelectedObjects, false);
+                        }
                         CurrentMode = MouseMode.Standard;
                         break;
                 }
