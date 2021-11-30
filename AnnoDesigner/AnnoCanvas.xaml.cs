@@ -570,6 +570,7 @@ namespace AnnoDesigner
         private readonly bool debugShowScrollableRectCoordinates = true;
         private readonly bool debugShowLayoutRectCoordinates = true;
         private readonly bool debugShowMouseGridCoordinates = true;
+        private readonly bool debugShowObjectCount = true;
 
         #endregion
 #endif
@@ -1035,6 +1036,20 @@ namespace AnnoDesigner
                         var h = _layoutBounds.Height;
                         var w = _layoutBounds.Width;
                         var text = new FormattedText($"Layout: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                     TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                        {
+                            TextAlignment = TextAlignment.Left
+                        };
+                        debugText.Add(text);
+                    }
+                }
+
+                if (debugShowObjectCount)
+                {
+                    //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
+                    if (App.DpiScale.PixelsPerDip != 0)
+                    {
+                        var text = new FormattedText($"{nameof(PlacedObjects)}: {PlacedObjects.Count}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
                                                      TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
                         {
                             TextAlignment = TextAlignment.Left
@@ -2719,6 +2734,8 @@ namespace AnnoDesigner
                     RemoveSelectedObject(obj, false);
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                     CurrentMode = MouseMode.DeleteObject;
+
+                    InvalidateVisual();
                 }
             }
         }
