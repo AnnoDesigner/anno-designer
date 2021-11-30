@@ -1324,6 +1324,7 @@ namespace AnnoDesigner
             {
                 return;
             }
+
             if (CurrentObjects.Count > 1)
             {
                 //Get the center of the current selection
@@ -1495,7 +1496,7 @@ namespace AnnoDesigner
                 return wasRedrawn;
             }
 
-            if (_lastSelectedObjects != objects || _lastObjectSelectionGridSize != GridSize)
+            if (_lastSelectedObjects != objects || _lastObjectSelectionGridSize != GridSize || CurrentMode == MouseMode.DragSelection)
             {
                 if (_drawingGroupObjectSelection.IsFrozen)
                 {
@@ -2239,6 +2240,7 @@ namespace AnnoDesigner
                                         break;
                                     }
                                 }
+
                                 // if no collisions were found, permanently move all selected objects
                                 if (!collisionsExist)
                                 {
@@ -2265,7 +2267,8 @@ namespace AnnoDesigner
                                     }
                                 }
 
-                                break;
+                                ForceRendering();
+                                return;
                             }
                     }
                 }
