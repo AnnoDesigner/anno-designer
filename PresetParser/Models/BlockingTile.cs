@@ -4,9 +4,9 @@
     {
         public BlockingTile()
         {
-            Faction = "Blocker";
+            Faction = null;
             Group = null;
-            Header = "- Blocking Presets";
+            Header = "(a0)- Blocking Presets";
             IconFileName = null;
             Template = "Blocker";
             Borderless = true;
