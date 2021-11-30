@@ -1051,11 +1051,14 @@ namespace AnnoDesigner
 
             if (CurrentObjects.Count == 0)
             {
-                // highlight object which is currently hovered
-                var hoveredObj = GetObjectAt(_mousePosition);
-                if (hoveredObj != null)
+                // highlight object which is currently hovered, but not if some objects are being dragged
+                if (CurrentMode != MouseMode.DragSelection)
                 {
-                    drawingContext.DrawRectangle(null, _highlightPen, hoveredObj.CalculateScreenRect(_gridSize));
+                    var hoveredObj = GetObjectAt(_mousePosition);
+                    if (hoveredObj != null)
+                    {
+                        drawingContext.DrawRectangle(null, _highlightPen, hoveredObj.CalculateScreenRect(_gridSize));
+                    }
                 }
             }
             else
