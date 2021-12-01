@@ -102,7 +102,18 @@ namespace AnnoDesigner.Core.Extensions
                 return null;
             }
 
-            return objects.Where(x => !string.Equals(x.Template, "Blocker", StringComparison.OrdinalIgnoreCase));
+            return objects.Where(x => !x.IsIgnoredObject());
+        }
+
+        /// <summary>
+        /// Checks if input object should be excluded from certain rendering actions.
+        /// </summary>
+        /// <remarks>
+        /// Currently the logic is based only on a single "Template", but can be extended to other criteria in the future.
+        /// </remarks>
+        public static bool IsIgnoredObject(this AnnoObject annoObject)
+        {
+            return string.Equals(annoObject.Template, "Blocker", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

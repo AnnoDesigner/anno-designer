@@ -503,6 +503,11 @@ namespace AnnoDesigner
         /// </summary>
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
 
+        /// <summary>
+        /// Does currently selected objects contain object which is not ignored from rendering?
+        /// </summary>
+        private bool selectionContainsNotIgnoredObject;
+
         #endregion
 
         #region Pens and Brushes
@@ -891,7 +896,17 @@ namespace AnnoDesigner
             //borderless objects should be drawn first; selection afterwards
             RenderObjectList(drawingContext, borderlessObjects, useTransparency: false);
             RenderObjectList(drawingContext, borderedObjects, useTransparency: false);
-            RenderObjectSelection(drawingContext, SelectedObjects.WithoutIgnoredObjects());
+
+            // draw object selection around not ignored selected objects
+            if (selectionContainsNotIgnoredObject)
+            {
+                RenderObjectSelection(drawingContext, SelectedObjects.WithoutIgnoredObjects());
+            }
+            else
+            {
+                // except when only ignored objects are selected, in which case render their selection
+                RenderObjectSelection(drawingContext, SelectedObjects);
+            }
 
             if (RenderPanorama)
             {
@@ -1678,6 +1693,11 @@ namespace AnnoDesigner
             RemoveSelectedObjects(new List<LayoutObject>() { objectToRemove }, includeSameObjects);
         }
 
+        private void RecalculateSelectionContainsNotIgnoredObject()
+        {
+            selectionContainsNotIgnoredObject = SelectedObjects.Any(x => !x.IsIgnoredObject());
+        }
+
         /// <summary>
         /// Used to load current color for grid lines from settings.
         /// </summary>
@@ -1922,6 +1942,7 @@ namespace AnnoDesigner
                         SelectedObjects.Clear();
                         var obj = GetObjectAt(_mouseDragStart);
                         AddSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
+                        RecalculateSelectionContainsNotIgnoredObject();
                         //after adding the object, compute the collision rect
                         _collisionRect = obj.GridRect;
                         CurrentMode = MouseMode.DragSelection;
@@ -1990,6 +2011,7 @@ namespace AnnoDesigner
                                 selectionRectGrid = _viewport.OriginToViewport(selectionRectGrid);
                                 AddSelectedObjects(PlacedObjects.GetItemsIntersecting(selectionRectGrid),
                                                    ShouldAffectObjectsWithIdentifier());
+                                RecalculateSelectionContainsNotIgnoredObject();
 
                                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                                 break;
@@ -2109,6 +2131,7 @@ namespace AnnoDesigner
                                 {
                                     AddSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
                                 }
+                                RecalculateSelectionContainsNotIgnoredObject();
                             }
 
                             _collisionRect = ComputeBoundingRect(SelectedObjects);
@@ -2731,6 +2754,7 @@ namespace AnnoDesigner
 
                     PlacedObjects.Remove(obj);
                     RemoveSelectedObject(obj, false);
+                    RecalculateSelectionContainsNotIgnoredObject();
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                     CurrentMode = MouseMode.DeleteObject;
 

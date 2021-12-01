@@ -23,5 +23,16 @@ namespace AnnoDesigner.Extensions
 
             return objects.Where(x => annoObjectsWithoutIgnoredObjects.Contains(x.WrappedAnnoObject));
         }
+
+        /// <summary>
+        /// Checks if input object should be excluded from certain rendering actions.
+        /// </summary>
+        /// <remarks>
+        /// Currently the logic is based only on a single "Template", but can be extended to other criteria in the future.
+        /// </remarks>
+        public static bool IsIgnoredObject(this LayoutObject layoutObject)
+        {
+            return layoutObject.WrappedAnnoObject.IsIgnoredObject();
+        }
     }
 }
