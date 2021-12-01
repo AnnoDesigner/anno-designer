@@ -288,7 +288,7 @@ namespace AnnoDesigner
         /// List of all currently selected objects.
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
-        public List<LayoutObject> SelectedObjects { get; set; }
+        public HashSet<LayoutObject> SelectedObjects { get; set; }
 
         /// <summary>
         /// Event which is fired when the current object is changed
@@ -612,7 +612,7 @@ namespace AnnoDesigner
             //initialize
             CurrentMode = MouseMode.Standard;
             PlacedObjects = new QuadTree<LayoutObject>(new Rect(-128, -128, 256, 256));
-            SelectedObjects = new List<LayoutObject>();
+            SelectedObjects = new HashSet<LayoutObject>();
             _oldObjectPositions = new List<(LayoutObject Item, Rect OldBounds)>();
             _statisticsCalculationHelper = new StatisticsCalculationHelper();
             _viewport = new Viewport();
@@ -1324,7 +1324,7 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object to render as selected</param>
-        private void RenderObjectSelection(DrawingContext drawingContext, List<LayoutObject> objects)
+        private void RenderObjectSelection(DrawingContext drawingContext, IEnumerable<LayoutObject> objects)
         {
             foreach (var curLayoutObject in objects)
             {
@@ -1338,7 +1338,7 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object which's influence is rendered</param>
-        private void RenderObjectInfluenceRadius(DrawingContext drawingContext, List<LayoutObject> objects)
+        private void RenderObjectInfluenceRadius(DrawingContext drawingContext, IEnumerable<LayoutObject> objects)
         {
             foreach (var curLayoutObject in objects)
             {
@@ -1376,7 +1376,7 @@ namespace AnnoDesigner
         /// If RenderTrueInfluenceRange is set to true, true influence range will be rendered and objects inside will be highlighted.
         /// Else maximum influence range will be rendered.
         /// </summary>
-        private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
+        private void RenderObjectInfluenceRange(DrawingContext drawingContext, ICollection<LayoutObject> objects)
         {
             if (objects.Count == 0 || !RenderInfluences)
             {
@@ -1629,15 +1629,12 @@ namespace AnnoDesigner
             if (includeSameObjects)
             {
                 // Add all placed objects whose identifier matches any of those in the objectsToAdd.
-                SelectedObjects.AddRange(PlacedObjects.Where(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase))));
+                SelectedObjects.UnionWith(PlacedObjects.Where(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase))));
             }
             else
             {
-                SelectedObjects.AddRange(objectsToAdd);
+                SelectedObjects.UnionWith(objectsToAdd);
             }
-
-            // This can lead to some objects being selected multiple times, so only keep distinct objects.
-            SelectedObjects = SelectedObjects.Distinct().ToList();
         }
 
         /// <summary>
@@ -1651,11 +1648,11 @@ namespace AnnoDesigner
             if (includeSameObjects)
             {
                 // Exclude any selected objects whose identifier matches any of those in the objectsToRemove.
-                SelectedObjects = SelectedObjects.Except(SelectedObjects.Where(placed => objectsToRemove.Any(toRemove => toRemove.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase)))).ToList();
+                SelectedObjects.RemoveWhere(placed => objectsToRemove.Any(toRemove => toRemove.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase)));
             }
             else
             {
-                SelectedObjects = SelectedObjects.Except(objectsToRemove).ToList();
+                SelectedObjects.ExceptWith(objectsToRemove);
             }
         }
 
@@ -2630,7 +2627,7 @@ namespace AnnoDesigner
             {
                 //Count == 0;
                 //Rotate from selected objects
-                CurrentObjects = CloneList(SelectedObjects);
+                CurrentObjects = SelectedObjects.ToListWithCapacity();
                 Rotate(CurrentObjects).Consume();
             }
             InvalidateVisual();
@@ -2665,7 +2662,7 @@ namespace AnnoDesigner
         {
             if (SelectedObjects.Count != 0)
             {
-                ClipboardObjects = CloneList(SelectedObjects);
+                ClipboardObjects = SelectedObjects.ToListWithCapacity();
             }
         }
 
@@ -2691,7 +2688,10 @@ namespace AnnoDesigner
             });
 
             // remove all currently selected objects from the grid and clear selection
-            SelectedObjects.ForEach(item => PlacedObjects.Remove(item));
+            foreach (var item in SelectedObjects)
+            {
+                PlacedObjects.Remove(item);
+            }
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
             CurrentMode = MouseMode.DeleteObject;

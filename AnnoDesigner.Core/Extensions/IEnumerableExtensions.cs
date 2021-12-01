@@ -67,6 +67,20 @@ namespace AnnoDesigner.Core.Extensions
         }
 
         /// <summary>
+        /// Creates a list from the elements in the source sequence. Unlike <see cref="Enumerable.ToList{TSource}"/>,
+        /// this method takes the number of elements as a parameter, so that it can allocate a list of the right size
+        /// from the start, hence suppressing the need for subsequent allocations and improving performance.
+        /// </summary>
+        public static List<TSource> ToListWithCapacity<TSource>(this ICollection<TSource> source)
+        {
+            var list = new List<TSource>(source.Count);
+
+            list.AddRange(source);
+
+            return list;
+        }
+
+        /// <summary>
         /// Iterates over each item in <paramref name="source"/>.
         /// Use on lazily evaluated iterator to materialize each item.
         /// </summary>
