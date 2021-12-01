@@ -4,7 +4,7 @@
     {
         public BlockingTile()
         {
-            Faction = null;
+            Faction = "Common";
             Group = null;
             Header = "(a0)- Blocking Presets";
             IconFileName = null;

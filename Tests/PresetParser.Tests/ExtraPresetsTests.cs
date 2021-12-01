@@ -167,8 +167,8 @@ namespace PresetParser.Tests
                 Assert.True(x.Borderless);
                 Assert.Null(x.Group);
                 Assert.Null(x.IconFileName);
-                Assert.Equal("Blocker", x.Faction);
-                Assert.Equal("- Blocking Presets", x.Header);
+                Assert.Equal("Common", x.Faction);
+                Assert.Equal("(a0)- Blocking Presets", x.Header);
                 Assert.Equal("Blocker", x.Template);
             });
         }
