@@ -2333,15 +2333,14 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Computes a <see cref="Rect"/> that encompasses the given objects
+        /// Computes a <see cref="Rect"/> that encompasses the given objects.
         /// </summary>
-        /// <param name="objects"></param>
-        /// <returns></returns>
+        /// <param name="objects">The collection of <see cref="LayoutObject"/> to compute the bounding <see cref="Rect"/> for.</param>
+        /// <returns>The <see cref="Rect"/> that encompasses all <paramref name="objects"/>.</returns>
         public Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects)
         {
-            //compute bouding box for given objects
-            var result = _statisticsCalculationHelper.CalculateStatistics(objects.Select(_ => _.WrappedAnnoObject), includeRoads: true);
-            return new Rect(result.MinX, result.MinY, result.UsedAreaWidth, result.UsedAreaHeight);
+            //make sure to include ALL objects (e.g. roads and ignored objetcs)
+            return (Rect)_statisticsCalculationHelper.CalculateStatistics(objects.Select(_ => _.WrappedAnnoObject), includeRoads: true, includeIgnoredObjects: true);
         }
 
         #endregion

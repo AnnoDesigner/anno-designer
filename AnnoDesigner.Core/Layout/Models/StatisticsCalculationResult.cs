@@ -3,8 +3,14 @@ using System.Windows;
 
 namespace AnnoDesigner.Core.Layout.Models
 {
+    /// <summary>
+    /// Contains various statistics of a layout.
+    /// </summary>
     public class StatisticsCalculationResult : IEquatable<StatisticsCalculationResult>
     {
+        /// <summary>
+        /// A static instance with empty statistics for easier use.
+        /// </summary>
         public static StatisticsCalculationResult Empty { get; } = new StatisticsCalculationResult();
 
         private StatisticsCalculationResult() : this(0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -43,8 +49,15 @@ namespace AnnoDesigner.Core.Layout.Models
 
         public double UsedAreaHeight { get; }
 
+        /// <summary>
+        /// The number of tiles which are used by the layout.
+        /// </summary>
         public double UsedTiles { get; }
 
+        /// <summary>
+        /// The number of tiles that are necessary by the layout.
+        /// </summary>
+        /// <remarks>This ignores all empty tiles.<para>Depending on the calculation used also all roads are ignored.</para></remarks>
         public double MinTiles { get; }
 
         /// <summary>

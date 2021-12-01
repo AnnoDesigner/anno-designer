@@ -10,19 +10,22 @@ namespace AnnoDesigner.Core.Layout.Helper
     public class StatisticsCalculationHelper
     {
         /// <summary>
-        /// Computes statistics for a given collection of <see cref="AnnoObject"/>.
+        /// Calculates various statistics for a given collection of <see cref="AnnoObject"/>.
         /// </summary>
-        /// <param name="objects"></param>
-        /// <param name="includeRoads"></param>
-        /// <returns>Properties about the collection - minX, maxX</returns>
-        public StatisticsCalculationResult CalculateStatistics(IEnumerable<AnnoObject> objects, bool includeRoads = false)
+        /// <param name="objects">The collection to calculate the statistics for.</param>
+        /// <param name="includeRoads">Should roads be included in calculation?</param>
+        /// <param name="includeIgnoredObjects">Should ignored objects be included in calculation?</param>
+        /// <returns>A <see cref="StatisticsCalculationResult"/> with all calculated statistics.</returns>
+        public StatisticsCalculationResult CalculateStatistics(IEnumerable<AnnoObject> objects, bool includeRoads = false, bool includeIgnoredObjects = false)
         {
             if (objects == null)
             {
                 return null;
             }
 
-            if (objects.Count() == 0 || objects.WithoutIgnoredObjects().Count() == 0)
+            var localObjects = includeIgnoredObjects ? objects : objects.WithoutIgnoredObjects();
+
+            if (localObjects.Count() == 0)
             {
                 return StatisticsCalculationResult.Empty;
             }
@@ -40,7 +43,7 @@ namespace AnnoDesigner.Core.Layout.Helper
             var minX = double.MaxValue;
             var minY = double.MaxValue;
             var sum = 0d;
-            foreach (var curObject in objects.WithoutIgnoredObjects())
+            foreach (var curObject in localObjects)
             {
                 var curPosX = curObject.Position.X;
                 var curPosY = curObject.Position.Y;
