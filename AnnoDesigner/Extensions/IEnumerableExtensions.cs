@@ -19,7 +19,7 @@ namespace AnnoDesigner.Extensions
                 return null;
             }
 
-            var annoObjectsWithoutIgnoredObjects = objects.Select(x => x.WrappedAnnoObject).WithoutIgnoredObjects();
+            var annoObjectsWithoutIgnoredObjects = objects.Select(x => x.WrappedAnnoObject).WithoutIgnoredObjects().ToHashSet();
 
             return objects.Where(x => annoObjectsWithoutIgnoredObjects.Contains(x.WrappedAnnoObject));
         }
