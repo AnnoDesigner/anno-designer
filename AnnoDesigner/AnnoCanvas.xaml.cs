@@ -1624,7 +1624,7 @@ namespace AnnoDesigner
         /// <param name="includeSameObjects"> 
         /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToAdd">.
         /// </param>
-        private void AddSelectedObjects(List<LayoutObject> objectsToAdd, bool includeSameObjects)
+        private void AddSelectedObjects(IEnumerable<LayoutObject> objectsToAdd, bool includeSameObjects)
         {
             if (includeSameObjects)
             {
@@ -1988,7 +1988,7 @@ namespace AnnoDesigner
                                 // select intersecting objects
                                 var selectionRectGrid = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
                                 selectionRectGrid = _viewport.OriginToViewport(selectionRectGrid);
-                                AddSelectedObjects(PlacedObjects.GetItemsIntersecting(selectionRectGrid).ToList(),
+                                AddSelectedObjects(PlacedObjects.GetItemsIntersecting(selectionRectGrid),
                                                    ShouldAffectObjectsWithIdentifier());
 
                                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
