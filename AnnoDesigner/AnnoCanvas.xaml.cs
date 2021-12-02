@@ -1513,6 +1513,7 @@ namespace AnnoDesigner
         private DrawingGroup _drawingGroupObjectSelection = new DrawingGroup();
         private ICollection<LayoutObject> _lastSelectedObjects = new List<LayoutObject>();
         private int _lastObjectSelectionGridSize = -1;
+        private Rect _lastSelectionRect;
 
         /// <summary>
         /// Renders a selection highlight on the specified object.
@@ -1522,12 +1523,12 @@ namespace AnnoDesigner
         private bool RenderObjectSelection(DrawingContext drawingContext, ICollection<LayoutObject> objects)
         {
             bool wasRedrawn = false;
-            if (objects.Count == 0)
+            if (_lastSelectionRect == _selectionRect && objects.Count == 0)
             {
                 return wasRedrawn;
             }
 
-            if (_lastSelectedObjects != objects || _lastObjectSelectionGridSize != GridSize || CurrentMode == MouseMode.DragSelection)
+            if (_lastSelectedObjects != objects || _lastObjectSelectionGridSize != GridSize || CurrentMode == MouseMode.DragSelection || _lastSelectionRect != _selectionRect)
             {
                 if (_drawingGroupObjectSelection.IsFrozen)
                 {
@@ -1547,6 +1548,7 @@ namespace AnnoDesigner
 
                 _lastObjectSelectionGridSize = GridSize;
                 _lastSelectedObjects = objects;
+                _lastSelectionRect = _selectionRect;
                 wasRedrawn = true;
 
                 if (_drawingGroupObjectSelection.CanFreeze)
