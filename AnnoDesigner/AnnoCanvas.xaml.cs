@@ -1881,6 +1881,14 @@ namespace AnnoDesigner
         }
 
         /// <summary>
+        /// Remove the objects from SelectedObjects which match specified predicate.
+        /// </summary>
+        private void RemoveSelectedObjects(Predicate<LayoutObject> predicate)
+        {
+            SelectedObjects.RemoveWhere(predicate);
+        }
+
+        /// <summary>
         /// Add a single object to SelectedObjects, optionally also add all objects with the same identifier.
         /// </summary>
         /// <param name="includeSameObjects"> 
@@ -2208,8 +2216,17 @@ namespace AnnoDesigner
                                 if (IsControlPressed() || IsShiftPressed())
                                 {
                                     // remove previously selected by the selection rect
-                                    RemoveSelectedObjects(SelectedObjects.Where(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)),
-                                                          ShouldAffectObjectsWithIdentifier());
+                                    if (ShouldAffectObjectsWithIdentifier())
+                                    {
+                                        RemoveSelectedObjects(
+                                            SelectedObjects.Where(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)).ToList(),
+                                            true
+                                        );
+                                    }
+                                    else
+                                    {
+                                        RemoveSelectedObjects(x => x.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
+                                    }
                                 }
                                 else
                                 {
@@ -2354,7 +2371,7 @@ namespace AnnoDesigner
                             CurrentMode = MouseMode.Standard;
                             if (selectionContainsNotIgnoredObject)
                             {
-                                RemoveSelectedObjects(SelectedObjects.Where(x => x.IsIgnoredObject()), false);
+                                RemoveSelectedObjects(Extensions.IEnumerableExtensions.IsIgnoredObject);
                             }
                             break;
                         }
@@ -2364,7 +2381,7 @@ namespace AnnoDesigner
                         CurrentMode = MouseMode.Standard;
                         if (selectionContainsNotIgnoredObject)
                         {
-                            RemoveSelectedObjects(SelectedObjects.Where(x => x.IsIgnoredObject()), false);
+                            RemoveSelectedObjects(Extensions.IEnumerableExtensions.IsIgnoredObject);
                         }
                         break;
                     case MouseMode.DragSelection:
@@ -2378,7 +2395,7 @@ namespace AnnoDesigner
                         ReindexMovedObjects();
                         if (SelectedObjects.Count == 1)
                         {
-                            RemoveSelectedObjects(SelectedObjects, false);
+                            SelectedObjects.Clear();
                         }
                         CurrentMode = MouseMode.Standard;
                         break;
