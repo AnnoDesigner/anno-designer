@@ -2138,12 +2138,20 @@ namespace AnnoDesigner
                             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                             // return to standard mode, i.e. clear any drag-start modes
                             CurrentMode = MouseMode.Standard;
+                            if (selectionContainsNotIgnoredObject)
+                            {
+                                RemoveSelectedObjects(SelectedObjects.Where(x => x.IsIgnoredObject()).ToList(), false);
+                            }
                             break;
                         }
                     case MouseMode.SelectionRect:
                         _collisionRect = ComputeBoundingRect(SelectedObjects);
                         // cancel dragging of selection rect
                         CurrentMode = MouseMode.Standard;
+                        if (selectionContainsNotIgnoredObject)
+                        {
+                            RemoveSelectedObjects(SelectedObjects.Where(x => x.IsIgnoredObject()).ToList(), false);
+                        }
                         break;
                     case MouseMode.DragSelection:
                         // stop dragging of selected objects
