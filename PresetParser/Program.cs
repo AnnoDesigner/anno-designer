@@ -1443,6 +1443,13 @@ namespace PresetParser
                 groupName = null;
             }
 
+            //plaze all Pedestrian Zone Pack DLC Object in the right menu
+            if (identifierName.Contains("PedestrianZone") || identifierName == "Groundplane System")
+            {
+                factionName = "Ornaments";
+                groupName = "25 Pedestrian Zone";
+            }
+
             // Place the rest of the buildings in the right Faction > Group menu
             #region Order the Buildings to the right tiers and factions as in the game
 
