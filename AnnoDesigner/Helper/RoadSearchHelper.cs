@@ -23,7 +23,7 @@ namespace AnnoDesigner.Helper
         /// </summary>
         public static Moved2DArray<AnnoObject> PrepareGridDictionary(IEnumerable<AnnoObject> placedObjects)
         {
-            if (placedObjects is null || placedObjects.Count() < 1)
+            if (placedObjects is null || placedObjects.WithoutIgnoredObjects().Count() < 1)
             {
                 return null;
             }
@@ -38,20 +38,20 @@ namespace AnnoDesigner.Helper
                 .Select(i => new AnnoObject[countY])
                 .ToArrayWithCapacity(countX);
 
-            Parallel.ForEach(placedObjects, placedObject =>
-            {
-                var x = (int)placedObject.Position.X;
-                var y = (int)placedObject.Position.Y;
-                var w = placedObject.Size.Width;
-                var h = placedObject.Size.Height;
-                for (var i = 0; i < w; i++)
-                {
-                    for (var j = 0; j < h; j++)
-                    {
-                        result[x + i - offset.x][y + j - offset.y] = placedObject;
-                    }
-                }
-            });
+            _ = Parallel.ForEach(placedObjects.WithoutIgnoredObjects(), placedObject =>
+              {
+                  var x = (int)placedObject.Position.X;
+                  var y = (int)placedObject.Position.Y;
+                  var w = placedObject.Size.Width;
+                  var h = placedObject.Size.Height;
+                  for (var i = 0; i < w; i++)
+                  {
+                      for (var j = 0; j < h; j++)
+                      {
+                          result[x + i - offset.x][y + j - offset.y] = placedObject;
+                      }
+                  }
+              });
 
             return new Moved2DArray<AnnoObject>()
             {

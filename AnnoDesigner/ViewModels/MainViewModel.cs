@@ -1371,7 +1371,7 @@ namespace AnnoDesigner.ViewModels
                 // set selection
                 if (exportSelection)
                 {
-                    target.SelectedObjects.AddRange(selectedObjects);
+                    target.SelectedObjects.UnionWith(selectedObjects);
                 }
 
                 // calculate output size

@@ -24,7 +24,7 @@ namespace AnnoDesigner.Models
         event EventHandler<SaveFileEventArgs> SaveFileRequested;
 
         QuadTree<LayoutObject> PlacedObjects { get; set; }
-        List<LayoutObject> SelectedObjects { get; set; }
+        HashSet<LayoutObject> SelectedObjects { get; set; }
         List<LayoutObject> ClipboardObjects { get; }
         BuildingPresets BuildingPresets { get; }
         Dictionary<string, IconImage> Icons { get; }

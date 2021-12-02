@@ -562,6 +562,7 @@ namespace PresetParser
                 if (addRoads)
                 {
                     AddExtraRoads(buildings);
+                    AddBlockingTiles(buildings);
                 }
             }
             else if (annoVersion == Constants.ANNO_VERSION_2205)
@@ -575,6 +576,7 @@ namespace PresetParser
                 if (addRoads)
                 {
                     AddExtraRoads(buildings);
+                    AddBlockingTiles(buildings);
                 }
             }
             else if (annoVersion == Constants.ANNO_VERSION_1800)
@@ -589,6 +591,7 @@ namespace PresetParser
                 if (addRoads)
                 {
                     AddExtraRoads(buildings);
+                    AddBlockingTiles(buildings);
                 }
             }
         }
@@ -620,7 +623,7 @@ namespace PresetParser
                     Borderless = false,
                 };
 
-                Console.WriteLine("Extra Building : {0}", buildingToAdd.Identifier);
+                Console.WriteLine("Extra Building: {0}", buildingToAdd.Identifier);
 
                 buildingToAdd.BuildBlocker = new SerializableDictionary<int>();
                 buildingToAdd.BuildBlocker["x"] = curExtraPreset.BuildBlockerX;
@@ -658,7 +661,7 @@ namespace PresetParser
                     Borderless = curExtraRoad.Borderless,
                 };
 
-                Console.WriteLine("Extra Road Bar : {0}", buildingToAdd.Identifier);
+                Console.WriteLine("Extra Road Bar: {0}", buildingToAdd.Identifier);
 
                 buildingToAdd.BuildBlocker = new SerializableDictionary<int>();
                 buildingToAdd.BuildBlocker["x"] = curExtraRoad.BuildBlockerX;
@@ -671,6 +674,44 @@ namespace PresetParser
                 buildingToAdd.Localization["pol"] = curExtraRoad.LocaPol;
                 buildingToAdd.Localization["rus"] = curExtraRoad.LocaRus;
                 buildingToAdd.Localization["esp"] = curExtraRoad.LocaEsp;
+
+                annoBuildingsListCount++;
+
+                buildings.Add(buildingToAdd);
+            }
+        }
+
+        private static void AddBlockingTiles(List<IBuildingInfo> buildings)
+        {
+            foreach (var curBlockingTile in ExtraPresets.GetBlockingTiles())
+            {
+                IBuildingInfo buildingToAdd = new BuildingInfo
+                {
+                    Header = curBlockingTile.Header,
+                    Faction = curBlockingTile.Faction,
+                    Group = curBlockingTile.Group,
+                    IconFileName = curBlockingTile.IconFileName,
+                    Identifier = curBlockingTile.Identifier,
+                    InfluenceRadius = curBlockingTile.InfluenceRadius,
+                    InfluenceRange = curBlockingTile.InfluenceRange,
+                    Template = curBlockingTile.Template,
+                    Road = curBlockingTile.Road,
+                    Borderless = curBlockingTile.Borderless,
+                };
+
+                Console.WriteLine("Extra Blocker: {0}", buildingToAdd.Identifier);
+
+                buildingToAdd.BuildBlocker = new SerializableDictionary<int>();
+                buildingToAdd.BuildBlocker["x"] = curBlockingTile.BuildBlockerX;
+                buildingToAdd.BuildBlocker["z"] = curBlockingTile.BuildBlockerZ;
+
+                buildingToAdd.Localization = new SerializableDictionary<string>();
+                buildingToAdd.Localization["eng"] = curBlockingTile.LocaEng;
+                buildingToAdd.Localization["ger"] = curBlockingTile.LocaGer;
+                buildingToAdd.Localization["fra"] = curBlockingTile.LocaFra;
+                buildingToAdd.Localization["pol"] = curBlockingTile.LocaPol;
+                buildingToAdd.Localization["rus"] = curBlockingTile.LocaRus;
+                buildingToAdd.Localization["esp"] = curBlockingTile.LocaEsp;
 
                 annoBuildingsListCount++;
 
