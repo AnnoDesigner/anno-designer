@@ -36,6 +36,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Testdata\StatisticsCalculation\*.ad">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Testdata\TreeLocalization\1language_2translations.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

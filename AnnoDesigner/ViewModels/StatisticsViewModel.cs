@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AnnoDesigner.Core.Layout.Helper;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
+using AnnoDesigner.Extensions;
 using AnnoDesigner.Models;
 
 namespace AnnoDesigner.ViewModels
@@ -120,7 +121,7 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
-        public void ToggleBuildingList(bool showBuildingList, IList<LayoutObject> placedObjects, List<LayoutObject> selectedObjects, BuildingPresets buildingPresets)
+        public void ToggleBuildingList(bool showBuildingList, IList<LayoutObject> placedObjects, ICollection<LayoutObject> selectedObjects, BuildingPresets buildingPresets)
         {
             ShowBuildingList = showBuildingList;
             if (showBuildingList)
@@ -131,7 +132,7 @@ namespace AnnoDesigner.ViewModels
 
         public async Task UpdateStatisticsAsync(UpdateMode mode,
             IList<LayoutObject> placedObjects,
-            List<LayoutObject> selectedObjects,
+            ICollection<LayoutObject> selectedObjects,
             BuildingPresets buildingPresets)
         {
             if (placedObjects.Count == 0)
@@ -179,6 +180,7 @@ namespace AnnoDesigner.ViewModels
 
             var validBuildingsGrouped = groupedBuildingsByIdentifier
                         .Where(_ => !_.ElementAt(0).WrappedAnnoObject.Road && _.ElementAt(0).Identifier != null)
+                        .Where(x => x.AsEnumerable().WithoutIgnoredObjects().Count() > 0)
                         .OrderByDescending(_ => _.Count());
             foreach (var item in validBuildingsGrouped)
             {

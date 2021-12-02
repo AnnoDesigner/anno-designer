@@ -25,6 +25,7 @@ using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.Services;
 using AnnoDesigner.CustomEventArgs;
+using AnnoDesigner.Extensions;
 using AnnoDesigner.Helper;
 using AnnoDesigner.Models;
 using AnnoDesigner.Services;
@@ -301,7 +302,7 @@ namespace AnnoDesigner
         /// List of all currently selected objects.
         /// All of them must also be contained in the _placedObjects list.
         /// </summary>
-        public List<LayoutObject> SelectedObjects { get; set; }
+        public HashSet<LayoutObject> SelectedObjects { get; set; }
 
         /// <summary>
         /// Event which is fired when the current object is changed
@@ -516,6 +517,11 @@ namespace AnnoDesigner
         /// </summary>
         private readonly Typeface TYPEFACE = new Typeface("Verdana");
 
+        /// <summary>
+        /// Does currently selected objects contain object which is not ignored from rendering?
+        /// </summary>
+        private bool selectionContainsNotIgnoredObject;
+
         private int _placedObjectCount;
 
         #endregion
@@ -585,6 +591,7 @@ namespace AnnoDesigner
         private readonly bool debugShowScrollableRectCoordinates = true;
         private readonly bool debugShowLayoutRectCoordinates = true;
         private readonly bool debugShowMouseGridCoordinates = true;
+        private readonly bool debugShowObjectCount = true;
 
         #endregion
 #endif
@@ -631,7 +638,7 @@ namespace AnnoDesigner
             //initialize
             CurrentMode = MouseMode.Standard;
             PlacedObjects = new QuadTree<LayoutObject>(new Rect(-128, -128, 256, 256));
-            SelectedObjects = new List<LayoutObject>();
+            SelectedObjects = new HashSet<LayoutObject>();
             _oldObjectPositions = new List<(LayoutObject Item, Rect OldBounds)>();
             _statisticsCalculationHelper = new StatisticsCalculationHelper();
             _viewport = new Viewport();
@@ -977,7 +984,17 @@ namespace AnnoDesigner
 
             drawingContext.DrawDrawing(_drawingGroupObjects);
 
-            var selectionWasRedrawn = RenderObjectSelection(drawingContext, SelectedObjects);
+            bool selectionWasRedrawn;
+            // draw object selection around not ignored selected objects
+            if (selectionContainsNotIgnoredObject)
+            {
+                selectionWasRedrawn = RenderObjectSelection(drawingContext, SelectedObjects.WithoutIgnoredObjects());
+            }
+            else
+            {
+                // except when only ignored objects are selected, in which case render their selection
+                selectionWasRedrawn = RenderObjectSelection(drawingContext, SelectedObjects);
+            }
 
             if (RenderPanorama)
             {
@@ -1169,6 +1186,20 @@ namespace AnnoDesigner
                         var h = _layoutBounds.Height;
                         var w = _layoutBounds.Width;
                         var text = new FormattedText($"Layout: {left:F2}, {top:F2}, {w:F2}, {h:F2}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
+                                                     TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
+                        {
+                            TextAlignment = TextAlignment.Left
+                        };
+                        debugText.Add(text);
+                    }
+                }
+
+                if (debugShowObjectCount)
+                {
+                    //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
+                    if (App.DpiScale.PixelsPerDip != 0)
+                    {
+                        var text = new FormattedText($"{nameof(PlacedObjects)}: {PlacedObjects.Count}", Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
                                                      TYPEFACE, 12, _debugBrushLight, null, TextFormattingMode.Display, App.DpiScale.PixelsPerDip)
                         {
                             TextAlignment = TextAlignment.Left
@@ -1480,7 +1511,7 @@ namespace AnnoDesigner
         }
 
         private DrawingGroup _drawingGroupObjectSelection = new DrawingGroup();
-        private List<LayoutObject> _lastSelectedObjects = new List<LayoutObject>();
+        private ICollection<LayoutObject> _lastSelectedObjects = new List<LayoutObject>();
         private int _lastObjectSelectionGridSize = -1;
 
         /// <summary>
@@ -1488,7 +1519,7 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object to render as selected</param>
-        private bool RenderObjectSelection(DrawingContext drawingContext, List<LayoutObject> objects)
+        private bool RenderObjectSelection(DrawingContext drawingContext, ICollection<LayoutObject> objects)
         {
             bool wasRedrawn = false;
             if (objects.Count == 0)
@@ -1534,7 +1565,7 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object which's influence is rendered</param>
-        private void RenderObjectInfluenceRadius(DrawingContext drawingContext, List<LayoutObject> objects)
+        private void RenderObjectInfluenceRadius(DrawingContext drawingContext, ICollection<LayoutObject> objects)
         {
             if (objects.Count == 0)
             {
@@ -1554,7 +1585,7 @@ namespace AnnoDesigner
 
                     var influenceGridRect = curLayoutObject.GridInfluenceRadiusRect;
 
-                    foreach (var curPlacedObject in PlacedObjects.GetItemsIntersecting(influenceGridRect))
+                    foreach (var curPlacedObject in PlacedObjects.GetItemsIntersecting(influenceGridRect).WithoutIgnoredObjects())
                     {
                         var distance = curPlacedObject.GetScreenRectCenterPoint(GridSize);
                         distance.X -= circleCenterX;
@@ -1577,7 +1608,7 @@ namespace AnnoDesigner
         /// If RenderTrueInfluenceRange is set to true, true influence range will be rendered and objects inside will be highlighted.
         /// Else maximum influence range will be rendered.
         /// </summary>
-        private void RenderObjectInfluenceRange(DrawingContext drawingContext, List<LayoutObject> objects)
+        private void RenderObjectInfluenceRange(DrawingContext drawingContext, ICollection<LayoutObject> objects)
         {
             if (objects.Count == 0 || !RenderInfluences)
             {
@@ -1825,20 +1856,17 @@ namespace AnnoDesigner
         /// <param name="includeSameObjects"> 
         /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToAdd">.
         /// </param>
-        private void AddSelectedObjects(List<LayoutObject> objectsToAdd, bool includeSameObjects)
+        private void AddSelectedObjects(IEnumerable<LayoutObject> objectsToAdd, bool includeSameObjects)
         {
             if (includeSameObjects)
             {
                 // Add all placed objects whose identifier matches any of those in the objectsToAdd.
-                SelectedObjects.AddRange(PlacedObjects.Where(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase))));
+                SelectedObjects.UnionWith(PlacedObjects.Where(placed => objectsToAdd.Any(toAdd => toAdd.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase))));
             }
             else
             {
-                SelectedObjects.AddRange(objectsToAdd);
+                SelectedObjects.UnionWith(objectsToAdd);
             }
-
-            // This can lead to some objects being selected multiple times, so only keep distinct objects.
-            SelectedObjects = SelectedObjects.Distinct().ToList();
         }
 
         /// <summary>
@@ -1847,16 +1875,16 @@ namespace AnnoDesigner
         /// <param name="includeSameObjects"> 
         /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToRemove">.
         /// </param>
-        private void RemoveSelectedObjects(List<LayoutObject> objectsToRemove, bool includeSameObjects)
+        private void RemoveSelectedObjects(IEnumerable<LayoutObject> objectsToRemove, bool includeSameObjects)
         {
             if (includeSameObjects)
             {
                 // Exclude any selected objects whose identifier matches any of those in the objectsToRemove.
-                SelectedObjects = SelectedObjects.Except(SelectedObjects.Where(placed => objectsToRemove.Any(toRemove => toRemove.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase)))).ToList();
+                SelectedObjects.RemoveWhere(placed => objectsToRemove.Any(toRemove => toRemove.Identifier.Equals(placed.Identifier, StringComparison.OrdinalIgnoreCase)));
             }
             else
             {
-                SelectedObjects = SelectedObjects.Except(objectsToRemove).ToList();
+                SelectedObjects.ExceptWith(objectsToRemove);
             }
         }
 
@@ -1880,6 +1908,11 @@ namespace AnnoDesigner
         private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects)
         {
             RemoveSelectedObjects(new List<LayoutObject>() { objectToRemove }, includeSameObjects);
+        }
+
+        private void RecalculateSelectionContainsNotIgnoredObject()
+        {
+            selectionContainsNotIgnoredObject = SelectedObjects.Any(x => !x.IsIgnoredObject());
         }
 
         /// <summary>
@@ -2130,6 +2163,7 @@ namespace AnnoDesigner
                         SelectedObjects.Clear();
                         var obj = GetObjectAt(_mouseDragStart);
                         AddSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
+                        RecalculateSelectionContainsNotIgnoredObject();
                         //after adding the object, compute the collision rect
                         _collisionRect = obj.GridRect;
                         CurrentMode = MouseMode.DragSelection;
@@ -2183,7 +2217,7 @@ namespace AnnoDesigner
                                 if (IsControlPressed() || IsShiftPressed())
                                 {
                                     // remove previously selected by the selection rect
-                                    RemoveSelectedObjects(SelectedObjects.Where(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)).ToList(),
+                                    RemoveSelectedObjects(SelectedObjects.Where(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)),
                                                           ShouldAffectObjectsWithIdentifier());
                                 }
                                 else
@@ -2196,8 +2230,9 @@ namespace AnnoDesigner
                                 // select intersecting objects
                                 var selectionRectGrid = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
                                 selectionRectGrid = _viewport.OriginToViewport(selectionRectGrid);
-                                AddSelectedObjects(PlacedObjects.GetItemsIntersecting(selectionRectGrid).ToList(),
+                                AddSelectedObjects(PlacedObjects.GetItemsIntersecting(selectionRectGrid),
                                                    ShouldAffectObjectsWithIdentifier());
+                                RecalculateSelectionContainsNotIgnoredObject();
 
                                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                                 break;
@@ -2319,18 +2354,27 @@ namespace AnnoDesigner
                                 {
                                     AddSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
                                 }
+                                RecalculateSelectionContainsNotIgnoredObject();
                             }
 
                             _collisionRect = ComputeBoundingRect(SelectedObjects);
                             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                             // return to standard mode, i.e. clear any drag-start modes
                             CurrentMode = MouseMode.Standard;
+                            if (selectionContainsNotIgnoredObject)
+                            {
+                                RemoveSelectedObjects(SelectedObjects.Where(x => x.IsIgnoredObject()), false);
+                            }
                             break;
                         }
                     case MouseMode.SelectionRect:
                         _collisionRect = ComputeBoundingRect(SelectedObjects);
                         // cancel dragging of selection rect
                         CurrentMode = MouseMode.Standard;
+                        if (selectionContainsNotIgnoredObject)
+                        {
+                            RemoveSelectedObjects(SelectedObjects.Where(x => x.IsIgnoredObject()), false);
+                        }
                         break;
                     case MouseMode.DragSelection:
                         // stop dragging of selected objects
@@ -2560,15 +2604,14 @@ namespace AnnoDesigner
         }
 
         /// <summary>
-        /// Computes a <see cref="Rect"/> that encompasses the given objects
+        /// Computes a <see cref="Rect"/> that encompasses the given objects.
         /// </summary>
-        /// <param name="objects"></param>
-        /// <returns></returns>
+        /// <param name="objects">The collection of <see cref="LayoutObject"/> to compute the bounding <see cref="Rect"/> for.</param>
+        /// <returns>The <see cref="Rect"/> that encompasses all <paramref name="objects"/>.</returns>
         public Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects)
         {
-            //compute bouding box for given objects
-            var result = _statisticsCalculationHelper.CalculateStatistics(objects.Select(_ => _.WrappedAnnoObject), includeRoads: true);
-            return new Rect(result.MinX, result.MinY, result.UsedAreaWidth, result.UsedAreaHeight);
+            //make sure to include ALL objects (e.g. roads and ignored objetcs)
+            return (Rect)_statisticsCalculationHelper.CalculateStatistics(objects.Select(_ => _.WrappedAnnoObject), includeRoads: true, includeIgnoredObjects: true);
         }
 
         #endregion
@@ -2859,7 +2902,7 @@ namespace AnnoDesigner
             {
                 //Count == 0;
                 //Rotate from selected objects
-                CurrentObjects = CloneList(SelectedObjects);
+                CurrentObjects = SelectedObjects.ToListWithCapacity();
                 Rotate(CurrentObjects).Consume();
             }
         }
@@ -2891,7 +2934,7 @@ namespace AnnoDesigner
         {
             if (SelectedObjects.Count != 0)
             {
-                ClipboardObjects = CloneList(SelectedObjects);
+                ClipboardObjects = SelectedObjects.ToListWithCapacity();
             }
         }
 
@@ -2916,8 +2959,11 @@ namespace AnnoDesigner
                 Collection = PlacedObjects
             });
 
-            // remove all currently selected objects from the grid and clear selection
-            SelectedObjects.ForEach(item => PlacedObjects.Remove(item));
+            // remove all currently selected objects from the grid and clear selection    
+            foreach (var item in SelectedObjects)
+            {
+                PlacedObjects.Remove(item);
+            }
             UpdatePlacedObjectCount();
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
@@ -2959,8 +3005,11 @@ namespace AnnoDesigner
                     PlacedObjects.Remove(obj);
                     UpdatePlacedObjectCount();
                     RemoveSelectedObject(obj, false);
+                    RecalculateSelectionContainsNotIgnoredObject();
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                     CurrentMode = MouseMode.DeleteObject;
+
+                    InvalidateVisual();
                 }
             }
         }

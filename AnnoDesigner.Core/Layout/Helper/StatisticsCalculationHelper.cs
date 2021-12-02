@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 
@@ -11,23 +10,24 @@ namespace AnnoDesigner.Core.Layout.Helper
     public class StatisticsCalculationHelper
     {
         /// <summary>
-        /// Computes statistics for a given collection of <see cref="AnnoObject"/>.
+        /// Calculates various statistics for a given collection of <see cref="AnnoObject"/>.
         /// </summary>
-        /// <param name="objects"></param>
-        /// <param name="includeRoads"></param>
-        /// <returns>Properties about the collection - minX, maxX</returns>
-        public StatisticsCalculationResult CalculateStatistics(IEnumerable<AnnoObject> objects, bool includeRoads = false)
+        /// <param name="objects">The collection to calculate the statistics for.</param>
+        /// <param name="includeRoads">Should roads be included in calculation?</param>
+        /// <param name="includeIgnoredObjects">Should ignored objects be included in calculation?</param>
+        /// <returns>A <see cref="StatisticsCalculationResult"/> with all calculated statistics.</returns>
+        public StatisticsCalculationResult CalculateStatistics(IEnumerable<AnnoObject> objects, bool includeRoads = false, bool includeIgnoredObjects = false)
         {
             if (objects == null)
             {
                 return null;
             }
 
-            var result = new StatisticsCalculationResult();
+            var localObjects = includeIgnoredObjects ? objects : objects.WithoutIgnoredObjects();
 
-            if (objects.Count() == 0)
+            if (localObjects.Count() == 0)
             {
-                return result;
+                return StatisticsCalculationResult.Empty;
             }
 
             /* old logic is easier to understand, but slower
@@ -43,7 +43,7 @@ namespace AnnoDesigner.Core.Layout.Helper
             var minX = double.MaxValue;
             var minY = double.MaxValue;
             var sum = 0d;
-            foreach (var curObject in objects)
+            foreach (var curObject in localObjects)
             {
                 var curPosX = curObject.Position.X;
                 var curPosY = curObject.Position.Y;
@@ -70,19 +70,10 @@ namespace AnnoDesigner.Core.Layout.Helper
             // calculate area of all buildings
             var minTiles = sum;
 
-            result.MinX = minX;
-            result.MinY = minY;
-            result.MaxX = maxX;
-            result.MaxY = maxY;
+            var usedTiles = boxX * boxY;
+            var efficiency = Math.Round(minTiles / boxX / boxY * 100);
 
-            result.UsedAreaWidth = boxX;
-            result.UsedAreaHeight = boxY;
-            result.UsedTiles = boxX * boxY;
-
-            result.MinTiles = minTiles;
-            result.Efficiency = Math.Round(minTiles / boxX / boxY * 100);
-
-            return result;
+            return new StatisticsCalculationResult(minX, minY, maxX, maxY, boxX, boxY, usedTiles, minTiles, efficiency);
         }
     }
 }
