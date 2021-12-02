@@ -27,8 +27,7 @@ namespace AnnoDesigner.Core.DataStructures
             /// <summary>
             /// A count of all items in this Quadrant and under it.
             /// </summary>
-            public int Count => ItemsInQuadrant.Count + (TopLeft?.Count ?? 0) + (TopRight?.Count ?? 0)
-                                                      + (BottomLeft?.Count ?? 0) + (BottomRight?.Count ?? 0);
+            public int Count { get; private set; }
 
             /// <summary>
             /// Holds a list of all the items in this quadrant.
@@ -100,6 +99,7 @@ namespace AnnoDesigner.Core.DataStructures
                 {
                     ItemsInQuadrant.Add(item);
                 }
+                Count++;
             }
 
             public bool Remove(T item) => Remove(item, item.Bounds);
@@ -133,6 +133,7 @@ namespace AnnoDesigner.Core.DataStructures
                     removed = ItemsInQuadrant.Remove(item);
                 }
 
+                if (removed) Count--;
                 return removed;
             }
 
@@ -146,6 +147,7 @@ namespace AnnoDesigner.Core.DataStructures
                 BottomRight = null;
                 BottomLeft = null;
                 ItemsInQuadrant.Clear();
+                Count = 0;
             }
 
             /// <summary>

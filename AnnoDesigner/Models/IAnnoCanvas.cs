@@ -50,6 +50,5 @@ namespace AnnoDesigner.Models
         Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects);
         bool CheckUnsavedChanges();
         void CheckUnsavedChangesBeforeCrash();
-        void UpdatePlacedObjectCount();
     }
 }

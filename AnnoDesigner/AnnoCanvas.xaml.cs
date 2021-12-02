@@ -288,15 +288,7 @@ namespace AnnoDesigner
         /// <summary>
         /// List of all currently placed objects.
         /// </summary>
-        public QuadTree<LayoutObject> PlacedObjects
-        {
-            get { return _placedObjects; }
-            set
-            {
-                _placedObjects = value;
-                UpdatePlacedObjectCount();
-            }
-        }
+        public QuadTree<LayoutObject> PlacedObjects { get; set; }
 
         /// <summary>
         /// List of all currently selected objects.
@@ -521,8 +513,6 @@ namespace AnnoDesigner
         /// Does currently selected objects contain object which is not ignored from rendering?
         /// </summary>
         private bool selectionContainsNotIgnoredObject;
-
-        private int _placedObjectCount;
 
         #endregion
 
@@ -1624,7 +1614,7 @@ namespace AnnoDesigner
             Moved2DArray<AnnoObject> gridDictionary = null;
             List<AnnoObject> placedAnnoObjects = null;
 
-            if (RenderTrueInfluenceRange && _placedObjectCount > 0)
+            if (RenderTrueInfluenceRange && PlacedObjects.Count > 0)
             {
                 var placedObjects = PlacedObjects.Concat(objects).ToHashSet();
                 placedAnnoObjects = placedObjects.Select(o => o.WrappedAnnoObject).ToList();
@@ -2065,7 +2055,7 @@ namespace AnnoDesigner
             }
 
             //if there are no objects placed down, then reset to viewport to 0,0, whilst maintaining any offsets to hide the change
-            if (_placedObjectCount == 0)
+            if (PlacedObjects.Count == 0)
             {
                 _viewport.Left = _viewport.HorizontalAlignmentValue >= 0 ? 1 - _viewport.HorizontalAlignmentValue : Math.Abs(_viewport.HorizontalAlignmentValue);
                 _viewport.Top = _viewport.VerticalAlignmentValue >= 0 ? 1 - _viewport.VerticalAlignmentValue : Math.Abs(_viewport.VerticalAlignmentValue);
@@ -2140,7 +2130,6 @@ namespace AnnoDesigner
         }
 
         private List<LayoutObject> _unselectedObjects = null;
-        private QuadTree<LayoutObject> _placedObjects;
 
         /// <summary>
         /// Here be dragons.
@@ -2552,7 +2541,6 @@ namespace AnnoDesigner
                 });
 
                 PlacedObjects.AddRange(newObjects);
-                UpdatePlacedObjectCount();
                 StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
 
                 //no need to update colors if drawing the same object(s)
@@ -2586,7 +2574,7 @@ namespace AnnoDesigner
         /// <returns>object at the position, <see langword="null"/> if no object could be found</returns>
         private LayoutObject GetObjectAt(Point position)
         {
-            if (_placedObjectCount == 0)
+            if (PlacedObjects.Count == 0)
             {
                 return null;
             }
@@ -2765,7 +2753,6 @@ namespace AnnoDesigner
             _viewport.Left = 0;
             _viewport.Top = 0;
             PlacedObjects.Clear();
-            UpdatePlacedObjectCount();
             SelectedObjects.Clear();
             UndoManager.Clear();
             LoadedFile = "";
@@ -2966,7 +2953,6 @@ namespace AnnoDesigner
             {
                 PlacedObjects.Remove(item);
             }
-            UpdatePlacedObjectCount();
             SelectedObjects.Clear();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
             CurrentMode = MouseMode.DeleteObject;
@@ -3005,7 +2991,6 @@ namespace AnnoDesigner
                     });
 
                     PlacedObjects.Remove(obj);
-                    UpdatePlacedObjectCount();
                     RemoveSelectedObject(obj, false);
                     RecalculateSelectionContainsNotIgnoredObject();
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
@@ -3070,11 +3055,6 @@ namespace AnnoDesigner
         public void RaiseColorsInLayoutUpdated()
         {
             ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void UpdatePlacedObjectCount()
-        {
-            _placedObjectCount = PlacedObjects?.Count ?? 0;
         }
 
         public void ForceRendering()

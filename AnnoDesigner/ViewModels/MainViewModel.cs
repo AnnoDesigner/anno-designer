@@ -762,7 +762,6 @@ namespace AnnoDesigner.ViewModels
 
                     var bounds = AnnoCanvas.ComputeBoundingRect(layoutObjects);
                     AnnoCanvas.PlacedObjects.AddRange(layoutObjects);
-                    AnnoCanvas.UpdatePlacedObjectCount();
 
                     AnnoCanvas.LoadedFile = filePath;
                     AnnoCanvas.Normalize(1);
