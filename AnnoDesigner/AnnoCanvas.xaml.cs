@@ -3007,6 +3007,7 @@ namespace AnnoDesigner
         {
             UndoManager.Undo();
             ForceRendering();
+            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
 
         private readonly Hotkey redoHotkey;
@@ -3015,6 +3016,7 @@ namespace AnnoDesigner
         {
             UndoManager.Redo();
             ForceRendering();
+            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
 
         #endregion
