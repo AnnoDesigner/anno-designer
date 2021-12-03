@@ -25,6 +25,7 @@ namespace AnnoDesigner.ViewModels
         private bool _automaticUpdateCheck;
         private bool _updateSupportsPrerelease;
         private string _versionValue;
+        private string _updatedVersionValue;
         private string _fileVersionValue;
         private string _presetsVersionValue;
         private string _colorPresetsVersionValue;
@@ -113,8 +114,11 @@ namespace AnnoDesigner.ViewModels
 
         private async Task CheckForNewAppVersionAsync()
         {
-            if (await _updateHelper.IsNewAppVersionAvailableAsync())
+            (bool isNewAppVersionAvailable, Version newAppVersion) = await _updateHelper.IsNewAppVersionAvailableAsync();
+
+            if (isNewAppVersionAvailable)
             {
+                UpdatedVersionValue = newAppVersion.ToString();
                 IsUpdateAvailable = true;
                 _messageBoxService.ShowMessage(Application.Current.MainWindow,
                     _localizationHelper.GetLocalization("UpdatePreferencesNewAppUpdateAvailable") + Environment.NewLine + Environment.NewLine + "https://github.com/AnnoDesigner/anno-designer/releases/",
@@ -299,6 +303,12 @@ namespace AnnoDesigner.ViewModels
         {
             get { return _treeLocalizationVersionValue; }
             set { UpdateProperty(ref _treeLocalizationVersionValue, value); }
+        }
+
+        public string UpdatedVersionValue
+        {
+            get { return _updatedVersionValue; }
+            set { UpdateProperty(ref _updatedVersionValue, value); }
         }
     }
 }

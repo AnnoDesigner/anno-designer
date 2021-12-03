@@ -297,7 +297,7 @@ namespace AnnoDesigner
             }
         }
 
-        public async Task<bool> IsNewAppVersionAvailableAsync()
+        public async Task<(bool, Version)> IsNewAppVersionAvailableAsync()
         {
             if (_appSettings.UpdateSupportsPrerelease)
             {
@@ -309,14 +309,14 @@ namespace AnnoDesigner
                 var foundRelease = CheckForAvailableRelease(ReleaseType.AnnoDesigner);
                 if (foundRelease is null)
                 {
-                    return false;
+                    return (false, default);
                 }
 
                 var isNewVersionAvailable = foundRelease.Version > Constants.Version;
 
                 logger.Info($"Found new App version (pre-release): {isNewVersionAvailable} ({Constants.Version} -> {foundRelease.Version})");
 
-                return isNewVersionAvailable;
+                return (isNewVersionAvailable, foundRelease.Version);
             }
             else
             {
@@ -330,7 +330,7 @@ namespace AnnoDesigner
 
                 logger.Info($"Found new App version: {isNewVersionAvailable} ({Constants.Version} -> {parsedVersion})");
 
-                return isNewVersionAvailable;
+                return (isNewVersionAvailable, parsedVersion);
             }
         }
 
