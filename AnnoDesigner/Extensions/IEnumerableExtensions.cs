@@ -25,6 +25,23 @@ namespace AnnoDesigner.Extensions
         }
 
         /// <summary>
+        /// Removes objects from a given <see cref="IEnumerable{LayoutObject}"/> based on some criteria.
+        /// </summary>
+        /// <param name="objects">The <see cref="IEnumerable{LayoutObject}"/> to filter.</param>
+        /// <returns>The filtered <see cref="IEnumerable{LayoutObject}"/>.</returns>
+        public static ICollection<LayoutObject> WithoutIgnoredObjects(this ICollection<LayoutObject> objects)
+        {
+            if (objects is null)
+            {
+                return null;
+            }
+
+            var annoObjectsWithoutIgnoredObjects = objects.Select(x => x.WrappedAnnoObject).WithoutIgnoredObjects().ToHashSet();
+
+            return objects.Where(x => annoObjectsWithoutIgnoredObjects.Contains(x.WrappedAnnoObject)).ToList();
+        }
+
+        /// <summary>
         /// Checks if input object should be excluded from certain rendering actions.
         /// </summary>
         /// <remarks>

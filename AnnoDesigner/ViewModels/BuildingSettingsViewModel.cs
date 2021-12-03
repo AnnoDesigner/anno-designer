@@ -390,7 +390,7 @@ namespace AnnoDesigner.ViewModels
                 curSelectedObject.Color = SelectedColor.Value;
             }
 
-            AnnoCanvasToUse.InvalidateVisual();
+            AnnoCanvasToUse.ForceRendering();
 
             AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
         }
@@ -428,7 +428,7 @@ namespace AnnoDesigner.ViewModels
                 }
             }
 
-            AnnoCanvasToUse.InvalidateVisual();
+            AnnoCanvasToUse.ForceRendering();
             AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
         }
 
@@ -479,7 +479,7 @@ namespace AnnoDesigner.ViewModels
 
         private void ColorChangeUndone()
         {
-            AnnoCanvasToUse.InvalidateVisual();
+            AnnoCanvasToUse.ForceRendering();
             AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
         }
     }

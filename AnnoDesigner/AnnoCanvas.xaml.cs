@@ -77,7 +77,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Backing field of the GridSize property.
         /// </summary>
-        private int _gridStep = Constants.GridStepDefault;
+        private int _gridSize = Constants.GridStepDefault;
 
         /// <summary>
         /// Gets or sets the width of the grid cells.
@@ -85,7 +85,7 @@ namespace AnnoDesigner
         /// </summary>
         public int GridSize
         {
-            get { return _gridStep; }
+            get { return _gridSize; }
             set
             {
                 var tmp = value;
@@ -99,12 +99,11 @@ namespace AnnoDesigner
                     tmp = Constants.GridStepMax;
                 }
 
-                if (_gridStep != tmp)
+                if (_gridSize != tmp)
                 {
+                    _gridSize = tmp;
                     InvalidateVisual();
                 }
-
-                _gridStep = tmp;
             }
         }
 
@@ -123,9 +122,10 @@ namespace AnnoDesigner
             {
                 if (_renderGrid != value)
                 {
+                    _renderGrid = value;
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
-                _renderGrid = value;
             }
         }
 
@@ -144,9 +144,10 @@ namespace AnnoDesigner
             {
                 if (_renderInfluences != value)
                 {
+                    _renderInfluences = value;
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
-                _renderInfluences = value;
             }
         }
 
@@ -165,9 +166,10 @@ namespace AnnoDesigner
             {
                 if (_renderLabel != value)
                 {
+                    _renderLabel = value;
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
-                _renderLabel = value;
             }
         }
 
@@ -186,9 +188,10 @@ namespace AnnoDesigner
             {
                 if (_renderIcon != value)
                 {
+                    _renderIcon = value;
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
-                _renderIcon = value;
             }
         }
 
@@ -207,9 +210,10 @@ namespace AnnoDesigner
             {
                 if (_renderTrueInfluenceRange != value)
                 {
+                    _renderTrueInfluenceRange = value;
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
-                _renderTrueInfluenceRange = value;
             }
         }
 
@@ -228,9 +232,10 @@ namespace AnnoDesigner
             {
                 if (_renderHarborBlockedArea != value)
                 {
+                    _renderHarborBlockedArea = value;
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
-                _renderHarborBlockedArea = value;
             }
         }
 
@@ -249,9 +254,10 @@ namespace AnnoDesigner
             {
                 if (_renderPanorama != value)
                 {
+                    _renderPanorama = value;
+                    _isRenderingForced = true;
                     InvalidateVisual();
                 }
-                _renderPanorama = value;
             }
         }
 
@@ -611,6 +617,11 @@ namespace AnnoDesigner
 
             _layoutLoader = new LayoutLoader();
 
+            _showScrollBars = _appSettings.ShowScrollbars;
+            _hideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;
+
+            UpdateScrollBarVisibility();
+
             var sw = new Stopwatch();
             sw.Start();
 
@@ -763,10 +774,19 @@ namespace AnnoDesigner
 
         #endregion
 
+        private bool _showScrollBars;
+        private bool _hideInfluenceOnSelection;
+
         private void AppSettings_SettingsChanged(object sender, EventArgs e)
         {
             LoadGridLineColor();
             LoadObjectBorderLineColor();
+            _needsRefreshAfterSettingsChanged = true;
+
+            _showScrollBars = _appSettings.ShowScrollbars;
+            _hideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;
+
+            UpdateScrollBarVisibility();
         }
 
         #endregion
@@ -790,6 +810,16 @@ namespace AnnoDesigner
         private List<LayoutObject> _lastBorderedObjectsToDraw = new List<LayoutObject>();
         private QuadTree<LayoutObject> _lastPlacedObjects = null;
 
+        private DrawingGroup _drawingGroupGridLines = new DrawingGroup();
+        private DrawingGroup _drawingGroupObjects = new DrawingGroup();
+        private DrawingGroup _drawingGroupSelectedObjectsInfluence = new DrawingGroup();
+        private DrawingGroup _drawingGroupInfluence = new DrawingGroup();
+        private int _lastGridSize = -1;
+        private double _lastWidth = -1;
+        private double _lastHeight = -1;
+        private bool _needsRefreshAfterSettingsChanged;
+        private bool _isRenderingForced;
+
         /// <summary>
         /// Renders the whole scene including grid, placed objects, current object, selection highlights, influence radii and selection rectangle.
         /// </summary>
@@ -798,28 +828,13 @@ namespace AnnoDesigner
         {
             var width = RenderSize.Width;
             var height = RenderSize.Height;
-            _viewport.Width = _coordinateHelper.ScreenToGrid(width, GridSize);
-            _viewport.Height = _coordinateHelper.ScreenToGrid(height, GridSize);
+            _viewport.Width = _coordinateHelper.ScreenToGrid(width, _gridSize);
+            _viewport.Height = _coordinateHelper.ScreenToGrid(height, _gridSize);
 
-            if (ScrollOwner != null)
+            if (ScrollOwner != null && _invalidateScrollInfo)
             {
-                //SCrollbar visibility should probably be managed by the owner of the the scrollviewer itself, not here...
-                if (_appSettings.ShowScrollbars)
-                {
-                    ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-                    ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
-                }
-                else
-                {
-                    ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-                    ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
-                }
-
-                if (_invalidateScrollInfo)
-                {
-                    ScrollOwner?.InvalidateScrollInfo();
-                    _invalidateScrollInfo = false;
-                }
+                ScrollOwner?.InvalidateScrollInfo();
+                _invalidateScrollInfo = false;
             }
 
             //use the negated value for the transform, as when we move the viewport (for example, if Top gets
@@ -844,41 +859,81 @@ namespace AnnoDesigner
              |
              |  Relative to the viewport, the object has been shifted "up".
              */
-            _viewportTransform.X = _coordinateHelper.GridToScreen(-_viewport.Left, GridSize);
-            _viewportTransform.Y = _coordinateHelper.GridToScreen(-_viewport.Top, GridSize);
+            _viewportTransform.X = _coordinateHelper.GridToScreen(-_viewport.Left, _gridSize);
+            _viewportTransform.Y = _coordinateHelper.GridToScreen(-_viewport.Top, _gridSize);
 
             // assure pixel perfect drawing using guidelines.
             // this value is cached and refreshed in LoadGridLineColor(), as it uses pen thickness in its calculation;
             drawingContext.PushGuidelineSet(_guidelineSet);
 
             // draw background
-            drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(new Point(), RenderSize));
+            drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(0, 0, width, height));
+
             // draw grid
             if (RenderGrid)
             {
-                for (var i = _viewport.HorizontalAlignmentValue * GridSize; i < width; i += _gridStep)
+                //check if redraw is necessary
+                if (_isRenderingForced ||
+                    _gridSize != _lastGridSize ||
+                    height != _lastHeight ||
+                    width != _lastWidth ||
+                    _needsRefreshAfterSettingsChanged)
                 {
-                    drawingContext.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
+                    if (_drawingGroupGridLines.IsFrozen)
+                    {
+                        _drawingGroupGridLines = new DrawingGroup();
+                    }
+
+                    var context = _drawingGroupGridLines.Open();
+                    context.PushGuidelineSet(_guidelineSet);
+
+                    //vertical lines
+                    for (var i = _viewport.HorizontalAlignmentValue * _gridSize; i < width; i += _gridSize)
+                    {
+                        context.DrawLine(_gridLinePen, new Point(i, 0), new Point(i, height));
+                    }
+
+                    //horizontal lines
+                    for (var i = _viewport.VerticalAlignmentValue * _gridSize; i < height; i += _gridSize)
+                    {
+                        context.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
+                    }
+
+                    context.Close();
+
+                    _lastGridSize = _gridSize;
+                    _lastHeight = height;
+                    _lastWidth = width;
+                    _needsRefreshAfterSettingsChanged = false;
+
+                    if (_drawingGroupGridLines.CanFreeze)
+                    {
+                        _drawingGroupGridLines.Freeze();
+                    }
                 }
-                for (var i = _viewport.VerticalAlignmentValue * GridSize; i < height; i += _gridStep)
-                {
-                    drawingContext.DrawLine(_gridLinePen, new Point(0, i), new Point(width, i));
-                }
+
+                drawingContext.DrawDrawing(_drawingGroupGridLines);
             }
 
             //Push the transform after rendering everything that should not be translated.
             drawingContext.PushTransform(_viewportTransform);
 
+            var viewPortAbsolute = _viewport.Absolute; //hot path optimization
             var objectsToDraw = _lastObjectsToDraw;
             var borderlessObjects = _lastBorderlessObjectsToDraw;
             var borderedObjects = _lastBorderedObjectsToDraw;
+            bool objectsChanged = false;
 
-            if (_lastViewPortAbsolute != _viewport.Absolute || _lastPlacedObjects != PlacedObjects || CurrentMode == MouseMode.PlaceObjects || CurrentMode == MouseMode.DeleteObject)
+            if (_isRenderingForced ||
+                _lastViewPortAbsolute != viewPortAbsolute ||
+                _lastPlacedObjects != PlacedObjects ||
+                CurrentMode == MouseMode.PlaceObjects ||
+                CurrentMode == MouseMode.DeleteObject)
             {
-                objectsToDraw = PlacedObjects.GetItemsIntersecting(_viewport.Absolute).ToList();
+                objectsToDraw = PlacedObjects.GetItemsIntersecting(viewPortAbsolute).ToList();
                 _lastObjectsToDraw = objectsToDraw;
                 _lastPlacedObjects = PlacedObjects;
-                _lastViewPortAbsolute = _viewport.Absolute;
+                _lastViewPortAbsolute = viewPortAbsolute;
 
                 borderlessObjects = objectsToDraw.Where(_ => _.WrappedAnnoObject.Borderless).ToList();
                 _lastBorderlessObjectsToDraw = borderlessObjects;
@@ -890,59 +945,127 @@ namespace AnnoDesigner
                 {
                     CurrentMode = MouseMode.Standard;
                 }
+
+                objectsChanged = true;
             }
 
-            // draw placed objects
-            //borderless objects should be drawn first; selection afterwards
-            RenderObjectList(drawingContext, borderlessObjects, useTransparency: false);
-            RenderObjectList(drawingContext, borderedObjects, useTransparency: false);
+            // draw placed objects            
+            if (_isRenderingForced || objectsChanged)
+            {
+                if (_drawingGroupObjects.IsFrozen)
+                {
+                    _drawingGroupObjects = new DrawingGroup();
+                }
 
+                var context = _drawingGroupObjects.Open();
+                context.PushGuidelineSet(_guidelineSet);
+
+                //borderless objects should be drawn first; selection afterwards
+                RenderObjectList(context, borderlessObjects, useTransparency: false);
+                RenderObjectList(context, borderedObjects, useTransparency: false);
+
+                context.Close();
+
+                if (_drawingGroupObjects.CanFreeze)
+                {
+                    _drawingGroupObjects.Freeze();
+                }
+            }
+
+            drawingContext.DrawDrawing(_drawingGroupObjects);
+
+            bool selectionWasRedrawn;
             // draw object selection around not ignored selected objects
             if (selectionContainsNotIgnoredObject)
             {
-                RenderObjectSelection(drawingContext, SelectedObjects.WithoutIgnoredObjects());
+                selectionWasRedrawn = RenderObjectSelection(drawingContext, SelectedObjects.WithoutIgnoredObjects());
             }
             else
             {
                 // except when only ignored objects are selected, in which case render their selection
-                RenderObjectSelection(drawingContext, SelectedObjects);
+                selectionWasRedrawn = RenderObjectSelection(drawingContext, SelectedObjects);
             }
 
             if (RenderPanorama)
             {
-                RenderPanoramaText(drawingContext, objectsToDraw);
+                RenderPanoramaText(drawingContext, objectsToDraw, forceRedraw: _isRenderingForced || objectsChanged);
             }
 
             if (!RenderInfluences)
             {
-                if (!_appSettings.HideInfluenceOnSelection)
+                if (!_hideInfluenceOnSelection)
                 {
-                    RenderObjectInfluenceRadius(drawingContext, SelectedObjects);
-                    RenderObjectInfluenceRange(drawingContext, SelectedObjects);
+                    if (selectionWasRedrawn || _isRenderingForced)
+                    {
+                        if (_drawingGroupSelectedObjectsInfluence.IsFrozen)
+                        {
+                            _drawingGroupSelectedObjectsInfluence = new DrawingGroup();
+                        }
+
+                        var context = _drawingGroupSelectedObjectsInfluence.Open();
+                        context.PushGuidelineSet(_guidelineSet);
+
+                        RenderObjectInfluenceRadius(context, SelectedObjects);
+                        RenderObjectInfluenceRange(context, SelectedObjects);
+
+                        context.Close();
+
+                        if (_drawingGroupSelectedObjectsInfluence.CanFreeze)
+                        {
+                            _drawingGroupSelectedObjectsInfluence.Freeze();
+                        }
+                    }
+
+                    if (SelectedObjects.Count > 0)
+                    {
+                        drawingContext.DrawDrawing(_drawingGroupSelectedObjectsInfluence);
+                    }
                 }
             }
             else
             {
-                RenderObjectInfluenceRadius(drawingContext, objectsToDraw);
-                RenderObjectInfluenceRange(drawingContext, objectsToDraw);
-                //Retrieve objects outside the viewport that have an influence range which affects objects
-                //within the viewport.
-                var offscreenObjects = PlacedObjects
-                .Where(_ => !_viewport.Absolute.Contains(_.GridRect) &&
-                            (_viewport.Absolute.IntersectsWith(_.GridInfluenceRadiusRect) || _viewport.Absolute.IntersectsWith(_.GridInfluenceRangeRect))
-                 ).ToList();
-                RenderObjectInfluenceRadius(drawingContext, offscreenObjects);
-                RenderObjectInfluenceRange(drawingContext, offscreenObjects);
+                if (objectsChanged || _isRenderingForced)
+                {
+                    if (_drawingGroupInfluence.IsFrozen)
+                    {
+                        _drawingGroupInfluence = new DrawingGroup();
+                    }
 
+                    var context = _drawingGroupInfluence.Open();
+                    context.PushGuidelineSet(_guidelineSet);
+
+                    RenderObjectInfluenceRadius(context, objectsToDraw);
+                    RenderObjectInfluenceRange(context, objectsToDraw);
+                    //Retrieve objects outside the viewport that have an influence range which affects objects
+                    //within the viewport.
+                    var offscreenObjects = PlacedObjects
+                    .Where(_ => !viewPortAbsolute.Contains(_.GridRect) &&
+                                (viewPortAbsolute.IntersectsWith(_.GridInfluenceRadiusRect) || viewPortAbsolute.IntersectsWith(_.GridInfluenceRangeRect))
+                     ).ToList();
+                    RenderObjectInfluenceRadius(context, offscreenObjects);
+                    RenderObjectInfluenceRange(context, offscreenObjects);
+
+                    context.Close();
+
+                    if (_drawingGroupInfluence.CanFreeze)
+                    {
+                        _drawingGroupInfluence.Freeze();
+                    }
+                }
+
+                drawingContext.DrawDrawing(_drawingGroupInfluence);
             }
 
             if (CurrentObjects.Count == 0)
             {
-                // highlight object which is currently hovered
-                var hoveredObj = GetObjectAt(_mousePosition);
-                if (hoveredObj != null)
+                // highlight object which is currently hovered, but not if some objects are being dragged
+                if (CurrentMode != MouseMode.DragSelection)
                 {
-                    drawingContext.DrawRectangle(null, _highlightPen, hoveredObj.CalculateScreenRect(GridSize));
+                    var hoveredObj = GetObjectAt(_mousePosition);
+                    if (hoveredObj != null)
+                    {
+                        drawingContext.DrawRectangle(null, _highlightPen, hoveredObj.CalculateScreenRect(_gridSize));
+                    }
                 }
             }
             else
@@ -976,8 +1099,10 @@ namespace AnnoDesigner
             {
                 drawingContext.DrawRectangle(_lightBrush, _highlightPen, _selectionRect);
             }
-#if DEBUG
+
             #region Draw debug information
+
+#if DEBUG
             if (debugModeIsEnabled)
             {
                 drawingContext.PushTransform(_viewportTransform);
@@ -987,7 +1112,7 @@ namespace AnnoDesigner
                     var pen = _penCache.GetPen(_debugBrushDark, 2);
                     foreach (var rect in PlacedObjects.GetQuadrantRects())
                     {
-                        drawingContext.DrawRectangle(brush, pen, _coordinateHelper.GridToScreen(rect, GridSize));
+                        drawingContext.DrawRectangle(brush, pen, _coordinateHelper.GridToScreen(rect, _gridSize));
                     }
                 }
 
@@ -997,7 +1122,7 @@ namespace AnnoDesigner
                     color.A = 0x08;
                     var brush = _brushCache.GetSolidBrush(color);
                     var pen = _penCache.GetPen(_debugBrushLight, 1);
-                    var collisionRectScreen = _coordinateHelper.GridToScreen(_collisionRect, GridSize);
+                    var collisionRectScreen = _coordinateHelper.GridToScreen(_collisionRect, _gridSize);
                     drawingContext.DrawRectangle(brush, pen, collisionRectScreen);
                 }
 
@@ -1083,7 +1208,7 @@ namespace AnnoDesigner
                     //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
                     if (App.DpiScale.PixelsPerDip != 0)
                     {
-                        var gridPosition = _coordinateHelper.ScreenToFractionalGrid(_mousePosition, GridSize);
+                        var gridPosition = _coordinateHelper.ScreenToFractionalGrid(_mousePosition, _gridSize);
                         gridPosition = _viewport.OriginToViewport(gridPosition);
                         var x = gridPosition.X;
                         var y = gridPosition.Y;
@@ -1104,7 +1229,7 @@ namespace AnnoDesigner
                 {
                     if (debugShowSelectionRectCoordinates)
                     {
-                        var rect = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
+                        var rect = _coordinateHelper.ScreenToGrid(_selectionRect, _gridSize);
                         var top = rect.Top;
                         var left = rect.Left;
                         var h = rect.Height;
@@ -1122,14 +1247,39 @@ namespace AnnoDesigner
                     }
                 }
             }
-            #endregion
 #endif
+
+            #endregion
+
             // pop back guidlines set
             drawingContext.Pop();
+
+            _isRenderingForced = false;
         }
 
-        private void RenderPanoramaText(DrawingContext drawingContext, List<LayoutObject> placedObjects)
+        private DrawingGroup _drawingGroupPanoramaText = new DrawingGroup();
+
+        private void RenderPanoramaText(DrawingContext drawingContext, List<LayoutObject> placedObjects, bool forceRedraw)
         {
+            if (placedObjects.Count == 0)
+            {
+                return;
+            }
+
+            if (!forceRedraw)
+            {
+                drawingContext.DrawDrawing(_drawingGroupPanoramaText);
+                return;
+            }
+
+            if (_drawingGroupPanoramaText.IsFrozen)
+            {
+                _drawingGroupPanoramaText = new DrawingGroup();
+            }
+
+            var context = _drawingGroupPanoramaText.Open();
+            context.PushGuidelineSet(_guidelineSet);
+
             foreach (var curObject in placedObjects.FindAll(_ => _.Identifier.StartsWith(IDENTIFIER_SKYSCRAPER, StringComparison.OrdinalIgnoreCase)))
             {
                 if (!_regex_panorama.TryMatch(curObject.Identifier, out var match))
@@ -1164,6 +1314,8 @@ namespace AnnoDesigner
 
                 if (curObject.LastPanorama != panorama || curObject.PanoramaText == null)
                 {
+                    curObject.LastPanorama = panorama;
+
                     // put the sign at the end of the string since it will be drawn from right to left
                     var text = Math.Abs(panorama).ToString() + (panorama >= 0 ? "" : "-");
 
@@ -1171,8 +1323,17 @@ namespace AnnoDesigner
                         FlowDirection.RightToLeft, TYPEFACE, FontSize, Brushes.Black, App.DpiScale.PixelsPerDip);
                 }
 
-                drawingContext.DrawText(curObject.PanoramaText, curObject.CalculateScreenRect(GridSize).TopRight);
+                context.DrawText(curObject.PanoramaText, curObject.CalculateScreenRect(GridSize).TopRight);
             }
+
+            context.Close();
+
+            if (_drawingGroupPanoramaText.CanFreeze)
+            {
+                _drawingGroupPanoramaText.Freeze();
+            }
+
+            drawingContext.DrawDrawing(_drawingGroupPanoramaText);
         }
 
         /// <summary>
@@ -1184,6 +1345,7 @@ namespace AnnoDesigner
             {
                 return;
             }
+
             if (CurrentObjects.Count > 1)
             {
                 //Get the center of the current selection
@@ -1224,8 +1386,13 @@ namespace AnnoDesigner
         /// <param name="obj">object to render</param>
         private void RenderObjectList(DrawingContext drawingContext, List<LayoutObject> objects, bool useTransparency)
         {
+            if (objects.Count == 0)
+            {
+                return;
+            }
+
             var gridSize = GridSize; //hot path optimization
-            var linePenThickness = _linePen.Thickness; //hot path optimization (avoid access of DependencyProperty)
+            var linePenThickness = LinePenThickness; //hot path optimization (avoid access of DependencyProperty)
             var renderHarborBlockedArea = RenderHarborBlockedArea; //hot path optimization
             var renderIcon = RenderIcon; //hot path optimization
             var renderLabel = RenderLabel; //hot path optimization
@@ -1333,19 +1500,56 @@ namespace AnnoDesigner
             }
         }
 
+        private DrawingGroup _drawingGroupObjectSelection = new DrawingGroup();
+        private ICollection<LayoutObject> _lastSelectedObjects = new List<LayoutObject>();
+        private int _lastObjectSelectionGridSize = -1;
+        private Rect _lastSelectionRect;
 
         /// <summary>
         /// Renders a selection highlight on the specified object.
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object to render as selected</param>
-        private void RenderObjectSelection(DrawingContext drawingContext, IEnumerable<LayoutObject> objects)
+        private bool RenderObjectSelection(DrawingContext drawingContext, ICollection<LayoutObject> objects)
         {
-            foreach (var curLayoutObject in objects)
+            bool wasRedrawn = false;
+            if (_lastSelectionRect == _selectionRect && objects.Count == 0)
             {
-                // draw object rectangle                
-                drawingContext.DrawRectangle(null, _highlightPen, curLayoutObject.CalculateScreenRect(GridSize));
+                return wasRedrawn;
             }
+
+            if (_lastSelectedObjects != objects || _lastObjectSelectionGridSize != GridSize || CurrentMode == MouseMode.DragSelection || _lastSelectionRect != _selectionRect)
+            {
+                if (_drawingGroupObjectSelection.IsFrozen)
+                {
+                    _drawingGroupObjectSelection = new DrawingGroup();
+                }
+
+                var context = _drawingGroupObjectSelection.Open();
+                context.PushGuidelineSet(_guidelineSet);
+
+                foreach (var curLayoutObject in objects)
+                {
+                    // draw object rectangle                
+                    context.DrawRectangle(null, _highlightPen, curLayoutObject.CalculateScreenRect(GridSize));
+                }
+
+                context.Close();
+
+                _lastObjectSelectionGridSize = GridSize;
+                _lastSelectedObjects = objects;
+                _lastSelectionRect = _selectionRect;
+                wasRedrawn = true;
+
+                if (_drawingGroupObjectSelection.CanFreeze)
+                {
+                    _drawingGroupObjectSelection.Freeze();
+                }
+            }
+
+            drawingContext.DrawDrawing(_drawingGroupObjectSelection);
+
+            return wasRedrawn;
         }
 
         /// <summary>
@@ -1353,8 +1557,13 @@ namespace AnnoDesigner
         /// </summary>
         /// <param name="drawingContext">context used for rendering</param>
         /// <param name="obj">object which's influence is rendered</param>
-        private void RenderObjectInfluenceRadius(DrawingContext drawingContext, IEnumerable<LayoutObject> objects)
+        private void RenderObjectInfluenceRadius(DrawingContext drawingContext, ICollection<LayoutObject> objects)
         {
+            if (objects.Count == 0)
+            {
+                return;
+            }
+
             foreach (var curLayoutObject in objects)
             {
                 if (curLayoutObject.WrappedAnnoObject.Radius >= 0.5)
@@ -1658,7 +1867,7 @@ namespace AnnoDesigner
         /// <param name="includeSameObjects"> 
         /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToRemove">.
         /// </param>
-        private void RemoveSelectedObjects(List<LayoutObject> objectsToRemove, bool includeSameObjects)
+        private void RemoveSelectedObjects(IEnumerable<LayoutObject> objectsToRemove, bool includeSameObjects)
         {
             if (includeSameObjects)
             {
@@ -1669,6 +1878,14 @@ namespace AnnoDesigner
             {
                 SelectedObjects.ExceptWith(objectsToRemove);
             }
+        }
+
+        /// <summary>
+        /// Remove the objects from SelectedObjects which match specified predicate.
+        /// </summary>
+        private void RemoveSelectedObjects(Predicate<LayoutObject> predicate)
+        {
+            SelectedObjects.RemoveWhere(predicate);
         }
 
         /// <summary>
@@ -1758,6 +1975,7 @@ namespace AnnoDesigner
 
             //update scroll viewer on next render
             _invalidateScrollInfo = true;
+            _isRenderingForced = true;
         }
 
         /// <summary>
@@ -1798,7 +2016,6 @@ namespace AnnoDesigner
         protected override void OnMouseEnter(MouseEventArgs e)
         {
             _mouseWithinControl = true;
-            //  _mousePosition = e.GetPosition(this);
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)
@@ -1829,6 +2046,7 @@ namespace AnnoDesigner
             {
                 change = e.Delta > 0 ? 1 : -1;
             }
+
             if (!_appSettings.UseZoomToPoint)
             {
                 GridSize += change;
@@ -1843,12 +2061,14 @@ namespace AnnoDesigner
                 _viewport.Left += diff.X;
                 _viewport.Top += diff.Y;
             }
+
             //if there are no objects placed down, then reset to viewport to 0,0, whilst maintaining any offsets to hide the change
             if (PlacedObjects.Count == 0)
             {
                 _viewport.Left = _viewport.HorizontalAlignmentValue >= 0 ? 1 - _viewport.HorizontalAlignmentValue : Math.Abs(_viewport.HorizontalAlignmentValue);
                 _viewport.Top = _viewport.VerticalAlignmentValue >= 0 ? 1 - _viewport.VerticalAlignmentValue : Math.Abs(_viewport.VerticalAlignmentValue);
             }
+
             InvalidateScroll();
         }
 
@@ -1996,8 +2216,17 @@ namespace AnnoDesigner
                                 if (IsControlPressed() || IsShiftPressed())
                                 {
                                     // remove previously selected by the selection rect
-                                    RemoveSelectedObjects(SelectedObjects.Where(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)).ToList(),
-                                                          ShouldAffectObjectsWithIdentifier());
+                                    if (ShouldAffectObjectsWithIdentifier())
+                                    {
+                                        RemoveSelectedObjects(
+                                            SelectedObjects.Where(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)).ToList(),
+                                            true
+                                        );
+                                    }
+                                    else
+                                    {
+                                        RemoveSelectedObjects(x => x.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
+                                    }
                                 }
                                 else
                                 {
@@ -2054,6 +2283,7 @@ namespace AnnoDesigner
                                         break;
                                     }
                                 }
+
                                 // if no collisions were found, permanently move all selected objects
                                 if (!collisionsExist)
                                 {
@@ -2080,7 +2310,8 @@ namespace AnnoDesigner
                                     }
                                 }
 
-                                break;
+                                ForceRendering();
+                                return;
                             }
                     }
                 }
@@ -2140,7 +2371,7 @@ namespace AnnoDesigner
                             CurrentMode = MouseMode.Standard;
                             if (selectionContainsNotIgnoredObject)
                             {
-                                RemoveSelectedObjects(SelectedObjects.Where(x => x.IsIgnoredObject()).ToList(), false);
+                                RemoveSelectedObjects(Extensions.IEnumerableExtensions.IsIgnoredObject);
                             }
                             break;
                         }
@@ -2150,7 +2381,7 @@ namespace AnnoDesigner
                         CurrentMode = MouseMode.Standard;
                         if (selectionContainsNotIgnoredObject)
                         {
-                            RemoveSelectedObjects(SelectedObjects.Where(x => x.IsIgnoredObject()).ToList(), false);
+                            RemoveSelectedObjects(Extensions.IEnumerableExtensions.IsIgnoredObject);
                         }
                         break;
                     case MouseMode.DragSelection:
@@ -2162,6 +2393,10 @@ namespace AnnoDesigner
                         });
 
                         ReindexMovedObjects();
+                        if (SelectedObjects.Count == 1)
+                        {
+                            SelectedObjects.Clear();
+                        }
                         CurrentMode = MouseMode.Standard;
                         break;
                 }
@@ -2347,6 +2582,8 @@ namespace AnnoDesigner
             return false;
         }
 
+        private Size _intersectingRectSize = new Size(1, 1);
+
         /// <summary>
         /// Retrieves the object at the given position given in screen coordinates.
         /// </summary>
@@ -2354,10 +2591,23 @@ namespace AnnoDesigner
         /// <returns>object at the position, <see langword="null"/> if no object could be found</returns>
         private LayoutObject GetObjectAt(Point position)
         {
+            if (PlacedObjects.Count == 0)
+            {
+                return null;
+            }
+
             var gridPosition = _coordinateHelper.ScreenToFractionalGrid(position, GridSize);
             gridPosition = _viewport.OriginToViewport(gridPosition);
-            var possibleItems = PlacedObjects.GetItemsIntersecting(new Rect(gridPosition, new Size(1, 1)));
-            return possibleItems.FirstOrDefault(_ => _.GridRect.Contains(gridPosition));
+            var possibleItems = PlacedObjects.GetItemsIntersecting(new Rect(gridPosition, _intersectingRectSize));
+            foreach (var curItem in possibleItems)
+            {
+                if (curItem.GridRect.Contains(gridPosition))
+                {
+                    return curItem;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -2661,7 +2911,6 @@ namespace AnnoDesigner
                 CurrentObjects = SelectedObjects.ToListWithCapacity();
                 Rotate(CurrentObjects).Consume();
             }
-            InvalidateVisual();
         }
 
         private readonly Hotkey rotateAllHotkey;
@@ -2683,8 +2932,6 @@ namespace AnnoDesigner
                 }
                 Normalize(1);
             });
-
-            InvalidateVisual();
         }
 
         private readonly Hotkey copyHotkey;
@@ -2718,7 +2965,7 @@ namespace AnnoDesigner
                 Collection = PlacedObjects
             });
 
-            // remove all currently selected objects from the grid and clear selection
+            // remove all currently selected objects from the grid and clear selection    
             foreach (var item in SelectedObjects)
             {
                 PlacedObjects.Remove(item);
@@ -2776,6 +3023,8 @@ namespace AnnoDesigner
         private void ExecuteUndo(object param)
         {
             UndoManager.Undo();
+            ForceRendering();
+            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
 
         private readonly Hotkey redoHotkey;
@@ -2783,6 +3032,8 @@ namespace AnnoDesigner
         private void ExecuteRedo(object param)
         {
             UndoManager.Redo();
+            ForceRendering();
+            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
 
         #endregion
@@ -2796,6 +3047,23 @@ namespace AnnoDesigner
             return newList;
         }
 
+        private void UpdateScrollBarVisibility()
+        {
+            if (ScrollOwner != null)
+            {
+                if (_showScrollBars)
+                {
+                    ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                    ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+                }
+                else
+                {
+                    ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+                    ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+                }
+            }
+        }
+
         #endregion
 
         public void RaiseStatisticsUpdated(UpdateStatisticsEventArgs args)
@@ -2806,6 +3074,12 @@ namespace AnnoDesigner
         public void RaiseColorsInLayoutUpdated()
         {
             ColorsInLayoutUpdated?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void ForceRendering()
+        {
+            _isRenderingForced = true;
+            InvalidateVisual();
         }
 
         #region IScrollInfo

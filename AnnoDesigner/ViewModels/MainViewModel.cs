@@ -766,6 +766,8 @@ namespace AnnoDesigner.ViewModels
                     AnnoCanvas.LoadedFile = filePath;
                     AnnoCanvas.Normalize(1);
 
+                    AnnoCanvas.ForceRendering();
+
                     AnnoCanvas_LoadedFileChanged(this, new FileLoadedEventArgs(filePath, layout));
 
                     AnnoCanvas.RaiseStatisticsUpdated(UpdateStatisticsEventArgs.All);

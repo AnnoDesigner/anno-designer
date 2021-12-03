@@ -40,7 +40,7 @@ namespace AnnoDesigner.Models
         string LoadedFile { get; set; }
         int GridSize { get; set; }
 
-        void InvalidateVisual();
+        void ForceRendering();
         void SetCurrentObject(LayoutObject obj);
         void ResetZoom();
         void Normalize();
