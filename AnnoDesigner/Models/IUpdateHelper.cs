@@ -14,6 +14,6 @@ namespace AnnoDesigner.Models
 
         Task ReplaceUpdatedPresetsFilesAsync();
 
-        Task<bool> IsNewAppVersionAvailableAsync();
+        Task<(bool, Version)> IsNewAppVersionAvailableAsync();
     }
 }
