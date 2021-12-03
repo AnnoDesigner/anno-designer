@@ -1,8 +1,8 @@
 #addin nuget:?package=Cake.FileHelpers&version=3.3.0
 const string xunitRunnerVersion = "2.4.1";
 #tool nuget:?package=xunit.runner.console&version=2.4.1
-#tool nuget:?package=OpenCover&version=4.7.922
-#tool nuget:?package=ReportGenerator&version=4.7.1
+#tool nuget:?package=OpenCover&version=4.7.1221
+#tool nuget:?package=ReportGenerator&version=5.0.0
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -280,7 +280,8 @@ var copyFilesTask = Task("Copy-Files")
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/AnnoDesigner.exe", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/AnnoDesigner.exe.config", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/colors.json", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/icons.json", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/icons.json", $"{outDirectory}");    
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Microsoft.Bcl.HashCode.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Microsoft.Xaml.Behaviors.dll", $"{outDirectory}");
 	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Newtonsoft.Json.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/NLog.dll", $"{outDirectory}");
