@@ -61,6 +61,46 @@ namespace AnnoDesigner.Core.DataStructures
                 bottomLeftBounds = new Rect(Extent.Left, Extent.Top + h, w, h);
             }
 
+            /// <summary>
+            /// Inflates the input quadrant in specific direction.
+            /// Creates new quadrant with double the size and places <paramref name="quadrant"/> in opposite corner from inflate <paramref name="direction"/>.
+            /// </summary>
+            public static Quadrant Inflate(Quadrant quadrant, ResizeDirection direction)
+            {
+                var oldWidth = new Vector(quadrant.Extent.Width, 0);
+                var oldHeight = new Vector(0, quadrant.Extent.Height);
+                var newSize = new Size(quadrant.Extent.Width * 2, quadrant.Extent.Height * 2);
+
+                switch (direction)
+                {
+                    case ResizeDirection.TopRight:
+                        return new Quadrant(new Rect(quadrant.Extent.TopLeft - oldHeight, newSize))
+                        {
+                            BottomLeft = quadrant,
+                            Count = quadrant.Count
+                        };
+                    case ResizeDirection.TopLeft:
+                        return new Quadrant(new Rect(quadrant.Extent.TopLeft - oldHeight - oldWidth, newSize))
+                        {
+                            BottomRight = quadrant,
+                            Count = quadrant.Count
+                        };
+                    case ResizeDirection.BottomLeft:
+                        return new Quadrant(new Rect(quadrant.Extent.TopLeft - oldWidth, newSize))
+                        {
+                            TopRight = quadrant,
+                            Count = quadrant.Count
+                        };
+                    case ResizeDirection.BottomRight:
+                    default:
+                        return new Quadrant(new Rect(quadrant.Extent.TopLeft, newSize))
+                        {
+                            TopLeft = quadrant,
+                            Count = quadrant.Count
+                        };
+                }
+            }
+
             public void Add(T item) => Add(item, item.Bounds);
 
             /// <summary>
@@ -448,30 +488,7 @@ namespace AnnoDesigner.Core.DataStructures
         /// </summary>
         public void Inflate(ResizeDirection direction)
         {
-            var oldRoot = root;
-            var oldWidth = new Vector(Extent.Width, 0);
-            var oldHeight = new Vector(0, Extent.Height);
-            var newSize = new Size(Extent.Width * 2, Extent.Height * 2);
-
-            switch (direction)
-            {
-                case ResizeDirection.TopRight:
-                    root = new Quadrant(new Rect(Extent.TopLeft - oldHeight, newSize));
-                    root.BottomLeft = oldRoot;
-                    break;
-                case ResizeDirection.TopLeft:
-                    root = new Quadrant(new Rect(Extent.TopLeft - oldHeight - oldWidth, newSize));
-                    root.BottomRight = oldRoot;
-                    break;
-                case ResizeDirection.BottomRight:
-                    root = new Quadrant(new Rect(Extent.TopLeft, newSize));
-                    root.TopLeft = oldRoot;
-                    break;
-                case ResizeDirection.BottomLeft:
-                    root = new Quadrant(new Rect(Extent.TopLeft - oldWidth, newSize));
-                    root.TopRight = oldRoot;
-                    break;
-            }
+            root = Quadrant.Inflate(root, direction);
         }
 
         /// <summary>
