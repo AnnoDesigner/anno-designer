@@ -13,6 +13,7 @@ namespace AnnoDesigner.Models
         PresetsAndIcons,
         PresetsIcons,
         PresetsColors,
-        PresetsWikiBuildingInfo
+        PresetsWikiBuildingInfo,
+        AnnoDesigner
     }
 }

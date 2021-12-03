@@ -30,6 +30,7 @@ namespace AnnoDesigner
         private const string TAG_PRESETS_ICONS = "PresetsIconsv";
         private const string TAG_PRESETS_COLORS = "PresetsColorsv";
         private const string TAG_PRESETS_WIKIBUILDINGINFO = "PresetsWikiBuildingInfov";
+        private const string TAG_ANNO_DESIGNER = "AnnoDesignerv";
 
         private GitHubClient _apiClient;
         private HttpClient _httpClient;
@@ -298,17 +299,39 @@ namespace AnnoDesigner
 
         public async Task<bool> IsNewAppVersionAvailableAsync()
         {
-            var downloadedContent = "0.1";
-            using (var webClient = new WebClient())
+            if (_appSettings.UpdateSupportsPrerelease)
             {
-                downloadedContent = await webClient.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/AnnoDesigner/anno-designer/master/version.txt"));
+                if (AllReleases == null)
+                {
+                    AllReleases = await GetAllAvailableReleases().ConfigureAwait(false);
+                }
+
+                var foundRelease = CheckForAvailableRelease(ReleaseType.AnnoDesigner);
+                if (foundRelease is null)
+                {
+                    return false;
+                }
+
+                var isNewVersionAvailable = foundRelease.Version > Constants.Version;
+
+                logger.Info($"Found new App version (pre-release): {isNewVersionAvailable} ({Constants.Version} -> {foundRelease.Version})");
+
+                return isNewVersionAvailable;
             }
+            else
+            {
+                var downloadedContent = "0.1";
+                using (var webClient = new WebClient())
+                {
+                    downloadedContent = await webClient.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/AnnoDesigner/anno-designer/master/version.txt"));
+                }
 
-            var isNewVersionAvailable = Version.TryParse(downloadedContent, out var parsedVersion) && parsedVersion > Constants.Version;
+                var isNewVersionAvailable = Version.TryParse(downloadedContent, out var parsedVersion) && parsedVersion > Constants.Version;
 
-            logger.Info($"Found new App version: {isNewVersionAvailable} ({Constants.Version} -> {parsedVersion})");
+                logger.Info($"Found new App version: {isNewVersionAvailable} ({Constants.Version} -> {parsedVersion})");
 
-            return isNewVersionAvailable;
+                return isNewVersionAvailable;
+            }
         }
 
         #endregion
@@ -439,6 +462,9 @@ namespace AnnoDesigner
                     break;
                 case ReleaseType.PresetsWikiBuildingInfo:
                     result = TAG_PRESETS_WIKIBUILDINGINFO;
+                    break;
+                case ReleaseType.AnnoDesigner:
+                    result = TAG_ANNO_DESIGNER;
                     break;
                 case ReleaseType.Unknown:
                 default:
