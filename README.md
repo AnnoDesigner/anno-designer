@@ -8,7 +8,7 @@ This is a fork of the project created by JcBernack - https://github.com/JcBernac
 ## Latest Releases
 
 ### [Anno Designer 9.2](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.2)
-#### [Latest Presets file release](https://github.com/AnnoDesigner/anno-designer/releases/tag/Presetsv3.12)
+#### [Latest Presets file release](https://github.com/AnnoDesigner/anno-designer/releases/tag/Presetsv4.0)
 The presets update can be downloaded automatically by the application.
 
 ## Discord
