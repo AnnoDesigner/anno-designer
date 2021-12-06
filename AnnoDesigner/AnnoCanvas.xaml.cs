@@ -53,6 +53,7 @@ namespace AnnoDesigner
         public const string DELETE_OBJECT_UNDER_CURSOR_LOCALIZATION_KEY = "DeleteObjectUnderCursor";
         public const string UNDO_LOCALIZATION_KEY = "Undo";
         public const string REDO_LOCALIZATION_KEY = "Redo";
+        public const string ENABLE_DEBUG_MODE_LOCALIZATION_KEY = "EnableDebugMode";
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
@@ -560,7 +561,6 @@ namespace AnnoDesigner
 
         #endregion
 
-#if DEBUG
         #region Debug options
 
         /// <summary>
@@ -584,7 +584,6 @@ namespace AnnoDesigner
         private readonly bool _debugShowObjectCount = true;
 
         #endregion
-#endif
 
         #region Constructor
         /// <summary>
@@ -645,6 +644,7 @@ namespace AnnoDesigner
             deleteObjectUnderCursorCommand = new RelayCommand(ExecuteDeleteObjectUnderCursor);
             undoCommand = new RelayCommand(ExecuteUndo);
             redoCommand = new RelayCommand(ExecuteRedo);
+            enableDebugModeCommand = new RelayCommand(ExecuteEnableDebugMode);
 
             //Set up default keybindings
 
@@ -680,6 +680,9 @@ namespace AnnoDesigner
             var redoBinding = new InputBinding(redoCommand, new PolyGesture(Key.Y, ModifierKeys.Control));
             redoHotkey = new Hotkey(REDO_LOCALIZATION_KEY, redoBinding, REDO_LOCALIZATION_KEY);
 
+            var enableDebugModeBinding = new InputBinding(enableDebugModeCommand, new PolyGesture(Key.D, ModifierKeys.Control | ModifierKeys.Shift));
+            enableDebugModeHotkey = new Hotkey(ENABLE_DEBUG_MODE_LOCALIZATION_KEY, enableDebugModeBinding, ENABLE_DEBUG_MODE_LOCALIZATION_KEY);
+
             //We specifically do not add the `InputBinding`s to the `InputBindingCollection` of `AnnoCanvas`, as if we did that,
             //`InputBinding.Gesture.Matches()` would be fired for *every* event - MouseWheel, MouseDown, KeyUp, KeyDown, MouseMove etc
             //which we don't want, as it produces a noticeable performance impact.
@@ -698,10 +701,8 @@ namespace AnnoDesigner
             color = Colors.LawnGreen;
             color.A = 32;
             _influencedBrush = _brushCache.GetSolidBrush(color);
-#if DEBUG
             _debugBrushLight = Brushes.Blue;
             _debugBrushDark = Brushes.DarkBlue;
-#endif
 
             sw.Stop();
             logger.Trace($"init variables took: {sw.ElapsedMilliseconds}ms");
@@ -1102,7 +1103,6 @@ namespace AnnoDesigner
 
             #region Draw debug information
 
-#if DEBUG
             if (_debugModeIsEnabled)
             {
                 drawingContext.PushTransform(_viewportTransform);
@@ -1247,7 +1247,6 @@ namespace AnnoDesigner
                     }
                 }
             }
-#endif
 
             #endregion
 
@@ -1479,7 +1478,7 @@ namespace AnnoDesigner
 
                     drawingContext.DrawText(text, textLocation);
                 }
-#if DEBUG
+
                 if (_debugModeIsEnabled && _debugShowObjectPositions)
                 {
                     var text = new FormattedText(obj.Position.ToString(), Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
@@ -1496,7 +1495,6 @@ namespace AnnoDesigner
 
                     drawingContext.DrawText(text, textLocation);
                 }
-#endif
             }
         }
 
@@ -2463,13 +2461,7 @@ namespace AnnoDesigner
             //When an InputBinding is added to the InputBindingsCollection, the  `Matches` method is fired for every event - KeyUp,
             //KeyDown, MouseUp, MouseMove, MouseWheel etc.
             HotkeyCommandManager.HandleCommand(e);
-#if DEBUG
-            if (e.Key == Key.D && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
-            {
-                _debugModeIsEnabled = !_debugModeIsEnabled;
-                e.Handled = true;
-            }
-#endif
+
             if (e.Handled)
             {
                 InvalidateVisual();
@@ -2709,6 +2701,7 @@ namespace AnnoDesigner
             manager.AddHotkey(deleteObjectUnderCursorHotkey);
             manager.AddHotkey(undoHotkey);
             manager.AddHotkey(redoHotkey);
+            manager.AddHotkey(enableDebugModeHotkey);
         }
 
         #endregion
@@ -3034,6 +3027,14 @@ namespace AnnoDesigner
             UndoManager.Redo();
             ForceRendering();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+        }
+
+        private readonly Hotkey enableDebugModeHotkey;
+        private readonly ICommand enableDebugModeCommand;
+        private void ExecuteEnableDebugMode(object param)
+        {
+            _debugModeIsEnabled = !_debugModeIsEnabled;
+            ForceRendering();
         }
 
         #endregion
