@@ -14,6 +14,7 @@ You can change the Hotkey via `Tools -> Preferences -> Manage Keybindings` menu.
 - display coordinates of current Viewport
 - display coordinates of current scrollable area
 - display coordinates and bounding box of current layout
+- display collision rectangle of current selection
 - display helper lines of `QuadTree`
 - display coordinates of objects (on each object)
 - display count of placed objects
