@@ -53,6 +53,7 @@ namespace AnnoDesigner
         public const string DELETE_OBJECT_UNDER_CURSOR_LOCALIZATION_KEY = "DeleteObjectUnderCursor";
         public const string UNDO_LOCALIZATION_KEY = "Undo";
         public const string REDO_LOCALIZATION_KEY = "Redo";
+        public const string SELECT_ALL_SAME_IDENTIFIER__LOCALIZATION_KEY = "SelectAllSameIdentifier";
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
@@ -645,6 +646,7 @@ namespace AnnoDesigner
             deleteObjectUnderCursorCommand = new RelayCommand(ExecuteDeleteObjectUnderCursor);
             undoCommand = new RelayCommand(ExecuteUndo);
             redoCommand = new RelayCommand(ExecuteRedo);
+            selectAllSameIdentifierCommand = new RelayCommand(ExecuteSelectAllSameIdentifier);
 
             //Set up default keybindings
 
@@ -679,6 +681,9 @@ namespace AnnoDesigner
 
             var redoBinding = new InputBinding(redoCommand, new PolyGesture(Key.Y, ModifierKeys.Control));
             redoHotkey = new Hotkey(REDO_LOCALIZATION_KEY, redoBinding, REDO_LOCALIZATION_KEY);
+
+            var selectAllSameIdentifierBinding = new InputBinding(selectAllSameIdentifierCommand, new PolyGesture(ExtendedMouseAction.LeftClick, ModifierKeys.Control | ModifierKeys.Shift));
+            selectAllSameIdentifierHotkey = new Hotkey(SELECT_ALL_SAME_IDENTIFIER__LOCALIZATION_KEY, selectAllSameIdentifierBinding, SELECT_ALL_SAME_IDENTIFIER__LOCALIZATION_KEY);
 
             //We specifically do not add the `InputBinding`s to the `InputBindingCollection` of `AnnoCanvas`, as if we did that,
             //`InputBinding.Gesture.Matches()` would be fired for *every* event - MouseWheel, MouseDown, KeyUp, KeyDown, MouseMove etc
@@ -2350,17 +2355,16 @@ namespace AnnoDesigner
                             }
 
                             var obj = GetObjectAt(_mousePosition);
-
                             if (obj != null)
                             {
                                 // user clicked an object: select or deselect it
                                 if (SelectedObjects.Contains(obj))
                                 {
-                                    RemoveSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
+                                    RemoveSelectedObject(obj, false);// ShouldAffectObjectsWithIdentifier());
                                 }
                                 else
                                 {
-                                    AddSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
+                                    AddSelectedObject(obj, false);// ShouldAffectObjectsWithIdentifier());
                                 }
                                 RecalculateSelectionContainsNotIgnoredObject();
                             }
@@ -2709,6 +2713,7 @@ namespace AnnoDesigner
             manager.AddHotkey(deleteObjectUnderCursorHotkey);
             manager.AddHotkey(undoHotkey);
             manager.AddHotkey(redoHotkey);
+            manager.AddHotkey(selectAllSameIdentifierHotkey);
         }
 
         #endregion
@@ -3032,6 +3037,25 @@ namespace AnnoDesigner
         private void ExecuteRedo(object param)
         {
             UndoManager.Redo();
+            ForceRendering();
+            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+        }
+
+        private readonly Hotkey selectAllSameIdentifierHotkey;
+        private readonly ICommand selectAllSameIdentifierCommand;
+        private void ExecuteSelectAllSameIdentifier(object param)
+        {
+            //select all objects with same identifier            
+            if (SelectedObjects.Count == 1)
+            {
+                AddSelectedObject(SelectedObjects.FirstOrDefault(), ShouldAffectObjectsWithIdentifier());
+            }
+            else if (SelectedObjects.Count > 1)
+            {
+                RemoveSelectedObject(SelectedObjects.FirstOrDefault(), ShouldAffectObjectsWithIdentifier());
+            }
+
+            RecalculateSelectionContainsNotIgnoredObject();
             ForceRendering();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
