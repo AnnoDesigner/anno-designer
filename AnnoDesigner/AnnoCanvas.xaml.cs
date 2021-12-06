@@ -572,16 +572,16 @@ namespace AnnoDesigner
         /// </summary>
         private readonly SolidColorBrush _debugBrushLight;
 
-        private bool debugModeIsEnabled = false;
-        private readonly bool debugShowObjectPositions = true;
-        private readonly bool debugShowQuadTreeViz = true;
-        private readonly bool debugShowSelectionRectCoordinates = true;
-        private readonly bool debugShowSelectionCollisionRect = true;
-        private readonly bool debugShowViewportRectCoordinates = true;
-        private readonly bool debugShowScrollableRectCoordinates = true;
-        private readonly bool debugShowLayoutRectCoordinates = true;
-        private readonly bool debugShowMouseGridCoordinates = true;
-        private readonly bool debugShowObjectCount = true;
+        private bool _debugModeIsEnabled = false;
+        private readonly bool _debugShowObjectPositions = true;
+        private readonly bool _debugShowQuadTreeViz = true;
+        private readonly bool _debugShowSelectionRectCoordinates = true;
+        private readonly bool _debugShowSelectionCollisionRect = true;
+        private readonly bool _debugShowViewportRectCoordinates = true;
+        private readonly bool _debugShowScrollableRectCoordinates = true;
+        private readonly bool _debugShowLayoutRectCoordinates = true;
+        private readonly bool _debugShowMouseGridCoordinates = true;
+        private readonly bool _debugShowObjectCount = true;
 
         #endregion
 #endif
@@ -1103,10 +1103,10 @@ namespace AnnoDesigner
             #region Draw debug information
 
 #if DEBUG
-            if (debugModeIsEnabled)
+            if (_debugModeIsEnabled)
             {
                 drawingContext.PushTransform(_viewportTransform);
-                if (debugShowQuadTreeViz)
+                if (_debugShowQuadTreeViz)
                 {
                     var brush = Brushes.Transparent;
                     var pen = _penCache.GetPen(_debugBrushDark, 2);
@@ -1116,7 +1116,7 @@ namespace AnnoDesigner
                     }
                 }
 
-                if (debugShowSelectionCollisionRect)
+                if (_debugShowSelectionCollisionRect)
                 {
                     var color = _debugBrushLight.Color;
                     color.A = 0x08;
@@ -1130,7 +1130,7 @@ namespace AnnoDesigner
                 drawingContext.Pop();
                 var debugText = new List<FormattedText>(3);
 
-                if (debugShowViewportRectCoordinates)
+                if (_debugShowViewportRectCoordinates)
                 {
                     //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
                     if (App.DpiScale.PixelsPerDip != 0)
@@ -1148,7 +1148,7 @@ namespace AnnoDesigner
                     }
                 }
 
-                if (debugShowScrollableRectCoordinates)
+                if (_debugShowScrollableRectCoordinates)
                 {
                     //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
                     if (App.DpiScale.PixelsPerDip != 0)
@@ -1166,7 +1166,7 @@ namespace AnnoDesigner
                     }
                 }
 
-                if (debugShowLayoutRectCoordinates)
+                if (_debugShowLayoutRectCoordinates)
                 {
                     //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
                     if (App.DpiScale.PixelsPerDip != 0)
@@ -1184,7 +1184,7 @@ namespace AnnoDesigner
                     }
                 }
 
-                if (debugShowObjectCount)
+                if (_debugShowObjectCount)
                 {
                     //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
                     if (App.DpiScale.PixelsPerDip != 0)
@@ -1203,7 +1203,7 @@ namespace AnnoDesigner
                     drawingContext.DrawText(debugText[i], new Point(5, (i * 15) + 5));
                 }
 
-                if (debugShowMouseGridCoordinates)
+                if (_debugShowMouseGridCoordinates)
                 {
                     //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
                     if (App.DpiScale.PixelsPerDip != 0)
@@ -1227,7 +1227,7 @@ namespace AnnoDesigner
                 //draw selection rect coords last so they draw over the top of everything else
                 if (CurrentMode == MouseMode.SelectionRect)
                 {
-                    if (debugShowSelectionRectCoordinates)
+                    if (_debugShowSelectionRectCoordinates)
                     {
                         var rect = _coordinateHelper.ScreenToGrid(_selectionRect, _gridSize);
                         var top = rect.Top;
@@ -1480,7 +1480,7 @@ namespace AnnoDesigner
                     drawingContext.DrawText(text, textLocation);
                 }
 #if DEBUG
-                if (debugModeIsEnabled && debugShowObjectPositions)
+                if (_debugModeIsEnabled && _debugShowObjectPositions)
                 {
                     var text = new FormattedText(obj.Position.ToString(), Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
                     TYPEFACE, 12, _debugBrushLight,
@@ -2466,7 +2466,7 @@ namespace AnnoDesigner
 #if DEBUG
             if (e.Key == Key.D && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
             {
-                debugModeIsEnabled = !debugModeIsEnabled;
+                _debugModeIsEnabled = !_debugModeIsEnabled;
                 e.Handled = true;
             }
 #endif
