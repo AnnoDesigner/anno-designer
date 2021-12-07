@@ -1899,7 +1899,7 @@ namespace AnnoDesigner
         /// <param name="includeSameObjects"> 
         /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToAdd">.
         /// </param>
-        private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects)
+        private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects = false)
         {
             AddSelectedObjects(new List<LayoutObject>() { objectToAdd }, includeSameObjects);
         }
@@ -1910,7 +1910,7 @@ namespace AnnoDesigner
         /// <param name="includeSameObjects"> 
         /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToRemove">.
         /// </param>
-        private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects)
+        private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects = false)
         {
             RemoveSelectedObjects(new List<LayoutObject>() { objectToRemove }, includeSameObjects);
         }
@@ -2360,11 +2360,11 @@ namespace AnnoDesigner
                                 // user clicked an object: select or deselect it
                                 if (SelectedObjects.Contains(obj))
                                 {
-                                    RemoveSelectedObject(obj, false);// ShouldAffectObjectsWithIdentifier());
+                                    RemoveSelectedObject(obj);
                                 }
                                 else
                                 {
-                                    AddSelectedObject(obj, false);// ShouldAffectObjectsWithIdentifier());
+                                    AddSelectedObject(obj);
                                 }
                                 RecalculateSelectionContainsNotIgnoredObject();
                             }
@@ -2503,8 +2503,8 @@ namespace AnnoDesigner
         /// Checks whether actions should affect all objects with the same identifier.
         /// </summary>
         /// <returns><see langword="true"> if all objects with same identifier should be affected, otherwise <see langword="false">.</returns>
-        private static bool ShouldAffectObjectsWithIdentifier()
-        {
+        private bool ShouldAffectObjectsWithIdentifier()
+        {            
             return IsShiftPressed() && IsControlPressed();
         }
 
@@ -3013,7 +3013,7 @@ namespace AnnoDesigner
                     });
 
                     PlacedObjects.Remove(obj);
-                    RemoveSelectedObject(obj, false);
+                    RemoveSelectedObject(obj);
                     RecalculateSelectionContainsNotIgnoredObject();
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                     CurrentMode = MouseMode.DeleteObject;
@@ -3045,19 +3045,23 @@ namespace AnnoDesigner
         private readonly ICommand selectAllSameIdentifierCommand;
         private void ExecuteSelectAllSameIdentifier(object param)
         {
-            //select all objects with same identifier            
-            if (SelectedObjects.Count == 1)
+            //select all objects with same identifier as object under mouse cursor
+            var objectToCheck = GetObjectAt(_mousePosition);
+            if (objectToCheck != null)
             {
-                AddSelectedObject(SelectedObjects.FirstOrDefault(), ShouldAffectObjectsWithIdentifier());
-            }
-            else if (SelectedObjects.Count > 1)
-            {
-                RemoveSelectedObject(SelectedObjects.FirstOrDefault(), ShouldAffectObjectsWithIdentifier());
-            }
+                if (SelectedObjects.Contains(objectToCheck))
+                {
+                    RemoveSelectedObject(objectToCheck, includeSameObjects: true);
+                }
+                else
+                {
+                    AddSelectedObject(objectToCheck, includeSameObjects: true);
+                }
 
-            RecalculateSelectionContainsNotIgnoredObject();
-            ForceRendering();
-            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+                RecalculateSelectionContainsNotIgnoredObject();
+                ForceRendering();
+                StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+            }
         }
 
         #endregion
