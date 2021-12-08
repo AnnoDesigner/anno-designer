@@ -2,7 +2,7 @@
   <PropertyGroup>
     <RootNamespace>AnnoDesigner</RootNamespace>
     <AssemblyName>AnnoDesigner</AssemblyName>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <OutputType>WinExe</OutputType>
     <UseWPF>true</UseWPF>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
