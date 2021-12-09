@@ -8,7 +8,7 @@
     <ProjectReference Include="..\AnnoDesigner.Core\AnnoDesigner.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.IO.Abstractions" Version="13.2.25" />
+    <PackageReference Include="System.IO.Abstractions" />
   </ItemGroup>
   <PropertyGroup />
 </Project>

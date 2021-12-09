@@ -1,0 +1,36 @@
+<Project>
+  <PropertyGroup Label="Versions">
+    <!-- versionnumbers as variables to be used in pre- and postbuild events -->
+    <NLogVersion>4.7.13</NLogVersion>
+    <NewtonsoftJsonVersion>13.0.1</NewtonsoftJsonVersion>
+    <IOAbstractionsVersion>14.0.3</IOAbstractionsVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Documentation">
+    <!--<GenerateDocumentationFile Condition="'$(Configuration)' == 'Debug'">true</GenerateDocumentationFile>-->
+    <DocumentationFile Condition="'$(Configuration)' == 'Debug'">$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
+    <!--
+      Make sure any documentation comments which are included in code get checked for syntax during the build, but do
+      not report warnings for missing comments.
+      CS1573: Parameter 'parameter' has no matching param tag in the XML comment for 'member' (but other parameters do)
+      CS1591: Missing XML comment for publicly visible type or member 'Type_or_Member'
+      CS1712: Type parameter 'parameter' has no matching typeparam tag in the XML comment on 'type_or_member' (but other type parameters do)
+    -->
+    <NoWarn Condition="'$(Language)' == 'C#'">$(NoWarn),1573,1591,1712</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup Label="IO Abstraction">
+    <PackageReference Update="System.IO.Abstractions" Version="$(IOAbstractionsVersion)" />
+    <PackageReference Update="System.IO.Abstractions.TestingHelpers" Version="$(IOAbstractionsVersion)" />
+    <PackageReference Include="Roslyn.System.IO.Abstractions.Analyzers" Version="12.2.19">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="NLog" Version="$(NLogVersion)" />
+    <PackageReference Update="Newtonsoft.Json" Version="$(NewtonsoftJsonVersion)" />
+  </ItemGroup>
+
+</Project>
