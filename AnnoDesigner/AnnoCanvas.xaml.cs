@@ -2527,9 +2527,9 @@ namespace AnnoDesigner
         /// <param name="a">List of objects</param>
         /// <param name="b">second object</param>
         /// <returns>true if there is a collision, otherwise false</returns>
-        private bool ObjectIntersectionExists(List<LayoutObject> a, LayoutObject b)
+        private bool ObjectIntersectionExists(IEnumerable<LayoutObject> a, LayoutObject b)
         {
-            return a.Exists(_ => _.CollisionRect.IntersectsWith(b.CollisionRect));
+            return a.Any(_ => _.CollisionRect.IntersectsWith(b.CollisionRect));
         }
 
         /// <summary>
@@ -2546,11 +2546,12 @@ namespace AnnoDesigner
             }
 
             var boundingRect = ComputeBoundingRect(CurrentObjects);
-            var objects = PlacedObjects.GetItemsIntersecting(boundingRect);
+            var relevantPlacedObjects = PlacedObjects.GetItemsIntersecting(boundingRect);
+            var intersectingCurrentObjects = CurrentObjects.Where(x => ObjectIntersectionExists(relevantPlacedObjects, x));
 
-            if (CurrentObjects.Count != 0 && !objects.Any(_ => ObjectIntersectionExists(CurrentObjects, _)))
+            if (IsShiftPressed() || !intersectingCurrentObjects.Any())
             {
-                var newObjects = CloneList(CurrentObjects);
+                var newObjects = CloneLayoutObjects(CurrentObjects.Except(intersectingCurrentObjects), CurrentObjects.Count);
                 UndoManager.RegisterOperation(new AddObjectsOperation<LayoutObject>()
                 {
                     Objects = newObjects,
@@ -2950,7 +2951,7 @@ namespace AnnoDesigner
         {
             if (ClipboardObjects.Count != 0)
             {
-                CurrentObjects = CloneList(ClipboardObjects);
+                CurrentObjects = CloneLayoutObjects(ClipboardObjects);
                 MoveCurrentObjectsToMouse();
             }
         }
@@ -3040,11 +3041,14 @@ namespace AnnoDesigner
 
         #region Helper methods
 
-        private List<LayoutObject> CloneList(List<LayoutObject> list)
+        private List<LayoutObject> CloneLayoutObjects(ICollection<LayoutObject> list)
         {
-            var newList = new List<LayoutObject>(list.Capacity);
-            list.ForEach(_ => newList.Add(new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)));
-            return newList;
+            return list.Select(x => new LayoutObject(new AnnoObject(x.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)).ToListWithCapacity(list.Count);
+        }
+
+        private List<LayoutObject> CloneLayoutObjects(IEnumerable<LayoutObject> list, int capacity)
+        {
+            return list.Select(x => new LayoutObject(new AnnoObject(x.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)).ToListWithCapacity(capacity);
         }
 
         private void UpdateScrollBarVisibility()
