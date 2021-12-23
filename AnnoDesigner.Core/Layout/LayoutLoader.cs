@@ -64,6 +64,17 @@ namespace AnnoDesigner.Core.Layout
             return Load(jsonString, forceLoad);
         }
 
+        public async Task<LayoutFile> LoadLayoutAsync(Stream streamWithLayout, bool forceLoad = false)
+        {
+            if (streamWithLayout == null)
+            {
+                throw new ArgumentNullException(nameof(streamWithLayout));
+            }
+            using var sr = new StreamReader(streamWithLayout);
+            var jsonString = await sr.ReadToEndAsync();
+            return await LoadAsync(jsonString, forceLoad);
+        }
+
         private LayoutFile Load(string jsonString, bool forceLoad)
         {
             var layoutVersion = new LayoutFileVersionContainer() { FileVersion = 0 };
@@ -87,6 +98,11 @@ namespace AnnoDesigner.Core.Layout
                 var version when version == 0 => new LayoutFile(SerializationHelper.LoadFromJsonStringLegacy<List<AnnoObject>>(jsonString)), //no file version, DataContractJsonSerializer format json
                 _ => throw new NotImplementedException()
             };
+        }
+
+        private Task<LayoutFile> LoadAsync(string jsonString, bool forceLoad)
+        {
+            return Task.Run(() => Load(jsonString, forceLoad));
         }
     }
 }

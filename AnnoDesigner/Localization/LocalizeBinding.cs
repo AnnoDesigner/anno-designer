@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
+using AnnoDesigner.Core.Layout.Presets;
 
 namespace AnnoDesigner.Localization
 {
@@ -90,6 +92,63 @@ namespace AnnoDesigner.Localization
         public DynamicLocalize(string keyPath) : this()
         {
             KeyPath = keyPath;
+        }
+    }
+
+    public class Multilang : MultiBinding
+    {
+        private class MultilangInfoConverter : IMultiValueConverter
+        {
+            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+            {
+                if (values.Length == 2)
+                {
+                    if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue)
+                    {
+                        return DependencyProperty.UnsetValue;
+                    }
+
+                    if (values[1] is null)
+                    {
+                        return null;
+                    }
+
+                    if (values[0] is string language && values[1] is MultilangInfo translations)
+                    {
+                        return translations.Translate(language);
+                    }
+                }
+                throw new Exception($"Incorrect Multilang parameters. {values[1]}");
+            }
+
+            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private static MultilangInfoConverter SingletonConverter { get; } = new MultilangInfoConverter();
+
+        public string Path
+        {
+            set
+            {
+                Bindings.Add(new Binding(value));
+            }
+        }
+
+        public Multilang()
+        {
+            Bindings.Add(new Binding(nameof(Localization.Instance.SelectedLanguageCode))
+            {
+                Source = Localization.Instance
+            });
+            Converter = SingletonConverter;
+        }
+
+        public Multilang(string path) : this()
+        {
+            Path = path;
         }
     }
 }

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft-04/schema",
+  "type": "object",
+  "definitions": {
+    "multilang": {
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Single value used for all languages"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "eng": {
+              "type": "string"
+            },
+            "ger": {
+              "type": "string"
+            },
+            "fra": {
+              "type": "string"
+            },
+            "esp": {
+              "type": "string"
+            },
+            "pol": {
+              "type": "string"
+            },
+            "rus": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "properties": {
+    "Name": {
+      "#ref": "/definitions/multilang"
+    },
+    "Description": {
+      "#ref": "/definitions/multilang"
+    },
+    "Author": {
+      "type": "string"
+    },
+    "AuthorContact": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "Name"
+  ]
+}

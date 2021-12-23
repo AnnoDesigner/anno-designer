@@ -559,5 +559,17 @@ namespace AnnoDesigner.Properties {
                 this["ShowMultipleInstanceWarning"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(".\\Layouts")]
+        public string PresetLayoutLocation {
+            get {
+                return ((string)(this["PresetLayoutLocation"]));
+            }
+            set {
+                this["PresetLayoutLocation"] = value;
+            }
+        }
     }
 }

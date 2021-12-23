@@ -36,7 +36,7 @@ namespace AnnoDesigner.Localization
 
         private static IDictionary<string, IDictionary<string, string>> TranslationsRaw { get; set; }
 
-        private string SelectedLanguageCode => _commons.CurrentLanguageCode;
+        public string SelectedLanguageCode => _commons.CurrentLanguageCode;
 
         public static IDictionary<string, string> Translations => TranslationsRaw[Instance.SelectedLanguageCode];
 
@@ -1283,6 +1283,7 @@ namespace AnnoDesigner.Localization
         {
             OnPropertyChanged(nameof(Translations));
             OnPropertyChanged(nameof(InstanceTranslations));
+            OnPropertyChanged(nameof(SelectedLanguageCode));
         }
 
         public string GetLocalization(string valueToTranslate)

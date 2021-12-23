@@ -293,6 +293,12 @@ namespace AnnoDesigner.Models
             get => Settings.Default.IncludeRoadsInStatisticCalculation;
             set => Settings.Default.IncludeRoadsInStatisticCalculation = value;
         }
+
+        public string PresetLayoutLocation
+        {
+            get => Settings.Default.PresetLayoutLocation;
+            set => Settings.Default.PresetLayoutLocation = value;
+        }
     }
 }
 
