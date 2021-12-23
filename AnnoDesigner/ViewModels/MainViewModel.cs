@@ -749,30 +749,14 @@ namespace AnnoDesigner.ViewModels
                 var layout = _layoutLoader.LoadLayout(filePath, forceLoad);
                 if (layout != null)
                 {
-                    AnnoCanvas.SelectedObjects.Clear();
-                    AnnoCanvas.PlacedObjects.Clear();
-                    AnnoCanvas.UndoManager.Clear();
-
-                    var layoutObjects = new List<LayoutObject>(layout.Objects.Count);
-                    foreach (var curObj in layout.Objects)
-                    {
-                        layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
-                    }
-
-                    var bounds = AnnoCanvas.ComputeBoundingRect(layoutObjects);
-                    AnnoCanvas.PlacedObjects.AddRange(layoutObjects);
-
-                    AnnoCanvas.LoadedFile = filePath;
-                    AnnoCanvas.Normalize(1);
-
-                    AnnoCanvas.ForceRendering();
-
-                    AnnoCanvas_LoadedFileChanged(this, new FileLoadedEventArgs(filePath, layout));
-
-                    AnnoCanvas.RaiseStatisticsUpdated(UpdateStatisticsEventArgs.All);
-                    AnnoCanvas.RaiseColorsInLayoutUpdated();
-                    AnnoCanvas.UndoManager.Clear();
+                    OpenLayout(layout);
                 }
+
+                AnnoCanvas.LoadedFile = filePath;
+
+                AnnoCanvas.ForceRendering();
+
+                AnnoCanvas_LoadedFileChanged(this, new FileLoadedEventArgs(filePath, layout));
             }
             catch (LayoutFileUnsupportedFormatException layoutEx)
             {
@@ -791,6 +775,32 @@ namespace AnnoDesigner.ViewModels
 
                 IOErrorMessageBox(ex);
             }
+        }
+
+        /// <summary>
+        /// Opens new layout from memory.
+        /// </summary>
+        public void OpenLayout(LayoutFile layout)
+        {
+            AnnoCanvas.SelectedObjects.Clear();
+            AnnoCanvas.PlacedObjects.Clear();
+            AnnoCanvas.UndoManager.Clear();
+
+            var layoutObjects = new List<LayoutObject>(layout.Objects.Count);
+            foreach (var curObj in layout.Objects)
+            {
+                layoutObjects.Add(new LayoutObject(curObj, _coordinateHelper, _brushCache, _penCache));
+            }
+            LayoutSettingsViewModel.LayoutVersion = layout.LayoutVersion;
+
+            AnnoCanvas.ComputeBoundingRect(layoutObjects);
+            AnnoCanvas.PlacedObjects.AddRange(layoutObjects);
+
+            AnnoCanvas.Normalize(1);
+
+            AnnoCanvas.RaiseStatisticsUpdated(UpdateStatisticsEventArgs.All);
+            AnnoCanvas.RaiseColorsInLayoutUpdated();
+            AnnoCanvas.UndoManager.Clear();
         }
 
         /// <summary>
@@ -1315,118 +1325,30 @@ namespace AnnoDesigner.ViewModels
                 return;
             }
 
-            // copy all objects
-            var allObjects = AnnoCanvas.PlacedObjects.Select(_ => new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)).ToList();
-            // copy selected objects
-            // note: should be references to the correct copied objects from allObjects
-            var selectedObjects = AnnoCanvas.SelectedObjects.Select(_ => new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)).ToList();
-
             logger.Trace($"UI thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
             void renderThread()
             {
-                logger.Trace($"Render thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
-
-                var sw = new Stopwatch();
-                sw.Start();
-
-                var icons = new Dictionary<string, IconImage>(StringComparer.OrdinalIgnoreCase);
-                foreach (var curIcon in AnnoCanvas.Icons)
-                {
-                    icons.Add(curIcon.Key, new IconImage(curIcon.Value.Name, curIcon.Value.Localizations, curIcon.Value.IconPath));
-                }
-
-                var quadTree = new QuadTree<LayoutObject>(AnnoCanvas.PlacedObjects.Extent);
-                quadTree.AddRange(allObjects);
-                // initialize output canvas
-                var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _appSettings, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
-                {
-                    PlacedObjects = quadTree,
-                    RenderGrid = AnnoCanvas.RenderGrid,
-                    RenderIcon = AnnoCanvas.RenderIcon,
-                    RenderLabel = AnnoCanvas.RenderLabel,
-                    RenderHarborBlockedArea = AnnoCanvas.RenderHarborBlockedArea,
-                    RenderPanorama = AnnoCanvas.RenderPanorama,
-                    RenderTrueInfluenceRange = AnnoCanvas.RenderTrueInfluenceRange,
-                    RenderInfluences = AnnoCanvas.RenderInfluences,
-                };
-
-                sw.Stop();
-                logger.Trace($"creating canvas took: {sw.ElapsedMilliseconds}ms");
-
-                // normalize layout
-                target.Normalize(border);
-
-                // set zoom level
-                if (exportZoom)
-                {
-                    target.GridSize = AnnoCanvas.GridSize;
-                }
-
-                // set selection
-                if (exportSelection)
-                {
-                    target.SelectedObjects.UnionWith(selectedObjects);
-                }
-
-                // calculate output size
-                var width = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border, target.GridSize);//if +1 then there are weird black lines next to the statistics view
-                var height = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border, target.GridSize) + 1;//+1 for black grid line at bottom
-
-                if (renderVersion)
-                {
-                    var versionView = new VersionView()
+                var target = PrepareCanvasForRender(
+                    AnnoCanvas.PlacedObjects.Select(o => o.WrappedAnnoObject),
+                    exportSelection ? AnnoCanvas.SelectedObjects.Select(o => o.WrappedAnnoObject) : Enumerable.Empty<AnnoObject>(),
+                    border,
+                    new CanvasRenderSetting()
                     {
-                        Context = LayoutSettingsViewModel
-                    };
-
-                    target.DockPanel.Children.Insert(0, versionView);
-                    DockPanel.SetDock(versionView, Dock.Bottom);
-
-                    versionView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-
-                    height += versionView.DesiredSize.Height;
-                }
-
-                if (renderStatistics)
-                {
-                    var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons, _appSettings);
-                    exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult();
-                    exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
-
-                    var exportStatisticsView = new StatisticsView()
-                    {
-                        Context = exportStatisticsViewModel
-                    };
-
-                    target.DockPanel.Children.Insert(0, exportStatisticsView);
-                    DockPanel.SetDock(exportStatisticsView, Dock.Right);
-
-                    //fix wrong for wrong width: https://stackoverflow.com/q/27894477
-                    exportStatisticsView.Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
-                    //according to https://stackoverflow.com/a/25507450
-                    //and https://stackoverflow.com/a/1320666
-                    exportStatisticsView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                    //exportStatisticsView.Arrange(new Rect(new Point(0, 0), exportStatisticsView.DesiredSize));
-
-                    if (exportStatisticsView.DesiredSize.Height > height)
-                    {
-                        height = exportStatisticsView.DesiredSize.Height + target.LinePenThickness + border;
+                        GridSize = exportZoom ? AnnoCanvas.GridSize : null,
+                        RenderGrid = AnnoCanvas.RenderGrid,
+                        RenderHarborBlockedArea = AnnoCanvas.RenderHarborBlockedArea,
+                        RenderIcon = AnnoCanvas.RenderIcon,
+                        RenderInfluences = AnnoCanvas.RenderInfluences,
+                        RenderLabel = AnnoCanvas.RenderLabel,
+                        RenderPanorama = AnnoCanvas.RenderPanorama,
+                        RenderTrueInfluenceRange = AnnoCanvas.RenderTrueInfluenceRange,
+                        RenderStatistics = renderStatistics,
+                        RenderVersion = renderVersion
                     }
-
-                    width += exportStatisticsView.DesiredSize.Width + target.LinePenThickness;
-                }
-
-                target.Width = width;
-                target.Height = height;
-                target.UpdateLayout();
-
-                // apply size
-                var outputSize = new Size(width, height);
-                target.Measure(outputSize);
-                target.Arrange(new Rect(outputSize));
+                );
 
                 // render canvas to file
-                DataIO.RenderToFile(target, filename);
+                target.RenderToFile(filename);
             }
 
             var thread = new Thread(renderThread);
@@ -1435,6 +1357,119 @@ namespace AnnoDesigner.ViewModels
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             thread.Join(TimeSpan.FromSeconds(10));
+        }
+
+        public FrameworkElement PrepareCanvasForRender(
+            IEnumerable<AnnoObject> placedObjects,
+            IEnumerable<AnnoObject> selectedObjects,
+            int border,
+            CanvasRenderSetting renderSettings = null)
+        {
+            renderSettings ??= new CanvasRenderSetting()
+            {
+                RenderGrid = true,
+                RenderIcon = true
+            };
+
+            var sw = new Stopwatch();
+            sw.Start();
+
+            var icons = new Dictionary<string, IconImage>(StringComparer.OrdinalIgnoreCase);
+            foreach (var curIcon in AnnoCanvas.Icons)
+            {
+                icons.Add(curIcon.Key, new IconImage(curIcon.Value.Name, curIcon.Value.Localizations, curIcon.Value.IconPath));
+            }
+
+            var statistics = new StatisticsCalculationHelper().CalculateStatistics(placedObjects, true, true);
+
+            var quadTree = new QuadTree<LayoutObject>((Rect)statistics);
+            quadTree.AddRange(placedObjects.Select(o => new LayoutObject(o, _coordinateHelper, _brushCache, _penCache)));
+            // initialize output canvas
+            var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _appSettings, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
+            {
+                PlacedObjects = quadTree,
+                RenderGrid = renderSettings.RenderGrid,
+                RenderIcon = renderSettings.RenderIcon,
+                RenderLabel = renderSettings.RenderLabel,
+                RenderHarborBlockedArea = renderSettings.RenderHarborBlockedArea,
+                RenderPanorama = renderSettings.RenderPanorama,
+                RenderTrueInfluenceRange = renderSettings.RenderTrueInfluenceRange,
+                RenderInfluences = renderSettings.RenderInfluences,
+            };
+
+            sw.Stop();
+            logger.Trace($"creating canvas took: {sw.ElapsedMilliseconds}ms");
+
+            // normalize layout
+            target.Normalize(border);
+
+            // set zoom level
+            if (renderSettings.GridSize.HasValue)
+            {
+                target.GridSize = renderSettings.GridSize.Value;
+            }
+
+            // set selection
+            target.SelectedObjects.UnionWith(selectedObjects.Select(o => new LayoutObject(o, _coordinateHelper, _brushCache, _penCache)));
+
+            // calculate output size
+            var width = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border, target.GridSize);//if +1 then there are weird black lines next to the statistics view
+            var height = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border, target.GridSize) + 1;//+1 for black grid line at bottom
+
+            if (renderSettings.RenderVersion)
+            {
+                var versionView = new VersionView()
+                {
+                    Context = LayoutSettingsViewModel
+                };
+
+                target.DockPanel.Children.Insert(0, versionView);
+                DockPanel.SetDock(versionView, Dock.Bottom);
+
+                versionView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+                height += versionView.DesiredSize.Height;
+            }
+
+            if (renderSettings.RenderStatistics)
+            {
+                var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons, _appSettings);
+                exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult();
+                exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
+
+                var exportStatisticsView = new StatisticsView()
+                {
+                    Context = exportStatisticsViewModel
+                };
+
+                target.DockPanel.Children.Insert(0, exportStatisticsView);
+                DockPanel.SetDock(exportStatisticsView, Dock.Right);
+
+                //fix wrong for wrong width: https://stackoverflow.com/q/27894477
+                exportStatisticsView.Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
+                //according to https://stackoverflow.com/a/25507450
+                //and https://stackoverflow.com/a/1320666
+                exportStatisticsView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                //exportStatisticsView.Arrange(new Rect(new Point(0, 0), exportStatisticsView.DesiredSize));
+
+                if (exportStatisticsView.DesiredSize.Height > height)
+                {
+                    height = exportStatisticsView.DesiredSize.Height + target.LinePenThickness + border;
+                }
+
+                width += exportStatisticsView.DesiredSize.Width + target.LinePenThickness;
+            }
+
+            target.Width = width;
+            target.Height = height;
+            target.UpdateLayout();
+
+            // apply size
+            var outputSize = new Size(width, height);
+            target.Measure(outputSize);
+            target.Arrange(new Rect(outputSize));
+
+            return target;
         }
 
         public ICommand CopyLayoutToClipboardCommand { get; private set; }
