@@ -19,7 +19,6 @@
         d:DataContext="{d:DesignInstance Type=viewModel:MainViewModel, IsDesignTimeCreatable=False}"
         d:DesignHeight="480"
         d:DesignWidth="640"
-        Title="{Binding MainWindowTitle}"
         Icon="/AnnoDesigner;component/icon.ico"
         Height="{Binding MainWindowHeight, Mode=TwoWay}"
         Width="{Binding MainWindowWidth, Mode=TwoWay}"
@@ -31,6 +30,7 @@
         Loaded="WindowLoaded"
         Closing="WindowClosing">
     <Window.Resources>
+        <coreConverters:UnsavedChangesConverter x:Key="UnsavedChangesConverter"/>
         <coreConverters:BoolToVisibilityConverter x:Key="converterBoolToVisibility"
                                                   TrueValue="Visible"
                                                   FalseValue="Hidden" />
@@ -42,6 +42,12 @@
             <TextBlock Text="{Binding Label}" />
         </HierarchicalDataTemplate>
     </Window.Resources>
+    <Window.Title>
+        <MultiBinding Converter="{StaticResource UnsavedChangesConverter}">
+            <Binding Path="MainWindowTitle" />
+            <Binding Path="AnnoCanvas.UndoManager.IsDirty" />
+        </MultiBinding>
+    </Window.Title>
     <xctk:BusyIndicator x:Name="busyIndicator">
         <Grid>
             <Grid.RowDefinitions>

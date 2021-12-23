@@ -2630,9 +2630,6 @@ namespace AnnoDesigner
         /// <param name="border"></param>
         public void Normalize(int border)
         {
-            _viewport.Left = 0;
-            _viewport.Top = 0;
-
             if (PlacedObjects.Count == 0)
             {
                 return;
@@ -2659,6 +2656,15 @@ namespace AnnoDesigner
             InvalidateVisual();
             InvalidateBounds();
             InvalidateScroll();
+        }
+
+        /// <summary>
+        /// Resets viewport of the canvas to top left corner.
+        /// </summary>
+        public void ResetViewport()
+        {
+            _viewport.Top = 0;
+            _viewport.Left = 0;
         }
 
         /// <summary>
@@ -2737,8 +2743,7 @@ namespace AnnoDesigner
                 return;
             }
 
-            _viewport.Left = 0;
-            _viewport.Top = 0;
+            ResetViewport();
             PlacedObjects.Clear();
             SelectedObjects.Clear();
             UndoManager.Clear();

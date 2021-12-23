@@ -154,6 +154,7 @@ namespace AnnoDesigner.ViewModels
             PreferencesGeneralViewModel = new GeneralSettingsViewModel(_appSettings, _commons, _recentFilesHelper);
 
             LayoutSettingsViewModel = new LayoutSettingsViewModel();
+            LayoutSettingsViewModel.PropertyChangedWithValues += LayoutSettingsViewModel_PropertyChangedWithValues;
 
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
@@ -218,6 +219,19 @@ namespace AnnoDesigner.ViewModels
             PreferencesUpdateViewModel.FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
 
             RecentFilesHelper_Updated(this, EventArgs.Empty);
+        }
+
+        private void LayoutSettingsViewModel_PropertyChangedWithValues(object sender, PropertyChangedWithValuesEventArgs<object> e)
+        {
+            if (e.PropertyName == nameof(LayoutSettingsViewModel.LayoutVersion))
+            {
+                AnnoCanvas.UndoManager.RegisterOperation(new ModifyLayoutVersionOperation()
+                {
+                    LayoutSettingsViewModel = sender as LayoutSettingsViewModel,
+                    OldValue = e.OldValue as Version,
+                    NewValue = e.NewValue as Version,
+                });
+            }
         }
 
         private IconImage GenerateNoIconItem()
@@ -797,6 +811,7 @@ namespace AnnoDesigner.ViewModels
             AnnoCanvas.PlacedObjects.AddRange(layoutObjects);
 
             AnnoCanvas.Normalize(1);
+            AnnoCanvas.ResetViewport();
 
             AnnoCanvas.RaiseStatisticsUpdated(UpdateStatisticsEventArgs.All);
             AnnoCanvas.RaiseColorsInLayoutUpdated();
@@ -1105,6 +1120,7 @@ namespace AnnoDesigner.ViewModels
         private void CanvasNormalize(object param)
         {
             AnnoCanvas.Normalize(1);
+            AnnoCanvas.ResetViewport();
         }
 
         public ICommand MergeRoadsCommand { get; private set; }
@@ -1205,6 +1221,7 @@ namespace AnnoDesigner.ViewModels
 
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
+                            AnnoCanvas.ResetViewport();
 
                             _ = UpdateStatisticsAsync(UpdateMode.All);
                         }
