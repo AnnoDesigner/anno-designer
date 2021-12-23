@@ -123,7 +123,7 @@ namespace AnnoDesigner
             }
         }
 
-        public static string FilenameArgument { get; private set; }
+        public static object StartupArguments { get; private set; }
 
         /// <summary>
         /// The DPI information for the current monitor.
@@ -132,14 +132,7 @@ namespace AnnoDesigner
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            // retrieve file argument if given
-            if (e.Args.Length > 0)
-            {
-                if (!e.Args[0].Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase))
-                {
-                    FilenameArgument = e.Args[0];
-                }
-            }
+            StartupArguments = ArgumentParser.Parse(e.Args);
 
             using var mutexAnnoDesigner = new Mutex(true, MutexHelper.MUTEX_ANNO_DESIGNER, out var createdNewMutex);
             //Are there other processes still running?

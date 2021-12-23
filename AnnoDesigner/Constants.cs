@@ -100,11 +100,6 @@ namespace AnnoDesigner
         public const int StatisticsMargin = 142;
 
         /// <summary>
-        /// Used to prevent endless loop on updates.
-        /// </summary>
-        public const string Argument_Ask_For_Admin = "-askAdmin";
-
-        /// <summary>
         /// The default number of recent files to show.
         /// </summary>
         public const int MaxRecentFiles = 10;

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Configuration;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using AnnoDesigner.Core.Extensions;
+using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.ViewModels;
 using NLog;
@@ -80,9 +83,29 @@ namespace AnnoDesigner
             //}            
 
             // load file given by argument
-            if (!string.IsNullOrEmpty(App.FilenameArgument))
+            if (App.StartupArguments is OpenArgs startupArgs && !string.IsNullOrEmpty(startupArgs.Filename))
             {
-                _mainViewModel.OpenFile(App.FilenameArgument);
+                _mainViewModel.OpenFile(startupArgs.Filename);
+            }
+
+            if (App.StartupArguments is ExportArgs exportArgs && !string.IsNullOrEmpty(exportArgs.Filename) && !string.IsNullOrEmpty(exportArgs.ExportedFilename))
+            {
+                var layout = new LayoutLoader().LoadLayout(exportArgs.Filename);
+                _mainViewModel.PrepareCanvasForRender(layout.Objects, Enumerable.Empty<AnnoObject>(), Math.Max(exportArgs.Border, 0), new Models.CanvasRenderSetting()
+                {
+                    GridSize = Math.Max(Math.Min(exportArgs.GridSize, Constants.GridStepMax), Constants.GridStepMin),
+                    RenderGrid = exportArgs.RenderGrid,
+                    RenderHarborBlockedArea = exportArgs.RenderHarborBlockedArea,
+                    RenderIcon = exportArgs.RenderIcon,
+                    RenderInfluences = exportArgs.RenderInfluences,
+                    RenderLabel = exportArgs.RenderLabel,
+                    RenderPanorama = exportArgs.RenderPanorama,
+                    RenderStatistics = exportArgs.RenderStatistics,
+                    RenderTrueInfluenceRange = exportArgs.RenderTrueInfluenceRange,
+                    RenderVersion = exportArgs.RenderVersion
+                }).RenderToFile(exportArgs.ExportedFilename);
+
+                Close();
             }
         }
 
