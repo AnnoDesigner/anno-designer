@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
@@ -41,7 +42,8 @@ namespace AnnoDesigner.Tests
         {
             return new BuildingSettingsViewModel(appSettingsToUse ?? _mockedAppSettings,
                 _mockedMessageBoxService,
-                _mockedLocalization);
+                _mockedLocalization,
+                new List<IconImage>());
         }
 
         #region ctor tests

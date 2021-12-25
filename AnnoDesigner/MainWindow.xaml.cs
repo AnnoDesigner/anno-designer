@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -174,6 +175,16 @@ namespace AnnoDesigner
             var userConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
             logger.Trace($"saving settings: \"{userConfig}\"");
 #endif
+        }
+
+        private void BuildingSettings_ApplySettings_Checked(object sender, RoutedEventArgs e)
+        {
+            DataContext.BuildingSettingsViewModel.ApplySettings |= (ApplySettings)(sender as CheckBox).Tag;
+        }
+
+        private void BuildingSettings_ApplySettings_Unchecked(object sender, RoutedEventArgs e)
+        {
+            DataContext.BuildingSettingsViewModel.ApplySettings &= ~(ApplySettings)(sender as CheckBox).Tag;
         }
     }
 }

@@ -71,7 +71,7 @@ namespace AnnoDesigner.Undo
 
             if (CurrentCompositeOperation != null)
             {
-                CurrentCompositeOperation.Operations.Add(operation);
+                CurrentCompositeOperation.Add(operation);
             }
             else
             {
@@ -93,7 +93,7 @@ namespace AnnoDesigner.Undo
             finally
             {
                 CurrentCompositeOperation = null;
-                if (operation != null && operation.Operations.Count > 0)
+                if (operation != null && operation.Count > 0)
                 {
                     RegisterOperation(operation);
                 }
