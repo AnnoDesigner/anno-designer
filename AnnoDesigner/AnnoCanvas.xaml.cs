@@ -32,6 +32,7 @@ using AnnoDesigner.Services;
 using AnnoDesigner.Undo;
 using AnnoDesigner.Undo.Operations;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using NLog;
 
 namespace AnnoDesigner
@@ -300,34 +301,6 @@ namespace AnnoDesigner
         /// Event which is fired when the current object is changed
         /// </summary>
         public event Action<LayoutObject> OnCurrentObjectChanged;
-
-        /// <summary>
-        /// backing field of the ObjectClipboard property
-        /// </summary>
-        private List<LayoutObject> _clipboardObjects = new List<LayoutObject>();
-
-        /// <summary>
-        /// Holds a list of objects that are currently on the clipboard.
-        /// </summary>
-        public List<LayoutObject> ClipboardObjects
-        {
-            get { return _clipboardObjects; }
-            private set
-            {
-                if (value != null)
-                {
-                    _clipboardObjects = value;
-                    var localizedMessage = value.Count == 1 ? _localizationHelper.GetLocalization("ItemCopied") : _localizationHelper.GetLocalization("ItemsCopied");
-                    StatusMessage = $"{value.Count} {localizedMessage}";
-                    OnClipboardChanged?.Invoke(value);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Event which is fired when the clipboard content is changed.
-        /// </summary>
-        public event Action<List<LayoutObject>> OnClipboardChanged;
 
         /// <summary>
         /// Backing field of the StatusMessage property.
@@ -2940,7 +2913,13 @@ namespace AnnoDesigner
         {
             if (SelectedObjects.Count != 0)
             {
-                ClipboardObjects = SelectedObjects.ToListWithCapacity();
+                using var memoryStream = new MemoryStream();
+                new LayoutLoader().SaveLayout(new LayoutFile(SelectedObjects.Select(x => x.WrappedAnnoObject)), memoryStream);
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                Clipboard.SetData(Constants.AnnoDesignerClipboardFormat, memoryStream);
+
+                var localizedMessage = SelectedObjects.Count == 1 ? _localizationHelper.GetLocalization("ItemCopied") : _localizationHelper.GetLocalization("ItemsCopied");
+                StatusMessage = $"{SelectedObjects.Count} {localizedMessage}";
             }
         }
 
@@ -2948,10 +2927,43 @@ namespace AnnoDesigner
         private readonly ICommand pasteCommand;
         private void ExecutePaste(object param)
         {
-            if (ClipboardObjects.Count != 0)
+            LayoutFile layout = null;
+
+            var files = Clipboard.GetFileDropList();
+            if (files.Count == 1)
             {
-                CurrentObjects = CloneList(ClipboardObjects);
-                MoveCurrentObjectsToMouse();
+                try
+                {
+                    layout = new LayoutLoader().LoadLayout(files[0], true);
+                }
+                catch (JsonReaderException) { }
+            }
+            if (layout is null && Clipboard.ContainsData(Constants.AnnoDesignerClipboardFormat))
+            {
+                var stream = Clipboard.GetData(Constants.AnnoDesignerClipboardFormat) as Stream;
+                try
+                {
+                    layout = new LayoutLoader().LoadLayout(stream, true);
+                }
+                catch (JsonReaderException) { }
+            }
+            if (layout is null && Clipboard.ContainsText())
+            {
+                using var memoryStream = new MemoryStream();
+                using var streamWriter = new StreamWriter(memoryStream);
+                streamWriter.Write(Clipboard.GetText());
+                streamWriter.Flush();
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                try
+                {
+                    layout = new LayoutLoader().LoadLayout(memoryStream, true);
+                }
+                catch (JsonReaderException) { }
+            }
+
+            if (layout != null && layout.Objects.Count > 0)
+            {
+                CurrentObjects = layout.Objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)).ToList();
             }
         }
 

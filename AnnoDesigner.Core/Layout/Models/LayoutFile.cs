@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using AnnoDesigner.Core.Models;
 
@@ -13,12 +14,12 @@ namespace AnnoDesigner.Core.Layout.Models
         [DataMember(Order = 99)]
         public List<AnnoObject> Objects { get; set; }
 
-        public LayoutFile() : this(null) { }
+        public LayoutFile() { }
 
-        public LayoutFile(List<AnnoObject> objects)
+        public LayoutFile(IEnumerable<AnnoObject> objects)
         {
             FileVersion = CoreConstants.LayoutFileVersion;
-            Objects = objects;
+            Objects = objects.ToList();
         }
     }
 }
