@@ -250,7 +250,9 @@ namespace AnnoDesigner.Localization
                     ["ShowPanorama"] = "Show Panorama",
                     ["GeneralPreferencesRecentFilesSettings"] = "Recent Files Settings",
                     ["GeneralPreferencesMaxRecentFiles"] = "Maximum Recent Files",
-                    ["Clear"] = "Clear"
+                    ["Clear"] = "Clear",
+                    ["EnableDebugMode"] = "Enable Debug Mode",
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Include roads in statistics"
                 },
                 ["ger"] = new Dictionary<string, string>()
                 {
@@ -448,7 +450,9 @@ namespace AnnoDesigner.Localization
                     ["ShowPanorama"] = "Panorama zeigen",
                     ["GeneralPreferencesRecentFilesSettings"] = "Zuletzt geöffnete Dateien",
                     ["GeneralPreferencesMaxRecentFiles"] = "maximale Anzahl Dateien",
-                    ["Clear"] = "Leeren"
+                    ["Clear"] = "Leeren",
+                    ["EnableDebugMode"] = "Debugmodus aktivieren",
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Straßen in die Statistik einbeziehen"
                 },
                 ["fra"] = new Dictionary<string, string>()
                 {
@@ -646,7 +650,9 @@ namespace AnnoDesigner.Localization
                     ["ShowPanorama"] = "Montrer panorama",
                     ["GeneralPreferencesRecentFilesSettings"] = "Fichiers récents",
                     ["GeneralPreferencesMaxRecentFiles"] = "Nombre maximal de fichiers",
-                    ["Clear"] = "Supprimer"
+                    ["Clear"] = "Supprimer",
+                    ["EnableDebugMode"] = "Activer le mode débogage",
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Inclure les routes dans les statistiques"
                 },
                 ["esp"] = new Dictionary<string, string>()
                 {
@@ -844,7 +850,9 @@ namespace AnnoDesigner.Localization
                     ["ShowPanorama"] = "Mostrar panorama",
                     ["GeneralPreferencesRecentFilesSettings"] = "Archivos recientes",
                     ["GeneralPreferencesMaxRecentFiles"] = "Número máximo de archivos",
-                    ["Clear"] = "Eliminar"
+                    ["Clear"] = "Eliminar",
+                    ["EnableDebugMode"] = "Activar el modo de depuración",
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Incluir las carreteras en las estadísticas"
                 },
                 ["pol"] = new Dictionary<string, string>()
                 {
@@ -1042,7 +1050,9 @@ namespace AnnoDesigner.Localization
                     ["ShowPanorama"] = "Pokaż panoramę",
                     ["GeneralPreferencesRecentFilesSettings"] = "Ostatnie akta",
                     ["GeneralPreferencesMaxRecentFiles"] = "Maksymalna liczba plików",
-                    ["Clear"] = "Skreślić"
+                    ["Clear"] = "Skreślić",
+                    ["EnableDebugMode"] = "Włącz tryb debugowania",
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Uwzględnienie dróg w statystykach"
                 },
                 ["rus"] = new Dictionary<string, string>()
                 {
@@ -1240,7 +1250,9 @@ namespace AnnoDesigner.Localization
                     ["ShowPanorama"] = "Показать панораму",
                     ["GeneralPreferencesRecentFilesSettings"] = "Последние Файлы",
                     ["GeneralPreferencesMaxRecentFiles"] = "Максимальное количество файлов",
-                    ["Clear"] = "Удалить"
+                    ["Clear"] = "Удалить",
+                    ["EnableDebugMode"] = "Включить режим отладки",
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Включить дороги в статистику"
                 },
             };
 

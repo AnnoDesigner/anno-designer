@@ -54,5 +54,6 @@ namespace AnnoDesigner.Core.Models
         bool InvertPanningDirection { get; set; }
         bool InvertScrollingDirection { get; set; }
         bool ShowScrollbars { get; set; }
+        bool IncludeRoadsInStatisticCalculation { get; set; }
     }
 }

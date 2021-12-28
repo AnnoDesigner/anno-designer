@@ -108,6 +108,7 @@ namespace AnnoDesigner.ViewModels
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
 
             _appSettings = appSettingsToUse;
+            _appSettings.SettingsChanged += AppSettings_SettingsChanged;
             _recentFilesHelper = recentFilesHelperToUse;
             _messageBoxService = messageBoxServiceToUse;
             _updateHelper = updateHelperToUse;
@@ -122,7 +123,7 @@ namespace AnnoDesigner.ViewModels
 
             HotkeyCommandManager = new HotkeyCommandManager(_localizationHelper);
 
-            StatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
+            StatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons, appSettingsToUse);
             StatisticsViewModel.IsVisible = _appSettings.StatsShowStats;
             StatisticsViewModel.ShowStatisticsBuildingCount = _appSettings.StatsShowBuildingCount;
 
@@ -275,6 +276,11 @@ namespace AnnoDesigner.ViewModels
             {
                 IsLanguageChange = false;
             }
+        }
+
+        private void AppSettings_SettingsChanged(object sender, EventArgs e)
+        {
+            _ = UpdateStatisticsAsync(UpdateMode.All);
         }
 
         private void RecentFilesHelper_Updated(object sender, EventArgs e)
@@ -564,6 +570,11 @@ namespace AnnoDesigner.ViewModels
 
         public Task UpdateStatisticsAsync(UpdateMode mode)
         {
+            if (StatisticsViewModel is null || AnnoCanvas is null)
+            {
+                return Task.CompletedTask;
+            }
+
             return StatisticsViewModel.UpdateStatisticsAsync(mode,
                 AnnoCanvas.PlacedObjects.ToList(),
                 AnnoCanvas.SelectedObjects,
@@ -1397,7 +1408,7 @@ namespace AnnoDesigner.ViewModels
 
                 if (renderStatistics)
                 {
-                    var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
+                    var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons, _appSettings);
                     exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult();
                     exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 
