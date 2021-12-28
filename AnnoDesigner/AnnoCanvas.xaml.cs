@@ -68,6 +68,8 @@ namespace AnnoDesigner
 
         public IUndoManager UndoManager { get; private set; }
 
+        public IClipboardManager ClipboardManager { get; set; }
+
         /// <summary>
         /// Contains all loaded icons as a mapping of name (the filename without extension) to loaded BitmapImage.
         /// </summary>
@@ -575,7 +577,8 @@ namespace AnnoDesigner
             IPenCache penCacheToUse = null,
             IMessageBoxService messageBoxServiceToUse = null,
             ILocalizationHelper localizationHelperToUse = null,
-            IUndoManager undoManager = null)
+            IUndoManager undoManager = null,
+            IClipboardManager clipboardManager = null)
         {
             InitializeComponent();
 
@@ -587,6 +590,7 @@ namespace AnnoDesigner
             _messageBoxService = messageBoxServiceToUse ?? new MessageBoxService();
             _localizationHelper = localizationHelperToUse ?? Localization.Localization.Instance;
             UndoManager = undoManager ?? new UndoManager();
+            ClipboardManager = clipboardManager ?? new ClipboardManager();
 
             _layoutLoader = new LayoutLoader();
 
@@ -2913,10 +2917,7 @@ namespace AnnoDesigner
         {
             if (SelectedObjects.Count != 0)
             {
-                using var memoryStream = new MemoryStream();
-                new LayoutLoader().SaveLayout(new LayoutFile(SelectedObjects.Select(x => x.WrappedAnnoObject)), memoryStream);
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                Clipboard.SetData(Constants.AnnoDesignerClipboardFormat, memoryStream);
+                ClipboardManager.Copy(SelectedObjects.Select(x => x.WrappedAnnoObject));
 
                 var localizedMessage = SelectedObjects.Count == 1 ? _localizationHelper.GetLocalization("ItemCopied") : _localizationHelper.GetLocalization("ItemsCopied");
                 StatusMessage = $"{SelectedObjects.Count} {localizedMessage}";
@@ -2927,43 +2928,10 @@ namespace AnnoDesigner
         private readonly ICommand pasteCommand;
         private void ExecutePaste(object param)
         {
-            LayoutFile layout = null;
-
-            var files = Clipboard.GetFileDropList();
-            if (files.Count == 1)
+            var objects = ClipboardManager.Paste();
+            if (objects.Count > 0)
             {
-                try
-                {
-                    layout = new LayoutLoader().LoadLayout(files[0], true);
-                }
-                catch (JsonReaderException) { }
-            }
-            if (layout is null && Clipboard.ContainsData(Constants.AnnoDesignerClipboardFormat))
-            {
-                var stream = Clipboard.GetData(Constants.AnnoDesignerClipboardFormat) as Stream;
-                try
-                {
-                    layout = new LayoutLoader().LoadLayout(stream, true);
-                }
-                catch (JsonReaderException) { }
-            }
-            if (layout is null && Clipboard.ContainsText())
-            {
-                using var memoryStream = new MemoryStream();
-                using var streamWriter = new StreamWriter(memoryStream);
-                streamWriter.Write(Clipboard.GetText());
-                streamWriter.Flush();
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                try
-                {
-                    layout = new LayoutLoader().LoadLayout(memoryStream, true);
-                }
-                catch (JsonReaderException) { }
-            }
-
-            if (layout != null && layout.Objects.Count > 0)
-            {
-                CurrentObjects = layout.Objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)).ToList();
+                CurrentObjects = objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)).ToList();
             }
         }
 
