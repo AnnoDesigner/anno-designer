@@ -123,7 +123,7 @@ namespace AnnoDesigner
             }
         }
 
-        public static object StartupArguments { get; private set; }
+        public static IProgramArgs StartupArguments { get; private set; }
 
         /// <summary>
         /// The DPI information for the current monitor.
@@ -132,7 +132,18 @@ namespace AnnoDesigner
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            StartupArguments = ArgumentParser.Parse(e.Args);
+            try
+            {
+                StartupArguments = ArgumentParser.Parse(e.Args);
+            }
+            catch (HelpException ex)
+            {
+                ConsoleManager.Show();
+                Console.WriteLine(ex.HelpText);
+                Console.WriteLine("Press enter to exit");
+                Console.ReadLine();
+                Environment.Exit(0);
+            }
 
             using var mutexAnnoDesigner = new Mutex(true, MutexHelper.MUTEX_ANNO_DESIGNER, out var createdNewMutex);
             //Are there other processes still running?

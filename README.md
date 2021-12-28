@@ -28,6 +28,16 @@ The **Anno Designer** is a standalone windows application that can be used for c
 
 **Download the latest version from the [here](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.2)** (select the .exe file). Run it, and use it to design layouts!
 
+Anno Designer can be started either without any arguments or by specifying one of supported verbs. When started without arguments, empty layout is open.
+
+Run `AnnoDesigner.exe --help` for list of supported verbs
+
+- `open` - opens specified layout file instead of empty layout
+- `export` - exports specific layout file to PNG file and exits
+
+Run `AnnoDesigner.exe <verb> --help` (for example `AnnoDesigner.exe open --help`) for more info about that verb and its arguments.
+
+
 ## Technology
 
 This application is written in C# (.NET Framework 4.8) and uses WPF.
