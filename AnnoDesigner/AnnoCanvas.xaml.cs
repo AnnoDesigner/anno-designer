@@ -588,10 +588,9 @@ namespace AnnoDesigner
             _penCache = penCacheToUse ?? new PenCache();
             _messageBoxService = messageBoxServiceToUse ?? new MessageBoxService();
             _localizationHelper = localizationHelperToUse ?? Localization.Localization.Instance;
-            UndoManager = undoManager ?? new UndoManager();
-            ClipboardService = clipboardService ?? new ClipboardService();
-
             _layoutLoader = new LayoutLoader();
+            UndoManager = undoManager ?? new UndoManager();
+            ClipboardService = clipboardService ?? new ClipboardService(_layoutLoader);
 
             _showScrollBars = _appSettings.ShowScrollbars;
             _hideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using Newtonsoft.Json;
@@ -12,12 +11,19 @@ namespace AnnoDesigner.Core.Services
 {
     public class ClipboardService : IClipboardService
     {
+        private readonly ILayoutLoader _layoutLoader;
+
+        public ClipboardService(ILayoutLoader layoutLoaderToUse)
+        {
+            _layoutLoader = layoutLoaderToUse;
+        }
+
         public void Copy(IEnumerable<AnnoObject> objects)
         {
             if (!objects.Any())
             {
                 using var memoryStream = new MemoryStream();
-                new LayoutLoader().SaveLayout(new LayoutFile(objects), memoryStream);
+                _layoutLoader.SaveLayout(new LayoutFile(objects), memoryStream);
                 memoryStream.Seek(0, SeekOrigin.Begin);
                 Clipboard.SetData(CoreConstants.AnnoDesignerClipboardFormat, memoryStream);
             }
@@ -25,14 +31,12 @@ namespace AnnoDesigner.Core.Services
 
         public ICollection<AnnoObject> Paste()
         {
-            var loader = new LayoutLoader();
-
             var files = Clipboard.GetFileDropList();
-            if (files.Count == 1)
+            if (files?.Count == 1)
             {
                 try
                 {
-                    return loader.LoadLayout(files[0], true).Objects;
+                    return _layoutLoader.LoadLayout(files[0], forceLoad: true).Objects;
                 }
                 catch (JsonReaderException) { }
             }
@@ -42,7 +46,7 @@ namespace AnnoDesigner.Core.Services
                 var stream = Clipboard.GetData(CoreConstants.AnnoDesignerClipboardFormat) as Stream;
                 try
                 {
-                    return loader.LoadLayout(stream, true).Objects;
+                    return _layoutLoader.LoadLayout(stream, forceLoad: true).Objects;
                 }
                 catch (JsonReaderException) { }
             }
@@ -56,7 +60,7 @@ namespace AnnoDesigner.Core.Services
                 memoryStream.Seek(0, SeekOrigin.Begin);
                 try
                 {
-                    return loader.LoadLayout(memoryStream, true).Objects;
+                    return _layoutLoader.LoadLayout(memoryStream, forceLoad: true).Objects;
                 }
                 catch (JsonReaderException) { }
             }
