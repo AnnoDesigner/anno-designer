@@ -2639,23 +2639,26 @@ namespace AnnoDesigner
             var dy = PlacedObjects.Min(_ => _.Position.Y) - border;
             var diff = new Vector(dx, dy);
 
-            UndoManager.RegisterOperation(new MoveObjectsOperation<LayoutObject>()
+            if (diff.LengthSquared > 0)
             {
-                ObjectPropertyValues = PlacedObjects.Select(obj => (obj, obj.Bounds, new Rect(obj.Position - diff, obj.Size))).ToList(),
-                QuadTree = PlacedObjects
-            });
+                UndoManager.RegisterOperation(new MoveObjectsOperation<LayoutObject>()
+                {
+                    ObjectPropertyValues = PlacedObjects.Select(obj => (obj, obj.Bounds, new Rect(obj.Position - diff, obj.Size))).ToList(),
+                    QuadTree = PlacedObjects
+                });
 
-            // make a copy of a list to avoid altering collection during iteration
-            var placedObjects = PlacedObjects.ToList();
+                // make a copy of a list to avoid altering collection during iteration
+                var placedObjects = PlacedObjects.ToList();
 
-            foreach (var item in placedObjects)
-            {
-                PlacedObjects.Move(item, -diff);
+                foreach (var item in placedObjects)
+                {
+                    PlacedObjects.Move(item, -diff);
+                }
+
+                InvalidateVisual();
+                InvalidateBounds();
+                InvalidateScroll();
             }
-
-            InvalidateVisual();
-            InvalidateBounds();
-            InvalidateScroll();
         }
 
         /// <summary>
