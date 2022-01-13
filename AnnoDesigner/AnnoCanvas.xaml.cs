@@ -2771,6 +2771,8 @@ namespace AnnoDesigner
             else
             {
                 SaveFileRequested?.Invoke(this, new SaveFileEventArgs(LoadedFile));
+                // Fire OnLoadedFileChanged event to trigger recalculation of MainWindowTitle
+                OnLoadedFileChanged?.Invoke(this, new FileLoadedEventArgs(LoadedFile));
                 return true;
             }
         }

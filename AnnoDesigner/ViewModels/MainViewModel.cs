@@ -543,10 +543,11 @@ namespace AnnoDesigner.ViewModels
         private void AnnoCanvas_LoadedFileChanged(object sender, FileLoadedEventArgs args)
         {
             var fileName = string.Empty;
-            if (!string.IsNullOrWhiteSpace(args.FilePath) && args.Layout?.LayoutVersion != default)
+            var layoutVersion = args.Layout?.LayoutVersion ?? LayoutSettingsViewModel.LayoutVersion;
+            if (!string.IsNullOrWhiteSpace(args.FilePath) && layoutVersion != default)
             {
-                fileName = $"{Path.GetFileName(args.FilePath)} ({args.Layout.LayoutVersion})";
-                LayoutSettingsViewModel.LayoutVersion = args.Layout.LayoutVersion;
+                fileName = $"{Path.GetFileName(args.FilePath)} ({layoutVersion})";
+                LayoutSettingsViewModel.LayoutVersion = layoutVersion;
             }
             else if (!string.IsNullOrWhiteSpace(args.FilePath))
             {
@@ -555,9 +556,12 @@ namespace AnnoDesigner.ViewModels
 
             MainWindowTitle = string.IsNullOrEmpty(fileName) ? "Anno Designer" : string.Format("{0} - Anno Designer", fileName);
 
-            logger.Info($"Loaded file: {(string.IsNullOrEmpty(args.FilePath) ? "(none)" : args.FilePath)}");
+            if (!string.IsNullOrWhiteSpace(args.FilePath))
+            {
+                logger.Info($"Loaded file: {(string.IsNullOrEmpty(args.FilePath) ? "(none)" : args.FilePath)}");
 
-            _recentFilesHelper.AddFile(new RecentFile(args.FilePath, DateTime.UtcNow));
+                _recentFilesHelper.AddFile(new RecentFile(args.FilePath, DateTime.UtcNow));
+            }
         }
 
         private void AnnoCanvas_OpenFileRequested(object sender, OpenFileEventArgs e)
