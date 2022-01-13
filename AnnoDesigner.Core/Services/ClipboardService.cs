@@ -20,12 +20,14 @@ namespace AnnoDesigner.Core.Services
 
         public void Copy(IEnumerable<AnnoObject> objects)
         {
-            if (!objects.Any())
+            if (objects.Any())
             {
                 using var memoryStream = new MemoryStream();
                 _layoutLoader.SaveLayout(new LayoutFile(objects), memoryStream);
                 memoryStream.Seek(0, SeekOrigin.Begin);
+                Clipboard.Clear();
                 Clipboard.SetData(CoreConstants.AnnoDesignerClipboardFormat, memoryStream);
+                Clipboard.Flush();
             }
         }
 
