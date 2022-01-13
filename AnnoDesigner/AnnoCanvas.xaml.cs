@@ -32,7 +32,6 @@ using AnnoDesigner.Services;
 using AnnoDesigner.Undo;
 using AnnoDesigner.Undo.Operations;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using NLog;
 
 namespace AnnoDesigner
