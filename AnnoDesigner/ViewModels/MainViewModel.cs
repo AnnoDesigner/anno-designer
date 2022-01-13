@@ -223,7 +223,7 @@ namespace AnnoDesigner.ViewModels
 
         private void LayoutSettingsViewModel_PropertyChangedWithValues(object sender, PropertyChangedWithValuesEventArgs<object> e)
         {
-            if (e.PropertyName == nameof(LayoutSettingsViewModel.LayoutVersion))
+            if (string.Equals(e.PropertyName, nameof(LayoutSettingsViewModel.LayoutVersion), StringComparison.OrdinalIgnoreCase))
             {
                 AnnoCanvas.UndoManager.RegisterOperation(new ModifyLayoutVersionOperation()
                 {

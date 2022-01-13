@@ -1,7 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace AnnoDesigner.Core.Models
 {
+    /// <inheritdoc/>
     public class PropertyChangedWithValuesEventArgs<T> : PropertyChangedEventArgs
     {
         public T OldValue { get; set; }
@@ -15,10 +17,8 @@ namespace AnnoDesigner.Core.Models
         }
     }
 
-    public delegate void PropertyChangedWithValuesEventHandler<T>(object sender, PropertyChangedWithValuesEventArgs<T> e);
-
     public interface INotifyPropertyChangedWithValues<T>
     {
-        event PropertyChangedWithValuesEventHandler<T> PropertyChangedWithValues;
+        event EventHandler<PropertyChangedWithValuesEventArgs<T>> PropertyChangedWithValues;
     }
 }

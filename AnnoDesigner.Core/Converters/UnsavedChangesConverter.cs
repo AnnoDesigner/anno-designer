@@ -15,6 +15,7 @@ namespace AnnoDesigner.Core.Converters
             {
                 return DependencyProperty.UnsetValue;
             }
+
             if (values.Length < 2 || values[1] is false)
             {
                 return values[0];

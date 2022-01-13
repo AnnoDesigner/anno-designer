@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace AnnoDesigner.Core.Models
@@ -15,7 +13,7 @@ namespace AnnoDesigner.Core.Models
     public class Notify : INotifyPropertyChanged, INotifyPropertyChangedWithValues<object>
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public event PropertyChangedWithValuesEventHandler<object> PropertyChangedWithValues;
+        public event EventHandler<PropertyChangedWithValuesEventArgs<object>> PropertyChangedWithValues;
 
         protected void OnPropertyChanged(string propertyName)
         {
