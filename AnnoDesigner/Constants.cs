@@ -108,10 +108,5 @@ namespace AnnoDesigner
         /// The default number of recent files to show.
         /// </summary>
         public const int MaxRecentFiles = 10;
-
-        /// <summary>
-        /// Clipboard format used to serialize list of <see cref="AnnoObject"/>.
-        /// </summary>
-        public const string AnnoDesignerClipboardFormat = "AnnoDesignerLayout";
     }
 }

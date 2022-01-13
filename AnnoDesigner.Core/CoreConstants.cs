@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AnnoDesigner.Core
 {
@@ -29,6 +25,11 @@ namespace AnnoDesigner.Core
         /// Prefix for temporary updated presets file.
         /// </summary>
         public const string PrefixUpdatedPresetsFile = "temp_";
+
+        /// <summary>
+        /// Clipboard format used to serialize list of <see cref="Models.AnnoObject"/>.
+        /// </summary>
+        internal const string AnnoDesignerClipboardFormat = "AnnoDesignerLayout";
 
         public static class PresetsFiles
         {

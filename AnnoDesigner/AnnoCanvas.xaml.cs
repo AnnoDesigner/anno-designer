@@ -67,7 +67,7 @@ namespace AnnoDesigner
 
         public IUndoManager UndoManager { get; private set; }
 
-        public IClipboardManager ClipboardManager { get; set; }
+        public IClipboardService ClipboardService { get; set; }
 
         /// <summary>
         /// Contains all loaded icons as a mapping of name (the filename without extension) to loaded BitmapImage.
@@ -577,7 +577,7 @@ namespace AnnoDesigner
             IMessageBoxService messageBoxServiceToUse = null,
             ILocalizationHelper localizationHelperToUse = null,
             IUndoManager undoManager = null,
-            IClipboardManager clipboardManager = null)
+            IClipboardService clipboardService = null)
         {
             InitializeComponent();
 
@@ -589,7 +589,7 @@ namespace AnnoDesigner
             _messageBoxService = messageBoxServiceToUse ?? new MessageBoxService();
             _localizationHelper = localizationHelperToUse ?? Localization.Localization.Instance;
             UndoManager = undoManager ?? new UndoManager();
-            ClipboardManager = clipboardManager ?? new ClipboardManager();
+            ClipboardService = clipboardService ?? new ClipboardService();
 
             _layoutLoader = new LayoutLoader();
 
@@ -2916,7 +2916,7 @@ namespace AnnoDesigner
         {
             if (SelectedObjects.Count != 0)
             {
-                ClipboardManager.Copy(SelectedObjects.Select(x => x.WrappedAnnoObject));
+                ClipboardService.Copy(SelectedObjects.Select(x => x.WrappedAnnoObject));
 
                 var localizedMessage = SelectedObjects.Count == 1 ? _localizationHelper.GetLocalization("ItemCopied") : _localizationHelper.GetLocalization("ItemsCopied");
                 StatusMessage = $"{SelectedObjects.Count} {localizedMessage}";
@@ -2927,7 +2927,7 @@ namespace AnnoDesigner
         private readonly ICommand pasteCommand;
         private void ExecutePaste(object param)
         {
-            var objects = ClipboardManager.Paste();
+            var objects = ClipboardService.Paste();
             if (objects.Count > 0)
             {
                 CurrentObjects = objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)).ToList();

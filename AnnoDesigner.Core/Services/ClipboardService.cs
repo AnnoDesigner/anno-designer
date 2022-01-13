@@ -8,16 +8,9 @@ using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using Newtonsoft.Json;
 
-namespace AnnoDesigner
+namespace AnnoDesigner.Core.Services
 {
-    public interface IClipboardManager
-    {
-        void Copy(IEnumerable<AnnoObject> objects);
-
-        ICollection<AnnoObject> Paste();
-    }
-
-    public class ClipboardManager : IClipboardManager
+    public class ClipboardService : IClipboardService
     {
         public void Copy(IEnumerable<AnnoObject> objects)
         {
@@ -26,7 +19,7 @@ namespace AnnoDesigner
                 using var memoryStream = new MemoryStream();
                 new LayoutLoader().SaveLayout(new LayoutFile(objects), memoryStream);
                 memoryStream.Seek(0, SeekOrigin.Begin);
-                Clipboard.SetData(Constants.AnnoDesignerClipboardFormat, memoryStream);
+                Clipboard.SetData(CoreConstants.AnnoDesignerClipboardFormat, memoryStream);
             }
         }
 
@@ -43,15 +36,17 @@ namespace AnnoDesigner
                 }
                 catch (JsonReaderException) { }
             }
-            if (Clipboard.ContainsData(Constants.AnnoDesignerClipboardFormat))
+
+            if (Clipboard.ContainsData(CoreConstants.AnnoDesignerClipboardFormat))
             {
-                var stream = Clipboard.GetData(Constants.AnnoDesignerClipboardFormat) as Stream;
+                var stream = Clipboard.GetData(CoreConstants.AnnoDesignerClipboardFormat) as Stream;
                 try
                 {
                     return loader.LoadLayout(stream, true).Objects;
                 }
                 catch (JsonReaderException) { }
             }
+
             if (Clipboard.ContainsText())
             {
                 using var memoryStream = new MemoryStream();
