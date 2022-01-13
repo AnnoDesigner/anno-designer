@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <OutputType>WinExe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AnnoDesigner.Core">
-      <HintPath>..\..\AnnoDesigner\bin\$(Configuration)\net472\AnnoDesigner.Core.dll</HintPath>
+      <HintPath>..\..\AnnoDesigner\bin\$(Configuration)\net48\AnnoDesigner.Core.dll</HintPath>
     </Reference>
     <Reference Include="FandomParser.Core">
-      <HintPath>..\..\FandomParser\FandomParser\bin\$(Configuration)\net472\FandomParser.Core.dll</HintPath>
+      <HintPath>..\..\FandomParser\FandomParser\bin\$(Configuration)\net48\FandomParser.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
   </ItemGroup>
