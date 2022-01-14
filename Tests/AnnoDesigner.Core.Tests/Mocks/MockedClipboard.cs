@@ -67,6 +67,11 @@ namespace AnnoDesigner.Core.Tests.Mocks
             return _text;
         }
 
+        public void SetText(string text)
+        {
+            _text = text;
+        }
+
         public void SetData(string format, object data)
         {
             if (data is System.IO.Stream stream)

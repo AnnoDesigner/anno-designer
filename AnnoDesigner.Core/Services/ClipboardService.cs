@@ -46,10 +46,13 @@ namespace AnnoDesigner.Core.Services
 
             if (_clipboard.ContainsData(CoreConstants.AnnoDesignerClipboardFormat))
             {
-                var stream = _clipboard.GetData(CoreConstants.AnnoDesignerClipboardFormat) as Stream;
                 try
                 {
-                    return _layoutLoader.LoadLayout(stream, forceLoad: true).Objects;
+                    var stream = _clipboard.GetData(CoreConstants.AnnoDesignerClipboardFormat) as Stream;
+                    if (stream is not null)
+                    {
+                        return _layoutLoader.LoadLayout(stream, forceLoad: true).Objects;
+                    }
                 }
                 catch (JsonReaderException) { }
             }

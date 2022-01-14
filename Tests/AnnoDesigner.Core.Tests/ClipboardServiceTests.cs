@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
@@ -18,6 +16,14 @@ namespace AnnoDesigner.Core.Tests
     {
         private readonly MockedClipboard _mockedClipboard;
         private readonly ILayoutLoader _mockedLayoutLoader;
+        private static readonly string testData_v4_LayoutWithVersionAndObjects;
+
+        static ClipboardServiceTests()
+        {
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+
+            testData_v4_LayoutWithVersionAndObjects = System.IO.File.ReadAllText(System.IO.Path.Combine(basePath, "Testdata", "Layout", "v4_layoutWithVersionAndObjects.ad"), Encoding.UTF8);
+        }
 
         public ClipboardServiceTests()
         {
@@ -214,6 +220,130 @@ namespace AnnoDesigner.Core.Tests
 
             var service = GetService(layoutLoaderToUse: mockedLayoutLoader.Object);
             _mockedClipboard.AddFilesToClipboard(new List<string> { "first" });
+
+            // Act
+            var result = service.Paste();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void Paste_Data_ClipboardHasUnknownDataType_ShouldReturnEmpty()
+        {
+            // Arrange
+            _mockedClipboard.SetData(CoreConstants.AnnoDesignerClipboardFormat, new { Id = "unknown object" });
+            var service = GetService();
+
+            // Act
+            var result = service.Paste();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void Paste_Data_ClipboardHasKnownDataType_ShouldReturnLayoutObjects()
+        {
+            // Arrange
+            var data = GetListOfObjects();
+
+            using var memoryStream = new System.IO.MemoryStream();
+            _mockedLayoutLoader.SaveLayout(new LayoutFile(data), memoryStream);
+            memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
+            _mockedClipboard.SetData(CoreConstants.AnnoDesignerClipboardFormat, memoryStream);
+
+            var service = GetService();
+
+            // Act
+            var result = service.Paste();
+
+            // Assert
+            Assert.Equal(data.Count, result.Count);
+            Assert.All(data, x =>
+            {
+                //Assert.Contains(x, result); //not useable because of missing cutom comparer for AnnoObject
+                Assert.Contains(result, y => y.Identifier.Equals(x.Identifier, StringComparison.OrdinalIgnoreCase));
+            });
+        }
+
+        [Fact]
+        public void Paste_Data_ClipboardHasKnownDataTypeAndLayoutLoaderThrows_ShouldReturnEmpty()
+        {
+            // Arrange
+            var data = GetListOfObjects();
+
+            var mockedLayoutLoader = new Mock<ILayoutLoader>();
+            _ = mockedLayoutLoader.Setup(x => x.LoadLayout(It.IsAny<System.IO.Stream>(), It.IsAny<bool>()))
+                .Throws(new JsonReaderException());
+
+            using var memoryStream = new System.IO.MemoryStream();
+            _mockedLayoutLoader.SaveLayout(new LayoutFile(data), memoryStream);
+            memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
+            _mockedClipboard.SetData(CoreConstants.AnnoDesignerClipboardFormat, memoryStream);
+
+            var service = GetService(layoutLoaderToUse: mockedLayoutLoader.Object);
+
+            // Act
+            var result = service.Paste();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void Paste_Text_ClipboardHasKnownDataType_ShouldReturnLayoutObjects()
+        {
+            // Arrange
+            _mockedClipboard.SetText(testData_v4_LayoutWithVersionAndObjects);
+
+            using var streamWithLayout = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(testData_v4_LayoutWithVersionAndObjects));
+            var expectedLayout = _mockedLayoutLoader.LoadLayout(streamWithLayout, forceLoad: true);
+
+            var service = GetService();
+
+            // Act
+            var result = service.Paste();
+
+            // Assert
+            Assert.Equal(expectedLayout.Objects.Count, result.Count);
+            Assert.All(expectedLayout.Objects, x =>
+            {
+                //Assert.Contains(x, result); //not useable because of missing cutom comparer for AnnoObject
+                Assert.Contains(result, y => y.Identifier.Equals(x.Identifier, StringComparison.OrdinalIgnoreCase));
+            });
+        }
+
+        [Fact]
+        public void Paste_Text_ClipboardHasUnknownDataType_ShouldReturnEmpty()
+        {
+            // Arrange
+            _mockedClipboard.SetText("not a layout");
+
+            var service = GetService();
+
+            // Act
+            var result = service.Paste();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void Paste_Text_ClipboardHasKnownDataTypeAndLayoutLoaderThrows_ShouldReturnEmpty()
+        {
+            // Arrange
+            _mockedClipboard.SetText(testData_v4_LayoutWithVersionAndObjects);
+
+            var mockedLayoutLoader = new Mock<ILayoutLoader>();
+            _ = mockedLayoutLoader.Setup(x => x.LoadLayout(It.IsAny<System.IO.Stream>(), It.IsAny<bool>()))
+                .Throws(new JsonReaderException());
+
+            var service = GetService(layoutLoaderToUse: mockedLayoutLoader.Object);
 
             // Act
             var result = service.Paste();
