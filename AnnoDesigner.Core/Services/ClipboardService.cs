@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using Newtonsoft.Json;
@@ -12,10 +11,12 @@ namespace AnnoDesigner.Core.Services
     public class ClipboardService : IClipboardService
     {
         private readonly ILayoutLoader _layoutLoader;
+        private readonly IClipboard _clipboard;
 
-        public ClipboardService(ILayoutLoader layoutLoaderToUse)
+        public ClipboardService(ILayoutLoader layoutLoaderToUse, IClipboard clipboardToUse)
         {
             _layoutLoader = layoutLoaderToUse;
+            _clipboard = clipboardToUse;
         }
 
         public void Copy(IEnumerable<AnnoObject> objects)
@@ -25,15 +26,15 @@ namespace AnnoDesigner.Core.Services
                 using var memoryStream = new MemoryStream();
                 _layoutLoader.SaveLayout(new LayoutFile(objects), memoryStream);
                 memoryStream.Seek(0, SeekOrigin.Begin);
-                Clipboard.Clear();
-                Clipboard.SetData(CoreConstants.AnnoDesignerClipboardFormat, memoryStream);
-                Clipboard.Flush();
+                _clipboard.Clear();
+                _clipboard.SetData(CoreConstants.AnnoDesignerClipboardFormat, memoryStream);
+                _clipboard.Flush();
             }
         }
 
         public ICollection<AnnoObject> Paste()
         {
-            var files = Clipboard.GetFileDropList();
+            var files = _clipboard.GetFileDropList();
             if (files?.Count == 1)
             {
                 try
@@ -43,9 +44,9 @@ namespace AnnoDesigner.Core.Services
                 catch (JsonReaderException) { }
             }
 
-            if (Clipboard.ContainsData(CoreConstants.AnnoDesignerClipboardFormat))
+            if (_clipboard.ContainsData(CoreConstants.AnnoDesignerClipboardFormat))
             {
-                var stream = Clipboard.GetData(CoreConstants.AnnoDesignerClipboardFormat) as Stream;
+                var stream = _clipboard.GetData(CoreConstants.AnnoDesignerClipboardFormat) as Stream;
                 try
                 {
                     return _layoutLoader.LoadLayout(stream, forceLoad: true).Objects;
@@ -53,11 +54,11 @@ namespace AnnoDesigner.Core.Services
                 catch (JsonReaderException) { }
             }
 
-            if (Clipboard.ContainsText())
+            if (_clipboard.ContainsText())
             {
                 using var memoryStream = new MemoryStream();
                 using var streamWriter = new StreamWriter(memoryStream);
-                streamWriter.Write(Clipboard.GetText());
+                streamWriter.Write(_clipboard.GetText());
                 streamWriter.Flush();
                 memoryStream.Seek(0, SeekOrigin.Begin);
                 try

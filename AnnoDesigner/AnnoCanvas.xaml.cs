@@ -590,7 +590,8 @@ namespace AnnoDesigner
             _localizationHelper = localizationHelperToUse ?? Localization.Localization.Instance;
             _layoutLoader = new LayoutLoader();
             UndoManager = undoManager ?? new UndoManager();
-            ClipboardService = clipboardService ?? new ClipboardService(_layoutLoader);
+            IClipboard clipboard = new WindowsClipboard();
+            ClipboardService = clipboardService ?? new ClipboardService(_layoutLoader, clipboard);
 
             _showScrollBars = _appSettings.ShowScrollbars;
             _hideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;
