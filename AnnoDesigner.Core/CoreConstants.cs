@@ -29,7 +29,7 @@ namespace AnnoDesigner.Core
         /// <summary>
         /// Clipboard format used to serialize list of <see cref="Models.AnnoObject"/>.
         /// </summary>
-        internal const string AnnoDesignerClipboardFormat = "AnnoDesignerLayout";
+        public const string AnnoDesignerClipboardFormat = "AnnoDesignerLayout";
 
         public static class PresetsFiles
         {

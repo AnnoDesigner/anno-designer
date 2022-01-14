@@ -21,7 +21,7 @@ namespace AnnoDesigner.Core.Services
 
         public void Copy(IEnumerable<AnnoObject> objects)
         {
-            if (objects.Any())
+            if (objects is not null && objects.Any())
             {
                 using var memoryStream = new MemoryStream();
                 _layoutLoader.SaveLayout(new LayoutFile(objects), memoryStream);
