@@ -752,9 +752,6 @@
                 <StatusBarItem Content="{l:Localize StatusBarControls}" />
                 <StatusBarItem Content="{Binding StatusMessage}"
                                Margin="10,0,0,0" />
-                <StatusBarItem Content="{Binding StatusMessageClipboard}"
-                               Margin="10,0,0,0"
-                               HorizontalAlignment="Right" />
             </StatusBar>
         </Grid>
     </xctk:BusyIndicator>

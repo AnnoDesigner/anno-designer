@@ -2,7 +2,7 @@
   <PropertyGroup>
     <RootNamespace>AnnoDesigner</RootNamespace>
     <AssemblyName>AnnoDesigner</AssemblyName>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <OutputType>WinExe</OutputType>
     <UseWPF>true</UseWPF>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -85,10 +85,10 @@
     <PackageReference Include="Extended.Wpf.Toolkit" Version="3.8.2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
-    <PackageReference Include="NLog" Version="4.7.8" />
+    <PackageReference Include="NLog" />
     <PackageReference Include="Octokit" Version="0.50.0" />
-    <PackageReference Include="System.IO.Abstractions" Version="13.2.25" />
-    <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="13.2.25" />
+    <PackageReference Include="System.IO.Abstractions" />
+    <PackageReference Include="System.IO.Abstractions.TestingHelpers" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="echo create directory for icons &quot;$(TargetDir)icons&quot;&#xD;&#xA;if not exist &quot;$(TargetDir)icons&quot; md &quot;$(TargetDir)icons&quot;&#xD;&#xA;&#xD;&#xA;rem ROBOCOPY exits with &quot;success codes&quot; which are under 8. See: http://support.microsoft.com/kb/954404&#xD;&#xA;rem This means that:&#xD;&#xA;&#xD;&#xA;rem robocopy exit code 0 = no files copied&#xD;&#xA;rem robocopy exit code 1 = files copied&#xD;&#xA;rem When the result is 1, this becomes an error exit code in visual studio.&#xD;&#xA;&#xD;&#xA;echo copy icons from &quot;$(ProjectDir)\icons&quot; to &quot;$(TargetDir)icons&quot;&#xD;&#xA;ROBOCOPY &quot;$(ProjectDir)\icons&quot; &quot;$(TargetDir)icons&quot; *.* /E /NFL /NDL /NJH /NJS /nc /ns /np&#xD;&#xA;&#xD;&#xA;if %2525ERRORLEVEL%2525 GEQ 8 goto failed&#xD;&#xA;&#xD;&#xA;rem end of batch&#xD;&#xA;goto success&#xD;&#xA;&#xD;&#xA;:failed&#xD;&#xA;exit -1&#xD;&#xA;&#xD;&#xA;:success&#xD;&#xA;exit 0" />

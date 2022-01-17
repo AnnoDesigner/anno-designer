@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWpf>true</UseWpf>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AnnoDesigner.Core">
-      <HintPath>..\..\AnnoDesigner.Core\bin\$(Configuration)\net472\AnnoDesigner.Core.dll</HintPath>
+      <HintPath>..\..\AnnoDesigner.Core\bin\$(Configuration)\net48\AnnoDesigner.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CXuesong.MW.WikiClientLibrary" Version="0.7.2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="NLog" Version="4.7.2" />
+    <PackageReference Include="NLog" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>

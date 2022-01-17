@@ -71,7 +71,6 @@ namespace AnnoDesigner.ViewModels
         private bool _isLanguageChange;
         private bool _isBusy;
         private string _statusMessage;
-        private string _statusMessageClipboard;
         private ObservableCollection<SupportedLanguage> _languages;
         private ObservableCollection<IconImage> _availableIcons;
         private IconImage _selectedIcon;
@@ -108,6 +107,7 @@ namespace AnnoDesigner.ViewModels
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
 
             _appSettings = appSettingsToUse;
+            _appSettings.SettingsChanged += AppSettings_SettingsChanged;
             _recentFilesHelper = recentFilesHelperToUse;
             _messageBoxService = messageBoxServiceToUse;
             _updateHelper = updateHelperToUse;
@@ -122,7 +122,7 @@ namespace AnnoDesigner.ViewModels
 
             HotkeyCommandManager = new HotkeyCommandManager(_localizationHelper);
 
-            StatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
+            StatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons, appSettingsToUse);
             StatisticsViewModel.IsVisible = _appSettings.StatsShowStats;
             StatisticsViewModel.ShowStatisticsBuildingCount = _appSettings.StatsShowBuildingCount;
 
@@ -248,12 +248,6 @@ namespace AnnoDesigner.ViewModels
 
                 BuildingSettingsViewModel.UpdateLanguageBuildingInfluenceType();
 
-                //Force a language update on the clipboard status item.
-                if (!string.IsNullOrWhiteSpace(StatusMessageClipboard))
-                {
-                    AnnoCanvas_ClipboardChanged(AnnoCanvas.ClipboardObjects);
-                }
-
                 //update settings
                 _appSettings.SelectedLanguage = _commons.CurrentLanguage;
 
@@ -275,6 +269,11 @@ namespace AnnoDesigner.ViewModels
             {
                 IsLanguageChange = false;
             }
+        }
+
+        private void AppSettings_SettingsChanged(object sender, EventArgs e)
+        {
+            _ = UpdateStatisticsAsync(UpdateMode.All);
         }
 
         private void RecentFilesHelper_Updated(object sender, EventArgs e)
@@ -522,11 +521,6 @@ namespace AnnoDesigner.ViewModels
             _ = UpdateStatisticsAsync(e.Mode);
         }
 
-        private void AnnoCanvas_ClipboardChanged(List<LayoutObject> itemsOnClipboard)
-        {
-            StatusMessageClipboard = _localizationHelper.GetLocalization("StatusBarItemsOnClipboard") + ": " + itemsOnClipboard.Count;
-        }
-
         private void AnnoCanvas_StatusMessageChanged(string message)
         {
             StatusMessage = message;
@@ -564,6 +558,11 @@ namespace AnnoDesigner.ViewModels
 
         public Task UpdateStatisticsAsync(UpdateMode mode)
         {
+            if (StatisticsViewModel is null || AnnoCanvas is null)
+            {
+                return Task.CompletedTask;
+            }
+
             return StatisticsViewModel.UpdateStatisticsAsync(mode,
                 AnnoCanvas.PlacedObjects.ToList(),
                 AnnoCanvas.SelectedObjects,
@@ -802,7 +801,7 @@ namespace AnnoDesigner.ViewModels
             try
             {
                 AnnoCanvas.Normalize(1);
-                var layoutToSave = new LayoutFile(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
+                var layoutToSave = new LayoutFile(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject));
                 layoutToSave.LayoutVersion = LayoutSettingsViewModel.LayoutVersion;
                 _layoutLoader.SaveLayout(layoutToSave, filePath);
                 AnnoCanvas.UndoManager.IsDirty = false;
@@ -836,7 +835,6 @@ namespace AnnoDesigner.ViewModels
 
                 _annoCanvas = value;
                 _annoCanvas.StatisticsUpdated += AnnoCanvas_StatisticsUpdated;
-                _annoCanvas.OnClipboardChanged += AnnoCanvas_ClipboardChanged;
                 _annoCanvas.OnCurrentObjectChanged += UpdateUIFromObject;
                 _annoCanvas.OnStatusMessageChanged += AnnoCanvas_StatusMessageChanged;
                 _annoCanvas.OnLoadedFileChanged += AnnoCanvas_LoadedFileChanged;
@@ -973,12 +971,6 @@ namespace AnnoDesigner.ViewModels
         {
             get { return _statusMessage; }
             set { UpdateProperty(ref _statusMessage, value); }
-        }
-
-        public string StatusMessageClipboard
-        {
-            get { return _statusMessageClipboard; }
-            set { UpdateProperty(ref _statusMessageClipboard, value); }
         }
 
         public ObservableCollection<SupportedLanguage> Languages
@@ -1397,7 +1389,7 @@ namespace AnnoDesigner.ViewModels
 
                 if (renderStatistics)
                 {
-                    var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons);
+                    var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons, _appSettings);
                     exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult();
                     exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 
@@ -1459,7 +1451,7 @@ namespace AnnoDesigner.ViewModels
                 using (var ms = new MemoryStream())
                 {
                     AnnoCanvas.Normalize(1);
-                    var layoutToSave = new LayoutFile(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject).ToList());
+                    var layoutToSave = new LayoutFile(AnnoCanvas.PlacedObjects.Select(x => x.WrappedAnnoObject));
                     _layoutLoader.SaveLayout(layoutToSave, ms);
 
                     var jsonString = Encoding.UTF8.GetString(ms.ToArray());

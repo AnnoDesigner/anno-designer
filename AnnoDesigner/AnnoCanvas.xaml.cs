@@ -68,6 +68,8 @@ namespace AnnoDesigner
 
         public IUndoManager UndoManager { get; private set; }
 
+        public IClipboardService ClipboardService { get; set; }
+
         /// <summary>
         /// Contains all loaded icons as a mapping of name (the filename without extension) to loaded BitmapImage.
         /// </summary>
@@ -301,34 +303,6 @@ namespace AnnoDesigner
         /// Event which is fired when the current object is changed
         /// </summary>
         public event Action<LayoutObject> OnCurrentObjectChanged;
-
-        /// <summary>
-        /// backing field of the ObjectClipboard property
-        /// </summary>
-        private List<LayoutObject> _clipboardObjects = new List<LayoutObject>();
-
-        /// <summary>
-        /// Holds a list of objects that are currently on the clipboard.
-        /// </summary>
-        public List<LayoutObject> ClipboardObjects
-        {
-            get { return _clipboardObjects; }
-            private set
-            {
-                if (value != null)
-                {
-                    _clipboardObjects = value;
-                    var localizedMessage = value.Count == 1 ? _localizationHelper.GetLocalization("ItemCopied") : _localizationHelper.GetLocalization("ItemsCopied");
-                    StatusMessage = $"{value.Count} {localizedMessage}";
-                    OnClipboardChanged?.Invoke(value);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Event which is fired when the clipboard content is changed.
-        /// </summary>
-        public event Action<List<LayoutObject>> OnClipboardChanged;
 
         /// <summary>
         /// Backing field of the StatusMessage property.
@@ -601,7 +575,8 @@ namespace AnnoDesigner
             IPenCache penCacheToUse = null,
             IMessageBoxService messageBoxServiceToUse = null,
             ILocalizationHelper localizationHelperToUse = null,
-            IUndoManager undoManager = null)
+            IUndoManager undoManager = null,
+            IClipboardService clipboardService = null)
         {
             InitializeComponent();
 
@@ -612,9 +587,10 @@ namespace AnnoDesigner
             _penCache = penCacheToUse ?? new PenCache();
             _messageBoxService = messageBoxServiceToUse ?? new MessageBoxService();
             _localizationHelper = localizationHelperToUse ?? Localization.Localization.Instance;
-            UndoManager = undoManager ?? new UndoManager();
-
             _layoutLoader = new LayoutLoader();
+            UndoManager = undoManager ?? new UndoManager();
+            IClipboard clipboard = new WindowsClipboard();
+            ClipboardService = clipboardService ?? new ClipboardService(_layoutLoader, clipboard);
 
             _showScrollBars = _appSettings.ShowScrollbars;
             _hideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;
@@ -2933,7 +2909,10 @@ namespace AnnoDesigner
         {
             if (SelectedObjects.Count != 0)
             {
-                ClipboardObjects = SelectedObjects.ToListWithCapacity();
+                ClipboardService.Copy(SelectedObjects.Select(x => x.WrappedAnnoObject));
+
+                var localizedMessage = SelectedObjects.Count == 1 ? _localizationHelper.GetLocalization("ItemCopied") : _localizationHelper.GetLocalization("ItemsCopied");
+                StatusMessage = $"{SelectedObjects.Count} {localizedMessage}";
             }
         }
 
@@ -2941,10 +2920,10 @@ namespace AnnoDesigner
         private readonly ICommand pasteCommand;
         private void ExecutePaste(object param)
         {
-            if (ClipboardObjects.Count != 0)
+            var objects = ClipboardService.Paste();
+            if (objects.Count > 0)
             {
-                CurrentObjects = CloneList(ClipboardObjects);
-                MoveCurrentObjectsToMouse();
+                CurrentObjects = objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)).ToList();
             }
         }
 
