@@ -15,7 +15,6 @@ namespace AnnoDesigner.Models
     public interface IAnnoCanvas : IHotkeySource
     {
         event EventHandler<EventArgs> ColorsInLayoutUpdated;
-        event Action<List<LayoutObject>> OnClipboardChanged;
         event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         event EventHandler<FileLoadedEventArgs> OnLoadedFileChanged;
         event Action<string> OnStatusMessageChanged;
@@ -25,7 +24,6 @@ namespace AnnoDesigner.Models
 
         QuadTree<LayoutObject> PlacedObjects { get; set; }
         HashSet<LayoutObject> SelectedObjects { get; set; }
-        List<LayoutObject> ClipboardObjects { get; }
         BuildingPresets BuildingPresets { get; }
         Dictionary<string, IconImage> Icons { get; }
         IUndoManager UndoManager { get; }

@@ -29,11 +29,13 @@ namespace AnnoDesigner.ViewModels
         private readonly ConcurrentDictionary<string, BuildingInfo> _cachedPresetsBuilding;
         private readonly ILocalizationHelper _localizationHelper;
         private readonly ICommons _commons;
+        private readonly IAppSettings _appSettings;
 
-        public StatisticsViewModel(ILocalizationHelper localizationHelperToUse, ICommons commonsToUse)
+        public StatisticsViewModel(ILocalizationHelper localizationHelperToUse, ICommons commonsToUse, IAppSettings appSettingsToUse)
         {
             _localizationHelper = localizationHelperToUse;
             _commons = commonsToUse;
+            _appSettings = appSettingsToUse;
 
             UsedArea = "12x4";
             UsedTiles = 308;
@@ -143,7 +145,7 @@ namespace AnnoDesigner.ViewModels
 
             AreStatisticsAvailable = true;
 
-            var calculateStatisticsTask = Task.Run(() => _statisticsCalculationHelper.CalculateStatistics(placedObjects.Select(_ => _.WrappedAnnoObject)));
+            var calculateStatisticsTask = Task.Run(() => _statisticsCalculationHelper.CalculateStatistics(placedObjects.Select(_ => _.WrappedAnnoObject), includeRoads: _appSettings.IncludeRoadsInStatisticCalculation));
 
             if (mode != UpdateMode.NoBuildingList && ShowBuildingList)
             {
@@ -179,7 +181,7 @@ namespace AnnoDesigner.ViewModels
             var tempList = new List<StatisticsBuilding>();
 
             var validBuildingsGrouped = groupedBuildingsByIdentifier
-                        .Where(_ => !_.ElementAt(0).WrappedAnnoObject.Road && _.ElementAt(0).Identifier != null)
+                        .Where(_ => (!_.ElementAt(0).WrappedAnnoObject.Road || _appSettings.IncludeRoadsInStatisticCalculation) && _.ElementAt(0).Identifier != null)
                         .Where(x => x.AsEnumerable().WithoutIgnoredObjects().Count() > 0)
                         .OrderByDescending(_ => _.Count());
             foreach (var item in validBuildingsGrouped)
