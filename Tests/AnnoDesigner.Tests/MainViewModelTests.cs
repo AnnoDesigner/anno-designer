@@ -133,7 +133,6 @@ namespace AnnoDesigner.Tests
             Assert.False(viewModel.IsBusy);
 
             Assert.Null(viewModel.StatusMessage);
-            Assert.Null(viewModel.StatusMessageClipboard);
 
             Assert.NotNull(viewModel.AvailableIcons);
             Assert.NotNull(viewModel.SelectedIcon);

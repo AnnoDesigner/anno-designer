@@ -273,23 +273,23 @@ var copyFilesTask = Task("Copy-Files")
     CleanDirectory(outputDirectoryIcons);
 
     Information($"{DateTime.Now:hh:mm:ss.ff} copy icons to \"{outputDirectoryIcons}\"");
-    CopyDirectory($"./../AnnoDesigner/bin/{configuration}/net472/icons", $"{outputDirectoryIcons}");
+    CopyDirectory($"./../AnnoDesigner/bin/{configuration}/net48/icons", $"{outputDirectoryIcons}");
 
     Information($"{DateTime.Now:hh:mm:ss.ff} copy application to \"{outDirectory}\"");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/AnnoDesigner.Core.dll", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/AnnoDesigner.exe", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/AnnoDesigner.exe.config", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/colors.json", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/icons.json", $"{outDirectory}");    
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Microsoft.Bcl.HashCode.dll", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Microsoft.Xaml.Behaviors.dll", $"{outDirectory}");
-	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Newtonsoft.Json.dll", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/NLog.dll", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Octokit.dll", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/presets.json", $"{outDirectory}");
-	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/System.IO.Abstractions.dll", $"{outDirectory}");
-	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/treeLocalization.json", $"{outDirectory}");
-	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net472/Xceed.Wpf.Toolkit.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/AnnoDesigner.Core.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/AnnoDesigner.exe", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/AnnoDesigner.exe.config", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/colors.json", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/icons.json", $"{outDirectory}");    
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Microsoft.Bcl.HashCode.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Microsoft.Xaml.Behaviors.dll", $"{outDirectory}");
+	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Newtonsoft.Json.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/NLog.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Octokit.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/presets.json", $"{outDirectory}");
+	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.IO.Abstractions.dll", $"{outDirectory}");
+	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/treeLocalization.json", $"{outDirectory}");
+	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Xceed.Wpf.Toolkit.dll", $"{outDirectory}");
 
     Information("");
 });
