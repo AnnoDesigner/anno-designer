@@ -32,6 +32,7 @@ namespace AnnoDesigner.ViewModels
         private bool _invertPanningDirection;
         private bool _showScrollbars;
         private bool _invertScrollingDirection;
+        private bool _includeRoadsInStatisticCalculation;
         private int _maxRecentFiles;
 
         public GeneralSettingsViewModel(IAppSettings appSettingsToUse, ICommons commonsToUse, IRecentFilesHelper recentFilesHelperToUse)
@@ -360,6 +361,19 @@ namespace AnnoDesigner.ViewModels
                 if (UpdateProperty(ref _showScrollbars, value))
                 {
                     _appSettings.ShowScrollbars = value;
+                    _appSettings.Save();
+                }
+            }
+        }
+
+        public bool IncludeRoadsInStatisticCalculation
+        {
+            get { return _includeRoadsInStatisticCalculation; }
+            set
+            {
+                if (UpdateProperty(ref _includeRoadsInStatisticCalculation, value))
+                {
+                    _appSettings.IncludeRoadsInStatisticCalculation = value;
                     _appSettings.Save();
                 }
             }

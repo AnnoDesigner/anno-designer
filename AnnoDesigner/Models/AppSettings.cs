@@ -281,6 +281,12 @@ namespace AnnoDesigner.Models
             get => Settings.Default.ShowScrollbars;
             set => Settings.Default.ShowScrollbars = value;
         }
+
+        public bool IncludeRoadsInStatisticCalculation
+        {
+            get => Settings.Default.IncludeRoadsInStatisticCalculation;
+            set => Settings.Default.IncludeRoadsInStatisticCalculation = value;
+        }
     }
 }
 
