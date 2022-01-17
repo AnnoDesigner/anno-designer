@@ -9,7 +9,7 @@ For further investigation of issues, it is possible to activate a `DebugMode`.
 The default Hotkey to enable/disable `DebugMode` is `CTRL + Shift + D`.</br>
 You can change the Hotkey via `Tools -> Preferences -> Manage Keybindings` menu.
 
-## Supported features of
+## Supported features of `DebugMode`
 
 - display coordinates of current Viewport
 - display coordinates of current scrollable area
