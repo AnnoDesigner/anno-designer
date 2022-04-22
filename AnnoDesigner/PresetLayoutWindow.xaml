@@ -14,6 +14,7 @@
     </Window.DataContext>
     <Window.Resources>
         <converters:ReferenceToValueConverter x:Key="ReferenceToVisibilityConverter" NullValue="{x:Static Visibility.Collapsed}" NotNullValue="{x:Static Visibility.Visible}"/>
+        <converters:ReferenceToValueConverter x:Key="ReferenceToVisibilityConverterInverted" NullValue="{x:Static Visibility.Visible}" NotNullValue="{x:Static Visibility.Collapsed}"/>
         <converters:ReferenceToValueConverter x:Key="ReferenceToBooleanConverter" NullValue="False" NotNullValue="True"/>
         <coreConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed" />
         <coreConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverterInverted" TrueValue="Collapsed" FalseValue="Visible" />
@@ -71,7 +72,7 @@
             <TextBlock Grid.Row="4" Text="Layout version" FontWeight="Bold"/>
             <TextBlock Grid.Row="4" Grid.Column="2" HorizontalAlignment="Left" Text="{Binding Layout.LayoutVersion}"/>
 
-            <ScrollViewer Grid.Row="6" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Visible">
+            <ScrollViewer Grid.Row="6" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Visible" Visibility="{Binding Images, Converter={StaticResource ReferenceToVisibilityConverter}}">
                 <ItemsControl ItemsSource="{Binding Images}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -87,6 +88,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
+            <TextBlock Grid.Row="6" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Loading images" Visibility="{Binding Images, Converter={StaticResource ReferenceToVisibilityConverterInverted}}"/>
 
             <Button Grid.Row="8" Grid.ColumnSpan="3" HorizontalAlignment="Right" Content="Load layout" Padding="10,5" IsEnabled="{Binding ., Converter={StaticResource ReferenceToBooleanConverter}}" Click="LoadButton_Click"/>
         </Grid>

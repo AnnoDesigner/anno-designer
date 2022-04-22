@@ -1,6 +1,11 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using AnnoDesigner.Core.Layout.Presets;
 using AnnoDesigner.Models;
 
@@ -20,11 +25,49 @@ namespace AnnoDesigner
         public PresetLayoutWindow()
         {
             InitializeComponent();
+
+            var timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(10);
+            timer.Tick += Timer_Tick;
+            timer.Start();
         }
 
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            static IEnumerable<PresetLayout> getRecursively(IPresetLayout preset)
+            {
+                if (preset is PresetLayout presetLayout)
+                {
+                    yield return presetLayout;
+                }
+                if (preset is PresetLayoutDirectory presetLayoutDirectory)
+                {
+                    foreach (var item in presetLayoutDirectory.Presets.SelectMany(getRecursively))
+                    {
+                        yield return item;
+                    }
+                }
+            }
+
+            foreach (var item in Context.Presets.SelectMany(getRecursively))
+            {
+                if (item != Context.SelectedPreset)
+                {
+                    item.UnloadImages();
+                }
+            }
+        }
+
+        private async void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             Context.SelectedPreset = e.NewValue as PresetLayout;
+            if (Context.SelectedPreset != null)
+            {
+                if (Context.SelectedPreset.Images == null)
+                {
+                    await Context.SelectedPreset.LoadImages();
+                }
+            }
         }
 
         private void LoadButton_Click(object sender, RoutedEventArgs e)
@@ -58,6 +101,7 @@ namespace AnnoDesigner
 
         private async void ReloadLayoutPresets_Click(object sender, RoutedEventArgs e)
         {
+            Context.SelectedPreset = null;
             await Context.LoadLayoutsAsync();
         }
 

@@ -402,6 +402,15 @@ namespace AnnoDesigner.Core.DataStructures
         }
 
         /// <summary>
+        /// Create a <see cref="QuadTree{T}"/>
+        /// </summary>
+        /// <param name="extent">The bounds of the <see cref="QuadTree{T}"/></param>
+        public QuadTree(Rect extent, IEnumerable<T> enumerable) : this(extent)
+        {
+            AddRange(enumerable);
+        }
+
+        /// <summary>
         /// Insert a <typeparamref name="T"/> item into the QuadTree.
         /// </summary>
         public void Add(T item)

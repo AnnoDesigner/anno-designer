@@ -755,6 +755,14 @@ namespace AnnoDesigner
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
         }
 
+        public void Uninitialize()
+        {
+            _appSettings.SettingsChanged -= AppSettings_SettingsChanged;
+
+            SelectedObjects.Clear();
+            PlacedObjects.Clear();
+        }
+
         #endregion
 
         private bool _showScrollBars;

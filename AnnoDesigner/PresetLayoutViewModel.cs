@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using AnnoDesigner.Core.Layout.Presets;
 using AnnoDesigner.Core.Models;
 
@@ -73,7 +74,8 @@ namespace AnnoDesigner
                                 Layout = new Core.Layout.Models.LayoutFile()
                                 {
                                     LayoutVersion = new Version(2, 1, 3, 12)
-                                }
+                                },
+                                Images = new List<ImageSource>()
                             }
                         }
                     }

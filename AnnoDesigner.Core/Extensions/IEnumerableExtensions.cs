@@ -115,5 +115,33 @@ namespace AnnoDesigner.Core.Extensions
         {
             return string.Equals(annoObject.Template, "Blocker", StringComparison.OrdinalIgnoreCase);
         }
+
+        public static T MinOrDefault<T>(this IEnumerable<T> enumerable, T @default = default)
+        {
+            if (!enumerable.Any()) return @default;
+
+            return enumerable.Min();
+        }
+
+        public static TResult MinOrDefault<T, TResult>(this IEnumerable<T> enumerable, Func<T, TResult> selector, TResult @default = default)
+        {
+            if (!enumerable.Any()) return @default;
+
+            return enumerable.Min(selector);
+        }
+
+        public static T MaxOrDefault<T>(this IEnumerable<T> enumerable, T @default = default)
+        {
+            if (!enumerable.Any()) return @default;
+
+            return enumerable.Max();
+        }
+
+        public static TResult MaxOrDefault<T, TResult>(this IEnumerable<T> enumerable, Func<T, TResult> selector, TResult @default = default)
+        {
+            if (!enumerable.Any()) return @default;
+
+            return enumerable.Max(selector);
+        }
     }
 }

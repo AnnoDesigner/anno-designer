@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -154,7 +155,19 @@ namespace AnnoDesigner.ViewModels
             {
                 AppSettings = _appSettings,
                 BeforeLayoutOpen = () => AnnoCanvas.CheckUnsavedChanges(),
-                PresetLayoutLoader = new PresetLayoutLoader((layout) => PrepareCanvasForRender(layout.Objects, Enumerable.Empty<AnnoObject>(), 1).RenderToBitmap())
+                PresetLayoutLoader = new PresetLayoutLoader(async (layout) =>
+                {
+                    var canvas = await PrepareCanvasForRender(layout.Objects, Enumerable.Empty<AnnoObject>(), 1, new CanvasRenderSetting()
+                    {
+                        RenderIcon = true,
+                        RenderGrid = false
+                    });
+                    var bitmap = canvas.RenderToBitmap();
+                    bitmap.Freeze();
+
+                    canvas.Uninitialize();
+                    return bitmap;
+                })
             };
             PreferencesUpdateViewModel = new UpdateSettingsViewModel(_commons, _appSettings, _messageBoxService, _updateHelper, _localizationHelper);
             PreferencesKeyBindingsViewModel = new ManageKeybindingsViewModel(HotkeyCommandManager, _commons, _messageBoxService, _localizationHelper);
@@ -1352,9 +1365,10 @@ namespace AnnoDesigner.ViewModels
             }
 
             logger.Trace($"UI thread: {Thread.CurrentThread.ManagedThreadId} ({Thread.CurrentThread.Name})");
-            void renderThread()
+
+            async Task renderCanvasToFile()
             {
-                var target = PrepareCanvasForRender(
+                var target = await PrepareCanvasForRender(
                     AnnoCanvas.PlacedObjects.Select(o => o.WrappedAnnoObject),
                     exportSelection ? AnnoCanvas.SelectedObjects.Select(o => o.WrappedAnnoObject) : Enumerable.Empty<AnnoObject>(),
                     border,
@@ -1375,9 +1389,11 @@ namespace AnnoDesigner.ViewModels
 
                 // render canvas to file
                 target.RenderToFile(filename);
+
+                target.Uninitialize();
             }
 
-            var thread = new Thread(renderThread);
+            var thread = new Thread(() => SingleThreadSynchronizationContext.Run(renderCanvasToFile));
             thread.IsBackground = true;
             thread.Name = "exportImage";
             thread.SetApartmentState(ApartmentState.STA);
@@ -1385,7 +1401,47 @@ namespace AnnoDesigner.ViewModels
             thread.Join(TimeSpan.FromSeconds(10));
         }
 
-        public FrameworkElement PrepareCanvasForRender(
+        public class SingleThreadSynchronizationContext : SynchronizationContext
+        {
+            private readonly BlockingCollection<KeyValuePair<SendOrPostCallback, object>> queue = new();
+
+            public override void Post(SendOrPostCallback d, object state)
+            {
+                queue.Add(new KeyValuePair<SendOrPostCallback, object>(d, state));
+            }
+
+            public void RunOnCurrentThread()
+            {
+                while (queue.TryTake(out var workItem, Timeout.Infinite))
+                    workItem.Key(workItem.Value);
+            }
+
+            public void Complete()
+            { 
+                queue.CompleteAdding();
+            }
+
+            public static void Run(Func<Task> work)
+            {
+                var oldContext = Current;
+                try
+                {
+                    var context = new SingleThreadSynchronizationContext();
+                    SetSynchronizationContext(context);
+
+                    var completed = work().ContinueWith((_) => context.Complete());
+
+                    context.RunOnCurrentThread();
+                    completed.GetAwaiter().GetResult();
+                }
+                finally
+                {
+                    SetSynchronizationContext(oldContext);
+                }
+            }
+        }
+
+        public async Task<AnnoCanvas> PrepareCanvasForRender(
             IEnumerable<AnnoObject> placedObjects,
             IEnumerable<AnnoObject> selectedObjects,
             int border,
@@ -1406,10 +1462,17 @@ namespace AnnoDesigner.ViewModels
                 icons.Add(curIcon.Key, new IconImage(curIcon.Value.Name, curIcon.Value.Localizations, curIcon.Value.IconPath));
             }
 
-            var statistics = new StatisticsCalculationHelper().CalculateStatistics(placedObjects, true, true);
+            // offload potentially long operations to different thread
+            var quadTree = await Task.Run(() =>
+            {
+                var statistics = new StatisticsCalculationHelper().CalculateStatistics(placedObjects, true, true);
 
-            var quadTree = new QuadTree<LayoutObject>((Rect)statistics);
-            quadTree.AddRange(placedObjects.Select(o => new LayoutObject(o, _coordinateHelper, _brushCache, _penCache)));
+                return new QuadTree<LayoutObject>(
+                    (Rect)statistics,
+                    placedObjects.Select(o => new LayoutObject(o, _coordinateHelper, _brushCache, _penCache))
+                );
+            });
+
             // initialize output canvas
             var target = new AnnoCanvas(AnnoCanvas.BuildingPresets, icons, _appSettings, _coordinateHelper, _brushCache, _penCache, _messageBoxService)
             {
@@ -1426,8 +1489,12 @@ namespace AnnoDesigner.ViewModels
             sw.Stop();
             logger.Trace($"creating canvas took: {sw.ElapsedMilliseconds}ms");
 
-            // normalize layout
-            target.Normalize(border);
+            // offload potentially long operations to different thread
+            await Task.Run(() =>
+            {
+                // normalize layout
+                target.Normalize(border);
+            });
 
             // set zoom level
             if (renderSettings.GridSize.HasValue)
@@ -1436,11 +1503,12 @@ namespace AnnoDesigner.ViewModels
             }
 
             // set selection
-            target.SelectedObjects.UnionWith(selectedObjects.Select(o => new LayoutObject(o, _coordinateHelper, _brushCache, _penCache)));
+            var selection = selectedObjects.ToHashSet();
+            target.SelectedObjects.UnionWith(target.PlacedObjects.Where(o => selection.Contains(o.WrappedAnnoObject)));
 
             // calculate output size
-            var width = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.X + _.Size.Width) + border, target.GridSize);//if +1 then there are weird black lines next to the statistics view
-            var height = _coordinateHelper.GridToScreen(target.PlacedObjects.Max(_ => _.Position.Y + _.Size.Height) + border, target.GridSize) + 1;//+1 for black grid line at bottom
+            var width = _coordinateHelper.GridToScreen(target.PlacedObjects.MaxOrDefault(_ => _.Position.X + _.Size.Width) + border, target.GridSize);//if +1 then there are weird black lines next to the statistics view
+            var height = _coordinateHelper.GridToScreen(target.PlacedObjects.MaxOrDefault(_ => _.Position.Y + _.Size.Height) + border, target.GridSize) + 1;//+1 for black grid line at bottom
 
             if (renderSettings.RenderVersion)
             {
@@ -1460,7 +1528,7 @@ namespace AnnoDesigner.ViewModels
             if (renderSettings.RenderStatistics)
             {
                 var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons, _appSettings);
-                exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult();
+                await exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.ToList(), target.SelectedObjects, target.BuildingPresets);
                 exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 
                 var exportStatisticsView = new StatisticsView()
