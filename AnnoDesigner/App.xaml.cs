@@ -140,8 +140,12 @@ namespace AnnoDesigner
             {
                 ConsoleManager.Show();
                 Console.WriteLine(ex.HelpText);
-                Console.WriteLine("Press enter to exit");
-                Console.ReadLine();
+                if (ConsoleManager.StartedWithoutConsole)
+                {
+                    Console.WriteLine("Press enter to exit");
+                    Console.ReadLine();
+                }
+                ConsoleManager.Hide();
                 Environment.Exit(0);
             }
 

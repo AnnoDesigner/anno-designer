@@ -26,22 +26,30 @@ namespace AnnoDesigner
         private static extern IntPtr GetConsoleWindow();
 
         [DllImport(Kernel32_DllName)]
-        private static extern int GetConsoleOutputCP();
+        private static extern bool AttachConsole(int dwProcessId);
+        private const int ATTACH_PARENT_PROCESS = -1;
 
         public static bool HasConsole
         {
             get { return GetConsoleWindow() != IntPtr.Zero; }
         }
 
+        public static bool StartedWithoutConsole { get; private set; }
+
         /// <summary>
         /// Creates a new console instance if the process is not attached to a console already.
         /// </summary>
         public static void Show()
         {
-            if (!HasConsole)
+            if (!AttachConsole(ATTACH_PARENT_PROCESS))
             {
                 AllocConsole();
-                InvalidateOutAndError();
+
+                StartedWithoutConsole = true;
+            }
+            else
+            {
+                StartedWithoutConsole = false;
             }
         }
 
@@ -52,7 +60,6 @@ namespace AnnoDesigner
         {
             if (HasConsole)
             {
-                SetOutAndErrorNull();
                 FreeConsole();
             }
         }
@@ -67,26 +74,6 @@ namespace AnnoDesigner
             {
                 Show();
             }
-        }
-
-        static void InvalidateOutAndError()
-        {
-            var type = typeof(Console);
-
-            type.GetField("_out", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
-                .SetValue(null, null);
-
-            type.GetField("_error", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
-                .SetValue(null, null);
-
-            type.GetMethod("InitializeStdOutError", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
-                .Invoke(null, new object[] { true });
-        }
-
-        static void SetOutAndErrorNull()
-        {
-            Console.SetOut(TextWriter.Null);
-            Console.SetError(TextWriter.Null);
         }
     }
 }
