@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using AnnoDesigner.CommandLine.Arguments;
 using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Models;

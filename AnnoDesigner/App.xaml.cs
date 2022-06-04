@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using AnnoDesigner.CommandLine;
+using AnnoDesigner.CommandLine.Arguments;
 using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Models;

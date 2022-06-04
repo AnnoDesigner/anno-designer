@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace AnnoDesigner
+namespace AnnoDesigner.CommandLine
 {
     /// <summary>
     /// Console manager class for showing console when help text should be shown.
