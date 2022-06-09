@@ -18,7 +18,16 @@ namespace AnnoDesigner.CommandLine
                 {
                     if (errors.IsHelp() || errors.IsVersion())
                     {
-                        throw new HelpException(HelpText.AutoBuild(parsed));
+                        var helpText = HelpText.AutoBuild(parsed,
+                            h =>
+                            {
+                                h.AdditionalNewLineAfterOption = false;
+                                h.MaximumDisplayWidth = 100;
+
+                                return h;
+                            });
+
+                        throw new HelpException(helpText);
                     }
 
                     return null;

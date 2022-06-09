@@ -14,7 +14,7 @@ namespace AnnoDesigner.CommandLine.Arguments
         [Option("border", Default = 1)]
         public int Border { get; set; }
 
-        [Option("gridSize", Default = 20)]
+        [Option("gridSize", Default = 20, Max = Constants.GridStepMax, Min = Constants.GridStepMin)]
         public int GridSize { get; set; }
 
         [Option("renderGrid", Default = true)]
