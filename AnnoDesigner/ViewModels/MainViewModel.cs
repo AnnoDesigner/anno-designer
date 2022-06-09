@@ -1434,7 +1434,7 @@ namespace AnnoDesigner.ViewModels
             if (renderSettings.RenderStatistics)
             {
                 var exportStatisticsViewModel = new StatisticsViewModel(_localizationHelper, _commons, _appSettings);
-                exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.ToList(), target.SelectedObjects, target.BuildingPresets).GetAwaiter().GetResult();
+                _ = exportStatisticsViewModel.UpdateStatisticsAsync(UpdateMode.All, target.PlacedObjects.ToList(), target.SelectedObjects, target.BuildingPresets);
                 exportStatisticsViewModel.ShowBuildingList = StatisticsViewModel.ShowBuildingList;
 
                 var exportStatisticsView = new StatisticsView()
