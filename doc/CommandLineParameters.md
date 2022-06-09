@@ -49,3 +49,25 @@ AnnoDesigner.exe export "C:\path\to\layout\file.ad" "C:\path\to\exported\image.p
 ```cmd
 AnnoDesigner.exe export "C:\path\to\layout\file.ad" "C:\path\to\exported\image.png" --renderIcon --renderLabel
 ```
+
+## Example script files
+
+For easier use you can create some script files. The following examples are batch files (*.bat) which can be executed from explorer.  
+*It is assumed that the batch file is in the same directory as the `AnnoDesigner.exe`.*  
+To have a starting point, just create an empty batch file, copy the script and adjust the file paths and parameters.
+
+### Script to open specific layout file
+
+```bat
+@echo off
+rem first parameter is the window title
+start "AnnoDesigner" "%~dp0\AnnoDesigner.exe" open "C:\path\to\layout\file.ad"
+```
+
+### Script to export specific layout file to image
+
+```bat
+@echo off
+rem first parameter is the window title
+start "AnnoDesigner" "%~dp0\AnnoDesigner.exe" export "C:\path\to\layout\file.ad" "C:\path\to\exported\image.png" --gridSize 20 --renderIcon --renderVersion
+```
