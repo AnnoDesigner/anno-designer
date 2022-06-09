@@ -10,15 +10,19 @@ namespace AnnoDesigner.CommandLine
         public static IProgramArgs Parse(IEnumerable<string> arguments)
         {
             var parsed = Parser.Default.ParseArguments<AdminRestartArgs, OpenArgs, ExportArgs>(arguments);
-            return parsed.MapResult<AdminRestartArgs, OpenArgs, ExportArgs, IProgramArgs>(x => x, x => x, x => x, errors =>
-            {
-                if (errors.IsHelp() || errors.IsVersion())
+            return parsed.MapResult<AdminRestartArgs, OpenArgs, ExportArgs, IProgramArgs>(
+                adminArgs => adminArgs,
+                openArgs => openArgs,
+                exportArgs => exportArgs,
+                errors =>
                 {
-                    throw new HelpException(HelpText.AutoBuild(parsed));
-                }
+                    if (errors.IsHelp() || errors.IsVersion())
+                    {
+                        throw new HelpException(HelpText.AutoBuild(parsed));
+                    }
 
-                return null;
-            });
+                    return null;
+                });
         }
     }
 }

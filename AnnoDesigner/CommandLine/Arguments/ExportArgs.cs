@@ -2,13 +2,13 @@
 
 namespace AnnoDesigner.CommandLine.Arguments
 {
-    [Verb("export", HelpText = "Exports layout to image and exits")]
+    [Verb("export", HelpText = "Exports the specified layout file to an image and closes immediately")]
     public class ExportArgs : IProgramArgs
     {
-        [Value(0, HelpText = "Input AD file", Required = true)]
+        [Value(0, MetaName = "layoutPath", HelpText = "Path to layout file (*.ad).", Required = true)]
         public string Filename { get; set; }
 
-        [Value(1, HelpText = "Exported png file", Required = true)]
+        [Value(1, MetaName = "imagePath", HelpText = "Path for exported image file (*.png)", Required = true)]
         public string ExportedFilename { get; set; }
 
         [Option("border", Default = 1)]

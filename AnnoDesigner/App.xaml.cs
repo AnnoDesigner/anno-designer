@@ -136,7 +136,11 @@ namespace AnnoDesigner
         {
             try
             {
-                StartupArguments = ArgumentParser.Parse(e.Args);
+                if (e.Args.Length > 0)
+                {
+                    logger.Info($"Used parameters: \"{string.Join(" ", e.Args)}\"");
+                    StartupArguments = ArgumentParser.Parse(e.Args);
+                }
             }
             catch (HelpException ex)
             {
