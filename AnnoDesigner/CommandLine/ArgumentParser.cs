@@ -16,6 +16,7 @@ namespace AnnoDesigner.CommandLine
                 {
                     throw new HelpException(HelpText.AutoBuild(parsed));
                 }
+
                 return null;
             });
         }
