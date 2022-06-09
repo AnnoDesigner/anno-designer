@@ -1,29 +1,51 @@
 # AnnoDesigner command line parameters
 
-AnnoDesigner supports 2 verbs when starting it from command line.
+AnnoDesigner supports the following verbs when starting it from command line:
 
-- `open` - AnnoDesigner starts with specific layout file openned.
-- `export`- AnnoDesigner exports specific layout file to image and closes immediately. See supported export parameters with `AnnoDesigner.exe export --help`.
+- `open`  
+  AnnoDesigner starts with the specified layout file opened.
+- `export`  
+  AnnoDesigner exports the specified layout file to an image and closes immediately.  
+  See supported export parameters with `AnnoDesigner.exe export --help`.
 
-If no verb is specified AnnoDesigner starts with empty layout.
+If no verb is specified AnnoDesigner starts with an empty layout (as usual).
 
 ## Example usages
 
-### Show all verbs
+### Show all supported verbs
 
-`AnnoDesigner.exe --help`
+```cmd
+AnnoDesigner.exe --help
+```
 
 ### Show info about specific verb
 
-`AnnoDeisgner.exe <verb> --help`
-`AnnoDeisgner.exe export --help`
+```cmd
+AnnoDesigner.exe <verb> --help
+```
+
+For example to show information about the `export` verb, use the following command.
+
+```cmd
+AnnoDesigner.exe export --help
+```
 
 ### Open specific layout file
 
-`AnnoDeisgner.exe open C:\path\to\layout\file.ad`
+```cmd
+AnnoDesigner.exe open "C:\path\to\layout\file.ad"
+```
 
 ### Export specific layout file to image
 
-`AnnoDeisgner.exe export C:\path\to\layout\file.ad C:\path\to\exported\image.png`
-`AnnoDeisgner.exe export C:\path\to\layout\file.ad C:\path\to\exported\image.png --gridSize 10`
-`AnnoDeisgner.exe export C:\path\to\layout\file.ad C:\path\to\exported\image.png --renderIcon --renderLabel`
+```cmd
+AnnoDesigner.exe export "C:\path\to\layout\file.ad" "C:\path\to\exported\image.png"
+```
+
+```cmd
+AnnoDesigner.exe export "C:\path\to\layout\file.ad" "C:\path\to\exported\image.png" --gridSize 10
+```
+
+```cmd
+AnnoDesigner.exe export "C:\path\to\layout\file.ad" "C:\path\to\exported\image.png" --renderIcon --renderLabel
+```
