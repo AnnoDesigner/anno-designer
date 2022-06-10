@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AnnoDesigner.CommandLine.Arguments;
 using CommandLine;
 using CommandLine.Text;
@@ -16,7 +17,7 @@ namespace AnnoDesigner.CommandLine
                 exportArgs => exportArgs,
                 errors =>
                 {
-                    if (errors.IsHelp() || errors.IsVersion())
+                    if (errors.IsHelp() || errors.IsVersion() || errors.Count(x => x is not NoVerbSelectedError) > 0)
                     {
                         var helpText = HelpText.AutoBuild(parsed,
                             h =>

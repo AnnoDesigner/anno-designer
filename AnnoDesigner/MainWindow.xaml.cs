@@ -95,15 +95,15 @@ namespace AnnoDesigner
                 _mainViewModel.PrepareCanvasForRender(layout.Objects, Enumerable.Empty<AnnoObject>(), Math.Max(exportArgs.Border, 0), new Models.CanvasRenderSetting()
                 {
                     GridSize = Math.Max(Math.Min(exportArgs.GridSize, Constants.GridStepMax), Constants.GridStepMin),
-                    RenderGrid = exportArgs.RenderGrid,
-                    RenderHarborBlockedArea = exportArgs.RenderHarborBlockedArea,
-                    RenderIcon = exportArgs.RenderIcon,
-                    RenderInfluences = exportArgs.RenderInfluences,
-                    RenderLabel = exportArgs.RenderLabel,
-                    RenderPanorama = exportArgs.RenderPanorama,
-                    RenderStatistics = exportArgs.RenderStatistics,
-                    RenderTrueInfluenceRange = exportArgs.RenderTrueInfluenceRange,
-                    RenderVersion = exportArgs.RenderVersion
+                    RenderGrid = exportArgs.RenderGrid ?? true,
+                    RenderHarborBlockedArea = exportArgs.RenderHarborBlockedArea ?? false,
+                    RenderIcon = exportArgs.RenderIcon ?? true,
+                    RenderInfluences = exportArgs.RenderInfluences ?? false,
+                    RenderLabel = exportArgs.RenderLabel ?? true,
+                    RenderPanorama = exportArgs.RenderPanorama ?? false,
+                    RenderStatistics = exportArgs.RenderStatistics ?? false,
+                    RenderTrueInfluenceRange = exportArgs.RenderTrueInfluenceRange ?? false,
+                    RenderVersion = exportArgs.RenderVersion ?? false
                 }).RenderToFile(exportArgs.ExportedFilename);
 
                 Close();

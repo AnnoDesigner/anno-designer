@@ -10,6 +10,6 @@ namespace AnnoDesigner.CommandLine
             HelpText = helpText;
         }
 
-        public HelpText HelpText { get; }
+        public string HelpText { get; }
     }
 }

@@ -14,7 +14,7 @@ namespace AnnoDesigner.CommandLine.Arguments
             {
                 yield return new Example("Export with default settings", new ExportArgs { Filename = @"C:\path\to\layout\file.ad", ExportedFilename = @"C:\path\to\exported\image.png" });
                 yield return new Example("Export with rendered influences", new ExportArgs { Filename = @"C:\path\to\layout\file.ad", ExportedFilename = @"C:\path\to\exported\image.png", RenderInfluences = true });
-                yield return new Example("Export with statistics and version information", new ExportArgs { Filename = @"C:\path\to\layout\file.ad", ExportedFilename = @"C:\path\to\exported\image.png", RenderStatistics = true, RenderVersion = true });
+                yield return new Example("Export with statistics and version information but no icons", new ExportArgs { Filename = @"C:\path\to\layout\file.ad", ExportedFilename = @"C:\path\to\exported\image.png", RenderStatistics = true, RenderVersion = true, RenderIcon = false });
             }
         }
 
@@ -27,34 +27,34 @@ namespace AnnoDesigner.CommandLine.Arguments
         [Option("border", Default = 1)]
         public int Border { get; set; }
 
-        [Option("gridSize", Default = 20)]
+        [Option("gridSize", Default = 20, HelpText = "supports zoom values between 8 and 100")]
         public int GridSize { get; set; }
 
         [Option("renderGrid", Default = true)]
-        public bool RenderGrid { get; set; }
+        public bool? RenderGrid { get; set; }
 
-        [Option("renderHarborBlockedArea")]
-        public bool RenderHarborBlockedArea { get; set; }
+        [Option("renderHarborBlockedArea", Default = false)]
+        public bool? RenderHarborBlockedArea { get; set; }
 
         [Option("renderIcon", Default = true)]
-        public bool RenderIcon { get; set; }
+        public bool? RenderIcon { get; set; }
 
-        [Option("renderInfluences")]
-        public bool RenderInfluences { get; set; }
+        [Option("renderInfluences", Default = false)]
+        public bool? RenderInfluences { get; set; }
 
         [Option("renderLabel", Default = true)]
-        public bool RenderLabel { get; set; }
+        public bool? RenderLabel { get; set; }
 
-        [Option("renderPanorama")]
-        public bool RenderPanorama { get; set; }
+        [Option("renderPanorama", Default = false)]
+        public bool? RenderPanorama { get; set; }
 
-        [Option("renderStatistics")]
-        public bool RenderStatistics { get; set; }
+        [Option("renderStatistics", Default = false)]
+        public bool? RenderStatistics { get; set; }
 
-        [Option("renderTrueInfluenceRange")]
-        public bool RenderTrueInfluenceRange { get; set; }
+        [Option("renderTrueInfluenceRange", Default = false)]
+        public bool? RenderTrueInfluenceRange { get; set; }
 
-        [Option("renderVersion")]
-        public bool RenderVersion { get; set; }
+        [Option("renderVersion", Default = false)]
+        public bool? RenderVersion { get; set; }
     }
 }

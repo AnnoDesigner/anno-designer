@@ -47,7 +47,7 @@ AnnoDesigner.exe export "C:\path\to\layout\file.ad" "C:\path\to\exported\image.p
 ```
 
 ```cmd
-AnnoDesigner.exe export "C:\path\to\layout\file.ad" "C:\path\to\exported\image.png" --renderIcon --renderLabel
+AnnoDesigner.exe export "C:\path\to\layout\file.ad" "C:\path\to\exported\image.png" --renderIcon=true --renderLabel=true
 ```
 
 ## Example script files
@@ -69,5 +69,31 @@ start "AnnoDesigner" "%~dp0\AnnoDesigner.exe" open "C:\path\to\layout\file.ad"
 ```bat
 @echo off
 rem first parameter is the window title
-start "AnnoDesigner" "%~dp0\AnnoDesigner.exe" export "C:\path\to\layout\file.ad" "C:\path\to\exported\image.png" --gridSize 20 --renderIcon --renderVersion
+start "AnnoDesigner" "%~dp0\AnnoDesigner.exe" export "C:\path\to\layout\file.ad" "C:\path\to\exported\image.png" --gridSize 20 --renderIcon=true --renderVersion=true
+```
+
+### Script to export all layouts in a directory to images
+
+```bat
+@echo off
+set pathToAnnoDesigner="%~dp0\AnnoDesigner.exe"
+set folderWithLayouts=C:\path\to\layouts\
+
+rem /d = also change drive if necessary
+cd /d %folderWithLayouts%
+
+rem %%f = current file name with extension
+rem %%~nf = current file name without extension
+rem %%~dpnf = current file path without extension
+rem %%~ff = current file path (fully qualified)
+rem ^> = >, >, | need to be escaped
+for %%f in (*.ad) do (
+echo exporting layout: "%%~ff" -^> "%%~dpnf.png"
+
+%pathToAnnoDesigner% export "%%f" "%%~dpnf.png" --gridSize 20 --renderIcon=false --renderVersion=true --renderStatistics=true
+)
+
+cd /d %~dp0
+
+echo finished
 ```
