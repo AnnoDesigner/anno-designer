@@ -18,13 +18,10 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void Parse_UnknownVerb_ShouldReturnNull()
+        public void Parse_UnknownVerb_ShouldThrow()
         {
-            // Arrange/Act
-            var parsedArguments = ArgumentParser.Parse(new[] { "unknown" });
-
-            // Assert
-            Assert.Null(parsedArguments);
+            // Arrange/Act/Assert
+            var ex = Assert.Throws<HelpException>(() => ArgumentParser.Parse(new[] { "unknown" }));
         }
 
         [Fact]
@@ -38,13 +35,10 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void Parse_OpenVerb_ShouldReturnNullIfFilenameNotSpecified()
+        public void Parse_OpenVerb_FilenameNotSpecified_ShouldThrow()
         {
-            // Arrange/Act
-            var parsedArguments = ArgumentParser.Parse(new[] { "open" });
-
-            // Assert
-            Assert.Null(parsedArguments);
+            // Arrange/Act/Assert
+            var ex = Assert.Throws<HelpException>(() => ArgumentParser.Parse(new[] { "open" }));
         }
 
         [Fact]
@@ -59,23 +53,17 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void Parse_ExportVerb_ShouldReturnNullIfLayoutFileNotSpecified()
+        public void Parse_ExportVerb_LayoutFileNotSpecified_ShouldThrow()
         {
-            // Arrange/Act
-            var parsedArguments = ArgumentParser.Parse(new[] { "export" });
-
-            // Assert
-            Assert.Null(parsedArguments);
+            // Arrange/Act/Assert
+            var ex = Assert.Throws<HelpException>(() => ArgumentParser.Parse(new[] { "export" }));
         }
 
         [Fact]
-        public void Parse_ExportVerb_ShouldReturnNullIfOutputFileNotSpecified()
+        public void Parse_ExportVerb_OutputFileNotSpecified_ShouldThrow()
         {
-            // Arrange/Act
-            var parsedArguments = ArgumentParser.Parse(new[] { "export", "filename" });
-
-            // Assert
-            Assert.Null(parsedArguments);
+            // Arrange/Act/Assert
+            var ex = Assert.Throws<HelpException>(() => ArgumentParser.Parse(new[] { "export", "filename" }));
         }
 
         [Fact]
