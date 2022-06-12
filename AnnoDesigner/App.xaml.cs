@@ -141,35 +141,6 @@ namespace AnnoDesigner
                 }
             }
 
-            using var mutexAnnoDesigner = new Mutex(true, MutexHelper.MUTEX_ANNO_DESIGNER, out var createdNewMutex);
-            //Are there other processes still running?
-            if (!createdNewMutex)
-            {
-                try
-                {
-                    var currentTry = 0;
-                    const int maxTrys = 10;
-                    while (!createdNewMutex && currentTry < maxTrys)
-                    {
-                        logger.Trace($"Waiting for other processes to finish. Try {currentTry} of {maxTrys}");
-
-                        createdNewMutex = mutexAnnoDesigner.WaitOne(TimeSpan.FromSeconds(1), true);
-                        currentTry++;
-                    }
-
-                    if (!createdNewMutex)
-                    {
-                        _messageBoxService.ShowMessage(Localization.Localization.Instance.GetLocalization("AnotherInstanceIsAlreadyRunning"));
-                        Environment.Exit(-1);
-                    }
-                }
-                catch (AbandonedMutexException)
-                {
-                    //mutex was killed
-                    createdNewMutex = true;
-                }
-            }
-
             try
             {
                 //check if file is not corrupt
