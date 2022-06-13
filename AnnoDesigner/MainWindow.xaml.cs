@@ -101,9 +101,9 @@ namespace AnnoDesigner
                     RenderInfluences = exportArgs.RenderInfluences ?? false,
                     RenderLabel = exportArgs.RenderLabel ?? true,
                     RenderPanorama = exportArgs.RenderPanorama ?? false,
-                    RenderStatistics = exportArgs.RenderStatistics ?? false,
+                    RenderStatistics = exportArgs.RenderStatistics ?? true,
                     RenderTrueInfluenceRange = exportArgs.RenderTrueInfluenceRange ?? false,
-                    RenderVersion = exportArgs.RenderVersion ?? false
+                    RenderVersion = exportArgs.RenderVersion ?? true
                 }).RenderToFile(exportArgs.ExportedFilename);
 
                 Close();

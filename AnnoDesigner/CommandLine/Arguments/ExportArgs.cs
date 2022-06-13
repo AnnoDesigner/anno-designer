@@ -48,13 +48,13 @@ namespace AnnoDesigner.CommandLine.Arguments
         [Option("renderPanorama", Default = false)]
         public bool? RenderPanorama { get; set; }
 
-        [Option("renderStatistics", Default = false)]
+        [Option("renderStatistics", Default = true)]
         public bool? RenderStatistics { get; set; }
 
         [Option("renderTrueInfluenceRange", Default = false)]
         public bool? RenderTrueInfluenceRange { get; set; }
 
-        [Option("renderVersion", Default = false)]
+        [Option("renderVersion", Default = true)]
         public bool? RenderVersion { get; set; }
     }
 }
