@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using AnnoDesigner.CommandLine;
 using AnnoDesigner.CommandLine.Arguments;
 using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Layout;
@@ -95,16 +96,20 @@ namespace AnnoDesigner
                 _mainViewModel.PrepareCanvasForRender(layout.Objects, Enumerable.Empty<AnnoObject>(), Math.Max(exportArgs.Border, 0), new Models.CanvasRenderSetting()
                 {
                     GridSize = Math.Max(Math.Min(exportArgs.GridSize, Constants.GridStepMax), Constants.GridStepMin),
-                    RenderGrid = exportArgs.RenderGrid ?? true,
-                    RenderHarborBlockedArea = exportArgs.RenderHarborBlockedArea ?? false,
-                    RenderIcon = exportArgs.RenderIcon ?? true,
-                    RenderInfluences = exportArgs.RenderInfluences ?? false,
-                    RenderLabel = exportArgs.RenderLabel ?? true,
-                    RenderPanorama = exportArgs.RenderPanorama ?? false,
-                    RenderStatistics = exportArgs.RenderStatistics ?? true,
-                    RenderTrueInfluenceRange = exportArgs.RenderTrueInfluenceRange ?? false,
-                    RenderVersion = exportArgs.RenderVersion ?? true
+                    RenderGrid = exportArgs.UseUserSetting ? _appSettings.ShowGrid : !exportArgs.HideGrid,
+                    RenderHarborBlockedArea = exportArgs.UseUserSetting ? _appSettings.ShowHarborBlockedArea : exportArgs.RenderHarborBlockedArea,
+                    RenderIcon = exportArgs.UseUserSetting ? _appSettings.ShowIcons : !exportArgs.HideIcon,
+                    RenderInfluences = exportArgs.UseUserSetting ? _appSettings.ShowInfluences : exportArgs.RenderInfluences,
+                    RenderLabel = exportArgs.UseUserSetting ? _appSettings.ShowLabels : !exportArgs.HideLabel,
+                    RenderPanorama = exportArgs.UseUserSetting ? _appSettings.ShowPanorama : exportArgs.RenderPanorama,
+                    RenderTrueInfluenceRange = exportArgs.UseUserSetting ? _appSettings.ShowTrueInfluenceRange : exportArgs.RenderTrueInfluenceRange,
+                    RenderStatistics = exportArgs.UseUserSetting ? _appSettings.StatsShowStats : !exportArgs.HideStatistics,
+                    RenderVersion = !exportArgs.HideVersion
                 }).RenderToFile(exportArgs.ExportedFilename);
+
+                ConsoleManager.Show();
+                Console.WriteLine($"Export of \"{exportArgs.Filename}\" completed");
+                ConsoleManager.Hide();
 
                 Close();
             }
