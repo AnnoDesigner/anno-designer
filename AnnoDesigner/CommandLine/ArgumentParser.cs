@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AnnoDesigner.CommandLine.Arguments;
 using CommandLine;
@@ -17,21 +18,22 @@ namespace AnnoDesigner.CommandLine
                 exportArgs => exportArgs,
                 errors =>
                 {
-                    if (errors.IsHelp() || errors.IsVersion() || errors.Count(x => x is not NoVerbSelectedError) > 0)
+                    errors = errors.Where(e => e.Tag != ErrorType.NoVerbSelectedError);
+                    if (!errors.Any())
                     {
-                        var helpText = HelpText.AutoBuild(parsed,
-                            h =>
-                            {
-                                h.AdditionalNewLineAfterOption = false;
-                                h.MaximumDisplayWidth = 100;
-
-                                return h;
-                            });
-
-                        throw new HelpException(helpText);
+                        return new EmptyArgs();
                     }
 
-                    return null;
+                    var helpText = HelpText.AutoBuild(parsed,
+                        h =>
+                        {
+                            h.AdditionalNewLineAfterOption = false;
+                            h.MaximumDisplayWidth = 100;
+
+                            return h;
+                        });
+
+                    throw new ArgumentParsingException(helpText);
                 });
         }
     }

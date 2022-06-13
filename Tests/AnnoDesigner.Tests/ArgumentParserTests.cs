@@ -8,20 +8,20 @@ namespace AnnoDesigner.Tests
     public class ArgumentParserTests
     {
         [Fact]
-        public void Parse_EmptyArguments_ShouldReturnNull()
+        public void Parse_EmptyArguments_ShouldReturnCorrectType()
         {
             // Arrange/Act
             var parsedArguments = ArgumentParser.Parse(Enumerable.Empty<string>());
 
             // Assert
-            Assert.Null(parsedArguments);
+            Assert.IsType<EmptyArgs>(parsedArguments);
         }
 
         [Fact]
         public void Parse_UnknownVerb_ShouldThrow()
         {
             // Arrange/Act/Assert
-            var ex = Assert.Throws<HelpException>(() => ArgumentParser.Parse(new[] { "unknown" }));
+            var ex = Assert.Throws<ArgumentParsingException>(() => ArgumentParser.Parse(new[] { "unknown" }));
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace AnnoDesigner.Tests
         public void Parse_OpenVerb_FilenameNotSpecified_ShouldThrow()
         {
             // Arrange/Act/Assert
-            var ex = Assert.Throws<HelpException>(() => ArgumentParser.Parse(new[] { "open" }));
+            var ex = Assert.Throws<ArgumentParsingException>(() => ArgumentParser.Parse(new[] { "open" }));
         }
 
         [Fact]
@@ -56,14 +56,14 @@ namespace AnnoDesigner.Tests
         public void Parse_ExportVerb_LayoutFileNotSpecified_ShouldThrow()
         {
             // Arrange/Act/Assert
-            var ex = Assert.Throws<HelpException>(() => ArgumentParser.Parse(new[] { "export" }));
+            var ex = Assert.Throws<ArgumentParsingException>(() => ArgumentParser.Parse(new[] { "export" }));
         }
 
         [Fact]
         public void Parse_ExportVerb_OutputFileNotSpecified_ShouldThrow()
         {
             // Arrange/Act/Assert
-            var ex = Assert.Throws<HelpException>(() => ArgumentParser.Parse(new[] { "export", "filename" }));
+            var ex = Assert.Throws<ArgumentParsingException>(() => ArgumentParser.Parse(new[] { "export", "filename" }));
         }
 
         [Fact]

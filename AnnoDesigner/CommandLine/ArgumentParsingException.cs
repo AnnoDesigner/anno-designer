@@ -3,9 +3,9 @@ using CommandLine.Text;
 
 namespace AnnoDesigner.CommandLine
 {
-    public class HelpException : Exception
+    public class ArgumentParsingException : Exception
     {
-        public HelpException(HelpText helpText)
+        public ArgumentParsingException(HelpText helpText)
         {
             HelpText = helpText;
         }
