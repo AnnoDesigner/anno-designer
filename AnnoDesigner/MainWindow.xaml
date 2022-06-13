@@ -29,7 +29,8 @@
         MinHeight="480"
         MinWidth="640"
         Loaded="WindowLoaded"
-        Closing="WindowClosing">
+        Closing="WindowClosing"
+        Closed="WindowClosed">
     <Window.Resources>
         <coreConverters:BoolToVisibilityConverter x:Key="converterBoolToVisibility"
                                                   TrueValue="Visible"
