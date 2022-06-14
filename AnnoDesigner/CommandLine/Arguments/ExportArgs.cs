@@ -13,6 +13,7 @@ namespace AnnoDesigner.CommandLine.Arguments
             get
             {
                 yield return new Example("Export with default settings", new ExportArgs { Filename = @"C:\path\to\layout\file.ad", ExportedFilename = @"C:\path\to\exported\image.png" });
+                yield return new Example("Export with current user settings", new ExportArgs { Filename = @"C:\path\to\layout\file.ad", ExportedFilename = @"C:\path\to\exported\image.png", UseUserSettings = true });
                 yield return new Example("Export with rendered influences", new ExportArgs { Filename = @"C:\path\to\layout\file.ad", ExportedFilename = @"C:\path\to\exported\image.png", RenderInfluences = true });
                 yield return new Example("Export with statistics and version information but no icons", new ExportArgs { Filename = @"C:\path\to\layout\file.ad", ExportedFilename = @"C:\path\to\exported\image.png", HideIcon = true });
             }
@@ -24,13 +25,13 @@ namespace AnnoDesigner.CommandLine.Arguments
         [Value(1, MetaName = "imagePath", HelpText = "Path for exported image file (*.png)", Required = true)]
         public string ExportedFilename { get; set; }
 
-        [Option("useUserSetting", HelpText = "Uses current user render settings")]
-        public bool UseUserSetting { get; set; }
+        [Option("useUserSettings", HelpText = "Uses render settings of current user")]
+        public bool UseUserSettings { get; set; }
 
         [Option("border", Default = 1)]
         public int Border { get; set; }
 
-        [Option("gridSize", Default = 20, HelpText = "supports zoom values between 8 and 100")]
+        [Option("gridSize", Default = 20, HelpText = "Supports zoom values between 8 and 100.")]
         public int GridSize { get; set; }
 
         [Option("hideGrid")]
