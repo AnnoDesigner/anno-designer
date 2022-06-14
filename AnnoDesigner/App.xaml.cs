@@ -142,16 +142,6 @@ namespace AnnoDesigner
                 }
             }
 
-            var anotherInstanceIsRunning = IsAnotherInstanceRunning();
-            if (anotherInstanceIsRunning && _appSettings.ShowMultipleInstanceWarning)
-            {
-                //prevent app from closing, because there is no main window yet
-                Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-
-                //inform user that auto update is not applied
-                _messageBoxService.ShowMessage(Localization.Localization.Instance.GetLocalization("AnotherInstanceIsAlreadyRunning"));
-            }
-
             try
             {
                 //check if file is not corrupt
@@ -189,6 +179,16 @@ namespace AnnoDesigner
                 }
 
                 _appSettings.Reload();
+            }
+
+            var anotherInstanceIsRunning = IsAnotherInstanceRunning();
+            if (anotherInstanceIsRunning && _appSettings.ShowMultipleInstanceWarning && await _updateHelper.AreUpdatedPresetsFilesPresentAsync())
+            {
+                //prevent app from closing, because there is no main window yet
+                Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+                //inform user that auto update is not applied
+                _messageBoxService.ShowMessage(Localization.Localization.Instance.GetLocalization("WarningMultipleInstancesAreRunning"));
             }
 
             if (!anotherInstanceIsRunning)
