@@ -143,7 +143,7 @@ namespace AnnoDesigner
             }
 
             var anotherInstanceIsRunning = IsAnotherInstanceRunning();
-            if (anotherInstanceIsRunning)
+            if (anotherInstanceIsRunning && _appSettings.ShowMultipleInstanceWarning)
             {
                 //prevent app from closing, because there is no main window yet
                 Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;

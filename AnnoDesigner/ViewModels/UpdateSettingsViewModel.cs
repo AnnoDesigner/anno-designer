@@ -24,6 +24,7 @@ namespace AnnoDesigner.ViewModels
 
         private bool _automaticUpdateCheck;
         private bool _updateSupportsPrerelease;
+        private bool _showMultipleInstanceWarning;
         private string _versionValue;
         private string _updatedVersionValue;
         private string _fileVersionValue;
@@ -251,6 +252,18 @@ namespace AnnoDesigner.ViewModels
             set
             {
                 if (UpdateProperty(ref _updateSupportsPrerelease, value))
+                {
+                    _appSettings.Save();
+                }
+            }
+        }
+
+        public bool ShowMultipleInstanceWarning
+        {
+            get { return _showMultipleInstanceWarning; }
+            set
+            {
+                if (UpdateProperty(ref _showMultipleInstanceWarning, value))
                 {
                     _appSettings.Save();
                 }

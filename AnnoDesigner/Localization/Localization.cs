@@ -252,7 +252,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Maximum Recent Files",
                     ["Clear"] = "Clear",
                     ["EnableDebugMode"] = "Enable Debug Mode",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Include roads in statistics"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Include roads in statistics",
+                    ["ShowMultipleInstanceWarning"] = "Show warning if multiple instances are open"
                 },
                 ["ger"] = new Dictionary<string, string>()
                 {
@@ -452,7 +453,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "maximale Anzahl Dateien",
                     ["Clear"] = "Leeren",
                     ["EnableDebugMode"] = "Debugmodus aktivieren",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Straßen in die Statistik einbeziehen"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Straßen in die Statistik einbeziehen",
+                    ["ShowMultipleInstanceWarning"] = "Warnung anzeigen, wenn mehrere Instanzen geöffnet sind"
                 },
                 ["fra"] = new Dictionary<string, string>()
                 {
@@ -652,7 +654,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Nombre maximal de fichiers",
                     ["Clear"] = "Supprimer",
                     ["EnableDebugMode"] = "Activer le mode débogage",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Inclure les routes dans les statistiques"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Inclure les routes dans les statistiques",
+                    ["ShowMultipleInstanceWarning"] = "Afficher un avertissement si plusieurs instances sont ouvertes"
                 },
                 ["esp"] = new Dictionary<string, string>()
                 {
@@ -852,7 +855,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Número máximo de archivos",
                     ["Clear"] = "Eliminar",
                     ["EnableDebugMode"] = "Activar el modo de depuración",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Incluir las carreteras en las estadísticas"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Incluir las carreteras en las estadísticas",
+                    ["ShowMultipleInstanceWarning"] = "Mostrar advertencia si hay varias instancias abiertas"
                 },
                 ["pol"] = new Dictionary<string, string>()
                 {
@@ -1052,7 +1056,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Maksymalna liczba plików",
                     ["Clear"] = "Skreślić",
                     ["EnableDebugMode"] = "Włącz tryb debugowania",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Uwzględnienie dróg w statystykach"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Uwzględnienie dróg w statystykach",
+                    ["ShowMultipleInstanceWarning"] = "Pokaż ostrzeżenie, jeśli otwartych jest wiele instancji"
                 },
                 ["rus"] = new Dictionary<string, string>()
                 {
@@ -1252,7 +1257,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Максимальное количество файлов",
                     ["Clear"] = "Удалить",
                     ["EnableDebugMode"] = "Включить режим отладки",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Включить дороги в статистику"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Включить дороги в статистику",
+                    ["ShowMultipleInstanceWarning"] = "Показывать предупреждение, если открыто несколько экземпляров"
                 },
             };
 
