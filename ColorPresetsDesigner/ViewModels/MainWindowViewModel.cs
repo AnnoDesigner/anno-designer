@@ -398,6 +398,7 @@ namespace ColorPresetsDesigner.ViewModels
                 if (_selectedPredefinedColor != null)
                 {
                     _selectedPredefinedColor.OnTargetTemplateChanged -= _selectedPredefinedColor_OnTargetTemplateChanged;
+                    _selectedPredefinedColor.OnTargetIdentifiersChanged -= _selectedPredefinedColor_OnTargetIdentifiersChanged;
                 }
 
                 if (SetPropertyAndNotify(ref _selectedPredefinedColor, value))
@@ -409,6 +410,7 @@ namespace ColorPresetsDesigner.ViewModels
                 if (_selectedPredefinedColor != null)
                 {
                     _selectedPredefinedColor.OnTargetTemplateChanged += _selectedPredefinedColor_OnTargetTemplateChanged;
+                    _selectedPredefinedColor.OnTargetIdentifiersChanged += _selectedPredefinedColor_OnTargetIdentifiersChanged;
                 }
             }
         }
@@ -482,6 +484,12 @@ namespace ColorPresetsDesigner.ViewModels
                     {
                         result.Add(curIdentifierName);
                     }
+                }
+
+                //remove already added identifiers
+                foreach (var alreadyAddedIdentifier in SelectedPredefinedColor.TargetIdentifiers)
+                {
+                    result.Remove(alreadyAddedIdentifier);
                 }
 
                 return result;
@@ -585,6 +593,11 @@ namespace ColorPresetsDesigner.ViewModels
         }
 
         private void _selectedPredefinedColor_OnTargetTemplateChanged(object sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(AvailableIdentifiersForTemplate));
+        }
+
+        private void _selectedPredefinedColor_OnTargetIdentifiersChanged(object sender, EventArgs e)
         {
             OnPropertyChanged(nameof(AvailableIdentifiersForTemplate));
         }
