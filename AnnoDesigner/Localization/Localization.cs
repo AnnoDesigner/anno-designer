@@ -252,7 +252,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Maximum Recent Files",
                     ["Clear"] = "Clear",
                     ["EnableDebugMode"] = "Enable Debug Mode",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Include roads in statistics"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Include roads in statistics",
+                    ["SelectAllSameIdentifier"] = "Select all buildings of same type"
                 },
                 ["ger"] = new Dictionary<string, string>()
                 {
@@ -452,7 +453,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "maximale Anzahl Dateien",
                     ["Clear"] = "Leeren",
                     ["EnableDebugMode"] = "Debugmodus aktivieren",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Straßen in die Statistik einbeziehen"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Straßen in die Statistik einbeziehen",
+                    ["SelectAllSameIdentifier"] = "Alle Gebäude desselben Typs auswählen"
                 },
                 ["fra"] = new Dictionary<string, string>()
                 {
@@ -652,7 +654,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Nombre maximal de fichiers",
                     ["Clear"] = "Supprimer",
                     ["EnableDebugMode"] = "Activer le mode débogage",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Inclure les routes dans les statistiques"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Inclure les routes dans les statistiques",
+                    ["SelectAllSameIdentifier"] = "Sélectionner tous les bâtiments de même type"
                 },
                 ["esp"] = new Dictionary<string, string>()
                 {
@@ -852,7 +855,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Número máximo de archivos",
                     ["Clear"] = "Eliminar",
                     ["EnableDebugMode"] = "Activar el modo de depuración",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Incluir las carreteras en las estadísticas"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Incluir las carreteras en las estadísticas",
+                    ["SelectAllSameIdentifier"] = "Seleccionar todos los edificios del mismo tipo"
                 },
                 ["pol"] = new Dictionary<string, string>()
                 {
@@ -1052,7 +1056,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Maksymalna liczba plików",
                     ["Clear"] = "Skreślić",
                     ["EnableDebugMode"] = "Włącz tryb debugowania",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Uwzględnienie dróg w statystykach"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Uwzględnienie dróg w statystykach",
+                    ["SelectAllSameIdentifier"] = "Wybierz wszystkie budynki tego samego typu"
                 },
                 ["rus"] = new Dictionary<string, string>()
                 {
@@ -1252,7 +1257,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Максимальное количество файлов",
                     ["Clear"] = "Удалить",
                     ["EnableDebugMode"] = "Включить режим отладки",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Включить дороги в статистику"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Включить дороги в статистику",
+                    ["SelectAllSameIdentifier"] = "Выберите все здания одного типа"
                 },
             };
 
