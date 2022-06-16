@@ -53,6 +53,7 @@ namespace AnnoDesigner
         public const string DELETE_OBJECT_UNDER_CURSOR_LOCALIZATION_KEY = "DeleteObjectUnderCursor";
         public const string UNDO_LOCALIZATION_KEY = "Undo";
         public const string REDO_LOCALIZATION_KEY = "Redo";
+        public const string ENABLE_DEBUG_MODE_LOCALIZATION_KEY = "EnableDebugMode";
         public const string SELECT_ALL_SAME_IDENTIFIER__LOCALIZATION_KEY = "SelectAllSameIdentifier";
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
@@ -67,6 +68,8 @@ namespace AnnoDesigner
         #region Properties
 
         public IUndoManager UndoManager { get; private set; }
+
+        public IClipboardService ClipboardService { get; set; }
 
         /// <summary>
         /// Contains all loaded icons as a mapping of name (the filename without extension) to loaded BitmapImage.
@@ -303,34 +306,6 @@ namespace AnnoDesigner
         public event Action<LayoutObject> OnCurrentObjectChanged;
 
         /// <summary>
-        /// backing field of the ObjectClipboard property
-        /// </summary>
-        private List<LayoutObject> _clipboardObjects = new List<LayoutObject>();
-
-        /// <summary>
-        /// Holds a list of objects that are currently on the clipboard.
-        /// </summary>
-        public List<LayoutObject> ClipboardObjects
-        {
-            get { return _clipboardObjects; }
-            private set
-            {
-                if (value != null)
-                {
-                    _clipboardObjects = value;
-                    var localizedMessage = value.Count == 1 ? _localizationHelper.GetLocalization("ItemCopied") : _localizationHelper.GetLocalization("ItemsCopied");
-                    StatusMessage = $"{value.Count} {localizedMessage}";
-                    OnClipboardChanged?.Invoke(value);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Event which is fired when the clipboard content is changed.
-        /// </summary>
-        public event Action<List<LayoutObject>> OnClipboardChanged;
-
-        /// <summary>
         /// Backing field of the StatusMessage property.
         /// </summary>
         private string _statusMessage;
@@ -561,7 +536,6 @@ namespace AnnoDesigner
 
         #endregion
 
-#if DEBUG
         #region Debug options
 
         /// <summary>
@@ -573,19 +547,18 @@ namespace AnnoDesigner
         /// </summary>
         private readonly SolidColorBrush _debugBrushLight;
 
-        private bool debugModeIsEnabled = false;
-        private readonly bool debugShowObjectPositions = true;
-        private readonly bool debugShowQuadTreeViz = true;
-        private readonly bool debugShowSelectionRectCoordinates = true;
-        private readonly bool debugShowSelectionCollisionRect = true;
-        private readonly bool debugShowViewportRectCoordinates = true;
-        private readonly bool debugShowScrollableRectCoordinates = true;
-        private readonly bool debugShowLayoutRectCoordinates = true;
-        private readonly bool debugShowMouseGridCoordinates = true;
-        private readonly bool debugShowObjectCount = true;
+        private bool _debugModeIsEnabled = false;
+        private readonly bool _debugShowObjectPositions = true;
+        private readonly bool _debugShowQuadTreeViz = true;
+        private readonly bool _debugShowSelectionRectCoordinates = true;
+        private readonly bool _debugShowSelectionCollisionRect = true;
+        private readonly bool _debugShowViewportRectCoordinates = true;
+        private readonly bool _debugShowScrollableRectCoordinates = true;
+        private readonly bool _debugShowLayoutRectCoordinates = true;
+        private readonly bool _debugShowMouseGridCoordinates = true;
+        private readonly bool _debugShowObjectCount = true;
 
         #endregion
-#endif
 
         #region Constructor
         /// <summary>
@@ -603,7 +576,8 @@ namespace AnnoDesigner
             IPenCache penCacheToUse = null,
             IMessageBoxService messageBoxServiceToUse = null,
             ILocalizationHelper localizationHelperToUse = null,
-            IUndoManager undoManager = null)
+            IUndoManager undoManager = null,
+            IClipboardService clipboardService = null)
         {
             InitializeComponent();
 
@@ -614,9 +588,10 @@ namespace AnnoDesigner
             _penCache = penCacheToUse ?? new PenCache();
             _messageBoxService = messageBoxServiceToUse ?? new MessageBoxService();
             _localizationHelper = localizationHelperToUse ?? Localization.Localization.Instance;
-            UndoManager = undoManager ?? new UndoManager();
-
             _layoutLoader = new LayoutLoader();
+            UndoManager = undoManager ?? new UndoManager();
+            IClipboard clipboard = new WindowsClipboard();
+            ClipboardService = clipboardService ?? new ClipboardService(_layoutLoader, clipboard);
 
             _showScrollBars = _appSettings.ShowScrollbars;
             _hideInfluenceOnSelection = _appSettings.HideInfluenceOnSelection;
@@ -646,6 +621,7 @@ namespace AnnoDesigner
             deleteObjectUnderCursorCommand = new RelayCommand(ExecuteDeleteObjectUnderCursor);
             undoCommand = new RelayCommand(ExecuteUndo);
             redoCommand = new RelayCommand(ExecuteRedo);
+            enableDebugModeCommand = new RelayCommand(ExecuteEnableDebugMode);
             selectAllSameIdentifierCommand = new RelayCommand(ExecuteSelectAllSameIdentifier);
 
             //Set up default keybindings
@@ -682,6 +658,9 @@ namespace AnnoDesigner
             var redoBinding = new InputBinding(redoCommand, new PolyGesture(Key.Y, ModifierKeys.Control));
             redoHotkey = new Hotkey(REDO_LOCALIZATION_KEY, redoBinding, REDO_LOCALIZATION_KEY);
 
+            var enableDebugModeBinding = new InputBinding(enableDebugModeCommand, new PolyGesture(Key.D, ModifierKeys.Control | ModifierKeys.Shift));
+            enableDebugModeHotkey = new Hotkey(ENABLE_DEBUG_MODE_LOCALIZATION_KEY, enableDebugModeBinding, ENABLE_DEBUG_MODE_LOCALIZATION_KEY);
+
             var selectAllSameIdentifierBinding = new InputBinding(selectAllSameIdentifierCommand, new PolyGesture(ExtendedMouseAction.LeftClick, ModifierKeys.Control | ModifierKeys.Shift));
             selectAllSameIdentifierHotkey = new Hotkey(SELECT_ALL_SAME_IDENTIFIER__LOCALIZATION_KEY, selectAllSameIdentifierBinding, SELECT_ALL_SAME_IDENTIFIER__LOCALIZATION_KEY);
 
@@ -703,10 +682,8 @@ namespace AnnoDesigner
             color = Colors.LawnGreen;
             color.A = 32;
             _influencedBrush = _brushCache.GetSolidBrush(color);
-#if DEBUG
             _debugBrushLight = Brushes.Blue;
             _debugBrushDark = Brushes.DarkBlue;
-#endif
 
             sw.Stop();
             logger.Trace($"init variables took: {sw.ElapsedMilliseconds}ms");
@@ -1107,11 +1084,10 @@ namespace AnnoDesigner
 
             #region Draw debug information
 
-#if DEBUG
-            if (debugModeIsEnabled)
+            if (_debugModeIsEnabled)
             {
                 drawingContext.PushTransform(_viewportTransform);
-                if (debugShowQuadTreeViz)
+                if (_debugShowQuadTreeViz)
                 {
                     var brush = Brushes.Transparent;
                     var pen = _penCache.GetPen(_debugBrushDark, 2);
@@ -1121,7 +1097,7 @@ namespace AnnoDesigner
                     }
                 }
 
-                if (debugShowSelectionCollisionRect)
+                if (_debugShowSelectionCollisionRect)
                 {
                     var color = _debugBrushLight.Color;
                     color.A = 0x08;
@@ -1135,7 +1111,7 @@ namespace AnnoDesigner
                 drawingContext.Pop();
                 var debugText = new List<FormattedText>(3);
 
-                if (debugShowViewportRectCoordinates)
+                if (_debugShowViewportRectCoordinates)
                 {
                     //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
                     if (App.DpiScale.PixelsPerDip != 0)
@@ -1153,7 +1129,7 @@ namespace AnnoDesigner
                     }
                 }
 
-                if (debugShowScrollableRectCoordinates)
+                if (_debugShowScrollableRectCoordinates)
                 {
                     //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
                     if (App.DpiScale.PixelsPerDip != 0)
@@ -1171,7 +1147,7 @@ namespace AnnoDesigner
                     }
                 }
 
-                if (debugShowLayoutRectCoordinates)
+                if (_debugShowLayoutRectCoordinates)
                 {
                     //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
                     if (App.DpiScale.PixelsPerDip != 0)
@@ -1189,7 +1165,7 @@ namespace AnnoDesigner
                     }
                 }
 
-                if (debugShowObjectCount)
+                if (_debugShowObjectCount)
                 {
                     //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
                     if (App.DpiScale.PixelsPerDip != 0)
@@ -1208,7 +1184,7 @@ namespace AnnoDesigner
                     drawingContext.DrawText(debugText[i], new Point(5, (i * 15) + 5));
                 }
 
-                if (debugShowMouseGridCoordinates)
+                if (_debugShowMouseGridCoordinates)
                 {
                     //The first time this is called, App.DpiScale is still 0 which causes this code to throw an error
                     if (App.DpiScale.PixelsPerDip != 0)
@@ -1232,7 +1208,7 @@ namespace AnnoDesigner
                 //draw selection rect coords last so they draw over the top of everything else
                 if (CurrentMode == MouseMode.SelectionRect)
                 {
-                    if (debugShowSelectionRectCoordinates)
+                    if (_debugShowSelectionRectCoordinates)
                     {
                         var rect = _coordinateHelper.ScreenToGrid(_selectionRect, _gridSize);
                         var top = rect.Top;
@@ -1252,7 +1228,6 @@ namespace AnnoDesigner
                     }
                 }
             }
-#endif
 
             #endregion
 
@@ -1484,8 +1459,8 @@ namespace AnnoDesigner
 
                     drawingContext.DrawText(text, textLocation);
                 }
-#if DEBUG
-                if (debugModeIsEnabled && debugShowObjectPositions)
+
+                if (_debugModeIsEnabled && _debugShowObjectPositions)
                 {
                     var text = new FormattedText(obj.Position.ToString(), Thread.CurrentThread.CurrentCulture, FlowDirection.LeftToRight,
                     TYPEFACE, 12, _debugBrushLight,
@@ -1501,7 +1476,6 @@ namespace AnnoDesigner
 
                     drawingContext.DrawText(text, textLocation);
                 }
-#endif
             }
         }
 
@@ -2467,13 +2441,7 @@ namespace AnnoDesigner
             //When an InputBinding is added to the InputBindingsCollection, the  `Matches` method is fired for every event - KeyUp,
             //KeyDown, MouseUp, MouseMove, MouseWheel etc.
             HotkeyCommandManager.HandleCommand(e);
-#if DEBUG
-            if (e.Key == Key.D && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
-            {
-                debugModeIsEnabled = !debugModeIsEnabled;
-                e.Handled = true;
-            }
-#endif
+
             if (e.Handled)
             {
                 InvalidateVisual();
@@ -2531,9 +2499,9 @@ namespace AnnoDesigner
         /// <param name="a">List of objects</param>
         /// <param name="b">second object</param>
         /// <returns>true if there is a collision, otherwise false</returns>
-        private bool ObjectIntersectionExists(List<LayoutObject> a, LayoutObject b)
+        private bool ObjectIntersectionExists(IEnumerable<LayoutObject> a, LayoutObject b)
         {
-            return a.Exists(_ => _.CollisionRect.IntersectsWith(b.CollisionRect));
+            return a.Any(_ => _.CollisionRect.IntersectsWith(b.CollisionRect));
         }
 
         /// <summary>
@@ -2550,11 +2518,12 @@ namespace AnnoDesigner
             }
 
             var boundingRect = ComputeBoundingRect(CurrentObjects);
-            var objects = PlacedObjects.GetItemsIntersecting(boundingRect);
+            var relevantPlacedObjects = PlacedObjects.GetItemsIntersecting(boundingRect);
+            var intersectingCurrentObjects = CurrentObjects.Where(x => ObjectIntersectionExists(relevantPlacedObjects, x));
 
-            if (CurrentObjects.Count != 0 && !objects.Any(_ => ObjectIntersectionExists(CurrentObjects, _)))
+            if (IsShiftPressed() || !intersectingCurrentObjects.Any())
             {
-                var newObjects = CloneList(CurrentObjects);
+                var newObjects = CloneLayoutObjects(CurrentObjects.Except(intersectingCurrentObjects), CurrentObjects.Count);
                 UndoManager.RegisterOperation(new AddObjectsOperation<LayoutObject>()
                 {
                     Objects = newObjects,
@@ -2713,6 +2682,7 @@ namespace AnnoDesigner
             manager.AddHotkey(deleteObjectUnderCursorHotkey);
             manager.AddHotkey(undoHotkey);
             manager.AddHotkey(redoHotkey);
+            manager.AddHotkey(enableDebugModeHotkey);
             manager.AddHotkey(selectAllSameIdentifierHotkey);
         }
 
@@ -2945,7 +2915,10 @@ namespace AnnoDesigner
         {
             if (SelectedObjects.Count != 0)
             {
-                ClipboardObjects = SelectedObjects.ToListWithCapacity();
+                ClipboardService.Copy(SelectedObjects.Select(x => x.WrappedAnnoObject));
+
+                var localizedMessage = SelectedObjects.Count == 1 ? _localizationHelper.GetLocalization("ItemCopied") : _localizationHelper.GetLocalization("ItemsCopied");
+                StatusMessage = $"{SelectedObjects.Count} {localizedMessage}";
             }
         }
 
@@ -2953,10 +2926,10 @@ namespace AnnoDesigner
         private readonly ICommand pasteCommand;
         private void ExecutePaste(object param)
         {
-            if (ClipboardObjects.Count != 0)
+            var objects = ClipboardService.Paste();
+            if (objects.Count > 0)
             {
-                CurrentObjects = CloneList(ClipboardObjects);
-                MoveCurrentObjectsToMouse();
+                CurrentObjects = objects.Select(x => new LayoutObject(x, _coordinateHelper, _brushCache, _penCache)).ToList();
             }
         }
 
@@ -3064,15 +3037,26 @@ namespace AnnoDesigner
             }
         }
 
+        private readonly Hotkey enableDebugModeHotkey;
+        private readonly ICommand enableDebugModeCommand;
+        private void ExecuteEnableDebugMode(object param)
+        {
+            _debugModeIsEnabled = !_debugModeIsEnabled;
+            ForceRendering();
+        }
+
         #endregion
 
         #region Helper methods
 
-        private List<LayoutObject> CloneList(List<LayoutObject> list)
+        private List<LayoutObject> CloneLayoutObjects(ICollection<LayoutObject> list)
         {
-            var newList = new List<LayoutObject>(list.Capacity);
-            list.ForEach(_ => newList.Add(new LayoutObject(new AnnoObject(_.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)));
-            return newList;
+            return list.Select(x => new LayoutObject(new AnnoObject(x.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)).ToListWithCapacity(list.Count);
+        }
+
+        private List<LayoutObject> CloneLayoutObjects(IEnumerable<LayoutObject> list, int capacity)
+        {
+            return list.Select(x => new LayoutObject(new AnnoObject(x.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)).ToListWithCapacity(capacity);
         }
 
         private void UpdateScrollBarVisibility()

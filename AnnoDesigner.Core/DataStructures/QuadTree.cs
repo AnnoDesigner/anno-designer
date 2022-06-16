@@ -335,7 +335,6 @@ namespace AnnoDesigner.Core.DataStructures
                 return null;
             }
 
-#if DEBUG
             /// <summary>
             /// Retrieves a list of Rects that make up this quadrant and the quadrants beneath it.
             /// Used when debugging to draw quadrants to a canvas.
@@ -377,7 +376,6 @@ namespace AnnoDesigner.Core.DataStructures
                     }
                 }
             }
-#endif
         }
 
         /// <summary>
@@ -546,7 +544,6 @@ namespace AnnoDesigner.Core.DataStructures
             }
         }
 
-#if DEBUG
         /// <summary>
         /// Retrieves a list of Rects that make up the Quadrants in this QuadTree.
         /// Used when debugging to draw the QuadTree quadrants to a canvas.
@@ -556,6 +553,5 @@ namespace AnnoDesigner.Core.DataStructures
         {
             return root.GetQuadrantRects();
         }
-#endif
     }
 }

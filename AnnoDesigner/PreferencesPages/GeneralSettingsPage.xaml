@@ -152,24 +152,46 @@
                     Padding="5,2"
                     Margin="20,0,0,0" />
         </Grid>
-
-        <StackPanel Margin="20,0,0,10">
+        <Grid Margin="20,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="180"
+                                  Width="Auto"
+                                  SharedSizeGroup="TitleColumn" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
             <CheckBox IsChecked="{Binding UseZoomToPoint}"
                       Content="{l:Localize GeneralPreferencesUseZoomToPoint}"
-                      Margin="0,0,0,10" />
+                      Grid.Row="0" />
             <CheckBox IsChecked="{Binding InvertPanningDirection}"
                       Content="{l:Localize GeneralPreferencesInvertPanningDirection}"
-                      Margin="0,0,0,10" />
+                      Grid.Row="2" />
             <CheckBox IsChecked="{Binding ShowScrollbars}"
                       Content="{l:Localize GeneralPreferencesShowScrollbars}"
-                      Margin="0,0,0,10" />
+                      Grid.Row="4" />
             <CheckBox IsChecked="{Binding InvertScrollingDirection}"
                       Content="{l:Localize GeneralPreferencesInvertScrollingDirection}"
-                      Margin="0,0,0,10" />
+                      Grid.Row="6" />
             <CheckBox IsChecked="{Binding HideInfluenceOnSelection}"
-                      Content="{l:Localize GeneralPreferencesHideInfluenceOnSelection}" />
+                      Content="{l:Localize GeneralPreferencesHideInfluenceOnSelection}"
+                      Grid.Row="8" />
+            <CheckBox IsChecked="{Binding IncludeRoadsInStatisticCalculation}"
+                      Content="{l:Localize GeneralPreferencesIncludeRoadsInStatisticCalculation}"
+                      Grid.Row="10" />
 
-        </StackPanel>
+        </Grid>
 
         <!--#endregion-->
 
