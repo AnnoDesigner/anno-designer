@@ -598,6 +598,7 @@ namespace AnnoDesigner.ViewModels
 
             PreferencesUpdateViewModel.AutomaticUpdateCheck = _appSettings.EnableAutomaticUpdateCheck;
             PreferencesUpdateViewModel.UpdateSupportsPrerelease = _appSettings.UpdateSupportsPrerelease;
+            PreferencesUpdateViewModel.ShowMultipleInstanceWarning = _appSettings.ShowMultipleInstanceWarning;
 
             UseCurrentZoomOnExportedImageValue = _appSettings.UseCurrentZoomOnExportedImageValue;
             RenderSelectionHighlightsOnExportedImageValue = _appSettings.RenderSelectionHighlightsOnExportedImageValue;
@@ -637,6 +638,7 @@ namespace AnnoDesigner.ViewModels
 
             _appSettings.EnableAutomaticUpdateCheck = PreferencesUpdateViewModel.AutomaticUpdateCheck;
             _appSettings.UpdateSupportsPrerelease = PreferencesUpdateViewModel.UpdateSupportsPrerelease;
+            _appSettings.ShowMultipleInstanceWarning = PreferencesUpdateViewModel.ShowMultipleInstanceWarning;
 
             _appSettings.UseCurrentZoomOnExportedImageValue = UseCurrentZoomOnExportedImageValue;
             _appSettings.RenderSelectionHighlightsOnExportedImageValue = RenderSelectionHighlightsOnExportedImageValue;
