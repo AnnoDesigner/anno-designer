@@ -54,7 +54,7 @@ namespace AnnoDesigner
         public const string UNDO_LOCALIZATION_KEY = "Undo";
         public const string REDO_LOCALIZATION_KEY = "Redo";
         public const string ENABLE_DEBUG_MODE_LOCALIZATION_KEY = "EnableDebugMode";
-        public const string SELECT_ALL_SAME_IDENTIFIER__LOCALIZATION_KEY = "SelectAllSameIdentifier";
+        public const string SELECT_ALL_SAME_IDENTIFIER_LOCALIZATION_KEY = "SelectAllSameIdentifier";
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
@@ -388,7 +388,8 @@ namespace AnnoDesigner
             DragAllStart,
             DragAll,
             PlaceObjects,
-            DeleteObject
+            DeleteObject,
+            SelectSameIdentifier
         }
 
         /// <summary>
@@ -662,7 +663,7 @@ namespace AnnoDesigner
             enableDebugModeHotkey = new Hotkey(ENABLE_DEBUG_MODE_LOCALIZATION_KEY, enableDebugModeBinding, ENABLE_DEBUG_MODE_LOCALIZATION_KEY);
 
             var selectAllSameIdentifierBinding = new InputBinding(selectAllSameIdentifierCommand, new PolyGesture(ExtendedMouseAction.LeftClick, ModifierKeys.Control | ModifierKeys.Shift));
-            selectAllSameIdentifierHotkey = new Hotkey(SELECT_ALL_SAME_IDENTIFIER__LOCALIZATION_KEY, selectAllSameIdentifierBinding, SELECT_ALL_SAME_IDENTIFIER__LOCALIZATION_KEY);
+            selectAllSameIdentifierHotkey = new Hotkey(SELECT_ALL_SAME_IDENTIFIER_LOCALIZATION_KEY, selectAllSameIdentifierBinding, SELECT_ALL_SAME_IDENTIFIER_LOCALIZATION_KEY);
 
             //We specifically do not add the `InputBinding`s to the `InputBindingCollection` of `AnnoCanvas`, as if we did that,
             //`InputBinding.Gesture.Matches()` would be fired for *every* event - MouseWheel, MouseDown, KeyUp, KeyDown, MouseMove etc
@@ -2353,6 +2354,11 @@ namespace AnnoDesigner
                             }
                             break;
                         }
+                    case MouseMode.SelectSameIdentifier:
+                        {
+                            CurrentMode = MouseMode.Standard;
+                            break;
+                        }
                     case MouseMode.SelectionRect:
                         _collisionRect = ComputeBoundingRect(SelectedObjects);
                         // cancel dragging of selection rect
@@ -2421,6 +2427,44 @@ namespace AnnoDesigner
                             CurrentMode = MouseMode.Standard;
                             break;
                         }
+                    case MouseMode.SelectSameIdentifier:
+                        {
+                            CurrentMode = MouseMode.Standard;
+                            break;
+                        }
+                }
+            }
+            else if (e.ChangedButton == MouseButton.Right)
+            {
+                switch (CurrentMode)
+                {
+                    case MouseMode.SelectSameIdentifier:
+                        {
+                            CurrentMode = MouseMode.Standard;
+                            break;
+                        }
+                }
+            }
+            else if (e.ChangedButton == MouseButton.XButton1)
+            {
+                switch (CurrentMode)
+                {
+                    case MouseMode.SelectSameIdentifier:
+                        {
+                            CurrentMode = MouseMode.Standard;
+                            break;
+                        }
+                }
+            }
+            else if (e.ChangedButton == MouseButton.XButton2)
+            {
+                switch (CurrentMode)
+                {
+                    case MouseMode.SelectSameIdentifier:
+                        {
+                            CurrentMode = MouseMode.Standard;
+                            break;
+                        }
                 }
             }
 
@@ -2472,7 +2516,7 @@ namespace AnnoDesigner
         /// </summary>
         /// <returns><see langword="true"> if all objects with same identifier should be affected, otherwise <see langword="false">.</returns>
         private bool ShouldAffectObjectsWithIdentifier()
-        {            
+        {
             return IsShiftPressed() && IsControlPressed();
         }
 
@@ -3022,6 +3066,8 @@ namespace AnnoDesigner
             var objectToCheck = GetObjectAt(_mousePosition);
             if (objectToCheck != null)
             {
+                CurrentMode = MouseMode.SelectSameIdentifier;
+
                 if (SelectedObjects.Contains(objectToCheck))
                 {
                     RemoveSelectedObject(objectToCheck, includeSameObjects: true);
