@@ -252,7 +252,9 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Maximum Recent Files",
                     ["Clear"] = "Clear",
                     ["EnableDebugMode"] = "Enable Debug Mode",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Include roads in statistics"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Include roads in statistics",
+                    ["ShowMultipleInstanceWarning"] = "Show warning if multiple instances are open",
+                    ["WarningMultipleInstancesAreRunning"] = "There is an update, but the app is open multiple times. Close all instances and start just 1 instance to allow the update to work."
                 },
                 ["ger"] = new Dictionary<string, string>()
                 {
@@ -452,7 +454,9 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "maximale Anzahl Dateien",
                     ["Clear"] = "Leeren",
                     ["EnableDebugMode"] = "Debugmodus aktivieren",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Straßen in die Statistik einbeziehen"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Straßen in die Statistik einbeziehen",
+                    ["ShowMultipleInstanceWarning"] = "Warnung anzeigen, wenn mehrere Instanzen geöffnet sind",
+                    ["WarningMultipleInstancesAreRunning"] = "Es gibt ein Update, aber die App ist mehrfach geöffnet. Schließen Sie alle Instanzen und starten Sie nur 1 Instanz, damit das Update funktioniert."
                 },
                 ["fra"] = new Dictionary<string, string>()
                 {
@@ -652,7 +656,9 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Nombre maximal de fichiers",
                     ["Clear"] = "Supprimer",
                     ["EnableDebugMode"] = "Activer le mode débogage",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Inclure les routes dans les statistiques"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Inclure les routes dans les statistiques",
+                    ["ShowMultipleInstanceWarning"] = "Afficher un avertissement si plusieurs instances sont ouvertes",
+                    ["WarningMultipleInstancesAreRunning"] = "Il y a une mise à jour, mais l'application est ouverte plusieurs fois. Fermez toutes les instances et démarrez une seule instance pour permettre à la mise à jour de fonctionner."
                 },
                 ["esp"] = new Dictionary<string, string>()
                 {
@@ -852,7 +858,9 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Número máximo de archivos",
                     ["Clear"] = "Eliminar",
                     ["EnableDebugMode"] = "Activar el modo de depuración",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Incluir las carreteras en las estadísticas"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Incluir las carreteras en las estadísticas",
+                    ["ShowMultipleInstanceWarning"] = "Mostrar advertencia si hay varias instancias abiertas",
+                    ["WarningMultipleInstancesAreRunning"] = "Hay una actualización, pero la aplicación está abierta varias veces. Cierra todas las instancias e inicia solo una para que la actualización funcione."
                 },
                 ["pol"] = new Dictionary<string, string>()
                 {
@@ -1052,7 +1060,9 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Maksymalna liczba plików",
                     ["Clear"] = "Skreślić",
                     ["EnableDebugMode"] = "Włącz tryb debugowania",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Uwzględnienie dróg w statystykach"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Uwzględnienie dróg w statystykach",
+                    ["ShowMultipleInstanceWarning"] = "Pokaż ostrzeżenie, jeśli otwartych jest wiele instancji",
+                    ["WarningMultipleInstancesAreRunning"] = "Jest aktualizacja, ale aplikacja jest otwarta wiele razy. Zamknij wszystkie instancje i uruchom tylko 1 instancję, aby umożliwić działanie aktualizacji."
                 },
                 ["rus"] = new Dictionary<string, string>()
                 {
@@ -1252,7 +1262,9 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesMaxRecentFiles"] = "Максимальное количество файлов",
                     ["Clear"] = "Удалить",
                     ["EnableDebugMode"] = "Включить режим отладки",
-                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Включить дороги в статистику"
+                    ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Включить дороги в статистику",
+                    ["ShowMultipleInstanceWarning"] = "Показывать предупреждение, если открыто несколько экземпляров",
+                    ["WarningMultipleInstancesAreRunning"] = "Есть обновление, но приложение открыто несколько раз. Закройте все экземпляры и запустите только 1 экземпляр, чтобы обновление сработало."
                 },
             };
 
