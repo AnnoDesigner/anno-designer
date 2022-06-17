@@ -486,10 +486,19 @@ namespace ColorPresetsDesigner.ViewModels
                     }
                 }
 
-                //remove already added identifiers
+                //remove already added identifiers (present in this template)
                 foreach (var alreadyAddedIdentifier in SelectedPredefinedColor.TargetIdentifiers)
                 {
                     result.Remove(alreadyAddedIdentifier);
+                }
+
+                //remove already added identifiers (present in all templates)
+                foreach (var curPredefinedColor in SelectedColorScheme.Colors)
+                {
+                    foreach (var curIdentifier in curPredefinedColor.TargetIdentifiers)
+                    {
+                        result.Remove(curIdentifier);
+                    }
                 }
 
                 return result;
