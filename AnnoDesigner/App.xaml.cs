@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Abstractions;
+using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using AnnoDesigner.Core.Extensions;
@@ -141,35 +142,6 @@ namespace AnnoDesigner
                 }
             }
 
-            using var mutexAnnoDesigner = new Mutex(true, MutexHelper.MUTEX_ANNO_DESIGNER, out var createdNewMutex);
-            //Are there other processes still running?
-            if (!createdNewMutex)
-            {
-                try
-                {
-                    var currentTry = 0;
-                    const int maxTrys = 10;
-                    while (!createdNewMutex && currentTry < maxTrys)
-                    {
-                        logger.Trace($"Waiting for other processes to finish. Try {currentTry} of {maxTrys}");
-
-                        createdNewMutex = mutexAnnoDesigner.WaitOne(TimeSpan.FromSeconds(1), true);
-                        currentTry++;
-                    }
-
-                    if (!createdNewMutex)
-                    {
-                        _messageBoxService.ShowMessage(Localization.Localization.Instance.GetLocalization("AnotherInstanceIsAlreadyRunning"));
-                        Environment.Exit(-1);
-                    }
-                }
-                catch (AbandonedMutexException)
-                {
-                    //mutex was killed
-                    createdNewMutex = true;
-                }
-            }
-
             try
             {
                 //check if file is not corrupt
@@ -209,8 +181,21 @@ namespace AnnoDesigner
                 _appSettings.Reload();
             }
 
-            //var updateWindow = new UpdateWindow();                
-            await _updateHelper.ReplaceUpdatedPresetsFilesAsync();
+            var anotherInstanceIsRunning = IsAnotherInstanceRunning();
+            if (anotherInstanceIsRunning && _appSettings.ShowMultipleInstanceWarning && await _updateHelper.AreUpdatedPresetsFilesPresentAsync())
+            {
+                //prevent app from closing, because there is no main window yet
+                Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+                //inform user that auto update is not applied
+                _messageBoxService.ShowMessage(Localization.Localization.Instance.GetLocalization("WarningMultipleInstancesAreRunning"));
+            }
+
+            if (!anotherInstanceIsRunning)
+            {
+                //var updateWindow = new UpdateWindow();                
+                await _updateHelper.ReplaceUpdatedPresetsFilesAsync();
+            }
 
             var recentFilesSerializer = new RecentFilesAppSettingsSerializer(_appSettings);
 
@@ -236,6 +221,19 @@ namespace AnnoDesigner
             }
 
             MainWindow.ShowDialog();
+        }
+
+        private static bool IsAnotherInstanceRunning()
+        {
+            Process currentProcess = Process.GetCurrentProcess();
+            var currentFileLocation = currentProcess.MainModule.FileName;
+
+            var runningProcesses = from process in Process.GetProcessesByName(currentProcess.ProcessName)
+                                   where process.Id != currentProcess.Id &&
+                                   string.Equals(process.MainModule.FileName, currentFileLocation, StringComparison.OrdinalIgnoreCase)
+                                   select process;
+
+            return runningProcesses.Any();
         }
     }
 }

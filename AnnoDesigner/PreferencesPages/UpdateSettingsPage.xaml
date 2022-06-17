@@ -100,7 +100,10 @@
                           Content="{l:Localize EnableAutomaticUpdateCheck}"
                           Margin="0,0,0,10" />
                 <CheckBox IsChecked="{Binding UpdateSupportsPrerelease}"
-                          Content="{l:Localize UpdatePreferencesCheckPreRelease}" />
+                          Content="{l:Localize UpdatePreferencesCheckPreRelease}"
+                          Margin="0,0,0,10" />
+                <CheckBox IsChecked="{Binding ShowMultipleInstanceWarning}"
+                          Content="{l:Localize ShowMultipleInstanceWarning}" />
             </StackPanel>
 
             <!--#endregion-->

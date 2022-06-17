@@ -43,6 +43,7 @@ namespace AnnoDesigner.Core.Models
         double MainWindowTop { get; set; }
         WindowState MainWindowWindowState { get; set; }
         bool UpdateSupportsPrerelease { get; set; }
+        bool ShowMultipleInstanceWarning { get; set; }
         string HotkeyMappings { get; set; }
         string RecentFiles { get; set; }
         int MaxRecentFiles { get; set; }
