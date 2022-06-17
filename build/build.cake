@@ -1,10 +1,12 @@
-#addin nuget:?package=Cake.FileHelpers&version=3.3.0
+// Install NuGet.CommandLine as a Cake Tool
+#tool nuget:?package=NuGet.CommandLine&version=6.2.1
+#addin nuget:?package=Cake.FileHelpers&version=5.0.0
 const string xunitRunnerVersion = "2.4.1";
 #tool nuget:?package=xunit.runner.console&version=2.4.1
 #tool nuget:?package=OpenCover&version=4.7.1221
-#tool nuget:?package=ReportGenerator&version=5.0.0
 #tool nuget:?package=7-Zip.CommandLine&version=18.1.0
 #addin nuget:?package=Cake.7zip&version=1.0.4
+#tool nuget:?package=ReportGenerator&version=5.1.9
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -21,7 +23,11 @@ var configuration = Argument<string>("configuration", "DEBUG");
 /// <summary>
 /// MSBuild tool version: <c>Visual Studio 2019</c>
 /// </summary>
-//VS2019 = 7
+//VS2019 = 7,
+/// <summary>
+/// MSBuild tool version: <c>Visual Studio 2022</c>
+/// </summary>
+//VS2022 = 10
 
 var msbuildVersion = Argument<int>("msbuildVersion", 7);
 var useBinaryLog = Argument<bool>("useBinaryLog", false);
@@ -227,14 +233,14 @@ var xUnit2Settings = new XUnit2Settings
         };
         
         var openCoverSettings = new OpenCoverSettings
-        {
-            Register = "user",
+        {            
             MergeOutput = true,
             MergeByHash = true,
             NoDefaultFilters = true,
             ReturnTargetCodeOffset = 0 //to throw an exception, when there are failing tests
             //ArgumentCustomization = args => args.Append("-coverbytest:*.Tests.dll").Append("-mergebyhash")
         };
+        openCoverSettings.WithRegisterUser();
         
         openCoverSettings.WithFilter("+[*]*");
         openCoverSettings.WithFilter("-[*.Tests]*");
