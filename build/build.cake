@@ -4,6 +4,8 @@
 const string xunitRunnerVersion = "2.4.1";
 #tool nuget:?package=xunit.runner.console&version=2.4.1
 #tool nuget:?package=OpenCover&version=4.7.1221
+#tool nuget:?package=7-Zip.CommandLine&version=18.1.0
+#addin nuget:?package=Cake.7zip&version=1.0.4
 #tool nuget:?package=ReportGenerator&version=5.1.9
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -284,18 +286,23 @@ var copyFilesTask = Task("Copy-Files")
     Information($"{DateTime.Now:hh:mm:ss.ff} copy application to \"{outDirectory}\"");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/AnnoDesigner.Core.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/AnnoDesigner.exe", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/AnnoDesigner.exe.config", $"{outDirectory}");
+    
+    //hide the exe.config file (it confused some users)
+    var appConfigFilePath = MakeAbsolute(File($"./../AnnoDesigner/bin/{configuration}/net48/AnnoDesigner.exe.config")).FullPath;
+    System.IO.File.SetAttributes(appConfigFilePath, System.IO.File.GetAttributes(appConfigFilePath) | System.IO.FileAttributes.Hidden);
+    CopyFileToDirectory(appConfigFilePath, $"{outDirectory}");    
+
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/colors.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/icons.json", $"{outDirectory}");    
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Microsoft.Bcl.HashCode.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Microsoft.Xaml.Behaviors.dll", $"{outDirectory}");
-	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Newtonsoft.Json.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Newtonsoft.Json.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/NLog.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Octokit.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/presets.json", $"{outDirectory}");
-	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.IO.Abstractions.dll", $"{outDirectory}");
-	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/treeLocalization.json", $"{outDirectory}");
-	CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Xceed.Wpf.Toolkit.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.IO.Abstractions.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/treeLocalization.json", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Xceed.Wpf.Toolkit.dll", $"{outDirectory}");
 
     Information("");
 });
@@ -312,8 +319,18 @@ var zipTask = Task("Compress-Output")
     var outputFilePath = $"{outDirectory}/../Anno.Designer.v{versionNumber}.zip";
 
     Information($"{DateTime.Now:hh:mm:ss.ff} creating zip file: \"{outputFilePath}\"");
-    Zip($"{outDirectory}", outputFilePath);
-    //use 7zip: https://github.com/cake-build/cake/issues/1283#issuecomment-254921290
+    
+    //use build in zip functionality (ignores file attributes)
+    //Zip($"{outDirectory}", outputFilePath);
+    
+    //use 7zip tool (respects file attributes)
+    SevenZip(m => m
+      .InAddMode()
+      .WithArchive(outputFilePath)
+      //.WithArchiveType(SwitchArchiveType.SevenZip)
+      .WithArchiveType(SwitchArchiveType.Zip)
+      .WithCompressionMethodLevel(9)//seems to be the highest value = best compression
+      .WithDirectoryContents(Directory(outDirectory)));
 
     Information("");
 });
