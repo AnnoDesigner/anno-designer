@@ -95,16 +95,16 @@ namespace AnnoDesigner
                 var layout = new LayoutLoader().LoadLayout(exportArgs.Filename);
                 _mainViewModel.PrepareCanvasForRender(layout.Objects, Enumerable.Empty<AnnoObject>(), Math.Max(exportArgs.Border, 0), new Models.CanvasRenderSetting()
                 {
-                    GridSize = Math.Max(Math.Min(exportArgs.GridSize, Constants.GridStepMax), Constants.GridStepMin),
-                    RenderGrid = exportArgs.UseUserSettings ? _appSettings.ShowGrid : !exportArgs.HideGrid,
-                    RenderHarborBlockedArea = exportArgs.UseUserSettings ? _appSettings.ShowHarborBlockedArea : exportArgs.RenderHarborBlockedArea,
-                    RenderIcon = exportArgs.UseUserSettings ? _appSettings.ShowIcons : !exportArgs.HideIcon,
-                    RenderInfluences = exportArgs.UseUserSettings ? _appSettings.ShowInfluences : exportArgs.RenderInfluences,
-                    RenderLabel = exportArgs.UseUserSettings ? _appSettings.ShowLabels : !exportArgs.HideLabel,
-                    RenderPanorama = exportArgs.UseUserSettings ? _appSettings.ShowPanorama : exportArgs.RenderPanorama,
-                    RenderTrueInfluenceRange = exportArgs.UseUserSettings ? _appSettings.ShowTrueInfluenceRange : exportArgs.RenderTrueInfluenceRange,
-                    RenderStatistics = exportArgs.UseUserSettings ? _appSettings.StatsShowStats : !exportArgs.HideStatistics,
-                    RenderVersion = !exportArgs.HideVersion
+                    GridSize = exportArgs.GridSize,
+                    RenderGrid = exportArgs.RenderGrid ?? (!exportArgs.UseUserSettings || _appSettings.ShowGrid),
+                    RenderIcon = exportArgs.RenderIcon ?? (!exportArgs.UseUserSettings || _appSettings.ShowIcons),
+                    RenderLabel = exportArgs.RenderLabel ?? (!exportArgs.UseUserSettings || _appSettings.ShowLabels),
+                    RenderStatistics = exportArgs.RenderStatistics ?? (!exportArgs.UseUserSettings || _appSettings.StatsShowStats),
+                    RenderVersion = exportArgs.RenderGrid ?? true,
+                    RenderHarborBlockedArea = exportArgs.RenderHarborBlockedArea ?? (exportArgs.UseUserSettings && _appSettings.ShowHarborBlockedArea),
+                    RenderInfluences = exportArgs.RenderInfluences ?? (exportArgs.UseUserSettings && _appSettings.ShowInfluences),
+                    RenderPanorama = exportArgs.RenderPanorama ?? (exportArgs.UseUserSettings && _appSettings.ShowPanorama),
+                    RenderTrueInfluenceRange = exportArgs.RenderTrueInfluenceRange ?? (exportArgs.UseUserSettings && _appSettings.ShowTrueInfluenceRange)
                 }).RenderToFile(exportArgs.ExportedFilename);
 
                 ConsoleManager.Show();

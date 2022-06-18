@@ -1,4 +1,6 @@
 ﻿using System;
+using System.CommandLine;
+using System.CommandLine.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -13,6 +15,56 @@ namespace AnnoDesigner.CommandLine
     [SuppressUnmanagedCodeSecurity]
     public static class ConsoleManager
     {
+        public class LazyConsole : IConsole
+        {
+            private readonly SystemConsole systemConsole = new SystemConsole();
+
+            public IStandardStreamWriter Out
+            {
+                get
+                {
+                    Show();
+                    return systemConsole.Out;
+                }
+            }
+
+            public bool IsOutputRedirected
+            {
+                get
+                {
+                    Show();
+                    return systemConsole.IsOutputRedirected;
+                }
+            }
+
+            public IStandardStreamWriter Error
+            {
+                get
+                {
+                    Show();
+                    return systemConsole.Error;
+                }
+            }
+
+            public bool IsErrorRedirected
+            {
+                get
+                {
+                    Show();
+                    return systemConsole.IsErrorRedirected;
+                }
+            }
+
+            public bool IsInputRedirected
+            {
+                get
+                {
+                    Show();
+                    return systemConsole.IsInputRedirected;
+                }
+            }
+        }
+
         private const string Kernel32_DllName = "kernel32.dll";
 
         [DllImport(Kernel32_DllName)]
@@ -40,6 +92,11 @@ namespace AnnoDesigner.CommandLine
         /// </summary>
         public static void Show()
         {
+            if (HasConsole)
+            {
+                return;
+            }
+
             if (!AttachConsole(ATTACH_PARENT_PROCESS))
             {
                 AllocConsole();

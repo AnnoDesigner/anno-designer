@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.CommandLine;
 using System.Linq;
 using AnnoDesigner.CommandLine.Arguments;
-using CommandLine;
-using CommandLine.Text;
+using System.CommandLine.Parsing;
 
 namespace AnnoDesigner.CommandLine
 {
@@ -11,30 +10,20 @@ namespace AnnoDesigner.CommandLine
     {
         public static IProgramArgs Parse(IEnumerable<string> arguments)
         {
-            var parsed = Parser.Default.ParseArguments<AdminRestartArgs, OpenArgs, ExportArgs>(arguments);
-            return parsed.MapResult<AdminRestartArgs, OpenArgs, ExportArgs, IProgramArgs>(
-                adminArgs => adminArgs,
-                openArgs => openArgs,
-                exportArgs => exportArgs,
-                errors =>
-                {
-                    errors = errors.Where(e => e.Tag != ErrorType.NoVerbSelectedError);
-                    if (!errors.Any())
-                    {
-                        return new EmptyArgs();
-                    }
+            IProgramArgs parsedArgs = null;
 
-                    var helpText = HelpText.AutoBuild(parsed,
-                        h =>
-                        {
-                            h.AdditionalNewLineAfterOption = false;
-                            h.MaximumDisplayWidth = 100;
+            void StoreParsedArgs(IProgramArgs args) => parsedArgs = args;
 
-                            return h;
-                        });
+            var root = new RootCommand
+            {
+                new OpenArgs.Binder().ConfigureCommand(StoreParsedArgs),
+                new ExportArgs.Binder().ConfigureCommand(StoreParsedArgs),
+                new AdminRestartArgs.Binder().ConfigureCommand(StoreParsedArgs)
+            };
+            root.SetHandler(() => parsedArgs = new EmptyArgs());
 
-                    throw new ArgumentParsingException(helpText);
-                });
+            root.Invoke(arguments.ToArray(), new ConsoleManager.LazyConsole());
+            return parsedArgs;
         }
     }
 }

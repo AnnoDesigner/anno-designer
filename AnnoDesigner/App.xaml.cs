@@ -134,15 +134,10 @@ namespace AnnoDesigner
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            try
-            {
-                logger.Info($"Used parameters: \"{string.Join(" ", e.Args)}\"");
-                StartupArguments = ArgumentParser.Parse(e.Args);
-            }
-            catch (ArgumentParsingException ex)
+            StartupArguments = ArgumentParser.Parse(e.Args);
+            if (StartupArguments is null)
             {
                 ConsoleManager.Show();
-                Console.WriteLine(ex.HelpText);
                 if (ConsoleManager.StartedWithoutConsole)
                 {
                     Console.WriteLine("Press enter to exit");

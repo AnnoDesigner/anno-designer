@@ -1,22 +1,33 @@
-﻿using System.Collections.Generic;
-using CommandLine;
-using CommandLine.Text;
+﻿using System.CommandLine;
+using System.CommandLine.Binding;
 
 namespace AnnoDesigner.CommandLine.Arguments
 {
-    [Verb("open", HelpText = "Starts AnnoDesigner with specified layout file opened")]
     public class OpenArgs : IProgramArgs
     {
-        [Usage]
-        public static IEnumerable<Example> Examples
+        public class Binder : ArgsBinderBase<OpenArgs>
         {
-            get
+            private readonly Argument<string> filename;
+
+            public Binder()
             {
-                yield return new Example("Open with layout", new OpenArgs { Filename = @"C:\path\to\layout\file.ad" });
+                filename = new("layoutPath", "Path to layout file (*.ad)");
+
+                command = new Command("open", "Starts AnnoDesigner with specified layout file opened")
+                {
+                    filename
+                };
+            }
+
+            protected override OpenArgs GetBoundValue(BindingContext bindingContext)
+            {
+                return new OpenArgs()
+                {
+                    Filename = bindingContext.ParseResult.GetValueForArgument(filename)
+                };
             }
         }
 
-        [Value(0, MetaName = "layoutPath", HelpText = "Path to layout file (*.ad).", Required = true)]
         public string Filename { get; set; }
     }
 }
