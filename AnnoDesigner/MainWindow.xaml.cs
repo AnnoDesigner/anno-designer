@@ -146,12 +146,5 @@ namespace AnnoDesigner
             logger.Trace($"saving settings: \"{userConfig}\"");
 #endif
         }
-
-        private void WindowClosed(object sender, EventArgs e)
-        {
-            base.OnClosed(e);
-            //re-enable closing the app
-            Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
-        }
     }
 }
