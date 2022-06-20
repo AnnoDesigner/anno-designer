@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using NLog;
 
 namespace AnnoDesigner.ViewModels
@@ -17,6 +19,7 @@ namespace AnnoDesigner.ViewModels
         private readonly IAppSettings _appSettings;
         private readonly ICommons _commons;
         private readonly IRecentFilesHelper _recentFilesHelper;
+        private readonly IPresetLayoutHolder _presetLayoutHolder;
 
         private bool _hideInfluenceOnSelection;
         private bool _useZoomToPoint;
@@ -34,13 +37,15 @@ namespace AnnoDesigner.ViewModels
         private bool _invertScrollingDirection;
         private bool _includeRoadsInStatisticCalculation;
         private int _maxRecentFiles;
+        private string _presetLayoutLocation;
 
-        public GeneralSettingsViewModel(IAppSettings appSettingsToUse, ICommons commonsToUse, IRecentFilesHelper recentFilesHelperToUse)
+        public GeneralSettingsViewModel(IAppSettings appSettingsToUse, ICommons commonsToUse, IRecentFilesHelper recentFilesHelperToUse, IPresetLayoutHolder presetLayoutHolder)
         {
             _appSettings = appSettingsToUse;
             _commons = commonsToUse;
             _commons.SelectedLanguageChanged += Commons_SelectedLanguageChanged;
             _recentFilesHelper = recentFilesHelperToUse;
+            _presetLayoutHolder = presetLayoutHolder;
 
             UseZoomToPoint = _appSettings.UseZoomToPoint;
             ZoomSensitivityPercentage = _appSettings.ZoomSensitivityPercentage;
@@ -49,10 +54,13 @@ namespace AnnoDesigner.ViewModels
             InvertPanningDirection = _appSettings.InvertPanningDirection;
             InvertScrollingDirection = _appSettings.InvertScrollingDirection;
             MaxRecentFiles = _appSettings.MaxRecentFiles;
+            _presetLayoutLocation = _appSettings.PresetLayoutLocation;
 
             ResetZoomSensitivityCommand = new RelayCommand(ExecuteResetZoomSensitivity, CanExecuteResetZoomSensitivity);
             ResetMaxRecentFilesCommand = new RelayCommand(ExecuteResetMaxRecentFiles, CanExecuteResetMaxRecentFiles);
             ClearRecentFilesCommand = new RelayCommand(ExecuteClearRecentFiles, CanExecuteClearRecentFiles);
+            SetPresetLayoutLocationCommand = new RelayCommand(ExecuteSetPresetLayoutLocation);
+            ResetPresetLayoutLocationCommand = new RelayCommand(ExecuteResetPresetLayoutLocation);
 
             GridLineColors = new ObservableCollection<UserDefinedColor>();
             RefreshGridLineColors();
@@ -394,6 +402,21 @@ namespace AnnoDesigner.ViewModels
             }
         }
 
+        public string PresetLayoutLocation
+        {
+            get { return _presetLayoutLocation; }
+            set
+            {
+                if (UpdateProperty(ref _presetLayoutLocation, value))
+                {
+                    _appSettings.PresetLayoutLocation = value;
+                    _appSettings.Save();
+
+                    _presetLayoutHolder.Presets = null;
+                }
+            }
+        }
+
         public ICommand ResetZoomSensitivityCommand { get; private set; }
 
         private void ExecuteResetZoomSensitivity(object param)
@@ -411,6 +434,40 @@ namespace AnnoDesigner.ViewModels
         private void ExecuteResetMaxRecentFiles(object param)
         {
             MaxRecentFiles = Constants.MaxRecentFiles;
+        }
+
+        public ICommand SetPresetLayoutLocationCommand { get; private set; }
+
+        private void ExecuteSetPresetLayoutLocation(object param)
+        {
+            var folder = Path.IsPathRooted(PresetLayoutLocation) ? PresetLayoutLocation : Path.GetFullPath(PresetLayoutLocation);
+            var dialog = new CommonOpenFileDialog()
+            {
+                Title = "Select layout preset folder",
+                IsFolderPicker = true,
+                InitialDirectory = folder
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                var normalizedSelectedFolder = Path.GetFullPath(dialog.FileName).Replace('/', '\\') + "\\";
+                var normalizedAppFolder = Path.GetFullPath(AppContext.BaseDirectory).Replace('/', '\\');
+                if (normalizedSelectedFolder.StartsWith(normalizedAppFolder))
+                {
+                    PresetLayoutLocation = Path.Combine(".", normalizedSelectedFolder.Substring(normalizedAppFolder.Length));
+                }
+                else
+                {
+                    PresetLayoutLocation = normalizedSelectedFolder;
+                }
+            }
+        }
+
+        public ICommand ResetPresetLayoutLocationCommand { get; private set; }
+
+        private void ExecuteResetPresetLayoutLocation(object param)
+        {
+            PresetLayoutLocation = Constants.DefaultPresetLayoutLocation;
         }
 
         private bool CanExecuteResetMaxRecentFiles(object param)

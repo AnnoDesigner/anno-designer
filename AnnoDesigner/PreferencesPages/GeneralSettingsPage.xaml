@@ -22,7 +22,8 @@
         <converters:UserDefinedColorToDisplayNameConverter x:Key="converterUserDefinedColorToDisplayName" />
     </Page.Resources>
     <StackPanel Orientation="Vertical"
-                Margin="10,5,0,0">
+                Margin="10,5,0,0"
+                Grid.IsSharedSizeScope="True">
 
         <!--#region UI Settings -->
 
@@ -33,7 +34,8 @@
         <Grid Margin="20,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="180"
-                                  Width="Auto" />
+                                  Width="Auto"
+                                  SharedSizeGroup="TitleColumn"/>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -74,12 +76,11 @@
                               Visibility="{Binding IsGridLineColorPickerVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
         </Grid>
 
-        <Grid Margin="20,0,0,10"
-              Grid.IsSharedSizeScope="True">
+        <Grid Margin="20,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="180"
                                   Width="Auto"
-                                  SharedSizeGroup="PreferenceLabel" />
+                                  SharedSizeGroup="TitleColumn" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -120,12 +121,11 @@
                               Visibility="{Binding IsObjectBorderLineColorPickerVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
         </Grid>
 
-        <Grid Margin="20,0,0,10"
-              Grid.IsSharedSizeScope="True">
+        <Grid Margin="20,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="180"
                                   Width="Auto"
-                                  SharedSizeGroup="PreferenceLabel" />
+                                  SharedSizeGroup="TitleColumn" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -190,7 +190,6 @@
             <CheckBox IsChecked="{Binding IncludeRoadsInStatisticCalculation}"
                       Content="{l:Localize GeneralPreferencesIncludeRoadsInStatisticCalculation}"
                       Grid.Row="10" />
-
         </Grid>
 
         <!--#endregion-->
@@ -204,7 +203,8 @@
         <Grid Margin="20,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="180"
-                                  Width="Auto" />
+                                  Width="Auto"
+                                  SharedSizeGroup="TitleColumn"/>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -236,6 +236,45 @@
                     Command="{Binding ClearRecentFilesCommand}"
                     Padding="5,2"
                     Margin="50,0,0,0" />
+
+        </Grid>
+
+        <!--#endregion-->
+
+        <!--#region Recent files Settings -->
+
+        <TextBlock Text="PresetLayoutSetting"
+                   FontSize="14"
+                   Margin="0,10,0,10" />
+
+        <Grid Margin="20,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="180"
+                                  Width="Auto"
+                                  SharedSizeGroup="TitleColumn"/>
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="Root location" />
+
+            <TextBox Grid.Column="2" Width="200" Text="{Binding PresetLayoutLocation}" />
+
+            <Button Grid.Column="4"
+                    Content="Select"
+                    Command="{Binding SetPresetLayoutLocationCommand}"
+                    Padding="5,2" />
+
+            <Button Grid.Column="6"
+                    Content="{l:Localize Default}"
+                    Command="{Binding ResetPresetLayoutLocationCommand}"
+                    Padding="5,2" />
 
         </Grid>
 

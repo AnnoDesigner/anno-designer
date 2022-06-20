@@ -199,6 +199,8 @@
                               Command="{Binding CanvasResetZoomCommand}" />
                     <MenuItem Header="{l:Localize MergeRoads}"
                               Command="{Binding MergeRoadsCommand}" />
+                    <MenuItem Header="LoadPresetLayout"
+                              Command="{Binding LoadPresetLayoutCommand}" />
                     <Separator />
                     <MenuItem Header="{l:Localize RegisterFileExtension}"
                               Command="{Binding RegisterExtensionCommand}" />

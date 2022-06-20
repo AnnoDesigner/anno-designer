@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using AnnoDesigner.Core.Models;
@@ -20,6 +21,14 @@ namespace AnnoDesigner.Core.Layout.Models
         {
             FileVersion = CoreConstants.LayoutFileVersion;
             Objects = objects.ToList();
+        }
+
+        public LayoutFile(LayoutFile copy)
+        {
+            FileVersion = copy.FileVersion;
+            LayoutVersion = (Version)copy.LayoutVersion.Clone();
+            Modified = copy.Modified;
+            Objects = copy.Objects.Select(x => new AnnoObject(x)).ToList();
         }
     }
 }

@@ -108,5 +108,10 @@ namespace AnnoDesigner
         /// The default number of recent files to show.
         /// </summary>
         public const int MaxRecentFiles = 10;
+
+        /// <summary>
+        /// Default location of preset layout folder.
+        /// </summary>
+        public const string DefaultPresetLayoutLocation = ".\\Layouts";
     }
 }

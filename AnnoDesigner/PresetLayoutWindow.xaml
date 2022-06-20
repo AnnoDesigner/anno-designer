@@ -1,0 +1,94 @@
+﻿<Window x:Class="AnnoDesigner.PresetLayoutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AnnoDesigner"
+        xmlns:converters="clr-namespace:AnnoDesigner.Converters"
+        xmlns:coreConverters="clr-namespace:AnnoDesigner.Core.Converters;assembly=AnnoDesigner.Core"
+        xmlns:l="clr-namespace:AnnoDesigner.Localization"
+        mc:Ignorable="d" Loaded="Window_Loaded"
+        Title="PresetLayoutWindow" Height="560" Width="940">
+    <Window.DataContext>
+        <local:PresetLayoutViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <converters:ReferenceToValueConverter x:Key="ReferenceToVisibilityConverter" NullValue="{x:Static Visibility.Collapsed}" NotNullValue="{x:Static Visibility.Visible}"/>
+        <converters:ReferenceToValueConverter x:Key="ReferenceToBooleanConverter" NullValue="False" NotNullValue="True"/>
+        <coreConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed" />
+        <coreConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverterInverted" TrueValue="Collapsed" FalseValue="Visible" />
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="{l:Localize File}">
+                <MenuItem Header="ReloadLayoutPresets" Click="ReloadLayoutPresets_Click" />
+            </MenuItem>
+        </Menu>
+        <Grid DockPanel.Dock="Left" Margin="5" Width="250">
+            <TreeView ItemsSource="{Binding Presets}" Padding="0,0,15,0" SelectedItemChanged="TreeView_SelectedItemChanged" Visibility="{Binding LoadingLayouts, Converter={StaticResource BoolToVisibilityConverterInverted}}">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Presets}">
+                        <TextBlock Text="{l:Multilang Name}" MouseDown="TreeViewItem_MouseDown"/>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+            <TreeView Padding="0,0,15,0" Visibility="{Binding LoadingLayouts, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TreeViewItem Header="Loading"/>
+            </TreeView>
+        </Grid>
+        <Grid Margin="5" DataContext="{Binding SelectedPreset}" Visibility="{Binding ., Converter={StaticResource ReferenceToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="{l:Multilang Path=Name}" FontSize="20" FontWeight="Bold"/>
+
+            <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Margin="0,5,0,0" Text="{l:Multilang Path=Info.Description}" TextWrapping="Wrap" Visibility="{Binding Info.Description, Converter={StaticResource ReferenceToVisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}"/>
+
+            <TextBlock Grid.Row="2" Text="Author" Margin="0,5,0,0" FontWeight="Bold" Visibility="{Binding Info.Author, Converter={StaticResource ReferenceToVisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}"/>
+            <TextBlock Grid.Row="2" Grid.Column="2" Margin="0,5,0,0" HorizontalAlignment="Left" Visibility="{Binding Info.Author, Converter={StaticResource ReferenceToVisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} ({1})">
+                        <Binding Path="Info.Author" TargetNullValue="Unknown"/>
+                        <Binding Path="Info.AuthorContact" TargetNullValue="no contact added"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
+            <TextBlock Grid.Row="4" Text="Layout version" FontWeight="Bold"/>
+            <TextBlock Grid.Row="4" Grid.Column="2" HorizontalAlignment="Left" Text="{Binding Layout.LayoutVersion}"/>
+
+            <ScrollViewer Grid.Row="6" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Visible">
+                <ItemsControl ItemsSource="{Binding Images}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" VerticalAlignment="Top"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Black" BorderThickness="1" Margin="5" Width="200" Height="200">
+                                <Image Source="{Binding .}" MouseDown="Image_MouseDown"/>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <Button Grid.Row="8" Grid.ColumnSpan="3" HorizontalAlignment="Right" Content="Load layout" Padding="10,5" IsEnabled="{Binding ., Converter={StaticResource ReferenceToBooleanConverter}}" Click="LoadButton_Click"/>
+        </Grid>
+    </DockPanel>
+</Window>
