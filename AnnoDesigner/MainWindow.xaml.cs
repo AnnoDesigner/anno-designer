@@ -89,8 +89,8 @@ namespace AnnoDesigner
             {
                 _mainViewModel.OpenFile(startupArgs.FilePath);
             }
-
-            if (App.StartupArguments is ExportArgs exportArgs && !string.IsNullOrEmpty(exportArgs.LayoutFilePath) && !string.IsNullOrEmpty(exportArgs.ExportedImageFilePath))
+            // export layout to image
+            else if (App.StartupArguments is ExportArgs exportArgs && !string.IsNullOrEmpty(exportArgs.LayoutFilePath) && !string.IsNullOrEmpty(exportArgs.ExportedImageFilePath))
             {
                 var layout = new LayoutLoader().LoadLayout(exportArgs.LayoutFilePath);
                 _mainViewModel.PrepareCanvasForRender(layout.Objects, Enumerable.Empty<AnnoObject>(), Math.Max(exportArgs.Border, 0), new Models.CanvasRenderSetting()
