@@ -299,10 +299,21 @@ var copyFilesTask = Task("Copy-Files")
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Newtonsoft.Json.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/NLog.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Octokit.dll", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/presets.json", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/presets.json", $"{outDirectory}");    
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.CommandLine.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.Buffers.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.Memory.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.Numerics.Vectors.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.Runtime.CompilerServices.Unsafe.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.IO.Abstractions.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/treeLocalization.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Xceed.Wpf.Toolkit.dll", $"{outDirectory}");
+
+    if(configuration.Equals("DEBUG", StringComparison.OrdinalIgnoreCase))
+    {
+        CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/AnnoDesigner.Core.pdb", $"{outDirectory}");
+        CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/AnnoDesigner.pdb", $"{outDirectory}");
+    }
 
     Information("");
 });
