@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CommandLine;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -35,6 +36,8 @@ namespace AnnoDesigner
         private static readonly ILocalizationHelper _localizationHelper;
         private static readonly IUpdateHelper _updateHelper;
         private static readonly IFileSystem _fileSystem;
+        private static readonly IArgumentParser _argumentParser;
+        private static readonly IConsole _console;
 
         public new MainWindow MainWindow { get => base.MainWindow as MainWindow; set => base.MainWindow = value; }
 
@@ -49,6 +52,9 @@ namespace AnnoDesigner
 
             _updateHelper = new UpdateHelper(ApplicationPath, _appSettings, _messageBoxService, _localizationHelper);
             _fileSystem = new FileSystem();
+
+            _console = new ConsoleManager.LazyConsole();
+            _argumentParser = new ArgumentParser(_console, _fileSystem);
         }
 
         public App()
@@ -135,7 +141,12 @@ namespace AnnoDesigner
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            StartupArguments = ArgumentParser.Parse(e.Args);
+            if (!Debugger.IsAttached)
+            {
+                Debugger.Launch();
+            }
+
+            StartupArguments = _argumentParser.Parse(e.Args);
             if (StartupArguments is null)
             {
                 ConsoleManager.Show();

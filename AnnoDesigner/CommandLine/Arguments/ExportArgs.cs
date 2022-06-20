@@ -1,5 +1,7 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Binding;
+using System.IO.Abstractions;
+using System.Linq;
 
 namespace AnnoDesigner.CommandLine.Arguments
 {
@@ -7,8 +9,8 @@ namespace AnnoDesigner.CommandLine.Arguments
     {
         public class Binder : ArgsBinderBase<ExportArgs>
         {
-            private readonly Argument<string> layoutFilepath;
-            private readonly Argument<string> imageFilepath;
+            private readonly Argument<IFileInfo> layoutFilepath;
+            private readonly Argument<IFileInfo> imageFilepath;
 
             private readonly Option<int> border;
             private readonly Option<int> gridSize;
@@ -24,10 +26,18 @@ namespace AnnoDesigner.CommandLine.Arguments
             private readonly Option<bool?> renderTrueInfluenceRange;
             private readonly Option<bool?> renderVersion;
 
-            public Binder()
+            public Binder(IFileSystem fileSystem)
             {
-                layoutFilepath = new("layoutPath", "Path to layout file (*.ad)");
-                imageFilepath = new("imagePath", "Path for exported image file (*.png)");
+                layoutFilepath = new Argument<IFileInfo>("layoutPath",
+                    parse: arg => fileSystem.FileInfo.FromFileName(arg.Tokens.First().Value),
+                    description: "Path to layout file (*.ad)")
+                    .ExistingOnly(fileSystem);
+
+                imageFilepath = new Argument<IFileInfo>("imagePath",
+                    parse: arg => fileSystem.FileInfo.FromFileName(arg.Tokens.First().Value),
+                    description: "Path for exported image file (*.png)")
+                    .LegalFilePathsOnly()
+                    .ExistingOnly(fileSystem);
 
                 border = new("--border", () => 1);
                 gridSize = new("--gridSize", () => 20, $"Grid size in pixelsc, can range from {Constants.GridStepMin} to {Constants.GridStepMax}");
@@ -74,8 +84,8 @@ namespace AnnoDesigner.CommandLine.Arguments
             {
                 return new ExportArgs()
                 {
-                    Filename = bindingContext.ParseResult.GetValueForArgument(layoutFilepath),
-                    ExportedFilename = bindingContext.ParseResult.GetValueForArgument(imageFilepath),
+                    Filename = bindingContext.ParseResult.GetValueForArgument(layoutFilepath)?.FullName,
+                    ExportedFilename = bindingContext.ParseResult.GetValueForArgument(imageFilepath)?.FullName,
                     Border = bindingContext.ParseResult.GetValueForOption(border),
                     GridSize = bindingContext.ParseResult.GetValueForOption(gridSize),
                     UseUserSettings = bindingContext.ParseResult.GetValueForOption(useUserSettings),

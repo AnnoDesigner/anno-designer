@@ -1,5 +1,7 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Binding;
+using System.IO.Abstractions;
+using System.Linq;
 
 namespace AnnoDesigner.CommandLine.Arguments
 {
@@ -7,27 +9,32 @@ namespace AnnoDesigner.CommandLine.Arguments
     {
         public class Binder : ArgsBinderBase<OpenArgs>
         {
-            private readonly Argument<string> filename;
+            private readonly Argument<IFileInfo> argumentFilePath;
 
-            public Binder()
+            public Binder(IFileSystem fileSystem)
             {
-                filename = new("layoutPath", "Path to layout file (*.ad)");
+                argumentFilePath = new Argument<IFileInfo>("layoutPath",
+                    parse: arg => fileSystem.FileInfo.FromFileName(arg.Tokens.First().Value),
+                    description: "Path to layout file (*.ad)")
+                    .ExistingOnly(fileSystem);
 
                 command = new Command("open", "Starts AnnoDesigner with specified layout file opened")
                 {
-                    filename
+                    argumentFilePath
                 };
             }
 
             protected override OpenArgs GetBoundValue(BindingContext bindingContext)
             {
+                var parsedFileInfo = bindingContext.ParseResult.GetValueForArgument(argumentFilePath);
+
                 return new OpenArgs()
                 {
-                    Filename = bindingContext.ParseResult.GetValueForArgument(filename)
+                    FilePath = parsedFileInfo?.FullName
                 };
             }
         }
 
-        public string Filename { get; set; }
+        public string FilePath { get; set; }
     }
 }

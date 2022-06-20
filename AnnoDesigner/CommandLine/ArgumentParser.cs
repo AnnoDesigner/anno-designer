@@ -1,14 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.CommandLine;
+using System.CommandLine.Parsing;
+using System.IO.Abstractions;
 using System.Linq;
 using AnnoDesigner.CommandLine.Arguments;
-using System.CommandLine.Parsing;
 
 namespace AnnoDesigner.CommandLine
 {
-    public static class ArgumentParser
+    public class ArgumentParser : IArgumentParser
     {
-        public static IProgramArgs Parse(IEnumerable<string> arguments)
+        private readonly IConsole _console;
+        private readonly IFileSystem _fileSystem;
+
+        public ArgumentParser(IConsole consoleToUse, IFileSystem fileSystemToUse)
+        {
+            _console = consoleToUse;
+            _fileSystem = fileSystemToUse;
+        }
+
+        public IProgramArgs Parse(IEnumerable<string> arguments)
         {
             IProgramArgs parsedArgs = null;
 
@@ -16,13 +26,14 @@ namespace AnnoDesigner.CommandLine
 
             var root = new RootCommand
             {
-                new OpenArgs.Binder().ConfigureCommand(StoreParsedArgs),
-                new ExportArgs.Binder().ConfigureCommand(StoreParsedArgs),
+                new OpenArgs.Binder(_fileSystem).ConfigureCommand(StoreParsedArgs),
+                new ExportArgs.Binder(_fileSystem).ConfigureCommand(StoreParsedArgs),
                 new AdminRestartArgs.Binder().ConfigureCommand(StoreParsedArgs)
             };
             root.SetHandler(() => parsedArgs = new EmptyArgs());
 
-            root.Invoke(arguments.ToArray(), new ConsoleManager.LazyConsole());
+            root.Invoke(arguments.ToArray(), _console);
+
             return parsedArgs;
         }
     }

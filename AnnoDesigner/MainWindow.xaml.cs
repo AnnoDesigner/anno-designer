@@ -85,9 +85,9 @@ namespace AnnoDesigner
             //}            
 
             // load file given by argument
-            if (App.StartupArguments is OpenArgs startupArgs && !string.IsNullOrEmpty(startupArgs.Filename))
+            if (App.StartupArguments is OpenArgs startupArgs && !string.IsNullOrEmpty(startupArgs.FilePath))
             {
-                _mainViewModel.OpenFile(startupArgs.Filename);
+                _mainViewModel.OpenFile(startupArgs.FilePath);
             }
 
             if (App.StartupArguments is ExportArgs exportArgs && !string.IsNullOrEmpty(exportArgs.Filename) && !string.IsNullOrEmpty(exportArgs.ExportedFilename))
