@@ -1,4 +1,5 @@
-﻿using System.CommandLine;
+﻿using System;
+using System.CommandLine;
 using System.CommandLine.Binding;
 using System.IO.Abstractions;
 using System.Linq;
@@ -18,6 +19,15 @@ namespace AnnoDesigner.CommandLine.Arguments
                     description: "Path to layout file (*.ad)")
                     .ExistingOnly(fileSystem);
 
+                argumentFilePath.AddValidator(parseResults =>
+                {
+                    var parsedFileinfo = parseResults.GetValueOrDefault<IFileInfo>();
+                    if (!string.Equals(parsedFileinfo.Extension, Constants.SavedLayoutExtension, StringComparison.OrdinalIgnoreCase))
+                    {
+                        parseResults.ErrorMessage = $"File \"{parsedFileinfo.Name}\" must have extension \"{Constants.SavedLayoutExtension}\".";
+                    }
+                });
+
                 command = new Command("open", "Starts AnnoDesigner with specified layout file opened")
                 {
                     argumentFilePath
@@ -30,7 +40,7 @@ namespace AnnoDesigner.CommandLine.Arguments
 
                 return new OpenArgs()
                 {
-                    FilePath = parsedFileInfo?.FullName
+                    FilePath = parsedFileInfo.FullName
                 };
             }
         }

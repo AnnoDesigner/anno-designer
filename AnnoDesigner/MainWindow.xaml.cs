@@ -90,9 +90,9 @@ namespace AnnoDesigner
                 _mainViewModel.OpenFile(startupArgs.FilePath);
             }
 
-            if (App.StartupArguments is ExportArgs exportArgs && !string.IsNullOrEmpty(exportArgs.Filename) && !string.IsNullOrEmpty(exportArgs.ExportedFilename))
+            if (App.StartupArguments is ExportArgs exportArgs && !string.IsNullOrEmpty(exportArgs.LayoutFilePath) && !string.IsNullOrEmpty(exportArgs.ExportedImageFilePath))
             {
-                var layout = new LayoutLoader().LoadLayout(exportArgs.Filename);
+                var layout = new LayoutLoader().LoadLayout(exportArgs.LayoutFilePath);
                 _mainViewModel.PrepareCanvasForRender(layout.Objects, Enumerable.Empty<AnnoObject>(), Math.Max(exportArgs.Border, 0), new Models.CanvasRenderSetting()
                 {
                     GridSize = exportArgs.GridSize,
@@ -105,10 +105,10 @@ namespace AnnoDesigner
                     RenderInfluences = exportArgs.RenderInfluences ?? (exportArgs.UseUserSettings && _appSettings.ShowInfluences),
                     RenderPanorama = exportArgs.RenderPanorama ?? (exportArgs.UseUserSettings && _appSettings.ShowPanorama),
                     RenderTrueInfluenceRange = exportArgs.RenderTrueInfluenceRange ?? (exportArgs.UseUserSettings && _appSettings.ShowTrueInfluenceRange)
-                }).RenderToFile(exportArgs.ExportedFilename);
+                }).RenderToFile(exportArgs.ExportedImageFilePath);
 
                 ConsoleManager.Show();
-                Console.WriteLine($"Export completed: \"{exportArgs.Filename}\"");
+                Console.WriteLine($"Export completed: \"{exportArgs.LayoutFilePath}\"");
                 ConsoleManager.Hide();
 
                 Close();

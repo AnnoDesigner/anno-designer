@@ -1,4 +1,5 @@
-﻿using System.CommandLine;
+﻿using System;
+using System.CommandLine;
 using System.CommandLine.Binding;
 using System.IO.Abstractions;
 using System.Linq;
@@ -33,13 +34,31 @@ namespace AnnoDesigner.CommandLine.Arguments
                     description: "Path to layout file (*.ad)")
                     .ExistingOnly(fileSystem);
 
+                layoutFilepath.AddValidator(parseResults =>
+                {
+                    var parsedFileinfo = parseResults.GetValueOrDefault<IFileInfo>();
+                    if (!string.Equals(parsedFileinfo.Extension, Constants.SavedLayoutExtension, StringComparison.OrdinalIgnoreCase))
+                    {
+                        parseResults.ErrorMessage = $"File \"{parsedFileinfo.Name}\" must have extension \"{Constants.SavedLayoutExtension}\".";
+                    }
+                });
+
                 imageFilepath = new Argument<IFileInfo>("imagePath",
                     parse: arg => fileSystem.FileInfo.FromFileName(arg.Tokens.First().Value),
                     description: "Path for exported image file (*.png)")
                     .LegalFilePathsOnly();
 
+                imageFilepath.AddValidator(parseResults =>
+                {
+                    var parsedFileinfo = parseResults.GetValueOrDefault<IFileInfo>();
+                    if (!string.Equals(parsedFileinfo.Extension, Constants.ExportedImageExtension, StringComparison.OrdinalIgnoreCase))
+                    {
+                        parseResults.ErrorMessage = $"File \"{parsedFileinfo.Name}\" must have extension \"{Constants.ExportedImageExtension}\".";
+                    }
+                });
+
                 border = new("--border", () => 1);
-                gridSize = new("--gridSize", () => 20, $"Grid size in pixelsc, can range from {Constants.GridStepMin} to {Constants.GridStepMax}");
+                gridSize = new("--gridSize", () => 20, $"Grid size in pixels, can range from {Constants.GridStepMin} to {Constants.GridStepMax}.");
                 gridSize.AddValidator(parseResults =>
                 {
                     var value = parseResults.GetValueOrDefault<int>();
@@ -83,8 +102,8 @@ namespace AnnoDesigner.CommandLine.Arguments
             {
                 return new ExportArgs()
                 {
-                    Filename = bindingContext.ParseResult.GetValueForArgument(layoutFilepath)?.FullName,
-                    ExportedFilename = bindingContext.ParseResult.GetValueForArgument(imageFilepath)?.FullName,
+                    LayoutFilePath = bindingContext.ParseResult.GetValueForArgument(layoutFilepath).FullName,
+                    ExportedImageFilePath = bindingContext.ParseResult.GetValueForArgument(imageFilepath).FullName,
                     Border = bindingContext.ParseResult.GetValueForOption(border),
                     GridSize = bindingContext.ParseResult.GetValueForOption(gridSize),
                     UseUserSettings = bindingContext.ParseResult.GetValueForOption(useUserSettings),
@@ -96,14 +115,13 @@ namespace AnnoDesigner.CommandLine.Arguments
                     RenderPanorama = bindingContext.ParseResult.GetValueForOption(renderPanorama),
                     RenderStatistics = bindingContext.ParseResult.GetValueForOption(renderStatistics),
                     RenderTrueInfluenceRange = bindingContext.ParseResult.GetValueForOption(renderTrueInfluenceRange),
-                    RenderVersion = bindingContext.ParseResult.GetValueForOption(renderVersion),
-
+                    RenderVersion = bindingContext.ParseResult.GetValueForOption(renderVersion)
                 };
             }
         }
 
-        public string Filename { get; set; }
-        public string ExportedFilename { get; set; }
+        public string LayoutFilePath { get; set; }
+        public string ExportedImageFilePath { get; set; }
         public int Border { get; set; }
         public int GridSize { get; set; }
         public bool UseUserSettings { get; set; }

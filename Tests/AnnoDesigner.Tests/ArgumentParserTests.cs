@@ -130,6 +130,21 @@ namespace AnnoDesigner.Tests
             Assert.Equal(_pathToLayoutFile, openArgs.FilePath);
         }
 
+        [Fact]
+        public void Parse_OpenVerb_WrongFileExtension_ShouldReturnNull()
+        {
+            // Arrange
+            InitFileSystem();
+            var filePathWithWrongExtension = $@"{_rootDirectory}\layout.wrong";
+            _fileSystem.AddFile(filePathWithWrongExtension, new MockFileData(string.Empty));
+
+            // Act
+            var parsedArguments = GetParser().Parse(new[] { "open", filePathWithWrongExtension });
+
+            // Assert
+            Assert.Null(parsedArguments);
+        }
+
         #endregion
 
         #region Option: export
@@ -158,7 +173,7 @@ namespace AnnoDesigner.Tests
         }
 
         [Fact]
-        public void Parse_ExportVerb_ShouldReturnParsedValues()
+        public void Parse_ExportVerb_OverridesBorder_ShouldReturnParsedValues()
         {
             // Arrange
             InitFileSystem();
@@ -169,9 +184,68 @@ namespace AnnoDesigner.Tests
 
             // Assert
             var exportArgs = Assert.IsType<ExportArgs>(parsedArguments);
-            Assert.Equal(_pathToLayoutFile, exportArgs.Filename);
-            Assert.Equal(_pathToExportedFile, exportArgs.ExportedFilename);
+            Assert.Equal(_pathToLayoutFile, exportArgs.LayoutFilePath);
+            Assert.Equal(_pathToExportedFile, exportArgs.ExportedImageFilePath);
             Assert.Equal(expectedBorder, exportArgs.Border);
+        }
+
+        [Fact]
+        public void Parse_ExportVerb_LayoutFileWithWrongFileExtension_ShouldReturnNull()
+        {
+            // Arrange
+            InitFileSystem();
+            var filePathWithWrongExtension = $@"{_rootDirectory}\layout.wrong";
+            _fileSystem.AddFile(filePathWithWrongExtension, new MockFileData(string.Empty));
+
+            // Act
+            var parsedArguments = GetParser().Parse(new[] { "export", filePathWithWrongExtension, _pathToExportedFile });
+
+            // Assert
+            Assert.Null(parsedArguments);
+        }
+
+
+        [Fact]
+        public void Parse_ExportVerb_ImageFileWithWrongFileExtension_ShouldReturnNull()
+        {
+            // Arrange
+            InitFileSystem();
+            var filePathWithWrongExtension = $@"{_rootDirectory}\layout.wrong";
+            _fileSystem.AddFile(filePathWithWrongExtension, new MockFileData(string.Empty));
+
+            // Act
+            var parsedArguments = GetParser().Parse(new[] { "export", _pathToLayoutFile, filePathWithWrongExtension });
+
+            // Assert
+            Assert.Null(parsedArguments);
+        }
+
+        [Fact]
+        public void Parse_ExportVerb_ValidPaths_ShouldReturnDefaultValues()
+        {
+            // Arrange
+            InitFileSystem();
+
+            // Act
+            var parsedArguments = GetParser().Parse(new[] { "export", _pathToLayoutFile, _pathToExportedFile });
+
+            // Assert
+            var exportArgs = Assert.IsType<ExportArgs>(parsedArguments);
+            Assert.Equal(_pathToLayoutFile, exportArgs.LayoutFilePath);
+            Assert.Equal(_pathToExportedFile, exportArgs.ExportedImageFilePath);
+
+            Assert.Equal(1, exportArgs.Border);
+            Assert.Equal(20, exportArgs.GridSize);
+            Assert.Null(exportArgs.RenderGrid);
+            Assert.Null(exportArgs.RenderHarborBlockedArea);
+            Assert.Null(exportArgs.RenderIcon);
+            Assert.Null(exportArgs.RenderInfluences);
+            Assert.Null(exportArgs.RenderLabel);
+            Assert.Null(exportArgs.RenderPanorama);
+            Assert.Null(exportArgs.RenderStatistics);
+            Assert.Null(exportArgs.RenderTrueInfluenceRange);
+            Assert.Null(exportArgs.RenderVersion);
+            Assert.False(exportArgs.UseUserSettings);
         }
 
         #endregion
