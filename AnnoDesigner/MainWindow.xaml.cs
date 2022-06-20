@@ -100,7 +100,7 @@ namespace AnnoDesigner
                     RenderIcon = exportArgs.RenderIcon ?? (!exportArgs.UseUserSettings || _appSettings.ShowIcons),
                     RenderLabel = exportArgs.RenderLabel ?? (!exportArgs.UseUserSettings || _appSettings.ShowLabels),
                     RenderStatistics = exportArgs.RenderStatistics ?? (!exportArgs.UseUserSettings || _appSettings.StatsShowStats),
-                    RenderVersion = exportArgs.RenderGrid ?? true,
+                    RenderVersion = exportArgs.RenderVersion ?? true,
                     RenderHarborBlockedArea = exportArgs.RenderHarborBlockedArea ?? (exportArgs.UseUserSettings && _appSettings.ShowHarborBlockedArea),
                     RenderInfluences = exportArgs.RenderInfluences ?? (exportArgs.UseUserSettings && _appSettings.ShowInfluences),
                     RenderPanorama = exportArgs.RenderPanorama ?? (exportArgs.UseUserSettings && _appSettings.ShowPanorama),
