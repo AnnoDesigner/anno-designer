@@ -5,7 +5,7 @@ const string xunitRunnerVersion = "2.4.1";
 #tool nuget:?package=xunit.runner.console&version=2.4.1
 #tool nuget:?package=OpenCover&version=4.7.1221
 #tool nuget:?package=7-Zip.CommandLine&version=18.1.0
-#addin nuget:?package=Cake.7zip&version=1.0.4
+#addin nuget:?package=Cake.7zip&version=2.0.0
 #tool nuget:?package=ReportGenerator&version=5.1.9
 
 ///////////////////////////////////////////////////////////////////////////////
