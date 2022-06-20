@@ -213,6 +213,12 @@ namespace AnnoDesigner.Models
             set => Settings.Default.UpdateSupportsPrerelease = value;
         }
 
+        public bool ShowMultipleInstanceWarning
+        {
+            get => Settings.Default.ShowMultipleInstanceWarning;
+            set => Settings.Default.ShowMultipleInstanceWarning = value;
+        }
+
         /// <summary>
         /// Serialized <see cref="IDictionary{string, HotkeyInformation}"/>.
         /// </summary>

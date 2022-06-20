@@ -221,6 +221,25 @@ namespace AnnoDesigner
             }
         }
 
+        public Task<bool> AreUpdatedPresetsFilesPresentAsync()
+        {
+            return Task.Run(() =>
+            {
+                foreach (ReleaseType curReleaseType in Enum.GetValues(typeof(ReleaseType)))
+                {
+                    var pathToUpdatedPresetsFile = GetPathToUpdatedPresetsFile(curReleaseType);
+                    if (string.IsNullOrWhiteSpace(pathToUpdatedPresetsFile) || !File.Exists(pathToUpdatedPresetsFile))
+                    {
+                        continue;
+                    }
+
+                    return true;
+                }
+
+                return false;
+            });
+        }
+
         public async Task ReplaceUpdatedPresetsFilesAsync()
         {
             try

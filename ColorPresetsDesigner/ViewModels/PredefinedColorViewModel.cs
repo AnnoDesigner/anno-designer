@@ -14,6 +14,7 @@ namespace ColorPresetsDesigner.ViewModels
     public class PredefinedColorViewModel : BaseModel
     {
         public event EventHandler OnTargetTemplateChanged;
+        public event EventHandler OnTargetIdentifiersChanged;
 
         private string _targetTemplate;
         private ObservableCollection<string> _targetIdentifiers;
@@ -84,6 +85,7 @@ namespace ColorPresetsDesigner.ViewModels
         private void AddIdentifier(object param)
         {
             TargetIdentifiers.Add(NewIdentifier);
+            OnTargetIdentifiersChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private bool CanAddIdentifier(object param)
@@ -97,6 +99,7 @@ namespace ColorPresetsDesigner.ViewModels
         private void DeleteIdentifier(object param)
         {
             TargetIdentifiers.Remove(SelectedIdentifier);
+            OnTargetIdentifiersChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private bool CanDeleteIdentifier(object param)

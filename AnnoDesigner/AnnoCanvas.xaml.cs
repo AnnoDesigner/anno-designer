@@ -54,6 +54,7 @@ namespace AnnoDesigner
         public const string UNDO_LOCALIZATION_KEY = "Undo";
         public const string REDO_LOCALIZATION_KEY = "Redo";
         public const string ENABLE_DEBUG_MODE_LOCALIZATION_KEY = "EnableDebugMode";
+        public const string SELECT_ALL_SAME_IDENTIFIER_LOCALIZATION_KEY = "SelectAllSameIdentifier";
 
         public event EventHandler<UpdateStatisticsEventArgs> StatisticsUpdated;
         public event EventHandler<EventArgs> ColorsInLayoutUpdated;
@@ -387,7 +388,8 @@ namespace AnnoDesigner
             DragAllStart,
             DragAll,
             PlaceObjects,
-            DeleteObject
+            DeleteObject,
+            SelectSameIdentifier
         }
 
         /// <summary>
@@ -621,6 +623,7 @@ namespace AnnoDesigner
             undoCommand = new RelayCommand(ExecuteUndo);
             redoCommand = new RelayCommand(ExecuteRedo);
             enableDebugModeCommand = new RelayCommand(ExecuteEnableDebugMode);
+            selectAllSameIdentifierCommand = new RelayCommand(ExecuteSelectAllSameIdentifier);
 
             //Set up default keybindings
 
@@ -658,6 +661,9 @@ namespace AnnoDesigner
 
             var enableDebugModeBinding = new InputBinding(enableDebugModeCommand, new PolyGesture(Key.D, ModifierKeys.Control | ModifierKeys.Shift));
             enableDebugModeHotkey = new Hotkey(ENABLE_DEBUG_MODE_LOCALIZATION_KEY, enableDebugModeBinding, ENABLE_DEBUG_MODE_LOCALIZATION_KEY);
+
+            var selectAllSameIdentifierBinding = new InputBinding(selectAllSameIdentifierCommand, new PolyGesture(ExtendedMouseAction.LeftClick, ModifierKeys.Control | ModifierKeys.Shift));
+            selectAllSameIdentifierHotkey = new Hotkey(SELECT_ALL_SAME_IDENTIFIER_LOCALIZATION_KEY, selectAllSameIdentifierBinding, SELECT_ALL_SAME_IDENTIFIER_LOCALIZATION_KEY);
 
             //We specifically do not add the `InputBinding`s to the `InputBindingCollection` of `AnnoCanvas`, as if we did that,
             //`InputBinding.Gesture.Matches()` would be fired for *every* event - MouseWheel, MouseDown, KeyUp, KeyDown, MouseMove etc
@@ -1868,7 +1874,7 @@ namespace AnnoDesigner
         /// <param name="includeSameObjects"> 
         /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToAdd">.
         /// </param>
-        private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects)
+        private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects = false)
         {
             AddSelectedObjects(new List<LayoutObject>() { objectToAdd }, includeSameObjects);
         }
@@ -1879,7 +1885,7 @@ namespace AnnoDesigner
         /// <param name="includeSameObjects"> 
         /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToRemove">.
         /// </param>
-        private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects)
+        private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects = false)
         {
             RemoveSelectedObjects(new List<LayoutObject>() { objectToRemove }, includeSameObjects);
         }
@@ -2324,17 +2330,16 @@ namespace AnnoDesigner
                             }
 
                             var obj = GetObjectAt(_mousePosition);
-
                             if (obj != null)
                             {
                                 // user clicked an object: select or deselect it
                                 if (SelectedObjects.Contains(obj))
                                 {
-                                    RemoveSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
+                                    RemoveSelectedObject(obj);
                                 }
                                 else
                                 {
-                                    AddSelectedObject(obj, ShouldAffectObjectsWithIdentifier());
+                                    AddSelectedObject(obj);
                                 }
                                 RecalculateSelectionContainsNotIgnoredObject();
                             }
@@ -2347,6 +2352,11 @@ namespace AnnoDesigner
                             {
                                 RemoveSelectedObjects(Extensions.IEnumerableExtensions.IsIgnoredObject);
                             }
+                            break;
+                        }
+                    case MouseMode.SelectSameIdentifier:
+                        {
+                            CurrentMode = MouseMode.Standard;
                             break;
                         }
                     case MouseMode.SelectionRect:
@@ -2417,6 +2427,44 @@ namespace AnnoDesigner
                             CurrentMode = MouseMode.Standard;
                             break;
                         }
+                    case MouseMode.SelectSameIdentifier:
+                        {
+                            CurrentMode = MouseMode.Standard;
+                            break;
+                        }
+                }
+            }
+            else if (e.ChangedButton == MouseButton.Right)
+            {
+                switch (CurrentMode)
+                {
+                    case MouseMode.SelectSameIdentifier:
+                        {
+                            CurrentMode = MouseMode.Standard;
+                            break;
+                        }
+                }
+            }
+            else if (e.ChangedButton == MouseButton.XButton1)
+            {
+                switch (CurrentMode)
+                {
+                    case MouseMode.SelectSameIdentifier:
+                        {
+                            CurrentMode = MouseMode.Standard;
+                            break;
+                        }
+                }
+            }
+            else if (e.ChangedButton == MouseButton.XButton2)
+            {
+                switch (CurrentMode)
+                {
+                    case MouseMode.SelectSameIdentifier:
+                        {
+                            CurrentMode = MouseMode.Standard;
+                            break;
+                        }
                 }
             }
 
@@ -2467,7 +2515,7 @@ namespace AnnoDesigner
         /// Checks whether actions should affect all objects with the same identifier.
         /// </summary>
         /// <returns><see langword="true"> if all objects with same identifier should be affected, otherwise <see langword="false">.</returns>
-        private static bool ShouldAffectObjectsWithIdentifier()
+        private bool ShouldAffectObjectsWithIdentifier()
         {
             return IsShiftPressed() && IsControlPressed();
         }
@@ -2679,6 +2727,7 @@ namespace AnnoDesigner
             manager.AddHotkey(undoHotkey);
             manager.AddHotkey(redoHotkey);
             manager.AddHotkey(enableDebugModeHotkey);
+            manager.AddHotkey(selectAllSameIdentifierHotkey);
         }
 
         #endregion
@@ -2981,7 +3030,7 @@ namespace AnnoDesigner
                     });
 
                     PlacedObjects.Remove(obj);
-                    RemoveSelectedObject(obj, false);
+                    RemoveSelectedObject(obj);
                     RecalculateSelectionContainsNotIgnoredObject();
                     StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
                     CurrentMode = MouseMode.DeleteObject;
@@ -3007,6 +3056,31 @@ namespace AnnoDesigner
             UndoManager.Redo();
             ForceRendering();
             StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+        }
+
+        private readonly Hotkey selectAllSameIdentifierHotkey;
+        private readonly ICommand selectAllSameIdentifierCommand;
+        private void ExecuteSelectAllSameIdentifier(object param)
+        {
+            //select all objects with same identifier as object under mouse cursor
+            var objectToCheck = GetObjectAt(_mousePosition);
+            if (objectToCheck != null)
+            {
+                CurrentMode = MouseMode.SelectSameIdentifier;
+
+                if (SelectedObjects.Contains(objectToCheck))
+                {
+                    RemoveSelectedObject(objectToCheck, includeSameObjects: true);
+                }
+                else
+                {
+                    AddSelectedObject(objectToCheck, includeSameObjects: true);
+                }
+
+                RecalculateSelectionContainsNotIgnoredObject();
+                ForceRendering();
+                StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+            }
         }
 
         private readonly Hotkey enableDebugModeHotkey;
