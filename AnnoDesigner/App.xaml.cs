@@ -141,11 +141,6 @@ namespace AnnoDesigner
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            if (!Debugger.IsAttached)
-            {
-                Debugger.Launch();
-            }
-
             StartupArguments = _argumentParser.Parse(e.Args);
             if (StartupArguments is null)
             {

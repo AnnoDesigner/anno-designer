@@ -36,8 +36,7 @@ namespace AnnoDesigner.CommandLine.Arguments
                 imageFilepath = new Argument<IFileInfo>("imagePath",
                     parse: arg => fileSystem.FileInfo.FromFileName(arg.Tokens.First().Value),
                     description: "Path for exported image file (*.png)")
-                    .LegalFilePathsOnly()
-                    .ExistingOnly(fileSystem);
+                    .LegalFilePathsOnly();
 
                 border = new("--border", () => 1);
                 gridSize = new("--gridSize", () => 20, $"Grid size in pixelsc, can range from {Constants.GridStepMin} to {Constants.GridStepMax}");
