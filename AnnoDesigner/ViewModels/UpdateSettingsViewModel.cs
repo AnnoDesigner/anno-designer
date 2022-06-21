@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using AnnoDesigner.CommandLine.Arguments;
 using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Services;
@@ -188,7 +189,7 @@ namespace AnnoDesigner.ViewModels
             if (!_commons.CanWriteInFolder())
             {
                 //already asked for admin rights?
-                if (Environment.GetCommandLineArgs().Any(x => x.Trim().Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase)))
+                if (App.StartupArguments is AdminRestartArgs)
                 {
                     _messageBoxService.ShowWarning($"You have no write access to the folder.{Environment.NewLine}The update can not be installed.",
                         _localizationHelper.GetLocalization("Error"));
@@ -201,7 +202,7 @@ namespace AnnoDesigner.ViewModels
                     _localizationHelper.GetLocalization("AdminRightsRequired"));
 
                 _appSettings.Save();
-                _commons.RestartApplication(true, Constants.Argument_Ask_For_Admin, App.ExecutablePath);
+                _commons.RestartApplication(true, AdminRestartArgs.Arguments, App.ExecutablePath);
             }
 
             //Context is required here, do not use ConfigureAwait(false)

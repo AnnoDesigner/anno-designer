@@ -22,21 +22,25 @@ Keep up to date the latest developments. If you have any ideas or questions that
 
 ## Summary
 
-The **Anno Designer** is a standalone windows application that can be used for creating and exporting layouts. It uses a drag/drop system and is intuitive and easy to use. **The Anno Designer supports the following Anno versions: 1404, 2070, 2205, 1800**.
+The **Anno Designer** is a standalone windows application that can be used for creating and exporting layouts. It uses a drag/drop system and is intuitive and easy to use.  
+**The Anno Designer supports the following Anno versions: 1404, 2070, 2205, 1800**.
 
 ## How to use
 
 **Download the latest version from the [here](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.2)** (select the .exe file). Run it, and use it to design layouts!
 
+Anno Designer can also be started from the command line for advanced usages.  
+Please see [this documentation](doc/CommandLineParameters.md) for more information and examples.
+
 ## Technology
 
-This application is written in C# (.NET Framework 4.8) and uses WPF.
-
+This application is written in C# (.NET Framework 4.8) and uses WPF.  
 The .NET Framework is available via Windows Update and further information about installing is available on [this site](https://docs.microsoft.com/en-us/dotnet/framework/install/).
 
 ## Game data and icons
 
-The building presets and icons are extracted from game files using the [RDA explorer](https://github.com/lysannschlegel/RDAExplorer)  and a custom script written by Peter Hozak. See the development pages at wikia: <http://anno2070.wikia.com/wiki/Development_Pages>
+The building presets and icons are extracted from game files using the [RDA explorer](https://github.com/lysannschlegel/RDAExplorer) and a custom script written by Peter Hozak.  
+See the development pages at wikia: <http://anno2070.wikia.com/wiki/Development_Pages>
 
 [StingMcRay](https://github.com/StingMcRay) has also done a lot of work on this, extracting icons from Anno 2205 and Anno 1800.
 

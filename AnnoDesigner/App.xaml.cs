@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CommandLine;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +8,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using AnnoDesigner.CommandLine;
+using AnnoDesigner.CommandLine.Arguments;
 using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Models;
@@ -33,6 +36,8 @@ namespace AnnoDesigner
         private static readonly ILocalizationHelper _localizationHelper;
         private static readonly IUpdateHelper _updateHelper;
         private static readonly IFileSystem _fileSystem;
+        private static readonly IArgumentParser _argumentParser;
+        private static readonly IConsole _console;
 
         public new MainWindow MainWindow { get => base.MainWindow as MainWindow; set => base.MainWindow = value; }
 
@@ -47,6 +52,9 @@ namespace AnnoDesigner
 
             _updateHelper = new UpdateHelper(ApplicationPath, _appSettings, _messageBoxService, _localizationHelper);
             _fileSystem = new FileSystem();
+
+            _console = new ConsoleManager.LazyConsole();
+            _argumentParser = new ArgumentParser(_console, _fileSystem);
         }
 
         public App()
@@ -124,7 +132,7 @@ namespace AnnoDesigner
             }
         }
 
-        public static string FilenameArgument { get; private set; }
+        public static IProgramArgs StartupArguments { get; private set; }
 
         /// <summary>
         /// The DPI information for the current monitor.
@@ -133,13 +141,17 @@ namespace AnnoDesigner
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            // retrieve file argument if given
-            if (e.Args.Length > 0)
+            StartupArguments = _argumentParser.Parse(e.Args);
+            if (StartupArguments is null)
             {
-                if (!e.Args[0].Equals(Constants.Argument_Ask_For_Admin, StringComparison.OrdinalIgnoreCase))
+                ConsoleManager.Show();
+                if (ConsoleManager.StartedWithoutConsole)
                 {
-                    FilenameArgument = e.Args[0];
+                    Console.WriteLine("Press enter to exit");
+                    Console.ReadLine();
                 }
+                ConsoleManager.Hide();
+                Environment.Exit(0);
             }
 
             try

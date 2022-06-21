@@ -5,7 +5,7 @@ const string xunitRunnerVersion = "2.4.1";
 #tool nuget:?package=xunit.runner.console&version=2.4.1
 #tool nuget:?package=OpenCover&version=4.7.1221
 #tool nuget:?package=7-Zip.CommandLine&version=18.1.0
-#addin nuget:?package=Cake.7zip&version=1.0.4
+#addin nuget:?package=Cake.7zip&version=2.0.0
 #tool nuget:?package=ReportGenerator&version=5.1.9
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -299,10 +299,21 @@ var copyFilesTask = Task("Copy-Files")
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Newtonsoft.Json.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/NLog.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Octokit.dll", $"{outDirectory}");
-    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/presets.json", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/presets.json", $"{outDirectory}");    
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.CommandLine.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.Buffers.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.Memory.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.Numerics.Vectors.dll", $"{outDirectory}");
+    CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.Runtime.CompilerServices.Unsafe.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/System.IO.Abstractions.dll", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/treeLocalization.json", $"{outDirectory}");
     CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/Xceed.Wpf.Toolkit.dll", $"{outDirectory}");
+
+    if(configuration.Equals("DEBUG", StringComparison.OrdinalIgnoreCase))
+    {
+        CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/AnnoDesigner.Core.pdb", $"{outDirectory}");
+        CopyFileToDirectory($"./../AnnoDesigner/bin/{configuration}/net48/AnnoDesigner.pdb", $"{outDirectory}");
+    }
 
     Information("");
 });
