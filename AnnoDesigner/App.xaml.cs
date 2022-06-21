@@ -221,15 +221,19 @@ namespace AnnoDesigner
             MainWindow.DataContext = mainVM;
 
             //If language is not recognized, bring up the language selection screen
-            if (!_commons.LanguageCodeMap.ContainsKey(_appSettings.SelectedLanguage))
+            if ((StartupArguments is EmptyArgs || StartupArguments is null) && !_commons.LanguageCodeMap.ContainsKey(_appSettings.SelectedLanguage))
             {
                 var w = new Welcome();
                 w.DataContext = mainVM.WelcomeViewModel;
                 w.ShowDialog();
             }
-            else
+            else if (StartupArguments is EmptyArgs || StartupArguments is OpenArgs || StartupArguments is null)
             {
                 _commons.CurrentLanguage = _appSettings.SelectedLanguage;
+            }
+            else
+            {
+                _commons.CurrentLanguage = "English";
             }
 
             MainWindow.ShowDialog();
