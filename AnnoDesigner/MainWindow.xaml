@@ -128,6 +128,9 @@
                     <MenuItem Header="{l:Localize RenderSelectionHighlightsOnExportedImage}"
                               IsCheckable="True"
                               IsChecked="{Binding RenderSelectionHighlightsOnExportedImageValue}" />
+                    <MenuItem Header="{l:Localize RenderVersionOnExportedImage}"
+                              IsCheckable="True"
+                              IsChecked="{Binding RenderVersionOnExportedImageValue}" />
                 </MenuItem>
                 <MenuItem Header="{l:Localize Language}"
                           TabIndex="23"

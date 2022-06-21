@@ -105,6 +105,12 @@ namespace AnnoDesigner.Models
             set => Settings.Default.RenderSelectionHighlightsOnExportedImageValue = value;
         }
 
+        public bool RenderVersionOnExportedImageValue
+        {
+            get => Settings.Default.RenderVersionOnExportedImageValue;
+            set => Settings.Default.RenderVersionOnExportedImageValue = value;
+        }
+
         public bool ShowLabels
         {
             get => Settings.Default.ShowLabels;
