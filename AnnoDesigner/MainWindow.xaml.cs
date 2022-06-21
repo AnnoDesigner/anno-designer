@@ -1,10 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Configuration;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using AnnoDesigner.CommandLine;
+using AnnoDesigner.CommandLine.Arguments;
+using AnnoDesigner.Core.Extensions;
+using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.ViewModels;
 using NLog;
@@ -80,9 +85,33 @@ namespace AnnoDesigner
             //}            
 
             // load file given by argument
-            if (!string.IsNullOrEmpty(App.FilenameArgument))
+            if (App.StartupArguments is OpenArgs startupArgs && !string.IsNullOrEmpty(startupArgs.FilePath))
             {
-                _mainViewModel.OpenFile(App.FilenameArgument);
+                _mainViewModel.OpenFile(startupArgs.FilePath);
+            }
+            // export layout to image
+            else if (App.StartupArguments is ExportArgs exportArgs && !string.IsNullOrEmpty(exportArgs.LayoutFilePath) && !string.IsNullOrEmpty(exportArgs.ExportedImageFilePath))
+            {
+                var layout = new LayoutLoader().LoadLayout(exportArgs.LayoutFilePath);
+                _mainViewModel.PrepareCanvasForRender(layout.Objects, Enumerable.Empty<AnnoObject>(), Math.Max(exportArgs.Border, 0), new Models.CanvasRenderSetting()
+                {
+                    GridSize = exportArgs.GridSize,
+                    RenderGrid = exportArgs.RenderGrid ?? (!exportArgs.UseUserSettings || _appSettings.ShowGrid),
+                    RenderIcon = exportArgs.RenderIcon ?? (!exportArgs.UseUserSettings || _appSettings.ShowIcons),
+                    RenderLabel = exportArgs.RenderLabel ?? (!exportArgs.UseUserSettings || _appSettings.ShowLabels),
+                    RenderStatistics = exportArgs.RenderStatistics ?? (!exportArgs.UseUserSettings || _appSettings.StatsShowStats),
+                    RenderVersion = exportArgs.RenderVersion ?? true,
+                    RenderHarborBlockedArea = exportArgs.RenderHarborBlockedArea ?? (exportArgs.UseUserSettings && _appSettings.ShowHarborBlockedArea),
+                    RenderInfluences = exportArgs.RenderInfluences ?? (exportArgs.UseUserSettings && _appSettings.ShowInfluences),
+                    RenderPanorama = exportArgs.RenderPanorama ?? (exportArgs.UseUserSettings && _appSettings.ShowPanorama),
+                    RenderTrueInfluenceRange = exportArgs.RenderTrueInfluenceRange ?? (exportArgs.UseUserSettings && _appSettings.ShowTrueInfluenceRange)
+                }).RenderToFile(exportArgs.ExportedImageFilePath);
+
+                ConsoleManager.Show();
+                Console.WriteLine($"Export completed: \"{exportArgs.LayoutFilePath}\"");
+                ConsoleManager.Hide();
+
+                Close();
             }
         }
 

@@ -29,12 +29,13 @@ goto :BUILD_MODE_PROMPT
 set "MSBUILD_VERSION=%~1"
 goto :MSBUILD_VERSION_CHECK
 :MSBUILD_VERSION_PROMPT
-set /p "MSBUILD_VERSION=Enter MSBUILD_VERSION (VS2017[6] | VS2019[7]): "
+set /p "MSBUILD_VERSION=Enter MSBUILD_VERSION (VS2017[6] | VS2019[7]| VS2022[10]): "
 :MSBUILD_VERSION_CHECK
 if "%MSBUILD_VERSION%"=="" goto :MSBUILD_VERSION_PROMPT
 set MSBUILD_VERSION_RESULT=false
 if "%MSBUILD_VERSION%"=="6" set MSBUILD_VERSION_RESULT=true
 if "%MSBUILD_VERSION%"=="7" set MSBUILD_VERSION_RESULT=true
+if "%MSBUILD_VERSION%"=="10" set MSBUILD_VERSION_RESULT=true
 if "%MSBUILD_VERSION%"=="VS2017" (
 set MSBUILD_VERSION_RESULT=true
 set MSBUILD_VERSION=6
@@ -42,6 +43,10 @@ set MSBUILD_VERSION=6
 if "%MSBUILD_VERSION%"=="VS2019" (
 set MSBUILD_VERSION_RESULT=true
 set MSBUILD_VERSION=7
+)
+if "%MSBUILD_VERSION%"=="VS2022" (
+set MSBUILD_VERSION_RESULT=true
+set MSBUILD_VERSION=10
 )
 if "%MSBUILD_VERSION_RESULT%"=="false" (
 echo not supported MSBUILD_VERSION: %MSBUILD_VERSION%
@@ -83,7 +88,7 @@ echo USE_BINARY_LOG=%BINARY_LOG%
 echo:
 
 rem  -Verbosity Diagnostic
-Powershell.exe -NoProfile -ExecutionPolicy ByPass -File "%~dp0\build.ps1" -configuration %BUILD_MODE% -msbuildVersion=%MSBUILD_VERSION% -useBinaryLog=%BINARY_LOG%
+Powershell.exe -NoProfile -ExecutionPolicy ByPass -File "%~dp0\build.ps1" --configuration %BUILD_MODE% --msbuildVersion=%MSBUILD_VERSION% --useBinaryLog=%BINARY_LOG%
 
 :EXIT
 echo finished
