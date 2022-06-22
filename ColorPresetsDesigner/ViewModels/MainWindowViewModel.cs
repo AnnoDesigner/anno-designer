@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -214,6 +215,8 @@ namespace ColorPresetsDesigner.ViewModels
 
             SelectedColorScheme.Colors.Add(newColor);
             AvailablePredefinedColors.Add(newColor);
+
+            SelectedPredefinedColor = newColor;
         }
 
         private bool CanAddColor(object param)
@@ -228,7 +231,7 @@ namespace ColorPresetsDesigner.ViewModels
             SelectedColorScheme.Colors.Remove(SelectedPredefinedColor);
             updateAvailablePredefinedColors();
 
-            SelectedPredefinedColor = AvailablePredefinedColors.FirstOrDefault();
+            SelectedPredefinedColor = AvailablePredefinedColors.OrderBy(x => x.TargetTemplate, StringComparer.OrdinalIgnoreCase).FirstOrDefault();
         }
 
         private bool CanDeleteColor(object param)
@@ -435,7 +438,17 @@ namespace ColorPresetsDesigner.ViewModels
 
         public bool ShowColorEdit
         {
-            get { return SelectedPredefinedColor != null; }
+            get
+            {
+#if DEBUG
+                if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+                {
+                    return true;
+                }
+#endif
+
+                return SelectedPredefinedColor != null;
+            }
         }
 
         public string StatusMessage
@@ -460,20 +473,20 @@ namespace ColorPresetsDesigner.ViewModels
         {
             get
             {
-                var result = new ObservableCollection<string>();
-
                 if (SelectedPredefinedColor == null ||
                     string.IsNullOrWhiteSpace(SelectedPredefinedColor.TargetTemplate) ||
                     !_templateIdentifierMapping.ContainsKey(SelectedPredefinedColor.TargetTemplate))
                 {
-                    return result;
+                    return new ObservableCollection<string>();
                 }
+
+                var tempList = new List<string>();
 
                 //add identifiers for template
                 var filteredIdentifiers = _templateIdentifierMapping[SelectedPredefinedColor.TargetTemplate];
                 foreach (var curIdentifierName in filteredIdentifiers)
                 {
-                    result.Add(curIdentifierName);
+                    tempList.Add(curIdentifierName);
                 }
 
                 //add identifiers without template
@@ -482,14 +495,14 @@ namespace ColorPresetsDesigner.ViewModels
                     var identifiersWithoutTemplate = _templateIdentifierMapping[NO_TEMPLATE_NAME];
                     foreach (var curIdentifierName in identifiersWithoutTemplate)
                     {
-                        result.Add(curIdentifierName);
+                        tempList.Add(curIdentifierName);
                     }
                 }
 
                 //remove already added identifiers (present in this template)
                 foreach (var alreadyAddedIdentifier in SelectedPredefinedColor.TargetIdentifiers)
                 {
-                    result.Remove(alreadyAddedIdentifier);
+                    tempList.Remove(alreadyAddedIdentifier);
                 }
 
                 //remove already added identifiers (present in all templates)
@@ -497,11 +510,11 @@ namespace ColorPresetsDesigner.ViewModels
                 {
                     foreach (var curIdentifier in curPredefinedColor.TargetIdentifiers)
                     {
-                        result.Remove(curIdentifier);
+                        tempList.Remove(curIdentifier);
                     }
                 }
 
-                return result;
+                return new ObservableCollection<string>(tempList);
             }
         }
 

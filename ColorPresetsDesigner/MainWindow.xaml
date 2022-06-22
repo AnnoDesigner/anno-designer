@@ -468,9 +468,17 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
+                            <Grid.Resources>
+                                <CollectionViewSource x:Key="viewSortedIdentifiersForTemplate"
+                                                      Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.AvailableIdentifiersForTemplate}">
+                                    <CollectionViewSource.SortDescriptions>
+                                        <scm:SortDescription PropertyName="." />
+                                    </CollectionViewSource.SortDescriptions>
+                                </CollectionViewSource>
+                            </Grid.Resources>
                             <xctk:WatermarkComboBox Grid.Column="0"
-                                                    Watermark="select new TargetIdentifier"
-                                                    ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.AvailableIdentifiersForTemplate}"
+                                                    Watermark="select new TargetIdentifier"                                                    
+                                                    ItemsSource="{Binding Source={StaticResource viewSortedIdentifiersForTemplate}}"
                                                     SelectedItem="{Binding NewIdentifier}"
                                                     Margin="3">
                                 <ComboBox.ItemsPanel>
