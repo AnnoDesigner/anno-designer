@@ -371,8 +371,10 @@
                         </Grid>
 
                         <ListBox ItemsSource="{Binding Source={StaticResource viewSortedColors}}"
-                                     SelectedItem="{Binding SelectedPredefinedColor}"
-                                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                 SelectedItem="{Binding SelectedPredefinedColor}"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 VirtualizingStackPanel.IsVirtualizing="True"
+                                 VirtualizingStackPanel.VirtualizationMode="Recycling">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
                                     <Setter Property="HorizontalContentAlignment"
@@ -580,10 +582,12 @@
                         </Grid>
 
                         <ListBox DockPanel.Dock="Top"
-                                     ItemsSource="{Binding Source={StaticResource viewSortedIdentifiers}}"
-                                     SelectedItem="{Binding SelectedIdentifier}"
-                                     Height="Auto"
-                                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                 ItemsSource="{Binding Source={StaticResource viewSortedIdentifiers}}"
+                                 SelectedItem="{Binding SelectedIdentifier}"
+                                 Height="Auto"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 VirtualizingStackPanel.IsVirtualizing="True"
+                                 VirtualizingStackPanel.VirtualizationMode="Recycling">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding}" />
