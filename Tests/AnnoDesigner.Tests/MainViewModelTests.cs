@@ -495,6 +495,26 @@ namespace AnnoDesigner.Tests
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveRenderVersionOnExportedImageValue(bool expectedRenderVersionOnExportedImageValue)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.RenderVersionOnExportedImageValue = expectedRenderVersionOnExportedImageValue;
+
+            // Act
+            viewModel.SaveSettings();
+
+            // Assert
+            Assert.Equal(expectedRenderVersionOnExportedImageValue, appSettings.Object.RenderVersionOnExportedImageValue);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
         public void SaveSettings_IsCalled_ShouldSaveIsPavedStreet(bool expectedIsPavedStreet)
         {
             // Arrange            
@@ -870,6 +890,26 @@ namespace AnnoDesigner.Tests
 
             // Assert
             Assert.Equal(expectedRenderSelectionHighlightsOnExportedImageValue, viewModel.RenderSelectionHighlightsOnExportedImageValue);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void LoadSettings_IsCalled_ShouldLoadRenderVersionOnExportedImageValue(bool expectedRenderVersionOnExportedImageValue)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.RenderVersionOnExportedImageValue).Returns(() => expectedRenderVersionOnExportedImageValue);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.RenderVersionOnExportedImageValue = !expectedRenderVersionOnExportedImageValue;
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedRenderVersionOnExportedImageValue, viewModel.RenderVersionOnExportedImageValue);
         }
 
         [Theory]

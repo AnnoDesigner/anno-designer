@@ -127,14 +127,15 @@
                 <MenuItem Header="{l:Localize Export}" TabIndex="22">
                     <MenuItem Command="{Binding ExportImageCommand}" Header="{l:Localize ExportImage}" />
                     <Separator />
-                    <MenuItem
-                        Header="{l:Localize UseCurrentZoomOnExportedImage}"
-                        IsCheckable="True"
-                        IsChecked="{Binding UseCurrentZoomOnExportedImageValue}" />
-                    <MenuItem
-                        Header="{l:Localize RenderSelectionHighlightsOnExportedImage}"
-                        IsCheckable="True"
-                        IsChecked="{Binding RenderSelectionHighlightsOnExportedImageValue}" />
+                    <MenuItem Header="{l:Localize UseCurrentZoomOnExportedImage}"
+                              IsCheckable="True"
+                              IsChecked="{Binding UseCurrentZoomOnExportedImageValue}" />
+                    <MenuItem Header="{l:Localize RenderSelectionHighlightsOnExportedImage}"
+                              IsCheckable="True"
+                              IsChecked="{Binding RenderSelectionHighlightsOnExportedImageValue}" />
+                    <MenuItem Header="{l:Localize RenderVersionOnExportedImage}"
+                              IsCheckable="True"
+                              IsChecked="{Binding RenderVersionOnExportedImageValue}" />
                 </MenuItem>
                 <MenuItem
                     Header="{l:Localize Language}"
