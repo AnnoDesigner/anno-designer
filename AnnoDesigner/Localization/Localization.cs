@@ -255,7 +255,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Include roads in statistics",
                     ["ShowMultipleInstanceWarning"] = "Show warning if multiple instances are open",
                     ["WarningMultipleInstancesAreRunning"] = "There is an update, but the app is open multiple times. Close all instances and start just 1 instance to allow the update to work.",
-                    ["SelectAllSameIdentifier"] = "Select all buildings of same type"
+                    ["SelectAllSameIdentifier"] = "Select all buildings of same type",
+                    ["RenderVersionOnExportedImage"] = "Render version on exported image"
                 },
                 ["ger"] = new Dictionary<string, string>()
                 {
@@ -458,7 +459,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Straßen in die Statistik einbeziehen",
                     ["ShowMultipleInstanceWarning"] = "Warnung anzeigen, wenn mehrere Instanzen geöffnet sind",
                     ["WarningMultipleInstancesAreRunning"] = "Es gibt ein Update, aber die App ist mehrfach geöffnet. Schließen Sie alle Instanzen und starten Sie nur 1 Instanz, damit das Update funktioniert.",
-                    ["SelectAllSameIdentifier"] = "Alle Gebäude desselben Typs auswählen"
+                    ["SelectAllSameIdentifier"] = "Alle Gebäude desselben Typs auswählen",
+                    ["RenderVersionOnExportedImage"] = "Zeige Layoutversion auf exportiertem Bild an"
                 },
                 ["fra"] = new Dictionary<string, string>()
                 {
@@ -661,7 +663,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Inclure les routes dans les statistiques",
                     ["ShowMultipleInstanceWarning"] = "Afficher un avertissement si plusieurs instances sont ouvertes",
                     ["WarningMultipleInstancesAreRunning"] = "Il y a une mise à jour, mais l'application est ouverte plusieurs fois. Fermez toutes les instances et démarrez une seule instance pour permettre à la mise à jour de fonctionner.",
-                    ["SelectAllSameIdentifier"] = "Sélectionner tous les bâtiments de même type"
+                    ["SelectAllSameIdentifier"] = "Sélectionner tous les bâtiments de même type",
+                    ["RenderVersionOnExportedImage"] = "Version du rendu sur l'image exportée"
                 },
                 ["esp"] = new Dictionary<string, string>()
                 {
@@ -864,7 +867,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Incluir las carreteras en las estadísticas",
                     ["ShowMultipleInstanceWarning"] = "Mostrar advertencia si hay varias instancias abiertas",
                     ["WarningMultipleInstancesAreRunning"] = "Hay una actualización, pero la aplicación está abierta varias veces. Cierra todas las instancias e inicia solo una para que la actualización funcione.",
-                    ["SelectAllSameIdentifier"] = "Seleccionar todos los edificios del mismo tipo"
+                    ["SelectAllSameIdentifier"] = "Seleccionar todos los edificios del mismo tipo",
+                    ["RenderVersionOnExportedImage"] = "Versión de renderizado en la imagen exportada"
                 },
                 ["pol"] = new Dictionary<string, string>()
                 {
@@ -1067,7 +1071,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Uwzględnienie dróg w statystykach",
                     ["ShowMultipleInstanceWarning"] = "Pokaż ostrzeżenie, jeśli otwartych jest wiele instancji",
                     ["WarningMultipleInstancesAreRunning"] = "Jest aktualizacja, ale aplikacja jest otwarta wiele razy. Zamknij wszystkie instancje i uruchom tylko 1 instancję, aby umożliwić działanie aktualizacji.",
-                    ["SelectAllSameIdentifier"] = "Wybierz wszystkie budynki tego samego typu"
+                    ["SelectAllSameIdentifier"] = "Wybierz wszystkie budynki tego samego typu",
+                    ["RenderVersionOnExportedImage"] = "Wersja renderowania na wyeksportowanym obrazie"
                 },
                 ["rus"] = new Dictionary<string, string>()
                 {
@@ -1270,7 +1275,8 @@ namespace AnnoDesigner.Localization
                     ["GeneralPreferencesIncludeRoadsInStatisticCalculation"] = "Включить дороги в статистику",
                     ["ShowMultipleInstanceWarning"] = "Показывать предупреждение, если открыто несколько экземпляров",
                     ["WarningMultipleInstancesAreRunning"] = "Есть обновление, но приложение открыто несколько раз. Закройте все экземпляры и запустите только 1 экземпляр, чтобы обновление сработало.",
-                    ["SelectAllSameIdentifier"] = "Выберите все здания одного типа"
+                    ["SelectAllSameIdentifier"] = "Выберите все здания одного типа",
+                    ["RenderVersionOnExportedImage"] = "Версия рендеринга на экспортированном изображении"
                 },
             };
 

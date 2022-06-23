@@ -68,6 +68,7 @@ namespace AnnoDesigner.ViewModels
         private bool _canvasShowPanorama;
         private bool _useCurrentZoomOnExportedImageValue;
         private bool _renderSelectionHighlightsOnExportedImageValue;
+        private bool _renderVersionOnExportedImageValue;
         private bool _isLanguageChange;
         private bool _isBusy;
         private string _statusMessage;
@@ -154,6 +155,7 @@ namespace AnnoDesigner.ViewModels
             PreferencesGeneralViewModel = new GeneralSettingsViewModel(_appSettings, _commons, _recentFilesHelper);
 
             LayoutSettingsViewModel = new LayoutSettingsViewModel();
+            LayoutSettingsViewModel.PropertyChangedWithValues += LayoutSettingsViewModel_PropertyChangedWithValues;
 
             OpenProjectHomepageCommand = new RelayCommand(OpenProjectHomepage);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
@@ -218,6 +220,19 @@ namespace AnnoDesigner.ViewModels
             PreferencesUpdateViewModel.FileVersionValue = CoreConstants.LayoutFileVersion.ToString("0.#", CultureInfo.InvariantCulture);
 
             RecentFilesHelper_Updated(this, EventArgs.Empty);
+        }
+
+        private void LayoutSettingsViewModel_PropertyChangedWithValues(object sender, PropertyChangedWithValuesEventArgs<object> e)
+        {
+            if (string.Equals(e.PropertyName, nameof(LayoutSettingsViewModel.LayoutVersion), StringComparison.OrdinalIgnoreCase))
+            {
+                AnnoCanvas.UndoManager.RegisterOperation(new ModifyLayoutVersionOperation()
+                {
+                    LayoutSettingsViewModel = sender as LayoutSettingsViewModel,
+                    OldValue = e.OldValue as Version,
+                    NewValue = e.NewValue as Version,
+                });
+            }
         }
 
         private IconImage GenerateNoIconItem()
@@ -529,10 +544,11 @@ namespace AnnoDesigner.ViewModels
         private void AnnoCanvas_LoadedFileChanged(object sender, FileLoadedEventArgs args)
         {
             var fileName = string.Empty;
-            if (!string.IsNullOrWhiteSpace(args.FilePath) && args.Layout?.LayoutVersion != default)
+            var layoutVersion = args.Layout?.LayoutVersion ?? LayoutSettingsViewModel.LayoutVersion;
+            if (!string.IsNullOrWhiteSpace(args.FilePath) && layoutVersion != default)
             {
-                fileName = $"{Path.GetFileName(args.FilePath)} ({args.Layout.LayoutVersion})";
-                LayoutSettingsViewModel.LayoutVersion = args.Layout.LayoutVersion;
+                fileName = $"{Path.GetFileName(args.FilePath)} ({layoutVersion})";
+                LayoutSettingsViewModel.LayoutVersion = layoutVersion;
             }
             else if (!string.IsNullOrWhiteSpace(args.FilePath))
             {
@@ -541,9 +557,12 @@ namespace AnnoDesigner.ViewModels
 
             MainWindowTitle = string.IsNullOrEmpty(fileName) ? "Anno Designer" : string.Format("{0} - Anno Designer", fileName);
 
-            logger.Info($"Loaded file: {(string.IsNullOrEmpty(args.FilePath) ? "(none)" : args.FilePath)}");
+            if (!string.IsNullOrWhiteSpace(args.FilePath))
+            {
+                logger.Info($"Loaded file: {(string.IsNullOrEmpty(args.FilePath) ? "(none)" : args.FilePath)}");
 
-            _recentFilesHelper.AddFile(new RecentFile(args.FilePath, DateTime.UtcNow));
+                _recentFilesHelper.AddFile(new RecentFile(args.FilePath, DateTime.UtcNow));
+            }
         }
 
         private void AnnoCanvas_OpenFileRequested(object sender, OpenFileEventArgs e)
@@ -602,6 +621,7 @@ namespace AnnoDesigner.ViewModels
 
             UseCurrentZoomOnExportedImageValue = _appSettings.UseCurrentZoomOnExportedImageValue;
             RenderSelectionHighlightsOnExportedImageValue = _appSettings.RenderSelectionHighlightsOnExportedImageValue;
+            RenderVersionOnExportedImageValue = _appSettings.RenderVersionOnExportedImageValue;
 
             CanvasShowGrid = _appSettings.ShowGrid;
             CanvasShowIcons = _appSettings.ShowIcons;
@@ -642,6 +662,7 @@ namespace AnnoDesigner.ViewModels
 
             _appSettings.UseCurrentZoomOnExportedImageValue = UseCurrentZoomOnExportedImageValue;
             _appSettings.RenderSelectionHighlightsOnExportedImageValue = RenderSelectionHighlightsOnExportedImageValue;
+            _appSettings.RenderVersionOnExportedImageValue = RenderVersionOnExportedImageValue;
 
             string savedTreeState;
             savedTreeState = SerializationHelper.SaveToJsonString(PresetsTreeViewModel.GetCondensedTreeState());
@@ -799,6 +820,7 @@ namespace AnnoDesigner.ViewModels
             AnnoCanvas.PlacedObjects.AddRange(layoutObjects);
 
             AnnoCanvas.Normalize(1);
+            AnnoCanvas.ResetViewport();
 
             AnnoCanvas.RaiseStatisticsUpdated(UpdateStatisticsEventArgs.All);
             AnnoCanvas.RaiseColorsInLayoutUpdated();
@@ -967,6 +989,12 @@ namespace AnnoDesigner.ViewModels
             set { UpdateProperty(ref _renderSelectionHighlightsOnExportedImageValue, value); }
         }
 
+        public bool RenderVersionOnExportedImageValue
+        {
+            get { return _renderVersionOnExportedImageValue; }
+            set { UpdateProperty(ref _renderVersionOnExportedImageValue, value); }
+        }
+
         public bool IsLanguageChange
         {
             get { return _isLanguageChange; }
@@ -1107,6 +1135,7 @@ namespace AnnoDesigner.ViewModels
         private void CanvasNormalize(object param)
         {
             AnnoCanvas.Normalize(1);
+            AnnoCanvas.ResetViewport();
         }
 
         public ICommand MergeRoadsCommand { get; private set; }
@@ -1207,6 +1236,7 @@ namespace AnnoDesigner.ViewModels
 
                             AnnoCanvas.LoadedFile = string.Empty;
                             AnnoCanvas.Normalize(1);
+                            AnnoCanvas.ResetViewport();
 
                             _ = UpdateStatisticsAsync(UpdateMode.All);
                         }
@@ -1271,7 +1301,7 @@ namespace AnnoDesigner.ViewModels
 
         private void ExecuteExportImage(object param)
         {
-            ExecuteExportImageSub(UseCurrentZoomOnExportedImageValue, RenderSelectionHighlightsOnExportedImageValue);
+            ExecuteExportImageSub(UseCurrentZoomOnExportedImageValue, RenderSelectionHighlightsOnExportedImageValue, RenderVersionOnExportedImageValue);
         }
 
         /// <summary>
@@ -1279,7 +1309,7 @@ namespace AnnoDesigner.ViewModels
         /// </summary>
         /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
         /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
-        private void ExecuteExportImageSub(bool exportZoom, bool exportSelection)
+        private void ExecuteExportImageSub(bool exportZoom, bool exportSelection, bool exportVersion)
         {
             var dialog = new SaveFileDialog
             {
@@ -1297,7 +1327,7 @@ namespace AnnoDesigner.ViewModels
             {
                 try
                 {
-                    RenderToFile(dialog.FileName, 1, exportZoom, exportSelection, StatisticsViewModel.IsVisible);
+                    RenderToFile(dialog.FileName, 1, exportZoom, exportSelection, StatisticsViewModel.IsVisible, exportVersion);
 
                     _messageBoxService.ShowMessage(Application.Current.MainWindow,
                        _localizationHelper.GetLocalization("ExportImageSuccessful"),
@@ -1320,7 +1350,7 @@ namespace AnnoDesigner.ViewModels
         /// <param name="border">normalization value used prior to exporting</param>
         /// <param name="exportZoom">indicates whether the current zoom level should be applied, if false the default zoom is used</param>
         /// <param name="exportSelection">indicates whether selection and influence highlights should be rendered</param>
-        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection, bool renderStatistics, bool renderVersion = true)
+        private void RenderToFile(string filename, int border, bool exportZoom, bool exportSelection, bool renderStatistics, bool renderVersion)
         {
             if (AnnoCanvas.PlacedObjects.Count() == 0)
             {

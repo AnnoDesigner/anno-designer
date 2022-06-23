@@ -43,6 +43,7 @@ namespace AnnoDesigner.Models
         void ResetZoom();
         void Normalize();
         void Normalize(int border);
+        void ResetViewport();
         void RaiseStatisticsUpdated(UpdateStatisticsEventArgs args);
         void RaiseColorsInLayoutUpdated();
         Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects);

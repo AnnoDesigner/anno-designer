@@ -197,10 +197,13 @@ namespace AnnoDesigner
             if (anotherInstanceIsRunning && _appSettings.ShowMultipleInstanceWarning && await _updateHelper.AreUpdatedPresetsFilesPresentAsync())
             {
                 //prevent app from closing, because there is no main window yet
+                var previousShutdownMode = Application.Current.ShutdownMode;
                 Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
                 //inform user that auto update is not applied
                 _messageBoxService.ShowMessage(Localization.Localization.Instance.GetLocalization("WarningMultipleInstancesAreRunning"));
+
+                Application.Current.ShutdownMode = previousShutdownMode;
             }
 
             if (!anotherInstanceIsRunning)
