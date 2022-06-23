@@ -223,16 +223,25 @@ namespace AnnoDesigner
             MainWindow = new MainWindow(_appSettings);
             MainWindow.DataContext = mainVM;
 
-            //If language is not recognized, bring up the language selection screen
-            if (!_commons.LanguageCodeMap.ContainsKey(_appSettings.SelectedLanguage))
+            //language already set -> apply selected language
+            if (_commons.LanguageCodeMap.ContainsKey(_appSettings.SelectedLanguage))
             {
-                var w = new Welcome();
-                w.DataContext = mainVM.WelcomeViewModel;
-                w.ShowDialog();
+                _commons.CurrentLanguage = _appSettings.SelectedLanguage;
             }
             else
             {
-                _commons.CurrentLanguage = _appSettings.SelectedLanguage;
+                //normal start and language not set -> show language selection
+                if (StartupArguments is not ExportArgs)
+                {
+                    var w = new Welcome();
+                    w.DataContext = mainVM.WelcomeViewModel;
+                    w.ShowDialog();
+                }
+                //started via command line and language is not set -> set default language
+                else
+                {
+                    _commons.CurrentLanguage = "English";
+                }
             }
 
             MainWindow.ShowDialog();
