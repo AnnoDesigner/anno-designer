@@ -56,6 +56,12 @@
     <None Include="..\Presets\treeLocalization.json" Link="treeLocalization.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Layouts\Arctic\Medium Islands\colony03_a01_01.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Layouts\Arctic\Plateaus\colony03_a02_01.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Layouts\LayoutInfoSchema.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
