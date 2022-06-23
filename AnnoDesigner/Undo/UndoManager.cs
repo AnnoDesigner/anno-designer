@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using AnnoDesigner.Core.Models;
 using AnnoDesigner.Undo.Operations;
 
 namespace AnnoDesigner.Undo
 {
-    public class UndoManager : IUndoManager
+    public class UndoManager : Notify, IUndoManager
     {
         internal Stack<IOperation> UndoStack { get; set; } = new Stack<IOperation>();
         internal Stack<IOperation> RedoStack { get; set; } = new Stack<IOperation>();
@@ -23,16 +24,23 @@ namespace AnnoDesigner.Undo
                 }
 
                 lastUndoableOperation = UndoStack.Count > 0 ? UndoStack.Peek() : null;
+                OnPropertyChanged(nameof(IsDirty));
             }
         }
+
+        private bool Undoing { get; set; }
 
         public void Undo()
         {
             if (UndoStack.Count > 0)
             {
+                var wasUndoing = Undoing;
+                Undoing = true;
                 var operation = UndoStack.Pop();
                 operation.Undo();
                 RedoStack.Push(operation);
+                OnPropertyChanged(nameof(IsDirty));
+                Undoing = wasUndoing;
             }
         }
 
@@ -40,9 +48,13 @@ namespace AnnoDesigner.Undo
         {
             if (RedoStack.Count > 0)
             {
+                var wasUndoing = Undoing;
+                Undoing = true;
                 var operation = RedoStack.Pop();
                 operation.Redo();
                 UndoStack.Push(operation);
+                OnPropertyChanged(nameof(IsDirty));
+                Undoing = wasUndoing;
             }
         }
 
@@ -55,6 +67,8 @@ namespace AnnoDesigner.Undo
 
         public void RegisterOperation(IOperation operation)
         {
+            if (Undoing) return;
+
             if (CurrentCompositeOperation != null)
             {
                 CurrentCompositeOperation.Operations.Add(operation);
@@ -63,6 +77,7 @@ namespace AnnoDesigner.Undo
             {
                 UndoStack.Push(operation);
                 RedoStack.Clear();
+                OnPropertyChanged(nameof(IsDirty));
             }
         }
 

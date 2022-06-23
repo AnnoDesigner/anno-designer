@@ -14,6 +14,8 @@ using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.RecentFiles;
 using AnnoDesigner.Core.Services;
 using AnnoDesigner.Models;
+using AnnoDesigner.Undo;
+using AnnoDesigner.Undo.Operations;
 using AnnoDesigner.ViewModels;
 using Moq;
 using Xunit;
@@ -54,6 +56,7 @@ namespace AnnoDesigner.Tests
             var annoCanvasMock = new Mock<IAnnoCanvas>();
             annoCanvasMock.SetupAllProperties();
             //The QuadTree does not have a default constructor, so we need to explicitly set up the property
+            annoCanvasMock.SetupGet(x => x.UndoManager).Returns(Mock.Of<IUndoManager>());
             annoCanvasMock.Setup(x => x.PlacedObjects).Returns(new Core.DataStructures.QuadTree<LayoutObject>(new Rect(-100, -100, 200, 200)));
             _mockedAnnoCanvas = annoCanvasMock.Object;
 
@@ -1111,6 +1114,29 @@ namespace AnnoDesigner.Tests
 
             // Assert
             mockedMessageBoxService.Verify(x => x.ShowError(It.IsAny<object>(), expectedException.Message, It.IsAny<string>()), Times.Once());
+        }
+
+        #endregion
+
+        #region 
+
+        [Fact]
+        public void LayoutSettingsViewModel_SettingLayoutVersion_ShouldBeConsideredUnsavedChange()
+        {
+            // Arrange
+            var versionToSave = new Version(42, 42, 42, 42);
+
+            var mockedAnnoCanvas = new Mock<IAnnoCanvas>();
+            var mockedUndoManager = new Mock<IUndoManager>();
+            mockedAnnoCanvas.SetupAllProperties();
+            mockedAnnoCanvas.SetupGet(x => x.UndoManager).Returns(mockedUndoManager.Object);
+            var viewModel = GetViewModel(annoCanvasToUse: mockedAnnoCanvas.Object);
+
+            // Act
+            viewModel.LayoutSettingsViewModel.LayoutVersion = versionToSave;
+
+            // Assert
+            mockedUndoManager.Verify(x => x.RegisterOperation(It.Is<ModifyLayoutVersionOperation>(y => y.NewValue == new Version(42, 42, 42, 42))));
         }
 
         #endregion
