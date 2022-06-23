@@ -367,7 +367,10 @@ namespace ColorPresetsDesigner.ViewModels
                 if (SetPropertyAndNotify(ref _selectedColorScheme, value))
                 {
                     updateAvailablePredefinedColors();
-                    _logger.Trace($"selected color scheme: {_selectedColorScheme.Name}");
+                    if (_selectedColorScheme is not null)
+                    {
+                        _logger.Trace($"selected color scheme: {_selectedColorScheme.Name}");
+                    }
                 }
             }
         }
