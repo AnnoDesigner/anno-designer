@@ -2678,9 +2678,6 @@ namespace AnnoDesigner
         /// <param name="border"></param>
         public void Normalize(int border)
         {
-            _viewport.Left = 0;
-            _viewport.Top = 0;
-
             if (PlacedObjects.Count == 0)
             {
                 return;
@@ -2690,23 +2687,35 @@ namespace AnnoDesigner
             var dy = PlacedObjects.Min(_ => _.Position.Y) - border;
             var diff = new Vector(dx, dy);
 
-            UndoManager.RegisterOperation(new MoveObjectsOperation<LayoutObject>()
+            if (diff.LengthSquared > 0)
             {
-                ObjectPropertyValues = PlacedObjects.Select(obj => (obj, obj.Bounds, new Rect(obj.Position - diff, obj.Size))).ToList(),
-                QuadTree = PlacedObjects
-            });
+                UndoManager.RegisterOperation(new MoveObjectsOperation<LayoutObject>()
+                {
+                    ObjectPropertyValues = PlacedObjects.Select(obj => (obj, obj.Bounds, new Rect(obj.Position - diff, obj.Size))).ToList(),
+                    QuadTree = PlacedObjects
+                });
 
-            // make a copy of a list to avoid altering collection during iteration
-            var placedObjects = PlacedObjects.ToList();
+                // make a copy of a list to avoid altering collection during iteration
+                var placedObjects = PlacedObjects.ToList();
 
-            foreach (var item in placedObjects)
-            {
-                PlacedObjects.Move(item, -diff);
+                foreach (var item in placedObjects)
+                {
+                    PlacedObjects.Move(item, -diff);
+                }
+
+                InvalidateVisual();
+                InvalidateBounds();
+                InvalidateScroll();
             }
+        }
 
-            InvalidateVisual();
-            InvalidateBounds();
-            InvalidateScroll();
+        /// <summary>
+        /// Resets viewport of the canvas to top left corner.
+        /// </summary>
+        public void ResetViewport()
+        {
+            _viewport.Top = 0;
+            _viewport.Left = 0;
         }
 
         /// <summary>
@@ -2786,8 +2795,7 @@ namespace AnnoDesigner
                 return;
             }
 
-            _viewport.Left = 0;
-            _viewport.Top = 0;
+            ResetViewport();
             PlacedObjects.Clear();
             SelectedObjects.Clear();
             UndoManager.Clear();
@@ -2812,6 +2820,8 @@ namespace AnnoDesigner
             else
             {
                 SaveFileRequested?.Invoke(this, new SaveFileEventArgs(LoadedFile));
+                // Fire OnLoadedFileChanged event to trigger recalculation of MainWindowTitle
+                OnLoadedFileChanged?.Invoke(this, new FileLoadedEventArgs(LoadedFile));
                 return true;
             }
         }
