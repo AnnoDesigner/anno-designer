@@ -103,5 +103,10 @@ namespace AnnoDesigner
         /// The default number of recent files to show.
         /// </summary>
         public const int MaxRecentFiles = 10;
+
+        /// <summary>
+        /// Key of registry used to specify command to open AD layout.
+        /// </summary>
+        public const string FileAssociationRegistryKey = @"HKEY_CURRENT_USER\Software\Classes\anno_designer\shell\open\command";
     }
 }

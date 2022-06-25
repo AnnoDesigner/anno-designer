@@ -1282,12 +1282,20 @@ namespace AnnoDesigner.ViewModels
         private void RegisterExtension(object param)
         {
             // registers the anno_designer class type and adds the correct command string to pass a file argument to the application
-            Registry.SetValue(@"HKEY_CURRENT_USER\Software\Classes\anno_designer\shell\open\command", null, string.Format("\"{0}\" \"%1\"", App.ExecutablePath));
+            Registry.SetValue(Constants.FileAssociationRegistryKey, null, string.Format("\"{0}\" open \"%1\"", App.ExecutablePath));
             Registry.SetValue(@"HKEY_CURRENT_USER\Software\Classes\anno_designer\DefaultIcon", null, string.Format("\"{0}\",0", App.ExecutablePath));
             // registers the .ad file extension to the anno_designer class
             Registry.SetValue(@"HKEY_CURRENT_USER\Software\Classes\.ad", null, "anno_designer");
 
             ShowRegistrationMessageBox(isDeregistration: false);
+        }
+
+        public void UpdateRegistedExtension()
+        {
+            if (string.Format("\"{0}\" \"%1\"", App.ExecutablePath).Equals(Registry.GetValue(Constants.FileAssociationRegistryKey, null, null)))
+            {
+                Registry.SetValue(Constants.FileAssociationRegistryKey, null, string.Format("\"{0}\" open \"%1\"", App.ExecutablePath));
+            }
         }
 
         private void ShowRegistrationMessageBox(bool isDeregistration)
