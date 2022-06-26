@@ -1290,7 +1290,7 @@ namespace AnnoDesigner.ViewModels
             ShowRegistrationMessageBox(isDeregistration: false);
         }
 
-        public void UpdateRegistedExtension()
+        public void UpdateRegisteredExtension()
         {
             if (string.Format("\"{0}\" \"%1\"", App.ExecutablePath).Equals(Registry.GetValue(Constants.FileAssociationRegistryKey, null, null)))
             {
