@@ -418,7 +418,7 @@ namespace AnnoDesigner
         /// <summary>
         /// The current mouse position.
         /// </summary>
-        private Point _mousePosition;
+        private Point _mousePosition = new Point(double.NaN, double.NaN);
 
         /// <summary>
         /// The position where the mouse button was pressed.
