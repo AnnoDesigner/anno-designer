@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
@@ -67,15 +62,15 @@ namespace PresetParser
 
                 building.BuildBlocker = new SerializableDictionary<int>();
 
-                //Convert the strings to a Variable and replace the "." for a "," to keep calculatable numbers 
-                var xfNormal1 = Convert.ToDouble(node1["xf"].InnerText.Replace(".", ","));
-                var zfNormal1 = Convert.ToDouble(node1["zf"].InnerText.Replace(".", ","));
-                var xfNormal2 = Convert.ToDouble(node2["xf"].InnerText.Replace(".", ","));
-                var zfNormal2 = Convert.ToDouble(node2["zf"].InnerText.Replace(".", ","));
-                var xfNormal3 = Convert.ToDouble(node3["xf"].InnerText.Replace(".", ","));
-                var zfNormal3 = Convert.ToDouble(node3["zf"].InnerText.Replace(".", ","));
-                var xfNormal4 = Convert.ToDouble(node4["xf"].InnerText.Replace(".", ","));
-                var zfNormal4 = Convert.ToDouble(node4["zf"].InnerText.Replace(".", ","));
+                //Convert the strings to a Variable and replace the "." for a "," to keep calculatable numbers
+                var xfNormal1 = double.Parse(node1["xf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var zfNormal1 = double.Parse(node1["zf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var xfNormal2 = double.Parse(node2["xf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var zfNormal2 = double.Parse(node2["zf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var xfNormal3 = double.Parse(node3["xf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var zfNormal3 = double.Parse(node3["zf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var xfNormal4 = double.Parse(node4["xf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var zfNormal4 = double.Parse(node4["zf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
 
                 // Calculation mode check highest number minus lowest number
                 // example 1:  9 - -2 = 11
@@ -87,7 +82,8 @@ namespace PresetParser
                 {
                     xf = Convert.ToInt32(xfNormal1 - xfNormal3);
                     xc = "MA";// just information for checking line calculated mode
-                } else
+                }
+                else
                 {
                     xf = Convert.ToInt32(xfNormal3 - xfNormal1);
                     xc = "MB";// just information for checking line calculated mode
@@ -118,8 +114,8 @@ namespace PresetParser
                     zc = "MC";// just information for checking line calculated mode
                 }
 
-                
-                if ((xf == 0 || zf == 0) && building.Identifier != "Trail_05x05") {
+                if ((xf == 0 || zf == 0) && building.Identifier != "Trail_05x05")
+                {
                     //when something goes wrong on the measurements, report and stop till a key is hit
                     Console.WriteLine("MEASUREMENTS GOING WRONG!!! CHECK THIS BUILDING");
                     Console.WriteLine(" Node 1 - XF: {0} | ZF: {1} ;\n Node 2 - XF: {2} | ZF: {3} ;\n Node 3 - XF: {4} | ZF: {5} ;\n Node 4 - XF: {6} | ZF: {7}", xfNormal1, zfNormal1, xfNormal2, zfNormal2, xfNormal3, zfNormal3, xfNormal4, zfNormal4);
@@ -189,7 +185,7 @@ namespace PresetParser
                 if (variationFilenameWithoutExtension == "production_biotech_moon_facility_02")
                 {
                     x = 6;
-                    z = 8; 
+                    z = 8;
                 }
                 if (x > 0)
                 {
