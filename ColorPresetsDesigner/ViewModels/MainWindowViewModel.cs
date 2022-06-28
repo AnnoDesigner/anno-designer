@@ -319,7 +319,7 @@ namespace ColorPresetsDesigner.ViewModels
                     }).ToList()
                 }));
 
-                var backupFilePath = ColorsVM.SelectedFile + ".bak";
+                var backupFilePath = $"{ColorsVM.SelectedFile}_{ColorPresetsVersion}.bak";
                 _logger.Trace($"create backup of \"{ColorsVM.SelectedFile}\" at \"{backupFilePath}\"");
                 File.Copy(ColorsVM.SelectedFile, backupFilePath, true);
                 StatusMessage = $"Backup created \"{backupFilePath}\".";
