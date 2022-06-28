@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
@@ -483,13 +484,13 @@ namespace ColorPresetsDesigner.ViewModels
                     return new ObservableCollection<string>();
                 }
 
-                var tempList = new List<string>();
-
                 //add identifiers for template
                 var filteredIdentifiers = _templateIdentifierMapping[SelectedPredefinedColor.TargetTemplate];
+                var tempList = new HashSet<string>(filteredIdentifiers.Count, StringComparer.OrdinalIgnoreCase);
+
                 foreach (var curIdentifierName in filteredIdentifiers)
                 {
-                    tempList.Add(curIdentifierName);
+                    tempList.Add(curIdentifierName.FirstCharToUpper());
                 }
 
                 //add identifiers without template
@@ -498,7 +499,7 @@ namespace ColorPresetsDesigner.ViewModels
                     var identifiersWithoutTemplate = _templateIdentifierMapping[NO_TEMPLATE_NAME];
                     foreach (var curIdentifierName in identifiersWithoutTemplate)
                     {
-                        tempList.Add(curIdentifierName);
+                        tempList.Add(curIdentifierName.FirstCharToUpper());
                     }
                 }
 
