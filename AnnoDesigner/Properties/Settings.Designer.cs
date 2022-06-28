@@ -559,5 +559,17 @@ namespace AnnoDesigner.Properties {
                 this["ShowMultipleInstanceWarning"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool RenderVersionOnExportedImageValue {
+            get {
+                return ((bool)(this["RenderVersionOnExportedImageValue"]));
+            }
+            set {
+                this["RenderVersionOnExportedImageValue"] = value;
+            }
+        }
     }
 }

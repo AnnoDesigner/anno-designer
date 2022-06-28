@@ -197,10 +197,13 @@ namespace AnnoDesigner
             if (anotherInstanceIsRunning && _appSettings.ShowMultipleInstanceWarning && await _updateHelper.AreUpdatedPresetsFilesPresentAsync())
             {
                 //prevent app from closing, because there is no main window yet
+                var previousShutdownMode = Application.Current.ShutdownMode;
                 Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
                 //inform user that auto update is not applied
                 _messageBoxService.ShowMessage(Localization.Localization.Instance.GetLocalization("WarningMultipleInstancesAreRunning"));
+
+                Application.Current.ShutdownMode = previousShutdownMode;
             }
 
             if (!anotherInstanceIsRunning)
@@ -215,21 +218,31 @@ namespace AnnoDesigner
             ITreeLocalizationLoader treeLocalizationLoader = new TreeLocalizationLoader(_fileSystem);
 
             var mainVM = new MainViewModel(_commons, _appSettings, recentFilesHelper, _messageBoxService, _updateHelper, _localizationHelper, _fileSystem, treeLocalizationLoader: treeLocalizationLoader);
+            mainVM.UpdateRegisteredExtension();
 
             //TODO MainWindow.ctor calls AnnoCanvas.ctor loads presets -> change logic when to load data 
             MainWindow = new MainWindow(_appSettings);
             MainWindow.DataContext = mainVM;
 
-            //If language is not recognized, bring up the language selection screen
-            if (!_commons.LanguageCodeMap.ContainsKey(_appSettings.SelectedLanguage))
+            //language already set -> apply selected language
+            if (_commons.LanguageCodeMap.ContainsKey(_appSettings.SelectedLanguage))
             {
-                var w = new Welcome();
-                w.DataContext = mainVM.WelcomeViewModel;
-                w.ShowDialog();
+                _commons.CurrentLanguage = _appSettings.SelectedLanguage;
             }
             else
             {
-                _commons.CurrentLanguage = _appSettings.SelectedLanguage;
+                //normal start and language not set -> show language selection
+                if (StartupArguments is not ExportArgs)
+                {
+                    var w = new Welcome();
+                    w.DataContext = mainVM.WelcomeViewModel;
+                    w.ShowDialog();
+                }
+                //started via command line and language is not set -> set default language
+                else
+                {
+                    _commons.CurrentLanguage = "English";
+                }
             }
 
             MainWindow.ShowDialog();

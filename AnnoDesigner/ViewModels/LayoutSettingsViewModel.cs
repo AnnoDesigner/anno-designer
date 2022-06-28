@@ -17,6 +17,11 @@ namespace AnnoDesigner.ViewModels
             get { return _layoutVersion; }
             set
             {
+                if (value is null)
+                {
+                    return;
+                }
+
                 UpdateProperty(ref _layoutVersion, value);
                 OnPropertyChanged(nameof(LayoutVersionDisplayValue));
             }

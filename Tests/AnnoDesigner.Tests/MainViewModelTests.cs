@@ -14,6 +14,8 @@ using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.RecentFiles;
 using AnnoDesigner.Core.Services;
 using AnnoDesigner.Models;
+using AnnoDesigner.Undo;
+using AnnoDesigner.Undo.Operations;
 using AnnoDesigner.ViewModels;
 using Moq;
 using Xunit;
@@ -54,6 +56,7 @@ namespace AnnoDesigner.Tests
             var annoCanvasMock = new Mock<IAnnoCanvas>();
             annoCanvasMock.SetupAllProperties();
             //The QuadTree does not have a default constructor, so we need to explicitly set up the property
+            annoCanvasMock.SetupGet(x => x.UndoManager).Returns(Mock.Of<IUndoManager>());
             annoCanvasMock.Setup(x => x.PlacedObjects).Returns(new Core.DataStructures.QuadTree<LayoutObject>(new Rect(-100, -100, 200, 200)));
             _mockedAnnoCanvas = annoCanvasMock.Object;
 
@@ -492,6 +495,26 @@ namespace AnnoDesigner.Tests
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
+        public void SaveSettings_IsCalled_ShouldSaveRenderVersionOnExportedImageValue(bool expectedRenderVersionOnExportedImageValue)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.RenderVersionOnExportedImageValue = expectedRenderVersionOnExportedImageValue;
+
+            // Act
+            viewModel.SaveSettings();
+
+            // Assert
+            Assert.Equal(expectedRenderVersionOnExportedImageValue, appSettings.Object.RenderVersionOnExportedImageValue);
+            appSettings.Verify(x => x.Save(), Times.AtLeastOnce);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
         public void SaveSettings_IsCalled_ShouldSaveIsPavedStreet(bool expectedIsPavedStreet)
         {
             // Arrange            
@@ -870,6 +893,26 @@ namespace AnnoDesigner.Tests
         }
 
         [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void LoadSettings_IsCalled_ShouldLoadRenderVersionOnExportedImageValue(bool expectedRenderVersionOnExportedImageValue)
+        {
+            // Arrange            
+            var appSettings = new Mock<IAppSettings>();
+            appSettings.SetupAllProperties();
+            appSettings.Setup(x => x.RenderVersionOnExportedImageValue).Returns(() => expectedRenderVersionOnExportedImageValue);
+
+            var viewModel = GetViewModel(null, appSettings.Object);
+            viewModel.RenderVersionOnExportedImageValue = !expectedRenderVersionOnExportedImageValue;
+
+            // Act
+            viewModel.LoadSettings();
+
+            // Assert
+            Assert.Equal(expectedRenderVersionOnExportedImageValue, viewModel.RenderVersionOnExportedImageValue);
+        }
+
+        [Theory]
         [InlineData("id", Key.A, ModifierKeys.Alt, Key.S, ModifierKeys.Control | ModifierKeys.Shift, ExtendedMouseAction.None, GestureType.KeyGesture, @"{""id"":{""Key"":62,""MouseAction"":0,""Modifiers"":6,""Type"":1}}")]
         [InlineData("id", Key.A, ModifierKeys.Alt, Key.None, ModifierKeys.Shift, ExtendedMouseAction.LeftDoubleClick, GestureType.MouseGesture, @"{""id"":{""Key"":0,""MouseAction"":5,""Modifiers"":4,""Type"":0}}")]
         [InlineData("id", Key.A, ModifierKeys.Alt, Key.A, ModifierKeys.Alt, ExtendedMouseAction.None, GestureType.KeyGesture, "{}")]
@@ -1111,6 +1154,29 @@ namespace AnnoDesigner.Tests
 
             // Assert
             mockedMessageBoxService.Verify(x => x.ShowError(It.IsAny<object>(), expectedException.Message, It.IsAny<string>()), Times.Once());
+        }
+
+        #endregion
+
+        #region 
+
+        [Fact]
+        public void LayoutSettingsViewModel_SettingLayoutVersion_ShouldBeConsideredUnsavedChange()
+        {
+            // Arrange
+            var versionToSave = new Version(42, 42, 42, 42);
+
+            var mockedAnnoCanvas = new Mock<IAnnoCanvas>();
+            var mockedUndoManager = new Mock<IUndoManager>();
+            mockedAnnoCanvas.SetupAllProperties();
+            mockedAnnoCanvas.SetupGet(x => x.UndoManager).Returns(mockedUndoManager.Object);
+            var viewModel = GetViewModel(annoCanvasToUse: mockedAnnoCanvas.Object);
+
+            // Act
+            viewModel.LayoutSettingsViewModel.LayoutVersion = versionToSave;
+
+            // Assert
+            mockedUndoManager.Verify(x => x.RegisterOperation(It.Is<ModifyLayoutVersionOperation>(y => y.NewValue == new Version(42, 42, 42, 42))));
         }
 
         #endregion

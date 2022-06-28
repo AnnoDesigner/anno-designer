@@ -8,6 +8,19 @@ namespace AnnoDesigner.Tests.Undo
 {
     public class UndoManagerTests
     {
+        private class EmptyOperation : BaseOperation
+        {
+            protected override void RedoOperation()
+            {
+
+            }
+
+            protected override void UndoOperation()
+            {
+
+            }
+        }
+
         private UndoManager _undoManager;
 
         public UndoManagerTests()
@@ -188,6 +201,23 @@ namespace AnnoDesigner.Tests.Undo
             operationMock.Verify(operation => operation.Undo(), Times.Once());
         }
 
+        [Fact]
+        public void Undo_OperationsRegisteredDuringUndo_ShouldBeIgnored()
+        {
+            // Arrange
+            _undoManager.UndoStack.Push(new EmptyOperation()
+            {
+                AfterAction = () => _undoManager.RegisterOperation(Mock.Of<IOperation>())
+            });
+
+            // Act
+            _undoManager.Undo();
+
+            // Assert
+            Assert.Empty(_undoManager.UndoStack);
+            Assert.Single(_undoManager.RedoStack);
+        }
+
         #endregion
 
         #region Redo tests
@@ -228,6 +258,23 @@ namespace AnnoDesigner.Tests.Undo
 
             // Assert
             operationMock.Verify(operation => operation.Redo(), Times.Once());
+        }
+
+        [Fact]
+        public void Redo_OperationsRegisteredDuringRedo_ShouldBeIgnored()
+        {
+            // Arrange
+            _undoManager.RedoStack.Push(new EmptyOperation()
+            {
+                AfterAction = () => _undoManager.RegisterOperation(Mock.Of<IOperation>())
+            });
+
+            // Act
+            _undoManager.Redo();
+
+            // Assert
+            Assert.Empty(_undoManager.RedoStack);
+            Assert.Single(_undoManager.UndoStack);
         }
 
         #endregion
