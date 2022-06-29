@@ -2937,7 +2937,7 @@ namespace AnnoDesigner
             {
                 //Count == 0;
                 //Rotate from selected objects
-                CurrentObjects = SelectedObjects.ToListWithCapacity();
+                CurrentObjects = CloneLayoutObjects(SelectedObjects);
                 Rotate(CurrentObjects).Consume();
             }
         }
