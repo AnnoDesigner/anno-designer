@@ -613,7 +613,7 @@ namespace AnnoDesigner
 
             #region Hotkeys/Commands
             //Commands
-            rotateCommand = new RelayCommand(ExecuteRotate);
+            RotateCommand = new RelayCommand(ExecuteRotate);
             rotateAllCommand = new RelayCommand(ExecuteRotateAll);
             copyCommand = new RelayCommand(ExecuteCopy);
             pasteCommand = new RelayCommand(ExecutePaste);
@@ -628,11 +628,11 @@ namespace AnnoDesigner
             //Set up default keybindings
 
             //for rotation with the r key.
-            var rotateBinding1 = new InputBinding(rotateCommand, new PolyGesture(Key.R, ModifierKeys.None));
+            var rotateBinding1 = new InputBinding(RotateCommand, new PolyGesture(Key.R, ModifierKeys.None));
             rotateHotkey1 = new Hotkey("Rotate_1", rotateBinding1, ROTATE_LOCALIZATION_KEY);
 
             //for rotation with middle click
-            var rotateBinding2 = new InputBinding(rotateCommand, new PolyGesture(ExtendedMouseAction.MiddleClick));
+            var rotateBinding2 = new InputBinding(RotateCommand, new PolyGesture(ExtendedMouseAction.MiddleClick));
             rotateHotkey2 = new Hotkey("Rotate_2", rotateBinding2, ROTATE_LOCALIZATION_KEY);
 
             var rotateAllBinding = new InputBinding(rotateAllCommand, new PolyGesture(Key.R, ModifierKeys.Shift));
@@ -2921,7 +2921,7 @@ namespace AnnoDesigner
         /// MiddleClick rotate
         /// </summary>
         private readonly Hotkey rotateHotkey2;
-        private readonly ICommand rotateCommand;
+        public ICommand RotateCommand { get; private set; }
         private void ExecuteRotate(object param)
         {
             if (CurrentObjects.Count == 1)
