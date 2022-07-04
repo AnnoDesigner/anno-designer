@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AnnoDesigner.Core.Presets.Models;
 
 namespace AnnoDesigner.Core.Extensions
 {
@@ -46,6 +47,38 @@ namespace AnnoDesigner.Core.Extensions
             foreach (var token in tokens)
             {
                 if (token.Contains(s, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // This checker is made so it is a 100% sure same Identifiers in name and length of the string.
+        // i discovered that .Contains .startWith and .IsPartOff was not good enough to check this.
+        // (11-06-2022)
+        public static bool IsMatch(this string IdentifierToCheck, List<IBuildingInfo> buildingsToCheck)
+        {
+            foreach (var building in buildingsToCheck)
+            {
+                var match = building.Identifier.StartsWith(IdentifierToCheck);
+                var isSameLenght = building.Identifier.Length;
+                if (match && (IdentifierToCheck.Length == isSameLenght))
+                {
+                    return true;
+                } 
+            }
+
+            return false;
+        }
+        public static bool IsMatchString(this string IdentifierToCheck, List<string> StringListtoCheck)
+        {
+            foreach (var StringValeu in StringListtoCheck)
+            {
+                var match = StringValeu.StartsWith(IdentifierToCheck);
+                var isSameLenght = StringValeu.Length;
+                if (match && (IdentifierToCheck.Length == isSameLenght))
                 {
                     return true;
                 }

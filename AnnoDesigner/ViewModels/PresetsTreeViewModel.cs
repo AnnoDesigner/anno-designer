@@ -173,8 +173,7 @@ namespace AnnoDesigner.ViewModels
 
             //prepare data
             var headerAnno2205 = "(A6) Anno 2205";
-
-            var excludedTemplates = new[] { "Ark", "Harbour", "OrnamentBuilding" };
+            var excludedTemplates = new[] { "Ark", "DefColFace", "RoofColDef", "RoofColFace" }; //Removed "Harbour" and "OrnamentBuilding" missing buidlings in those 2 Template Groups (18-06-2022)
             var excludedFactions = new[] { "third party", "Facility Modules" };
 
             var filteredBuildingList = buildingPresets.Buildings
