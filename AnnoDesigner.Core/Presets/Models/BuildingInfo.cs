@@ -102,9 +102,11 @@ namespace AnnoDesigner.Core.Presets.Models
 
         /// <summary>
         /// Game Unit ID number (GUID)
-        /// This is brought in because it is need for Convert tool Anno1800SavegameVisualizer: game saves -> .ad layout files (by DuxVitae) 31-05-2022
-        /// is only need in the presets, not in the ad files it self
-        /// /// </summary>
+        /// </summary>
+        /// <remarks>
+        /// It is needed for the tool "Anno1800SavegameVisualizer": game saves -> layout files (by DuxVitae)<br/>
+        /// It is only needed for creating the presets, not in the layout files itself.
+        /// </remarks>
         [DataMember(Order = 14)]
         public int Guid { get; set; }
 
@@ -113,7 +115,6 @@ namespace AnnoDesigner.Core.Presets.Models
         /// </summary>
         [DataMember(Order = 99)]
         public SerializableDictionary<string> Localization { get; set; }
-
 
         // technical information
         //[DataMember(Name = ".ifo")]
