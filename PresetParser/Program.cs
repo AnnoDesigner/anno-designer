@@ -1,18 +1,18 @@
-﻿using AnnoDesigner.Core.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Abstractions;
+using System.Linq;
+using System.Xml;
+using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
 using PresetParser.Anno1404_Anno2070;
 using PresetParser.Anno1800;
 using PresetParser.Anno1800.Models;
+using PresetParser.Extensions;
 using PresetParser.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Abstractions;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Xml;
 
 namespace PresetParser
 {
@@ -634,7 +634,7 @@ namespace PresetParser
                     // Those will skipped by checking if file exists, as they have no IconfileName, 
                     // or not need an Icon anyway (i.e. Street kind objects and Quay Objects) 
                     IconIgnoreGuidOrIdentifier = new List<string> { "harbourprops", "Harboursystem", "HarbourSystem" };
-                    if (GUID_or_IdentifierName.IsMatchString(IconIgnoreGuidOrIdentifier))
+                    if (GUID_or_IdentifierName.IsMatch(IconIgnoreGuidOrIdentifier))
                     {
                         return;
                     }
@@ -1474,7 +1474,7 @@ namespace PresetParser
                 // Add Module Field Icons to the Modules of the Facilities, to distinguish Module Fields vs Farm-Buildings. (29-06-2022)
                 // Icons are added to the Icon Folder, the icons is based on the main building icon, but has the Anno 1800 module icon
                 // included, and this change the names of the IconFileName to pick the right Icon for the fields.
-                if (b.Faction== "Facility Modules")
+                if (b.Faction == "Facility Modules")
                 {
                     b.IconFileName = b.IconFileName.Replace(".png", "_module.png");
                 }
@@ -2927,13 +2927,13 @@ namespace PresetParser
                     case "A7_harbour_kontor.png": if (b.Guid != 100586) { DVDataGUID2 = 100586; DVDatacounted2 = true; } break;
                     case "A7_oil_storage.png": if (b.Guid != 100784) { DVDataGUID2 = 100784; DVDatacounted2 = true; } break;
                     case "A7_repair_crane.png": if (b.Guid != 1010525) { DVDataGUID2 = 1010525; DVDatacounted2 = true; } break;
-                    case "A7_guildhouse.png":  if (b.Guid != 1010516) { DVDataGUID2 = 1010516; DVDatacounted2 = true; } break;
+                    case "A7_guildhouse.png": if (b.Guid != 1010516) { DVDataGUID2 = 1010516; DVDatacounted2 = true; } break;
                     case "A7_mineral_desposits.png": if (b.Guid != 1000029) { DVDataGUID2 = 1000029; DVDatacounted2 = true; } break;
                     case "A7_oil.png": if (b.Guid != 100849 && b.Guid != 101331 && b.Guid != 1010561) { DVDataGUID2 = 100849; DVDatacounted2 = true; } else if (b.Guid != 101331 && b.Guid != 100849 && b.Guid != 101062 && b.Guid != 116037) { DVDataGUID2 = 101331; DVDatacounted2 = true; } break;
                     case "A7_defense_tower_pucklegun.png": if (b.Guid != 1010522) { DVDataGUID2 = 1010522; DVDatacounted2 = true; } break;
                     case "A7_defense_tower_cannon.png": if (b.Guid != 1010523) { DVDataGUID2 = 1010523; DVDatacounted2 = true; } break;
                     case "A7_sail_shipyard.png": if (b.Guid != 1010520) { DVDataGUID2 = 1010520; DVDatacounted2 = true; } break;
-                    
+
                 }
             }
 
@@ -2951,7 +2951,7 @@ namespace PresetParser
             {
                 var oldColor2 = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine("---> Building added to Replacement List: " + DVDataGUID2 + " << " + isExcludedGuidStr + " || "+ b.IconFileName);
+                Console.WriteLine("---> Building added to Replacement List: " + DVDataGUID2 + " << " + isExcludedGuidStr + " || " + b.IconFileName);
                 string DVisExcludedGuidStr = Convert.ToString(b.Guid);
                 DVDataList[DVDataGUID2] = DVDataList[DVDataGUID2] + DVDataSeperator + DVisExcludedGuidStr;
                 Console.ForegroundColor = oldColor2; return;
@@ -2971,7 +2971,7 @@ namespace PresetParser
                 {
                     var oldColor2 = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.DarkRed;
-                    Console.WriteLine("---> ERROR GUID WAS ALREADY IN DATALIST: GUID "+Convert.ToString(b.Guid));
+                    Console.WriteLine("---> ERROR GUID WAS ALREADY IN DATALIST: GUID " + Convert.ToString(b.Guid));
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Enter any key to continue");
                     Console.ForegroundColor = oldColor2;
@@ -2982,7 +2982,7 @@ namespace PresetParser
 
             // Remove CultureModules Menu and the OrnamentalBuilding Menu that Appeared
             if ((b.Header == "(A7) Anno 1800" && b.Faction == "All Worlds") && (b.Group == "CultureModule" || b.Group == "OrnamentalBuilding")) { return; }
- 
+
             // Remove the Not Placed Buildings
             /// comment out the line below if you make a new preset after update of the game 'ANNO 1800', or when a new 'ANNO 1800 DLC' is released 
             if (b.Faction == "Not Placed Yet -Moderate" || b.Faction == "Not Placed Yet -Arctic" || b.Faction == "Not Placed Yet -Africa" || b.Faction == "Not Placed Yet -Colony01" || b.Faction == "Not Placed Yet -All Worlds") { return; }

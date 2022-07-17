@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
-using AnnoDesigner.Core.Extensions;
+using PresetParser.Extensions;
 
 namespace PresetParser
 {
@@ -176,7 +171,7 @@ namespace PresetParser
                     xf = 3;
                     zf = 3;
                 }
-                
+
                 //
                 if (xf > 0)
                 {
@@ -211,12 +206,12 @@ namespace PresetParser
         private bool ParseBuildingBlocker(XmlDocument ifoDocument, IBuildingInfo building, string variationFilename)
         {
             var variationFilenameWithoutExtension = Path.GetFileNameWithoutExtension(variationFilename);
-               
+
             try
             {
-                XmlNode node = ifoDocument.FirstChild[BUILDBLOCKER]?.FirstChild; 
+                XmlNode node = ifoDocument.FirstChild[BUILDBLOCKER]?.FirstChild;
                 building.BuildBlocker = new SerializableDictionary<int>();
-                
+
                 var x = 0;
                 var z = 0;
 
@@ -249,7 +244,7 @@ namespace PresetParser
                 if (variationFilenameWithoutExtension == "production_biotech_moon_facility_02")
                 {
                     x = 6;
-                    z = 8; 
+                    z = 8;
                 }
                 //correcting Measurement of anno 1404 building: Coal Mine (on assets 2x3, as all others are 4x3 i set it equal as that (18-06-2022)
                 if (building.Header == "(A4) Anno 1404" && building.Identifier == "CoalMine")
@@ -270,7 +265,7 @@ namespace PresetParser
                     z = 6;
                 }
                 //Correcting some Water Farm Fields from 2x? to 3x3 (Anno 2205, 30-06-2022)
-                if (building.Header == "(A6) Anno 2205" && building.Identifier.IsMatchString(Anno2205_CoastalFarmFieldsList))
+                if (building.Header == "(A6) Anno 2205" && building.Identifier.IsMatch(Anno2205_CoastalFarmFieldsList))
                 {
                     x = 3;
                     z = 3;
@@ -282,7 +277,7 @@ namespace PresetParser
                     z = 12;
                 }
                 //Correcting Water Coastal Farm buildings, from 2x6 to 3x6 as in game measurements (Anno 2205, 01-07-2022)
-                if (building.Header == "(A6) Anno 2205" && building.Identifier.IsMatchString(Anno2205_CoastalFarmBuildingsList))
+                if (building.Header == "(A6) Anno 2205" && building.Identifier.IsMatch(Anno2205_CoastalFarmBuildingsList))
                 {
                     x = 3;
                     z = 6;
@@ -293,7 +288,7 @@ namespace PresetParser
                     x = 4;
                     z = 8;
                 }
-                
+
 
                 if (x > 0)
                 {
