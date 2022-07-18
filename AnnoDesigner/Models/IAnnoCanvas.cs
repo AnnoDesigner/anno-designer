@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
@@ -24,6 +25,7 @@ namespace AnnoDesigner.Models
 
         QuadTree<LayoutObject> PlacedObjects { get; set; }
         HashSet<LayoutObject> SelectedObjects { get; set; }
+        List<LayoutObject> CurrentObjects { get; }
         BuildingPresets BuildingPresets { get; }
         Dictionary<string, IconImage> Icons { get; }
         IUndoManager UndoManager { get; }
@@ -37,6 +39,8 @@ namespace AnnoDesigner.Models
         bool RenderIcon { get; set; }
         string LoadedFile { get; set; }
         int GridSize { get; set; }
+
+        ICommand RotateCommand { get; }
 
         void ForceRendering();
         void SetCurrentObject(LayoutObject obj);
