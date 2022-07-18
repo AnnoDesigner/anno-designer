@@ -20,7 +20,7 @@ namespace ColorPresetsDesigner
     /// </summary>
     public partial class App : Application
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public App()
         {
@@ -33,12 +33,12 @@ namespace ColorPresetsDesigner
             TaskScheduler.UnobservedTaskException += (s, e) =>
                 LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");
 
-            logger.Info($"program version: {Assembly.GetExecutingAssembly().GetName().Version}");
+            _logger.Info($"program version: {Assembly.GetExecutingAssembly().GetName().Version}");
         }
 
         private void LogUnhandledException(Exception ex, string @event)
         {
-            logger.Error(ex, @event);
+            _logger.Error(ex, @event);
 
             var message = "An unhandled exception occurred.";
 
@@ -64,7 +64,7 @@ namespace ColorPresetsDesigner
         {
             if (ColorPresetsDesigner.Properties.Settings.Default.SettingsUpgradeNeeded)
             {
-                logger.Trace("upgrade settings");
+                _logger.Trace("upgrade settings");
 
                 ColorPresetsDesigner.Properties.Settings.Default.Upgrade();
                 ColorPresetsDesigner.Properties.Settings.Default.SettingsUpgradeNeeded = false;

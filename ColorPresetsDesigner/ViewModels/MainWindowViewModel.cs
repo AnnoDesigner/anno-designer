@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -9,6 +10,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using AnnoDesigner.Core.Extensions;
 using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Presets.Loader;
 using AnnoDesigner.Core.Presets.Models;
@@ -19,7 +21,7 @@ namespace ColorPresetsDesigner.ViewModels
 {
     public class MainWindowViewModel : BaseModel
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         //private const string DEFAULT_BUSY_CONTENT = "Please wait ...";
         private const string NO_TEMPLATE_NAME = "NO_TEMPLATE";
@@ -85,7 +87,7 @@ namespace ColorPresetsDesigner.ViewModels
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Error adjusting the title.");
+                _logger.Error(ex, "Error adjusting the title.");
                 Title = oldTitle;
             }
         }
@@ -95,7 +97,7 @@ namespace ColorPresetsDesigner.ViewModels
             if (e.PropertyName.Equals(nameof(PresetsVM.SelectedFile)))
             {
                 Properties.Settings.Default.LastSelectedPresetsFilePath = PresetsVM.SelectedFile;
-                logger.Info($"selected presets file: \"{PresetsVM.SelectedFile}\"");
+                _logger.Info($"selected presets file: \"{PresetsVM.SelectedFile}\"");
             }
         }
 
@@ -104,7 +106,7 @@ namespace ColorPresetsDesigner.ViewModels
             if (e.PropertyName.Equals(nameof(ColorsVM.SelectedFile)))
             {
                 Properties.Settings.Default.LastSelectedColorsFilePath = ColorsVM.SelectedFile;
-                logger.Info($"selected color presets file: \"{ColorsVM.SelectedFile}\"");
+                _logger.Info($"selected color presets file: \"{ColorsVM.SelectedFile}\"");
             }
         }
 
@@ -119,7 +121,7 @@ namespace ColorPresetsDesigner.ViewModels
         private void ClosingWindow(object param)
         {
             var userConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
-            logger.Trace($"saving settings: \"{userConfig}\"");
+            _logger.Trace($"saving settings: \"{userConfig}\"");
             Properties.Settings.Default.Save();
         }
 
@@ -143,7 +145,7 @@ namespace ColorPresetsDesigner.ViewModels
             catch (Exception ex)
             {
                 var message = $"Error parsing {nameof(BuildingPresets)}.";
-                logger.Error(ex, message);
+                _logger.Error(ex, message);
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 StatusMessage = $"{message} -> Maybe wrong selected file?";
@@ -151,7 +153,7 @@ namespace ColorPresetsDesigner.ViewModels
             }
 
             PresetsVersion = buildingPresets.Version;
-            logger.Info($"loaded presets version: {PresetsVersion}");
+            _logger.Info($"loaded presets version: {PresetsVersion}");
 
             fillAvailableTemplates(buildingPresets);
             fillAvailableIdentifiers(buildingPresets);
@@ -172,14 +174,14 @@ namespace ColorPresetsDesigner.ViewModels
             catch (Exception ex)
             {
                 var message = $"Error parsing {nameof(ColorPresets)}.";
-                logger.Error(ex, message);
+                _logger.Error(ex, message);
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 StatusMessage = $"{message} -> Maybe wrong selected file?";
                 return;
             }
 
-            logger.Info($"loaded color presets version: {colorPresets.Version}");
+            _logger.Info($"loaded color presets version: {colorPresets.Version}");
 
             foreach (var curScheme in colorPresets.AvailableSchemes)
             {
@@ -214,6 +216,8 @@ namespace ColorPresetsDesigner.ViewModels
 
             SelectedColorScheme.Colors.Add(newColor);
             AvailablePredefinedColors.Add(newColor);
+
+            SelectedPredefinedColor = newColor;
         }
 
         private bool CanAddColor(object param)
@@ -228,7 +232,7 @@ namespace ColorPresetsDesigner.ViewModels
             SelectedColorScheme.Colors.Remove(SelectedPredefinedColor);
             updateAvailablePredefinedColors();
 
-            SelectedPredefinedColor = AvailablePredefinedColors.FirstOrDefault();
+            SelectedPredefinedColor = AvailablePredefinedColors.OrderBy(x => x.TargetTemplate, StringComparer.OrdinalIgnoreCase).FirstOrDefault();
         }
 
         private bool CanDeleteColor(object param)
@@ -315,12 +319,12 @@ namespace ColorPresetsDesigner.ViewModels
                     }).ToList()
                 }));
 
-                var backupFilePath = ColorsVM.SelectedFile + ".bak";
-                logger.Trace($"create backup of \"{ColorsVM.SelectedFile}\" at \"{backupFilePath}\"");
+                var backupFilePath = $"{ColorsVM.SelectedFile}_{ColorPresetsVersion}.bak";
+                _logger.Trace($"create backup of \"{ColorsVM.SelectedFile}\" at \"{backupFilePath}\"");
                 File.Copy(ColorsVM.SelectedFile, backupFilePath, true);
                 StatusMessage = $"Backup created \"{backupFilePath}\".";
 
-                logger.Info($"save color presets file: \"{ColorsVM.SelectedFile}\" ({colorPresets.Version})");
+                _logger.Info($"save color presets file: \"{ColorsVM.SelectedFile}\" ({colorPresets.Version})");
                 SerializationHelper.SaveToFile<ColorPresets>(colorPresets, ColorsVM.SelectedFile);
 
                 MessageBox.Show("New colors.json was saved.", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -328,7 +332,7 @@ namespace ColorPresetsDesigner.ViewModels
             catch (Exception ex)
             {
                 var message = "Error saving colors.json.";
-                logger.Error(ex, message);
+                _logger.Error(ex, message);
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 StatusMessage = $"{message} -> Could not save to \"{ColorsVM.SelectedFile}\"";
@@ -364,7 +368,10 @@ namespace ColorPresetsDesigner.ViewModels
                 if (SetPropertyAndNotify(ref _selectedColorScheme, value))
                 {
                     updateAvailablePredefinedColors();
-                    logger.Trace($"selected color scheme: {_selectedColorScheme.Name}");
+                    if (_selectedColorScheme is not null)
+                    {
+                        _logger.Trace($"selected color scheme: {_selectedColorScheme.Name}");
+                    }
                 }
             }
         }
@@ -435,7 +442,17 @@ namespace ColorPresetsDesigner.ViewModels
 
         public bool ShowColorEdit
         {
-            get { return SelectedPredefinedColor != null; }
+            get
+            {
+#if DEBUG
+                if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+                {
+                    return true;
+                }
+#endif
+
+                return SelectedPredefinedColor != null;
+            }
         }
 
         public string StatusMessage
@@ -460,20 +477,20 @@ namespace ColorPresetsDesigner.ViewModels
         {
             get
             {
-                var result = new ObservableCollection<string>();
-
                 if (SelectedPredefinedColor == null ||
                     string.IsNullOrWhiteSpace(SelectedPredefinedColor.TargetTemplate) ||
                     !_templateIdentifierMapping.ContainsKey(SelectedPredefinedColor.TargetTemplate))
                 {
-                    return result;
+                    return new ObservableCollection<string>();
                 }
 
                 //add identifiers for template
                 var filteredIdentifiers = _templateIdentifierMapping[SelectedPredefinedColor.TargetTemplate];
+                var tempList = new HashSet<string>(filteredIdentifiers.Count, StringComparer.OrdinalIgnoreCase);
+
                 foreach (var curIdentifierName in filteredIdentifiers)
                 {
-                    result.Add(curIdentifierName);
+                    tempList.Add(curIdentifierName.FirstCharToUpper());
                 }
 
                 //add identifiers without template
@@ -482,14 +499,14 @@ namespace ColorPresetsDesigner.ViewModels
                     var identifiersWithoutTemplate = _templateIdentifierMapping[NO_TEMPLATE_NAME];
                     foreach (var curIdentifierName in identifiersWithoutTemplate)
                     {
-                        result.Add(curIdentifierName);
+                        tempList.Add(curIdentifierName.FirstCharToUpper());
                     }
                 }
 
                 //remove already added identifiers (present in this template)
                 foreach (var alreadyAddedIdentifier in SelectedPredefinedColor.TargetIdentifiers)
                 {
-                    result.Remove(alreadyAddedIdentifier);
+                    tempList.Remove(alreadyAddedIdentifier);
                 }
 
                 //remove already added identifiers (present in all templates)
@@ -497,11 +514,11 @@ namespace ColorPresetsDesigner.ViewModels
                 {
                     foreach (var curIdentifier in curPredefinedColor.TargetIdentifiers)
                     {
-                        result.Remove(curIdentifier);
+                        tempList.Remove(curIdentifier);
                     }
                 }
 
-                return result;
+                return new ObservableCollection<string>(tempList);
             }
         }
 

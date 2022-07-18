@@ -204,16 +204,15 @@
                             </Button>
                         </Grid>
 
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <ListBox ItemsSource="{Binding AvailableColorSchemes}"
-                                     SelectedItem="{Binding SelectedColorScheme}">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Name}" />
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </ScrollViewer>
+                        <ListBox ItemsSource="{Binding AvailableColorSchemes}"
+                                     SelectedItem="{Binding SelectedColorScheme}"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </DockPanel>
                 </Border>
 
@@ -225,6 +224,15 @@
                         Grid.Column="1"
                         Grid.Row="0">
                     <DockPanel>
+                        <DockPanel.Resources>
+                            <CollectionViewSource x:Key="viewSortedColors"
+                                                      Source="{Binding AvailablePredefinedColors}">
+                                <CollectionViewSource.SortDescriptions>
+                                    <scm:SortDescription PropertyName="TargetTemplate" />
+                                </CollectionViewSource.SortDescriptions>
+                            </CollectionViewSource>
+                        </DockPanel.Resources>
+
                         <TextBlock DockPanel.Dock="Top"
                                    Padding="3"
                                    Text="{Binding SelectedColorScheme.Name, FallbackValue='colors in scheme', StringFormat='colors in scheme &quot;{0}&quot;'}"
@@ -362,46 +370,39 @@
                             </Button>
                         </Grid>
 
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <ScrollViewer.Resources>
-                                <CollectionViewSource x:Key="viewSortedColors"
-                                                      Source="{Binding AvailablePredefinedColors}">
-                                    <CollectionViewSource.SortDescriptions>
-                                        <scm:SortDescription PropertyName="TargetTemplate" />
-                                    </CollectionViewSource.SortDescriptions>
-                                </CollectionViewSource>
-                            </ScrollViewer.Resources>
-                            <ListBox ItemsSource="{Binding Source={StaticResource viewSortedColors}}"
-                                     SelectedItem="{Binding SelectedPredefinedColor}">
-                                <ListBox.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Setter Property="HorizontalContentAlignment"
+                        <ListBox ItemsSource="{Binding Source={StaticResource viewSortedColors}}"
+                                 SelectedItem="{Binding SelectedPredefinedColor}"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 VirtualizingStackPanel.IsVirtualizing="True"
+                                 VirtualizingStackPanel.VirtualizationMode="Recycling">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment"
                                                 Value="Stretch" />
-                                    </Style>
-                                </ListBox.ItemContainerStyle>
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0">
-                                                <TextBlock.Text>
-                                                    <MultiBinding StringFormat="{}{0} ({1} Identifiers)">
-                                                        <Binding Path="TargetTemplate" />
-                                                        <Binding Path="TargetIdentifiers.Count" />
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                            <Rectangle Grid.Column="1"
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} ({1} Identifiers)">
+                                                    <Binding Path="TargetTemplate" />
+                                                    <Binding Path="TargetIdentifiers.Count" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <Rectangle Grid.Column="1"
                                                        Width="16"
                                                        Fill="{Binding SelectedColor, Converter={StaticResource converterColorToSolidColorBrush}}" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </ScrollViewer>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
 
                     </DockPanel>
                 </Border>
@@ -415,6 +416,14 @@
                         Grid.Row="0"
                         DataContext="{Binding SelectedPredefinedColor}">
                     <DockPanel Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowColorEdit, Converter={StaticResource converterBoolToVisibility}}">
+                        <DockPanel.Resources>
+                            <CollectionViewSource x:Key="viewSortedIdentifiers"
+                                                      Source="{Binding TargetIdentifiers}">
+                                <CollectionViewSource.SortDescriptions>
+                                    <scm:SortDescription PropertyName="." />
+                                </CollectionViewSource.SortDescriptions>
+                            </CollectionViewSource>
+                        </DockPanel.Resources>
                         <Grid DockPanel.Dock="Top"
                               Margin="3">
                             <Grid.ColumnDefinitions>
@@ -468,9 +477,17 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
+                            <Grid.Resources>
+                                <CollectionViewSource x:Key="viewSortedIdentifiersForTemplate"
+                                                      Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.AvailableIdentifiersForTemplate}">
+                                    <CollectionViewSource.SortDescriptions>
+                                        <scm:SortDescription PropertyName="." />
+                                    </CollectionViewSource.SortDescriptions>
+                                </CollectionViewSource>
+                            </Grid.Resources>
                             <xctk:WatermarkComboBox Grid.Column="0"
-                                                    Watermark="select new TargetIdentifier"
-                                                    ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.AvailableIdentifiersForTemplate}"
+                                                    Watermark="select new TargetIdentifier"                                                    
+                                                    ItemsSource="{Binding Source={StaticResource viewSortedIdentifiersForTemplate}}"
                                                     SelectedItem="{Binding NewIdentifier}"
                                                     Margin="3">
                                 <ComboBox.ItemsPanel>
@@ -564,26 +581,19 @@
                             </Button>
                         </Grid>
 
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <ScrollViewer.Resources>
-                                <CollectionViewSource x:Key="viewSortedIdentifiers"
-                                                      Source="{Binding TargetIdentifiers}">
-                                    <CollectionViewSource.SortDescriptions>
-                                        <scm:SortDescription PropertyName="." />
-                                    </CollectionViewSource.SortDescriptions>
-                                </CollectionViewSource>
-                            </ScrollViewer.Resources>
-                            <ListBox DockPanel.Dock="Top"
-                                     ItemsSource="{Binding Source={StaticResource viewSortedIdentifiers}}"
-                                     SelectedItem="{Binding SelectedIdentifier}"
-                                     Height="Auto">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding}" />
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </ScrollViewer>
+                        <ListBox DockPanel.Dock="Top"
+                                 ItemsSource="{Binding Source={StaticResource viewSortedIdentifiers}}"
+                                 SelectedItem="{Binding SelectedIdentifier}"
+                                 Height="Auto"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 VirtualizingStackPanel.IsVirtualizing="True"
+                                 VirtualizingStackPanel.VirtualizationMode="Recycling">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </DockPanel>
                 </Border>
 

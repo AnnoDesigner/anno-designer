@@ -15,7 +15,7 @@ namespace PresetParser.Anno1404_Anno2070
 
         static LocalizationHelper()
         {
-            localizationFiles = new string[] { "icons.txt", "guids.txt", "addon/texts.txt" };
+            localizationFiles = new string[] { "icons.txt", "guids.txt", "addon/addontexte.txt", "dlc01.txt", "dlc02.txt", "dlc03.txt", "dlc04.txt", "addon/texts.txt" };
         }
 
         public LocalizationHelper(IFileSystem fileSystemToUse)

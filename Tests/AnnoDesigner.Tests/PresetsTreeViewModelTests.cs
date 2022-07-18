@@ -449,8 +449,9 @@ namespace AnnoDesigner.Tests
 
         [Theory]
         [InlineData("Ark")]
-        [InlineData("Harbour")]
-        [InlineData("OrnamentBuilding")]
+        [InlineData("DefColFace")]
+        [InlineData("RoofColDef")]
+        [InlineData("RoofColFace")]
         public void LoadItems_BuildingsHaveSpecialTemplate_ShouldNotLoadBuildings(string templateToSet)
         {
             // Arrange

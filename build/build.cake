@@ -17,10 +17,6 @@ var configuration = Argument<string>("configuration", "DEBUG");
 
 //from cake source:
 /// <summary>
-/// MSBuild tool version: <c>Visual Studio 2017</c>
-/// </summary>
-//VS2017 = 6,
-/// <summary>
 /// MSBuild tool version: <c>Visual Studio 2019</c>
 /// </summary>
 //VS2019 = 7,
@@ -31,6 +27,7 @@ var configuration = Argument<string>("configuration", "DEBUG");
 
 var msbuildVersion = Argument<int>("msbuildVersion", 7);
 var useBinaryLog = Argument<bool>("useBinaryLog", false);
+var isWorkflowRun = Argument<bool>("isWorkflowRun", false);
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
@@ -114,11 +111,17 @@ var restoreNuGetTask = Task("Restore-NuGet-Packages")
 .IsDependentOn(cleanTask)
 .Does(() =>
 {
+    var settings = new NuGetRestoreSettings
+    {
+        Verbosity= NuGetVerbosity.Quiet,//NuGetVerbosity.Normal,
+        NoCache = false
+    };
+
     foreach (var curSolutionFile in solutionFiles)
     {
         var curSolutionFileName = System.IO.Path.GetFileName(curSolutionFile);
         Information($"{DateTime.Now:hh:mm:ss.ff} restoring NuGet packages for {curSolutionFileName}");
-        NuGetRestore(curSolutionFile);
+        NuGetRestore(curSolutionFile, settings);
     }
 });
 
@@ -176,6 +179,12 @@ var buildTask = Task("Build")
             Verbosity = Verbosity.Minimal,
             NoLogo = true
         };
+
+        if(isWorkflowRun)
+        {
+            msBuildSettings.NoConsoleLogger = false;
+            //msBuildSettings.Verbosity = Verbosity.Normal;
+        }
 
         if(useBinaryLog)
         {
@@ -322,7 +331,7 @@ var zipTask = Task("Compress-Output")
 .IsDependentOn(copyFilesTask)
 .Does(() =>
 {
-    if(configuration.Equals("DEBUG", StringComparison.OrdinalIgnoreCase))
+    if(configuration.Equals("DEBUG", StringComparison.OrdinalIgnoreCase) || isWorkflowRun)
     {
         return;
     }
