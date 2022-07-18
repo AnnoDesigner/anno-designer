@@ -16,6 +16,7 @@ namespace AnnoDesigner.Core.Presets.Models
         bool Borderless { get; set; }
         bool Road { get; set; }
         SerializableDictionary<string> Localization { get; set; }
+        int Guid { get; set; }
         double BlockedAreaLength { get; set; }
         double BlockedAreaWidth { get; set; }
         GridDirection Direction { get; set; }

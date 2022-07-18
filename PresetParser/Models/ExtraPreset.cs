@@ -6,6 +6,7 @@
         public string Group { get; set; }
         public string Faction { get; set; }
         public string Identifier { get; set; }
+        public int Guid { get; set; }
         public string IconFileName { get; set; }
         public int BuildBlockerX { get; set; }
         public int BuildBlockerZ { get; set; }

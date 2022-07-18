@@ -41,7 +41,7 @@ namespace AnnoDesigner.Core.Presets.Models
         public string Identifier { get; set; }
 
         /// <summary>
-        /// The name of the iconof this building.
+        /// The name of the icon of this building.
         /// </summary>
         [DataMember(Order = 4)]
         public string IconFileName { get; set; }
@@ -101,14 +101,22 @@ namespace AnnoDesigner.Core.Presets.Models
         public GridDirection Direction { get; set; } = GridDirection.Down;
 
         /// <summary>
+        /// Game Unit ID number (GUID)
+        /// </summary>
+        /// <remarks>
+        /// It is needed for the tool "Anno1800SavegameVisualizer": game saves -> layout files (by DuxVitae)<br/>
+        /// It is only needed for creating the presets, not in the layout files itself.
+        /// </remarks>
+        [DataMember(Order = 14)]
+        public int Guid { get; set; }
+
+        /// <summary>
         /// The localized names of this building.
         /// </summary>
         [DataMember(Order = 99)]
         public SerializableDictionary<string> Localization { get; set; }
 
         // technical information
-        //[DataMember(Name = "GUID")]
-        //public int Guid { get; set; }
         //[DataMember(Name = ".ifo")]
         //public int IfoFile { get; set; }
 

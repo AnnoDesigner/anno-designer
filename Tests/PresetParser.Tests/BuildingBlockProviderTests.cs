@@ -66,7 +66,7 @@ namespace PresetParser.Tests
 
             // Assert
             Assert.False(result);
-            Assert.Null(mockedBuilding.Object.BuildBlocker);
+            Assert.NotNull(mockedBuilding.Object.BuildBlocker);
         }
 
         [Fact]
@@ -88,8 +88,8 @@ namespace PresetParser.Tests
             var result = provider.GetBuildingBlocker("basePath", mockedBuilding.Object, "variationFilename", Constants.ANNO_VERSION_1404);
 
             // Assert
-            Assert.False(result);
-            Assert.Null(mockedBuilding.Object.BuildBlocker);
+            Assert.False(result);            
+            Assert.NotNull(mockedBuilding.Object.BuildBlocker);
         }
 
         [Fact]
