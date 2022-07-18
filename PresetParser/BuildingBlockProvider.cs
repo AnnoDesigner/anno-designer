@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Xml;
 using AnnoDesigner.Core.Models;
@@ -85,15 +86,15 @@ namespace PresetParser
 
                 building.BuildBlocker = new SerializableDictionary<int>();
 
-                //Convert the strings to a Variable and replace the "." for a "," to keep calculable numbers 
-                var xfNormal1 = Convert.ToDouble(node1["xf"].InnerText.Replace(".", ","));
-                var zfNormal1 = Convert.ToDouble(node1["zf"].InnerText.Replace(".", ","));
-                var xfNormal2 = Convert.ToDouble(node2["xf"].InnerText.Replace(".", ","));
-                var zfNormal2 = Convert.ToDouble(node2["zf"].InnerText.Replace(".", ","));
-                var xfNormal3 = Convert.ToDouble(node3["xf"].InnerText.Replace(".", ","));
-                var zfNormal3 = Convert.ToDouble(node3["zf"].InnerText.Replace(".", ","));
-                var xfNormal4 = Convert.ToDouble(node4["xf"].InnerText.Replace(".", ","));
-                var zfNormal4 = Convert.ToDouble(node4["zf"].InnerText.Replace(".", ","));
+                //Convert the strings to a Variable and replace the "." for a "," to keep calculatable numbers
+                var xfNormal1 = double.Parse(node1["xf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var zfNormal1 = double.Parse(node1["zf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var xfNormal2 = double.Parse(node2["xf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var zfNormal2 = double.Parse(node2["zf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var xfNormal3 = double.Parse(node3["xf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var zfNormal3 = double.Parse(node3["zf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var xfNormal4 = double.Parse(node4["xf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var zfNormal4 = double.Parse(node4["zf"].InnerText, NumberStyles.Any, CultureInfo.InvariantCulture);
 
                 // Calculation mode check highest number minus lowest number
                 // example 1:  9 - -2 = 11

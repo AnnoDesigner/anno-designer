@@ -1,21 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using AnnoDesigner.Core.Presets.Models;
 using Moq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace PresetParser.Tests
 {
+    //disable parallel execution of tests, because of culture awareness in some of the tests
+    [CollectionDefinition(nameof(BuildingBlockProviderTests), DisableParallelization = true)]
     public class BuildingBlockProviderTests
     {
         #region testdata
 
         private static readonly string testData_Bakery;
+        private readonly ITestOutputHelper _out;
 
         #endregion
 
@@ -26,6 +27,10 @@ namespace PresetParser.Tests
             testData_Bakery = File.ReadAllText(Path.Combine(basePath, "Testdata", "1404_Bakery.txt"), Encoding.UTF8);
         }
 
+        public BuildingBlockProviderTests(ITestOutputHelper outputHelper)
+        {
+            _out = outputHelper;
+        }
 
         #region ctor tests
 
@@ -340,7 +345,7 @@ namespace PresetParser.Tests
             Assert.Empty(mockedBuilding.Object.BuildBlocker.Dict);
         }
 
-        [Fact]
+        [CulturedFact]
         public void GetBuildingBlocker_Anno1800ValueForxIsZero_ShouldSetxToOne()
         {
             // Arrange
@@ -355,17 +360,19 @@ namespace PresetParser.Tests
             var mockedBuilding = new Mock<IBuildingInfo>();
             mockedBuilding.SetupAllProperties();
 
+            var building = mockedBuilding.Object;
+
             // Act
-            var result = provider.GetBuildingBlocker("basePath", mockedBuilding.Object, "variationFilename", Constants.ANNO_VERSION_1800);
+            var result = provider.GetBuildingBlocker("basePath", building, "variationFilename", Constants.ANNO_VERSION_1800);
 
             // Assert
             Assert.True(result);
-            Assert.NotNull(mockedBuilding.Object.BuildBlocker);
-            Assert.Equal(1, mockedBuilding.Object.BuildBlocker["x"]);
-            Assert.Equal(4, mockedBuilding.Object.BuildBlocker["z"]);
+            Assert.NotNull(building.BuildBlocker);
+            Assert.Equal(1, building.BuildBlocker["x"]);
+            Assert.Equal(4, building.BuildBlocker["z"]);
         }
 
-        [Fact]
+        [CulturedFact]
         public void GetBuildingBlocker_Anno1800ValueForzIsZero_ShouldSetzToOne()
         {
             // Arrange
@@ -390,7 +397,7 @@ namespace PresetParser.Tests
             Assert.Equal(1, mockedBuilding.Object.BuildBlocker["z"]);
         }
 
-        [Fact]
+        [CulturedFact]
         public void GetBuildingBlocker_Anno1800BuildingIsPalaceGate_ShouldSetCorrectSize()
         {
             // Arrange
