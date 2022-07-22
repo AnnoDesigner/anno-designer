@@ -1,4 +1,4 @@
-[![GitHub](https://img.shields.io/github/license/AnnoDesigner/anno-designer)](https://github.com/AnnoDesigner/anno-designer/blob/master/LICENSE) [![version](https://img.shields.io/badge/latest--version-9.2-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.2) [![presets version](https://img.shields.io/badge/presets--version-4.0-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/Presetsv4.0) [![Discord](https://img.shields.io/discord/571011757317947406?label=help%2Fdiscord)](https://discord.gg/JJpHWRB)
+[![GitHub](https://img.shields.io/github/license/AnnoDesigner/anno-designer)](https://github.com/AnnoDesigner/anno-designer/blob/master/LICENSE) [![version](https://img.shields.io/badge/latest--version-9.4-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4) [![presets version](https://img.shields.io/badge/presets--version-5.0-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4) [![Discord](https://img.shields.io/discord/571011757317947406?label=help%2Fdiscord)](https://discord.gg/JJpHWRB)
 
 # Anno Designer
 
@@ -8,9 +8,9 @@ This is a fork of the project created by JcBernack - https://github.com/JcBernac
 
 ## Latest Releases
 
-### [Anno Designer 9.2](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.2)
+### [Anno Designer 9.4](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4)
 
-#### [Latest Presets file release](https://github.com/AnnoDesigner/anno-designer/releases/tag/Presetsv4.0)
+#### [Latest Presets file release](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4)
 
 The presets update can also be downloaded automatically by the application.
 
@@ -27,7 +27,7 @@ The **Anno Designer** is a standalone windows application that can be used for c
 
 ## How to use
 
-**Download the latest version from the [here](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.2)** (select the .exe file). Run it, and use it to design layouts!
+**Download the latest version from the [here](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4)** (select the .exe file). Run it, and use it to design layouts!
 
 Anno Designer can also be started from the command line for advanced usages.  
 Please see [this documentation](doc/CommandLineParameters.md) for more information and examples.
