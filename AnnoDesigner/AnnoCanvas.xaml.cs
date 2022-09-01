@@ -2865,6 +2865,7 @@ namespace AnnoDesigner
             if (dialog.ShowDialog() == true)
             {
                 OpenFileRequested?.Invoke(this, new OpenFileEventArgs(dialog.FileName));
+                InvalidateBounds();
             }
         }
 
