@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using AnnoDesigner.Core.Models;
 
 namespace AnnoDesigner.Core.Extensions
@@ -114,6 +115,65 @@ namespace AnnoDesigner.Core.Extensions
         public static bool IsIgnoredObject(this AnnoObject annoObject)
         {
             return string.Equals(annoObject.Template, "Blocker", StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Generates sequence of double values from <paramref name="from"/> to <paramref name="to"/>.
+        /// Can generate sequences in descending order.
+        /// Generated sequence always have <paramref name="from"/>. By default <paramref name="to"/> is excluded from sequence unless <paramref name="inclusiveTo"/> is set.
+        /// </summary>
+        /// <param name="from">First value of the sequence.</param>
+        /// <param name="to">Last value of the sequence.</param>
+        /// <param name="step">Increment between iterations.</param>
+        /// <param name="inclusiveTo">Returns value after last iteration if set to true.</param>
+        /// <returns>Sequence of doubles between provided bounds.</returns>
+        public static IEnumerable<double> Range(double from, double to, double step = 1, bool inclusiveTo = false)
+        {
+            if (step <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(step), "Value must be positive");
+            }
+
+            double i;
+            if (to > from)
+            {
+                for (i = from; i < to; i += step)
+                {
+                    yield return i;
+                }
+            }
+            else
+            {
+                for (i = from; i > to; i -= step)
+                {
+                    yield return i;
+                }
+            }
+            if (inclusiveTo)
+            {
+                yield return i;
+            }
+        }
+
+        /// <summary>
+        /// Generates sequence of grid points in rectangle specified by <paramref name="start"/> and <paramref name="inclusiveEnd"/>.
+        /// Uses <see cref="Range(double, double, double, bool)"/> to generate X and Y coordinates.
+        /// </summary>
+        /// <param name="start">Point where rect should start at.</param>
+        /// <param name="end">Point where rect should end at.</param>
+        /// <param name="step">Steps in horizontal and vertical directions between points. Defaults to (1, 1).</param>
+        /// <param name="inclusiveEnd">Includes one point after the <paramref name="end"/>.</param>
+        /// <returns>Sequence of grid points in specified rectangle.</returns>
+        public static IEnumerable<Point> GeneratePointsInsideRect(Point start, Point end, Size? step = null, bool inclusiveEnd = false)
+        {
+            step ??= new Size(1, 1);
+            foreach (var i in Range(start.X, end.X, step.Value.Width, inclusiveEnd))
+            {
+                foreach (var j in Range(start.Y, end.Y, step.Value.Height, inclusiveEnd))
+                {
+                    yield return new Point(i, j);
+                }
+            }
         }
     }
 }

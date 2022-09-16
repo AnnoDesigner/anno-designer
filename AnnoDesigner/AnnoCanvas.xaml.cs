@@ -389,7 +389,9 @@ namespace AnnoDesigner
             DragAll,
             PlaceObjects,
             DeleteObject,
-            SelectSameIdentifier
+            SelectSameIdentifier,
+            // used to place objects by drawing rectangle
+            RectPlaceObjects
         }
 
         /// <summary>
@@ -932,6 +934,24 @@ namespace AnnoDesigner
                 objectsChanged = true;
             }
 
+            if (CurrentMode == MouseMode.RectPlaceObjects && CurrentObjects.Count == 1)
+            {
+                var objectToClone = CurrentObjects[0];
+                var start = ScreenPointToObjectGridPosition(_mouseDragStart, objectToClone);
+                var end = ScreenPointToObjectGridPosition(_mousePosition, objectToClone);
+                var clones = Core.Extensions.IEnumerableExtensions.GeneratePointsInsideRect(start, end, objectToClone.Size, true)
+                    .Select(point =>
+                    {
+                        var obj = CloneLayoutObject(objectToClone);
+                        obj.Position = point;
+                        return obj;
+                    })
+                    .Where(obj => !ObjectIntersectionExists(PlacedObjects.GetItemsIntersecting(obj.Bounds), obj))
+                    .ToList();
+
+                RenderObjectList(drawingContext, clones, true);
+            }
+
             // draw placed objects            
             if (_isRenderingForced || objectsChanged)
             {
@@ -1350,14 +1370,16 @@ namespace AnnoDesigner
             }
             else
             {
-                var pos = _coordinateHelper.ScreenToFractionalGrid(_mousePosition, GridSize);
-                var size = CurrentObjects[0].Size;
-                pos.X -= size.Width / 2;
-                pos.Y -= size.Height / 2;
-                pos = _viewport.OriginToViewport(pos);
-                pos = new Point(Math.Round(pos.X, MidpointRounding.AwayFromZero), Math.Round(pos.Y, MidpointRounding.AwayFromZero));
-                CurrentObjects[0].Position = pos;
+                CurrentObjects[0].Position = ScreenPointToObjectGridPosition(_mousePosition, CurrentObjects[0]);
             }
+        }
+
+        private Point ScreenPointToObjectGridPosition(Point point, LayoutObject obj)
+        {
+            point = _coordinateHelper.ScreenToFractionalGrid(point, GridSize);
+            point -= (Vector)obj.Size / 2;
+            point = _viewport.OriginToViewport(point);
+            return new Point(Math.Round(point.X, MidpointRounding.AwayFromZero), Math.Round(point.Y, MidpointRounding.AwayFromZero));
         }
 
         /// <summary>
@@ -2095,8 +2117,17 @@ namespace AnnoDesigner
             }
             else if (e.LeftButton == MouseButtonState.Pressed && CurrentObjects.Count != 0)
             {
-                // place new object
-                TryPlaceCurrentObjects(isContinuousDrawing: false);
+                if (IsShiftPressed() && CurrentObjects.Count == 1)
+                {
+                    // begin rectangle placing objects
+                    CurrentMode = MouseMode.RectPlaceObjects;
+                }
+                else
+                {
+                    // place single new object
+                    TryPlaceCurrentObjects(isContinuousDrawing: false);
+                    CurrentMode = MouseMode.PlaceObjects;
+                }
             }
             else if (e.LeftButton == MouseButtonState.Pressed && CurrentObjects.Count == 0)
             {
@@ -2150,6 +2181,9 @@ namespace AnnoDesigner
                     case MouseMode.DragAllStart:
                         CurrentMode = MouseMode.DragAll;
                         break;
+                    case MouseMode.RectPlaceObjects:
+
+                        break;
                 }
             }
 
@@ -2180,120 +2214,117 @@ namespace AnnoDesigner
             }
             else if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if (CurrentObjects.Count != 0)
+                switch (CurrentMode)
                 {
-                    CurrentMode = MouseMode.PlaceObjects;
-                    // place new object
-                    TryPlaceCurrentObjects(isContinuousDrawing: true);
-                }
-                else
-                {
-                    // selection of multiple objects
-                    switch (CurrentMode)
-                    {
-                        case MouseMode.SelectionRect:
+                    case MouseMode.PlaceObjects:
+                        if (CurrentObjects.Count != 0)
+                        {
+                            // place new object
+                            TryPlaceCurrentObjects(isContinuousDrawing: true);
+                        }
+                        break;
+                    case MouseMode.SelectionRect:
+                        {
+                            if (IsControlPressed() || IsShiftPressed())
                             {
-                                if (IsControlPressed() || IsShiftPressed())
+                                // remove previously selected by the selection rect
+                                if (ShouldAffectObjectsWithIdentifier())
                                 {
-                                    // remove previously selected by the selection rect
-                                    if (ShouldAffectObjectsWithIdentifier())
-                                    {
-                                        RemoveSelectedObjects(
-                                            SelectedObjects.Where(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)).ToList(),
-                                            true
-                                        );
-                                    }
-                                    else
-                                    {
-                                        RemoveSelectedObjects(x => x.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
-                                    }
+                                    RemoveSelectedObjects(
+                                        SelectedObjects.Where(_ => _.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect)).ToList(),
+                                        true
+                                    );
                                 }
                                 else
                                 {
-                                    SelectedObjects.Clear();
+                                    RemoveSelectedObjects(x => x.CalculateScreenRect(GridSize).IntersectsWith(_selectionRect));
                                 }
+                            }
+                            else
+                            {
+                                SelectedObjects.Clear();
+                            }
 
-                                // adjust rect
-                                _selectionRect = new Rect(_mouseDragStart, _mousePosition);
-                                // select intersecting objects
-                                var selectionRectGrid = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
-                                selectionRectGrid = _viewport.OriginToViewport(selectionRectGrid);
-                                AddSelectedObjects(PlacedObjects.GetItemsIntersecting(selectionRectGrid),
-                                                   ShouldAffectObjectsWithIdentifier());
-                                RecalculateSelectionContainsNotIgnoredObject();
+                            // adjust rect
+                            _selectionRect = new Rect(_mouseDragStart, _mousePosition);
+                            // select intersecting objects
+                            var selectionRectGrid = _coordinateHelper.ScreenToGrid(_selectionRect, GridSize);
+                            selectionRectGrid = _viewport.OriginToViewport(selectionRectGrid);
+                            AddSelectedObjects(PlacedObjects.GetItemsIntersecting(selectionRectGrid),
+                                                ShouldAffectObjectsWithIdentifier());
+                            RecalculateSelectionContainsNotIgnoredObject();
 
-                                StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+                            StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+                            break;
+                        }
+                    case MouseMode.DragSelection:
+                        {
+                            if (_oldObjectPositions.Count == 0)
+                            {
+                                _oldObjectPositions.AddRange(SelectedObjects.Select(obj => (obj, obj.GridRect)));
+                            }
+
+                            // move all selected objects
+                            var dx = (int)_coordinateHelper.ScreenToGrid(_mousePosition.X - _mouseDragStart.X, GridSize);
+                            var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
+                            // check if the mouse has moved at least one grid cell in any direction
+                            if (dx == 0 && dy == 0)
+                            {
+                                //no relevant mouse move -> no further action
                                 break;
                             }
-                        case MouseMode.DragSelection:
-                            {
-                                if (_oldObjectPositions.Count == 0)
-                                {
-                                    _oldObjectPositions.AddRange(SelectedObjects.Select(obj => (obj, obj.GridRect)));
-                                }
+                            //Recompute _unselectedObjects
+                            var offsetCollisionRect = _collisionRect;
+                            offsetCollisionRect.Offset(dx, dy);
 
-                                // move all selected objects
-                                var dx = (int)_coordinateHelper.ScreenToGrid(_mousePosition.X - _mouseDragStart.X, GridSize);
-                                var dy = (int)_coordinateHelper.ScreenToGrid(_mousePosition.Y - _mouseDragStart.Y, GridSize);
-                                // check if the mouse has moved at least one grid cell in any direction
-                                if (dx == 0 && dy == 0)
+                            //Its causing slowdowns when dragging large numbers of objects
+                            _unselectedObjects = PlacedObjects.GetItemsIntersecting(offsetCollisionRect).Where(_ => !SelectedObjects.Contains(_)).ToList();
+                            var collisionsExist = false;
+                            // temporarily move each object and check if collisions with unselected objects exist
+                            foreach (var curLayoutObject in SelectedObjects)
+                            {
+                                var originalPosition = curLayoutObject.Position;
+                                // move object                                
+                                curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
+                                // check for collisions                                
+                                var collides = _unselectedObjects.Find(_ => ObjectIntersectionExists(curLayoutObject, _)) != null;
+                                curLayoutObject.Position = originalPosition;
+                                if (collides)
                                 {
-                                    //no relevant mouse move -> no further action
+                                    collisionsExist = true;
                                     break;
                                 }
-                                //Recompute _unselectedObjects
-                                var offsetCollisionRect = _collisionRect;
-                                offsetCollisionRect.Offset(dx, dy);
+                            }
 
-                                //Its causing slowdowns when dragging large numbers of objects
-                                _unselectedObjects = PlacedObjects.GetItemsIntersecting(offsetCollisionRect).Where(_ => !SelectedObjects.Contains(_)).ToList();
-                                var collisionsExist = false;
-                                // temporarily move each object and check if collisions with unselected objects exist
+                            // if no collisions were found, permanently move all selected objects
+                            if (!collisionsExist)
+                            {
                                 foreach (var curLayoutObject in SelectedObjects)
                                 {
-                                    var originalPosition = curLayoutObject.Position;
-                                    // move object                                
                                     curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
-                                    // check for collisions                                
-                                    var collides = _unselectedObjects.Find(_ => ObjectIntersectionExists(curLayoutObject, _)) != null;
-                                    curLayoutObject.Position = originalPosition;
-                                    if (collides)
-                                    {
-                                        collisionsExist = true;
-                                        break;
-                                    }
                                 }
+                                // adjust the drag start to compensate the amount we already moved
+                                _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
+                                _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
 
-                                // if no collisions were found, permanently move all selected objects
-                                if (!collisionsExist)
+                                //update collision rect, so that collisions are correctly computed on next run
+                                _collisionRect.X += dx;
+                                _collisionRect.Y += dy;
+
+                                //position change -> update
+                                StatisticsUpdated?.Invoke(this, new UpdateStatisticsEventArgs(UpdateMode.NoBuildingList));
+                                //always recompute bounds when moving, as we may be moving an item in from the edge of the layout
+                                var oldLayoutBounds = _layoutBounds;
+                                InvalidateBounds();
+                                if (oldLayoutBounds != _layoutBounds)
                                 {
-                                    foreach (var curLayoutObject in SelectedObjects)
-                                    {
-                                        curLayoutObject.Position = new Point(curLayoutObject.Position.X + dx, curLayoutObject.Position.Y + dy);
-                                    }
-                                    // adjust the drag start to compensate the amount we already moved
-                                    _mouseDragStart.X += _coordinateHelper.GridToScreen(dx, GridSize);
-                                    _mouseDragStart.Y += _coordinateHelper.GridToScreen(dy, GridSize);
-
-                                    //update collision rect, so that collisions are correctly computed on next run
-                                    _collisionRect.X += dx;
-                                    _collisionRect.Y += dy;
-
-                                    //position change -> update
-                                    StatisticsUpdated?.Invoke(this, new UpdateStatisticsEventArgs(UpdateMode.NoBuildingList));
-                                    //always recompute bounds when moving, as we may be moving an item in from the edge of the layout
-                                    var oldLayoutBounds = _layoutBounds;
-                                    InvalidateBounds();
-                                    if (oldLayoutBounds != _layoutBounds)
-                                    {
-                                        InvalidateScroll();
-                                    }
+                                    InvalidateScroll();
                                 }
-
-                                ForceRendering();
-                                return;
                             }
-                    }
+
+                            ForceRendering();
+                            return;
+                        }
                 }
             }
 
@@ -2387,7 +2418,33 @@ namespace AnnoDesigner
             }
             else if (e.ChangedButton == MouseButton.Left && CurrentObjects.Count != 0)
             {
-                CurrentMode = MouseMode.PlaceObjects;
+                switch (CurrentMode)
+                {
+                    case MouseMode.RectPlaceObjects:
+                        var objectToClone = CurrentObjects[0];
+                        var start = ScreenPointToObjectGridPosition(_mouseDragStart, objectToClone);
+                        var end = ScreenPointToObjectGridPosition(_mousePosition, objectToClone);
+                        var clones = Core.Extensions.IEnumerableExtensions.GeneratePointsInsideRect(start, end, objectToClone.Size, true)
+                            .Select(point =>
+                            {
+                                var obj = CloneLayoutObject(objectToClone);
+                                obj.Position = point;
+                                return obj;
+                            })
+                            .Where(obj => !ObjectIntersectionExists(PlacedObjects.GetItemsIntersecting(obj.Bounds), obj))
+                            .ToList();
+
+                        UndoManager.RegisterOperation(new AddObjectsOperation<LayoutObject>()
+                        {
+                            Objects = clones,
+                            Collection = PlacedObjects
+                        });
+                        PlacedObjects.AddRange(clones);
+                        StatisticsUpdated?.Invoke(this, UpdateStatisticsEventArgs.All);
+                        ForceRendering();
+                        break;
+                }
+                CurrentMode = MouseMode.Standard;
             }
             else if (e.ChangedButton == MouseButton.Right)
             {
@@ -2427,17 +2484,6 @@ namespace AnnoDesigner
                             CurrentMode = MouseMode.Standard;
                             break;
                         }
-                    case MouseMode.SelectSameIdentifier:
-                        {
-                            CurrentMode = MouseMode.Standard;
-                            break;
-                        }
-                }
-            }
-            else if (e.ChangedButton == MouseButton.Right)
-            {
-                switch (CurrentMode)
-                {
                     case MouseMode.SelectSameIdentifier:
                         {
                             CurrentMode = MouseMode.Standard;
@@ -3106,14 +3152,19 @@ namespace AnnoDesigner
 
         #region Helper methods
 
+        private LayoutObject CloneLayoutObject(LayoutObject obj)
+        {
+            return new LayoutObject(new AnnoObject(obj.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache);
+        }
+
         private List<LayoutObject> CloneLayoutObjects(ICollection<LayoutObject> list)
         {
-            return list.Select(x => new LayoutObject(new AnnoObject(x.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)).ToListWithCapacity(list.Count);
+            return list.Select(CloneLayoutObject).ToListWithCapacity(list.Count);
         }
 
         private List<LayoutObject> CloneLayoutObjects(IEnumerable<LayoutObject> list, int capacity)
         {
-            return list.Select(x => new LayoutObject(new AnnoObject(x.WrappedAnnoObject), _coordinateHelper, _brushCache, _penCache)).ToListWithCapacity(capacity);
+            return list.Select(CloneLayoutObject).ToListWithCapacity(capacity);
         }
 
         private void UpdateScrollBarVisibility()
