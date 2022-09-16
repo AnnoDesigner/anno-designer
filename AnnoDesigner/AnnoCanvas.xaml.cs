@@ -1270,6 +1270,7 @@ namespace AnnoDesigner
 
                 var center = _coordinateHelper.GetCenterPoint(curObject.GridRect);
 
+                var tier = int.Parse(match.Groups["tier"].Value);
                 var level = int.Parse(match.Groups["level"].Value);
                 var radiusSquared = curObject.WrappedAnnoObject.Radius * curObject.WrappedAnnoObject.Radius;
                 var panorama = level;
@@ -1287,8 +1288,18 @@ namespace AnnoDesigner
                     {
                         if (_regex_panorama.TryMatch(adjacentObject.Identifier, out var match2))
                         {
+                            var tier2 = int.Parse(match2.Groups["tier"].Value);
                             var level2 = int.Parse(match2.Groups["level"].Value);
-                            panorama += level > level2 ? 1 : -1;
+                            if (tier != tier2)
+                            {
+                                // same levels increase panorama if different tiers
+                                panorama += level >= level2 ? 1 : -1;
+                            }
+                            else
+                            {
+                                // only lower levels increase panorama for same tiers
+                                panorama += level > level2 ? 1 : -1;
+                            }
                         }
                     }
                 }
