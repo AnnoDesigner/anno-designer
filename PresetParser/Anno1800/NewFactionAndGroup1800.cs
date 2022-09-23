@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Extensions;
+using PresetParser.Extensions;
 
 namespace PresetParser.Anno1800
 {
@@ -34,7 +35,7 @@ namespace PresetParser.Anno1800
         private static readonly List<string> ChangeBuildingsToNW1_Public_1800 = new List<string> { "Institution_colony01_02 (Fire Department)", "Institution_colony01_01 (Police)", "Service_colony01_01 (Marketplace)", "Service_colony01_02 (Chapel)" };
         private static readonly List<string> ChangeBuildingsToNW2_Public_1800 = new List<string> { "Institution_colony01_03 (Hospital)", "Service_colony01_03 (Boxing Arena)" };
         private static readonly List<string> ChangeBuildingsToAT1_Public_1800 = new List<string> { "Service_arctic_01 (Canteen)", "Institution_arctic_01 (Ranger Station)" };
-        private static readonly List<string> ChangeBuildingsToAT2_Public_1800 = new List<string> { "Service_arctic_02 (Post Office)" };
+        private static readonly List<string> ChangeBuildingsToAT2_Public_1800 = new List<string> { "Service_arctic_02 (Post Office)"};
         private static readonly List<string> ChangeBuildingsToAF1_Public_1800 = new List<string> { "Service_colony02_01 (Bazaar)", "Service_colony02_02 (Music Plaza)", "Institution_colony02_01 (Fire Station)" };
         private static readonly List<string> ChangeBuildingsToAF2_Public_1800 = new List<string> { "Institution_colony02_02 (Police)", "Institution_colony02_03 (Hospital)", "Service_colony02_03 (Monastery)" };
 
@@ -91,57 +92,57 @@ namespace PresetParser.Anno1800
             }
 
             //public buildings
-            //if (identifierName.IsPartOf(ChangeBuildingsToAW_Public_1800)) { factionName = "All Worlds"; groupName = "Public Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW1_Public_1800)) { factionName = "(01) Farmers"; groupName = "Public Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW2_Public_1800)) { factionName = "(02) Workers"; groupName = "Public Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW3_Public_1800)) { factionName = "(03) Artisans"; groupName = "Public Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW4_Public_1800)) { factionName = "(04) Engineers"; groupName = "Public Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW5_Public_1800)) { factionName = "(05) Investors"; groupName = "Public Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW6_Public_1800)) { factionName = "(13) Scholars"; groupName = "Public Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToNW1_Public_1800)) { factionName = "(07) Jornaleros"; groupName = "Public Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToNW2_Public_1800)) { factionName = "(08) Obreros"; groupName = "Public Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAT1_Public_1800)) { factionName = "(10) Explorers"; groupName = "Public Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAT2_Public_1800)) { factionName = "(11) Technicians"; groupName = "Public Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAF1_Public_1800)) { factionName = "(14) Shepherds"; groupName = "Public Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAF2_Public_1800)) { factionName = "(15) Elders"; groupName = "Public Buildings"; }
+            //if (identifierName.IsMatch(ChangeBuildingsToAW_Public_1800)) { factionName = "All Worlds"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW1_Public_1800)) { factionName = "(01) Farmers"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW2_Public_1800)) { factionName = "(02) Workers"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW3_Public_1800)) { factionName = "(03) Artisans"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW4_Public_1800)) { factionName = "(04) Engineers"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW5_Public_1800)) { factionName = "(05) Investors"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW6_Public_1800)) { factionName = "(13) Scholars"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToNW1_Public_1800)) { factionName = "(07) Jornaleros"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToNW2_Public_1800)) { factionName = "(08) Obreros"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAT1_Public_1800)) { factionName = "(10) Explorers"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAT2_Public_1800)) { factionName = "(11) Technicians"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAF1_Public_1800)) { factionName = "(14) Shepherds"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAF2_Public_1800)) { factionName = "(15) Elders"; groupName = "Public Buildings"; }
 
             //Production buildings
-            //if (identifierName.IsPartOf(ChangeBuildingsToAW_Productions_1800)) { factionName = "All Worlds"; groupName = "Public Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW1_Productions_1800)) { factionName = "(01) Farmers"; groupName = "Production Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW2_Productions_1800)) { factionName = "(02) Workers"; groupName = "Production Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW3_Productions_1800)) { factionName = "(03) Artisans"; groupName = "Production Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW4_Productions_1800)) { factionName = "(04) Engineers"; groupName = "Production Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW5_Productions_1800)) { factionName = "(05) Investors"; groupName = "Production Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW6_Productions_1800)) { factionName = "(13) Scholars"; groupName = "Production Buildings"; } 
-            if (identifierName.IsPartOf(ChangeBuildingsToNW1_Productions_1800)) { factionName = "(07) Jornaleros"; groupName = "Production Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToNW2_Productions_1800)) { factionName = "(08) Obreros"; groupName = "Production Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAT1_Productions_1800)) { factionName = "(10) Explorers"; groupName = "Production Buildings"; templateName = "FactoryBuilding7"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAT2_Productions_1800)) { factionName = "(11) Technicians"; groupName = "Production Buildings"; templateName = "FactoryBuilding7"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAF1_Productions_1800)) { factionName = "(14) Shepherds"; groupName = "Production Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAF2_Productions_1800)) { factionName = "(15) Elders"; groupName = "Production Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToTou_Productions_1800)) { factionName = "(17) Tourists"; groupName = "Production Buildings"; }
+            //if (identifierName.IsMatch(ChangeBuildingsToAW_Productions_1800)) { factionName = "All Worlds"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW1_Productions_1800)) { factionName = "(01) Farmers"; groupName = "Production Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW2_Productions_1800)) { factionName = "(02) Workers"; groupName = "Production Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW3_Productions_1800)) { factionName = "(03) Artisans"; groupName = "Production Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW4_Productions_1800)) { factionName = "(04) Engineers"; groupName = "Production Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW5_Productions_1800)) { factionName = "(05) Investors"; groupName = "Production Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW6_Productions_1800)) { factionName = "(13) Scholars"; groupName = "Production Buildings"; } 
+            if (identifierName.IsMatch(ChangeBuildingsToNW1_Productions_1800)) { factionName = "(07) Jornaleros"; groupName = "Production Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToNW2_Productions_1800)) { factionName = "(08) Obreros"; groupName = "Production Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAT1_Productions_1800)) { factionName = "(10) Explorers"; groupName = "Production Buildings"; templateName = "FactoryBuilding7"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAT2_Productions_1800)) { factionName = "(11) Technicians"; groupName = "Production Buildings"; templateName = "FactoryBuilding7"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAF1_Productions_1800)) { factionName = "(14) Shepherds"; groupName = "Production Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAF2_Productions_1800)) { factionName = "(15) Elders"; groupName = "Production Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToTou_Productions_1800)) { factionName = "(17) Tourists"; groupName = "Production Buildings"; }
 
             //Farm buildings
-            //if (identifierName.IsPartOf(ChangeBuildingsToAW_FarmBuilding_1800)) { factionName = "All Worlds"; groupName = "Farm Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW1_FarmBuilding_1800)) { factionName = "(01) Farmers"; groupName = "Farm Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW2_FarmBuilding_1800)) { factionName = "(02) Workers"; groupName = "Farm Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW3_FarmBuilding_1800)) { factionName = "(03) Artisans"; groupName = "Farm Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToOW5_FarmBuilding_1800)) { factionName = "(05) Investors"; groupName = "Farm Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToNW1_FarmBuilding_1800)) { factionName = "(07) Jornaleros"; groupName = "Farm Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToNW2_FarmBuilding_1800)) { factionName = "(08) Obreros"; groupName = "Farm Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAT1_FarmBuilding_1800)) { factionName = "(10) Explorers"; groupName = "Farm Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAT2_FarmBuilding_1800)) { factionName = "(11) Technicians"; groupName = "Farm Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAF1_FarmBuilding_1800)) { factionName = "(14) Shepherds"; groupName = "Farm Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAF2_FarmBuilding_1800)) { factionName = "(15) Elders"; groupName = "Farm Buildings"; }
+            //if (identifierName.IsMatch(ChangeBuildingsToAW_FarmBuilding_1800)) { factionName = "All Worlds"; groupName = "Farm Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW1_FarmBuilding_1800)) { factionName = "(01) Farmers"; groupName = "Farm Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW2_FarmBuilding_1800)) { factionName = "(02) Workers"; groupName = "Farm Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW3_FarmBuilding_1800)) { factionName = "(03) Artisans"; groupName = "Farm Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToOW5_FarmBuilding_1800)) { factionName = "(05) Investors"; groupName = "Farm Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToNW1_FarmBuilding_1800)) { factionName = "(07) Jornaleros"; groupName = "Farm Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToNW2_FarmBuilding_1800)) { factionName = "(08) Obreros"; groupName = "Farm Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAT1_FarmBuilding_1800)) { factionName = "(10) Explorers"; groupName = "Farm Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAT2_FarmBuilding_1800)) { factionName = "(11) Technicians"; groupName = "Farm Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAF1_FarmBuilding_1800)) { factionName = "(14) Shepherds"; groupName = "Farm Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAF2_FarmBuilding_1800)) { factionName = "(15) Elders"; groupName = "Farm Buildings"; }
 
             //River Buildings (Only Africa DLC 06)
-            //if (identifierName.IsPartOf(ChangeBuildingsToAF1_RiverBuilding_1800)) { factionName = "(14) Shepherds"; groupName = "River Buildings"; }
-            if (identifierName.IsPartOf(ChangeBuildingsToAF2_RiverBuilding_1800)) { factionName = "(15) Elders"; groupName = "River Buildings"; }
+            //if (identifierName.IsMatch(ChangeBuildingsToAF1_RiverBuilding_1800)) { factionName = "(14) Shepherds"; groupName = "River Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAF2_RiverBuilding_1800)) { factionName = "(15) Elders"; groupName = "River Buildings"; }
             
             //Special Buildings
-            if (identifierName.IsPartOf(ChangeBuildingsToAW_SpecialBuilding_1800)) { factionName = "All Worlds"; groupName = "Special Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToAW_SpecialBuilding_1800)) { factionName = "All Worlds"; groupName = "Special Buildings"; }
             //Ornamentals 
-            //if (identifierName.IsPartOf(ChangeBuildingsToAW_Ornamentals_1800)) { factionName = "All Worlds"; }
+            //if (identifierName.IsMatch(ChangeBuildingsToAW_Ornamentals_1800)) { factionName = "All Worlds"; }
 
             return (factionName, groupName, templateName);
         }
