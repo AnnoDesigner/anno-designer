@@ -330,9 +330,12 @@ var copyFilesTask = Task("Copy-Files")
 var zipTask = Task("Compress-Output")
 .IsDependentOn(copyFilesTask)
 .Does(() =>
-{
-    if(configuration.Equals("DEBUG", StringComparison.OrdinalIgnoreCase) || isWorkflowRun)
+{  
+    Information($"{DateTime.Now:hh:mm:ss.ff} start of task");
+    
+    if(configuration.Equals("DEBUG", StringComparison.OrdinalIgnoreCase))// || isWorkflowRun)
     {
+        Information($"{DateTime.Now:hh:mm:ss.ff} return from task");
         return;
     }
 
