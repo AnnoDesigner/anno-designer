@@ -1,0 +1,79 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: CI on push to master
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push events but only for the "master" branch
+  push:
+    branches:
+      - master
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:    
+    runs-on: windows-2022
+    steps:
+      #- name: Dump GitHub context
+      #  run: 'echo "context: ${{ toJson(github) }}"'
+
+      #- name: Dump Run Number
+      #  run: 'echo "run number: ${{ github.run_number }}"'
+
+      #- name: Dump Run Attempt
+      #  run: 'echo "run attempt: ${{ github.run_attempt }}"'
+
+      #- name: Dump event_name
+      #   run: 'echo "event-name: ${{ github.event_name }}"'
+
+      - name: Set short commit hash
+        shell: pwsh
+        run: |
+          $shortSha = "${{ github.sha }}".Substring("","8")
+          echo "SHORT_SHA=$shortSha" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+        
+      - name: Dump SHORT_SHA        
+        run: 'echo "SHORT_SHA: ${{ env.SHORT_SHA }}"'
+
+      - name: Set OUTPUT_FILENAME        
+        run: echo "OUTPUT_FILENAME=CI_${{ env.SHORT_SHA }}_${{ github.run_attempt }}" >> $env:GITHUB_ENV
+
+      - name: Adjust OUTPUT_FILENAME for manual execution
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: echo "OUTPUT_FILENAME=CI_${{ env.SHORT_SHA }}_${{ github.run_number }}_${{ github.run_attempt }}" >> $env:GITHUB_ENV
+        
+      - name: Dump OUTPUT_FILENAME
+        run: 'echo "OUTPUT_FILENAME: ${{ env.OUTPUT_FILENAME }}"'
+
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      # Add MSBuild to the PATH
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v1.1
+        with:
+          msbuild-architecture: x64
+
+      - name: Build with cake script
+        shell: pwsh
+        run: .\build\build.ps1 --configuration Release --msbuildVersion=10 --useBinaryLog=false --isWorkflowRun=true
+
+      - name: Publish app
+        uses: actions/upload-artifact@v3
+        with:
+          name: AnnoDesigner_${{ env.OUTPUT_FILENAME }}
+          path: build/out/*.zip
+
+      - name: Publish coverage reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage_${{ env.OUTPUT_FILENAME }}
+          path: build/reports
+
+      - name: Publish logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: logFiles_${{ env.OUTPUT_FILENAME }}
+          path: build/logs
+        # Use always() to always run this step to publish logs when there are failures
+        if: ${{ always() }}
