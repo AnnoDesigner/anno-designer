@@ -123,3 +123,6 @@ csharp_new_line_before_catch = true
 csharp_new_line_before_finally = true
 csharp_new_line_before_members_in_object_initializers = true
 csharp_new_line_before_members_in_anonymous_types = true
+
+# CS1570: XML comment has badly formed XML
+dotnet_diagnostic.CS1570.severity = warning

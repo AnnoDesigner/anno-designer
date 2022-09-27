@@ -1858,9 +1858,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Add the objects to SelectedObjects, optionally also add all objects which match one of their identifiers.
         /// </summary>
-        /// <param name="includeSameObjects"> 
-        /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToAdd">.
-        /// </param>
+        /// <param name="includeSameObjects">If <see langword="true"/> then apply to objects whose identifier matches one of those in <paramref name="objectsToAdd"/>.</param>        
         private void AddSelectedObjects(IEnumerable<LayoutObject> objectsToAdd, bool includeSameObjects)
         {
             if (includeSameObjects)
@@ -1877,9 +1875,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Remove the objects from SelectedObjects, optionally also remove all objects which match one of their identifiers.
         /// </summary>
-        /// <param name="includeSameObjects"> 
-        /// If <see langword="true"> then apply to objects whose identifier matches one of those in <see cref="objectsToRemove">.
-        /// </param>
+        /// <param name="includeSameObjects">If <see langword="true"/> then apply to objects whose identifier matches one of those in <paramref name="objectsToRemove"/>.</param>
         private void RemoveSelectedObjects(IEnumerable<LayoutObject> objectsToRemove, bool includeSameObjects)
         {
             if (includeSameObjects)
@@ -1904,9 +1900,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Add a single object to SelectedObjects, optionally also add all objects with the same identifier.
         /// </summary>
-        /// <param name="includeSameObjects"> 
-        /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToAdd">.
-        /// </param>
+        /// <param name="includeSameObjects">If <see langword="true"/> then apply to objects whose identifier match that of <paramref name="objectToAdd"/>.</param>
         private void AddSelectedObject(LayoutObject objectToAdd, bool includeSameObjects = false)
         {
             AddSelectedObjects(new List<LayoutObject>() { objectToAdd }, includeSameObjects);
@@ -1915,9 +1909,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Remove a single object from SelectedObjects, optionally also remove all objects with the same identifier.
         /// </summary>
-        /// <param name="includeSameObjects"> 
-        /// If <see langword="true"> then apply to objects whose identifier match that of <see cref="objectToRemove">.
-        /// </param>
+        /// <param name="includeSameObjects">If <see langword="true"/> then apply to objects whose identifier match that of <paramref name="objectToRemove"/>.</param>
         private void RemoveSelectedObject(LayoutObject objectToRemove, bool includeSameObjects = false)
         {
             RemoveSelectedObjects(new List<LayoutObject>() { objectToRemove }, includeSameObjects);
@@ -2553,7 +2545,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Checks whether the user is pressing the control key.
         /// </summary>
-        /// <returns><see langword="true"> if the control key is pressed, otherwise <see langword="false">.</returns>
+        /// <returns><see langword="true"/> if the control key is pressed, otherwise <see langword="false"/>.</returns>
         private static bool IsControlPressed()
         {
             return (Keyboard.Modifiers & ModifierKeys.Control) != 0;
@@ -2562,7 +2554,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Checks whether the user is pressing the shift key.
         /// </summary>
-        /// <returns><see langword="true"> if the shift key is pressed, otherwise <see langword="false">.</returns>
+        /// <returns><see langword="true"/> if the shift key is pressed, otherwise <see langword="false"/>.</returns>
         private static bool IsShiftPressed()
         {
             return (Keyboard.Modifiers & ModifierKeys.Shift) != 0;
@@ -2571,7 +2563,7 @@ namespace AnnoDesigner
         /// <summary>
         /// Checks whether actions should affect all objects with the same identifier.
         /// </summary>
-        /// <returns><see langword="true"> if all objects with same identifier should be affected, otherwise <see langword="false">.</returns>
+        /// <returns><see langword="true"/> if all objects with same identifier should be affected, otherwise <see langword="false"/>.</returns>
         private bool ShouldAffectObjectsWithIdentifier()
         {
             return IsShiftPressed() && IsControlPressed();
