@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace PresetParser
         public static bool isExcludedGUID = false; /*only for Anno 1800 */
 
         private static Dictionary<string, Dictionary<string, PathRef[]>> VersionSpecificPaths { get; set; }
-        private const string BUILDING_PRESETS_VERSION = "5.0";
+        private const string BUILDING_PRESETS_VERSION = "5.1";
         // Initializing Language Directory's and Filenames
         private static readonly string[] Languages = new[] { "eng", "ger", "fra", "pol", "rus", "esp" };
         private static readonly string[] LanguagesFiles2205 = new[] { "english", "german", "french", "polish", "russian", "spanish" };
@@ -113,11 +114,15 @@ namespace PresetParser
             "SlotFactoryBuilding7", "Farmfield", "OilPumpBuilding", "PublicServiceBuilding", "CityInstitutionBuilding", "CultureBuilding", "Market", "Warehouse", "PowerplantBuilding", "HarborOffice", "HarborWarehouse7",
             "HarborDepot","Shipyard","HarborBuildingAttacker", "RepairCrane", "HarborLandingStage7", "VisitorPier", "WorkforceConnector", "Guildhouse", "OrnamentalBuilding", "CultureModule","Palace","BuffFactory",
             "BuildPermitBuilding", "BuildPermitModules", "OrnamentalModule", "IrrigationPropagationSource", "ResearchCenter", "Dockland", "HarborOrnament", "Restaurant", "Busstop","Multifactory", "FreeAreaRecipeBuilding",
-            "Mall", "CultureModule", "Hacienda", "Heater_Arctic", "Monument", "HarborWarehouseStrategic", "WorkAreaRiverBuilding", "Slot", "WorkAreaSlot", "AdditionalModule", "RecipeFarm", "ItemWithUICrafting" };
+            "Mall", "CultureModule", "Hacienda", "Heater_Arctic", "Monument", "HarborWarehouseStrategic", "WorkAreaRiverBuilding", "Slot", "WorkAreaSlot", "AdditionalModule", "RecipeFarm", "ItemWithUICrafting",
+            "PostBoxBuildingWithDepot", "PostBoxBuildingWithPublicService", "AirshipPlatform", "AirshipPlatformModuleItemTransfer", "AirshipPlatformPostModule", "AirshipPlatformModuleWorkforceTransfer",
+            "AirshipPostFreeModule"
+        };
         private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358", "1010462",
             "1010463", "1010464", "1010275", "1010271", "1010516", "1010517", "1010519", "1000155", "101623", "1003272", "118218", "100849", "1010186", "100438", "114435", "1010371", "100516", "100517", "102449", "100783",
             "100519", "100429", "100510", "100511", "119259", "101404", "1010311", "100415", "100586", "1010540", "100515", "100784", "1010525", "101403", "100416", "1010283", "1010520", "1010310", "1010522", "1010523",
-            "101263", "24657", "24658", "24652", "101280", "1010321", "1010304", "1010309", "1010308", "1010305", "1010500", "1010501", "1010504", "1010505", "1010277", "1010542", "1010546", "1010543", "101272", "100514"};
+            "101263", "24657", "24658", "24652", "101280", "1010321", "1010304", "1010309", "1010308", "1010305", "1010500", "1010501", "1010504", "1010505", "1010277", "1010542", "1010546", "1010543", "101272", "100514",
+            "742", "962"};
         // The following GUID's are given in the assets as <BaseAssetGUID> tags instead of Template name tags
         private static readonly List<string> ExcludeBuildingsGUID1800 = new List<string> { "269850", "269851", "25175", "25176" };
         private static readonly List<string> ExcludeNameList1800 = new List<string> { "TreePlanter_GGJ_TEST", "(Wood Field)", "(Hunting Grounds)", "(Wash House)", "Fake Ornament [test 2nd party]", "Third_party_", "CQO_",
@@ -139,7 +144,7 @@ namespace PresetParser
             "NewspaperScene", "ValueAssetMap", "RightClickMenu", "ItemFilter", "KeywordFilter", "ItemKeywords", "StaticHelpConfig", "PlayerLogo", "Icon", "TargetGroup", "Portrait", "Seamine", "RewardItemPool", "UplayReward", "Island", "CraftingPopup",
             "TreasureMapScene", "Fertility", "Profile_3rdParty", "WorldMap", "MinimapDot", "NewspaperSpecialEditionArticle", "NewspaperImage", "Street", "IrrigationFeature", "ResearchFeature", "RiverslotFeature", "Region", "ResearchCentreScene",
             "TradeContractFeature", "ConstructionCategory", "Skin", "LandSpy", "TownhallItem", "ScenarioInformation", "SeasonFeature", "TownhallBuff", "CameraSequence", "EffectContainer", "HarbourOfficeBuff", "EcoSystemFeature", "EcoSystemBuff", "AssetPool",
-            "ThirdpartyFeedback", "Fish", "IceFloe", "Herd", "Flock", "Slot", "FeedbackVehicle", "FleetDummy", "CampaignUncleMansion", "ItemSpecialAction", "FeedbackBuildingGroup", "UnlockNewsTracker", "ObjectBuildNewsTracker", "OverallSatisfactionNewsTracker",
+            "ThirdpartyFeedback", "Fish", "IceFloe", "Herd", "Flock", "FeedbackVehicle", "FleetDummy", "CampaignUncleMansion", "ItemSpecialAction", "FeedbackBuildingGroup", "UnlockNewsTracker", "ObjectBuildNewsTracker", "OverallSatisfactionNewsTracker",
             "NeedSatisfactionNewsTracker", "IncomeBalanceNewsTracker", "WorkforceNewsTracker", "WorkforceSliderNewsTracker", "IncidentNewsTracker", "ShipBuiltNewsTracker", "MilitaryNewsTracker", "DiplomacyNewsTracker", "CityAttractivenessNewsTracker",
             "HostileTakeoverNewsTracker", "PlacementScore", "ScenarioSelectionMarker", "VehicleBuff", "ShipSpecialist", "VehicleItem", "FluffItem", "ItemSet", "SwitchChoice", "StateChoice", "StaticHelpTopic", "DivingBellObject", "VisualBuilding_NoLogic",
             "FeedbackObject", "UnlockableAsset", "ResearchSubcategory", "ProgressBalancing", "NeedsSatisfactionNews", "ObjectmenuPierScene", "AirShip", "RecipeList", "Recipe", "MovingMobPicturePuzzle", "FeedbackUnitClass", "TrafficFeedbackUnit", "SinglePlayerGame",
@@ -149,7 +154,7 @@ namespace PresetParser
             "117108", "100439", "100440", "1010361", "102229", "102383", "102892", "102483", "102450", "102666", "102448", "100442", "1010062", "100441", "118718", "100437", "100443", "101432", "102428", "102425", "101965", "1010158", "102631", "102635", "102638", "102641",
             "102644", "102371", "102588", "142613", "2001096", "142615", "142873", "141027", "141079", "142792", "141013", "141010", "141076", "141082", "141084", "141189", "803895", "501757", "501941", "112551", "113695", "113964", "113965", "113784", "113785", "113786",
             "113787", "113788", "113789", "1010035", "1000178", "2001019", "142467", "102344", "667", "25000035", "501516", "15000005", "15000006", "15000000", "130097", "130101", "130103", "130096", "130100", "190865", "190872", "21389", "118745", "668", "137943", "689",
-            "764", "138793", "139107", "140037", "140043", "101293", "101294", "101295", "101290", "101291", "101292", "101254", "101255", "130237", "130236", "130238", "130239", "130291", "130240", "130241", "130242", "130243", "130244", "130246", "130248", "22395", "22374",
+            "764", "963", "138793", "139107", "140037", "140043", "101293", "101294", "101295", "101290", "101291", "101292", "101254", "101255", "130237", "130236", "130238", "130239", "130291", "130240", "130241", "130242", "130243", "130244", "130246", "130248", "22395", "22374",
             "270008", "269865", "24187", "24024", "24027", "24028", "24029", "24056", "24057", "24058", "24059", "949", "680", "685", "686", "24030", "24350", "139859", "24053", "24048", "24034", "24012", "24014", "24016", "24018", "24033", "24036", "24019", "24023", "24043",
             "24044", "24054", "24164", "24114", "24151", "24153", "24154", "24155", "24159", "24160", "24162", "24163", "24087", "24086", "24061", "24064", "24065", "24068", "24078", "24079", "24081", "24082", "24100", "24107", "24108", "24109", "24113", "24195", "24196",
             "24197", "24201", "24199", "24198", "24179", "24191", "24192", "24248", "24286", "141486", "142412", "142413", "140786", "140787", "140789", "140790", "140794", "500005", "500017", "25000193", "25000194", "501007", "500904", "500908", "500910", "500913", "500912",
@@ -160,7 +165,16 @@ namespace PresetParser
             "118227", "118228", "118952", "118953", "80022", "80027", "102443", "101327", "1003240", "1003250", "1000071", "1003231", "1001799", "1001792", "1001789", "80110", "502085", "502083", "502084", "502082", "502081", "502080", "502078", "130245", "2320", "19534",
             "118236", "117659", "117660", "117661", "117662", "114331", "24794", "24798", "25003", "25019", "25020", "24795", "24800", "24801", "25064", "25350", "25508", "24802", "24806", "25330", "101303", "1010318", "1010317", "101296", "1010330", "1010331", "101311",
             "101339", "102460", "102459", "1010335", "1010336", "1010337", "100524", "1010549", "1010507", "1010270", "1010273", "501008", "502075", "502038", "502044", "125295", "24828", "24829", "100009", "100722", "1010233", "1010192", "1010195", "1010250", "1010196",
-            "1010216", "1010214", "1010258", "1010251", "1010252", "1010255", "1010256", "1010239", "1010259", "114452", "114448", "114441", "114495", "114490", "24825", "24836", "24820", "24844", "24845", "24856", "24857", "24860", "24861", "25547", "25548", "25549"
+            "1010216", "1010214", "1010258", "1010251", "1010252", "1010255", "1010256", "1010239", "1010259", "114452", "114448", "114441", "114495", "114490", "24825", "24836", "24820", "24844", "24845", "24856", "24857", "24860", "24861", "25547", "25548", "25549",
+            "EffectExclusiveTag", "DropGoodPopup", "ItemSearchConfig", "180023", "1049", "849", "140985", "1060", "720", "102430", "102429", "962", "ProductList", "501996", "501995", "502017", "502021", "502050", "501422", "501423", "501424", "2006", "2005", "2013", "2014",
+            "1379", "1797", "1798", "130260", "130247", "130261", "502034", "502027", "502067", "1000029", "192484", "192483", "192482", "191788", "191789", "191790", "191750", "191751", "191752", "191753", "191754", "191755", "190675", "190676", "191006", "190269", "191008",
+            "191007", "191009", "191010", "191572", "192468", "192450", "190693", "190724", "190722", "190723", "190410", "190725", "190653", "190656", "191312", "191313", "190760", "190757", "190759", "191463", "191581", "191582", "191387", "191466", "190818", "190819",
+            "190820", "192305", "190826", "190824", "190891", "190892", "190893", "190913", "190861", "1945", "4602", "4603", "4616", "4617", "4618", "100817", "1988", "535", "536", "4267",  "2280", "1361", "2279", "2047", "2048", "102931", "103608", "103406", "103414",
+            "103415", "103416", "103417", "103419", "103423", "103425", "103429", "103430", "103610", "103612", "103613", "103614", "103615", "103619", "103620", "103621", "1384", "2226", "2232", "2281", "117302", "117303", "116175", "116173", "116186", "116189", "140788",
+            "140790", "140792", "140795", "142344", "142345", "142346", "142347", "142348", "142349", "24525", "24526", "24527", "24528", "141531", "141532", "141533", "141530", "500907", "502072", "501957", "2287", "2284", "102319", "2038", "4619", "4620", "4621", "4622",
+            "4623", "3761", "3661", "692", "693", "695", "635", "835", "1418", "1308", "1353", "906", "538", "966", "4254", "103643", "103645", "103646", "103647", "103648", "103649", "103650", "103651", "103652", "103653", "114166", "110942", "110943", "110944",
+            "110950", "110948", "110938", "110936", "110937", "111179", "111040", "111039", "111038", "111034", "111033", "111032", "111028", "111027", "111026", "111020", "111019", "111018", "1010218", "1010210", "1654", "1655", "1058", "1059", "112518", "2397", "2400",
+            "ItemTransferFeature", "ScenarioWorkshopItem", "ScenarioWorkshopPackage"
             };
         #endregion
 
@@ -423,7 +437,14 @@ namespace PresetParser
                     new PathRef("data/dlc10/scenario02/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/dlc10/scenario02/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/dlc10/scenario02/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
-                    new PathRef("data/dlc10/scenario02/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset")
+                    new PathRef("data/dlc10/scenario02/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    // Scenario 03 Extra / Changed Buildings list
+                    new PathRef("data/dlc11/scenario03/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/dlc11/scenario03/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/dlc11/scenario03/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/dlc11/scenario03/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/dlc11/scenario03/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/dlc11/scenario03/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset")
                 });
             }
             #endregion
@@ -829,13 +850,23 @@ namespace PresetParser
                 }
                 #endregion
 
+                var PPTNFileXPath = "";
                 Console.WriteLine("Parsing buildings...");
                 foreach (PathRef p in assetPathRefs)
                 {
+                    // To know in what assets file is the Missing Template Name
+                    // for the missing TemplateNames file (20-09-2022) 
+                    if (p.Path != PPTNFileXPath)
+                    {
+                        PPTNFile.WriteLine("XPath : " + p.Path + ": ");
+                        PPTNFileXPath = p.Path;
+                    }
                     ParseAssetsFile1800(BASE_PATH + p.Path, p.XPath, buildings);
                 }
+
                 // Add extra buildings to the anno version preset file
                 AddExtraPreset(annoVersion, buildings);
+
                 // Whatever Annoversion is "-ALL" or "1800", add the Extra Roads Bars 
                 if (addRoads)
                 {
@@ -1662,6 +1693,7 @@ namespace PresetParser
             string groupName = "";
             string headerName = "(A7) Anno " + Constants.ANNO_VERSION_1800;
             int guidNumber = 0;
+            var oldColor = Console.ForegroundColor;
 
             #region Get valid Building Information 
 
@@ -1685,13 +1717,21 @@ namespace PresetParser
 
                     if (templateName == null)
                     {
-                        var oldColor = Console.ForegroundColor;
+                        oldColor = Console.ForegroundColor;
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("--> No Template found, Building is skipped");
                         Console.ForegroundColor = oldColor;
                         return;
                     }
 
+                    // to skip template names that are in the PPTNList (internal)
+                    if (templateName.IsMatch(PPTNList))
+                    {
+                        return;
+                    }
+
+                    // If Template name is not in the Include LIsts, then write it to file, so i can search manually in the Assets.xml 
+                    // files to see if building needs to be added into this lists.
                     if (!templateName.Contains(IncludeBuildingsTemplateNames1800) && !templateName.Contains(IncludeBuildingsTemplateGUID1800))
                     {
                         if (!templateName.Contains(PPTNList) && !string.IsNullOrEmpty(templateName))
@@ -1725,7 +1765,7 @@ namespace PresetParser
 
             if (string.IsNullOrEmpty(values["Standard"]?["Name"]?.InnerText))
             {
-                var oldColor = Console.ForegroundColor;
+                oldColor = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("--> Error in Identifier Name : " + guidName + " >> " + templateName + ".");
                 Console.ForegroundColor = oldColor;
@@ -1747,7 +1787,7 @@ namespace PresetParser
             // so i remove this word from the identifierName strings (since Game Update 10) Change made 03-03-2021
             if (identifierName.Contains("DEPRECATED_"))
             {
-                var oldColor = Console.ForegroundColor;
+                oldColor = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 identifierName = identifierName.Replace("DEPRECATED_", "");
                 Console.WriteLine("--> Removed 'DEPRECATED_' to get object still in AD: ");
@@ -1775,7 +1815,7 @@ namespace PresetParser
 
             switch (templateName)
             {
-                case "BuildPermitBuilding": { factionName = "Ornaments"; groupName = "13 World's Fair Rewards"; break; }
+                case "BuildPermitBuilding": if (!identifierName.StartsWith("GG_OldNate")) { factionName = "Ornaments"; groupName = "13 World's Fair Rewards"; } break;
                 case "Farmfield": { groupName = "Farm Fields"; break; }
                 case "SlotFactoryBuilding7": { factionName = "All Worlds"; groupName = "Mining Buildings"; break; }
                 case "Warehouse": { factionName = "(01) Farmers"; groupName = null; break; }
@@ -1807,7 +1847,7 @@ namespace PresetParser
                 case "FarmBuilding_Arctic": { templateName = "FarmBuilding"; break; }
                 case "PalaceModule": { templateName = "PalaceBuilding"; factionName = "(05) Investors"; groupName = "Palace Buildings"; break; }
                 case "PalaceMinistry": { templateName = "PalaceBuilding"; factionName = "All Worlds"; groupName = "Special Buildings"; break; }
-                case "1010517": { templateName = "SkyTradingPost"; factionName = "(11) Technicians"; groupName = "Special Buildings"; break; }
+                case "1010517": { templateName = "SkyTradingPost"; factionName = "(11) Technicians"; groupName = "Public Buildings"; break; }
                 case "FactoryBuilding7_BuildPermit": { factionName = "(13) Scholars"; groupName = "Permitted Buildings"; break; }
                 case "HarborOrnament": { factionName = "Ornaments"; groupName = "22 Docklands Ornaments"; break; }
                 default: { groupName = templateName.FirstCharToUpper(); break; }
@@ -1946,6 +1986,104 @@ namespace PresetParser
                 groupName = "25 Pedestrian Zone";
             }
 
+            // Empire of the Skies (DLC 20-09-2022)
+            if (guidNumber == 835 || guidNumber == 648 || guidNumber == 1345 || guidNumber == 1418)
+            {
+                factionName = "(20) Empire of the Skies";
+                groupName = "Production Buildings";
+                if (guidNumber == 835)
+                {
+                    templateName = "FactoryBuilding7";
+                }
+            }
+            if (guidNumber == 1372 || guidNumber == 1375 || guidNumber == 2399)
+            {
+                factionName = "(20) Empire of the Skies";
+                groupName = "Mining Buildings";
+            }
+            if (identifierName.StartsWith("DLC11 "))
+            {
+                factionName = "(20) Empire of the Skies";
+                groupName = "Ornaments";
+            }
+            // skipp the old Post Offices of the Arctic, and replace with new one
+            if (guidNumber == 112684)
+            {
+                DVDataList[4260] = "4260,A7_post_office.png,Service_arctic_02 (Post Office),112684";
+                oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("---> Building added to Replacement List (DLC11 Replacement): 3327 << " + guidNumber);
+                Console.ForegroundColor = oldColor;
+                return;
+            }
+            if (guidNumber == 2654)
+            { 
+                DVDataList[2654] = "2654,A7_airship_platform_southamerica.png,airship landing platform colony01,963";
+                oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("---> Building added to Replacement List (Just adding right GUID): 2654 << 963 ");
+                Console.ForegroundColor = oldColor;
+                identifierName = "airship landing platform colony01";
+                templateName = "AirshipPlatform";
+            }
+
+            // Put the Free Module Airmail Sorting Office (for old Platforms DLC03) in replacement file
+            // Skipp this one and point this to the right module that is for the New Platforms (DLC11)
+            if (guidNumber == 4513)
+            {
+                DVDataList[4259] = "4259,A7_airship_platform_post.png,Platform module post Passage,4513";
+                oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("---> Building added to Replacement List (DLC11 Replacement): 4259 << " + guidNumber);
+                Console.ForegroundColor = oldColor;
+                return;
+            }
+
+            // move the new post office, post boxes and Airship Platforms to the right menu's
+            if (guidNumber == 4260)
+            {
+                factionName = "(11) Technicians";
+                groupName = "Public Buildings";
+                identifierName = "Service_arctic_02 (Post Office)";
+            }
+            if (guidNumber == 538 || guidNumber == 962 || guidNumber == 3741)
+            {
+                factionName = "(03) Artisans";
+                groupName = "Public Buildings";
+            }
+            if (guidNumber == 3661 || guidNumber == 3761 || guidNumber == 2654)
+            {
+                factionName = "(08) Obreros";
+                groupName = "Public Buildings";
+            }
+
+            // Move the Airship Platforms to the right menus
+            if (guidNumber == 4259)
+            {
+                factionName = "(11) Technicians";
+                groupName = "Airship Platform Module";
+            }
+            if (guidNumber == 966 || guidNumber == 964)
+            {
+                factionName = "(03) Artisans";
+                groupName = "Airship Platform Module";
+            }
+            if (guidNumber == 967 || guidNumber == 2274 || guidNumber == 2276)
+            {
+                factionName = "(08) Obreros";
+                groupName = "Airship Platform Module";
+            }
+
+            // Move DLC11 Multi-factories on the right Menu's
+            if (identifierName.StartsWith("Multifactory_Magazin(DropGoods)_Moderate_"))
+            {
+                factionName = "(03) Artisans";
+            }
+            if (identifierName.StartsWith("Multifactory_Magazin(DropGoods)_SA"))
+            {
+                factionName = "(08) Obreros";
+            }
+
             //Scenario 1 : Eden Burning Ornamentals/Buildings 
             if (identifierName.StartsWith("GGJ_2x2_") || identifierName.StartsWith("Eoy21_Charity"))
             {
@@ -1953,7 +2091,7 @@ namespace PresetParser
                 groupName = "Ornaments";
                 templateName = "Scenario1";
             }
-            if (guidNumber > 769 && guidNumber < 951 || guidNumber == 686)
+            if (((guidNumber > 769 && guidNumber < 951) && guidNumber!=835 && !identifierName.StartsWith("Multifactory_Magazin(DropGoods)_")) || guidNumber == 686)
             {
                 factionName = "(30) Scenario 1: Eden Burning";
                 switch (templateName)
@@ -1987,6 +2125,13 @@ namespace PresetParser
                 groupName = null;
             }
 
+            //Scenario 3: Clash of the Curiers
+            if (identifierName.Contains("scenario03") || identifierName.Contains("Scenario03"))
+            { 
+                factionName = "(32) Scenario 3: Clash of the Curiers";
+                groupName = null;
+            }
+
             //Set all Industrial Zone-pack CLDC (08) in the right menu
             if (identifierName.StartsWith("CDLC08"))
             {
@@ -1994,6 +2139,12 @@ namespace PresetParser
                 groupName = "27 Industrial Zone";
             }
 
+            //The Grand Gallery earning System Ornamentals and other things (GU15 - 20-09-2022)
+            if (identifierName.StartsWith("GG_OldNate_"))
+            {
+                factionName = "Ornaments";
+                groupName = "28 Grand Gallery";
+            }
 
             // Place the rest of the buildings in the right Faction > Group menu
             #region Order the Buildings to the right tiers and factions as in the game
@@ -2212,7 +2363,7 @@ namespace PresetParser
                 }
                 else
                 {
-                    var oldColor = Console.ForegroundColor;
+                    oldColor = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("- BuildBlocker not found, skipping: Missing Object File (B)");
                     Console.ForegroundColor = oldColor;
@@ -2221,7 +2372,7 @@ namespace PresetParser
             }
             else
             {
-                var oldColor = Console.ForegroundColor;
+                oldColor = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("- BuildBlocker not found, skipping: Object Information not found (A)");
                 Console.ForegroundColor = oldColor;
@@ -2303,6 +2454,11 @@ namespace PresetParser
                     case "Coastal_colony02_01 (Salt Coast Building)": icon = replaceName + "salt_africa.png"; break;
                     case "Random slot mining": { icon = replaceName + "mineral_desposits.png"; break; }
                     case "Random slot oil pump": { icon = replaceName + "oil.png"; break; }
+                    case "Season4 random mining slot colony01": { icon = replaceName + "mineral_desposits.png"; break; }
+                }
+                switch (b.Guid)
+                {
+                    case 4258: { icon = replaceName + "airship_landing_plattform.png"; break; }
                 }
 
                 //Place all (24) Seasonal Decorations Pack CDLC in the right menu (on IconFileName)
@@ -2318,7 +2474,7 @@ namespace PresetParser
             {
                 b.IconFileName = null;
 
-                //Buildings that came in with the BaseAssetGUID template has no icons or just have no icon, this will fix that;
+                //Buildings that came in with the BaseAssetGUID template has no icons or just have no icon, this will fix/set that;
                 switch (identifierName)
                 {
                     case "Residence_New_World": b.IconFileName = replaceName + "resident.png"; break;
@@ -2343,7 +2499,13 @@ namespace PresetParser
                     case "Factory_colony01_05 (Brick Factory)": { b.IconFileName = replaceName + "bricks.png"; break; }
                     case "Agriculture_colony01_12_field (Palm Tree Field)": { b.IconFileName = replaceName + "coconut_palm_trees.png"; break; }
                 }
-                //Some icons need to be fixed by building GUID's
+                //Some icons need to be set/fixed by TemplateNames
+                switch (b.Template)
+                {
+                    case "WorkAreaSlot": { b.IconFileName = replaceName + "mineral_desposits.png"; break; };
+                }
+
+                //Some icons need to be set/fixed by building GUID's
                 switch (b.Guid)
                 {
                     case 101290: { b.IconFileName = replaceName + "kontor_main.png"; break; }
@@ -2354,10 +2516,11 @@ namespace PresetParser
                     case 24134: { b.IconFileName = replaceName + "fish_ggj_1.png"; break; }
                     case 24658: { b.IconFileName = replaceName + "pigs.png"; break; }
                     case 24136: { b.IconFileName = replaceName + "aqua_well.png"; break; }
+                    case 4260: { b.IconFileName = replaceName + "post_office.png"; break; }
                 }
             }
 
-            #region Check and Change Icons is need for DVDataList
+            #region Check and Change Icons is need or remove objects for the DVDataList
             // Add some iconfilenames to objects that not have any yet on start and not placed yet,
             // that need to be filtered for GUID purpose
             if (b.Faction.StartsWith("Not Placed Yet -"))
@@ -2389,6 +2552,31 @@ namespace PresetParser
                 b.IconFileName = replaceName + "dam_a.png";
             }
 
+            // Put Double DLC11 Ornamentals into DVDatalist Manualy, to avoid Double names there
+            bool DoDLC11_OrnamentRemove = false; 
+            oldColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            if (!string.IsNullOrEmpty(b.IconFileName))
+            {
+                if (b.IconFileName.Contains("_nw.png") && b.Faction == "(20) Empire of the Skies")
+                {
+                    switch (guidNumber)
+                    {
+                        case 3356: { DVDataList[3327] = "3327,A7_airport_cafe_ow.png,DLC11 Cafe Moderate,3356"; Console.WriteLine("---> Building added to Replacement List (DLC11 Ornament): 3327 << 3356"); DoDLC11_OrnamentRemove = true; break; }
+                        case 3357: { DVDataList[3330] = "3330,A7_airport_cafetables_ow.png,DLC11 Cafe Tables Moderate,3357"; Console.WriteLine("---> Building added to Replacement List (DLC11 Ornament): 3330 << 3357"); DoDLC11_OrnamentRemove = true; break; }
+                        case 3358: { DVDataList[3331] = "3331,A7_airport_clock_ow.png,DLC11 Clock Moderate,3358"; Console.WriteLine("---> Building added to Replacement List (DLC11 Ornament): 3331 << 3358"); DoDLC11_OrnamentRemove = true; break; }
+                        case 3360: { DVDataList[3337] = "3337,A7_airport_flag_02_ow.png,DLC11 Flagpole Moderate,3360"; Console.WriteLine("---> Building added to Replacement List (DLC11 Ornament): 3337 << 3360 "); DoDLC11_OrnamentRemove = true; break; }
+                        case 3361: { DVDataList[3338] = "3338,A7_airport_seats_ow.png,DLC11 Benches Small Moderate,3361"; Console.WriteLine("---> Building added to Replacement List (DLC11 Ornament): 3338 << 3361"); DoDLC11_OrnamentRemove = true; break; }
+                        case 3362: { DVDataList[3339] = "3339,A7_airport_seats_large_ow.png,DLC11 Benches Large Moderate,3362"; Console.WriteLine("---> Building added to Replacement List (DLC11 Ornament): 3339 << 3362"); DoDLC11_OrnamentRemove = true; break; }
+                        case 3363: { DVDataList[3340] = "3340,A7_airport_sign_ow.png,DLC11 Sign Moderate,3363"; Console.WriteLine("---> Building added to Replacement List (DLC11 Ornament): 3340 << 3363"); DoDLC11_OrnamentRemove = true; break; }
+                        case 3368: { DVDataList[3341] = "3341,A7_airport_arrivals_ow.png,DLC11 Gate Moderate,3368"; Console.WriteLine("---> Building added to Replacement List (DLC11 Ornament): 3341 << 3368"); DoDLC11_OrnamentRemove = true; break; }
+                    }
+                }
+            }
+            Console.ForegroundColor = oldColor;
+            if (DoDLC11_OrnamentRemove == true) { return; }
+
+
             string isExcludedGuidStr = Convert.ToString(b.Guid);
             //Those Identifier changes will not harm any users, as they where never in the presets before....
             //This will be done directly to the building info structure (b)
@@ -2409,7 +2597,7 @@ namespace PresetParser
                 // The following is for DuxVitae Convert tool, so he knows what GUID's are excluded, and what GUID he
                 // must use to get the right AD Object into his converted ad file.
                 // This will also prevent Double Identifier Objects
-                var oldColor = Console.ForegroundColor;
+                oldColor = Console.ForegroundColor;
                 foreach (string DVData in DVDataList)
                 {
                     if (!String.IsNullOrEmpty(DVData))
@@ -2506,6 +2694,11 @@ namespace PresetParser
             {
                 b.InfluenceRange = Convert.ToInt32(values["PublicService"]["FullSatisfactionDistance"].InnerText);
             }
+            else if ((!string.IsNullOrEmpty(values?["BuffFactory"]?["PublicServiceData"]?["FullSatisfactionDistance"]?.InnerText)))
+            {
+                // Fix #407, missing InfluenceRange on Stores/Malls (and maybe some other buildings)
+                b.InfluenceRange = Convert.ToInt32(values["BuffFactory"]["PublicServiceData"]["FullSatisfactionDistance"].InnerText);
+            }
             else
             {
                 switch (identifierName)
@@ -2515,7 +2708,11 @@ namespace PresetParser
                     case "Electricity_02 (Oil Power Plant)": b.InfluenceRange = 35; break;
                 }
             }
-
+            //fix #407, missing InfluenceRange on Stores/Malls_Blank ones (and maybe some other buildings)
+            if (templateName == "Mall" && groupName == "Mall" && identifierName.Contains("_Blank"))
+            {
+                b.InfluenceRange = 44;
+            }
             if (b.Guid == 24136)
             {
                 b.InfluenceRange = 18;
@@ -2543,6 +2740,8 @@ namespace PresetParser
             {
                 buildingGuid = values["Text"]["TextOverride"].InnerText;
             }
+
+            //Manual Override of translations, like on renewed/replaced objects
             if (b.Guid == 24134)
             {
                 buildingGuid = "972";
@@ -2550,6 +2749,10 @@ namespace PresetParser
             if (b.Guid == 24136)
             {
                 buildingGuid = "993";
+            }
+            if (b.Guid == 112726)
+            {
+                buildingGuid = "4258";
             }
 
             //Initialize the dictionary
@@ -2800,7 +3003,7 @@ namespace PresetParser
                     {
                         if (languageCount < 1)
                         {
-                            var oldColor = Console.ForegroundColor;
+                            oldColor = Console.ForegroundColor;
                             Console.ForegroundColor = ConsoleColor.DarkCyan;
                             Console.WriteLine("---> No Translation found, it will set to Identifier.");
                             Console.ForegroundColor = oldColor;
@@ -2847,7 +3050,7 @@ namespace PresetParser
                                     if (Convert.ToInt32(fieldAmountValue) <= 0)
                                     {
                                         // ERROR ? Farm without field amount found
-                                        var oldColor = Console.ForegroundColor;
+                                        oldColor = Console.ForegroundColor;
                                         Console.ForegroundColor = ConsoleColor.DarkRed;
                                         Console.WriteLine("-- > Farm field Skipped, Zero Field counter");
                                         Console.ForegroundColor = oldColor;
@@ -2875,7 +3078,7 @@ namespace PresetParser
             }
             if (string.IsNullOrEmpty(buildingGuid))
             {
-                var oldColor = Console.ForegroundColor;
+                oldColor = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine("---> No GUID Number found, it is set to the Identifier.");
                 Console.ForegroundColor = oldColor;
@@ -2933,7 +3136,7 @@ namespace PresetParser
                     case "A7_defense_tower_pucklegun.png": if (b.Guid != 1010522) { DVDataGUID2 = 1010522; DVDatacounted2 = true; } break;
                     case "A7_defense_tower_cannon.png": if (b.Guid != 1010523) { DVDataGUID2 = 1010523; DVDatacounted2 = true; } break;
                     case "A7_sail_shipyard.png": if (b.Guid != 1010520) { DVDataGUID2 = 1010520; DVDatacounted2 = true; } break;
-
+                    case "A7_airship_hangar_southamerica.png": if(b.Guid != 648) { DVDataGUID2 = 648; DVDatacounted2 = true; } break;
                 }
             }
 
@@ -2959,7 +3162,8 @@ namespace PresetParser
 
             if ((b.Guid != 100455) && (b.Guid != 100454) && (b.Guid != 111104) && (b.Guid != 113452) &&
                 (b.Guid != 112685) && (b.Guid != 132765) && (b.Guid != 118938) && (b.Guid != 1010371) &&
-                (b.Guid != 100783) && (b.Guid != 1010540) && (b.Guid != 100429) && (b.Guid != 686))
+                (b.Guid != 100783) && (b.Guid != 1010540) && (b.Guid != 100429) && (b.Guid != 686) &&
+                (b.Guid != 4260) && (b.Guid != 4258) && (b.Guid!=2654))
             {
                 if (string.IsNullOrEmpty(DVDataList[b.Guid]))
                 {

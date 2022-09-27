@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Extensions;
+using PresetParser.Extensions;
 
 namespace PresetParser.Anno1800
 {
@@ -36,8 +37,8 @@ namespace PresetParser.Anno1800
     public static class NewOrnamentsGroup1800
     {
         //private static readonly List<string> ChangeOrnamentToParkPaths_1800 = new List<string> {  "" };
-        private static readonly List<string> ChangeOrnamentToParkPaths_1800 = new List<string> { "Park_1x1_pathstraight", "Park_1x1_pathend", "Park_1x1_pathangle", "Park_1x1_pathcrossing", "Park_1x1_pathwall" };
-        private static readonly List<string> ChangeOrnamentToParkFences_1800 = new List<string> { "Park_1x1_hedgestraight", "Park_1x1_hedgeend", "Park_1x1_hedgeangle", "Park_1x1_hedgecrossing", "Park_1x1_hedgewall", "Culture_1x1_fencestraight", "Culture_1x1_fenceend",
+        private static readonly List<string> ChangeOrnamentToParkPaths_1800 = new List<string> { "Park_1x1_path", "Park_1x1_pathstraight", "Park_1x1_pathend", "Park_1x1_pathangle", "Park_1x1_pathcrossing", "Park_1x1_pathwall" };
+        private static readonly List<string> ChangeOrnamentToParkFences_1800 = new List<string> { "Park_1x1_hedge", "Park_1x1_hedgestraight", "Park_1x1_hedgeend", "Park_1x1_hedgeangle", "Park_1x1_hedgecrossing", "Park_1x1_hedgewall", "Culture_1x1_fence", "Culture_1x1_fencestraight", "Culture_1x1_fenceend",
             "Culture_1x1_fenceangle", "Culture_1x1_fencecrossing", "Culture_1x1_fencewall", "Park_1x1_hedgegate", "Culture_1x1_fencegate" };
         private static readonly List<string> ChangeOrnamentToParkVegetation_1800 = new List<string> { "Park_1x1_grass", "Park_1x1_bush", "Park_1x1_smalltree", "Park_1x1_pine", "Park_1x1_poplar" , "Park_1x1_bigtree", "Park_1x1_poplarforest", "Park_1x1_tropicalforest",
             "Park_1x1_philodendron", "Park_1x1_ferns", "Park_1x1_floweringshrub", "Park_1x1_smallpalmtree", "Park_1x1_palmtree", "Park_1x1_shrub", "Park_1x1_growncypress"};
@@ -47,7 +48,7 @@ namespace PresetParser.Anno1800
         private static readonly List<string> ChangeOrnamentToCityPaths_1800 = new List<string> { "Palace Ornament02 Set01 hedge pointy", "Palace Ornament01 Set01 banner", "Palace Ornament03 Set01 hedge round", "Palace Ornament05 Set01 fountain big", "Palace Ornament04 Set01 fountain small",
             "Palace Ornament03 Set02 angle", "Palace Ornament04 Set02 crossing", "Palace Ornament02 Set02 end", "Palace Ornament05 Set02 junction", "Palace Ornament01 Set02 straight", "Palace Ornament06 Set02 straight variation",};
         private static readonly List<string> ChangeOrnamentToCityFences_1800 = new List<string> { "Culture_prop_system_1x1_03", "Culture_prop_system_1x1_04", "Culture_prop_system_1x1_05", "Culture_prop_system_1x1_06", "Culture_prop_system_1x1_07", "Culture_prop_system_1x1_08",
-            "Culture_prop_system_1x1_09", "Culture_prop_system_1x1_11", "Culture_prop_system_1x1_12", "Culture_prop_system_1x1_13", "Culture_prop_system_1x1_14", "Culture_1x1_hedgegate", "Culture_1x1_hedgestraight",
+            "Culture_prop_system_1x1_09", "Culture_prop_system_1x1_11", "Culture_prop_system_1x1_12", "Culture_prop_system_1x1_13", "Culture_prop_system_1x1_14","Culture_1x1_hedge", "Culture_1x1_hedgegate", "Culture_1x1_hedgestraight",
             "Park_1x1_fencegate"};
         private static readonly List<string> ChangeOrnamentToCityStatues_1800 = new List<string> { "Park_1x1_statue", "City_prop_system_2x2_03", "Culture_prop_system_1x1_10", "Park_2x2_manstatue", "Culture_1x1_statue" };
         private static readonly List<string> ChangeOrnamentToCityDecorations_1800 = new List<string> { "PropagandaTower Players Version", "PropagandaFlag Players Version", "Botanica Ornament 01", "Botanica Ornament 02", "Botanica Ornament 03", "Culture_1x1_benches", "Culture_1x1_stand",
@@ -67,10 +68,10 @@ namespace PresetParser.Anno1800
             "Orange flower field - plumeria aussi orange", "Red white flower field - red white petunia", "Trees alley", "Sculpted trees", "Yellow flower field - miracle daisy" };
         private static readonly List<string> ChangeOrnamentToAgriculturalOrnaments_1800 = new List<string> { "BH Ornament04 Flatbed Wagon", "BH Ornament05 Scarecrow", "BH Ornament06 LogPile", "BH Ornament07 Outhouse", "BH Ornament08 Signpost", "BH Ornament09 HayBalePile", "BH Ornament10 Swing",
             "BH Ornament23 Clothes Line" };
-        private static readonly List<string> ChangeOrnamentToAgriculturalFences_1800 = new List<string> { "BH Ornament03 Fence Straight", "BH Ornament03 Fence End", "BH Ornament03 Fence Cross", "BH Ornament03 Fence T-Cross", "BH Ornament03 Fence Corner", "BH Ornament03 Fence Gate" };
+        private static readonly List<string> ChangeOrnamentToAgriculturalFences_1800 = new List<string> { "BH Ornament03 Fence", "BH Ornament03 Fence Straight", "BH Ornament03 Fence End", "BH Ornament03 Fence Cross", "BH Ornament03 Fence T-Cross", "BH Ornament03 Fence Corner", "BH Ornament03 Fence Gate" };
         private static readonly List<string> ChangeOrnamentToIndustrialOrnaments_1800 = new List<string> { "BH Ornament24 Empty Groundplane", "BH Ornament11 Pipes", "BH Ornament12 Barrel Pile", "BH Ornament13 WoddenBoxes", "BH Ornament14 Tanks", "BH Ornament15 Water Tower",
             "BH Ornament17 Shed", "BH Ornament18 Pile Iron Bars", "BH Ornament19 Pile Boxes and Barrels", "BH Ornament20 Heap", "BH Ornament21 Large Boxes", "BH Ornament22 Gangway" };
-        private static readonly List<string> ChangeOrnamentToIndustrialFences_1800 = new List<string> { "BH Ornament01 Wall Straight", "BH Ornament01 Wall End", "BH Ornament01 Wall Cross", "BH Ornament01 Wall T-Cross", "BH Ornament01 Wall Corner", "BH Ornament01 Wall Gate",
+        private static readonly List<string> ChangeOrnamentToIndustrialFences_1800 = new List<string> { "BH Ornament01 Wall", "BH Ornament01 Wall Straight", "BH Ornament01 Wall End", "BH Ornament01 Wall Cross", "BH Ornament01 Wall T-Cross", "BH Ornament01 Wall Corner", "BH Ornament01 Wall Gate",
             "BH Ornament01 Wall Gate 02", "BH Ornament02 Wall Straight Large", "BH Ornament02 Wall End Large", "BH Ornament02 Wall Cross Large", "BH Ornament02 Wall T-Cross Large", "BH Ornament02 Wall Corner Large", "BH Ornament02 Wall Gate Large", "BH Ornament02 Wall Large" };
         private static readonly List<string> ChangeOrnamentToAmusementPark_1800 = new List<string> { "AmusementPark FerrisWheel", "AmusementPark RollerCoaster", "AmusementPark PayBooth", "AmusementPark Icecream", "AmusementPark CottonCandy", "AmusementPark TinCanGame", "AmusementPark ShootingGame",
             "AmusementPark Consumable01", "AmusementPark Consumable02", "AmusementPark Strongman", "AmusementPark PictureWall", "AmusementPark OrganPlayer", "AmusementPark BalloonSeller", "AmusementPark Painter", "AmusementPark GateBig", "AmusementPark BarTable", "AmusementPark DrinkStand",
@@ -92,25 +93,25 @@ namespace PresetParser.Anno1800
             }
 
             //New Ornaments Groups
-            if (identifierName.IsPartOf(ChangeOrnamentToParkPaths_1800)) { factionName = "Ornaments"; groupName = "01 Park Paths"; templateName = "OrnamentalBuilding_Park"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToParkFences_1800)) { factionName = "Ornaments"; groupName = "02 Park Fences"; templateName = "OrnamentalBuilding_Park"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToParkVegetation_1800)) { factionName = "Ornaments"; groupName = "03 Park Vegetation"; templateName = "OrnamentalBuilding_Park"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToParkFountains_1800)) { factionName = "Ornaments"; groupName = "04 Park Fountains"; templateName = "OrnamentalBuilding_Park"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToParkStatues_1800)) { factionName = "Ornaments"; groupName = "05 Park Statues"; templateName = "OrnamentalBuilding_Park"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToParkDecorations_1800)) { factionName = "Ornaments"; groupName = "06 Park Decorations"; templateName = "OrnamentalBuilding_Park"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToCityPaths_1800)) { factionName = "Ornaments"; groupName = "07 City Paths"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToCityFences_1800)) { factionName = "Ornaments"; groupName = "08 City Fences"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToCityStatues_1800)) { factionName = "Ornaments"; groupName = "09 City Statues"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToCityDecorations_1800)) { factionName = "Ornaments"; groupName = "10 City Decorations"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToSpecialOrnaments_1800)) { factionName = "Ornaments"; groupName = "11 Special Ornaments"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToChristmasDecorations_1800)) { factionName = "Ornaments"; groupName = "12 Christmas Decorations"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToWFRewards_1800)) { factionName = "Ornaments"; groupName = "13 World's Fair Rewards"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToGardens_1800)) { factionName = "Ornaments"; groupName = "14 Gardens"; templateName = "OrnamentalBuilding_Park"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToAgriculturalOrnaments_1800)) { factionName = "Ornaments"; groupName = "15 Agricultural Ornaments"; templateName = "OrnamentalBuilding_Park"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToAgriculturalFences_1800)) { factionName = "Ornaments"; groupName = "16 Agricultural Fences"; templateName = "OrnamentalBuilding_Park"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToIndustrialOrnaments_1800)) { factionName = "Ornaments"; groupName = "17 Industrial Ornaments"; templateName = "OrnamentalBuilding_Industrial"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToIndustrialFences_1800)) { factionName = "Ornaments"; groupName = "18 IndustrialFences"; templateName = "OrnamentalBuilding_Industrial"; }
-            if (identifierName.IsPartOf(ChangeOrnamentToAmusementPark_1800)) { factionName = "Ornaments"; groupName = "19 Amusement Park"; }
+            if (identifierName.IsMatch(ChangeOrnamentToParkPaths_1800)) { factionName = "Ornaments"; groupName = "01 Park Paths"; templateName = "OrnamentalBuilding_Park"; }
+            if (identifierName.IsMatch(ChangeOrnamentToParkFences_1800)) { factionName = "Ornaments"; groupName = "02 Park Fences"; templateName = "OrnamentalBuilding_Park"; }
+            if (identifierName.IsMatch(ChangeOrnamentToParkVegetation_1800)) { factionName = "Ornaments"; groupName = "03 Park Vegetation"; templateName = "OrnamentalBuilding_Park"; }
+            if (identifierName.IsMatch(ChangeOrnamentToParkFountains_1800)) { factionName = "Ornaments"; groupName = "04 Park Fountains"; templateName = "OrnamentalBuilding_Park"; }
+            if (identifierName.IsMatch(ChangeOrnamentToParkStatues_1800)) { factionName = "Ornaments"; groupName = "05 Park Statues"; templateName = "OrnamentalBuilding_Park"; }
+            if (identifierName.IsMatch(ChangeOrnamentToParkDecorations_1800)) { factionName = "Ornaments"; groupName = "06 Park Decorations"; templateName = "OrnamentalBuilding_Park"; }
+            if (identifierName.IsMatch(ChangeOrnamentToCityPaths_1800)) { factionName = "Ornaments"; groupName = "07 City Paths"; }
+            if (identifierName.IsMatch(ChangeOrnamentToCityFences_1800)) { factionName = "Ornaments"; groupName = "08 City Fences"; }
+            if (identifierName.IsMatch(ChangeOrnamentToCityStatues_1800)) { factionName = "Ornaments"; groupName = "09 City Statues"; }
+            if (identifierName.IsMatch(ChangeOrnamentToCityDecorations_1800)) { factionName = "Ornaments"; groupName = "10 City Decorations"; }
+            if (identifierName.IsMatch(ChangeOrnamentToSpecialOrnaments_1800)) { factionName = "Ornaments"; groupName = "11 Special Ornaments"; }
+            if (identifierName.IsMatch(ChangeOrnamentToChristmasDecorations_1800)) { factionName = "Ornaments"; groupName = "12 Christmas Decorations"; }
+            if (identifierName.IsMatch(ChangeOrnamentToWFRewards_1800)) { factionName = "Ornaments"; groupName = "13 World's Fair Rewards"; }
+            if (identifierName.IsMatch(ChangeOrnamentToGardens_1800)) { factionName = "Ornaments"; groupName = "14 Gardens"; templateName = "OrnamentalBuilding_Park"; }
+            if (identifierName.IsMatch(ChangeOrnamentToAgriculturalOrnaments_1800)) { factionName = "Ornaments"; groupName = "15 Agricultural Ornaments"; templateName = "OrnamentalBuilding_Park"; }
+            if (identifierName.IsMatch(ChangeOrnamentToAgriculturalFences_1800)) { factionName = "Ornaments"; groupName = "16 Agricultural Fences"; templateName = "OrnamentalBuilding_Park"; }
+            if (identifierName.IsMatch(ChangeOrnamentToIndustrialOrnaments_1800)) { factionName = "Ornaments"; groupName = "17 Industrial Ornaments"; templateName = "OrnamentalBuilding_Industrial"; }
+            if (identifierName.IsMatch(ChangeOrnamentToIndustrialFences_1800)) { factionName = "Ornaments"; groupName = "18 IndustrialFences"; templateName = "OrnamentalBuilding_Industrial"; }
+            if (identifierName.IsMatch(ChangeOrnamentToAmusementPark_1800)) { factionName = "Ornaments"; groupName = "19 Amusement Park"; }
             return (factionName, groupName, templateName);
         }
     }
