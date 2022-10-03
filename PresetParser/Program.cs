@@ -821,8 +821,11 @@ namespace PresetParser
                 DVDataList[100783] = "100783,A7_oil_habour_01.png,Harbor_14a (Oil Harbor I)";
                 DVDataList[100429] = "100429,A7_visitor_harbour.png,Harbor_09 (tourism_pier_01)";
                 DVDataList[686] = "686,A7_dam_a.png,GGJDam_01_03";
+                DVDataList[1372] = "1372,A7_bauxit.png,Mining_20_slot (Bauxite Ore Mine),1308";
+                DVDataList[1375] = "1375,A7_helium.png,Mining_21_slot (SA GasWell),1353";
                 PPTNFile.WriteLine("This File is created with the Anno Designer Presets version: " + BUILDING_PRESETS_VERSION);
                 PPTNFile.WriteLine("-----------------------------------------------------------> TSL <-");
+
                 #endregion
 
                 #region Read in Language Files
@@ -1757,6 +1760,13 @@ namespace PresetParser
             }
 
             if (guidNumber == 0)
+            {
+                return;
+            }
+
+            //Skip the 2 following mines, as those are manual added to the DVDataList
+            //1308 = second bauxit mine , 1353 = second helium mine
+            if (guidNumber == 1308 || guidNumber == 1353)
             {
                 return;
             }
@@ -3163,7 +3173,7 @@ namespace PresetParser
             if ((b.Guid != 100455) && (b.Guid != 100454) && (b.Guid != 111104) && (b.Guid != 113452) &&
                 (b.Guid != 112685) && (b.Guid != 132765) && (b.Guid != 118938) && (b.Guid != 1010371) &&
                 (b.Guid != 100783) && (b.Guid != 1010540) && (b.Guid != 100429) && (b.Guid != 686) &&
-                (b.Guid != 4260) && (b.Guid != 4258) && (b.Guid!=2654))
+                (b.Guid != 4260) && (b.Guid != 4258) && (b.Guid!=2654) && (b.Guid != 1372) && (b.Guid != 1375))
             {
                 if (string.IsNullOrEmpty(DVDataList[b.Guid]))
                 {
