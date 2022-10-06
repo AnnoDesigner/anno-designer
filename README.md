@@ -1,4 +1,4 @@
-[![GitHub](https://img.shields.io/github/license/AnnoDesigner/anno-designer)](https://github.com/AnnoDesigner/anno-designer/blob/master/LICENSE) [![version](https://img.shields.io/badge/latest--version-9.4-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4) [![presets version](https://img.shields.io/badge/presets--version-5.0-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4) [![Discord](https://img.shields.io/discord/571011757317947406?label=help%2Fdiscord)](https://discord.gg/JJpHWRB)
+[![GitHub](https://img.shields.io/github/license/AnnoDesigner/anno-designer)](https://github.com/AnnoDesigner/anno-designer/blob/master/LICENSE) [![version](https://img.shields.io/badge/latest--version-9.4-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4) [![presets version](https://img.shields.io/badge/presets--version-5.1-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/Presetsv5.1) [![Discord](https://img.shields.io/discord/571011757317947406?label=help%2Fdiscord)](https://discord.gg/JJpHWRB)
 
 # Anno Designer
 
@@ -10,7 +10,7 @@ This is a fork of the project created by JcBernack - https://github.com/JcBernac
 
 ### [Anno Designer 9.4](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4)
 
-#### [Latest Presets file release](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4)
+#### [Latest Presets file release](https://github.com/AnnoDesigner/anno-designer/releases/tag/Presetsv5.1)
 
 The presets update can also be downloaded automatically by the application.
 
