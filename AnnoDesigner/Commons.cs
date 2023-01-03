@@ -57,6 +57,7 @@ namespace AnnoDesigner
             { "Polski", "pol" },
             { "Русский", "rus" },
             { "Español", "esp" },
+            { "简体中文", "cn" },
             /* We currently do not support these languages */
             //{ "Italiano", "ita" },
             //{ "český", "cze" },
