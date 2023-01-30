@@ -2118,6 +2118,15 @@ namespace PresetParser
                 groupName = "Public Buildings";
                 templateName = "Scenario1";
             }
+            if (guidNumber == 24658)
+            {
+                DVDataList[1010269] = "1010269,A7_pigs.png,Agriculture_08 (Pig Farm),24658";
+                oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("---> Building added to Replacement List (Eoy21 Replacement): 1010269 << " + guidNumber);
+                Console.ForegroundColor = oldColor;
+                return;
+            }
 
             //Scenario 2 : Seasons of Silver Ornamentals/Buildings
             if ((identifierName.Contains("Scenario02")) || (identifierName == "Amoniac Factory") || (identifierName == "Cyanide Pool Module") || (identifierName == "Cyanide Leacher") || (identifierName == "SilverMint") || (identifierName == "SilverSmelter"))
