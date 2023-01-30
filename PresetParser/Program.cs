@@ -2955,6 +2955,18 @@ namespace PresetParser
                                 case 5: { translation = "Fuente de petróleo"; break; }
                             }
                         }
+                        else if (buildingGuid == "1010311")
+                        {
+                            switch (languageCount)
+                            {
+                                case 0: { translation = "Gold Mine"; break; }
+                                case 1: { translation = "Goldmine"; break; }
+                                case 2: { translation = "Mine d'or"; break; }
+                                case 3: { translation = "Kopalnia złota"; break; }
+                                case 4: { translation = "Золотая шахта"; break; }
+                                case 5: { translation = "Mina de oro"; break; }
+                            }
+                        }
                         else if (buildingGuid == "972") //fix translations of the Aquafarm that uses 5 fields
                         {
                             switch (languageCount)
