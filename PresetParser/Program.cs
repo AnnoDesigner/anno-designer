@@ -426,8 +426,9 @@ namespace PresetParser
                     // Scenario 1 Extra / Changed Building Lists
                     new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
-                    new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    /// The order of the next two lines is important to process ModuleOwner (Farm Buildings) before the Modules (Farm Fields)
                     new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     // Scenario 2 Extra / Changed Building Lists
@@ -2096,14 +2097,14 @@ namespace PresetParser
                 factionName = "(30) Scenario 1: Eden Burning";
                 switch (templateName)
                 {
-                    case "HeavyFreeAreaBuilding": groupName = "Production Buildings"; break;
-                    case "HeavyFactoryBuilding": groupName = "Production Buildings"; break;
-                    case "FactoryBuilding7": groupName = "Production Buildings"; break;
-                    case "101272": groupName = "Production Buildings"; break;
-                    case "101280": groupName = "Farm Fields"; break;
-                    case "101263": groupName = "Farm Buildings"; break;
+                    case "HeavyFreeAreaBuilding": groupName = "Production Buildings"; templateName = "Scenario1"; break;
+                    case "HeavyFactoryBuilding": groupName = "Production Buildings"; templateName = "Scenario1"; break;
+                    case "FactoryBuilding7": groupName = "Production Buildings"; templateName = "Scenario1"; break;
+                    case "101272": groupName = "Production Buildings"; templateName = "Scenario1"; break;
+                    case "101280": groupName = "Farm Fields"; templateName = "Farmfield"; break;
+                    case "101263": groupName = "Farm Buildings"; templateName = "FarmBuilding"; break;
+                    default: templateName = "Scenario1"; break;
                 }
-                templateName = "Scenario1";
             }
             if (guidNumber == 24134)
             {
