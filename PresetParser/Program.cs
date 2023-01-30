@@ -2129,7 +2129,7 @@ namespace PresetParser
             }
 
             //Scenario 2 : Seasons of Silver Ornamentals/Buildings
-            if ((identifierName.Contains("Scenario02")) || (identifierName == "Amoniac Factory") || (identifierName == "Cyanide Pool Module") || (identifierName == "Cyanide Leacher") || (identifierName == "SilverMint") || (identifierName == "SilverSmelter"))
+            if ((identifierName.Contains("Scenario02")) || (identifierName == "Amoniac Factory") || (identifierName == "Basin") || (identifierName == "Cyanide Pool Module") || (identifierName == "Cyanide Leacher") || (identifierName == "SilverMint") || (identifierName == "SilverSmelter"))
             {
                 factionName = "(31) Scenario 2: Seasons of Silver";
                 groupName = null;
