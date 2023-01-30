@@ -416,6 +416,8 @@ namespace PresetParser
                 /// only the 'Values' will skip the <template> tag that i still need
                 VersionSpecificPaths[Constants.ANNO_VERSION_1800].Add("assets", new PathRef[]
                 {
+                    // Cosmetic DLC 9/10
+                    new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Assets/Asset"),
                     // Base Game with DLC's
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
@@ -2154,6 +2156,20 @@ namespace PresetParser
             {
                 factionName = "Ornaments";
                 groupName = "28 Grand Gallery";
+            }
+
+            // Old Town-pack CLDC (09)
+            if (identifierName.StartsWith("CDLC09"))
+            {
+                factionName = "Ornaments";
+                groupName = "29 Old Town";
+            }
+
+            // Dragon Garden-pack CLDC (10)
+            if (identifierName.StartsWith("CDLC10"))
+            {
+                factionName = "Ornaments";
+                groupName = "30 Dragon Garden";
             }
 
             // Place the rest of the buildings in the right Faction > Group menu
