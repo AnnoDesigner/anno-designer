@@ -13,7 +13,7 @@ namespace PresetParser.Anno1800
     /// ChangeBuildingTo<1>_<2>_1800 
     /// <1> can be : OW (All Worlds) - OW1 (New World - (1) Farmers) - OW2 (New World - (2) Workers) - OW3 (New World - (3) Artisans)
     ///              OW4 (New World - (4) Engineers  - OW5 (New World - (5) Investors) - OW6 (New World (13) Scholars)  
-    ///              NW1 (Old World - (7) Jornaleros  - NW2 (Old World - (8) Obreros)
+    ///              NW1 (Old World - (7) Jornaleros  - NW2 (Old World - (8) Obreros  - NW3 (Old World - (21) Artista)
     ///              AT1 (Arctic - (10) Explorers)  - AT2 (Arctic - (11) Technicians)
     ///              AF1 (Africa - (14) Shepherds)  - AF2 (Africa - (15) Elders) 
     ///              Tou ((17) Tourists) - HL1 ((18) High Live)
@@ -34,6 +34,7 @@ namespace PresetParser.Anno1800
         private static readonly List<string> ChangeBuildingsToOW6_Public_1800 = new List<string> { "ResearchCenter_01", "Service_moderate_LoL_01 (Radio Station)" };
         private static readonly List<string> ChangeBuildingsToNW1_Public_1800 = new List<string> { "Institution_colony01_02 (Fire Department)", "Institution_colony01_01 (Police)", "Service_colony01_01 (Marketplace)", "Service_colony01_02 (Chapel)" };
         private static readonly List<string> ChangeBuildingsToNW2_Public_1800 = new List<string> { "Institution_colony01_03 (Hospital)", "Service_colony01_03 (Boxing Arena)" };
+        private static readonly List<string> ChangeBuildingsToNW3_Public_1800 = new List<string> { "Colony01 electricity_02 (Oil Power Plant)", "DLC12 Beach", "DLC12 Samba School", "DLC12 Cinema" };
         private static readonly List<string> ChangeBuildingsToAT1_Public_1800 = new List<string> { "Service_arctic_01 (Canteen)", "Institution_arctic_01 (Ranger Station)" };
         private static readonly List<string> ChangeBuildingsToAT2_Public_1800 = new List<string> { "Service_arctic_02 (Post Office)"};
         private static readonly List<string> ChangeBuildingsToAF1_Public_1800 = new List<string> { "Service_colony02_01 (Bazaar)", "Service_colony02_02 (Music Plaza)", "Institution_colony02_01 (Fire Station)" };
@@ -49,6 +50,7 @@ namespace PresetParser.Anno1800
         private static readonly List<string> ChangeBuildingsToOW6_Productions_1800 = new List<string> { "Final_moderate_LoL_01(Leather Shoes)", "Final_moderate_LoL_02 (Suits)", "Final_moderate_LoL_03 (Telephones)", "Final_moderate_LoL_01 (Leather Shoes)" };
         private static readonly List<string> ChangeBuildingsToNW1_Productions_1800 = new List<string> { "Processing_colony01_02 (Poncho Maker)", "Coastal_colony01_01 (Pearls Coast Building)", "Food_colony01_04 (Fried Banana Maker)", "Coastal_colony01_02 (Fish Coast Building)", "Factory_colony01_02 (Sailcloth Factory)", "Factory_colony01_01 (Timber Factory)", "Agriculture_colony01_06 (Timber Yard)", "Factory_colony01_03 (Cotton Cloth Processing)", "Food_colony01_01 (Rum Maker)" };
         private static readonly List<string> ChangeBuildingsToNW2_Productions_1800 = new List<string> { "Food_colony01_02 (Chocolate Maker)", "Workshop_colony01_01 (Cigars Workshop)", "Factory_colony01_07 (Bombin Maker)", "Factory_colony01_06 (Felt Maker)", "Food_colony01_03 (Coffee Maker)", "Food_colony01_05 (Burrito Maker)", "Processing_colony01_01 (Sugar Processing)", "Processing_colony01_03 (Inlay Processing)", "Heavy_colony01_01 (Oil Heavy Industry)", "Heavy_colony01_01_field (Oil Pump)", "Colony01_fuel_station_01 (FuelStation)", "Factory_colony01_05 (Brick Factory)" };
+        private static readonly List<string> ChangeBuildingsToNW3_Productions_1800 = new List<string> { "Coastal_colony01_05 (Calamari Fishery)", "DLC12 food_colony01_08 (NotTequilla)", "DLC12 food_colony01_06 (Jalea Maker)", "DLC12 Colony01 Steelworks", "DLC12 Colony01 Sewing Machine Factory", "DLC12 workshop_colony01_04 (Soccer Ball Maker)", "DLC12 food_colony01_07 (Ice Cream Factory)", "DLC12 Lab Fire Extinguishers", "DLC12 Lab Cuffs", "DLC12 Lab Medicine", "DLC12 workshop_colony01_03 (Perfume Mixer)", "DLC12 Lab Pigments", "DLC12 workshop_colony01_05 (Costume Maker)", "DLC12 Cable Factory", "DLC12 Motor Factory", "DLC12 Ventilator Factory NEW", "Multifactory_SA_Chemical_Film", "DLC12 Scooter Factory" };
         private static readonly List<string> ChangeBuildingsToAT1_Productions_1800 = new List<string> { "Agriculture_arctic_01 (Timber Yard)", "Factory_arctic_01 (Timber Factory)", "Agriculture_arctic_02 (Caribou Hunter)", "Factory_arctic_02 (Sleeping Bags Factory)", "Heavy_arctic_01 (Coal Heavy Industry)", "Coastal_arctic_01 (Whale Coast Building)", "Coastal_arctic_02 (Seal Hunter)", "Factory_arctic_03 (Oil Lamp Factory)", "Food_arctic_01 (Pemmican)" };
         private static readonly List<string> ChangeBuildingsToAT2_Productions_1800 = new List<string> { "Agriculture_arctic_04 (Bear Hunter)", "Factory_arctic_04 (Parka Factory)", "Agriculture_arctic_06 (Normal Fur Hunter)", "Factory_arctic_05 (Sled Frame Factory)", "Factory_arctic_06 (Husky Sled Factory)", "Mining_arctic_01 (Gas Mine)", "Mining_arctic_02 (Gold Mine)", "Mining_arctic_01_pump (Gas Pump)", "Monument_arctic_01_00" };
         private static readonly List<string> ChangeBuildingsToAF1_Productions_1800 = new List<string> { "Agriculture_colony02_01 (Wanza Woodcutter)", "Intermediate_colony02_01 (Linen Mill)", "Final_colony02_02 (Weaver)", "Coastal_colony02_01 (Salt Coast Building)", "Final_colony02_01 (Meat Dry-House)", "Final_colony02_03 (Tea Maker)" };
@@ -62,6 +64,7 @@ namespace PresetParser.Anno1800
         private static readonly List<string> ChangeBuildingsToOW5_FarmBuilding_1800 = new List<string> { "Agriculture_10 (Vineyard)" };
         private static readonly List<string> ChangeBuildingsToNW1_FarmBuilding_1800 = new List<string> { "Agriculture_colony01_11 (Alpaca Farm)", "Agriculture_colony01_08 (Banana Farm)", "Agriculture_colony01_03 (Cotton Farm)", "Agriculture_colony01_01 (Sugar Cane Farm)", "Agriculture_colony01_05 (Caoutchouc Farm)" };
         private static readonly List<string> ChangeBuildingsToNW2_FarmBuilding_1800 = new List<string> { "Agriculture_colony01_09 (Cattle Farm)", "Agriculture_colony01_04 (Cocoa Farm)", "Agriculture_colony01_02 (Tobacco Farm)", "Agriculture_colony01_07 (Coffee Beans Farm)", "Agriculture_colony01_10 (Corn Farm)" };
+        private static readonly List<string> ChangeBuildingsToNW3_FarmBuilding_1800 = new List<string> { "DLC12 agriculture_colony01_14 (Orchid Farm)", "DLC12 agriculture_colony01_13 (Herb Farm)", "DLC12 agriculture_colony01_12 (Nandu Farm)" };
         private static readonly List<string> ChangeBuildingsToAT1_FarmBuilding_1800 = new List<string> { "Agriculture_arctic_03 (Goose Farm)" };
         private static readonly List<string> ChangeBuildingsToAT2_FarmBuilding_1800 = new List<string> { "Agriculture_arctic_05 (Husky Farm)" };
         private static readonly List<string> ChangeBuildingsToAF1_FarmBuilding_1800 = new List<string> { "Animal_colony02_01 (Goat Farm)", "Agriculture_colony02_02 (Flax Farm)", "Animal_colony02_02 (Sanga Farm)", "Agriculture_colony02_03 (Hibiscus)" };
@@ -101,6 +104,7 @@ namespace PresetParser.Anno1800
             if (identifierName.IsMatch(ChangeBuildingsToOW6_Public_1800)) { factionName = "(13) Scholars"; groupName = "Public Buildings"; }
             if (identifierName.IsMatch(ChangeBuildingsToNW1_Public_1800)) { factionName = "(07) Jornaleros"; groupName = "Public Buildings"; }
             if (identifierName.IsMatch(ChangeBuildingsToNW2_Public_1800)) { factionName = "(08) Obreros"; groupName = "Public Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToNW3_Public_1800)) { factionName = "(21) Artista"; groupName = "Public Buildings"; }
             if (identifierName.IsMatch(ChangeBuildingsToAT1_Public_1800)) { factionName = "(10) Explorers"; groupName = "Public Buildings"; }
             if (identifierName.IsMatch(ChangeBuildingsToAT2_Public_1800)) { factionName = "(11) Technicians"; groupName = "Public Buildings"; }
             if (identifierName.IsMatch(ChangeBuildingsToAF1_Public_1800)) { factionName = "(14) Shepherds"; groupName = "Public Buildings"; }
@@ -116,6 +120,7 @@ namespace PresetParser.Anno1800
             if (identifierName.IsMatch(ChangeBuildingsToOW6_Productions_1800)) { factionName = "(13) Scholars"; groupName = "Production Buildings"; } 
             if (identifierName.IsMatch(ChangeBuildingsToNW1_Productions_1800)) { factionName = "(07) Jornaleros"; groupName = "Production Buildings"; }
             if (identifierName.IsMatch(ChangeBuildingsToNW2_Productions_1800)) { factionName = "(08) Obreros"; groupName = "Production Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToNW3_Productions_1800)) { factionName = "(21) Artista"; groupName = "Production Buildings"; }
             if (identifierName.IsMatch(ChangeBuildingsToAT1_Productions_1800)) { factionName = "(10) Explorers"; groupName = "Production Buildings"; templateName = "FactoryBuilding7"; }
             if (identifierName.IsMatch(ChangeBuildingsToAT2_Productions_1800)) { factionName = "(11) Technicians"; groupName = "Production Buildings"; templateName = "FactoryBuilding7"; }
             if (identifierName.IsMatch(ChangeBuildingsToAF1_Productions_1800)) { factionName = "(14) Shepherds"; groupName = "Production Buildings"; }
@@ -130,6 +135,7 @@ namespace PresetParser.Anno1800
             if (identifierName.IsMatch(ChangeBuildingsToOW5_FarmBuilding_1800)) { factionName = "(05) Investors"; groupName = "Farm Buildings"; }
             if (identifierName.IsMatch(ChangeBuildingsToNW1_FarmBuilding_1800)) { factionName = "(07) Jornaleros"; groupName = "Farm Buildings"; }
             if (identifierName.IsMatch(ChangeBuildingsToNW2_FarmBuilding_1800)) { factionName = "(08) Obreros"; groupName = "Farm Buildings"; }
+            if (identifierName.IsMatch(ChangeBuildingsToNW3_FarmBuilding_1800)) { factionName = "(21) Artista"; groupName = "Farm Buildings"; }
             if (identifierName.IsMatch(ChangeBuildingsToAT1_FarmBuilding_1800)) { factionName = "(10) Explorers"; groupName = "Farm Buildings"; }
             if (identifierName.IsMatch(ChangeBuildingsToAT2_FarmBuilding_1800)) { factionName = "(11) Technicians"; groupName = "Farm Buildings"; }
             if (identifierName.IsMatch(ChangeBuildingsToAF1_FarmBuilding_1800)) { factionName = "(14) Shepherds"; groupName = "Farm Buildings"; }
