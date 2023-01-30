@@ -1996,7 +1996,7 @@ namespace PresetParser
                     templateName = "FactoryBuilding7";
                 }
             }
-            if (guidNumber == 1372 || guidNumber == 1375 || guidNumber == 2399)
+            if (guidNumber == 1308 || guidNumber == 1353 || guidNumber == 2399)
             {
                 factionName = "(20) Empire of the Skies";
                 groupName = "Mining Buildings";
