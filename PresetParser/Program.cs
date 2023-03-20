@@ -116,7 +116,7 @@ namespace PresetParser
             "BuildPermitBuilding", "BuildPermitModules", "OrnamentalModule", "IrrigationPropagationSource", "ResearchCenter", "Dockland", "HarborOrnament", "Restaurant", "Busstop","Multifactory", "FreeAreaRecipeBuilding",
             "Mall", "CultureModule", "Hacienda", "Heater_Arctic", "Monument", "HarborWarehouseStrategic", "WorkAreaRiverBuilding", "Slot", "WorkAreaSlot", "AdditionalModule", "RecipeFarm", "ItemWithUICrafting",
             "PostBoxBuildingWithDepot", "PostBoxBuildingWithPublicService", "AirshipPlatform", "AirshipPlatformModuleItemTransfer", "AirshipPlatformPostModule", "AirshipPlatformModuleWorkforceTransfer",
-            "AirshipPostFreeModule"
+            "AirshipPostFreeModule", "FactoryModuleElectric"
         };
         private static readonly List<string> IncludeBuildingsTemplateGUID1800 = new List<string> { "100451", "1010266", "1010343", "1010288", "101331", "1010320", "1010263", "1010372", "1010359", "1010358", "1010462",
             "1010463", "1010464", "1010275", "1010271", "1010516", "1010517", "1010519", "1000155", "101623", "1003272", "118218", "100849", "1010186", "100438", "114435", "1010371", "100516", "100517", "102449", "100783",
@@ -416,6 +416,8 @@ namespace PresetParser
                 /// only the 'Values' will skip the <template> tag that i still need
                 VersionSpecificPaths[Constants.ANNO_VERSION_1800].Add("assets", new PathRef[]
                 {
+                    // Cosmetic DLC 9/10
+                    new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Assets/Asset"),
                     // Base Game with DLC's
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
@@ -426,8 +428,9 @@ namespace PresetParser
                     // Scenario 1 Extra / Changed Building Lists
                     new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
-                    new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    /// The order of the next two lines is important to process ModuleOwner (Farm Buildings) before the Modules (Farm Fields)
                     new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/eoy21/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     // Scenario 2 Extra / Changed Building Lists
@@ -444,7 +447,14 @@ namespace PresetParser
                     new PathRef("data/dlc11/scenario03/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/dlc11/scenario03/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                     new PathRef("data/dlc11/scenario03/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
-                    new PathRef("data/dlc11/scenario03/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset")
+                    new PathRef("data/dlc11/scenario03/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    // Scenario 04 Extra / Changed Buildings list
+                    new PathRef("data/dlc12/scenario04/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/dlc12/scenario04/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/dlc12/scenario04/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/dlc12/scenario04/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/dlc12/scenario04/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
+                    new PathRef("data/dlc12/scenario04/config/game/assets/scenario/config/export/main/asset/assets.xml", "AssetList/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Groups/Group/Assets/Asset"),
                 });
             }
             #endregion
@@ -537,7 +547,10 @@ namespace PresetParser
                 DVDataList[102383] = DVDataList[102383] + ",103048";
                 DVDataList[102229] = DVDataList[102229] + ",103047";
                 DVDataList[114435] = DVDataList[114435] + ",117633";
+                DVDataList[132370] = DVDataList[132370] + ",132506";
                 DVDataList[1010310] = DVDataList[1010310] + ",101303";
+                DVDataList[1000029] = DVDataList[1000029] + ",1372,1386,1387";
+                DVDataList[1353] = DVDataList[1353] + ",1375";
                 #endregion
                 foreach (string DVData in DVDataList)
                 {
@@ -574,7 +587,7 @@ namespace PresetParser
             // This list contains identifiers which are duplicated on purpose (on various places inside the preset tree) and known to not cause any errors (e.g. translation or statistics).
             var knownDuplicates = new List<string> { "Logistic_02 (Warehouse I)", "Residence_Old_World", "Residence_tier02", "Residence_tier03", "Residence_tier04",
                 "Residence_tier05", "Residence_tier05b", "Residence_New_World", "Residence_colony01_tier02", "Residence_Arctic_World", "Residence_arctic_tier02",
-                "Residence_Africa_World", "Residence_colony02_tier02" };
+                "Residence_Africa_World", "Residence_colony02_tier02", "Residence_colony01_tier03" };
 
             var validator = new Validator();
             (bool isValid, List<string> duplicateIdentifiers) = validator.CheckForUniqueIdentifiers(buildingsToCheck, knownDuplicates);
@@ -1860,6 +1873,7 @@ namespace PresetParser
                 case "1010517": { templateName = "SkyTradingPost"; factionName = "(11) Technicians"; groupName = "Public Buildings"; break; }
                 case "FactoryBuilding7_BuildPermit": { factionName = "(13) Scholars"; groupName = "Permitted Buildings"; break; }
                 case "HarborOrnament": { factionName = "Ornaments"; groupName = "22 Docklands Ornaments"; break; }
+                case "FactoryModuleElectric": { templateName = "Farmfield"; groupName = "Farm Fields"; break; }
                 default: { groupName = templateName.FirstCharToUpper(); break; }
             }
 
@@ -1913,6 +1927,9 @@ namespace PresetParser
                 case "Oasis_Riverslot": { factionName = "All Worlds"; groupName = "Empty Slots"; break; }
                 case "Agriculture_colony01_13 (Forestation)": { factionName = "(30) Scenario 1: Eden Burning"; groupName = "Farm Buildings"; templateName = "Scenario1"; ; break; }
                 case "Coastal_02 (Water Purifier)": { factionName = "(30) Scenario 1: Eden Burning"; groupName = "Harbor Buildings"; templateName = "Scenario1"; break; }
+                case "Mining_colony01_20 (Bauxite Ore Mine)": { factionName = "(20) Empire of the Skies"; groupName = "Mining Buildings"; break; }
+                case "Mining_colony01_23 (SAOre02)": { factionName = "(21) Artista"; groupName = "Mining Buildings"; break; }
+                case "DLC12 monument stadium 00": { factionName = "(21) Artista"; groupName = null; break; }
             }
 
             // Place all TouristSeason Ornament in the right Tree Menu
@@ -1968,7 +1985,7 @@ namespace PresetParser
                     if (guidNumber != 24794)
                     {
                         DVDataList[24794] = DVDataList[24794] + "," + guidNumber;
-                        return;
+                        // return later after adding Farmfield amount
                     }
                     if (guidNumber == 24794)
                     {
@@ -2006,7 +2023,7 @@ namespace PresetParser
                     templateName = "FactoryBuilding7";
                 }
             }
-            if (guidNumber == 1372 || guidNumber == 1375 || guidNumber == 2399)
+            if (guidNumber == 1308 || guidNumber == 1353 || guidNumber == 2399)
             {
                 factionName = "(20) Empire of the Skies";
                 groupName = "Mining Buildings";
@@ -2035,6 +2052,88 @@ namespace PresetParser
                 Console.ForegroundColor = oldColor;
                 identifierName = "airship landing platform colony01";
                 templateName = "AirshipPlatform";
+            }
+
+            // skip advanced institutions and replace with old ones
+            if (guidNumber == 6258)
+            {
+                ValidateIconFile("A7_police_advanced.png", Convert.ToString(guidNumber), headerName);
+                DVDataList[101274] = "101274,A7_police_advanced.png,Institution_colony01_01 (Police)," + guidNumber;
+                oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("---> Buildings added to Replacement List (Advanced Public Building): 101274 << " + guidNumber);
+                Console.ForegroundColor = oldColor;
+                return;
+            }
+            if (guidNumber == 6353)
+            {
+                ValidateIconFile("A7_police_advanced.png", Convert.ToString(guidNumber), headerName);
+                DVDataList[1010462] = "1010462,A7_police_advanced.png,Institution_01 (Police)," + guidNumber;
+                oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("---> Buildings added to Replacement List (Advanced Public Building): 1010462 << " + guidNumber);
+                Console.ForegroundColor = oldColor;
+                return;
+            }
+            if (guidNumber == 6259)
+            {
+                ValidateIconFile("A7_fire_brigade_advanced.png", Convert.ToString(guidNumber), headerName);
+                DVDataList[101275] = "101275,A7_fire_brigade_advanced.png,Institution_colony01_02 (Fire Department)," + guidNumber;
+                oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("---> Buildings added to Replacement List (Advanced Public Building): 101275 << " + guidNumber);
+                Console.ForegroundColor = oldColor;
+                return;
+            }
+            if (guidNumber == 6354)
+            {
+                ValidateIconFile("A7_fire_brigade_advanced.png", Convert.ToString(guidNumber), headerName);
+                DVDataList[1010463] = "1010463,A7_fire_brigade_advanced.png,Institution_02 (Fire Department)," + guidNumber;
+                oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("---> Buildings added to Replacement List (Advanced Public Building): 1010463 << " + guidNumber);
+                Console.ForegroundColor = oldColor;
+                return;
+            }
+            if (guidNumber == 6260)
+            {
+                ValidateIconFile("A7_hospital_advanced.png", Convert.ToString(guidNumber), headerName);
+                DVDataList[101276] = "101276,A7_hospital_advanced.png,Institution_colony01_03 (Hospital)," + guidNumber;
+                oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("---> Buildings added to Replacement List (Advanced Public Building): 101276 << " + guidNumber);
+                Console.ForegroundColor = oldColor;
+                return;
+            }
+            if (guidNumber == 6355)
+            {
+                ValidateIconFile("A7_hospital_advanced.png", Convert.ToString(guidNumber), headerName);
+                DVDataList[1010464] = "1010464,A7_hospital_advanced.png,Institution_03 (Hospital)," + guidNumber;
+                oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("---> Buildings added to Replacement List (Advanced Public Building): 1010464 << " + guidNumber);
+                Console.ForegroundColor = oldColor;
+                return;
+            }
+
+            // skip industrialized pastures and replace with old ones
+            if (guidNumber == 8002)
+            {
+                DVDataList[101281] = "101281,A7_general_module_01.png,Agriculture_colony01_09_field (Cattle Pasture)," + guidNumber;
+                oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("---> Buildings added to Replacement List (Electrifiable Modules): 101210128183 << " + guidNumber);
+                Console.ForegroundColor = oldColor;
+                return;
+            }
+            if (guidNumber == 8027)
+            {
+                DVDataList[101283] = "101283,A7_general_module_01.png,Agriculture_colony01_11_field (Alpaca Pasture)," + guidNumber;
+                oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("---> Buildings added to Replacement List (Electrifiable Modules): 101283 << " + guidNumber);
+                Console.ForegroundColor = oldColor;
+                return;
             }
 
             // Put the Free Module Airmail Sorting Office (for old Platforms DLC03) in replacement file
@@ -2106,14 +2205,14 @@ namespace PresetParser
                 factionName = "(30) Scenario 1: Eden Burning";
                 switch (templateName)
                 {
-                    case "HeavyFreeAreaBuilding": groupName = "Production Buildings"; break;
-                    case "HeavyFactoryBuilding": groupName = "Production Buildings"; break;
-                    case "FactoryBuilding7": groupName = "Production Buildings"; break;
-                    case "101272": groupName = "Production Buildings"; break;
-                    case "101280": groupName = "Farm Fields"; break;
-                    case "101263": groupName = "Farm Buildings"; break;
+                    case "HeavyFreeAreaBuilding": groupName = "Production Buildings"; templateName = "Scenario1"; break;
+                    case "HeavyFactoryBuilding": groupName = "Production Buildings"; templateName = "Scenario1"; break;
+                    case "FactoryBuilding7": groupName = "Production Buildings"; templateName = "Scenario1"; break;
+                    case "101272": groupName = "Production Buildings"; templateName = "Scenario1"; break;
+                    case "101280": groupName = "Farm Fields"; templateName = "Farmfield"; break;
+                    case "101263": groupName = "Farm Buildings"; templateName = "FarmBuilding"; break;
+                    default: templateName = "Scenario1"; break;
                 }
-                templateName = "Scenario1";
             }
             if (guidNumber == 24134)
             {
@@ -2127,9 +2226,18 @@ namespace PresetParser
                 groupName = "Public Buildings";
                 templateName = "Scenario1";
             }
+            if (guidNumber == 24658)
+            {
+                DVDataList[1010269] = "1010269,A7_pigs.png,Agriculture_08 (Pig Farm),24658";
+                oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("---> Building added to Replacement List (Eoy21 Replacement): 1010269 << " + guidNumber);
+                Console.ForegroundColor = oldColor;
+                return;
+            }
 
             //Scenario 2 : Seasons of Silver Ornamentals/Buildings
-            if ((identifierName.Contains("Scenario02")) || (identifierName == "Amoniac Factory") || (identifierName == "Cyanide Pool Module") || (identifierName == "Cyanide Leacher") || (identifierName == "SilverMint") || (identifierName == "SilverSmelter"))
+            if ((identifierName.Contains("Scenario02")) || (identifierName == "Amoniac Factory") || (identifierName == "Basin") || (identifierName == "Cyanide Pool Module") || (identifierName == "Cyanide Leacher") || (identifierName == "SilverMint") || (identifierName == "SilverSmelter"))
             {
                 factionName = "(31) Scenario 2: Seasons of Silver";
                 groupName = null;
@@ -2139,6 +2247,19 @@ namespace PresetParser
             if (identifierName.Contains("scenario03") || identifierName.Contains("Scenario03"))
             { 
                 factionName = "(32) Scenario 3: Clash of the Curiers";
+                groupName = null;
+            }
+
+            // Scenario 4: Pride & Peddlers
+            if (identifierName.Contains("Scenario04") || guidNumber == 7413 || guidNumber == 7438)
+            {
+                factionName = "(33) Scenario 4: Pride & Peddlers";
+                groupName = null;
+            }
+            if (identifierName.Contains("Sceanrio04")) // This is not my typo, its in the game files like this
+            {
+                if (guidNumber >= 5920 && guidNumber <= 5924) return; // Skip NPC Kontors
+                factionName = "(33) Scenario 4: Pride & Peddlers";
                 groupName = null;
             }
 
@@ -2154,6 +2275,20 @@ namespace PresetParser
             {
                 factionName = "Ornaments";
                 groupName = "28 Grand Gallery";
+            }
+
+            // Old Town-pack CLDC (09)
+            if (identifierName.StartsWith("CDLC09"))
+            {
+                factionName = "Ornaments";
+                groupName = "29 Old Town";
+            }
+
+            // Dragon Garden-pack CLDC (10)
+            if (identifierName.StartsWith("CDLC10"))
+            {
+                factionName = "Ornaments";
+                groupName = "30 Dragon Garden";
             }
 
             // Place the rest of the buildings in the right Faction > Group menu
@@ -2351,6 +2486,7 @@ namespace PresetParser
                 case 114445: b.Faction = "Residences"; b.Template = "DefColDef"; b.Group = "(1) Old World"; break;
                 case 101254: b.Faction = "Residences"; b.Template = "DefColDef"; b.Group = "(2) New World"; break;
                 case 101255: b.Faction = "Residences"; b.Template = "DefColDef"; b.Group = "(2) New World"; break;
+                case 5405: b.Faction = "Residences"; b.Template = "DefColDef"; b.Group = "(2) New World"; break;
                 //case <unknown>: b.Faction = "Residences"; b.Template = "DefColDef"; b.Group = "(2) New World"; break;
                 case 112091: b.Faction = "Residences"; b.Template = "DefColDef"; b.Group = "(3) Arctic"; break;
                 case 112652: b.Faction = "Residences"; b.Template = "DefColDef"; b.Group = "(3) Arctic"; break;
@@ -2965,6 +3101,18 @@ namespace PresetParser
                                 case 5: { translation = "Fuente de petróleo"; break; }
                             }
                         }
+                        else if (buildingGuid == "1010311")
+                        {
+                            switch (languageCount)
+                            {
+                                case 0: { translation = "Gold Mine"; break; }
+                                case 1: { translation = "Goldmine"; break; }
+                                case 2: { translation = "Mine d'or"; break; }
+                                case 3: { translation = "Kopalnia złota"; break; }
+                                case 4: { translation = "Золотая шахта"; break; }
+                                case 5: { translation = "Mina de oro"; break; }
+                            }
+                        }
                         else if (buildingGuid == "972") //fix translations of the Aquafarm that uses 5 fields
                         {
                             switch (languageCount)
@@ -2988,8 +3136,8 @@ namespace PresetParser
                         {
                             translation = "(2) " + translation;
                         }
-                        //Tier numbers 3 (Temperate only)
-                        if (b.Guid == 1010345)
+                        //Tier numbers 3 (Old World and New World)
+                        if (b.Guid == 1010345 || b.Guid == 5405)
                         {
                             translation = "(3) " + translation;
                         }
@@ -3027,14 +3175,16 @@ namespace PresetParser
                         translation = translation.FirstCharToUpper();
                     }
 
-                    if (templateName == "FarmBuilding" || templateName == "Farmfield")
+                    if (templateName == "RecipeFarm" || templateName == "FarmBuilding" || templateName == "FarmBuilding_Electrifiable" || templateName == "Farmfield")
                     {
                         string fieldAmountValue = null;
                         string fieldGuidValue = null;
 
                         switch (templateName)
                         {
+                            case "RecipeFarm":
                             case "FarmBuilding":
+                            case "FarmBuilding_Electrifiable":
                                 {
                                     fieldGuidValue = values["ModuleOwner"]["ConstructionOptions"]["Item"]["ModuleGUID"].InnerText;
                                     fieldAmountValue = values?["ModuleOwner"]?["ModuleLimits"]?["Main"]?["Limit"]?.InnerText;
@@ -3094,6 +3244,11 @@ namespace PresetParser
                 Console.ForegroundColor = oldColor;
             }
 
+            if (templateName == "RecipeFarm" && guidNumber != 24794)
+            {
+                return;
+            }
+
             #endregion
 
             #region Rename some duplicate identifiers to avoid double identifiers on the hand of Icon Files
@@ -3147,6 +3302,7 @@ namespace PresetParser
                     case "A7_defense_tower_cannon.png": if (b.Guid != 1010523) { DVDataGUID2 = 1010523; DVDatacounted2 = true; } break;
                     case "A7_sail_shipyard.png": if (b.Guid != 1010520) { DVDataGUID2 = 1010520; DVDatacounted2 = true; } break;
                     case "A7_airship_hangar_southamerica.png": if(b.Guid != 648) { DVDataGUID2 = 648; DVDatacounted2 = true; } break;
+                    case "A7_stadium.png": if (b.Guid != 6117) { DVDataGUID2 = 6117; DVDatacounted2 = true; } break;
                 }
             }
 

@@ -76,6 +76,8 @@ namespace PresetParser.Anno1800
         private static readonly List<string> ChangeOrnamentToAmusementPark_1800 = new List<string> { "AmusementPark FerrisWheel", "AmusementPark RollerCoaster", "AmusementPark PayBooth", "AmusementPark Icecream", "AmusementPark CottonCandy", "AmusementPark TinCanGame", "AmusementPark ShootingGame",
             "AmusementPark Consumable01", "AmusementPark Consumable02", "AmusementPark Strongman", "AmusementPark PictureWall", "AmusementPark OrganPlayer", "AmusementPark BalloonSeller", "AmusementPark Painter", "AmusementPark GateBig", "AmusementPark BarTable", "AmusementPark DrinkStand",
             "AmusementPark FoodStand" };
+        private static readonly List<string> ChangeOrnamentToBeach_1800 = new List<string> { "Beach Ornament Shop 02", "Beach Ornament Sandvariations", "Beach Ornament Shop 01", "Beach Ornament Baywatch", "Beach Ornament Picknick Blanket 01", "Beach Ornament Picknick Blanket 02", "Beach Ornament Picknick Blanket 03",
+            "Beach Ornament Dressing Room" };
 
         /// <summary>
         /// Retuns the faction and group for an identifier.
@@ -112,6 +114,7 @@ namespace PresetParser.Anno1800
             if (identifierName.IsMatch(ChangeOrnamentToIndustrialOrnaments_1800)) { factionName = "Ornaments"; groupName = "17 Industrial Ornaments"; templateName = "OrnamentalBuilding_Industrial"; }
             if (identifierName.IsMatch(ChangeOrnamentToIndustrialFences_1800)) { factionName = "Ornaments"; groupName = "18 IndustrialFences"; templateName = "OrnamentalBuilding_Industrial"; }
             if (identifierName.IsMatch(ChangeOrnamentToAmusementPark_1800)) { factionName = "Ornaments"; groupName = "19 Amusement Park"; }
+            if (identifierName.IsMatch(ChangeOrnamentToBeach_1800)) { factionName = "Ornaments"; groupName = "31 Beach Ornaments"; }
             return (factionName, groupName, templateName);
         }
     }

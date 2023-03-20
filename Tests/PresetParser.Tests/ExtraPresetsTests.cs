@@ -22,7 +22,7 @@ namespace PresetParser.Tests
         [Theory]
         [InlineData(Constants.ANNO_VERSION_1404, 4)]
         [InlineData(Constants.ANNO_VERSION_2070, 5)]
-        [InlineData(Constants.ANNO_VERSION_1800, 64)]
+        [InlineData(Constants.ANNO_VERSION_1800, 67)]
         [InlineData(Constants.ANNO_VERSION_2205, 0)]
         public void GetExtraPresets_AnnoVersionIsKnown_ShouldReturnCorrectExtraPresetsCount(string annoVersion, int expectedCount)
         {
