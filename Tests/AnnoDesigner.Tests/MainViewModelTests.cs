@@ -138,7 +138,6 @@ namespace AnnoDesigner.Tests
             Assert.Null(viewModel.StatusMessage);
 
             Assert.NotNull(viewModel.AvailableIcons);
-            Assert.NotNull(viewModel.SelectedIcon);
             Assert.NotNull(viewModel.Languages);
             Assert.NotNull(viewModel.MainWindowTitle);
             Assert.NotNull(viewModel.PresetsSectionHeader);

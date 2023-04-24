@@ -591,5 +591,11 @@ namespace AnnoDesigner.Models
                 return _gridInfluenceRangeRect;
             }
         }
+
+        public string Label { get => WrappedAnnoObject.Label; set => WrappedAnnoObject.Label = value; }
+        public double InfluenceRange { get => WrappedAnnoObject.InfluenceRange; set => WrappedAnnoObject.InfluenceRange = value; }
+        public double Radius { get => WrappedAnnoObject.Radius; set => WrappedAnnoObject.Radius = value; }
+        public bool Borderless { get => WrappedAnnoObject.Borderless; set => WrappedAnnoObject.Borderless = value; }
+        public bool Road { get => WrappedAnnoObject.Road; set => WrappedAnnoObject.Road = value; }
     }
 }

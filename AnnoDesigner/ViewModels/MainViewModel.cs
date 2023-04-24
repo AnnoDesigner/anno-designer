@@ -127,7 +127,11 @@ namespace AnnoDesigner.ViewModels
             StatisticsViewModel.IsVisible = _appSettings.StatsShowStats;
             StatisticsViewModel.ShowStatisticsBuildingCount = _appSettings.StatsShowBuildingCount;
 
-            BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings, _messageBoxService, _localizationHelper);
+            AvailableIcons = new ObservableCollection<IconImage>();
+            _noIconItem = GenerateNoIconItem();
+            AvailableIcons.Add(_noIconItem);
+
+            BuildingSettingsViewModel = new BuildingSettingsViewModel(_appSettings, _messageBoxService, _localizationHelper, AvailableIcons);
 
             // load tree localization            
             try
@@ -176,11 +180,6 @@ namespace AnnoDesigner.ViewModels
             ShowPreferencesWindowCommand = new RelayCommand(ExecuteShowPreferencesWindow);
             ShowLicensesWindowCommand = new RelayCommand(ExecuteShowLicensesWindow);
             OpenRecentFileCommand = new RelayCommand(ExecuteOpenRecentFile);
-
-            AvailableIcons = new ObservableCollection<IconImage>();
-            _noIconItem = GenerateNoIconItem();
-            AvailableIcons.Add(_noIconItem);
-            SelectedIcon = _noIconItem;
 
             RecentFiles = new ObservableCollection<RecentFileItem>();
             _recentFilesHelper.Updated += RecentFilesHelper_Updated;
@@ -274,7 +273,7 @@ namespace AnnoDesigner.ViewModels
                 AvailableIcons.Clear();
                 AvailableIcons.Add(_noIconItem);
                 LoadAvailableIcons();
-                SelectedIcon = _noIconItem;
+                BuildingSettingsViewModel.SelectedIcon = _noIconItem;
             }
             catch (Exception ex)
             {
@@ -370,7 +369,7 @@ namespace AnnoDesigner.ViewModels
                 Size = new Size(BuildingSettingsViewModel.BuildingWidth, BuildingSettingsViewModel.BuildingHeight),
                 Color = BuildingSettingsViewModel.SelectedColor ?? Colors.Red,
                 Label = BuildingSettingsViewModel.IsEnableLabelChecked ? BuildingSettingsViewModel.BuildingName : string.Empty,
-                Icon = SelectedIcon == _noIconItem ? null : SelectedIcon.Name,
+                Icon = BuildingSettingsViewModel.SelectedIcon == _noIconItem ? null : BuildingSettingsViewModel.SelectedIcon.Name,
                 Radius = BuildingSettingsViewModel.BuildingRadius,
                 InfluenceRange = BuildingSettingsViewModel.BuildingInfluenceRange,
                 PavedStreet = BuildingSettingsViewModel.IsPavedStreet,
@@ -473,19 +472,19 @@ namespace AnnoDesigner.ViewModels
             {
                 if (string.IsNullOrWhiteSpace(obj.Icon))
                 {
-                    SelectedIcon = _noIconItem;
+                    BuildingSettingsViewModel.SelectedIcon = _noIconItem;
                 }
                 else
                 {
                     var foundIconImage = AvailableIcons.SingleOrDefault(x => x.Name.Equals(Path.GetFileNameWithoutExtension(obj.Icon), StringComparison.OrdinalIgnoreCase));
-                    SelectedIcon = foundIconImage ?? _noIconItem;
+                    BuildingSettingsViewModel.SelectedIcon = foundIconImage ?? _noIconItem;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error finding {nameof(IconImage)} for value \"{obj.Icon}\".{Environment.NewLine}{ex}");
 
-                SelectedIcon = _noIconItem;
+                BuildingSettingsViewModel.SelectedIcon = _noIconItem;
             }
 
             // radius
@@ -1032,12 +1031,6 @@ namespace AnnoDesigner.ViewModels
         {
             get { return _availableIcons; }
             set { UpdateProperty(ref _availableIcons, value); }
-        }
-
-        public IconImage SelectedIcon
-        {
-            get { return _selectedIcon; }
-            set { UpdateProperty(ref _selectedIcon, value); }
         }
 
         public string MainWindowTitle

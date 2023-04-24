@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -14,9 +15,55 @@ using NLog;
 
 namespace AnnoDesigner.ViewModels
 {
+    [Flags]
+    public enum ApplySettings
+    {
+        None = 0,
+        Color = 1 << 0,
+        Label = 1 << 1,
+        Icon = 1 << 2,
+        Influence = 1 << 3,
+        Borderless = 1 << 4,
+        Road = 1 << 5,
+    }
+
+    public interface Aaa
+    {
+        ApplySettings ApplySettings { get; }
+
+        IOperation SetValueAndGetUndoableOperation(IEnumerable<LayoutObject> objs);
+    }
+
+    public class Aaaa<T> : Aaa
+    {
+        public ApplySettings ApplySettings { get; set; }
+
+        public string PropertyName { get; set; }
+
+        public Func<LayoutObject, T> OldValueGetter { get; set; }
+
+        public Func<T> NewValueGetter { get; set; }
+
+        public IOperation SetValueAndGetUndoableOperation(IEnumerable<LayoutObject> objs)
+        {
+            var operation = new ModifyObjectPropertiesOperation<LayoutObject, T>()
+            {
+                PropertyName = PropertyName,
+                ObjectPropertyValues = objs
+                    .Select(obj => (obj, OldValueGetter(obj), NewValueGetter()))
+                    .ToList()
+            };
+
+            operation.Redo();
+
+            return operation;
+        }
+    }
+
     public class BuildingSettingsViewModel : Notify
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly List<Aaa> applySettingsTemplates;
 
         private readonly IAppSettings _appSettings;
         private readonly IMessageBoxService _messageBoxService;
@@ -38,8 +85,11 @@ namespace AnnoDesigner.ViewModels
         private bool _isEnableLabelChecked;
         private bool _isBorderlessChecked;
         private bool _isRoadChecked;
+        private ApplySettings _applySettings = ApplySettings.Color | ApplySettings.Borderless;
         private ObservableCollection<SerializableColor> _colorsInLayout;
         private IAnnoCanvas _annoCanvasToUse;
+        private ICollection<IconImage> _availableIcons;
+        private IconImage _selectedIcon;
         private ColorHueSaturationBrightnessComparer _colorSorter;
         private ObservableCollection<BuildingInfluence> _buildingInfluences;
         private BuildingInfluence _selectedBuildingInfluence;
@@ -51,14 +101,17 @@ namespace AnnoDesigner.ViewModels
         /// </summary>
         public BuildingSettingsViewModel(IAppSettings appSettingsToUse,
             IMessageBoxService messageBoxServiceToUse,
-            ILocalizationHelper localizationHelperToUse)
+            ILocalizationHelper localizationHelperToUse,
+            ICollection<IconImage> availableIcons)
         {
             _appSettings = appSettingsToUse;
             _messageBoxService = messageBoxServiceToUse;
             _localizationHelper = localizationHelperToUse;
+            _availableIcons = availableIcons;
 
-            ApplyColorToSelectionCommand = new RelayCommand(ApplyColorToSelection, CanApplyColorToSelection);
-            ApplyPredefinedColorToSelectionCommand = new RelayCommand(ApplyPredefinedColorToSelection, CanApplyPredefinedColorToSelection);
+            ApplyColorToSelectionCommand = new RelayCommand(ApplyColorToSelection, AreSomeObjectsSelected);
+            ApplyPredefinedColorToSelectionCommand = new RelayCommand(ApplyPredefinedColorToSelection, AreSomeObjectsSelected);
+            ApplySettingsToSelectionCommand = new RelayCommand(ApplySettingsToSelection, AreSomeObjectsSelected);
             UseColorInLayoutCommand = new RelayCommand(UseColorInLayout, CanUseColorInLayout);
 
             SelectedColor = Colors.Red;
@@ -77,6 +130,59 @@ namespace AnnoDesigner.ViewModels
             BuildingInfluences = new ObservableCollection<BuildingInfluence>();
             InitBuildingInfluences();
             SelectedBuildingInfluence = BuildingInfluences.SingleOrDefault(x => x.Type == BuildingInfluenceType.None);
+
+            applySettingsTemplates = new()
+            {
+                new Aaaa<SerializableColor>()
+                {
+                    ApplySettings = ApplySettings.Color,
+                    PropertyName = nameof(LayoutObject.Color),
+                    OldValueGetter = x => x.Color,
+                    NewValueGetter = () => SelectedColor.Value
+                },
+                new Aaaa<string>()
+                {
+                    ApplySettings = ApplySettings.Label,
+                    PropertyName = nameof(LayoutObject.Label),
+                    OldValueGetter = x => x.WrappedAnnoObject.Label,
+                    NewValueGetter = () => BuildingName
+                },
+                new Aaaa<IconImage>()
+                {
+                    ApplySettings = ApplySettings.Icon,
+                    PropertyName = nameof(LayoutObject.Icon),
+                    OldValueGetter = x => x.Icon,
+                    NewValueGetter = () => SelectedIcon
+                },
+                new Aaaa<double>()
+                {
+                    ApplySettings = ApplySettings.Influence,
+                    PropertyName = nameof(LayoutObject.InfluenceRange),
+                    OldValueGetter = x => x.WrappedAnnoObject.InfluenceRange,
+                    NewValueGetter = () => BuildingInfluenceRange
+                },
+                new Aaaa<double>()
+                {
+                    ApplySettings = ApplySettings.Influence,
+                    PropertyName = nameof(LayoutObject.Radius),
+                    OldValueGetter = x => x.WrappedAnnoObject.Radius,
+                    NewValueGetter = () => BuildingRadius
+                },
+                new Aaaa<bool>()
+                {
+                    ApplySettings = ApplySettings.Borderless,
+                    PropertyName = nameof(LayoutObject.Borderless),
+                    OldValueGetter = x => x.WrappedAnnoObject.Borderless,
+                    NewValueGetter = () => IsBorderlessChecked
+                },
+                new Aaaa<bool>()
+                {
+                    ApplySettings = ApplySettings.Road,
+                    PropertyName = nameof(LayoutObject.Road),
+                    OldValueGetter = x => x.WrappedAnnoObject.Road,
+                    NewValueGetter = () => IsRoadChecked
+                },
+            };
         }
 
         private void InitBuildingInfluences()
@@ -107,6 +213,18 @@ namespace AnnoDesigner.ViewModels
         {
             get { return _selectedColor; }
             set { UpdateProperty(ref _selectedColor, value); }
+        }
+
+        public ICollection<IconImage> AvailableIcons
+        {
+            get { return _availableIcons; }
+            set { UpdateProperty(ref _availableIcons, value); }
+        }
+
+        public IconImage SelectedIcon
+        {
+            get { return _selectedIcon; }
+            set { UpdateProperty(ref _selectedIcon, value); }
         }
 
         public int BuildingHeight
@@ -205,6 +323,12 @@ namespace AnnoDesigner.ViewModels
             set { UpdateProperty(ref _isRoadChecked, value); }
         }
 
+        public ApplySettings ApplySettings
+        {
+            get { return _applySettings; }
+            set { UpdateProperty(ref _applySettings, value); }
+        }
+
         public IAnnoCanvas AnnoCanvasToUse
         {
             get { return _annoCanvasToUse; }
@@ -237,7 +361,7 @@ namespace AnnoDesigner.ViewModels
 
         private ColorHueSaturationBrightnessComparer ColorSorter
         {
-            get { return _colorSorter ?? (_colorSorter = new ColorHueSaturationBrightnessComparer()); }
+            get { return _colorSorter ??= new ColorHueSaturationBrightnessComparer(); }
         }
 
         public ObservableCollection<BuildingInfluence> BuildingInfluences
@@ -382,7 +506,7 @@ namespace AnnoDesigner.ViewModels
                 ObjectPropertyValues = AnnoCanvasToUse.SelectedObjects
                     .Select(obj => (obj, obj.Color, selectedColor: (SerializableColor)SelectedColor.Value))
                     .ToList(),
-                AfterAction = ColorChangeUndone
+                AfterAction = RerenderCanvas
             });
 
             foreach (var curSelectedObject in AnnoCanvasToUse.SelectedObjects)
@@ -393,11 +517,6 @@ namespace AnnoDesigner.ViewModels
             AnnoCanvasToUse.ForceRendering();
 
             AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
-        }
-
-        private bool CanApplyColorToSelection(object param)
-        {
-            return AnnoCanvasToUse?.SelectedObjects.Count > 0;
         }
 
         public ICommand ApplyPredefinedColorToSelectionCommand { get; private set; }
@@ -416,7 +535,7 @@ namespace AnnoDesigner.ViewModels
                     .Where(obj => ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject).HasValue)
                     .Select(obj => (obj, obj.Color, (SerializableColor)ColorPresetsHelper.Instance.GetPredefinedColor(obj.WrappedAnnoObject).Value))
                     .ToList(),
-                AfterAction = ColorChangeUndone
+                AfterAction = RerenderCanvas
             });
 
             foreach (var curSelectedObject in AnnoCanvasToUse.SelectedObjects)
@@ -428,11 +547,32 @@ namespace AnnoDesigner.ViewModels
                 }
             }
 
-            AnnoCanvasToUse.ForceRendering();
-            AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
+            RerenderCanvas();
         }
 
-        private bool CanApplyPredefinedColorToSelection(object param)
+        public ICommand ApplySettingsToSelectionCommand { get; private set; }
+
+        private void ApplySettingsToSelection(object param)
+        {
+            if (AnnoCanvasToUse == null)
+            {
+                return;
+            }
+
+            var operations = applySettingsTemplates.Where(x => ApplySettings.HasFlag(x.ApplySettings)).Select(x => x.SetValueAndGetUndoableOperation(AnnoCanvasToUse.SelectedObjects)).ToList();
+
+            if (operations.Count > 0)
+            {
+                AnnoCanvasToUse.UndoManager.RegisterOperation(new CompositeOperation(operations)
+                {
+                    AfterAction = RerenderCanvas
+                });
+
+                RerenderCanvas();
+            }
+        }
+
+        private bool AreSomeObjectsSelected(object param)
         {
             return AnnoCanvasToUse?.SelectedObjects.Count > 0;
         }
@@ -477,7 +617,7 @@ namespace AnnoDesigner.ViewModels
             OnPropertyChanged(nameof(ShowColorsInLayout));
         }
 
-        private void ColorChangeUndone()
+        private void RerenderCanvas()
         {
             AnnoCanvasToUse.ForceRendering();
             AnnoCanvasToUse_ColorsUpdated(this, EventArgs.Empty);
