@@ -26,17 +26,13 @@ namespace AnnoDesigner.Helper
         /// </summary>
         public static (int x, int y) GetStartPoint((int x, int y) pixel, Direction side)
         {
-            switch (side)
+            return side switch
             {
-                case Direction.Up:
-                    return pixel;
-                case Direction.Left:
-                    return (pixel.x, pixel.y + 1);
-                case Direction.Down:
-                    return (pixel.x + 1, pixel.y + 1);
-                default:
-                    return (pixel.x + 1, pixel.y);
-            }
+                Direction.Up => pixel,
+                Direction.Left => (pixel.x, pixel.y + 1),
+                Direction.Down => (pixel.x + 1, pixel.y + 1),
+                _ => (pixel.x + 1, pixel.y),
+            };
         }
 
         /// <summary>
@@ -49,24 +45,24 @@ namespace AnnoDesigner.Helper
 
         private static Direction RotateClockwise(Direction direction)
         {
-            switch (direction)
+            return direction switch
             {
-                case Direction.Up: return Direction.Right;
-                case Direction.Left: return Direction.Up;
-                case Direction.Down: return Direction.Left;
-                default: return Direction.Down;
-            }
+                Direction.Up => Direction.Right,
+                Direction.Left => Direction.Up,
+                Direction.Down => Direction.Left,
+                _ => Direction.Down,
+            };
         }
 
         private static Direction RotateCounterClockwise(Direction direction)
         {
-            switch (direction)
+            return direction switch
             {
-                case Direction.Up: return Direction.Left;
-                case Direction.Left: return Direction.Down;
-                case Direction.Down: return Direction.Right;
-                default: return Direction.Up;
-            }
+                Direction.Up => Direction.Left,
+                Direction.Left => Direction.Down,
+                Direction.Down => Direction.Right,
+                _ => Direction.Up,
+            };
         }
 
         /// <summary>
@@ -84,17 +80,13 @@ namespace AnnoDesigner.Helper
         /// </summary>
         private static (int x, int y) GetLeftCell((int X, int Y) point, Direction direction)
         {
-            switch (direction)
+            return direction switch
             {
-                case Direction.Up:
-                    return (point.X - 1, point.Y);
-                case Direction.Left:
-                    return point;
-                case Direction.Down:
-                    return (point.X, point.Y - 1);
-                default:
-                    return (point.X - 1, point.Y - 1);
-            }
+                Direction.Up => (point.X - 1, point.Y),
+                Direction.Left => point,
+                Direction.Down => (point.X, point.Y - 1),
+                _ => (point.X - 1, point.Y - 1),
+            };
         }
 
 
@@ -113,17 +105,13 @@ namespace AnnoDesigner.Helper
         /// </summary>
         private static (int x, int y) GetForwardCell((int X, int Y) point, Direction direction)
         {
-            switch (direction)
+            return direction switch
             {
-                case Direction.Up:
-                    return (point.X - 1, point.Y - 1);
-                case Direction.Left:
-                    return (point.X - 1, point.Y);
-                case Direction.Down:
-                    return point;
-                default:
-                    return (point.X, point.Y - 1);
-            }
+                Direction.Up => (point.X - 1, point.Y - 1),
+                Direction.Left => (point.X - 1, point.Y),
+                Direction.Down => point,
+                _ => (point.X, point.Y - 1),
+            };
         }
 
 
@@ -142,32 +130,24 @@ namespace AnnoDesigner.Helper
         /// </summary>
         private static (int x, int y) GetRightCell((int X, int Y) point, Direction direction)
         {
-            switch (direction)
+            return direction switch
             {
-                case Direction.Up:
-                    return (point.X, point.Y - 1);
-                case Direction.Left:
-                    return (point.X - 1, point.Y - 1);
-                case Direction.Down:
-                    return (point.X - 1, point.Y);
-                default:
-                    return point;
-            }
+                Direction.Up => (point.X, point.Y - 1),
+                Direction.Left => (point.X - 1, point.Y - 1),
+                Direction.Down => (point.X - 1, point.Y),
+                _ => point,
+            };
         }
 
         private static (int x, int y) MoveForward((int X, int Y) point, Direction direction)
         {
-            switch (direction)
+            return direction switch
             {
-                case Direction.Up:
-                    return (point.X, point.Y - 1);
-                case Direction.Left:
-                    return (point.X - 1, point.Y);
-                case Direction.Down:
-                    return (point.X, point.Y + 1);
-                default:
-                    return (point.X + 1, point.Y);
-            }
+                Direction.Up => (point.X, point.Y - 1),
+                Direction.Left => (point.X - 1, point.Y),
+                Direction.Down => (point.X, point.Y + 1),
+                _ => (point.X + 1, point.Y),
+            };
         }
 
         /// <summary>

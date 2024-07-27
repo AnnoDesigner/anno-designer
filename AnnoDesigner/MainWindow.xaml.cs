@@ -13,13 +13,14 @@ using AnnoDesigner.Core.Layout;
 using AnnoDesigner.Core.Models;
 using AnnoDesigner.ViewModels;
 using NLog;
+using Wpf.Ui.Controls;
 
 namespace AnnoDesigner
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, ICloseable
+    public partial class MainWindow : FluentWindow, ICloseable
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 

@@ -26,8 +26,11 @@
     </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="240*" />
-            <RowDefinition Height="110*" />
+            <RowDefinition Height="68*" />
+            <RowDefinition Height="21*" />
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <Image Source="pack://application:,,,/Images/Icons/icon64.png"
                Stretch="Uniform"
@@ -40,80 +43,71 @@
                Margin="82,12,0,0"
                VerticalAlignment="Top"
                FontSize="24"
-               Content="Anno Designer" />
+               Content="Anno Designer" Height="36" Width="157" />
         <Label Margin="82,48,0,0"
                VerticalAlignment="Top"
-               Content="{l:Localize BuildingLayoutDesigner}" />
+               Content="{l:Localize BuildingLayoutDesigner}" Height="20" />
         <Label Margin="12,92,0,0"
                VerticalAlignment="Top"
                FontSize="14"
-               Content="{l:Localize Credits}" />
+               Content="{l:Localize Credits}" Height="23" />
         <!-- Can't use StringFormat with label elements -->
-        <TextBlock Margin="24,120,0,0"
+        <TextBlock Margin="24,132,0,0"
                    VerticalAlignment="Top"
-                   Text="{l:Localize OriginalApplicationBy, StringFormat=\{0\} Jan Christoph Bernack (ZackSchneider)}" />
+                   Text="{l:Localize OriginalApplicationBy, StringFormat=\{0\} Jan Christoph Bernack (ZackSchneider)}" Height="16" />
         <TextBlock Margin="24,153,0,0"
                    VerticalAlignment="Top"
-                   Text="{l:Localize CombinedForAnnoVersions, StringFormat='\{0\} Anno 1404, 2070, 2205 and 1800'}" />
+                   Text="{l:Localize CombinedForAnnoVersions, StringFormat='\{0\} Anno 1404, 2070, 2205 and 1800'}" Height="16" />
         <TextBlock Margin="24,171,0,0"
                    VerticalAlignment="Top"
-                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 1404 by &quot;&lt;Unknown&gt;&quot;'}" />
+                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 1404 by &quot;&lt;Unknown&gt;&quot;'}" Height="16" />
         <TextBlock Margin="24,189,0,0"
                    VerticalAlignment="Top"
-                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 2070 by Peter Hozak (DeathApril)'}" />
+                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 2070 by Peter Hozak (DeathApril)'}" Height="16" />
         <TextBlock Margin="24,207,0,0"
                    VerticalAlignment="Top"
-                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 2205 by PickledWhispers'}" />
+                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 2205 by PickledWhispers'}" Height="16" />
         <TextBlock Margin="24,225,0,0"
                    VerticalAlignment="Top"
-                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 1800 by Sting McRay'}" />
-        <Label Margin="24,2,0,0"
+                   Text="{l:Localize BuildingPresets, StringFormat='\{0\} Anno 1800 by Sting McRay'}" Height="16" />
+        <Label Margin="179,2,0,0"
                VerticalAlignment="Top"
-               HorizontalAlignment="Center"
+               HorizontalAlignment="Left"
                Content="{l:Localize AdditionalChanges}"
-               Grid.Row="1" />
-        <Label Margin="0,30,0,0"
+               Grid.Row="1" Height="20" Width="242" />
+        <Label
                VerticalAlignment="Top"
                HorizontalContentAlignment="Center"
                Content="{l:Localize ManyThanks}"
-               Grid.Row="1" />
-        <Label Margin="0,57,0,0"
+               Grid.Row="1" Height="20" Margin="0,27,0,0" />
+        <Label Margin="0,52,0,0"
                VerticalAlignment="Top"
                HorizontalContentAlignment="Center"
                Content="{l:Localize VisitTheFandom}"
-               Grid.Row="1" />
-        <Button Width="117"
-                Height="23"
-                Margin="10,0,0,10"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Left"
+               Grid.Row="1" Height="20" />
+        <Button  
+                Margin="10,0,0,0"
                 Content="{l:Localize OriginalHomepage}"
                 Command="{Binding OpenOriginalHomepageCommand}"
-                Grid.Row="1" />
-        <Button Width="117"
-                Height="23"
-                Margin="145,0,0,10"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Left"
+                Grid.Row="3" Height="32" Width="143" />
+        <Button  
+                Margin="158,0,0,0"
                 Content="{l:Localize ProjectHomepage}"
                 Command="{Binding OpenProjectHomepageCommand}"
-                Grid.Row="1" />
-        <Button Width="118"
-                Height="23"
-                Margin="278,0,145,10"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Center"
+                Grid.Row="3" Height="32" Width="137" />
+        <Button  
+                Margin="300,0,0,0"
                 Content="{l:Localize GoToFandom}"
                 Command="{Binding OpenWikiHomepageCommand}"
-                Grid.Row="1" />
-        <Button Width="117"
-                Height="23"
-                Margin="0,0,10,10"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Right"
+                Grid.Row="3" Height="32" Width="112" />
+        <Button  
+                Margin="0,0,10,0"
                 Content="{l:Localize Close}"
                 Command="{Binding CloseWindowCommand}"
                 CommandParameter="{Binding ElementName=aboutWindow}"
-                Grid.Row="1" />
+                Grid.Row="3" Height="32" Width="58" HorizontalAlignment="Right" />
+        <TextBlock Margin="24,115,-1,0"
+            VerticalAlignment="Top"
+            Text="Developed By @rasyidf" Height="16" />
     </Grid>
 </Window>

@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>AnnoDesigner</RootNamespace>
     <AssemblyName>AnnoDesigner</AssemblyName>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <UseWPF>true</UseWPF>
+    <UseWPF>True</UseWPF>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup>
@@ -62,14 +62,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="icon.ico" />
     <Resource Include="Images\Icons\chevron-down.png" />
     <Resource Include="Images\Icons\left-click.png" />
@@ -82,14 +74,17 @@
     <ProjectReference Include="..\AnnoDesigner.Core\AnnoDesigner.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="3.8.2" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
-    <PackageReference Include="NLog" />
-    <PackageReference Include="Octokit" Version="0.50.0" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.1" />
+    <PackageReference Include="MaterialDesignColors" Version="3.1.1-ci697" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
+    <PackageReference Include="NLog" Version="5.3.2" />
+    <PackageReference Include="Octokit" Version="13.0.1" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-    <PackageReference Include="System.IO.Abstractions" />
-    <PackageReference Include="System.IO.Abstractions.TestingHelpers" />
+    <PackageReference Include="System.IO.Abstractions" Version="21.0.29" />
+    <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="21.0.29" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.0-preview.6.24327.7" />
+    <PackageReference Include="WPF-UI" Version="3.0.5" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="echo create directory for icons &quot;$(TargetDir)icons&quot;&#xD;&#xA;if not exist &quot;$(TargetDir)icons&quot; md &quot;$(TargetDir)icons&quot;&#xD;&#xA;&#xD;&#xA;rem ROBOCOPY exits with &quot;success codes&quot; which are under 8. See: http://support.microsoft.com/kb/954404&#xD;&#xA;rem This means that:&#xD;&#xA;&#xD;&#xA;rem robocopy exit code 0 = no files copied&#xD;&#xA;rem robocopy exit code 1 = files copied&#xD;&#xA;rem When the result is 1, this becomes an error exit code in visual studio.&#xD;&#xA;&#xD;&#xA;echo copy icons from &quot;$(ProjectDir)\icons&quot; to &quot;$(TargetDir)icons&quot;&#xD;&#xA;ROBOCOPY &quot;$(ProjectDir)\icons&quot; &quot;$(TargetDir)icons&quot; *.* /E /NFL /NDL /NJH /NJS /nc /ns /np&#xD;&#xA;&#xD;&#xA;if %2525ERRORLEVEL%2525 GEQ 8 goto failed&#xD;&#xA;&#xD;&#xA;rem end of batch&#xD;&#xA;goto success&#xD;&#xA;&#xD;&#xA;:failed&#xD;&#xA;exit -1&#xD;&#xA;&#xD;&#xA;:success&#xD;&#xA;exit 0" />

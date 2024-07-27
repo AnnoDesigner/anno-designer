@@ -46,14 +46,14 @@
                    Width="433"
                    FontSize="22"
                    Height="38"><Run Text="Please select a language:" /></TextBlock>
-        <ListBox Margin="10,83,191,48"
+        <ListBox Margin="10,96,11,69"
                  HorizontalContentAlignment="Stretch"
                  SelectionMode="Single"
                  ItemsSource="{Binding Languages}"
                  SelectedItem="{Binding SelectedItem}"
                  ScrollViewer.CanContentScroll="False"
                  BorderThickness="0"
-                 Background="#FFECECEC">
+                 Background="#FFECECEC" d:ItemsSource="{d:SampleData ItemCount=5}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <i:InvokeCommandAction Command="{Binding ContinueCommand}"
@@ -76,8 +76,8 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <Button Height="33"
-                Margin="10,0,373,10"
-                VerticalAlignment="Bottom"
+                Margin="191,625,192,0"
+                VerticalAlignment="Top"
                 Content="Continue"
                 Command="{Binding ContinueCommand}"
                 CommandParameter="{Binding ElementName=welcomeWindow}"

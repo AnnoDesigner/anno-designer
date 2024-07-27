@@ -110,46 +110,28 @@ namespace AnnoDesigner.Core.Helper
         /// <returns></returns>
         private static string GetFriendlyDisplayString(Key key)
         {
-            switch (key)
+            return key switch
             {
                 //Also defined as Key.Return. Return Enter explicitly
-                case Key.Enter:
-                    return "Enter";
+                Key.Enter => "Enter",
                 //Also defined as Key.Capital. Return CapsLock explicitly
-                case Key.CapsLock:
-                    return "CapsLock";
+                Key.CapsLock => "CapsLock",
                 //Also defined as Key.Prior. Return PageUp explicitly
-                case Key.PageUp:
-                    return "PageUp";
+                Key.PageUp => "PageUp",
                 //Also defined as Key.Next. Return PageDown explicitly.
-                case Key.PageDown:
-                    return "PageDown";
+                Key.PageDown => "PageDown",
                 //Also defined as Key.Snapshot. Return PrintScreen explicitly
-                case Key.PrintScreen:
-                    return "PrintScreen";
-                case Key.LWin:
-                case Key.RWin:
-                    return "Windows";
-                case Key.LeftShift:
-                case Key.RightShift:
-                    return "Shift";
-                case Key.LeftCtrl:
-                case Key.RightCtrl:
-                    return "Ctrl";
-                case Key.LeftAlt:
-                case Key.RightAlt:
-                    return "Alt";
-                case Key.Decimal:
-                    return "NumPadDecimal";
-                case Key.Subtract:
-                    return "NumPadSubtract";
-                case Key.Multiply:
-                    return "NumPadMultiply";
-                case Key.Divide:
-                    return "NumPadDivide";
-                default:
-                    return key.ToString();
-            }
+                Key.PrintScreen => "PrintScreen",
+                Key.LWin or Key.RWin => "Windows",
+                Key.LeftShift or Key.RightShift => "Shift",
+                Key.LeftCtrl or Key.RightCtrl => "Ctrl",
+                Key.LeftAlt or Key.RightAlt => "Alt",
+                Key.Decimal => "NumPadDecimal",
+                Key.Subtract => "NumPadSubtract",
+                Key.Multiply => "NumPadMultiply",
+                Key.Divide => "NumPadDivide",
+                _ => key.ToString(),
+            };
         }
 
         /// <summary>
@@ -160,25 +142,11 @@ namespace AnnoDesigner.Core.Helper
         /// <returns></returns>
         private static bool IsNumPadKey(Key key)
         {
-            switch (key)
+            return key switch
             {
-                case Key.NumPad0:
-                case Key.NumPad1:
-                case Key.NumPad2:
-                case Key.NumPad3:
-                case Key.NumPad4:
-                case Key.NumPad5:
-                case Key.NumPad6:
-                case Key.NumPad7:
-                case Key.NumPad8:
-                case Key.NumPad9:
-                case Key.Decimal:
-                case Key.Subtract:
-                case Key.Multiply:
-                case Key.Divide:
-                    return true;
-                default: return false;
-            }
+                Key.NumPad0 or Key.NumPad1 or Key.NumPad2 or Key.NumPad3 or Key.NumPad4 or Key.NumPad5 or Key.NumPad6 or Key.NumPad7 or Key.NumPad8 or Key.NumPad9 or Key.Decimal or Key.Subtract or Key.Multiply or Key.Divide => true,
+                _ => false,
+            };
         }
     }
 }

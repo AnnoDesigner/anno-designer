@@ -8,7 +8,7 @@ namespace AnnoDesigner.Models
 {
     public class AvailableRelease
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public ReleaseType Type { get; set; }
 

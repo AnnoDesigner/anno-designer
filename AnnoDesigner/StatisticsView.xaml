@@ -5,12 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:l="clr-namespace:AnnoDesigner.Localization"
              xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
-             xmlns:converter="clr-namespace:AnnoDesigner.Core.Converters;assembly=AnnoDesigner.Core"
+             xmlns:converter="clr-namespace:AnnoDesigner.Core.Converters;assembly=AnnoDesigner.Core" xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewModel:StatisticsViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="350"
-             d:DesignWidth="200"
-             Background="White">
+             d:DesignWidth="300"
+             Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}">
     <UserControl.Resources>
         <converter:BoolToVisibilityConverter x:Key="boolToVisConverter"
                                              TrueValue="Visible"
@@ -35,15 +35,12 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Auto">
         <StackPanel>
-            <TextBlock x:Name="tblNothingPlaced"
-                       Text="{l:Localize StatNothingPlaced}"
-                       Margin="5"
-                       Visibility="{Binding AreStatisticsAvailable, Converter={StaticResource invertedBoolToVisConverter}}" />
+            <ui:InfoBar x:Name="tblNothingPlaced" Title="{l:Localize StatNothingPlaced}" Margin="8" IsClosable="False" IsOpen="True" Visibility="{Binding AreStatisticsAvailable, Converter={StaticResource invertedBoolToVisConverter}}" 
+                        />
 
             <StackPanel Visibility="{Binding AreStatisticsAvailable, Converter={StaticResource boolToVisConverter}}">
-                <GroupBox x:Name="grpBoundingBox"
-                          Header="{l:Localize StatBoundingBox}"
-                          Style="{StaticResource styleGroupBox}">
+                <Expander IsExpanded="True" x:Name="grpBoundingBox"
+                          Header="{l:Localize StatBoundingBox}" Margin="8">
                     <StackPanel>
                         <TextBlock Text="{Binding UsedArea}"
                                    Style="{StaticResource styleGroupEntry}" />
@@ -56,11 +53,10 @@
                             </TextBlock.Text>
                         </TextBlock>
                     </StackPanel>
-                </GroupBox>
+                </Expander>
 
-                <GroupBox x:Name="grpMinArea"
-                          Header="{l:Localize StatMinimumArea}"
-                          Style="{StaticResource styleGroupBox}">
+                <Expander IsExpanded="True" x:Name="grpMinArea"
+                          Header="{l:Localize StatMinimumArea}"  Margin="8">
                     <StackPanel>
                         <TextBlock Style="{StaticResource styleGroupEntry}">
                             <TextBlock.Text>
@@ -71,20 +67,18 @@
                             </TextBlock.Text>
                         </TextBlock>
                     </StackPanel>
-                </GroupBox>
+                </Expander>
 
-                <GroupBox x:Name="grpEfficiency"
-                          Header="{l:Localize StatSpaceEfficiency}"
-                          Style="{StaticResource styleGroupBox}">
+                <Expander IsExpanded="True" x:Name="grpEfficiency"
+                          Header="{l:Localize StatSpaceEfficiency}"  Margin="8">
                     <StackPanel>
                         <TextBlock Text="{Binding Efficiency}"
                                    Style="{StaticResource styleGroupEntry}" />
                     </StackPanel>
-                </GroupBox>
+                </Expander>
 
-                <GroupBox x:Name="grpBuildings"
-                          Header="{l:Localize StatBuildings}"
-                          Style="{StaticResource styleGroupBox}"
+                <Expander IsExpanded="True" x:Name="grpBuildings"
+                          Header="{l:Localize StatBuildings}"  Margin="8"
                           Visibility="{Binding ShowBuildingList , Converter={StaticResource boolToVisConverter}}">
                     <ItemsControl ItemsSource="{Binding Buildings}">
                         <ItemsControl.ItemTemplate>
@@ -100,11 +94,11 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </GroupBox>
+                </Expander>
 
-                <GroupBox x:Name="grpSelectedBuildings"
+                <Expander IsExpanded="True"  x:Name="grpSelectedBuildings"
                           Header="{l:Localize StatBuildingsSelected}"
-                          Style="{StaticResource styleGroupBox}"
+                           Margin="8"
                           Visibility="{Binding ShowSelectedBuildingList, Converter={StaticResource boolToVisConverter}}">
                     <ItemsControl ItemsSource="{Binding SelectedBuildings}">
                         <ItemsControl.ItemTemplate>
@@ -120,7 +114,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </GroupBox>
+                </Expander>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

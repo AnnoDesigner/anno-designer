@@ -1807,12 +1807,11 @@ namespace PresetParser
             // Setting the factionname, thats the first menu after header
             string associatedRegion = "";
             associatedRegion = values?["Building"]?["AssociatedRegions"]?.InnerText;
-            switch (associatedRegion)
+            factionName = associatedRegion switch
             {
-                case "Moderate;Colony01": factionName = "All Worlds"; break;
-                default: factionName = associatedRegion.FirstCharToUpper(); break;
-            }
-
+                "Moderate;Colony01" => "All Worlds",
+                _ => associatedRegion.FirstCharToUpper(),
+            };
             if (values?["Building"]?["BuildingType"]?.InnerText != null)
             {
                 groupName = values["Building"]["BuildingType"].InnerText;

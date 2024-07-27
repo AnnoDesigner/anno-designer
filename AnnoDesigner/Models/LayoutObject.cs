@@ -217,15 +217,12 @@ namespace AnnoDesigner.Models
                     return _wrappedAnnoObject.BlockedAreaWidth;
                 }
 
-                switch (Direction)
+                return Direction switch
                 {
-                    case GridDirection.Up:
-                    case GridDirection.Down: return Size.Width - 0.5;
-                    case GridDirection.Right:
-                    case GridDirection.Left: return Size.Height - 0.5;
-                }
-
-                return 0;
+                    GridDirection.Up or GridDirection.Down => Size.Width - 0.5,
+                    GridDirection.Right or GridDirection.Left => Size.Height - 0.5,
+                    _ => 0,
+                };
             }
         }
 

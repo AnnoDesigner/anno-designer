@@ -93,33 +93,22 @@ namespace AnnoDesigner.Services
 
         public bool? ShowQuestionWithCancel(object owner, string message, string title)
         {
-            MessageBoxResult result;
-
-            if (owner is Window ownerWindow)
-            {
-                result = MessageBox.Show(ownerWindow,
+            var result = owner is Window ownerWindow
+                ? MessageBox.Show(ownerWindow,
                     message,
                     title,
                     MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Question);
-            }
-            else
-            {
-                result = MessageBox.Show(message,
+                    MessageBoxImage.Question)
+                : MessageBox.Show(message,
                     title,
                     MessageBoxButton.YesNoCancel,
                     MessageBoxImage.Question);
-            }
-
-            switch (result)
+            return result switch
             {
-                case MessageBoxResult.Yes:
-                    return true;
-                case MessageBoxResult.No:
-                    return false;
-                default:
-                    return null;
-            }
+                MessageBoxResult.Yes => true,
+                MessageBoxResult.No => false,
+                _ => null,
+            };
         }
     }
 }

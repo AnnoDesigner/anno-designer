@@ -31,20 +31,13 @@ namespace AnnoDesigner.Converters
             if (!(value is ExtendedMouseAction mouseAction)) {
                 return null;
             }
-            switch (mouseAction)
+            return mouseAction switch
             {
-                case ExtendedMouseAction.LeftClick:
-                case ExtendedMouseAction.LeftDoubleClick:
-                    return RESOURCE_ROOT_PATH + "/left-click.png";
-                case ExtendedMouseAction.RightClick:
-                case ExtendedMouseAction.RightDoubleClick:
-                    return RESOURCE_ROOT_PATH + "/right-click.png";
-                case ExtendedMouseAction.MiddleClick:
-                case ExtendedMouseAction.MiddleDoubleClick:
-                    return RESOURCE_ROOT_PATH + "/middle-click.png";
-                default:
-                    return "";
-            }
+                ExtendedMouseAction.LeftClick or ExtendedMouseAction.LeftDoubleClick => RESOURCE_ROOT_PATH + "/left-click.png",
+                ExtendedMouseAction.RightClick or ExtendedMouseAction.RightDoubleClick => RESOURCE_ROOT_PATH + "/right-click.png",
+                ExtendedMouseAction.MiddleClick or ExtendedMouseAction.MiddleDoubleClick => RESOURCE_ROOT_PATH + "/middle-click.png",
+                _ => "",
+            };
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

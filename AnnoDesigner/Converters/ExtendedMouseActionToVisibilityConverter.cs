@@ -19,22 +19,12 @@ namespace AnnoDesigner.Converters
                 return null;
             }
 
-            switch (mouseAction)
+            return mouseAction switch
             {
-                case ExtendedMouseAction.LeftClick:
-                case ExtendedMouseAction.RightClick:
-                case ExtendedMouseAction.MiddleClick:
-                case ExtendedMouseAction.XButton1Click:
-                case ExtendedMouseAction.XButton2Click:
-                case ExtendedMouseAction.WheelClick:
-                    return Visibility.Collapsed;
-                case ExtendedMouseAction.LeftDoubleClick:
-                case ExtendedMouseAction.RightDoubleClick:
-                case ExtendedMouseAction.MiddleDoubleClick:
-                    return Visibility.Visible;
-                default:
-                    return null;
-            }
+                ExtendedMouseAction.LeftClick or ExtendedMouseAction.RightClick or ExtendedMouseAction.MiddleClick or ExtendedMouseAction.XButton1Click or ExtendedMouseAction.XButton2Click or ExtendedMouseAction.WheelClick => Visibility.Collapsed,
+                ExtendedMouseAction.LeftDoubleClick or ExtendedMouseAction.RightDoubleClick or ExtendedMouseAction.MiddleDoubleClick => Visibility.Visible,
+                _ => null,
+            };
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
