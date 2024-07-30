@@ -5,110 +5,97 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using AnnoDesigner.Core.Services;
-using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace AnnoDesigner.Services
 {
     public class MessageBoxService : IMessageBoxService
     {
-        public void ShowMessage(object owner, string message, string title)
+        public async void ShowMessage(object owner, string message, string title)
         {
-            if (owner is Window ownerWindow)
+            var uiMessageBox = new Wpf.Ui.Controls.MessageBox
             {
-                MessageBox.Show(ownerWindow,
-                    message,
-                    title,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-            }
-            else
-            {
-                MessageBox.Show(message,
-                    title,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-            }
+                Owner = owner as Window,
+                Title = title,
+                Content = message,
+                IsPrimaryButtonEnabled = true,
+                PrimaryButtonText = "OK",
+            };
+
+            _ = await uiMessageBox.ShowDialogAsync();
+
         }
 
-        public void ShowWarning(object owner, string message, string title)
+        public async void ShowWarning(object owner, string message, string title)
         {
-            if (owner is Window ownerWindow)
+            var uiMessageBox = new Wpf.Ui.Controls.MessageBox
             {
-                MessageBox.Show(ownerWindow,
-                    message,
-                    title,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
-            }
-            else
-            {
-                MessageBox.Show(message,
-                    title,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
-            }
+                Owner = owner as Window,
+                Title = title,
+                Content = message,
+                IsPrimaryButtonEnabled = true,
+                PrimaryButtonText = "OK",
+                PrimaryButtonAppearance = Wpf.Ui.Controls.ControlAppearance.Caution
+            };
+
+            _ = uiMessageBox.ShowDialogAsync();
         }
 
-        public void ShowError(object owner, string message, string title)
+        public async void ShowError(object owner, string message, string title)
         {
-            if (owner is Window ownerWindow)
+            var uiMessageBox = new Wpf.Ui.Controls.MessageBox
             {
-                MessageBox.Show(ownerWindow,
-                    message,
-                    title,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
-            else
-            {
-                MessageBox.Show(message,
-                    title,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
+                Owner = owner as Window,
+                Title = title,
+                Content = message,
+                IsPrimaryButtonEnabled = true,
+                PrimaryButtonText = "OK",
+                PrimaryButtonAppearance = Wpf.Ui.Controls.ControlAppearance.Danger
+            };
+
+            _ = uiMessageBox.ShowDialogAsync();
         }
 
-        public bool ShowQuestion(object owner, string message, string title)
+        public async Task<bool> ShowQuestion(object owner, string message, string title)
         {
-            MessageBoxResult result;
-
-            if (owner is Window ownerWindow)
+            var uiMessageBox = new Wpf.Ui.Controls.MessageBox
             {
-                result = MessageBox.Show(ownerWindow,
-                    message,
-                    title,
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-            }
-            else
-            {
-                result = MessageBox.Show(message,
-                    title,
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-            }
+                Owner = owner as Window,
+                Title = title,
+                Content = message,
+                IsPrimaryButtonEnabled = true,
+                IsSecondaryButtonEnabled = true,
+                SecondaryButtonText = "No",
+                PrimaryButtonText = "Yes",
+            };
 
-            return result == MessageBoxResult.Yes;
+            var result = await uiMessageBox.ShowDialogAsync();
+
+            return result == Wpf.Ui.Controls.MessageBoxResult.Primary;
         }
 
-        public bool? ShowQuestionWithCancel(object owner, string message, string title)
+        public async Task<bool?> ShowQuestionWithCancel(object owner, string message, string title)
         {
-            var result = owner is Window ownerWindow
-                ? MessageBox.Show(ownerWindow,
-                    message,
-                    title,
-                    MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Question)
-                : MessageBox.Show(message,
-                    title,
-                    MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Question);
+            var uiMessageBox = new Wpf.Ui.Controls.MessageBox
+            {
+                Owner = owner as Window,
+                Title = title,
+                Content = message,
+                IsPrimaryButtonEnabled = true,
+                IsSecondaryButtonEnabled = true,
+
+                SecondaryButtonText = "No",
+                PrimaryButtonText = "Yes",
+            };
+
+            var result = await uiMessageBox.ShowDialogAsync();
             return result switch
             {
-                MessageBoxResult.Yes => true,
-                MessageBoxResult.No => false,
+                Wpf.Ui.Controls.MessageBoxResult.Primary => true,
+                Wpf.Ui.Controls.MessageBoxResult.Secondary => false,
                 _ => null,
             };
         }
+
+
     }
 }

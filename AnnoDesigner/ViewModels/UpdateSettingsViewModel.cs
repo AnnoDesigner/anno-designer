@@ -86,7 +86,7 @@ namespace AnnoDesigner.ViewModels
                     {
                         _appSettings.PromptedForAutoUpdateCheck = true;
 
-                        if (!_messageBoxService.ShowQuestion(Application.Current.MainWindow,
+                        if (!await _messageBoxService.ShowQuestion(Application.Current.MainWindow,
                             _localizationHelper.GetLocalization("ContinueCheckingForUpdates"),
                             _localizationHelper.GetLocalization("ContinueCheckingForUpdatesTitle")))
                         {
@@ -150,7 +150,7 @@ namespace AnnoDesigner.ViewModels
 
                 if (isAutomaticUpdateCheck)
                 {
-                    if (_messageBoxService.ShowQuestion(Application.Current.MainWindow,
+                    if (await _messageBoxService.ShowQuestion(Application.Current.MainWindow,
                         _localizationHelper.GetLocalization("UpdateAvailablePresetMessage"),
                         _localizationHelper.GetLocalization("UpdateAvailableHeader")))
                     {

@@ -86,13 +86,8 @@ namespace AnnoDesigner
             var message = "An unhandled exception occurred.";
 
             //find location of log file
-            FileTarget? fileTarget = (FileTarget)LogManager.Configuration.FindTargetByName("MainLogger");
-            if (fileTarget is null)
-            {
-                _messageBoxService.ShowError("Not Found");
-
-            }
-            var logFile = fileTarget.FileName.Render(new LogEventInfo());
+            var fileTarget = (FileTarget)LogManager.Configuration?.FindTargetByName("MainLogger"); 
+            var logFile = fileTarget?.FileName?.Render(new LogEventInfo());
             if (!string.IsNullOrWhiteSpace(logFile))
             {
                 logFile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), logFile);

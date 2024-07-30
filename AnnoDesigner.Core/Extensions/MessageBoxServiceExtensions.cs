@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using AnnoDesigner.Core.Services;
 
 namespace AnnoDesigner.Core.Extensions
@@ -35,7 +36,7 @@ namespace AnnoDesigner.Core.Extensions
             service.ShowError(null, message, title);
         }
 
-        public static bool ShowQuestion(this IMessageBoxService service, string message, string title = "Question")
+        public static Task<bool> ShowQuestion(this IMessageBoxService service, string message, string title = "Question")
         {
             if (service == null)
             {
@@ -45,7 +46,7 @@ namespace AnnoDesigner.Core.Extensions
             return service.ShowQuestion(null, message, title);
         }
 
-        public static bool? ShowQuestionWithCancel(this IMessageBoxService service, string message, string title = "Question")
+        public static Task<bool?> ShowQuestionWithCancel(this IMessageBoxService service, string message, string title = "Question")
         {
             if (service == null)
             {

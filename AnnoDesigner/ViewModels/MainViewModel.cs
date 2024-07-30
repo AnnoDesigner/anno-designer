@@ -162,7 +162,7 @@ namespace AnnoDesigner.ViewModels
             CanvasResetZoomCommand = new RelayCommand(CanvasResetZoom);
             CanvasNormalizeCommand = new RelayCommand(CanvasNormalize);
             MergeRoadsCommand = new RelayCommand(MergeRoads);
-            LoadLayoutFromJsonCommand = new RelayCommand(ExecuteLoadLayoutFromJson);
+            LoadLayoutFromJsonCommand = new RelayCommand(async (obj) => await ExecuteLoadLayoutFromJsonAsync(obj));
             UnregisterExtensionCommand = new RelayCommand(UnregisterExtension);
             RegisterExtensionCommand = new RelayCommand(RegisterExtension);
             ExportImageCommand = new RelayCommand(ExecuteExportImage);
@@ -175,7 +175,7 @@ namespace AnnoDesigner.ViewModels
             PlaceBuildingCommand = new RelayCommand(ExecutePlaceBuilding);
             ShowPreferencesWindowCommand = new RelayCommand(ExecuteShowPreferencesWindow);
             ShowLicensesWindowCommand = new RelayCommand(ExecuteShowLicensesWindow);
-            OpenRecentFileCommand = new RelayCommand(ExecuteOpenRecentFile);
+            OpenRecentFileCommand = new RelayCommand(async (obj) => await ExecuteOpenRecentFileAsync(obj));
 
             AvailableIcons = new ObservableCollection<IconImage>();
             _noIconItem = GenerateNoIconItem();
@@ -567,7 +567,7 @@ namespace AnnoDesigner.ViewModels
 
         private void AnnoCanvas_OpenFileRequested(object sender, OpenFileEventArgs e)
         {
-            OpenFile(e.FilePath);
+            OpenFileAsync(e.FilePath);
         }
 
         private void AnnoCanvas_SaveFileRequested(object sender, SaveFileEventArgs e)
@@ -765,7 +765,7 @@ namespace AnnoDesigner.ViewModels
         /// <summary>
         /// Loads a new layout from file.
         /// </summary>
-        public void OpenFile(string filePath, bool forceLoad = false)
+        public async Task OpenFileAsync(string filePath, bool forceLoad = false)
         {
             try
             {
@@ -785,11 +785,11 @@ namespace AnnoDesigner.ViewModels
             {
                 logger.Warn(layoutEx, "Version of layout file is not supported.");
 
-                if (_messageBoxService.ShowQuestion(
+                if (await _messageBoxService.ShowQuestion(
                         _localizationHelper.GetLocalization("FileVersionUnsupportedMessage"),
                         _localizationHelper.GetLocalization("FileVersionUnsupportedTitle")))
                 {
-                    OpenFile(filePath, true);
+                    OpenFileAsync(filePath, true);
                 }
             }
             catch (Exception ex)
@@ -1203,9 +1203,9 @@ namespace AnnoDesigner.ViewModels
 
         public ICommand LoadLayoutFromJsonCommand { get; private set; }
 
-        private void ExecuteLoadLayoutFromJson(object param)
+        private async Task ExecuteLoadLayoutFromJsonAsync(object param)
         {
-            if (!AnnoCanvas.CheckUnsavedChanges())
+            if (!await AnnoCanvas.CheckUnsavedChanges())
             {
                 return;
             }
@@ -1213,10 +1213,10 @@ namespace AnnoDesigner.ViewModels
             var input = InputWindow.Prompt(this, _localizationHelper.GetLocalization("LoadLayoutMessage"),
                 _localizationHelper.GetLocalization("LoadLayoutHeader"));
 
-            ExecuteLoadLayoutFromJsonSub(input, false);
+            ExecuteLoadLayoutFromJsonSubAsync(input, false);
         }
 
-        private void ExecuteLoadLayoutFromJsonSub(string jsonString, bool forceLoad = false)
+        private async Task ExecuteLoadLayoutFromJsonSubAsync(string jsonString, bool forceLoad = false)
         {
             try
             {
@@ -1247,11 +1247,11 @@ namespace AnnoDesigner.ViewModels
             {
                 logger.Warn(layoutEx, "Version of layout does not match.");
 
-                if (_messageBoxService.ShowQuestion(
+                if (await _messageBoxService.ShowQuestion(
                         _localizationHelper.GetLocalization("FileVersionMismatchMessage"),
                         _localizationHelper.GetLocalization("FileVersionMismatchTitle")))
                 {
-                    ExecuteLoadLayoutFromJsonSub(jsonString, true);
+                    ExecuteLoadLayoutFromJsonSubAsync(jsonString, true);
                 }
             }
             catch (Exception ex)
@@ -1674,7 +1674,7 @@ namespace AnnoDesigner.ViewModels
 
         public ICommand OpenRecentFileCommand { get; private set; }
 
-        private void ExecuteOpenRecentFile(object param)
+        private async Task ExecuteOpenRecentFileAsync(object param)
         {
             if (!(param is RecentFileItem recentFile))
             {
@@ -1683,12 +1683,12 @@ namespace AnnoDesigner.ViewModels
 
             if (_fileSystem.File.Exists(recentFile.Path))
             {
-                if (!AnnoCanvas.CheckUnsavedChanges())
+                if (!await AnnoCanvas.CheckUnsavedChanges())
                 {
                     return;
                 }
 
-                OpenFile(recentFile.Path);
+                OpenFileAsync(recentFile.Path);
 
                 _recentFilesHelper.AddFile(new RecentFile(recentFile.Path, DateTime.UtcNow));
             }

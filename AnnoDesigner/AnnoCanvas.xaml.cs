@@ -2754,11 +2754,11 @@ namespace AnnoDesigner
 
         #region New/Save/Load/Export methods
 
-        public void CheckUnsavedChangesBeforeCrash()
+        public async void CheckUnsavedChangesBeforeCrash()
         {
             if (UndoManager.IsDirty)
             {
-                var save = _messageBoxService.ShowQuestion(
+                var save = await _messageBoxService.ShowQuestion(
                     _localizationHelper.GetLocalization("SaveUnsavedChanges"),
                     _localizationHelper.GetLocalization("UnsavedChangedBeforeCrash")
                 );
@@ -2774,11 +2774,11 @@ namespace AnnoDesigner
         /// Checks for unsaved changes. Shows Yes/No/Cancel dialog to let user decide what to do.
         /// </summary>
         /// <returns>True if changes were saved or discarded. False if operation should be cancelled.</returns>
-        public bool CheckUnsavedChanges()
+        public async Task<bool> CheckUnsavedChanges()
         {
             if (UndoManager.IsDirty)
             {
-                var save = _messageBoxService.ShowQuestionWithCancel(
+                var save = await _messageBoxService.ShowQuestionWithCancel(
                     _localizationHelper.GetLocalization("SaveUnsavedChanges"),
                     _localizationHelper.GetLocalization("UnsavedChanged")
                 );
@@ -2799,9 +2799,9 @@ namespace AnnoDesigner
         /// <summary>
         /// Removes all objects from the grid.
         /// </summary>
-        public void NewFile()
+        public async Task NewFileAsync()
         {
-            if (!CheckUnsavedChanges())
+            if (!await CheckUnsavedChanges())
             {
                 return;
             }
@@ -2860,9 +2860,9 @@ namespace AnnoDesigner
         /// <summary>
         /// Opens a dialog and loads the given file.
         /// </summary>
-        public void OpenFile()
+        public async Task OpenFileAsync()
         {
-            if (!CheckUnsavedChanges())
+            if (!await CheckUnsavedChanges())
             {
                 return;
             }
@@ -2898,8 +2898,8 @@ namespace AnnoDesigner
             // create event handler mapping
             CommandExecuteMappings = new Dictionary<ICommand, Action<AnnoCanvas>>
             {
-                { ApplicationCommands.New, _ => _.NewFile() },
-                { ApplicationCommands.Open, _ => _.OpenFile() },
+                { ApplicationCommands.New, _ => _.NewFileAsync() },
+                { ApplicationCommands.Open, _ => _.OpenFileAsync() },
                 { ApplicationCommands.Save, _ => _.Save() },
                 { ApplicationCommands.SaveAs, _ => _.SaveAs() }
             };

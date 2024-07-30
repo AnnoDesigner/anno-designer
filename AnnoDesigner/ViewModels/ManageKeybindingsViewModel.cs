@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using AnnoDesigner.Core.Controls;
 using AnnoDesigner.Core.Extensions;
@@ -36,7 +37,7 @@ namespace AnnoDesigner.ViewModels
             _localizationHelper = localizationHelperToUse;
 
             EditCommand = new RelayCommand<Hotkey>(ExecuteRebind);
-            ResetHotkeysCommand = new RelayCommand(ExecuteResetHotkeys);
+            ResetHotkeysCommand = new RelayCommand(async (obj) => await ExecuteResetHotkeysAsync(obj));
             this.commons = commons;
             this.commons.SelectedLanguageChanged += Instance_SelectedLanguageChanged;
 
@@ -94,9 +95,9 @@ namespace AnnoDesigner.ViewModels
             UpdateRebindButtonText();
         }
 
-        private void ExecuteResetHotkeys(object param)
+        private async Task ExecuteResetHotkeysAsync(object param)
         {
-            if (_messageBoxService.ShowQuestion(_localizationHelper.GetLocalization(RESET_ALL_CONFIRMATION_MESSAGE),
+            if (await _messageBoxService.ShowQuestion(_localizationHelper.GetLocalization(RESET_ALL_CONFIRMATION_MESSAGE),
                 _localizationHelper.GetLocalization(RESET_ALL)))
             {
                 HotkeyCommandManager.ResetHotkeys();

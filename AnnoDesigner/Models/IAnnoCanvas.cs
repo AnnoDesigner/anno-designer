@@ -51,7 +51,7 @@ namespace AnnoDesigner.Models
         void RaiseStatisticsUpdated(UpdateStatisticsEventArgs args);
         void RaiseColorsInLayoutUpdated();
         Rect ComputeBoundingRect(IEnumerable<LayoutObject> objects);
-        bool CheckUnsavedChanges();
+        Task<bool> CheckUnsavedChanges();
         void CheckUnsavedChangesBeforeCrash();
     }
 }

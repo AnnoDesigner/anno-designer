@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -88,7 +89,7 @@ namespace AnnoDesigner
             // load file given by argument
             if (App.StartupArguments is OpenArgs startupArgs && !string.IsNullOrEmpty(startupArgs.FilePath))
             {
-                _mainViewModel.OpenFile(startupArgs.FilePath);
+                _mainViewModel.OpenFileAsync(startupArgs.FilePath);
             }
             // export layout to image
             else if (App.StartupArguments is ExportArgs exportArgs && !string.IsNullOrEmpty(exportArgs.LayoutFilePath) && !string.IsNullOrEmpty(exportArgs.ExportedImageFilePath))
@@ -154,9 +155,9 @@ namespace AnnoDesigner
 
         #endregion
 
-        private void WindowClosing(object sender, CancelEventArgs e)
+        private async void WindowClosing(object sender, CancelEventArgs e)
         {
-            if (!annoCanvas.CheckUnsavedChanges())
+            if (!await annoCanvas.CheckUnsavedChanges())
             {
                 e.Cancel = true;
                 return;
@@ -176,5 +177,6 @@ namespace AnnoDesigner
             logger.Trace($"saving settings: \"{userConfig}\"");
 #endif
         }
+
     }
 }
