@@ -1,0 +1,19 @@
+﻿<UserControl
+    x:Class="AnnoDesigner.AnnoCanvas"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:AnnoDesigner.Models"
+    d:DesignHeight="200"
+    d:DesignWidth="200"
+    ClipToBounds="True"
+    Focusable="True"
+    mc:Ignorable="d">
+    <!--  This dock panel is used when exporting images only  -->
+    <DockPanel Name="DockPanel" Background="Transparent">
+        <Grid>
+            <!--  Empty grid to use rest of dock panel space  -->
+        </Grid>
+    </DockPanel>
+</UserControl>

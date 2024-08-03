@@ -1,0 +1,160 @@
+﻿<Window
+    x:Class="AnnoDesigner.About"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:l="clr-namespace:AnnoDesigner.Localization"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:properties="clr-namespace:AnnoDesigner.Properties"
+    xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
+    x:Name="aboutWindow"
+    Title="Anno Designer"
+    Width="575"
+    Height="420"
+    d:DataContext="{d:DesignInstance Type=viewModel:AboutViewModel,
+                                     IsDesignTimeCreatable=True}"
+    d:DesignHeight="420"
+    d:DesignWidth="575"
+    Icon="/AnnoDesigner;component/icon.ico"
+    Left="{Binding Source={x:Static properties:Settings.Default}, Path=AboutLeft, Mode=TwoWay}"
+    ResizeMode="NoResize"
+    Top="{Binding Source={x:Static properties:Settings.Default}, Path=AboutTop, Mode=TwoWay}"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+    <Window.InputBindings>
+        <KeyBinding
+            Key="Esc"
+            Command="{Binding CloseWindowCommand}"
+            CommandParameter="{Binding ElementName=aboutWindow}" />
+    </Window.InputBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="68*" />
+            <RowDefinition Height="21*" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
+        </Grid.RowDefinitions>
+        <Image
+            Width="70"
+            Height="75"
+            Margin="7,12,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Source="pack://application:,,,/Images/Icons/icon64.png"
+            Stretch="Uniform" />
+        <Label
+            Width="157"
+            Height="36"
+            Margin="82,12,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="Anno Designer"
+            FontSize="24" />
+        <Label
+            Height="20"
+            Margin="82,48,0,0"
+            VerticalAlignment="Top"
+            Content="{l:Localize BuildingLayoutDesigner}" />
+        <Label
+            Height="23"
+            Margin="12,92,0,0"
+            VerticalAlignment="Top"
+            Content="{l:Localize Credits}"
+            FontSize="14" />
+        <!--  Can't use StringFormat with label elements  -->
+        <TextBlock
+            Height="16"
+            Margin="24,132,0,0"
+            VerticalAlignment="Top"
+            Text="{l:Localize OriginalApplicationBy,
+                              StringFormat=\{0\} Jan Christoph Bernack (ZackSchneider)}" />
+        <TextBlock
+            Height="16"
+            Margin="24,153,0,0"
+            VerticalAlignment="Top"
+            Text="{l:Localize CombinedForAnnoVersions,
+                              StringFormat='\{0\} Anno 1404, 2070, 2205 and 1800'}" />
+        <TextBlock
+            Height="16"
+            Margin="24,171,0,0"
+            VerticalAlignment="Top"
+            Text="{l:Localize BuildingPresets,
+                              StringFormat='\{0\} Anno 1404 by &quot;&lt;Unknown&gt;&quot;'}" />
+        <TextBlock
+            Height="16"
+            Margin="24,189,0,0"
+            VerticalAlignment="Top"
+            Text="{l:Localize BuildingPresets,
+                              StringFormat='\{0\} Anno 2070 by Peter Hozak (DeathApril)'}" />
+        <TextBlock
+            Height="16"
+            Margin="24,207,0,0"
+            VerticalAlignment="Top"
+            Text="{l:Localize BuildingPresets,
+                              StringFormat='\{0\} Anno 2205 by PickledWhispers'}" />
+        <TextBlock
+            Height="16"
+            Margin="24,225,0,0"
+            VerticalAlignment="Top"
+            Text="{l:Localize BuildingPresets,
+                              StringFormat='\{0\} Anno 1800 by Sting McRay'}" />
+        <Label
+            Grid.Row="1"
+            Width="242"
+            Height="20"
+            Margin="179,2,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="{l:Localize AdditionalChanges}" />
+        <Label
+            Grid.Row="1"
+            Height="20"
+            Margin="0,27,0,0"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            Content="{l:Localize ManyThanks}" />
+        <Label
+            Grid.Row="1"
+            Height="20"
+            Margin="0,52,0,0"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            Content="{l:Localize VisitTheFandom}" />
+        <Button
+            Grid.Row="3"
+            Width="143"
+            Height="32"
+            Margin="10,0,0,0"
+            Command="{Binding OpenOriginalHomepageCommand}"
+            Content="{l:Localize OriginalHomepage}" />
+        <Button
+            Grid.Row="3"
+            Width="137"
+            Height="32"
+            Margin="158,0,0,0"
+            Command="{Binding OpenProjectHomepageCommand}"
+            Content="{l:Localize ProjectHomepage}" />
+        <Button
+            Grid.Row="3"
+            Width="112"
+            Height="32"
+            Margin="300,0,0,0"
+            Command="{Binding OpenWikiHomepageCommand}"
+            Content="{l:Localize GoToFandom}" />
+        <Button
+            Grid.Row="3"
+            Width="58"
+            Height="32"
+            Margin="0,0,10,0"
+            HorizontalAlignment="Right"
+            Command="{Binding CloseWindowCommand}"
+            CommandParameter="{Binding ElementName=aboutWindow}"
+            Content="{l:Localize Close}" />
+        <TextBlock
+            Height="16"
+            Margin="24,115,-1,0"
+            VerticalAlignment="Top"
+            Text="Developed By @rasyidf" />
+    </Grid>
+</Window>

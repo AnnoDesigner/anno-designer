@@ -13,6 +13,7 @@ using AnnoDesigner.Core.Models;
 using AnnoDesigner.Core.Presets.Models;
 using AnnoDesigner.Core.RecentFiles;
 using AnnoDesigner.Core.Services;
+using AnnoDesigner.Helper;
 using AnnoDesigner.Models;
 using AnnoDesigner.Undo;
 using AnnoDesigner.Undo.Operations;

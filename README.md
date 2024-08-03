@@ -1,50 +1,68 @@
+# Anno Designer (Improved Fork)
+
 [![GitHub](https://img.shields.io/github/license/AnnoDesigner/anno-designer)](https://github.com/AnnoDesigner/anno-designer/blob/master/LICENSE) [![version](https://img.shields.io/badge/latest--version-9.4-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4) [![presets version](https://img.shields.io/badge/presets--version-5.1-blue)](https://github.com/AnnoDesigner/anno-designer/releases/tag/Presetsv5.1) [![Discord](https://img.shields.io/discord/571011757317947406?label=help%2Fdiscord)](https://discord.gg/JJpHWRB)
 
-# Anno Designer
+A building layout designer for Ubisoft's Anno-series with significant improvements.
 
-A building layout designer for Ubisoft's Anno-series
+This is a fork of the project originally created by JcBernack - https://github.com/JcBernack/anno-designer
 
-This is a fork of the project created by JcBernack - https://github.com/JcBernack/anno-designer
+## Key Improvements in this Fork
+
+- Updated to .NET 9 for improved performance and new language features
+- Migrated to Fluent UI for a modern and consistent user interface
+- Refactored project structure for better maintainability and extensibility
 
 ## Latest Releases
 
 ### [Anno Designer 9.4](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4)
-
 #### [Latest Presets file release](https://github.com/AnnoDesigner/anno-designer/releases/tag/Presetsv5.1)
-
 The presets update can also be downloaded automatically by the application.
 
 ## Discord
 
-Keep up to date the latest developments. If you have any ideas or questions that you want to share with us, or are running into an error with the designer, then the discord is the perfect place to join.
+Join our Discord community to keep up with the latest developments, share ideas, ask questions, or get help with any issues:
 
 <https://discord.gg/JJpHWRB>
 
 ## Summary
 
-The **Anno Designer** is a standalone windows application that can be used for creating and exporting layouts. It uses a drag/drop system and is intuitive and easy to use.  
-**The Anno Designer supports the following Anno versions: 1404, 2070, 2205, 1800**.
+The **Anno Designer** is a standalone Windows application for creating and exporting layouts for Anno games. It features an intuitive drag-and-drop interface, making it easy to use for both beginners and experienced players.
 
-## How to use
+**Supported Anno versions: 1404, 2070, 2205, 1800**
 
-**Download the latest version from the [here](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4)** (select the .exe file). Run it, and use it to design layouts!
+## How to Use
 
-Anno Designer can also be started from the command line for advanced usages.  
-Please see [this documentation](doc/CommandLineParameters.md) for more information and examples.
+1. **Download the latest version [here](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4)** (select the .exe file).
+2. Run the application to start designing your layouts.
+
+For advanced usage, Anno Designer can be started from the command line. See [this documentation](doc/CommandLineParameters.md) for more information and examples.
 
 ## Technology
 
-This application is written in C# (.NET Framework 4.8) and uses WPF.  
-The .NET Framework is available via Windows Update and further information about installing is available on [this site](https://docs.microsoft.com/en-us/dotnet/framework/install/).
+- Written in C# (.NET 9)
+- Uses WPF (Windows Presentation Foundation) with Fluent UI
+- Requires the .NET 9 runtime, which can be downloaded from the [official Microsoft website](https://dotnet.microsoft.com/download/dotnet/9.0)
 
-## Game data and icons
+## Game Data and Icons
 
-The building presets and icons are extracted from game files using the [RDA explorer](https://github.com/lysannschlegel/RDAExplorer) and a custom script written by Peter Hozak.  
-See the development pages at wikia: <http://anno2070.wikia.com/wiki/Development_Pages>
+Building presets and icons are extracted from game files using:
+- [RDA Explorer](https://github.com/lysannschlegel/RDAExplorer)
+- Custom script by Peter Hozak
+- Additional work by [StingMcRay](https://github.com/StingMcRay) for Anno 2205 and Anno 1800 icons
 
-[StingMcRay](https://github.com/StingMcRay) has also done a lot of work on this, extracting icons from Anno 2205 and Anno 1800.
+For more information, visit the development pages at: <http://anno2070.wikia.com/wiki/Development_Pages>
 
-Included in this repo is a modified version of the PresetParser - which supports the extraction of data from all the different Anno versions. It is not required to run the app (and is not included in any release).
+A modified version of the PresetParser, supporting data extraction from all Anno versions, is included in this repository. It is not required to run the app and is not included in releases.
+
+## Contributing
+
+We welcome contributions to this project! If you'd like to contribute, please:
+
+1. Fork the repository
+2. Create a new branch for your feature or bug fix
+3. Make your changes and commit them with clear, descriptive messages
+4. Push your changes to your fork
+5. Create a pull request with a description of your changes
 
 ## License
 

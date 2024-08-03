@@ -7,11 +7,12 @@
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="..\..\Presets\treeLocalization.json" Link="Testdata\TreeLocalization\treeLocalization.json">
+    <None Include="..\..\Presets\treeLocalization.json" Link="Testdata\TreeLocalization\Presets\treeLocalization.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
     <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="21.0.29" />
     <PackageReference Include="xunit" Version="2.9.0" />
@@ -45,5 +46,8 @@
     <None Update="Testdata\TreeLocalization\1language_2translations.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Testdata\TreeLocalization\Presets\" />
   </ItemGroup>
 </Project>

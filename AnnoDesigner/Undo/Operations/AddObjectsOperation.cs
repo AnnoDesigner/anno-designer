@@ -1,27 +1,26 @@
 ﻿using System.Collections.Generic;
 
-namespace AnnoDesigner.Undo.Operations
+namespace AnnoDesigner.Undo.Operations;
+
+public class AddObjectsOperation<T> : BaseOperation
 {
-    public class AddObjectsOperation<T> : BaseOperation
+    public IEnumerable<T> Objects { get; set; }
+
+    public ICollection<T> Collection { get; set; }
+
+    protected override void UndoOperation()
     {
-        public IEnumerable<T> Objects { get; set; }
-
-        public ICollection<T> Collection { get; set; }
-
-        protected override void UndoOperation()
+        foreach (T obj in Objects)
         {
-            foreach (var obj in Objects)
-            {
-                Collection.Remove(obj);
-            }
+            _ = Collection.Remove(obj);
         }
+    }
 
-        protected override void RedoOperation()
+    protected override void RedoOperation()
+    {
+        foreach (T obj in Objects)
         {
-            foreach (var obj in Objects)
-            {
-                Collection.Add(obj);
-            }
+            Collection.Add(obj);
         }
     }
 }

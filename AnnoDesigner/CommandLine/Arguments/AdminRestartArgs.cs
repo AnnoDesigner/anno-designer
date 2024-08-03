@@ -1,26 +1,25 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Binding;
 
-namespace AnnoDesigner.CommandLine.Arguments
-{
-    public class AdminRestartArgs : IProgramArgs
-    {
-        public class Binder : ArgsBinderBase<AdminRestartArgs>
-        {
-            public Binder()
-            {
-                command = new Command(Arguments)
-                {
-                    IsHidden = true
-                };
-            }
+namespace AnnoDesigner.CommandLine.Arguments;
 
-            protected override AdminRestartArgs GetBoundValue(BindingContext bindingContext)
+public class AdminRestartArgs : IProgramArgs
+{
+    public class Binder : ArgsBinderBase<AdminRestartArgs>
+    {
+        public Binder()
+        {
+            command = new Command(Arguments)
             {
-                return new AdminRestartArgs();
-            }
+                IsHidden = true
+            };
         }
 
-        public const string Arguments = "askAdmin";
+        protected override AdminRestartArgs GetBoundValue(BindingContext bindingContext)
+        {
+            return new AdminRestartArgs();
+        }
     }
+
+    public const string Arguments = "askAdmin";
 }

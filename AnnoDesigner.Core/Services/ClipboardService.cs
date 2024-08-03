@@ -6,72 +6,71 @@ using AnnoDesigner.Core.Layout.Models;
 using AnnoDesigner.Core.Models;
 using Newtonsoft.Json;
 
-namespace AnnoDesigner.Core.Services
+namespace AnnoDesigner.Core.Services;
+
+public class ClipboardService : IClipboardService
 {
-    public class ClipboardService : IClipboardService
+    private readonly ILayoutLoader _layoutLoader;
+    private readonly IClipboard _clipboard;
+
+    public ClipboardService(ILayoutLoader layoutLoaderToUse, IClipboard clipboardToUse)
     {
-        private readonly ILayoutLoader _layoutLoader;
-        private readonly IClipboard _clipboard;
+        _layoutLoader = layoutLoaderToUse;
+        _clipboard = clipboardToUse;
+    }
 
-        public ClipboardService(ILayoutLoader layoutLoaderToUse, IClipboard clipboardToUse)
+    public void Copy(IEnumerable<AnnoObject> objects)
+    {
+        if (objects is not null && objects.Any())
         {
-            _layoutLoader = layoutLoaderToUse;
-            _clipboard = clipboardToUse;
+            using var memoryStream = new MemoryStream();
+            _layoutLoader.SaveLayout(new LayoutFile(objects), memoryStream);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            _clipboard.Clear();
+            _clipboard.SetData(CoreConstants.AnnoDesignerClipboardFormat, memoryStream);
+            _clipboard.Flush();
+        }
+    }
+
+    public ICollection<AnnoObject> Paste()
+    {
+        var files = _clipboard.GetFileDropList();
+        if (files?.Count == 1)
+        {
+            try
+            {
+                return _layoutLoader.LoadLayout(files[0], forceLoad: true).Objects;
+            }
+            catch (JsonReaderException) { }
         }
 
-        public void Copy(IEnumerable<AnnoObject> objects)
+        if (_clipboard.ContainsData(CoreConstants.AnnoDesignerClipboardFormat))
         {
-            if (objects is not null && objects.Any())
+            try
             {
-                using var memoryStream = new MemoryStream();
-                _layoutLoader.SaveLayout(new LayoutFile(objects), memoryStream);
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                _clipboard.Clear();
-                _clipboard.SetData(CoreConstants.AnnoDesignerClipboardFormat, memoryStream);
-                _clipboard.Flush();
+                var stream = _clipboard.GetData(CoreConstants.AnnoDesignerClipboardFormat) as Stream;
+                if (stream is not null)
+                {
+                    return _layoutLoader.LoadLayout(stream, forceLoad: true).Objects;
+                }
             }
+            catch (JsonReaderException) { }
         }
 
-        public ICollection<AnnoObject> Paste()
+        if (_clipboard.ContainsText())
         {
-            var files = _clipboard.GetFileDropList();
-            if (files?.Count == 1)
+            using var memoryStream = new MemoryStream();
+            using var streamWriter = new StreamWriter(memoryStream);
+            streamWriter.Write(_clipboard.GetText());
+            streamWriter.Flush();
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            try
             {
-                try
-                {
-                    return _layoutLoader.LoadLayout(files[0], forceLoad: true).Objects;
-                }
-                catch (JsonReaderException) { }
+                return _layoutLoader.LoadLayout(memoryStream, forceLoad: true).Objects;
             }
-
-            if (_clipboard.ContainsData(CoreConstants.AnnoDesignerClipboardFormat))
-            {
-                try
-                {
-                    var stream = _clipboard.GetData(CoreConstants.AnnoDesignerClipboardFormat) as Stream;
-                    if (stream is not null)
-                    {
-                        return _layoutLoader.LoadLayout(stream, forceLoad: true).Objects;
-                    }
-                }
-                catch (JsonReaderException) { }
-            }
-
-            if (_clipboard.ContainsText())
-            {
-                using var memoryStream = new MemoryStream();
-                using var streamWriter = new StreamWriter(memoryStream);
-                streamWriter.Write(_clipboard.GetText());
-                streamWriter.Flush();
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                try
-                {
-                    return _layoutLoader.LoadLayout(memoryStream, forceLoad: true).Objects;
-                }
-                catch (JsonReaderException) { }
-            }
-
-            return Array.Empty<AnnoObject>();
+            catch (JsonReaderException) { }
         }
+
+        return Array.Empty<AnnoObject>();
     }
 }

@@ -2,29 +2,28 @@
 using System.Windows;
 using AnnoDesigner.Core.Models;
 
-namespace AnnoDesigner.Core.DataStructures
+namespace AnnoDesigner.Core.DataStructures;
+
+public interface IQuadTree<T> : ICollection<T>
+    where T : IBounded
 {
-    public interface IQuadTree<T> : ICollection<T>
-        where T : IBounded
-    {
-        Rect Extent { get; }
+    Rect Extent { get; }
 
-        void EnsureBounds(Rect bounds);
+    void EnsureBounds(Rect bounds);
 
-        void Inflate(ResizeDirection direction);
+    void Inflate(ResizeDirection direction);
 
-        void ReIndex(T item, Rect oldBounds);
+    void ReIndex(T item, Rect oldBounds);
 
-        void Move(T item, Rect newBounds);
+    void Move(T item, Rect newBounds);
 
-        void Move(T item, Vector offset);
+    void Move(T item, Vector offset);
 
-        IEnumerable<T> GetItemsIntersecting(Rect bounds);
+    IEnumerable<T> GetItemsIntersecting(Rect bounds);
 
-        void AddRange(IEnumerable<T> collection);
+    void AddRange(IEnumerable<T> collection);
 
 #if DEBUG
-        IEnumerable<Rect> GetQuadrantRects();
+    IEnumerable<Rect> GetQuadrantRects();
 #endif
-    }
 }

@@ -1,9 +1,8 @@
-﻿namespace AnnoDesigner.Undo.Operations
-{
-    public interface IOperation
-    {
-        void Undo();
+﻿namespace AnnoDesigner.Undo.Operations;
 
-        void Redo();
-    }
+public interface IOperation
+{
+    void Undo();
+
+    void Redo();
 }

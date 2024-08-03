@@ -8,568 +8,567 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AnnoDesigner.Properties {
+namespace AnnoDesigner.Properties; 
+
+
+[global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.2.0.0")]
+internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
     
+    private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
     
-    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.2.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
-        
-        private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-        
-        public static Settings Default {
-            get {
-                return defaultInstance;
-            }
+    public static Settings Default {
+        get {
+            return defaultInstance;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double MainWindowTop {
-            get {
-                return ((double)(this["MainWindowTop"]));
-            }
-            set {
-                this["MainWindowTop"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("0")]
+    public double MainWindowTop {
+        get {
+            return ((double)(this["MainWindowTop"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double MainWindowLeft {
-            get {
-                return ((double)(this["MainWindowLeft"]));
-            }
-            set {
-                this["MainWindowLeft"] = value;
-            }
+        set {
+            this["MainWindowTop"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("800")]
-        public double MainWindowHeight {
-            get {
-                return ((double)(this["MainWindowHeight"]));
-            }
-            set {
-                this["MainWindowHeight"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("0")]
+    public double MainWindowLeft {
+        get {
+            return ((double)(this["MainWindowLeft"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1200")]
-        public double MainWindowWidth {
-            get {
-                return ((double)(this["MainWindowWidth"]));
-            }
-            set {
-                this["MainWindowWidth"] = value;
-            }
+        set {
+            this["MainWindowLeft"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double WelcomeTop {
-            get {
-                return ((double)(this["WelcomeTop"]));
-            }
-            set {
-                this["WelcomeTop"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("800")]
+    public double MainWindowHeight {
+        get {
+            return ((double)(this["MainWindowHeight"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double WelcomeLeft {
-            get {
-                return ((double)(this["WelcomeLeft"]));
-            }
-            set {
-                this["WelcomeLeft"] = value;
-            }
+        set {
+            this["MainWindowHeight"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("200")]
-        public double AboutTop {
-            get {
-                return ((double)(this["AboutTop"]));
-            }
-            set {
-                this["AboutTop"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("1200")]
+    public double MainWindowWidth {
+        get {
+            return ((double)(this["MainWindowWidth"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("200")]
-        public double AboutLeft {
-            get {
-                return ((double)(this["AboutLeft"]));
-            }
-            set {
-                this["AboutLeft"] = value;
-            }
+        set {
+            this["MainWindowWidth"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Default")]
-        public string SelectedLanguage {
-            get {
-                return ((string)(this["SelectedLanguage"]));
-            }
-            set {
-                this["SelectedLanguage"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("0")]
+    public double WelcomeTop {
+        get {
+            return ((double)(this["WelcomeTop"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Normal")]
-        public global::System.Windows.WindowState MainWindowWindowState {
-            get {
-                return ((global::System.Windows.WindowState)(this["MainWindowWindowState"]));
-            }
-            set {
-                this["MainWindowWindowState"] = value;
-            }
+        set {
+            this["WelcomeTop"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool PromptedForAutoUpdateCheck {
-            get {
-                return ((bool)(this["PromptedForAutoUpdateCheck"]));
-            }
-            set {
-                this["PromptedForAutoUpdateCheck"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("0")]
+    public double WelcomeLeft {
+        get {
+            return ((double)(this["WelcomeLeft"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool EnableAutomaticUpdateCheck {
-            get {
-                return ((bool)(this["EnableAutomaticUpdateCheck"]));
-            }
-            set {
-                this["EnableAutomaticUpdateCheck"] = value;
-            }
+        set {
+            this["WelcomeLeft"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool StatsShowStats {
-            get {
-                return ((bool)(this["StatsShowStats"]));
-            }
-            set {
-                this["StatsShowStats"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("200")]
+    public double AboutTop {
+        get {
+            return ((double)(this["AboutTop"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool StatsShowBuildingCount {
-            get {
-                return ((bool)(this["StatsShowBuildingCount"]));
-            }
-            set {
-                this["StatsShowBuildingCount"] = value;
-            }
+        set {
+            this["AboutTop"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowLabels {
-            get {
-                return ((bool)(this["ShowLabels"]));
-            }
-            set {
-                this["ShowLabels"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("200")]
+    public double AboutLeft {
+        get {
+            return ((double)(this["AboutLeft"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowIcons {
-            get {
-                return ((bool)(this["ShowIcons"]));
-            }
-            set {
-                this["ShowIcons"] = value;
-            }
+        set {
+            this["AboutLeft"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowGrid {
-            get {
-                return ((bool)(this["ShowGrid"]));
-            }
-            set {
-                this["ShowGrid"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("Default")]
+    public string SelectedLanguage {
+        get {
+            return ((string)(this["SelectedLanguage"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TreeViewSearchText {
-            get {
-                return ((string)(this["TreeViewSearchText"]));
-            }
-            set {
-                this["TreeViewSearchText"] = value;
-            }
+        set {
+            this["SelectedLanguage"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool SettingsUpgradeNeeded {
-            get {
-                return ((bool)(this["SettingsUpgradeNeeded"]));
-            }
-            set {
-                this["SettingsUpgradeNeeded"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("Normal")]
+    public global::System.Windows.WindowState MainWindowWindowState {
+        get {
+            return ((global::System.Windows.WindowState)(this["MainWindowWindowState"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowPavedRoadsWarning {
-            get {
-                return ((bool)(this["ShowPavedRoadsWarning"]));
-            }
-            set {
-                this["ShowPavedRoadsWarning"] = value;
-            }
+        set {
+            this["MainWindowWindowState"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsPavedStreet {
-            get {
-                return ((bool)(this["IsPavedStreet"]));
-            }
-            set {
-                this["IsPavedStreet"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool PromptedForAutoUpdateCheck {
+        get {
+            return ((bool)(this["PromptedForAutoUpdateCheck"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PresetsTreeExpandedState {
-            get {
-                return ((string)(this["PresetsTreeExpandedState"]));
-            }
-            set {
-                this["PresetsTreeExpandedState"] = value;
-            }
+        set {
+            this["PromptedForAutoUpdateCheck"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PresetsTreeLastVersion {
-            get {
-                return ((string)(this["PresetsTreeLastVersion"]));
-            }
-            set {
-                this["PresetsTreeLastVersion"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("True")]
+    public bool EnableAutomaticUpdateCheck {
+        get {
+            return ((bool)(this["EnableAutomaticUpdateCheck"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool UseCurrentZoomOnExportedImageValue {
-            get {
-                return ((bool)(this["UseCurrentZoomOnExportedImageValue"]));
-            }
-            set {
-                this["UseCurrentZoomOnExportedImageValue"] = value;
-            }
+        set {
+            this["EnableAutomaticUpdateCheck"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool RenderSelectionHighlightsOnExportedImageValue {
-            get {
-                return ((bool)(this["RenderSelectionHighlightsOnExportedImageValue"]));
-            }
-            set {
-                this["RenderSelectionHighlightsOnExportedImageValue"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("True")]
+    public bool StatsShowStats {
+        get {
+            return ((bool)(this["StatsShowStats"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PresetsTreeGameVersionFilter {
-            get {
-                return ((string)(this["PresetsTreeGameVersionFilter"]));
-            }
-            set {
-                this["PresetsTreeGameVersionFilter"] = value;
-            }
+        set {
+            this["StatsShowStats"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool UpdateSupportsPrerelease {
-            get {
-                return ((bool)(this["UpdateSupportsPrerelease"]));
-            }
-            set {
-                this["UpdateSupportsPrerelease"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("True")]
+    public bool StatsShowBuildingCount {
+        get {
+            return ((bool)(this["StatsShowBuildingCount"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowTrueInfluenceRange {
-            get {
-                return ((bool)(this["ShowTrueInfluenceRange"]));
-            }
-            set {
-                this["ShowTrueInfluenceRange"] = value;
-            }
+        set {
+            this["StatsShowBuildingCount"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowInfluences {
-            get {
-                return ((bool)(this["ShowInfluences"]));
-            }
-            set {
-                this["ShowInfluences"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("True")]
+    public bool ShowLabels {
+        get {
+            return ((bool)(this["ShowLabels"]));
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("8.7")]
-        public double CurrentVersion {
-            get {
-                return ((double)(this["CurrentVersion"]));
-            }
+        set {
+            this["ShowLabels"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string HotkeyMappings {
-            get {
-                return ((string)(this["HotkeyMappings"]));
-            }
-            set {
-                this["HotkeyMappings"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("True")]
+    public bool ShowIcons {
+        get {
+            return ((bool)(this["ShowIcons"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string RecentFiles {
-            get {
-                return ((string)(this["RecentFiles"]));
-            }
-            set {
-                this["RecentFiles"] = value;
-            }
+        set {
+            this["ShowIcons"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("{\"A\":255,\"R\":0,\"G\":0,\"B\":0}")]
-        public string ColorGridLines {
-            get {
-                return ((string)(this["ColorGridLines"]));
-            }
-            set {
-                this["ColorGridLines"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("True")]
+    public bool ShowGrid {
+        get {
+            return ((bool)(this["ShowGrid"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("{\"A\":255,\"R\":0,\"G\":0,\"B\":0}")]
-        public string ColorObjectBorderLines {
-            get {
-                return ((string)(this["ColorObjectBorderLines"]));
-            }
-            set {
-                this["ColorObjectBorderLines"] = value;
-            }
+        set {
+            this["ShowGrid"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool UseZoomToPoint {
-            get {
-                return ((bool)(this["UseZoomToPoint"]));
-            }
-            set {
-                this["UseZoomToPoint"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("")]
+    public string TreeViewSearchText {
+        get {
+            return ((string)(this["TreeViewSearchText"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool HideInfluenceOnSelection {
-            get {
-                return ((bool)(this["HideInfluenceOnSelection"]));
-            }
-            set {
-                this["HideInfluenceOnSelection"] = value;
-            }
+        set {
+            this["TreeViewSearchText"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("50")]
-        public double ZoomSensitivityPercentage {
-            get {
-                return ((double)(this["ZoomSensitivityPercentage"]));
-            }
-            set {
-                this["ZoomSensitivityPercentage"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("True")]
+    public bool SettingsUpgradeNeeded {
+        get {
+            return ((bool)(this["SettingsUpgradeNeeded"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool InvertPanningDirection {
-            get {
-                return ((bool)(this["InvertPanningDirection"]));
-            }
-            set {
-                this["InvertPanningDirection"] = value;
-            }
+        set {
+            this["SettingsUpgradeNeeded"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool InvertScrollingDirection {
-            get {
-                return ((bool)(this["InvertScrollingDirection"]));
-            }
-            set {
-                this["InvertScrollingDirection"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool ShowPavedRoadsWarning {
+        get {
+            return ((bool)(this["ShowPavedRoadsWarning"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowScrollbars {
-            get {
-                return ((bool)(this["ShowScrollbars"]));
-            }
-            set {
-                this["ShowScrollbars"] = value;
-            }
+        set {
+            this["ShowPavedRoadsWarning"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowHarborBlockedArea {
-            get {
-                return ((bool)(this["ShowHarborBlockedArea"]));
-            }
-            set {
-                this["ShowHarborBlockedArea"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool IsPavedStreet {
+        get {
+            return ((bool)(this["IsPavedStreet"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public int MaxRecentFiles {
-            get {
-                return ((int)(this["MaxRecentFiles"]));
-            }
-            set {
-                this["MaxRecentFiles"] = value;
-            }
+        set {
+            this["IsPavedStreet"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowPanorama {
-            get {
-                return ((bool)(this["ShowPanorama"]));
-            }
-            set {
-                this["ShowPanorama"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("")]
+    public string PresetsTreeExpandedState {
+        get {
+            return ((string)(this["PresetsTreeExpandedState"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IncludeRoadsInStatisticCalculation {
-            get {
-                return ((bool)(this["IncludeRoadsInStatisticCalculation"]));
-            }
-            set {
-                this["IncludeRoadsInStatisticCalculation"] = value;
-            }
+        set {
+            this["PresetsTreeExpandedState"] = value;
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowMultipleInstanceWarning {
-            get {
-                return ((bool)(this["ShowMultipleInstanceWarning"]));
-            }
-            set {
-                this["ShowMultipleInstanceWarning"] = value;
-            }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("")]
+    public string PresetsTreeLastVersion {
+        get {
+            return ((string)(this["PresetsTreeLastVersion"]));
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool RenderVersionOnExportedImageValue {
-            get {
-                return ((bool)(this["RenderVersionOnExportedImageValue"]));
-            }
-            set {
-                this["RenderVersionOnExportedImageValue"] = value;
-            }
+        set {
+            this["PresetsTreeLastVersion"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool UseCurrentZoomOnExportedImageValue {
+        get {
+            return ((bool)(this["UseCurrentZoomOnExportedImageValue"]));
+        }
+        set {
+            this["UseCurrentZoomOnExportedImageValue"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool RenderSelectionHighlightsOnExportedImageValue {
+        get {
+            return ((bool)(this["RenderSelectionHighlightsOnExportedImageValue"]));
+        }
+        set {
+            this["RenderSelectionHighlightsOnExportedImageValue"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("")]
+    public string PresetsTreeGameVersionFilter {
+        get {
+            return ((string)(this["PresetsTreeGameVersionFilter"]));
+        }
+        set {
+            this["PresetsTreeGameVersionFilter"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool UpdateSupportsPrerelease {
+        get {
+            return ((bool)(this["UpdateSupportsPrerelease"]));
+        }
+        set {
+            this["UpdateSupportsPrerelease"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool ShowTrueInfluenceRange {
+        get {
+            return ((bool)(this["ShowTrueInfluenceRange"]));
+        }
+        set {
+            this["ShowTrueInfluenceRange"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool ShowInfluences {
+        get {
+            return ((bool)(this["ShowInfluences"]));
+        }
+        set {
+            this["ShowInfluences"] = value;
+        }
+    }
+    
+    [global::System.Configuration.ApplicationScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("8.7")]
+    public double CurrentVersion {
+        get {
+            return ((double)(this["CurrentVersion"]));
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("")]
+    public string HotkeyMappings {
+        get {
+            return ((string)(this["HotkeyMappings"]));
+        }
+        set {
+            this["HotkeyMappings"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("")]
+    public string RecentFiles {
+        get {
+            return ((string)(this["RecentFiles"]));
+        }
+        set {
+            this["RecentFiles"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("{\"A\":255,\"R\":0,\"G\":0,\"B\":0}")]
+    public string ColorGridLines {
+        get {
+            return ((string)(this["ColorGridLines"]));
+        }
+        set {
+            this["ColorGridLines"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("{\"A\":255,\"R\":0,\"G\":0,\"B\":0}")]
+    public string ColorObjectBorderLines {
+        get {
+            return ((string)(this["ColorObjectBorderLines"]));
+        }
+        set {
+            this["ColorObjectBorderLines"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool UseZoomToPoint {
+        get {
+            return ((bool)(this["UseZoomToPoint"]));
+        }
+        set {
+            this["UseZoomToPoint"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool HideInfluenceOnSelection {
+        get {
+            return ((bool)(this["HideInfluenceOnSelection"]));
+        }
+        set {
+            this["HideInfluenceOnSelection"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("50")]
+    public double ZoomSensitivityPercentage {
+        get {
+            return ((double)(this["ZoomSensitivityPercentage"]));
+        }
+        set {
+            this["ZoomSensitivityPercentage"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("True")]
+    public bool InvertPanningDirection {
+        get {
+            return ((bool)(this["InvertPanningDirection"]));
+        }
+        set {
+            this["InvertPanningDirection"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool InvertScrollingDirection {
+        get {
+            return ((bool)(this["InvertScrollingDirection"]));
+        }
+        set {
+            this["InvertScrollingDirection"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("True")]
+    public bool ShowScrollbars {
+        get {
+            return ((bool)(this["ShowScrollbars"]));
+        }
+        set {
+            this["ShowScrollbars"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool ShowHarborBlockedArea {
+        get {
+            return ((bool)(this["ShowHarborBlockedArea"]));
+        }
+        set {
+            this["ShowHarborBlockedArea"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("10")]
+    public int MaxRecentFiles {
+        get {
+            return ((int)(this["MaxRecentFiles"]));
+        }
+        set {
+            this["MaxRecentFiles"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool ShowPanorama {
+        get {
+            return ((bool)(this["ShowPanorama"]));
+        }
+        set {
+            this["ShowPanorama"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("False")]
+    public bool IncludeRoadsInStatisticCalculation {
+        get {
+            return ((bool)(this["IncludeRoadsInStatisticCalculation"]));
+        }
+        set {
+            this["IncludeRoadsInStatisticCalculation"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("True")]
+    public bool ShowMultipleInstanceWarning {
+        get {
+            return ((bool)(this["ShowMultipleInstanceWarning"]));
+        }
+        set {
+            this["ShowMultipleInstanceWarning"] = value;
+        }
+    }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("True")]
+    public bool RenderVersionOnExportedImageValue {
+        get {
+            return ((bool)(this["RenderVersionOnExportedImageValue"]));
+        }
+        set {
+            this["RenderVersionOnExportedImageValue"] = value;
         }
     }
 }

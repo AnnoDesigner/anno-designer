@@ -1,89 +1,84 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using AnnoDesigner.Core.Models;
+﻿using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
-namespace AnnoDesigner.ViewModels
+namespace AnnoDesigner.ViewModels;
+
+public class WelcomeViewModel : Notify
 {
-    public class WelcomeViewModel : Notify
+    private readonly ICommons _commons;
+    private readonly IAppSettings _appSettings;
+    private ObservableCollection<SupportedLanguage> _languages;
+    private SupportedLanguage _selectedItem;
+
+    public WelcomeViewModel(ICommons commonsToUse, IAppSettings appSettingsToUse)
     {
-        private readonly ICommons _commons;
-        private readonly IAppSettings _appSettings;
-        private ObservableCollection<SupportedLanguage> _languages;
-        private SupportedLanguage _selectedItem;
+        _commons = commonsToUse;
+        _appSettings = appSettingsToUse;
 
-        public WelcomeViewModel(ICommons commonsToUse, IAppSettings appSettingsToUse)
-        {
-            _commons = commonsToUse;
-            _appSettings = appSettingsToUse;
-
-            Languages = new ObservableCollection<SupportedLanguage>();
-            Languages.Add(new SupportedLanguage("English")
+        Languages =
+        [
+            new SupportedLanguage("English")
             {
                 FlagPath = "Flags/United Kingdom.png"
-            });
-            Languages.Add(new SupportedLanguage("Deutsch")
+            },
+            new SupportedLanguage("Deutsch")
             {
                 FlagPath = "Flags/Germany.png"
-            });
-            Languages.Add(new SupportedLanguage("Français")
+            },
+            new SupportedLanguage("Français")
             {
                 FlagPath = "Flags/France.png"
-            });
-            Languages.Add(new SupportedLanguage("Polski")
+            },
+            new SupportedLanguage("Polski")
             {
                 FlagPath = "Flags/Poland.png"
-            });
-            Languages.Add(new SupportedLanguage("Русский")
+            },
+            new SupportedLanguage("Русский")
             {
                 FlagPath = "Flags/Russia.png"
-            });
-            Languages.Add(new SupportedLanguage("Español")
+            },
+            new SupportedLanguage("Español")
             {
                 FlagPath = "Flags/Spain.png"
-            });
+            },
+        ];
 
-            ContinueCommand = new RelayCommand(Continue, CanContinue);
-        }
+        ContinueCommand = new RelayCommand(Continue, CanContinue);
+    }
 
-        public ObservableCollection<SupportedLanguage> Languages
-        {
-            get { return _languages; }
-            set { UpdateProperty(ref _languages, value); }
-        }
+    public ObservableCollection<SupportedLanguage> Languages
+    {
+        get => _languages;
+        set => UpdateProperty(ref _languages, value);
+    }
 
-        public SupportedLanguage SelectedItem
-        {
-            get { return _selectedItem; }
-            set { UpdateProperty(ref _selectedItem, value); }
-        }
+    public SupportedLanguage SelectedItem
+    {
+        get => _selectedItem;
+        set => UpdateProperty(ref _selectedItem, value);
+    }
 
-        public ICommand ContinueCommand { get; private set; }
+    public ICommand ContinueCommand { get; private set; }
 
-        private void Continue(object param)
-        {
-            LoadSelectedLanguage(param as ICloseable);
-        }
+    private void Continue(object param)
+    {
+        LoadSelectedLanguage(param as ICloseable);
+    }
 
-        private bool CanContinue(object param)
-        {
-            return SelectedItem != null;
-        }
+    private bool CanContinue(object param)
+    {
+        return SelectedItem != null;
+    }
 
-        private void LoadSelectedLanguage(ICloseable window)
-        {
-            _commons.CurrentLanguage = SelectedItem.Name;
+    private void LoadSelectedLanguage(ICloseable window)
+    {
+        _commons.CurrentLanguage = SelectedItem.Name;
 
-            _appSettings.SelectedLanguage = _commons.CurrentLanguage;
-            _appSettings.Save();
+        _appSettings.SelectedLanguage = _commons.CurrentLanguage;
+        _appSettings.Save();
 
-            window?.Close();
-        }
+        window?.Close();
     }
 }

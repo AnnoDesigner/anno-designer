@@ -1,11 +1,3 @@
-﻿namespace PresetParser.Anno1404_Anno2070.Models
-{
-    public class GuidRef
-    {
-        public string Language { get; set; }
+﻿namespace PresetParser.Anno1404_Anno2070.Models;
 
-        public string Guid { get; set; }
-
-        public string GuidReference { get; set; }
-    }
-}
+public record GuidRef(string Language, string Guid, string GuidReference);

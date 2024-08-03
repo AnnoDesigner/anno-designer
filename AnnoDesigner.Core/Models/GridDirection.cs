@@ -1,10 +1,9 @@
-﻿namespace AnnoDesigner.Core.Models
+﻿namespace AnnoDesigner.Core.Models;
+
+public enum GridDirection
 {
-    public enum GridDirection
-    {
-        Up,
-        Right,
-        Down,
-        Left
-    }
+    Up,
+    Right,
+    Down,
+    Left
 }

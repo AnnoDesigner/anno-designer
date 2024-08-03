@@ -1,20 +1,19 @@
-﻿using System;
-using AnnoDesigner.Undo.Operations;
+﻿using AnnoDesigner.Undo.Operations;
+using System;
 
-namespace AnnoDesigner.Undo
+namespace AnnoDesigner.Undo;
+
+public interface IUndoManager
 {
-    public interface IUndoManager
-    {
-        bool IsDirty { get; set; }
+    bool IsDirty { get; set; }
 
-        void Undo();
+    void Undo();
 
-        void Redo();
+    void Redo();
 
-        void Clear();
+    void Clear();
 
-        void RegisterOperation(IOperation operation);
+    void RegisterOperation(IOperation operation);
 
-        void AsSingleUndoableOperation(Action action);
-    }
+    void AsSingleUndoableOperation(Action action);
 }

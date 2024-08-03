@@ -1,4 +1,3 @@
-﻿namespace AnnoDesigner.CommandLine.Arguments
-{
-    public interface IProgramArgs { }
-}
+﻿namespace AnnoDesigner.CommandLine.Arguments;
+
+public interface IProgramArgs { }

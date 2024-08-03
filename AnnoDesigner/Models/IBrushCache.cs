@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
-namespace AnnoDesigner.Models
+namespace AnnoDesigner.Models;
+
+public interface IBrushCache
 {
-    public interface IBrushCache
-    {
-        SolidColorBrush GetSolidBrush(Color color);
-    }
+    SolidColorBrush GetSolidBrush(Color color);
 }

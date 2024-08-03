@@ -1,10 +1,9 @@
-﻿namespace AnnoDesigner.Core.DataStructures
+﻿namespace AnnoDesigner.Core.DataStructures;
+
+public enum ResizeDirection
 {
-    public enum ResizeDirection
-    {
-        TopRight,
-        TopLeft,
-        BottomRight,
-        BottomLeft
-    }
+    TopRight,
+    TopLeft,
+    BottomRight,
+    BottomLeft
 }

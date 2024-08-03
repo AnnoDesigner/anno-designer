@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace AnnoDesigner.Models
+namespace AnnoDesigner.Models;
+
+public interface IAdjacentCellGrouper
 {
-    public interface IAdjacentCellGrouper
-    {
-        IEnumerable<CellGroup<T>> GroupAdjacentCells<T>(T[][] cells, bool returnSingleCells = false);
-    }
+    IEnumerable<CellGroup<T>> GroupAdjacentCells<T>(T[][] cells, bool returnSingleCells = false);
 }

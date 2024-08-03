@@ -7,56 +7,55 @@ using AnnoDesigner.Core.Models;
 using Newtonsoft.Json;
 using NLog;
 
-namespace AnnoDesigner.Core.RecentFiles
+namespace AnnoDesigner.Core.RecentFiles;
+
+public class RecentFilesAppSettingsSerializer : IRecentFilesSerializer
 {
-    public class RecentFilesAppSettingsSerializer : IRecentFilesSerializer
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+    private readonly IAppSettings _appSettings;
+
+    public RecentFilesAppSettingsSerializer(IAppSettings appSettingsToUse)
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        _appSettings = appSettingsToUse;
+    }
 
-        private readonly IAppSettings _appSettings;
-
-        public RecentFilesAppSettingsSerializer(IAppSettings appSettingsToUse)
+    public List<RecentFile> Deserialize()
+    {
+        if (string.IsNullOrWhiteSpace(_appSettings.RecentFiles))
         {
-            _appSettings = appSettingsToUse;
+            return [];
         }
 
-        public List<RecentFile> Deserialize()
+        var savedList = new List<RecentFile>();
+
+        try
         {
-            if (string.IsNullOrWhiteSpace(_appSettings.RecentFiles))
+            var deserializedList = JsonConvert.DeserializeObject<List<RecentFile>>(_appSettings.RecentFiles);
+            if (deserializedList is null)
             {
-                return new List<RecentFile>();
+                return savedList;
             }
 
-            var savedList = new List<RecentFile>();
-
-            try
-            {
-                var deserializedList = JsonConvert.DeserializeObject<List<RecentFile>>(_appSettings.RecentFiles);
-                if (deserializedList is null)
-                {
-                    return savedList;
-                }
-
-                savedList = deserializedList.Where(x => !string.IsNullOrWhiteSpace(x.Path)).ToList();
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, $"Error deserializing saved list of recent files.{Environment.NewLine}{nameof(_appSettings.RecentFiles)}: \"{_appSettings.RecentFiles}\"");
-            }
-
-            return savedList;
+            savedList = deserializedList.Where(x => !string.IsNullOrWhiteSpace(x.Path)).ToList();
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, $"Error deserializing saved list of recent files.{Environment.NewLine}{nameof(_appSettings.RecentFiles)}: \"{_appSettings.RecentFiles}\"");
         }
 
-        public void Serialize(List<RecentFile> recentFiles)
-        {
-            if (recentFiles is null)
-            {
-                return;
-            }
+        return savedList;
+    }
 
-            var json = JsonConvert.SerializeObject(recentFiles);
-            _appSettings.RecentFiles = json;
-            _appSettings.Save();
+    public void Serialize(List<RecentFile> recentFiles)
+    {
+        if (recentFiles is null)
+        {
+            return;
         }
+
+        var json = JsonConvert.SerializeObject(recentFiles);
+        _appSettings.RecentFiles = json;
+        _appSettings.Save();
     }
 }

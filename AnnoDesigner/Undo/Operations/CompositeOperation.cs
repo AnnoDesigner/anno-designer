@@ -1,26 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace AnnoDesigner.Undo.Operations
+namespace AnnoDesigner.Undo.Operations;
+
+public class CompositeOperation : BaseOperation
 {
-    public class CompositeOperation : BaseOperation
+    public ICollection<IOperation> Operations { get; set; } = [];
+
+    protected override void RedoOperation()
     {
-        public ICollection<IOperation> Operations { get; set; } = new List<IOperation>();
-
-        protected override void RedoOperation()
+        foreach (IOperation curOperation in Operations)
         {
-            foreach (var curOperation in Operations)
-            {
-                curOperation.Redo();
-            }
+            curOperation.Redo();
         }
+    }
 
-        protected override void UndoOperation()
+    protected override void UndoOperation()
+    {
+        foreach (IOperation curOperation in Operations.Reverse())
         {
-            foreach (var curOperation in Operations.Reverse())
-            {
-                curOperation.Undo();
-            }
+            curOperation.Undo();
         }
     }
 }

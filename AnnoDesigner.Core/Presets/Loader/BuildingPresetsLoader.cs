@@ -9,31 +9,30 @@ using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Presets.Models;
 using NLog;
 
-namespace AnnoDesigner.Core.Presets.Loader
+namespace AnnoDesigner.Core.Presets.Loader;
+
+public class BuildingPresetsLoader
 {
-    public class BuildingPresetsLoader
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+    public BuildingPresets Load(string pathToBuildingPresetsFile)
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        BuildingPresets result = null;
 
-        public BuildingPresets Load(string pathToBuildingPresetsFile)
+        try
         {
-            BuildingPresets result = null;
-
-            try
+            result = SerializationHelper.LoadFromFile<BuildingPresets>(pathToBuildingPresetsFile);
+            if (result != null)
             {
-                result = SerializationHelper.LoadFromFile<BuildingPresets>(pathToBuildingPresetsFile);
-                if (result != null)
-                {
-                    logger.Debug($"Loaded building presets version: {result.Version}");
-                }
+                logger.Debug($"Loaded building presets version: {result.Version}");
             }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Error loading the buildings.");
-                throw;
-            }
-
-            return result;
         }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Error loading the buildings.");
+            throw;
+        }
+
+        return result;
     }
 }

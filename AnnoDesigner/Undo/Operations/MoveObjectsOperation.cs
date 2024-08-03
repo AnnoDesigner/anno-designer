@@ -1,35 +1,34 @@
-﻿using System.Windows;
-using AnnoDesigner.Core.DataStructures;
+﻿using AnnoDesigner.Core.DataStructures;
 using AnnoDesigner.Core.Models;
+using System.Windows;
 
-namespace AnnoDesigner.Undo.Operations
+namespace AnnoDesigner.Undo.Operations;
+
+public class MoveObjectsOperation<T> : ModifyObjectPropertiesOperation<T, Rect>
+    where T : IBounded
 {
-    public class MoveObjectsOperation<T> : ModifyObjectPropertiesOperation<T, Rect>
-        where T : IBounded
+    public IQuadTree<T> QuadTree { get; set; }
+
+    public MoveObjectsOperation()
     {
-        public IQuadTree<T> QuadTree { get; set; }
+        PropertyName = nameof(IBounded.Bounds);
+        AfterUndoAction = AfterUndo;
+        AfterRedoAction = AfterRedo;
+    }
 
-        public MoveObjectsOperation()
+    private void AfterUndo()
+    {
+        foreach ((T obj, Rect _, Rect newRect) in ObjectPropertyValues)
         {
-            PropertyName = nameof(IBounded.Bounds);
-            AfterUndoAction = AfterUndo;
-            AfterRedoAction = AfterRedo;
+            QuadTree.ReIndex(obj, newRect);
         }
+    }
 
-        private void AfterUndo()
+    private void AfterRedo()
+    {
+        foreach ((T obj, Rect oldRect, Rect _) in ObjectPropertyValues)
         {
-            foreach (var (obj, _, newRect) in ObjectPropertyValues)
-            {
-                QuadTree.ReIndex(obj, newRect);
-            }
-        }
-
-        private void AfterRedo()
-        {
-            foreach (var (obj, oldRect, _) in ObjectPropertyValues)
-            {
-                QuadTree.ReIndex(obj, oldRect);
-            }
+            QuadTree.ReIndex(obj, oldRect);
         }
     }
 }
