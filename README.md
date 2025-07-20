@@ -6,6 +6,9 @@ A building layout designer for Ubisoft's Anno-series
 
 This is a fork of the project created by JcBernack - https://github.com/JcBernack/anno-designer
 
+## This repository is looking for new maintainers
+See the details here https://github.com/AnnoDesigner/anno-designer/issues/454
+
 ## Latest Releases
 
 ### [Anno Designer 9.4](https://github.com/AnnoDesigner/anno-designer/releases/tag/AnnoDesignerv9.4)
