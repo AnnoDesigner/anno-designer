@@ -100,6 +100,8 @@ public class BuildingInfo : IBuildingInfo
     [DataMember(Order = 13)]
     public GridDirection Direction { get; set; } = GridDirection.Down;
 
+    public float Rotation { get; set; } = 0f;
+
     /// <summary>
     /// Game Unit ID number (GUID)
     /// </summary>

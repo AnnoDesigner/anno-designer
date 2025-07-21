@@ -1,7 +1,10 @@
-﻿using AnnoDesigner.Core.Models;
+﻿using AnnoDesigner.Core.Helper;
+using AnnoDesigner.Core.Models;
 using AnnoDesigner.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace AnnoDesigner.Helper;
 
@@ -160,8 +163,27 @@ public class CoordinateHelper : ICoordinateHelper
     /// </summary>
     /// <param name="direction"></param>
     /// <returns></returns>
-    public GridDirection Rotate(GridDirection direction)
+    public float Rotate(float rotation)
     {
-        return (GridDirection)((int)(direction + 1) % 4);
+        return (rotation + float.Pi / 4) % (float.Pi * 2);
+    }
+
+    public Point GridClamp(Point coord, bool xEven, bool yEven)
+    {
+        return new Point(
+                Math.Round(coord.X),
+                Math.Round(coord.Y)
+            );
+    }
+
+    public Point GridClampDiagonal(Point coord, bool xEven, bool yEven)
+    {
+        var roundX = MathHelper.RoundSnap(coord.X, 0.5);
+        var roundY = MathHelper.RoundSnap(coord.Y, 0.5);
+        return new Point(
+                xEven ? roundX + 0.25: roundX,
+                yEven ? roundY + 0.25 : roundY
+            );
+
     }
 }

@@ -1044,7 +1044,7 @@ public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource, IScro
                 LayoutObject hoveredObj = GetObjectAt(_mousePosition);
                 if (hoveredObj != null)
                 {
-                    drawingContext.DrawRectangle(null, _highlightPen, hoveredObj.CalculateScreenRect(_gridSize));
+                    drawingContext.DrawRectangleRotated(null, _highlightPen, hoveredObj.CalculateScreenRect(_gridSize), hoveredObj.RotationDegrees);
                 }
             }
         }
@@ -1356,14 +1356,26 @@ public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource, IScro
                 obj.Position = pos;
             }
         }
+        //Place singular building
         else
         {
             Point pos = _coordinateHelper.ScreenToFractionalGrid(_mousePosition, GridSize);
-            Size size = CurrentObjects[0].Size;
-            pos.X -= size.Width / 2;
-            pos.Y -= size.Height / 2;
+            var layoutObj = CurrentObjects[0];
+            pos.X -= layoutObj.Size.Width / 2;
+            pos.Y -= layoutObj.Size.Height / 2;
+
+                    
             pos = _viewport.OriginToViewport(pos);
-            pos = new Point(Math.Round(pos.X, MidpointRounding.AwayFromZero), Math.Round(pos.Y, MidpointRounding.AwayFromZero));
+
+            if (layoutObj.Is45DegreeOriented)
+            {
+                pos = _coordinateHelper.GridClamp(pos, layoutObj.DiagonalTileSize.Width % 2 == 0, layoutObj.DiagonalTileSize.Height % 2 == 0);
+            }
+            else
+            {
+                pos = _coordinateHelper.GridClamp(pos, layoutObj.Size.Width % 2 == 0, layoutObj.Size.Height % 2 == 0);
+            }
+            
             CurrentObjects[0].Position = pos;
         }
     }
@@ -1390,20 +1402,22 @@ public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource, IScro
         foreach (LayoutObject curLayoutObject in objects)
         {
             AnnoObject obj = curLayoutObject.WrappedAnnoObject;
-
-            // draw object rectangle
             Rect objRect = curLayoutObject.CalculateScreenRect(gridSize);
+
+
 
             SolidColorBrush brush = useTransparency ? curLayoutObject.TransparentBrush : curLayoutObject.RenderBrush;
 
             Pen borderPen = obj.Borderless ? curLayoutObject.GetBorderlessPen(brush, linePenThickness) : _linePen;
-            drawingContext.DrawRectangle(brush, borderPen, objRect);
+
+            drawingContext.DrawRectangleRotated(brush, borderPen, objRect, curLayoutObject.RotationDegrees);
+
             if (renderHarborBlockedArea)
             {
                 Rect? objBlockedRect = curLayoutObject.CalculateBlockedScreenRect(gridSize);
                 if (objBlockedRect.HasValue)
                 {
-                    drawingContext.DrawRectangle(curLayoutObject.BlockedAreaBrush, borderPen, objBlockedRect.Value);
+                    drawingContext.DrawRectangleRotated(curLayoutObject.BlockedAreaBrush, borderPen, objBlockedRect.Value, curLayoutObject.RotationDegrees);
                 }
             }
 
@@ -1519,7 +1533,7 @@ public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource, IScro
             foreach (LayoutObject curLayoutObject in objects)
             {
                 // draw object rectangle                
-                context.DrawRectangle(null, _highlightPen, curLayoutObject.CalculateScreenRect(GridSize));
+                context.DrawRectangleRotated(null, _highlightPen, curLayoutObject.CalculateScreenRect(GridSize), curLayoutObject.RotationDegrees);
             }
 
             context.Close();
@@ -1572,7 +1586,7 @@ public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource, IScro
                     // check if the center is within the influence circle
                     if ((distance.X * distance.X) + (distance.Y * distance.Y) <= radius * radius)
                     {
-                        drawingContext.DrawRectangle(_influencedBrush, _influencedPen, curPlacedObject.CalculateScreenRect(GridSize));
+                        drawingContext.DrawRectangleRotated(_influencedBrush, _influencedPen, curPlacedObject.CalculateScreenRect(GridSize), curPlacedObject.RotationDegrees);
                     }
                 }
 
@@ -1609,7 +1623,7 @@ public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource, IScro
 
             void Highlight(AnnoObject objectInRange)
             {
-                drawingContext.DrawRectangle(_influencedBrush, _influencedPen, placedObjectDictionary[objectInRange].CalculateScreenRect(GridSize));
+                drawingContext.DrawRectangleRotated(_influencedBrush, _influencedPen, placedObjectDictionary[objectInRange].CalculateScreenRect(GridSize), placedObjectDictionary[objectInRange].RotationDegrees);
             }
 
             gridDictionary = RoadSearchHelper.PrepareGridDictionary(placedAnnoObjects);
@@ -1989,7 +2003,7 @@ public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource, IScro
             Rect newRect = _coordinateHelper.Rotate(item.Bounds);
             Rect oldRect = item.Bounds;
             item.Bounds = newRect;
-            item.Direction = _coordinateHelper.Rotate(item.Direction);
+            item.Rotation = _coordinateHelper.Rotate(item.Rotation);
             yield return (item, oldRect);
         }
     }
@@ -2935,7 +2949,7 @@ public partial class AnnoCanvas : UserControl, IAnnoCanvas, IHotkeySource, IScro
         if (CurrentObjects.Count == 1)
         {
             CurrentObjects[0].Size = _coordinateHelper.Rotate(CurrentObjects[0].Size);
-            CurrentObjects[0].Direction = _coordinateHelper.Rotate(CurrentObjects[0].Direction);
+            CurrentObjects[0].Rotation = _coordinateHelper.Rotate(CurrentObjects[0].Rotation);
         }
         else if (CurrentObjects.Count > 1)
         {

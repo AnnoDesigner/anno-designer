@@ -8,6 +8,7 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Navigation;
 
 namespace AnnoDesigner.Models;
 
@@ -40,6 +41,8 @@ public class LayoutObject : IBounded
     private string _iconNameWithoutExtension;
     private string _identifier;
     private Size _size;
+    private Size _squashedSize;
+    private Size _diagonalTileSize; 
     private FormattedText _formattedText;
     private CultureInfo _usedTextCulture;
     private Typeface _usedTextTypeFace;
@@ -203,17 +206,27 @@ public class LayoutObject : IBounded
 
     public double BlockedAreaWidth => _wrappedAnnoObject.BlockedAreaWidth > 0
                 ? _wrappedAnnoObject.BlockedAreaWidth
-                : Direction switch
+                : Rotation switch
                 {
-                    GridDirection.Up or GridDirection.Down => Size.Width - 0.5,
-                    GridDirection.Right or GridDirection.Left => Size.Height - 0.5,
+                    0 or float.Pi => Size.Width - 0.5,
+                    float.Pi/2 or float.Pi * 1.5f => Size.Height - 0.5,
                     _ => 0,
                 };
 
-    public GridDirection Direction
+    public float Rotation
     {
-        get => WrappedAnnoObject.Direction;
-        set => WrappedAnnoObject.Direction = value;
+        get => WrappedAnnoObject.Rotation;
+        set => WrappedAnnoObject.Rotation = value;
+    }
+
+    public float RotationDegrees
+    {
+        get => Rotation * (180 / float.Pi);
+    }
+
+    public bool Is45DegreeOriented
+    {
+        get => (Math.Round(RotationDegrees) + 45) % 90 == 0;
     }
 
     /// <summary>
@@ -236,7 +249,8 @@ public class LayoutObject : IBounded
         {
             if (_screenRect == null)
             {
-                _screenRect = new Rect(_coordinateHelper.GridToScreen(Position, _gridSizeScreenRect), _coordinateHelper.GridToScreen(Size, _gridSizeScreenRect));
+                var size = Is45DegreeOriented ? SquashedSize : Size;
+                _screenRect = new Rect(_coordinateHelper.GridToScreen(Position, _gridSizeScreenRect), _coordinateHelper.GridToScreen(size, _gridSizeScreenRect));
                 _blockedAreaScreenRect = null;
             }
 
@@ -264,31 +278,11 @@ public class LayoutObject : IBounded
                 double blockedAreaScreenWidth = _coordinateHelper.GridToScreen(BlockedAreaWidth, _gridSizeScreenRect);
                 double blockedAreaScreenLength = _coordinateHelper.GridToScreen(_blockedAreaLength, _gridSizeScreenRect);
 
-                switch (Direction)
-                {
-                    case GridDirection.Up:
-                        return _blockedAreaScreenRect = new Rect(
-                            ScreenRect.Left + ((ScreenRect.Width - blockedAreaScreenWidth) / 2),
-                            ScreenRect.Top - blockedAreaScreenLength,
-                            blockedAreaScreenWidth,
-                            blockedAreaScreenLength);
-                    case GridDirection.Right:
-                        return _blockedAreaScreenRect = new Rect(
-                            ScreenRect.Right,
-                            ScreenRect.Top + ((ScreenRect.Height - blockedAreaScreenWidth) / 2),
-                            blockedAreaScreenLength,
-                            blockedAreaScreenWidth);
-                    case GridDirection.Down:
-                        return _blockedAreaScreenRect = new Rect(ScreenRect.Left + ((ScreenRect.Width - blockedAreaScreenWidth) / 2),
-                            ScreenRect.Bottom,
-                            blockedAreaScreenWidth,
-                            blockedAreaScreenLength);
-                    case GridDirection.Left:
-                        return _blockedAreaScreenRect = new Rect(ScreenRect.TopLeft.X - blockedAreaScreenLength,
-                            ScreenRect.TopLeft.Y + ((ScreenRect.Height - blockedAreaScreenWidth) / 2),
-                            blockedAreaScreenLength,
-                            blockedAreaScreenWidth);
-                }
+                return _blockedAreaScreenRect = new Rect(
+                    ScreenRect.Left + ((ScreenRect.Width - blockedAreaScreenWidth) / 2),
+                    ScreenRect.Top - blockedAreaScreenLength,
+                    blockedAreaScreenWidth,
+                    blockedAreaScreenLength);
             }
 
             return _blockedAreaScreenRect;
@@ -352,6 +346,18 @@ public class LayoutObject : IBounded
         }
     }
 
+    public Size SquashedSize
+    {
+        get => _squashedSize;
+        private set => _squashedSize = value;
+    }
+
+    public Size DiagonalTileSize
+    {
+        get => _diagonalTileSize;
+        private set => _diagonalTileSize = value; 
+    }
+
     public Size Size
     {
         get
@@ -367,6 +373,8 @@ public class LayoutObject : IBounded
         {
             WrappedAnnoObject.Size = value;
             _size = value;
+            _diagonalTileSize = new Size(MathHelper.GetDiagonalTiles(_size.Width), MathHelper.GetDiagonalTiles(_size.Height));
+            _squashedSize = new Size(MathHelper.GetRealLengthOfDiagonalTiles(_diagonalTileSize.Width), MathHelper.GetRealLengthOfDiagonalTiles(_diagonalTileSize.Height)); 
 
             _collisionSize = default;
             _screenRect = null;

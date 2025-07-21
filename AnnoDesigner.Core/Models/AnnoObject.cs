@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Windows;
@@ -43,7 +44,7 @@ public class AnnoObject
         //BuildCosts = obj.BuildCosts;
         BlockedAreaLength = obj.BlockedAreaLength;
         BlockedAreaWidth = obj.BlockedAreaWidth;
-        Direction = obj.Direction;
+        Rotation = obj.Rotation;
     }
 
     #endregion
@@ -147,6 +148,13 @@ public class AnnoObject
     /// <summary>
     /// Direction of blocked area
     /// </summary>
+    [Obsolete]
     [DataMember(Order = 14)]
     public GridDirection Direction { get; set; } = GridDirection.Down;
+
+    /// <summary>
+    /// Rotation of blocked area in Radians 
+    /// </summary>
+    [DataMember(Order = 15)]
+    public float Rotation { get; set; } = 0;
 }

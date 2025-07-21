@@ -35,6 +35,7 @@ public class BuildingSettingsViewModel : Notify
     private double _buildingBlockedAreaLength;
     private double _buildingBlockedAreaWidth;
     private GridDirection _buildingDirection;
+    private float _buildingRotation;
     private bool _isPavedStreet;
     private bool _isEnableLabelChecked;
     private bool _isBorderlessChecked;
@@ -174,6 +175,12 @@ public class BuildingSettingsViewModel : Notify
     {
         get => _buildingDirection;
         set => UpdateProperty(ref _buildingDirection, value);
+    }
+
+    public float BuildingRotation
+    {
+        get => _buildingRotation;
+        set => UpdateProperty(ref _buildingRotation, value);
     }
 
     public bool IsPavedStreet

@@ -17,7 +17,7 @@ public interface ICoordinateHelper
 
     Rect Rotate(Rect rect);
 
-    GridDirection Rotate(GridDirection direction);
+    float Rotate(float direction);
 
     double RoundScreenToGrid(double screenLength, int gridStep);
 
@@ -32,4 +32,8 @@ public interface ICoordinateHelper
     public Rect ScreenToGrid(Rect rect, int gridStep);
 
     public Rect GridToScreen(Rect rect, int gridStep);
+
+    public Point GridClamp(Point point, bool xEven, bool yEven);
+
+    public Point GridClampDiagonal(Point point, bool xEven, bool yEven);
 }

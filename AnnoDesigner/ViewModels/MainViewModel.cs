@@ -386,7 +386,8 @@ public class MainViewModel : Notify
             Template = BuildingSettingsViewModel.BuildingTemplate,
             BlockedAreaLength = BuildingSettingsViewModel.BuildingBlockedAreaLength,
             BlockedAreaWidth = BuildingSettingsViewModel.BuildingBlockedAreaWidth,
-            Direction = BuildingSettingsViewModel.BuildingDirection
+            Direction = BuildingSettingsViewModel.BuildingDirection,
+            Rotation = BuildingSettingsViewModel.BuildingRotation
         };
 
         string objIconFileName = "";
@@ -416,6 +417,7 @@ public class MainViewModel : Notify
                     obj.BlockedAreaLength = buildingInfo.BlockedAreaLength;
                     obj.BlockedAreaWidth = buildingInfo.BlockedAreaWidth;
                     obj.Direction = buildingInfo.Direction;
+                    obj.Rotation = buildingInfo.Rotation;
                 }
 
                 //if user entered a new Label Name (as in renaming existing building or naming own building) then name and identifier will be renamed

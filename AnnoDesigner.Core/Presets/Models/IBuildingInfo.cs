@@ -20,4 +20,5 @@ public interface IBuildingInfo
     double BlockedAreaLength { get; set; }
     double BlockedAreaWidth { get; set; }
     GridDirection Direction { get; set; }
+    float Rotation { get; set; }
 }

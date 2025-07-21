@@ -28,7 +28,7 @@ public static class BuildingInfoExtensions
             //BuildCosts = BuildCost
             BlockedAreaLength = buildingInfo.BlockedAreaLength,
             BlockedAreaWidth = buildingInfo.BlockedAreaWidth,
-            Direction = buildingInfo.Direction
+            Rotation = buildingInfo.Rotation,
         };
     }
 
