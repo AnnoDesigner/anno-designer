@@ -3,93 +3,84 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace AnnoDesigner.Localization
+namespace AnnoDesigner.Localization;
+
+public class LocalizeConverter : IValueConverter, IMultiValueConverter
 {
-    public class LocalizeConverter : IValueConverter, IMultiValueConverter
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var translations = value as IDictionary<string, string>;
+        IDictionary<string, string> translations = value as IDictionary<string, string>;
 
-            if (parameter is string key && translations.TryGetValue(key, out var translation))
-            {
-                return translation;
-            }
-#if DEBUG
-            throw new Exception($"Missing translation or not string translation key \"{parameter}\"");
-#else
-            return $"!{parameter}";
-#endif
-        }
-
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        if (parameter is string key && translations.TryGetValue(key, out string translation))
         {
-            if (values.Length == 2 && values[0] is IDictionary<string, string>)
-            {
-                return Convert(values[0], targetType, values[1], culture);
-            }
-            throw new Exception($"Incorrect DynamicLocalize parameters.");
+            return translation;
         }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+//#if DEBUG
+        //throw new Exception($"Missing translation or not string translation key \"{parameter}\"");
+//#else
+        return $"!{parameter}";
+//#endif
     }
 
-    public class Localize : Binding
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
-        private static LocalizeConverter LocalizeConverter { get; } = new LocalizeConverter();
-
-        public string Key
-        {
-            set
-            {
-                ConverterParameter = value;
-            }
-        }
-
-        public Localize() : base(nameof(Localization.Instance.InstanceTranslations))
-        {
-            Source = Localization.Instance;
-            Converter = LocalizeConverter;
-        }
-
-        public Localize(string key) : this()
-        {
-            Key = key;
-        }
+        return values.Length == 2 && values[0] is IDictionary<string, string>
+            ? Convert(values[0], targetType, values[1], culture)
+            : throw new Exception($"Incorrect DynamicLocalize parameters.");
     }
 
-    public class DynamicLocalize : MultiBinding
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        private static LocalizeConverter LocalizeConverter { get; } = new LocalizeConverter();
+        throw new NotImplementedException();
+    }
 
-        public string KeyPath
-        {
-            set
-            {
-                Bindings.Add(new Binding(value));
-            }
-        }
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
 
-        public DynamicLocalize()
-        {
-            Bindings.Add(new Binding(nameof(Localization.Instance.InstanceTranslations))
-            {
-                Source = Localization.Instance
-            });
-            Converter = LocalizeConverter;
-        }
+public class Localize : Binding
+{
+    private static LocalizeConverter LocalizeConverter { get; } = new LocalizeConverter();
 
-        public DynamicLocalize(string keyPath) : this()
+    public string Key
+    {
+        set => ConverterParameter = value;
+    }
+
+    public Localize() : base(nameof(Localization.Instance.InstanceTranslations))
+    {
+        Source = Localization.Instance;
+        Converter = LocalizeConverter;
+    }
+
+    public Localize(string key) : this()
+    {
+        Key = key;
+    }
+}
+
+public class DynamicLocalize : MultiBinding
+{
+    private static LocalizeConverter LocalizeConverter { get; } = new LocalizeConverter();
+
+    public string KeyPath
+    {
+        set => Bindings.Add(new Binding(value));
+    }
+
+    public DynamicLocalize()
+    {
+        Bindings.Add(new Binding(nameof(Localization.Instance.InstanceTranslations))
         {
-            KeyPath = keyPath;
-        }
+            Source = Localization.Instance
+        });
+        Converter = LocalizeConverter;
+    }
+
+    public DynamicLocalize(string keyPath) : this()
+    {
+        KeyPath = keyPath;
     }
 }

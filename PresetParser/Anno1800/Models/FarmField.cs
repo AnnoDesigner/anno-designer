@@ -1,9 +1,3 @@
-﻿namespace PresetParser.Anno1800.Models
-{
-    public class FarmField
-    {
-        public string FieldGuid { get; set; }
+﻿namespace PresetParser.Anno1800.Models;
 
-        public string FieldAmount { get; set; }
-    }
-}
+public record FarmField(string FieldGuid, string FieldAmount);

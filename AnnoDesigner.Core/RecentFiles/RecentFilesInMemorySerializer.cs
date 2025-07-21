@@ -5,25 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Models;
 
-namespace AnnoDesigner.Core.RecentFiles
+namespace AnnoDesigner.Core.RecentFiles;
+
+public class RecentFilesInMemorySerializer : IRecentFilesSerializer
 {
-    public class RecentFilesInMemorySerializer : IRecentFilesSerializer
+    private List<RecentFile> _recentFiles;
+
+    public RecentFilesInMemorySerializer()
     {
-        private List<RecentFile> _recentFiles;
+        _recentFiles = [];            
+    }
 
-        public RecentFilesInMemorySerializer()
-        {
-            _recentFiles = new List<RecentFile>();            
-        }
+    public List<RecentFile> Deserialize()
+    {
+        return _recentFiles;
+    }
 
-        public List<RecentFile> Deserialize()
-        {
-            return _recentFiles;
-        }
-
-        public void Serialize(List<RecentFile> recentFiles)
-        {
-            _recentFiles = new List<RecentFile>(recentFiles);
-        }
+    public void Serialize(List<RecentFile> recentFiles)
+    {
+        _recentFiles = new List<RecentFile>(recentFiles);
     }
 }

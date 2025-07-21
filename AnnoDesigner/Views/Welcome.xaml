@@ -1,0 +1,121 @@
+﻿<ui:FluentWindow
+    x:Class="AnnoDesigner.Welcome"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:AnnoDesigner"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:properties="clr-namespace:AnnoDesigner.Properties"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:viewModel="clr-namespace:AnnoDesigner.ViewModels"
+    x:Name="welcomeWindow"
+    Title="Welcome"
+    Width="525"
+    Height="705"
+    MinWidth="300"
+    MinHeight="300"
+    Padding="10,10,10,10"
+    d:DataContext="{d:DesignInstance Type=viewModel:WelcomeViewModel,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="705"
+    d:DesignWidth="525"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    ExtendsContentIntoTitleBar="True"
+    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Icon="/AnnoDesigner;component/icon.ico"
+    Left="{Binding Source={x:Static properties:Settings.Default}, Path=WelcomeLeft, Mode=TwoWay}"
+    ResizeMode="NoResize"
+    Top="{Binding Source={x:Static properties:Settings.Default}, Path=WelcomeTop, Mode=TwoWay}"
+    WindowBackdropType="Mica"
+    WindowCornerPreference="Round"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Grid Margin="8">
+
+        <Grid
+            Width="502"
+            Height="73"
+            Margin="0,21,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top">
+
+            <TextBlock
+                Width="433"
+                Margin="69,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                FontSize="28"
+                Text="Welcome to the Anno Designer!" />
+            <Image
+                Width="64"
+                Height="68"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Source="Images/Icons/icon64.png"
+                Stretch="Fill" />
+            <TextBlock
+                Width="433"
+                Height="38"
+                Margin="69,35,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                FontSize="18"><Run Text="Please select a language:" /></TextBlock>
+        </Grid>
+        <ui:ListView
+            Margin="0,86,0,30"
+            HorizontalContentAlignment="Stretch"
+            d:ItemsSource="{d:SampleData ItemCount=5}"
+            Background="#FFECECEC"
+            BorderThickness="0"
+            ItemsSource="{Binding Languages}"
+            ScrollViewer.CanContentScroll="False"
+            SelectedItem="{Binding SelectedItem}"
+            SelectionMode="Single">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding ContinueCommand}" CommandParameter="{Binding ElementName=welcomeWindow}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <ui:ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel
+                        Margin="20"
+                        HorizontalAlignment="Stretch"
+                        Orientation="Horizontal">
+                        <Image Width="100" Source="{Binding FlagPath}" />
+                        <Label
+                            Width="Auto"
+                            Margin="8,0,0,0"
+                            VerticalContentAlignment="Center"
+                            Content="{Binding Name}"
+                            FontSize="18" />
+                    </StackPanel>
+                </DataTemplate>
+            </ui:ListView.ItemTemplate>
+        </ui:ListView>
+        <Button
+            Height="33"
+            Margin="181,0,181,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Bottom"
+            Command="{Binding ContinueCommand}"
+            CommandParameter="{Binding ElementName=welcomeWindow}"
+            Content="Continue" />
+        <TextBlock
+            Width="146"
+            Margin="319,78,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            RenderTransformOrigin="0.416,0.462"
+            TextWrapping="Wrap" />
+        <ui:TitleBar
+            Grid.Row="0"
+            Margin="0"
+            ApplicationTheme="Dark"
+            CanMaximize="False"
+            ShowMaximize="False"
+            ShowMinimize="False" />
+    </Grid>
+</ui:FluentWindow>

@@ -1,0 +1,228 @@
+﻿using AnnoDesigner.Core.Models;
+using AnnoDesigner.Models;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows.Input;
+
+namespace AnnoDesigner.ViewModels;
+
+public class HotkeyCommandManager : Notify, INotifyCollectionChanged
+{
+    public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+    private readonly ILocalizationHelper _localizationHelper;
+    /// <summary>
+    /// Backing collection for the ObservableCollection property.
+    /// </summary>
+    private readonly ObservableCollection<Hotkey> _observableCollection;
+    /// <summary>
+    /// Stores hotkey information loaded from user settings. Use <see cref="EnsureMappedHotkeys"/>
+    /// </summary>
+    private IDictionary<string, HotkeyInformation> hotkeyUserMappings;
+    private readonly Dictionary<string, Hotkey> hotkeys;
+
+    public HotkeyCommandManager(ILocalizationHelper localizationHelperToUse)
+    {
+        hotkeys = [];
+        _observableCollection = [];
+        ObservableCollection = _observableCollection;
+        _localizationHelper = localizationHelperToUse;
+    }
+
+    /// <summary>
+    /// Represents a read-only data-bindable collection of hotkeys.
+    /// </summary>
+    //public ReadOnlyObservableCollection<Hotkey> ObservableCollection { get; }
+    public ObservableCollection<Hotkey> ObservableCollection { get; }
+
+    public void HandleCommand(InputEventArgs e)
+    {
+        IEnumerable<Hotkey> values = hotkeys.Values;
+        foreach (Hotkey item in values)
+        {
+
+            if (item?.Binding?.Command?.CanExecute(item.Binding.CommandParameter) ?? false)
+            {
+                if (item.Binding.Gesture.Matches(e.Source, e))
+                {
+                    item.Binding.Command.Execute(item.Binding.CommandParameter);
+                    e.Handled = true;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Registers a hotkey with the hotkey manager. Creates a <see cref="Hotkey"/> from the provided parameters
+    /// and adds it to the <see cref="HotkeyCommandManager"/>.
+    /// </summary>
+    /// <param name="hotkeyId">A unique identifier for the hotkey. Also acts as the key for localizing the hotkey description.</param>
+    /// <param name="binding">A <see cref="KeyBinding"/> or <see cref="MouseBinding"/></param>
+    public void AddHotkey(string hotkeyId, InputBinding binding)
+    {
+        AddHotkey(new Hotkey(hotkeyId, binding));
+    }
+
+    /// <summary>
+    /// Registers a <see cref="Hotkey"/> with the hotkey manager.
+    /// </summary>
+    /// <param name="hotkey"></param>
+    public void AddHotkey(Hotkey hotkey)
+    {
+        if (hotkeys.TryAdd(hotkey.HotkeyId, hotkey))
+        {
+            hotkey.PropertyChanged += Hotkey_PropertyChanged;
+            _observableCollection.Add(hotkey);
+            //Check for localization
+            hotkey.Description = _localizationHelper.GetLocalization(hotkey.LocalizationKey);
+            CheckHotkeyUserMappings();
+        }
+        else
+        {
+            throw new ArgumentException($"Key {hotkey.HotkeyId} already exists in collection.", nameof(hotkey));
+        }
+    }
+
+    private void Hotkey_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+    }
+
+    /// <summary>
+    /// Removes the hotkey that matches the specified hotkeyId
+    /// </summary>
+    /// <param name="hotkeyId"></param>
+    public void RemoveHotkey(string hotkeyId)
+    {
+        if (hotkeys.TryGetValue(hotkeyId, out Hotkey value))
+        {
+            value.PropertyChanged -= Hotkey_PropertyChanged;
+            _ = _observableCollection.Remove(value);
+            _ = hotkeys.Remove(hotkeyId);
+        }
+        else
+        {
+            throw new KeyNotFoundException($"Key {hotkeyId} does not exist");
+        }
+    }
+
+    public IEnumerable<Hotkey> GetHotkeys()
+    {
+        return hotkeys.Values;
+    }
+
+    /// <summary>
+    /// Resets all hotkeys to their defaults
+    /// </summary>
+    public void ResetHotkeys()
+    {
+        foreach (Hotkey hotkey in hotkeys.Values)
+        {
+            hotkey.Reset();
+        }
+    }
+
+    /// <summary>
+    /// Returns true if the specified hotkey exists in this <see cref="HotkeyCommandManager"/>
+    /// </summary>
+    /// <param name="hotkeyId">A unique identifier for the hotkey</param>
+    /// <returns></returns>
+    public bool ContainsHotkey(string hotkeyId)
+    {
+        return hotkeys.ContainsKey(hotkeyId);
+    }
+
+    /// <summary>
+    /// Retrieves a <see cref="Hotkey"/>
+    /// </summary>
+    /// <param name="hotkeyId"></param>
+    /// <returns></returns>
+    public Hotkey GetHotkey(string hotkeyId)
+    {
+        return !hotkeys.TryGetValue(hotkeyId, out Hotkey hotkey) ? throw new KeyNotFoundException($"Key {hotkeyId} does not exist") : hotkey;
+    }
+
+    /// <summary>
+    /// Updates the <see cref="Hotkey.Description"/> of all <see cref="Hotkey"/> in this <see cref="HotkeyCommandManager"/>
+    /// </summary>
+    public void UpdateLanguage()
+    {
+        foreach (KeyValuePair<string, Hotkey> kvp in hotkeys)
+        {
+            kvp.Value.Description = _localizationHelper.GetLocalization(kvp.Value.LocalizationKey);
+        }
+    }
+
+    /// <summary>
+    /// Retrieves a <see cref="Dictionary{string, HotkeyInformation}"/> of Hotkeys that have been remapped from their defaults. 
+    /// Hotkeys that have not been changed are ignored.
+    /// </summary>
+    /// <returns></returns>
+    public Dictionary<string, HotkeyInformation> GetRemappedHotkeys()
+    {
+        Dictionary<string, HotkeyInformation> remapped = [];
+        foreach (Hotkey h in hotkeys.Values)
+        {
+            if (h.IsRemapped())
+            {
+                remapped.Add(h.HotkeyId, h.GetHotkeyInformation());
+            }
+        }
+        return remapped;
+    }
+
+    /// <summary>
+    /// Loads the given hotkey mappings. The hotkey mappings are lazily applied so that hotkeys registered after this
+    /// method is called can still be updated with the information provided. See the remarks section for more info.
+    /// </summary>
+    /// <remarks>
+    /// As we don't know when in the lifetime of the HotkeyCommandManager that this method will be called, the mappings 
+    /// must be "lazily" loaded - this means that hotkeys can be registered with the manager after this method has been
+    /// called, and the mappings can still be loaded. This is done by checking against the hotkeyId property - if we find
+    /// a match, we update the hotkey with the new information.
+    ///
+    /// We can run the matching process over all existing hotkeys when this method is initially called, to update the
+    /// mappings for hotkeys that are already registered.
+    /// </remarks>
+    public void LoadHotkeyMappings(IDictionary<string, HotkeyInformation> mappings)
+    {
+        if (mappings is null || mappings.Count == 0)
+        {
+            return;
+        }
+        hotkeyUserMappings = mappings;
+        CheckHotkeyUserMappings();
+    }
+
+    /// <summary>
+    /// Attempts to map hotkey information loaded from user settings to existing hotkeys set with defaults.
+    /// A value is removed from the <see cref="hotkeyUserMappings"/> dictionary once it is mapped.
+    /// </summary>
+    private void CheckHotkeyUserMappings()
+    {
+        if (hotkeyUserMappings is null || hotkeyUserMappings.Count == 0)
+        {
+            return;
+        }
+        //Copy so that we can modify the original collection within the foreach loop
+        foreach (KeyValuePair<string, HotkeyInformation> kvp in hotkeyUserMappings.ToDictionary(_ => _.Key, _ => _.Value))
+        {
+            if (hotkeys.TryGetValue(kvp.Key, out Hotkey hotkey))
+            {
+                try
+                {
+                    hotkey.UpdateHotkey(kvp.Value);
+                }
+                catch { }
+                //ignore any exceptions. Remove this mapping anyway, even if an exception is thrown,
+                //as its probably responsible for the exception
+                _ = hotkeyUserMappings.Remove(kvp.Key);
+            }
+        }
+    }
+
+}

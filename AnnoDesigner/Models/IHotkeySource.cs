@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using AnnoDesigner.ViewModels;
 
-namespace AnnoDesigner.Models
+namespace AnnoDesigner.Models;
+
+public interface IHotkeySource
 {
-    public interface IHotkeySource
-    {
-        void RegisterHotkeys(HotkeyCommandManager manager);
-        HotkeyCommandManager HotkeyCommandManager { get; set; }
-    }
+    void RegisterHotkeys(HotkeyCommandManager manager);
+    HotkeyCommandManager HotkeyCommandManager { get; set; }
 }

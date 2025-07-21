@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AnnoDesigner.Models;
+﻿using AnnoDesigner.Models;
+using System;
 
-namespace AnnoDesigner.CustomEventArgs
+namespace AnnoDesigner.CustomEventArgs;
+
+public class UpdateStatisticsEventArgs : EventArgs
 {
-    public class UpdateStatisticsEventArgs : EventArgs
+    public static new readonly UpdateStatisticsEventArgs Empty = new();
+
+    public static readonly UpdateStatisticsEventArgs All = new(UpdateMode.All);
+
+    private UpdateStatisticsEventArgs()
     {
-        public new static readonly UpdateStatisticsEventArgs Empty = new UpdateStatisticsEventArgs();
-
-        public static readonly UpdateStatisticsEventArgs All = new UpdateStatisticsEventArgs(UpdateMode.All);
-
-        private UpdateStatisticsEventArgs()
-        {
-        }
-
-        public UpdateStatisticsEventArgs(UpdateMode _updateMode)
-        {
-            Mode = _updateMode;
-        }
-
-        public UpdateMode Mode { get; private set; }
     }
+
+    public UpdateStatisticsEventArgs(UpdateMode _updateMode)
+    {
+        Mode = _updateMode;
+    }
+
+    public UpdateMode Mode { get; private set; }
 }

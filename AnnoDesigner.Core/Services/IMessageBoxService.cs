@@ -1,15 +1,16 @@
-﻿namespace AnnoDesigner.Core.Services
+﻿using System.Threading.Tasks;
+
+namespace AnnoDesigner.Core.Services;
+
+public interface IMessageBoxService
 {
-    public interface IMessageBoxService
-    {
-        void ShowMessage(object owner, string message, string title);
+    void ShowMessage(object owner, string message, string title);
 
-        void ShowWarning(object owner, string message, string title);
+    void ShowWarning(object owner, string message, string title);
 
-        void ShowError(object owner, string message, string title);
+    void ShowError(object owner, string message, string title);
 
-        bool ShowQuestion(object owner, string message, string title);
+    Task<bool> ShowQuestion(object owner, string message, string title);
 
-        bool? ShowQuestionWithCancel(object owner, string message, string title);
-    }
+    Task<bool?> ShowQuestionWithCancel(object owner, string message, string title);
 }

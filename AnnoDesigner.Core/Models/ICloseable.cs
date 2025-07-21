@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnnoDesigner.Core.Models
+namespace AnnoDesigner.Core.Models;
+
+public interface ICloseable
 {
-    public interface ICloseable
-    {
-        void Close();
-    }
+    void Close();
 }

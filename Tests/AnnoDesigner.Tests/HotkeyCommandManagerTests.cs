@@ -13,6 +13,7 @@ using System.Reflection;
 using Moq;
 using Xunit;
 using AnnoDesigner.Localization;
+using AnnoDesigner.ViewModels;
 
 namespace AnnoDesigner.Tests
 {

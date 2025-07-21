@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace AnnoDesigner.Models
+namespace AnnoDesigner.Models;
+
+public interface IUpdateHelper
 {
-    public interface IUpdateHelper
-    {
-        Task<List<AvailableRelease>> GetAvailableReleasesAsync();
+    Task<List<AvailableRelease>> GetAvailableReleasesAsync();
 
-        Task<AvailableRelease> GetAvailableReleasesAsync(ReleaseType releaseType);
+    Task<AvailableRelease> GetAvailableReleasesAsync(ReleaseType releaseType);
 
-        Task<string> DownloadReleaseAsync(AvailableRelease releaseToDownload);
+    Task<string> DownloadReleaseAsync(AvailableRelease releaseToDownload);
 
-        Task ReplaceUpdatedPresetsFilesAsync();
+    Task ReplaceUpdatedPresetsFilesAsync();
 
-        Task<bool> AreUpdatedPresetsFilesPresentAsync();
+    Task<bool> AreUpdatedPresetsFilesPresentAsync();
 
-        Task<(bool, Version)> IsNewAppVersionAvailableAsync();
-    }
+    Task<(bool, Version)> IsNewAppVersionAvailableAsync();
 }

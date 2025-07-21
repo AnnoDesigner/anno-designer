@@ -2,46 +2,45 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace AnnoDesigner.Core.Models
+namespace AnnoDesigner.Core.Models;
+
+[Serializable]
+public class SerializableDictionary<T>
+    : ISerializable
 {
-    [Serializable]
-    public class SerializableDictionary<T>
-        : ISerializable
+    public readonly Dictionary<string, T> Dict;
+
+    public SerializableDictionary()
     {
-        public readonly Dictionary<string, T> Dict;
+        Dict = [];
+    }
 
-        public SerializableDictionary()
+    protected SerializableDictionary(SerializationInfo info, StreamingContext context)
+    {
+        Dict = [];
+        foreach (var entry in info)
         {
-            Dict = new Dictionary<string, T>();
+            Dict.Add(entry.Name, (T)Convert.ChangeType(entry.Value, typeof(T)));
         }
+    }
 
-        protected SerializableDictionary(SerializationInfo info, StreamingContext context)
+    public void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        foreach (var key in Dict.Keys)
         {
-            Dict = new Dictionary<string, T>();
-            foreach (var entry in info)
-            {
-                Dict.Add(entry.Name, (T)Convert.ChangeType(entry.Value, typeof(T)));
-            }
+            info.AddValue(key, Dict[key]);
         }
+    }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+    public T this[string key]
+    {
+        get
         {
-            foreach (var key in Dict.Keys)
-            {
-                info.AddValue(key, Dict[key]);
-            }
+            return Dict.ContainsKey(key) ? Dict[key] : default;
         }
-
-        public T this[string key]
+        set
         {
-            get
-            {
-                return Dict.ContainsKey(key) ? Dict[key] : default;
-            }
-            set
-            {
-                Dict[key] = value;
-            }
+            Dict[key] = value;
         }
     }
 }

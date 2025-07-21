@@ -3,24 +3,23 @@ using System.CommandLine;
 using System.CommandLine.Binding;
 using System.Threading.Tasks;
 
-namespace AnnoDesigner.CommandLine.Arguments
+namespace AnnoDesigner.CommandLine;
+
+public abstract class ArgsBinderBase<T> : BinderBase<T>
 {
-    public abstract class ArgsBinderBase<T> : BinderBase<T>
+    protected Command command;
+
+    public Command ConfigureCommand(Action<T> handler)
     {
-        protected Command command;
+        command.SetHandler(handler, this);
 
-        public Command ConfigureCommand(Action<T> handler)
-        {
-            command.SetHandler(handler, this);
+        return command;
+    }
 
-            return command;
-        }
+    public Command ConfigureCommand(Func<T, Task> handler)
+    {
+        command.SetHandler(handler, this);
 
-        public Command ConfigureCommand(Func<T, Task> handler)
-        {
-            command.SetHandler(handler, this);
-
-            return command;
-        }
+        return command;
     }
 }

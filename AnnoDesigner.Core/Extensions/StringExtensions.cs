@@ -1,63 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AnnoDesigner.Core.Extensions
+namespace AnnoDesigner.Core.Extensions;
+
+public static class StringExtensions
 {
-    public static class StringExtensions
+    public static bool Contains(this string s, string token, StringComparison stringComparison)
     {
-        public static bool Contains(this string s, string token, StringComparison stringComparison)
+
+        if (string.IsNullOrWhiteSpace(s) || string.IsNullOrWhiteSpace(token))
         {
+            return false;//or throw error?
+        }
 
-            if (string.IsNullOrWhiteSpace(s) || string.IsNullOrWhiteSpace(token))
-            {
-                return false;//or throw error?
-            }
+        if (s.IndexOf(token, stringComparison) != -1)
+        {
+            return true;
+        }
 
-            if (s.IndexOf(token, stringComparison) != -1)
+        return false;
+    }
+
+    public static bool Contains(this string s, IEnumerable<string> tokens)
+    {
+        foreach (var token in tokens)
+        {
+            if (s.Contains(token, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
-
-            return false;
         }
 
-        public static bool Contains(this string s, IEnumerable<string> tokens)
+        return false;
+    }
+
+    public static bool IsPartOf(this string s, IEnumerable<string> tokens)
+    {
+        foreach (var token in tokens)
         {
-            foreach (var token in tokens)
+            if (token.Contains(s, StringComparison.OrdinalIgnoreCase))
             {
-                if (s.Contains(token, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
+                return true;
             }
-
-            return false;
         }
 
-        public static bool IsPartOf(this string s, IEnumerable<string> tokens)
+        return false;
+    }
+
+    public static string FirstCharToUpper(this string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
         {
-            foreach (var token in tokens)
-            {
-                if (token.Contains(s, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return string.Empty;
         }
 
-        public static string FirstCharToUpper(this string input)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                return string.Empty;
-            }
+        var tempCharArray = input.ToCharArray();
+        tempCharArray[0] = char.ToUpper(tempCharArray[0]);
 
-            var tempCharArray = input.ToCharArray();
-            tempCharArray[0] = char.ToUpper(tempCharArray[0]);
-
-            return new string(tempCharArray);
-        }
+        return new string(tempCharArray);
     }
 }

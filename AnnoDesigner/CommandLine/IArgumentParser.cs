@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using AnnoDesigner.CommandLine.Arguments;
+﻿using AnnoDesigner.CommandLine.Arguments;
+using System.Collections.Generic;
 
-namespace AnnoDesigner.CommandLine
+namespace AnnoDesigner.CommandLine;
+
+public interface IArgumentParser
 {
-    public interface IArgumentParser
-    {
-        IProgramArgs Parse(IEnumerable<string> arguments);
-    }
+    IProgramArgs Parse(IEnumerable<string> arguments);
 }

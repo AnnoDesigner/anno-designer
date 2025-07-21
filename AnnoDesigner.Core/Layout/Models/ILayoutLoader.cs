@@ -6,16 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using AnnoDesigner.Core.Models;
 
-namespace AnnoDesigner.Core.Layout.Models
+namespace AnnoDesigner.Core.Layout.Models;
+
+public interface ILayoutLoader
 {
-    public interface ILayoutLoader
-    {
-        void SaveLayout(LayoutFile layout, string pathToLayoutFile);
+    void SaveLayout(LayoutFile layout, string pathToLayoutFile);
 
-        void SaveLayout(LayoutFile layout, Stream streamWithLayout);
+    void SaveLayout(LayoutFile layout, Stream streamWithLayout);
 
-        LayoutFile LoadLayout(string pathToLayoutFile, bool forceLoad = false);
+    LayoutFile LoadLayout(string pathToLayoutFile, bool forceLoad = false);
 
-        LayoutFile LoadLayout(Stream streamWithLayout, bool forceLoad = false);
-    }
+    LayoutFile LoadLayout(Stream streamWithLayout, bool forceLoad = false);
 }

@@ -1,9 +1,8 @@
 ﻿using System.Xml;
 
-namespace PresetParser
+namespace PresetParser;
+
+public interface IIfoFileProvider
 {
-    public interface IIfoFileProvider
-    {
-        XmlDocument GetIfoFileContent(string basePath, string variationFilename);
-    }
+    XmlDocument GetIfoFileContent(string basePath, string variationFilename);
 }

@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AnnoDesigner.Core.Layout.Models;
+﻿using AnnoDesigner.Core.Layout.Models;
+using System;
 
-namespace AnnoDesigner.CustomEventArgs
+namespace AnnoDesigner.CustomEventArgs;
+
+public class FileLoadedEventArgs : EventArgs
 {
-    public class FileLoadedEventArgs : EventArgs
+    public FileLoadedEventArgs(string filePathToUse, LayoutFile layoutToUse = null)
     {
-        public FileLoadedEventArgs(string filePathToUse, LayoutFile layoutToUse = null)
-        {
-            FilePath = filePathToUse;
-            Layout = layoutToUse;
-        }
-
-        public string FilePath { get; private set; }
-
-        public LayoutFile Layout { get; private set; }
+        FilePath = filePathToUse;
+        Layout = layoutToUse;
     }
+
+    public string FilePath { get; private set; }
+
+    public LayoutFile Layout { get; private set; }
 }

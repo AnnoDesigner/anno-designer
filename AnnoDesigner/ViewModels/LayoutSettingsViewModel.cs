@@ -1,41 +1,40 @@
-﻿using System;
-using AnnoDesigner.Core.Models;
+﻿using AnnoDesigner.Core.Models;
+using System;
 
-namespace AnnoDesigner.ViewModels
+namespace AnnoDesigner.ViewModels;
+
+public class LayoutSettingsViewModel : Notify
 {
-    public class LayoutSettingsViewModel : Notify
+    public LayoutSettingsViewModel()
     {
-        public LayoutSettingsViewModel()
-        {
-            _layoutVersion = new Version(1, 0, 0, 0);
-        }
+        _layoutVersion = new Version(1, 0, 0, 0);
+    }
 
-        private Version _layoutVersion;
+    private Version _layoutVersion;
 
-        public Version LayoutVersion
+    public Version LayoutVersion
+    {
+        get => _layoutVersion;
+        set
         {
-            get { return _layoutVersion; }
-            set
+            if (value is null)
             {
-                if (value is null)
-                {
-                    return;
-                }
-
-                UpdateProperty(ref _layoutVersion, value);
-                OnPropertyChanged(nameof(LayoutVersionDisplayValue));
+                return;
             }
-        }
 
-        public string LayoutVersionDisplayValue
+            _ = UpdateProperty(ref _layoutVersion, value);
+            OnPropertyChanged(nameof(LayoutVersionDisplayValue));
+        }
+    }
+
+    public string LayoutVersionDisplayValue
+    {
+        get => _layoutVersion.ToString();
+        set
         {
-            get { return _layoutVersion.ToString(); }
-            set
+            if (Version.TryParse(value, out Version parsedVersion))
             {
-                if (Version.TryParse(value, out var parsedVersion))
-                {
-                    LayoutVersion = parsedVersion;
-                }
+                LayoutVersion = parsedVersion;
             }
         }
     }

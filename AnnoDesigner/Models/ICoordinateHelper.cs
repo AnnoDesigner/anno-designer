@@ -1,36 +1,39 @@
-﻿using System.Windows;
-using AnnoDesigner.Core.Models;
+﻿using AnnoDesigner.Core.Models;
+using System.Windows;
 
-namespace AnnoDesigner.Models
+namespace AnnoDesigner.Models;
+
+public interface ICoordinateHelper
 {
-    public interface ICoordinateHelper
-    {
-        Point GetCenterPoint(Rect rect);
+    Point GetCenterPoint(Rect rect);
 
-        double GridToScreen(double gridLength, int gridStep);
+    double GridToScreen(double gridLength, int gridStep);
 
-        Point GridToScreen(Point gridPoint, int gridStep);
+    Point GridToScreen(Point gridPoint, int gridStep);
 
-        Size GridToScreen(Size gridSize, int gridStep);
+    Size GridToScreen(Size gridSize, int gridStep);
 
-        Size Rotate(Size size);
+    Size Rotate(Size size);
 
-        Rect Rotate(Rect rect);
+    Rect Rotate(Rect rect);
 
-        GridDirection Rotate(GridDirection direction);
+    float Rotate(float direction);
 
-        double RoundScreenToGrid(double screenLength, int gridStep);
+    double RoundScreenToGrid(double screenLength, int gridStep);
 
-        Point RoundScreenToGrid(Point screenPoint, int gridStep);
+    Point RoundScreenToGrid(Point screenPoint, int gridStep);
 
-        double ScreenToGrid(double screenLength, int gridStep);
+    double ScreenToGrid(double screenLength, int gridStep);
 
-        Point ScreenToGrid(Point screenPoint, int gridStep);
+    Point ScreenToGrid(Point screenPoint, int gridStep);
 
-        Point ScreenToFractionalGrid(Point screenPoint, int gridStep);
+    Point ScreenToFractionalGrid(Point screenPoint, int gridStep);
 
-        public Rect ScreenToGrid(Rect rect, int gridStep);
+    public Rect ScreenToGrid(Rect rect, int gridStep);
 
-        public Rect GridToScreen(Rect rect, int gridStep);
-    }
+    public Rect GridToScreen(Rect rect, int gridStep);
+
+    public Point GridClamp(Point point, bool xEven, bool yEven);
+
+    public Point GridClampDiagonal(Point point, bool xEven, bool yEven);
 }

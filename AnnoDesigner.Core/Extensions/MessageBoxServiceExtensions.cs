@@ -1,58 +1,43 @@
 ﻿using System;
+using System.Threading.Tasks;
 using AnnoDesigner.Core.Services;
 
-namespace AnnoDesigner.Core.Extensions
+namespace AnnoDesigner.Core.Extensions;
+
+public static class MessageBoxServiceExtensions
 {
-    public static class MessageBoxServiceExtensions
+    public static void ShowMessage(this IMessageBoxService service, string message, string title = "Information")
     {
-        public static void ShowMessage(this IMessageBoxService service, string message, string title = "Information")
-        {
-            if (service == null)
-            {
-                throw new ArgumentNullException(nameof(service));
-            }
+        ArgumentNullException.ThrowIfNull(service);
 
-            service.ShowMessage(null, message, title);
-        }
+        service.ShowMessage(null, message, title);
+    }
 
-        public static void ShowWarning(this IMessageBoxService service, string message, string title = "Warning")
-        {
-            if (service == null)
-            {
-                throw new ArgumentNullException(nameof(service));
-            }
+    public static void ShowWarning(this IMessageBoxService service, string message, string title = "Warning")
+    {
+        ArgumentNullException.ThrowIfNull(service);
 
-            service.ShowWarning(null, message, title);
-        }
+        service.ShowWarning(null, message, title);
+    }
 
-        public static void ShowError(this IMessageBoxService service, string message, string title = "Error")
-        {
-            if (service == null)
-            {
-                throw new ArgumentNullException(nameof(service));
-            }
+    public static void ShowError(this IMessageBoxService service, string message, string title = "Error")
+    {
+        ArgumentNullException.ThrowIfNull(service);
 
-            service.ShowError(null, message, title);
-        }
+        service.ShowError(null, message, title);
+    }
 
-        public static bool ShowQuestion(this IMessageBoxService service, string message, string title = "Question")
-        {
-            if (service == null)
-            {
-                throw new ArgumentNullException(nameof(service));
-            }
+    public static Task<bool> ShowQuestion(this IMessageBoxService service, string message, string title = "Question")
+    {
+        ArgumentNullException.ThrowIfNull(service);
 
-            return service.ShowQuestion(null, message, title);
-        }
+        return service.ShowQuestion(null, message, title);
+    }
 
-        public static bool? ShowQuestionWithCancel(this IMessageBoxService service, string message, string title = "Question")
-        {
-            if (service == null)
-            {
-                throw new ArgumentNullException(nameof(service));
-            }
+    public static Task<bool?> ShowQuestionWithCancel(this IMessageBoxService service, string message, string title = "Question")
+    {
+        ArgumentNullException.ThrowIfNull(service);
 
-            return service.ShowQuestionWithCancel(null, message, title);
-        }
+        return service.ShowQuestionWithCancel(null, message, title);
     }
 }

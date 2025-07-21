@@ -1,4 +1,3 @@
-﻿namespace AnnoDesigner.CommandLine.Arguments
-{
-    public class EmptyArgs : IProgramArgs { }
-}
+﻿namespace AnnoDesigner.CommandLine.Arguments;
+
+public class EmptyArgs : IProgramArgs { }

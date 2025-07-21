@@ -9,46 +9,45 @@ using AnnoDesigner.Core.Helper;
 using AnnoDesigner.Core.Presets.Models;
 using NLog;
 
-namespace AnnoDesigner.Core.Presets.Loader
+namespace AnnoDesigner.Core.Presets.Loader;
+
+public class ColorPresetsLoader
 {
-    public class ColorPresetsLoader
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+    public ColorPresets Load(string pathToColorPresetsFile)
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        ColorPresets result = null;
 
-        public ColorPresets Load(string pathToColorPresetsFile)
+        try
         {
-            ColorPresets result = null;
-
-            try
-            {
-                result = SerializationHelper.LoadFromFile<ColorPresets>(pathToColorPresetsFile);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Error loading the colors.");
-                throw;
-            }
-
-            return result;
+            result = SerializationHelper.LoadFromFile<ColorPresets>(pathToColorPresetsFile);
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Error loading the colors.");
+            throw;
         }
 
-        public ColorScheme LoadDefaultScheme(string colorPresetsFilePath)
+        return result;
+    }
+
+    public ColorScheme LoadDefaultScheme(string colorPresetsFilePath)
+    {
+        ColorScheme result = null;
+
+        try
         {
-            ColorScheme result = null;
+            var colorPresets = Load(colorPresetsFilePath);
 
-            try
-            {
-                var colorPresets = Load(colorPresetsFilePath);
-
-                result = colorPresets?.AvailableSchemes.FirstOrDefault(x => x.Name.Equals("Default", StringComparison.OrdinalIgnoreCase));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Error loading the default scheme.");
-                throw;
-            }
-
-            return result;
+            result = colorPresets?.AvailableSchemes.FirstOrDefault(x => x.Name.Equals("Default", StringComparison.OrdinalIgnoreCase));
         }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Error loading the default scheme.");
+            throw;
+        }
+
+        return result;
     }
 }

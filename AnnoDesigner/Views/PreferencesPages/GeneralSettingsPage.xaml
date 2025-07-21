@@ -1,0 +1,260 @@
+﻿<Page
+    x:Class="AnnoDesigner.PreferencesPages.GeneralSettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:annoDesigner="clr-namespace:AnnoDesigner"
+    xmlns:converters="clr-namespace:AnnoDesigner.Converters"
+    xmlns:coreConverters="clr-namespace:AnnoDesigner.Core.Converters;assembly=AnnoDesigner.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:AnnoDesigner.Helper"
+    xmlns:l="clr-namespace:AnnoDesigner.Localization"
+    xmlns:local="clr-namespace:AnnoDesigner.PreferencesPages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:viewModels="clr-namespace:AnnoDesigner.ViewModels"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    d:DataContext="{d:DesignInstance Type=viewModels:GeneralSettingsViewModel,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="544.433"
+    d:DesignWidth="800"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <coreConverters:BoolToVisibilityConverter
+            x:Key="converterBoolToVisibilityCollapsed"
+            FalseValue="Collapsed"
+            TrueValue="Visible" />
+        <converters:UserDefinedColorToDisplayNameConverter x:Key="converterUserDefinedColorToDisplayName" />
+    </Page.Resources>
+    <StackPanel Margin="10,5,0,0" Orientation="Vertical">
+
+        <!--#region UI Settings-->
+
+        <TextBlock
+            Margin="0,10,0,10"
+            FontSize="14"
+            Text="{l:Localize GeneralPreferencesUISettings}" />
+
+        <Grid Margin="20,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MinWidth="180" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="{l:Localize GeneralPreferencesGridLinesColor, StringFormat='\{0\}:', Mode=OneWay}" />
+            <ComboBox
+                Grid.Column="1"
+                Width="140"
+                Margin="10,0,0,0"
+                VerticalAlignment="Bottom"
+                IsEnabled="True"
+                ItemsSource="{Binding GridLineColors}"
+                SelectedItem="{Binding SelectedGridLineColor}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource converterUserDefinedColorToDisplayName}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <xctk:ColorPicker
+                Grid.Column="2"
+                Width="140"
+                Margin="10,0,0,0"
+                AdvancedTabHeader="{l:Localize Advanced}"
+                AvailableColorsHeader="{l:Localize AvailableColors}"
+                AvailableColorsSortingMode="HueSaturationBrightness"
+                DisplayColorAndName="True"
+                DisplayColorTooltip="True"
+                RecentColorsHeader="{l:Localize RecentColors}"
+                SelectedColor="{Binding SelectedCustomGridLineColor}"
+                ShowAvailableColors="True"
+                ShowDropDownButton="True"
+                ShowRecentColors="True"
+                ShowStandardColors="False"
+                StandardColorsHeader="{l:Localize StandardColors}"
+                StandardTabHeader="{l:Localize Standard}"
+                Visibility="{Binding IsGridLineColorPickerVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
+        </Grid>
+
+        <Grid Margin="20,0,0,10" Grid.IsSharedSizeScope="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="Auto"
+                    MinWidth="180"
+                    SharedSizeGroup="PreferenceLabel" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="{l:Localize GeneralPreferencesObjectBorderLinesColor, StringFormat='\{0\}:', Mode=OneWay}" />
+            <ComboBox
+                Grid.Column="1"
+                Width="140"
+                Margin="10,0,0,0"
+                VerticalAlignment="Bottom"
+                IsEnabled="True"
+                ItemsSource="{Binding ObjectBorderLineColors}"
+                SelectedItem="{Binding SelectedObjectBorderLineColor}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource converterUserDefinedColorToDisplayName}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <xctk:ColorPicker
+                Grid.Column="2"
+                Width="140"
+                Margin="10,0,0,0"
+                AdvancedTabHeader="{l:Localize Advanced}"
+                AvailableColorsHeader="{l:Localize AvailableColors}"
+                AvailableColorsSortingMode="HueSaturationBrightness"
+                DisplayColorAndName="True"
+                DisplayColorTooltip="True"
+                RecentColorsHeader="{l:Localize RecentColors}"
+                SelectedColor="{Binding SelectedCustomObjectBorderLineColor}"
+                ShowAvailableColors="True"
+                ShowDropDownButton="True"
+                ShowRecentColors="True"
+                ShowStandardColors="False"
+                StandardColorsHeader="{l:Localize StandardColors}"
+                StandardTabHeader="{l:Localize Standard}"
+                Visibility="{Binding IsObjectBorderLineColorPickerVisible, Converter={StaticResource converterBoolToVisibilityCollapsed}}" />
+        </Grid>
+
+        <Grid Margin="20,0,0,10" Grid.IsSharedSizeScope="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="Auto"
+                    MinWidth="180"
+                    SharedSizeGroup="PreferenceLabel" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="{l:Localize GeneralPreferencesZoomSensitivity, StringFormat='{}{0}:'}" />
+            <Slider
+                Name="ZoomSlider"
+                Grid.Column="1"
+                Width="140"
+                Margin="10,0,0,0"
+                IsSnapToTickEnabled="True"
+                Maximum="{x:Static helpers:Constants.ZoomSensitivitySliderMaximum}"
+                Minimum="1"
+                TickFrequency="1"
+                TickPlacement="None"
+                Value="{Binding ZoomSensitivityPercentage}" />
+            <TextBlock
+                Grid.Column="2"
+                Margin="10,0,0,0"
+                Text="{Binding ElementName=ZoomSlider, Path=Value, StringFormat='{}{0}%'}" />
+            <Button
+                Grid.Column="3"
+                Margin="20,0,0,0"
+                Padding="5,2"
+                Command="{Binding ResetZoomSensitivityCommand}"
+                Content="{l:Localize Default}" />
+        </Grid>
+        <Grid Margin="20,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="Auto"
+                    MinWidth="180"
+                    SharedSizeGroup="TitleColumn" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <CheckBox
+                Grid.Row="0"
+                Content="{l:Localize GeneralPreferencesUseZoomToPoint}"
+                IsChecked="{Binding UseZoomToPoint}" />
+            <CheckBox
+                Grid.Row="2"
+                Content="{l:Localize GeneralPreferencesInvertPanningDirection}"
+                IsChecked="{Binding InvertPanningDirection}" />
+            <CheckBox
+                Grid.Row="4"
+                Content="{l:Localize GeneralPreferencesShowScrollbars}"
+                IsChecked="{Binding ShowScrollbars}" />
+            <CheckBox
+                Grid.Row="6"
+                Content="{l:Localize GeneralPreferencesInvertScrollingDirection}"
+                IsChecked="{Binding InvertScrollingDirection}" />
+            <CheckBox
+                Grid.Row="8"
+                Content="{l:Localize GeneralPreferencesHideInfluenceOnSelection}"
+                IsChecked="{Binding HideInfluenceOnSelection}" />
+            <CheckBox
+                Grid.Row="10"
+                Content="{l:Localize GeneralPreferencesIncludeRoadsInStatisticCalculation}"
+                IsChecked="{Binding IncludeRoadsInStatisticCalculation}" />
+
+        </Grid>
+
+        <!--#endregion-->
+
+        <!--#region Recent files Settings-->
+
+        <TextBlock
+            Margin="0,10,0,10"
+            FontSize="14"
+            Text="{l:Localize GeneralPreferencesRecentFilesSettings}" />
+
+        <Grid Margin="20,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MinWidth="180" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="{l:Localize GeneralPreferencesMaxRecentFiles, StringFormat='\{0\}:', Mode=OneWay}" />
+
+            <ui:NumberBox
+                Grid.Column="1"
+                Width="70"
+                Margin="10,0,0,0"
+                IsEnabled="True"
+                Maximum="100"
+                Minimum="1"
+                SpinButtonPlacementMode="Compact"
+                TabIndex="0"
+                Value="{Binding MaxRecentFiles}" />
+
+            <Button
+                Grid.Column="2"
+                Margin="20,0,0,0"
+                Padding="5,2"
+                Command="{Binding ResetMaxRecentFilesCommand}"
+                Content="{l:Localize Default}" />
+            <Button
+                Grid.Column="3"
+                Margin="50,0,0,0"
+                Padding="5,2"
+                Command="{Binding ClearRecentFilesCommand}"
+                Content="{l:Localize Clear}" />
+
+        </Grid>
+
+        <!--#endregion-->
+
+    </StackPanel>
+</Page>

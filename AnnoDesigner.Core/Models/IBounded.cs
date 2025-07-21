@@ -1,13 +1,12 @@
 ﻿using System.Windows;
 
-namespace AnnoDesigner.Core.Models
+namespace AnnoDesigner.Core.Models;
+
+public interface IBounded
 {
-    public interface IBounded
-    {
-        Point Position { get; set; }
+    Point Position { get; set; }
 
-        Size Size { get; set; }
+    Size Size { get; set; }
 
-        Rect Bounds { get; set; }
-    }
+    Rect Bounds { get; set; }
 }
